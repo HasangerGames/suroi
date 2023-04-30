@@ -4,10 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --config ./webpack/webpack.prod.ts",
-    "dev": "NODE_ENV=development webpack serve --config ./webpack/webpack.dev.ts",
-    "lint": "eslint . --fix --ext .js,.ts,.tsx,.svelte",
-    "lint:ci": "eslint . --ext .js,.ts,.tsx,.svelte"
+    "build": "webpack --config ./webpack/webpack.prod.ts",
+    "dev": "webpack serve --config ./webpack/webpack.dev.ts",
+    "lint": "eslint . --fix --ext .js,.ts,.tsx",
+    "lint:ci": "eslint . --ext .js,.ts,.tsx"
   },
   "engines": {
     "node": ">=18.8.0"
@@ -38,7 +38,6 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-svelte": "^2.27.2",
     "expose-loader": "^4.1.0",
     "html-webpack-plugin": "^5.5.1",
     "jquery": "^3.6.4",
@@ -49,11 +48,6 @@
     "postcss-preset-env": "^8.3.2",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
-    "svelte": "^3.58.0",
-    "svelte-eslint-parser": "^0.27.0",
-    "svelte-loader": "^3.1.7",
-    "svelte-preprocess": "^5.0.3",
-    "svelte-routing": "^1.6.0",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",

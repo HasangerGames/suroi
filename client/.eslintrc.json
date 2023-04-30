@@ -4,7 +4,6 @@
         "es2022": true
     },
     "extends": [
-        "plugin:svelte/recommended",
         "plugin:@typescript-eslint/recommended",
         "eslint:recommended",
         "standard-with-typescript"
@@ -17,20 +16,17 @@
         "ecmaVersion": 12,
         "sourceType": "module",
         "project": "./tsconfig.json",
-        "extraFileExtensions": ".svelte"
+        "extraFileExtensions": ".js"
     },
     "plugins": [
         "@typescript-eslint"
     ],
     "overrides": [
         {
-            "files": ["*.svelte"],
-            "parser": "svelte-eslint-parser",
+            "files": ["*.js"],
+            "parser": "@babel/eslint-parser",
             "parserOptions": {
-                "parser": {
-                    "ts": "@typescript-eslint/parser",
-                    "js": "@babel/eslint-parser"
-                }
+                "requireConfigFile": false
             }
         }
     ],
@@ -50,14 +46,5 @@
         "curly": 0,
         "@typescript-eslint/curly": 0,
         "import/no-webpack-loader-syntax": 0
-    },
-    "settings": {
-        "svelte": {
-            "compileOptions": {
-                "postcss": {
-                    "configFilePath": "./postcss.config.js"
-                }
-            }
-        }
     }
 }

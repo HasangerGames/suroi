@@ -23,9 +23,12 @@ const config = merge(common, {
         new CopyPlugin({
             patterns: [{
                 from: path.resolve(__dirname, "../public"),
-                to: path.resolve(__dirname, "../build"),
+                to: path.resolve(__dirname, "../dist"),
                 globOptions: {
-                    ignore: ["**/index.html"]
+                    ignore: [
+                        "**/index.html",
+                        "**/leaderboard.html"
+                    ]
                 }
             }]
         }),

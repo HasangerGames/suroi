@@ -3,8 +3,6 @@ import { version } from "../package.json";
 import * as Webpack from "webpack";
 import type WDS from "webpack-dev-server";
 
-import SveltePreprocess from "svelte-preprocess";
-
 import { WebpackManifestPlugin } from "webpack-manifest-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
@@ -16,45 +14,18 @@ interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
 }
 
-const mode = (process.env.NODE_ENV as "production" | "development") ?? "development";
-const prod = mode === "production";
-
 const config: Configuration = {
     entry: {
-        app: path.resolve(__dirname, "../src/index.ts")
+        app: path.resolve(__dirname, "../src/Client/index.ts"),
+        leaderboard: path.resolve(__dirname, "../src/Leaderboard/index.ts")
     },
 
     resolve: {
-        alias: {
-            svelte: path.dirname(require.resolve("svelte/package.json"))
-        },
-        extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx", ".svelte"],
-        mainFields: ["svelte", "browser", "module", "main"],
-        conditionNames: ["svelte"]
+        extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"]
     },
 
     module: {
         rules: [
-            {
-                test: /\.svelte$/,
-                use: {
-                    loader: "svelte-loader",
-                    options: {
-                        compilerOptions: {
-                            dev: !prod
-                        },
-                        emitCss: true,
-                        preprocess: SveltePreprocess({ postcss: true }),
-                        hotReload: !prod
-                    }
-                }
-            },
-            {
-                test: /node_modules\/svelte\/.*\.mjs$/,
-                resolve: {
-                    fullySpecified: false
-                }
-            },
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
@@ -126,6 +97,26 @@ const config: Configuration = {
         new HTMLWebpackPlugin({
             inject: true,
             template: path.resolve(__dirname, "../public/index.html"),
+            chunks: ["app"],
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../public/leaderboard.html"),
+            chunks: ["leaderboard"],
+            filename: "leaderboard.html",
 
             minify: {
                 removeComments: true,
