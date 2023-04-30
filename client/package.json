@@ -10,6 +10,7 @@
   "keywords": [],
   "license": "GPL-3.0",
   "dependencies": {
+    "jquery": "^3.6.4",
     "tailwindcss": "^3.3.2"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import { App, SSLApp } from "uWebSockets.js";
 import fs from "fs";
-import { Config, Debug, getContentType, log } from "@suroi/api/src/utils";
+import { Config, Debug, getContentType, log } from "@suroi/api/dist/utils";
 
 // Initialize the server
 let app;
@@ -23,13 +23,13 @@ function walk(dir: string, files: string[] = []): string[] {
         if(stat.isDirectory()) {
             walk(dir + "/" + f, files);
         } else {
-            files.push(dir.slice(6) + "/" + f);
+            files.push(dir.slice(12) + "/" + f);
         }
     }
     return files;
 }
-for(const file of walk("public")) {
-    staticFiles[file] = fs.readFileSync("public" + file);
+for(const file of walk("client/dist")) {
+    staticFiles[file] = fs.readFileSync("client/dist/" + file);
 }
 
 app.get("/*", async (res, req) => {
@@ -37,7 +37,7 @@ app.get("/*", async (res, req) => {
     let file: Buffer | undefined;
     if(Debug.disableStaticFileCache) {
         try {
-            file = fs.readFileSync("public" + path);
+            file = fs.readFileSync("client/dist" + path);
         } catch(e) {
             file = undefined;
         }
