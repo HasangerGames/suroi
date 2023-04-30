@@ -1,11 +1,19 @@
 {
   "name": "@suroi/server",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "@suroi/api": "file:../api",
+    "typescript": "^5.0.4",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.23.0"
+  },
   "keywords": [],
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "@types/node": "^18.16.3"
+  }
 }
