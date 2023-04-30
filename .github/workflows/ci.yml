@@ -20,7 +20,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Packages
+      - name: Install Packages (Common)
+        working-directory: ./common
+        run: npm ci
+
+      - name: Install Packages (Client)
         working-directory: ./client
         run: npm ci
 
@@ -41,7 +45,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Packages
+      - name: Install Packages (Common)
+        working-directory: ./common
+        run: npm ci
+
+      - name: Install Packages (Server)
         working-directory: ./server
         run: npm ci
 

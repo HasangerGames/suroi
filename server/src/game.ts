@@ -1,14 +1,9 @@
-import { log } from "@suroi/api/dist/utils/misc";
+import { log } from "../../common/src/utils/misc";
 
-import { Player } from "@suroi/api/dist/objects/player";
+import { Player } from "../../common/src/objects/player";
 
 export class Game {
-    constructor () {
-
-    }
-
     tickTimes: number[] = [];
-
     players: Set<Player>;
 
     tick (delay: number): void {
@@ -35,6 +30,5 @@ export class Game {
         return player;
     }
 
-    removePlayer (player: Player): void {
-    }
+    removePlayer (player: Player): void {}
 }

@@ -1,3 +1,5 @@
+import type { WebSocket } from "uWebSockets.js";
+
 import { GameObject } from "./gameObject";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
@@ -11,9 +13,7 @@ export class Player extends GameObject {
     private readonly _adrenaline = 100;
     adrenalineDirty = true;
 
-    constructor () {
-        super();
-    }
+    socket: WebSocket<Player>;
 
     get health (): number {
         return this._health;
