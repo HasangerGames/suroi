@@ -1,0 +1,14 @@
+{
+  "name": "suroi",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "build": "cd common && tsc && cd ../server && tsc && cd ../client && npm run build",
+    "start": "node --enable-source-maps server/dist/server.js"
+  },
+  "dependencies": {
+    "typescript": "^5.0.4"
+  },
+  "keywords": [],
+  "license": "GPL-3.0"
+}
