@@ -51,7 +51,7 @@ jobs:
   api:
     name: API
     runs-on: ubuntu-latest
-    concurrency: ci-api-${{ github.ref }}
+    concurrency: ci-common-${{ github.ref }}
 
     steps:
       - name: Checkout Repository
@@ -63,9 +63,9 @@ jobs:
           node-version: 20
 
       - name: Install Packages
-        working-directory: ./api
+        working-directory: ./common
         run: npm ci
 
       - name: Build
-        working-directory: ./api
+        working-directory: ./common
         run: npm run build

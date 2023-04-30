@@ -9,6 +9,7 @@
   "keywords": [],
   "license": "GPL-3.0",
   "dependencies": {
-    "@types/node": "^18.16.3"
+    "@types/node": "^18.16.3",
+    "bit-buffer": "^0.2.5"
   }
 }

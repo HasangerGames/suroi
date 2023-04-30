@@ -11,6 +11,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "jquery": "^3.6.4",
+    "phaser": "^3.60.0",
     "tailwindcss": "^3.3.2"
   },
   "devDependencies": {

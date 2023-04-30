@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "build": "cd api && tsc && cd ../server && tsc && cd ../client && npm run build",
+    "build": "cd common && tsc && cd ../server && tsc && cd ../client && npm run build",
     "start": "node --enable-source-maps server/dist/server.js"
   },
   "dependencies": {
