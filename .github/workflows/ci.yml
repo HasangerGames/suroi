@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [dependabot/**]
+
+jobs:
+  client:
+    name: Client
+    runs-on: ubuntu-latest
+    concurrency: ci-client-${{ github.ref }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Packages
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build
+        working-directory: ./client
+        run: npm run build
+  server:
+    name: Server
+    runs-on: ubuntu-latest
+    concurrency: ci-serveri-${{ github.ref }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Packages
+        working-directory: ./server
+        run: npm ci
+
+      - name: Build
+        working-directory: ./server
+        run: npm run build
+  api:
+    name: API
+    runs-on: ubuntu-latest
+    concurrency: ci-api-${{ github.ref }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Packages
+        working-directory: ./api
+        run: npm ci
+
+      - name: Build
+        working-directory: ./api
+        run: npm run build

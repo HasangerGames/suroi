@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "jsx": "react",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "strictNullChecks": true
+    },
+    "include": ["**/*.js", "**/*.ts", "**/*.tsx"]
+}
