@@ -1,44 +1,44 @@
-import { version } from '../package.json';
+import { version } from "../package.json";
 
-import * as Webpack from 'webpack';
-import type WDS from 'webpack-dev-server';
+import * as Webpack from "webpack";
+import type WDS from "webpack-dev-server";
 
-import SveltePreprocess from 'svelte-preprocess';
+import SveltePreprocess from "svelte-preprocess";
 
-import { WebpackManifestPlugin } from 'webpack-manifest-plugin';
-import HTMLWebpackPlugin from 'html-webpack-plugin';
-import MiniCSSExtractPlugin from 'mini-css-extract-plugin';
-import CSSMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import { WebpackManifestPlugin } from "webpack-manifest-plugin";
+import HTMLWebpackPlugin from "html-webpack-plugin";
+import MiniCSSExtractPlugin from "mini-css-extract-plugin";
+import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 
-import * as path from 'path';
+import * as path from "path";
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
 }
 
-const mode = (process.env.NODE_ENV as `production` | `development`) ?? `development`;
-const prod = mode === `production`;
+const mode = (process.env.NODE_ENV as "production" | "development") ?? "development";
+const prod = mode === "production";
 
 const config: Configuration = {
     entry: {
-        app: path.resolve(__dirname, `../src/index.ts`)
+        app: path.resolve(__dirname, "../src/index.ts")
     },
 
     resolve: {
         alias: {
-            svelte: path.dirname(require.resolve(`svelte/package.json`))
+            svelte: path.dirname(require.resolve("svelte/package.json"))
         },
-        extensions: [`.js`, `.jsx`, `.mjs`, `.ts`, `.tsx`, `.svelte`],
-        mainFields: [`svelte`, `browser`, `module`, `main`],
-        conditionNames: [`svelte`],
-    },  
+        extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx", ".svelte"],
+        mainFields: ["svelte", "browser", "module", "main"],
+        conditionNames: ["svelte"]
+    },
 
     module: {
         rules: [
             {
                 test: /\.svelte$/,
                 use: {
-                    loader: `svelte-loader`,
+                    loader: "svelte-loader",
                     options: {
                         compilerOptions: {
                             dev: !prod
@@ -60,7 +60,7 @@ const config: Configuration = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: `ts-loader`,
+                        loader: "ts-loader",
                         options: {
                             transpileOnly: true,
                             experimentalWatchApi: true
@@ -72,46 +72,46 @@ const config: Configuration = {
                 test: /\.m?js$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: `babel-loader`,
+                    loader: "babel-loader",
                     options: {
                         presets: [
-                            [`@babel/preset-env`, { targets: `defaults` }]
+                            ["@babel/preset-env", { targets: "defaults" }]
                         ],
-                        plugins: [`@babel/plugin-proposal-class-properties`]
+                        plugins: ["@babel/plugin-proposal-class-properties"]
                     }
                 }
             },
             {
-                test: require.resolve(`jquery`),
-                loader: `expose-loader`,
+                test: require.resolve("jquery"),
+                loader: "expose-loader",
                 options: {
-                    exposes: [`$`, `jQuery`]
+                    exposes: ["$", "jQuery"]
                 }
             },
             {
                 test: /\.css$/,
                 use: [
                     MiniCSSExtractPlugin.loader,
-                    `css-loader`,
-                    `postcss-loader`
+                    "css-loader",
+                    "postcss-loader"
                 ]
             },
             {
                 test: /\.s[ac]ss$/i,
-                use: [MiniCSSExtractPlugin.loader, `css-loader`, `postcss-loader`, `sass-loader`]
+                use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: `asset/resource`,
+                type: "asset/resource",
                 generator: {
-                    filename: `assets/img/static/[contenthash:8][ext]`
+                    filename: "assets/img/static/[contenthash:8][ext]"
                 }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: `asset/resource`,
+                type: "asset/resource",
                 generator: {
-                    filename: `assets/fonts/static/[contenthash:8][ext]`
+                    filename: "assets/fonts/static/[contenthash:8][ext]"
                 }
             }
         ]
@@ -125,7 +125,7 @@ const config: Configuration = {
         new WebpackManifestPlugin({}),
         new HTMLWebpackPlugin({
             inject: true,
-            template: path.resolve(__dirname, `../public/index.html`),
+            template: path.resolve(__dirname, "../public/index.html"),
 
             minify: {
                 removeComments: true,
@@ -140,30 +140,30 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new MiniCSSExtractPlugin({ filename: `assets/css/[name].[contenthash:8].css` }),
+        new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({
-            $: `jquery`
+            $: "jquery"
         })
     ],
 
     optimization: {
         runtimeChunk: {
-            name: `manifest`
+            name: "manifest"
         },
         splitChunks: {
             cacheGroups: {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
-                    name: `vendor`,
-                    chunks: `all`
+                    name: "vendor",
+                    chunks: "all"
                 }
             }
         },
         minimizer: [
-            `...`,
+            "...",
             new CSSMinimizerPlugin({
                 minimizerOptions: {
-                    preset: [`default`, { discardComments: { removeAll: true } }]
+                    preset: ["default", { discardComments: { removeAll: true } }]
                 }
             })
         ]

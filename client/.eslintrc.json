@@ -1,0 +1,63 @@
+{
+    "env": {
+        "browser": true,
+        "es2022": true
+    },
+    "extends": [
+        "plugin:svelte/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "eslint:recommended",
+        "standard-with-typescript"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module",
+        "project": "./tsconfig.json",
+        "extraFileExtensions": ".svelte"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "parser": "svelte-eslint-parser",
+            "parserOptions": {
+                "parser": {
+                    "ts": "@typescript-eslint/parser",
+                    "js": "@babel/eslint-parser"
+                }
+            }
+        }
+    ],
+    "rules": {
+        "indent": [1, 4, { "SwitchCase": 1 }],
+        "semi": [1, "always"],
+        "quotes": [1, "double", "avoid-escape"],
+        "@typescript-eslint/indent": [1, 4, { "SwitchCase": 1 }],
+        "@typescript-eslint/semi": [1, "always"],
+        "@typescript-eslint/quotes": [1, "double", "avoid-escape"],
+        "no-use-before-define": 0,
+        "no-unused-vars": 0,
+        "@typescript-eslint/no-use-before-define": 2,
+        "@typescript-eslint/no-unused-vars": 2,
+        "prefer-arrow-callback": 1,
+        "prefer-template": 1,
+        "curly": 0,
+        "@typescript-eslint/curly": 0,
+        "import/no-webpack-loader-syntax": 0
+    },
+    "settings": {
+        "svelte": {
+            "compileOptions": {
+                "postcss": {
+                    "configFilePath": "./postcss.config.js"
+                }
+            }
+        }
+    }
+}

@@ -1,12 +1,12 @@
 <script>
-    import '../assets/scss/pages/client.scss';
+    import "../assets/scss/pages/client.scss";
 </script>
 
 <h1>Suroi.io</h1>
 <p>2D Battle royale</p>
 
 <div class="textbox-container">
-    <textarea type="text" name="name-input" id="name-input" placeholder="Enter your nickname"></textarea>
+    <input type="text" name="name-input" id="name-input" placeholder="Enter your nickname" maxlength="16" />
 </div>
 
 <button>Play Solo</button>

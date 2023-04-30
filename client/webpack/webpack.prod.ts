@@ -1,36 +1,36 @@
-import merge from 'webpack-merge';
-import common from './webpack.common';
+import merge from "webpack-merge";
+import common from "./webpack.common";
 
-import { DefinePlugin } from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { DefinePlugin } from "webpack";
+import CopyPlugin from "copy-webpack-plugin";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
-import * as path from 'path';
+import * as path from "path";
 
 const config = merge(common, {
-    mode: `production`,
+    mode: "production",
 
     output: {
-        path: path.resolve(__dirname, `../dist`),
-        filename: `assets/js/[name].[chunkhash:8].js`,
+        path: path.resolve(__dirname, "../dist"),
+        filename: "assets/js/[name].[chunkhash:8].js",
         clean: true
     },
 
     plugins: [
         new DefinePlugin({
-            API_URL: `"/api"`
+            API_URL: "\"/api\""
         }),
         new CopyPlugin({
             patterns: [{
-                from: path.resolve(__dirname, `../public`),
-                to: path.resolve(__dirname, `../build`),
+                from: path.resolve(__dirname, "../public"),
+                to: path.resolve(__dirname, "../build"),
                 globOptions: {
-                    ignore: [`**/index.html`]
+                    ignore: ["**/index.html"]
                 }
             }]
         }),
         new CleanWebpackPlugin({
-            cleanAfterEveryBuildPatterns: [`**/*.LICENSE.txt`],
+            cleanAfterEveryBuildPatterns: ["**/*.LICENSE.txt"],
             protectWebpackAssets: false
         })
     ]

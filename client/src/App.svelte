@@ -1,13 +1,13 @@
 <script>
-    import { Router, Route } from 'svelte-routing';
+    import { Router, Route } from "svelte-routing";
 
-    import Client from './Client/index.svelte';
+    import Client from "./Client/index.svelte";
 
-    import 'bootstrap';
+    import "bootstrap";
 
-    import './assets/scss/main.scss';
+    import "./assets/scss/main.scss";
 
-    export let url = ``;
+    export let url = "";
 </script>
 
 <Router url="{url}">
