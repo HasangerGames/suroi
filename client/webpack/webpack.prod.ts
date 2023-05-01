@@ -17,9 +17,7 @@ const config = merge(common, {
     },
 
     plugins: [
-        new DefinePlugin({
-            API_URL: "\"/api\""
-        }),
+        new DefinePlugin({ API_URL: "\"/api\"" }),
         new CopyPlugin({
             patterns: [{
                 from: path.resolve(__dirname, "../public"),

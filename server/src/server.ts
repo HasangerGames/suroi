@@ -1,7 +1,17 @@
-import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type WebSocket } from "uWebSockets.js";
+import {
+    App,
+    DEDICATED_COMPRESSOR_256KB,
+    SSLApp,
+    type WebSocket
+} from "uWebSockets.js";
 import * as fs from "fs";
 
-import { Config, Debug, getContentType, log } from "../../common/src/utils/misc";
+import {
+    Config,
+    Debug,
+    getContentType,
+    log
+} from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type Player } from "../../common/src/objects/player";
 import { Game } from "./game";

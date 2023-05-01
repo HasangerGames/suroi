@@ -20,9 +20,7 @@ const config: Configuration = {
         leaderboard: path.resolve(__dirname, "../src/Leaderboard/index.ts")
     },
 
-    resolve: {
-        extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"]
-    },
+    resolve: { extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"] },
 
     module: {
         rules: [
@@ -55,9 +53,7 @@ const config: Configuration = {
             {
                 test: require.resolve("jquery"),
                 loader: "expose-loader",
-                options: {
-                    exposes: ["$", "jQuery"]
-                }
+                options: { exposes: ["$", "jQuery"] }
             },
             {
                 test: /\.css$/,
@@ -74,25 +70,19 @@ const config: Configuration = {
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: {
-                    filename: "assets/img/static/[contenthash:8][ext]"
-                }
+                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: {
-                    filename: "assets/fonts/static/[contenthash:8][ext]"
-                }
+                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
             }
         ]
     },
 
     plugins: [
         new Webpack.ProgressPlugin(),
-        new Webpack.DefinePlugin({
-            APP_VERSION: `"${version}"`
-        }),
+        new Webpack.DefinePlugin({ APP_VERSION: `"${version}"` }),
         new WebpackManifestPlugin({}),
         new HTMLWebpackPlugin({
             inject: true,
@@ -132,15 +122,11 @@ const config: Configuration = {
             }
         }),
         new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
-        new Webpack.ProvidePlugin({
-            $: "jquery"
-        })
+        new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 
     optimization: {
-        runtimeChunk: {
-            name: "manifest"
-        },
+        runtimeChunk: { name: "manifest" },
         splitChunks: {
             cacheGroups: {
                 vendor: {
@@ -152,17 +138,11 @@ const config: Configuration = {
         },
         minimizer: [
             "...",
-            new CSSMinimizerPlugin({
-                minimizerOptions: {
-                    preset: ["default", { discardComments: { removeAll: true } }]
-                }
-            })
+            new CSSMinimizerPlugin({ minimizerOptions: { preset: ["default", { discardComments: { removeAll: true } }] } })
         ]
     },
 
-    performance: {
-        hints: false
-    }
+    performance: { hints: false }
 };
 
 export default config;
