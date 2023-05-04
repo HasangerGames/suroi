@@ -3,6 +3,8 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./src/main.ts",
+  mode: "development",
+  "devtool": "source-map",
   module: {
     rules: [
       {
@@ -23,6 +25,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "css", to: "../css" },
+        { from: "img", to: "../img" },
+        { from: "audio", to: "../audio" },
         { from: "index.html", to: "../" }
       ]
     })

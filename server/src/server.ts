@@ -1,8 +1,8 @@
 import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, WebSocket } from "uWebSockets.js";
 import fs from "fs";
-import { Config, Debug, getContentType, log } from "@suroi/api/dist/utils/misc";
-import { SuroiBitStream } from "@suroi/api/dist/utils/suroiBitStream";
-import { Player } from "@suroi/api/dist/objects/player";
+import { Config, Debug, getContentType, log } from "../../common/dist/utils/misc";
+import { SuroiBitStream } from "../../common/dist/utils/suroiBitStream";
+import { Player } from "../../common/dist/objects/player";
 import { Game } from "./game";
 
 // Initialize the server
@@ -60,6 +60,10 @@ app.get("/*", async (res, req) => {
     }
 
     res.writeHeader("Content-Type", getContentType(path)).end(file);
+});
+
+app.get("/getGame", (res) => {
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:8000/play" }`);
 });
 
 app.ws("/play", {

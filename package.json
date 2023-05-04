@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "build": "cd common && tsc && cd ../server && tsc && cd ../client && npm run build",
-    "start": "node --enable-source-maps server/dist/server.js"
+    "start": "node --enable-source-maps server/dist/server.js",
+    "dev": "npm run build && npm start"
   },
   "dependencies": {
     "typescript": "^5.0.4"

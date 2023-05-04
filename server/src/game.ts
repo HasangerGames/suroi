@@ -1,6 +1,6 @@
-import { log } from "@suroi/api/dist/utils/misc";
+import { log } from "../../common/dist/utils/misc";
 
-import { Player } from "@suroi/api/dist/objects/player";
+import { Player } from "../../common/dist/objects/player";
 
 export class Game {
 
@@ -10,7 +10,7 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    players: Set<Player>;
+    players: Set<Player> = new Set<Player>();
 
     tick(delay: number): void {
         setTimeout(() => {
@@ -25,7 +25,7 @@ export class Game {
                 this.tickTimes = [];
             }
 
-            const newDelay: number = Math.max(0, 30 - tickTime);
+            const newDelay: number = Math.max(0, 50 - tickTime);
             this.tick(newDelay);
         }, delay);
     }
