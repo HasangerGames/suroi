@@ -1,24 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
   <head>
-    <title>Suroi.io</title>
+    <title>Suroi - 2D battle royale game</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="icon" type="image/x-icon" href="../../img/logos/suroi_small.png">
+    <link rel="image" href="../../img/logos/suroi.svg">
+
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
+
+    <!-- Inter Font -->
+    <link rel="stylesheet" href="font/inter.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>Suroi.io</h1>
 
-    <p>2D Battle Royale</p>
-
-    <div class="textbox-container">
-      <input type="text" placeholder="Enter your Nickname" maxlength="20">
+    <div class="dropdown-more">
+      <button onclick="reveal()" class="btn-dropdown-more">More <i class="fa-solid fa-caret-down"></i></button>
+      <div id="dropdownMore" class="dropdown-more-content">
+        <a href="https://wiki.suroi.io">Wiki  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        <a href="https://suroi.io/proxies">Proxies  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        <a href="https://suroi.io/leaderboard">Leaderboard  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+      </div>
     </div>
 
-    <button id="playBtn">Play Solo</button>
-    <button>Play Duo</button>
-    <button>Play Squads</button>
+    <div class="logo-home">
+      <img src="/img/logos/suroi.svg" alt="Suroi.io">
+    </div>
 
-    <footer>
-      <a href="changelog.html">v0.1.0</a>
-    </footer>
+
+    <div class="menu-column">
+      <input class="name-enter" type="text" placeholder="Enter Nickname" minlength="1" maxlength="16">
+      <select class="server-cascade" name="subject" id="subject">
+        <option value="balls" selected="selected">North America</option>
+      </select>
+      <button id="playBtn" class="buttonPlay">Play Solo</button>
+      <!---
+      <button class="buttonPlay">Play Duo</button>
+      <button class="button_squads">Play Squads</button>
+      <button class="button_Create_party">Create Party</button>
+      -->
+    </div>
+
+    <div class="top-right-menu">
+      <button class="button_topRight"><i class="fa-solid fa-gear"></i></button>
+      <button class="button_topRight"><i class="fa-solid fa-earth-americas"></i></i></button>
+    </div>
+
+
+    <div class="bottom-center-menu">
+        <a href="changelog.html">v0.1.0</a>
+    </div>
   </body>
 </html>

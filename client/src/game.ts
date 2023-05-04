@@ -17,7 +17,12 @@ export class Game {
             width: 1600,
             height: 900,
             scene: SuroiScene,
-            backgroundColor: "#317229"
+            backgroundColor: "#317229",
+            scale: {
+                parent: "body",
+                mode: Phaser.Scale.RESIZE,
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            }
         };
         const game = new Phaser.Game(config);
 
