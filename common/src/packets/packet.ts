@@ -1,5 +1,5 @@
-import { SuroiBitStream } from "../utils/suroiBitStream";
-import { Player } from "../objects/player";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { type Player } from "../objects/player";
 
 export enum PacketType {
     JoinPacket, MapPacket, UpdatePacket

@@ -20,7 +20,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Packages
+      - name: Install Packages (Common)
+        working-directory: ./common
+        run: npm ci
+
+      - name: Install Packages (Client)
         working-directory: ./client
         run: npm ci
 
@@ -41,31 +45,14 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Packages
+      - name: Install Packages (Common)
+        working-directory: ./common
+        run: npm ci
+
+      - name: Install Packages (Server)
         working-directory: ./server
         run: npm ci
 
       - name: Build
         working-directory: ./server
-        run: npm run build
-  api:
-    name: API
-    runs-on: ubuntu-latest
-    concurrency: ci-common-${{ github.ref }}
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install Packages
-        working-directory: ./common
-        run: npm ci
-
-      - name: Build
-        working-directory: ./common
         run: npm run build

@@ -1,20 +1,18 @@
 import { Packet, PacketType } from "./packet";
-import { Player } from "../objects/player";
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { type Player } from "../objects/player";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
 
 export class MapPacket extends Packet {
-
-    constructor(player: Player) {
+    constructor (player: Player) {
         super(player);
         this.type = PacketType.MapPacket;
         this.allocBytes = 8192;
     }
 
-    serialize(stream: SuroiBitStream) {
+    serialize (stream: SuroiBitStream) {
         super.serialize(stream);
     }
 
-    deserialize(stream: SuroiBitStream) {
+    deserialize (stream: SuroiBitStream) {
     }
-
 }
