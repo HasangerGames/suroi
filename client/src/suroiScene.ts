@@ -1,6 +1,5 @@
 import Phaser from "phaser";
 import { MapObjects } from "./constants/mapObjects";
-import Vector from "../../common/dist/utils/vector";
 
 export class SuroiScene extends Phaser.Scene {
 
