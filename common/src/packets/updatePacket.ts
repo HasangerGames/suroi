@@ -1,16 +1,15 @@
 import { Packet, PacketType } from "./packet";
-import { SuroiBitStream } from "../utils/suroiBitStream";
-import { Player } from "../objects/player";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { type Player } from "../objects/player";
 
 export class UpdatePacket extends Packet {
-
-    constructor(player: Player) {
+    constructor (player: Player) {
         super(player);
         this.type = PacketType.UpdatePacket;
         this.allocBytes = 8192;
     }
 
-    serialize(stream: SuroiBitStream) {
+    serialize (stream: SuroiBitStream) {
         super.serialize(stream);
         const p = this.player;
         stream.writeBoolean(p.healthDirty);
@@ -19,7 +18,6 @@ export class UpdatePacket extends Packet {
         if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8);
     }
 
-    deserialize(stream: SuroiBitStream) {
+    deserialize (stream: SuroiBitStream) {
     }
-
 }

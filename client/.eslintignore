@@ -1,0 +1,5 @@
+# Compiled source
+dist/
+
+# Node modules
+node_modules/

@@ -4,8 +4,6 @@ module.exports = {
         "./src/**/*.{js,ts,jsx,tsx}"
     ],
     prefix: "tw-",
-    theme: {
-        extend: {}
-    },
+    theme: { extend: {} },
     plugins: []
 };

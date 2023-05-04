@@ -9,7 +9,7 @@ export const readJSON = <T>(path: string): T => JSON.parse(fs.readFileSync(path,
 export const Config = readJSON<any>("config.json");
 export const Debug = Config.debug;
 
-export function log(message: string): void {
+export function log (message: string): void {
     const date: Date = new Date();
     console.log(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}] ${message}`);
 }
@@ -18,7 +18,7 @@ export function log(message: string): void {
  * Get the MIME type of a file.
  * @param file The name or path to the file.
  */
-export function getContentType(file: string): string {
+export function getContentType (file: string): string {
     let contentType = "";
     switch (file.split(".").pop()) {
         case "svg":

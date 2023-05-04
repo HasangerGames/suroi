@@ -1,8 +1,7 @@
-import { Vector } from "../utils/vector";
-import { SuroiBitStream } from "../utils/suroiBitStream";
+import { type Vector } from "../utils/vector";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
 
 export abstract class GameObject {
-
     position: Vector;
 
     abstract deserializePartial(stream: SuroiBitStream): void;
@@ -10,5 +9,4 @@ export abstract class GameObject {
 
     abstract serializePartial(stream: SuroiBitStream): void;
     abstract serializeFull(stream: SuroiBitStream): void;
-
 }

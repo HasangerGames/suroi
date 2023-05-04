@@ -1,13 +1,8 @@
-import { log } from "../../common/dist/utils/misc";
+import { log } from "../../common/src/utils/misc";
 
-import { Player } from "../../common/dist/objects/player";
+import { Player } from "../../common/src/objects/player";
 
 export class Game {
-
-    constructor() {
-
-    }
-
     tickTimes: number[] = [];
 
     players: Set<Player> = new Set<Player>();

@@ -1,0 +1,40 @@
+{
+    "env": {
+        "node": true,
+        "es2022": true
+    },
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "eslint:recommended",
+        "standard-with-typescript"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": "./tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "@typescript-eslint/indent": [1, 4, { "SwitchCase": 1 }],
+        "@typescript-eslint/semi": [2, "always"],
+        "@typescript-eslint/quotes": [1, "double", { "avoidEscape": true }],
+        "no-use-before-define": 0,
+        "no-unused-vars": 0,
+        "@typescript-eslint/no-use-before-define": 2,
+        "@typescript-eslint/no-unused-vars": 1,
+        "prefer-arrow-callback": 1,
+        "prefer-template": 1,
+        "@typescript-eslint/no-confusing-void-expression": 0,
+        "@typescript-eslint/no-namespace": 0,
+        "curly": [1, "multi-line"],
+        "object-curly-newline": [1, {
+            "ObjectExpression": { "multiline": true, "minProperties": 3 },
+            "ObjectPattern": { "multiline": true },
+            "ImportDeclaration": { "multiline": true, "minProperties": 3 },
+            "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+        }]
+    }
+}

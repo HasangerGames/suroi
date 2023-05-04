@@ -1,13 +1,24 @@
-import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, WebSocket } from "uWebSockets.js";
-import fs from "fs";
-import { Config, Debug, getContentType, log } from "../../common/dist/utils/misc";
-import { SuroiBitStream } from "../../common/dist/utils/suroiBitStream";
-import { Player } from "../../common/dist/objects/player";
+import {
+    App,
+    DEDICATED_COMPRESSOR_256KB,
+    SSLApp,
+    type WebSocket
+} from "uWebSockets.js";
+import * as fs from "fs";
+
+import {
+    Config,
+    Debug,
+    getContentType,
+    log
+} from "../../common/src/utils/misc";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { type Player } from "../../common/src/objects/player";
 import { Game } from "./game";
 
 // Initialize the server
 let app;
-if(Config.https) {
+if (Config.https) {
     app = SSLApp({
         key_file_name: Config.keyFile,
         cert_file_name: Config.certFile
@@ -21,29 +32,29 @@ const game = new Game();
 // Set up static files
 const staticFiles = {};
 function walk(dir: string, files: string[] = []): string[] {
-    if(dir.includes(".git") || dir.includes("src") || dir.includes(".vscode") || dir.includes(".idea")) return files;
+    if (dir.includes(".git") || dir.includes("src") || dir.includes(".vscode") || dir.includes(".idea")) return files;
     const dirFiles = fs.readdirSync(dir);
-    for(const f of dirFiles) {
-        const stat = fs.lstatSync(dir + "/" + f);
-        if(stat.isDirectory()) {
-            walk(dir + "/" + f, files);
+    for (const f of dirFiles) {
+        const stat = fs.lstatSync(`${dir}/${f}`);
+        if (stat.isDirectory()) {
+            walk(`${dir}/${f}`, files);
         } else {
-            files.push(dir.slice(12) + "/" + f);
+            files.push(`${dir.slice(12)}/${f}`);
         }
     }
     return files;
 }
-for(const file of walk("client/dist")) {
-    staticFiles[file] = fs.readFileSync("client/dist/" + file);
+for (const file of walk("client/dist")) {
+    staticFiles[file] = fs.readFileSync(`client/dist/${file}`);
 }
 
 app.get("/*", async (res, req) => {
     const path: string = req.getUrl() === "/" ? "/index.html" : req.getUrl();
     let file: Buffer | undefined;
-    if(Debug.disableStaticFileCache) {
+    if (Debug.disableStaticFileCache) {
         try {
-            file = fs.readFileSync("client/dist" + path);
-        } catch(e) {
+            file = fs.readFileSync(`client/dist${path}`);
+        } catch (e) {
             file = undefined;
         }
     } else {
@@ -53,7 +64,7 @@ app.get("/*", async (res, req) => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     res.onAborted(() => {});
 
-    if(file === undefined) {
+    if (file === undefined) {
         res.writeStatus("404 Not Found");
         res.end(`<!DOCTYPE html><html lang="en"><body><pre>404 Not Found: ${req.getUrl()}</pre></body></html>`);
         return;
@@ -90,11 +101,10 @@ app.ws("/play", {
      */
     open: (socket: WebSocket<Player>) => {
         socket.getUserData().socket = socket;
-        //let playerName = socket.cookies["player-name"]?.trim().substring(0, 16) ?? "Player";
-        //if (typeof playerName !== "string" || playerName.length < 1) playerName = "Player";
-        //log(`"${playerName}" joined the game.`);
+        // let playerName = socket.cookies["player-name"]?.trim().substring(0, 16) ?? "Player";
+        // if (typeof playerName !== "string" || playerName.length < 1) playerName = "Player";
+        // log(`"${playerName}" joined the game.`);
         log("Player joined the game.");
-
     },
 
     /**
