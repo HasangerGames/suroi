@@ -6,18 +6,20 @@ export enum PacketType {
 }
 
 export abstract class Packet {
+
     allocBytes: number;
     type: PacketType;
 
     player: Player;
 
-    protected constructor (player: Player) {
+    protected constructor(player: Player) {
         this.player = player;
     }
 
-    serialize (stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeUint8(this.type);
     }
 
-    abstract deserialize (stream: SuroiBitStream);
+    abstract deserialize(stream: SuroiBitStream);
+
 }

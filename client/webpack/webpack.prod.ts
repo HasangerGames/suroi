@@ -12,7 +12,7 @@ const config = merge(common, {
 
     output: {
         path: path.resolve(__dirname, "../dist"),
-        filename: "assets/js/[name].[chunkhash:8].js",
+        filename: "js/[name].[chunkhash:8].js",
         clean: true
     },
 
@@ -20,18 +20,18 @@ const config = merge(common, {
         new DefinePlugin({ API_URL: "\"/api\"" }),
         new CopyPlugin({
             patterns: [{
-                from: path.resolve(__dirname, "../public"),
+                from: path.resolve(__dirname),
                 to: path.resolve(__dirname, "../dist"),
                 globOptions: {
                     ignore: [
-                        "**/index.html",
-                        "**/leaderboard.html"
+                        "**/webpack/*.ts"
                     ]
-                }
+                },
+                noErrorOnMissing: true
             }]
         }),
         new CleanWebpackPlugin({
-            cleanAfterEveryBuildPatterns: ["**/*.LICENSE.txt"],
+            cleanAfterEveryBuildPatterns: ["**/manifest.json"],
             protectWebpackAssets: false
         })
     ]

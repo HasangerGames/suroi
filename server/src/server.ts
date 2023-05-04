@@ -31,7 +31,7 @@ const game = new Game();
 
 // Set up static files
 const staticFiles = {};
-function walk (dir: string, files: string[] = []): string[] {
+function walk(dir: string, files: string[] = []): string[] {
     if (dir.includes(".git") || dir.includes("src") || dir.includes(".vscode") || dir.includes(".idea")) return files;
     const dirFiles = fs.readdirSync(dir);
     for (const f of dirFiles) {
@@ -71,6 +71,10 @@ app.get("/*", async (res, req) => {
     }
 
     res.writeHeader("Content-Type", getContentType(path)).end(file);
+});
+
+app.get("/getGame", (res) => {
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:8000/play" }`);
 });
 
 app.ws("/play", {
@@ -125,7 +129,7 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close: (socket: WebSocket<Player>) => {
-        // log(`"${socket.player.name}" left the game.`);
+        //log(`"${socket.player.name}" left the game.`);
 
         game.removePlayer(socket.getUserData());
     }

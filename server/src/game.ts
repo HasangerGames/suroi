@@ -4,9 +4,10 @@ import { Player } from "../../common/src/objects/player";
 
 export class Game {
     tickTimes: number[] = [];
-    players: Set<Player>;
 
-    tick (delay: number): void {
+    players: Set<Player> = new Set<Player>();
+
+    tick(delay: number): void {
         setTimeout(() => {
             const tickStart = Date.now();
 
@@ -19,16 +20,18 @@ export class Game {
                 this.tickTimes = [];
             }
 
-            const newDelay: number = Math.max(0, 30 - tickTime);
+            const newDelay: number = Math.max(0, 50 - tickTime);
             this.tick(newDelay);
         }, delay);
     }
 
-    addPlayer (): Player {
+    addPlayer(): Player {
         const player = new Player();
         this.players.add(player);
         return player;
     }
 
-    removePlayer (player: Player): void {}
+    removePlayer(player: Player): void {
+    }
+
 }

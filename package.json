@@ -3,10 +3,15 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "build": "cd server && tsc && cd ../client && npm run build",
-    "start": "node --enable-source-maps server/dist/server.js",
+    "full-install": "cd common && npm install && cd ../server && npm install && cd ../client && npm install",
     "lint": "cd common && npm run lint && cd ../server && npm run lint && cd ../client && npm run lint",
-    "lint:ci": "cd common && npm run lint:ci && cd ../server && npm run lint:ci && cd ../client && npm run lint:ci"
+    "lint:ci": "cd common && npm run lint:ci && cd ../server && npm run lint:ci && cd ../client && npm run lint:ci",
+    "build": "cd common && tsc && cd ../server && tsc && cd ../client && npm run build",
+    "start": "node --enable-source-maps server/dist/server.js",
+    "dev": "npm run build && npm start"
+  },
+  "dependencies": {
+    "typescript": "^5.0.4"
   },
   "keywords": [],
   "license": "GPL-3.0"
