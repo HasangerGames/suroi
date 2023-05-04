@@ -20,7 +20,7 @@ const config = merge(common, {
         new DefinePlugin({ API_URL: "\"/api\"" }),
         new CopyPlugin({
             patterns: [{
-                from: path.resolve(__dirname, "../public"),
+                from: path.resolve(__dirname),
                 to: path.resolve(__dirname, "../dist"),
                 globOptions: {
                     ignore: [

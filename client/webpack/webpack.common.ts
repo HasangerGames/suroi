@@ -16,8 +16,7 @@ interface Configuration extends Webpack.Configuration {
 
 const config: Configuration = {
     entry: {
-        app: path.resolve(__dirname, "../src/Client/index.ts"),
-        leaderboard: path.resolve(__dirname, "../src/Leaderboard/index.ts")
+        app: path.resolve(__dirname, "../src/main.ts"),
     },
 
     resolve: { extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"] },
@@ -86,7 +85,7 @@ const config: Configuration = {
         new WebpackManifestPlugin({}),
         new HTMLWebpackPlugin({
             inject: true,
-            template: path.resolve(__dirname, "../public/index.html"),
+            template: path.resolve(__dirname, "../index.html"),
             chunks: ["app"],
 
             minify: {
@@ -102,26 +101,7 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new HTMLWebpackPlugin({
-            inject: true,
-            template: path.resolve(__dirname, "../public/leaderboard.html"),
-            chunks: ["leaderboard"],
-            filename: "leaderboard.html",
-
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true
-            }
-        }),
-        new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
+        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 

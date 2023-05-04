@@ -12,6 +12,8 @@ export class Player extends GameObject {
     private _adrenaline = 100;
     adrenalineDirty = true;
 
+    socket;
+
     constructor() {
         super();
     }
