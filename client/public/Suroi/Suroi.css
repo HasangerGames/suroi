@@ -1,14 +1,17 @@
 :root{
-  --backgroundColor: #568C64;
-  --mainFont: Neo Fobia;
+  --backgroundColor: #3d3e48;
+  --mainFont: Inter;
 
-  --btnBottomRightColor: #555555;
-  --btnBottomRightBorderColor: #3c3c3c;
-  --btnBottomRightHover: #444444;
+  --suroiOrange: #FF7500;
+  --suroiBlue: #008AFF;
 
-  --btnPlayColor: #9f7cf0;
-  --btnPlayBottomBorderColor: #8b6cd4;;
-  --btnPlayColorHover: #7a5eba;
+  --btnTopRightColor: #555555;
+  --btnTopRightBorderColor: #3c3c3c;
+  --btnTopRightHover: #444444;
+
+  --btnPlayColor: #008AFF;
+  --btnPlayBottomBorderColor: #007ae4;
+  --btnPlayColorHover: #0073d7;
 
   --btnDropdownMore: #008AFF;
   --btnDropdownMoreHover: #0073d7;
@@ -21,53 +24,50 @@
 
 body {
   background-color: var(--backgroundColor);
-  /*text-align: center;*/
+  display: flex;
+  flex-direction: column;
+  font-family: "Inter", sans-serif;
   margin: 0;
   padding: 0px;
   padding-bottom: 0px;
-  display: flex;
-  flex-direction: column;
-  /*align-items: center;*/
-  font: var(--mainFont);
 }
 
 /* Chrome, Firefox, Opera, Safare 10.1+ */
 ::placeholder{
-  font-family: var(--mainFont);
+  font-family: "Inter", sans-serif;
 }
 
 /* Microsoft Edge (sucks) */
 ::-ms-input-placeholder{
-  font-family: var(--mainFont);
+  font-family: "Inter", sans-serif
 }
 
 .h1 {
+  font-size: 60px;
   margin-bottom: 30px;
   text-align: center;
-  font-size: 60px;
 }
 
 .article {
-  margin-top: 20px;
   margin-bottom: 40px;
+  margin-top: 20px;
 }
 
 /* Buttons for selecting which game mode to play */
 .buttonPlay {
-  color: white;
   background:  var(--btnPlayColor);
   border: none;
   border-bottom: 2px solid var(--btnPlayBottomBorderColor);
-  text-align: center;
-  padding: 10px;
   border-radius: 10px;
-  font: 15px var(--mainFont);
-  max-width: 150px;
-  width: 50%;
-  margin-top: 0px;
   box-shadow: inset 0 -2px var(--btnPlayBottomBorderColor);
+  color: white;
   cursor: pointer;
   display: inline-block;
+  font-size: 20px;
+  font-family: "Inter", sans-serif;
+  width: 200px;
+  padding: 10px;
+  text-align: center;
 }
 
 .buttonPlay:nth-child(2) {
@@ -80,24 +80,24 @@ body {
 }
 
 /* Buttons for the bottom right, such as settings and volume control */
-.button_bottomRight {
+.button_topRight {
   color: white;
-  background: var(--btnBottomRightColor);
+  background: var(--btnTopRightColor);
   border: none;
-  border-bottom: 2px solid var(--btnBottomRightBorderColor);
+  border-bottom: 2px solid var(--btnTopRightBorderColor);
   text-align: center;
   padding: 10px 20px;
   border-radius: 10px;
-  font: 25px var(--mainFont);
+  font-size: 25px;
+  font-family: "Inter", sans-serif;
   max-width: 100px;
   max-height: 100px;
-  margin-top: 10px;
-  box-shadow: inset 0 -2px var(--btnBottomRightBorderColor);
+  box-shadow: inset 0 -2px var(--btnTopRightBorderColor);
   cursor: pointer;
 }
 
-.button_bottomRight:hover {
-  background-color: var(--btnBottomRightHover);
+.button_topRight:hover {
+  background-color: var(--btnTopRightHover);
   color: white;
 }
 
@@ -110,7 +110,8 @@ body {
   text-align: center;
   padding: 10px 20px;
   border-radius: 10px;
-  font: 15px var(--mainFont);
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
   max-width: 300px;
   width: 50%;
   margin-top: 10px;
@@ -119,36 +120,18 @@ body {
   opacity: 0.6;
 }
 
-.textbox-container {
-  background: transparent;
-}
-
-textarea {
-  width: 300px;
-  outline: none;
-  text-align: center;
-  height: 60px;
-  font-size: 23px;
-  border-radius: 10px;
-  border: none;
-  padding: 10px;
-  box-sizing: border-box;
-  resize: none;
-  padding-top: 15px;
-}
-
 .menu-column {
   display: block;
   border-radius: 30px;
   text-align: center;
   background-color: rgba(22, 22, 22, 0.5);
-  font: 60px var(--mainFont);
+  font: 60px;
   padding: 20px;
-  width: 480px;
+  width: 350px;
   height: 180px;
-  box-sizing: border-box;
-  margin: 0;
+  box-sizing: content-box;
   align-self: center;
+  justify-content: center;
   
 }
 
@@ -161,7 +144,8 @@ textarea {
   text-align: center;
   padding: 10px 20px;
   border-radius: 10px;
-  font: 15px var(--mainFont);
+  font-size: 15px;
+  font-family: "Inter", sans-serif;
   max-width: 300px;
   width: 50%;
   margin-top: 10px;
@@ -170,14 +154,14 @@ textarea {
   opacity: 0.6;
 }
 
-.bottom-right-menu{
+.top-right-menu{
   height: 50px;
   position: absolute;
   background-color: transparent;
-  bottom: 0;
+  top: 0;
   right: 0;
-  padding-bottom: 25px;
-  padding-right: 20px;
+  padding-top: 15px;
+  padding-right: 15px;
 }
 
 .bottom-center-menu{
@@ -205,6 +189,7 @@ textarea {
 .btn-dropdown-more{
   background-color: var(--btnDropdownMore);
   color: var(--btnDropdownTextColor);
+  font-family: "Inter", sans-serif;
   padding: 16px;
   font-size: 16px;
   border: none;
@@ -224,8 +209,8 @@ textarea {
   float: left;
   position: relative;
   display: block;
-  padding-top: 10px;
-  padding-left: 10px;
+  padding-top: 15px;
+  padding-left: 15px;
   border-radius: 10px;
 }
 
@@ -241,6 +226,7 @@ textarea {
   margin-left: 10px;
   left: 0;
   overflow: auto;
+  font-family: "Inter", sans-serif;
 }
 
 /* Links on dropdown buttons */
@@ -263,4 +249,43 @@ textarea {
 
 .logo-home{
   align-self: center;
+}
+
+.name-enter{
+  width: 200px;
+  height: 50px;
+  border-radius: 10px;
+  border: transparent;
+  background-color: white;
+  margin-bottom: 10px;
+  text-align: center;
+  color: black;
+  font-size: 20px;
+}
+
+.name-enter::placeholder{
+  color: #b0b0b0;
+  font-size: 20px;
+  text-align: center;
+}
+
+/* I hate microsfot edge*/
+::-ms-input-placeholder{
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+.server-cascade{
+  background: transparent;
+  width: 200px;
+  height: 50px;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: var(--suroiOrange);
+  border-width: 3px;
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  margin-bottom: 10px;
 }

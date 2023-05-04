@@ -5,10 +5,17 @@
     <title>Suroi.io</title>
     <link rel="stylesheet" href="Suroi.css">
     <link rel="icon" type="image/x-icon" href="suroi_small.png">
+    <link rel="image" href="suroi.svg">
+
     <!--Icon Libary-->
     <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
+
     <!--Add JavaScript File-->
     <script src="Suroi_Home.js"></script>
+
+    <!--Inter Font-->
+    <link rel="stylesheet" href="font/inter.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
@@ -23,25 +30,26 @@
     </div>
 
     <div class="logo-home">
-      <h1>
-        <img src="suroi_banner.png" alt="Suroi.io">
-      </h1>
+      <img src="suroi.svg" alt="Suroi.io">
     </div>
     
     
     <div class="menu-column">
-      <div class="textbox-container">
-        <textarea placeholder="Enter your Nickname" maxlength="20"></textarea>
-      </div>
+      <input class="name-enter" type="text" placeholder = "Enter Nickname" maxlength="15" minlength="1">
+      <select class="server-cascade" name="subject" id="subject">
+        <option value="balls" selected="selected">North America</option>
+      </select>
       <button class="buttonPlay">Play Solo</button>
-      <!--
+      <!---
       <button class="buttonPlay">Play Duo</button>
       <button class="button_squads">Play Squads</button>
-      <button class="button_Create_party">Create Party</button>-->
+      <button class="button_Create_party">Create Party</button>
+      -->
     </div>
 
-    <div class="bottom-right-menu">
-      <button class="button_bottomRight"><i class="fa-solid fa-gear"></i></button>
+    <div class="top-right-menu">
+      <button class="button_topRight"><i class="fa-solid fa-gear"></i></button>
+      <button class="button_topRight"><i class="fa-solid fa-earth-americas"></i></i></button>
     </div>
     
     
