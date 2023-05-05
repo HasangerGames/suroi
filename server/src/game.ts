@@ -7,7 +7,7 @@ export class Game {
 
     players: Set<Player> = new Set<Player>();
 
-    tick (delay: number): void {
+    tick(delay: number): void {
         setTimeout(() => {
             const tickStart = Date.now();
 
@@ -25,12 +25,12 @@ export class Game {
         }, delay);
     }
 
-    addPlayer (): Player {
+    addPlayer(): Player {
         const player = new Player();
         this.players.add(player);
         return player;
     }
 
-    removePlayer (player: Player): void {
+    removePlayer(player: Player): void {
     }
 }
