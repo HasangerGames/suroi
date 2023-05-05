@@ -15,9 +15,7 @@ interface Configuration extends Webpack.Configuration {
 }
 
 const config: Configuration = {
-    entry: {
-        app: path.resolve(__dirname, "../src/main.ts"),
-    },
+    entry: { app: path.resolve(__dirname, "../src/main.ts") },
 
     resolve: { extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"] },
 
@@ -70,7 +68,7 @@ const config: Configuration = {
                 test: /\.(png|svg|jpg|jpeg|gif|mp3|ttf|woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
                 generator: { filename: "[path][name][ext]" }
-            },
+            }
         ]
     },
 

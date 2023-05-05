@@ -3,7 +3,6 @@ import { Game } from "./game";
 import "../css/main.css";
 import "../font/inter.css";
 $(() => {
-
     // Play button logic
     $("#playBtn").on("click", () => {
         $.get("/getGame", data => {
@@ -18,8 +17,8 @@ $(() => {
     });
 
     // Close the dropdown menu when user clicks outside it
-    $(document.body).on("click", function(event: JQuery.ClickEvent<HTMLElement>){
-        if(!event.target.matches(".btn-dropdown-more")) {
+    $(document.body).on("click", (event: JQuery.ClickEvent<HTMLElement>) => {
+        if (!event.target.matches(".btn-dropdown-more")) {
             $(".dropdown-more-content").removeClass("dropdown-more-show");
         }
     });
