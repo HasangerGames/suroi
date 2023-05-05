@@ -36,6 +36,7 @@ export class SuroiScene extends Phaser.Scene {
                 this.sound.add("swing").play();
             }
         });
+        this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
 
     create(): void {
