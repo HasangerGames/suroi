@@ -67,15 +67,10 @@ const config: Configuration = {
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                test: /\.(png|svg|jpg|jpeg|gif|mp3|ttf|woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
+                generator: { filename: "[path][name][ext]" }
             },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: "asset/resource",
-                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
-            }
         ]
     },
 

@@ -39,13 +39,13 @@ function walk(dir: string, files: string[] = []): string[] {
         if (stat.isDirectory()) {
             walk(`${dir}/${f}`, files);
         } else {
-            files.push(`${dir.slice(12)}/${f}`);
+            files.push(`${dir}/${f}`);
         }
     }
     return files;
 }
-for (const file of walk("client/dist")) {
-    staticFiles[file] = fs.readFileSync(`client/dist/${file}`);
+for (const file of walk("../client/dist")) {
+    staticFiles[file] = fs.readFileSync(file);
 }
 
 app.get("/*", async (res, req) => {
@@ -53,7 +53,7 @@ app.get("/*", async (res, req) => {
     let file: Buffer | undefined;
     if (Debug.disableStaticFileCache) {
         try {
-            file = fs.readFileSync(`client/dist${path}`);
+            file = fs.readFileSync(`../client/dist${path}`);
         } catch (e) {
             file = undefined;
         }

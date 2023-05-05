@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { Game } from "./game";
-
+import "../css/main.css";
+import "../font/inter.css";
 $(() => {
 
     // Play button logic

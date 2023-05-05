@@ -14,9 +14,9 @@ export class SuroiScene extends Phaser.Scene {
 
     preload(): void {
         for(const object of MapObjects) {
-            this.load.image(object.id, `/img/map/${object.imageName}`);
+            this.load.image(object.id, require(`/img/map/${object.imageName}`));
         }
-        this.load.audio("swing", "/audio/sfx/swing.mp3");
+        this.load.audio("swing", require("/audio/sfx/swing.mp3"));
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
             this.player.setRotation(angle);

@@ -6,7 +6,7 @@ import fs from "fs";
  */
 export const readJSON = <T>(path: string): T => JSON.parse(fs.readFileSync(path, "utf-8")) as T;
 
-export const Config = readJSON<any>("config.json");
+export const Config = readJSON<any>("../config.json");
 export const Debug = Config.debug;
 
 export function log (message: string): void {
