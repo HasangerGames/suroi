@@ -38,7 +38,7 @@ cd client && npm run dev
 
 In another, run the following:
 ```sh
-cd server && npm run build && npm start
+cd server && npm run dev
 ```
 
 

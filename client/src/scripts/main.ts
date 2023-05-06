@@ -2,10 +2,12 @@ import $ from "jquery";
 
 import { Game } from "./game";
 
+declare const API_URL: string;
+
 $(() => {
     // Play button logic
     $("#playBtn").on("click", () => {
-        void $.get("/getGame", data => {
+        void $.get(`${API_URL}/getGame`, data => {
             /* eslint-disable-next-line no-new */
             new Game(data.addr);
         });

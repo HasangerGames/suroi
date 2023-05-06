@@ -3,23 +3,26 @@ import Config from "../../config.json";
 import {
     App,
     DEDICATED_COMPRESSOR_256KB,
+    type HttpResponse,
     SSLApp,
     type WebSocket
 } from "uWebSockets.js";
 
-import * as path from "path";
-import * as fs from "fs";
-
-import {
-    getContentType,
-    log,
-    readDirectory
-} from "../../common/src/utils/misc";
+import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import type { Player } from "../../common/src/objects/player";
 import { Game } from "./game";
 
-const Debug = Config.debug;
+/**
+ * Apply CORS headers to a response.
+ * @param res The response sent by the server.
+ */
+const cors = (res: HttpResponse): void => {
+    res.writeHeader("Access-Control-Allow-Origin", "*");
+    res.writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+    res.writeHeader("Access-Control-Max-Age", "3600");
+};
 
 // Initialize the server
 const app = Config.ssl?.enable
@@ -31,35 +34,9 @@ const app = Config.ssl?.enable
 
 const game = new Game();
 
-// Set up static files
-const staticFiles: Record<string, Buffer> = {};
-for (const file of readDirectory(path.resolve(__dirname, "../../../../client/dist"))) staticFiles[file] = fs.readFileSync(file);
-
-app.get("/*", (res, req) => {
-    const filePath: string = req.getUrl() === "/" ? "/index.html" : req.getUrl();
-    let file: Buffer | undefined;
-    if (Debug.disableStaticFileCache) {
-        try {
-            file = fs.readFileSync(path.resolve(__dirname, `../../../../client/dist${filePath}`));
-        } catch (e) {
-            file = undefined;
-        }
-    } else file = staticFiles[filePath];
-
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted(() => {});
-
-    if (file === undefined) {
-        res.writeStatus("404 Not Found");
-        res.end(`<!DOCTYPE html><html lang="en"><body><pre>404 Not Found: ${req.getUrl()}</pre></body></html>`);
-        return;
-    }
-
-    res.writeHeader("Content-Type", getContentType(filePath)).end(file);
-});
-
-app.get("/getGame", (res) => {
-    res.writeHeader("Content-Type", "application/json").end("{ \"addr\": \"ws://127.0.0.1:8000/play\" }");
+app.get("/api/getGame", (res) => {
+    cors(res);
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:${Config.port}/play" }`);
 });
 
 app.ws("/play", {
@@ -70,6 +47,7 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
+        cors(res);
         const player = game.addPlayer();
         res.upgrade(
             {},
