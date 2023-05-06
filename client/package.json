@@ -59,10 +59,8 @@
     "@pixi/utils": "^7.2.4",
     "@popperjs/core": "^2.11.7",
     "axios": "^1.4.0",
-    "bootstrap": "^5.2.3",
     "howler": "^2.2.3",
     "phaser": "^3.60.0",
-    "pixi.js": "^7.2.4",
-    "tailwindcss": "^3.3.2"
+    "pixi.js": "^7.2.4"
   }
 }
