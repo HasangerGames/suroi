@@ -14,7 +14,11 @@ interface Configuration extends Webpack.Configuration {
 }
 
 const config: Configuration = {
-    entry: { app: path.resolve(__dirname, "../src/index.ts") },
+    entry: {
+        app: path.resolve(__dirname, "../src/index.ts"),
+        changelog: path.resolve(__dirname, "../src/changelog.ts"),
+        leaderboard: path.resolve(__dirname, "../src/leaderboard.ts")
+    },
 
     resolve: { extensions: [".js", ".ts"] },
 
@@ -83,6 +87,25 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/index.html"),
             chunks: ["app"],
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../src/pages/changelog.html"),
+            chunks: ["changelog"],
+            filename: "changelog.html",
 
             minify: {
                 removeComments: true,

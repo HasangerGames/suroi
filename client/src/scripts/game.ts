@@ -1,4 +1,3 @@
-import { GameScene } from "./scenes/gameScene";
 import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../common/src/packets/packet";
@@ -11,8 +10,9 @@ export class Game {
 
     constructor (address: string) {
         if (address === undefined) return;
+
         const ws = new WebSocket(address);
-        ws.onmessage = (message: MessageEvent<any>) => {
+        ws.onmessage = (message: MessageEvent) => {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readUint8()) {
                 case PacketType.UpdatePacket: {
@@ -21,6 +21,7 @@ export class Game {
                 }
             }
         };
+
         $("canvas").addClass("active");
         global.phaser.scene.start("game");
     }
