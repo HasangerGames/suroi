@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="./client/img/logos/suroi.svg">
+  <img src="./client/img/logos/suroi_readme.svg">
+  <hr />
 </div>
+
 
 <div align="center">
   <img src="https://img.shields.io/badge/node.js%20-%23339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white" />
