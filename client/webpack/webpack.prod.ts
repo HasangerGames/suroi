@@ -3,7 +3,6 @@ import common from "./webpack.common";
 
 import { DefinePlugin } from "webpack";
 import CopyPlugin from "copy-webpack-plugin";
-import { CleanWebpackPlugin } from "clean-webpack-plugin";
 
 import * as path from "path";
 const config = merge(common, {
@@ -17,15 +16,9 @@ const config = merge(common, {
         new DefinePlugin({ API_URL: "\"/api\"" }),
         new CopyPlugin({
             patterns: [
-                { from: "audio", to: "../dist/audio" },
-                { from: "css", to: "../dist/css" },
-                { from: "font", to: "../dist/font" },
-                { from: "img", to: "../dist/img" }
+                { from: "./assets/audio", to: "../dist/assets/audio" },
+                { from: "./assets/img", to: "../dist/assets/img" }
             ]
-        }),
-        new CleanWebpackPlugin({
-            cleanAfterEveryBuildPatterns: ["**/manifest.json"],
-            protectWebpackAssets: false
         })
     ]
 });

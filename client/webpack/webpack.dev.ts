@@ -9,18 +9,17 @@ const config = merge(common, {
     mode: "development",
     devtool: "source-map",
 
-    devServer: {
-        devMiddleware: { publicPath: "http://localhost:3000" },
-        static: { directory: path.resolve(__dirname, "../assets") },
-        historyApiFallback: true,
-        port: 3000,
-        hot: true
-    },
-
     output: {
         path: path.resolve(__dirname, "../dist"),
-        filename: "assets/js/[name].[chunkhash:8].js",
-        clean: true
+        filename: "assets/js/[name].[chunkhash:8].js"
+    },
+
+    devServer: {
+        devMiddleware: { publicPath: "http://localhost:3000" },
+        static: { directory: path.resolve(__dirname, "../public") },
+        historyApiFallback: true,
+        port: 3000,
+        hot: false
     },
 
     plugins: [

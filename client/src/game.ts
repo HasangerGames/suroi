@@ -24,6 +24,8 @@ export class Game {
             }
         };
 
+        if (address === undefined) return;
+
         /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
         const game = new Phaser.Game(config);
         const ws = new WebSocket(address);
