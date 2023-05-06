@@ -1,67 +1,52 @@
+import Config from "../../config.json";
+
 import {
     App,
     DEDICATED_COMPRESSOR_256KB,
     SSLApp,
     type WebSocket
 } from "uWebSockets.js";
+
+import * as path from "path";
 import * as fs from "fs";
 
 import {
-    Config,
-    Debug,
     getContentType,
-    log
+    log,
+    readDirectory
 } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { type Player } from "../../common/src/objects/player";
+import type { Player } from "../../common/src/objects/player";
 import { Game } from "./game";
 
+const Debug = Config.debug;
+
 // Initialize the server
-let app;
-if (Config.https) {
-    app = SSLApp({
-        key_file_name: Config.keyFile,
-        cert_file_name: Config.certFile
-    });
-} else {
-    app = App();
-}
+const app = Config.ssl?.enable
+    ? SSLApp({
+        key_file_name: Config.ssl.keyFile,
+        cert_file_name: Config.ssl.certFile
+    })
+    : App();
 
 const game = new Game();
 
 // Set up static files
-const staticFiles = {};
-function walk (dir: string, files: string[] = []): string[] {
-    if (dir.includes(".git") || dir.includes("src") || dir.includes(".vscode") || dir.includes(".idea")) return files;
-    const dirFiles = fs.readdirSync(dir);
-    for (const f of dirFiles) {
-        const stat = fs.lstatSync(`${dir}/${f}`);
-        if (stat.isDirectory()) {
-            walk(`${dir}/${f}`, files);
-        } else {
-            files.push(`${dir}/${f}`);
-        }
-    }
-    return files;
-}
-for (const file of walk("../client/dist")) {
-    staticFiles[file] = fs.readFileSync(file);
-}
+const staticFiles: Record<string, Buffer> = {};
+for (const file of readDirectory(path.resolve(__dirname, "../../../../client/dist"))) staticFiles[file] = fs.readFileSync(file);
 
-app.get("/*", async (res, req) => {
-    const path: string = req.getUrl() === "/" ? "/index.html" : req.getUrl();
+app.get("/*", (res, req) => {
+    const filePath: string = req.getUrl() === "/" ? "/index.html" : req.getUrl();
     let file: Buffer | undefined;
     if (Debug.disableStaticFileCache) {
         try {
-            file = fs.readFileSync(`../client/dist${path}`);
+            file = fs.readFileSync(path.resolve(__dirname, `../../../../client/dist${filePath}`));
         } catch (e) {
             file = undefined;
         }
-    } else {
-        file = staticFiles[path];
-    }
+    } else file = staticFiles[filePath];
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     res.onAborted(() => {});
 
     if (file === undefined) {
@@ -70,7 +55,7 @@ app.get("/*", async (res, req) => {
         return;
     }
 
-    res.writeHeader("Content-Type", getContentType(path)).end(file);
+    res.writeHeader("Content-Type", getContentType(filePath)).end(file);
 });
 
 app.get("/getGame", (res) => {
@@ -116,9 +101,7 @@ app.ws("/play", {
         const stream = new SuroiBitStream(message);
         try {
             const msgType = stream.readUint8();
-            switch (msgType) {
-
-            }
+            // switch (msgType) {}
         } catch (e) {
             console.warn("Error parsing message:", e);
         }

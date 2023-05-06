@@ -5,7 +5,6 @@
         "./server/tsconfig.json"
     ],
     "include": [
-        "**/*.ts",
-        "**/*.js"
+        "**/*.ts"
     ]
 }

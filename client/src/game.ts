@@ -23,16 +23,18 @@ export class Game {
                 autoCenter: Phaser.Scale.CENTER_BOTH
             }
         };
-        const game = new Phaser.Game(config);
 
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+        const game = new Phaser.Game(config);
         const ws = new WebSocket(address);
+
         ws.onmessage = (message) => {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readUint8()) {
-                case PacketType.UpdatePacket:
+                case PacketType.UpdatePacket: {
                     const updatePacket = new UpdatePacket(this.activePlayer);
                     updatePacket.deserialize(stream);
-                    break;
+                }
             }
         };
     }

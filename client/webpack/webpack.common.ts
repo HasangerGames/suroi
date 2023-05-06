@@ -3,7 +3,6 @@ import { version } from "../package.json";
 import * as Webpack from "webpack";
 import type WDS from "webpack-dev-server";
 
-import { WebpackManifestPlugin } from "webpack-manifest-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
 import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
@@ -75,10 +74,9 @@ const config: Configuration = {
     plugins: [
         new Webpack.ProgressPlugin(),
         new Webpack.DefinePlugin({ APP_VERSION: `"${version}"` }),
-        new WebpackManifestPlugin({}),
         new HTMLWebpackPlugin({
             inject: true,
-            template: path.resolve(__dirname, "../index.html"),
+            template: path.resolve(__dirname, "../views/index.html"),
             chunks: ["app"],
 
             minify: {

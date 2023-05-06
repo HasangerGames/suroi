@@ -1,13 +1,11 @@
-import fs from "fs";
+import * as path from "path";
+import * as fs from "fs";
 
 /**
  * Read a JSON file.
  * @param path The path to the JSON file.
  */
 export const readJSON = <T>(path: string): T => JSON.parse(fs.readFileSync(path, "utf-8")) as T;
-
-export const Config = readJSON<any>("config.json");
-export const Debug = Config.debug;
 
 export function log (message: string): void {
     const date: Date = new Date();
@@ -46,5 +44,28 @@ export function getContentType (file: string): string {
             contentType = "image/jpeg";
             break;
     }
+
     return contentType;
 }
+
+/**
+ * Recursively read a directory.
+ * @param dir The absolute path to the directory.
+ * @returns An array representation of the directory's contents.
+ */
+export const readDirectory = (dir: string): string[] => {
+    let results: string[] = [];
+    const files = fs.readdirSync(dir);
+
+    for (const file of files) {
+        const filePath = path.resolve(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat?.isDirectory()) {
+            const res = readDirectory(filePath);
+            results = results.concat(res);
+        } else results.push(filePath);
+    }
+
+    return results;
+};

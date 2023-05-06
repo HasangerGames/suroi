@@ -11,7 +11,7 @@ const config = merge(common, {
 
     devServer: {
         devMiddleware: { publicPath: "http://localhost:3000" },
-        static: { directory: path.resolve(__dirname, "../public") },
+        static: { directory: path.resolve(__dirname, "../assets") },
         historyApiFallback: true,
         port: 3000,
         hot: true

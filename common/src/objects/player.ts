@@ -1,45 +1,34 @@
+import type { WebSocket } from "uWebSockets.js";
+
 import { GameObject } from "./gameObject";
-import { SuroiBitStream } from "../utils/suroiBitStream";
-import { Vector } from "../utils/vector";
+import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { type Vector } from "../utils/vector";
 
 export class Player extends GameObject {
-
     direction: Vector;
 
-    private _health= 100;
+    private readonly _health = 100;
     healthDirty = true;
 
-    private _adrenaline = 100;
+    private readonly _adrenaline = 100;
     adrenalineDirty = true;
 
-    socket;
+    socket: WebSocket<Player>;
 
-    constructor() {
-        super();
-    }
-
-    get health(): number {
+    get health (): number {
         return this._health;
     }
 
-    get adrenaline(): number {
+    get adrenaline (): number {
         return this._adrenaline;
     }
 
-    deserializePartial(stream: SuroiBitStream): void {
+    /* eslint-disable @typescript-eslint/no-empty-function */
+    deserializePartial (stream: SuroiBitStream): void {}
 
-    }
+    deserializeFull (stream: SuroiBitStream): void {}
 
-    deserializeFull(stream: SuroiBitStream): void {
+    serializePartial (stream: SuroiBitStream): void {}
 
-    }
-
-    serializePartial(stream: SuroiBitStream): void {
-
-    }
-
-    serializeFull(stream: SuroiBitStream): void {
-
-    }
-
+    serializeFull (stream: SuroiBitStream): void {}
 }
