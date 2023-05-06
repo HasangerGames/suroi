@@ -3,7 +3,6 @@ name: CI
 on:
   push:
   pull_request:
-    branches: [dependabot/**]
 
 jobs:
   client:
@@ -20,31 +19,20 @@ jobs:
         with:
           version: 8
 
-      - id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: pnpm
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install Packages (Common)
         working-directory: ./common
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Install Packages (Client)
         working-directory: ./client
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./client
@@ -63,31 +51,20 @@ jobs:
         with:
           version: 8
 
-      - id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: pnpm
-
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+  
       - name: Install Packages (Common)
         working-directory: ./common
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Install Packages (Server)
         working-directory: ./server
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./server
