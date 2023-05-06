@@ -2,6 +2,8 @@ import $ from "jquery";
 
 import { Game } from "./game";
 
+import "./ui/splash";
+
 declare const API_URL: string;
 
 $(() => {

@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <head>
     <title>Suroi - 2D battle royale game</title>
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -10,48 +13,77 @@
     <link rel="icon" type="image/x-icon" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png" />
     <link rel="icon" type="image/x-icon" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png" />
 
-    <!-- Icons -->
     <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body>
-
+</head>
+<body>
     <div class="dropdown-more">
-      <button onclick="reveal()" class="btn-dropdown-more">More <i class="fa-solid fa-caret-down"></i></button>
-      <div id="dropdownMore" class="dropdown-more-content">
-        <a href="https://wiki.suroi.io">Wiki  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-        <a href="https://suroi.io/proxies">Proxies  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-        <a href="https://suroi.io/leaderboard">Leaderboard  <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-      </div>
+        <button class="btn-dropdown-more">
+            More
+            <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <div id="dropdownMore" class="dropdown-more-content">
+            <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
+                Wiki
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/proxies.txt" target="_blank" rel="noopener noreferrer">
+                Proxies
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
+                Leaderboard
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+        </div>
     </div>
 
     <div class="logo-home">
-      <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi.io">
+        <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi.io">
     </div>
 
+    <div class="center-container">
+        <div class="left-menu-container">
+            <div class="news">
+                <div class="news-container-header">
+                    News
+                    <i class="fa-solid fa-newspaper" style="color: #ff7500;"></i>
+                </div>
 
-    <div class="menu-column">
-      <input class="name-enter" type="text" placeholder="Enter Nickname" minlength="1" maxlength="16">
-      <select class="server-cascade" name="subject" id="subject">
-        <option value="balls" selected="selected">North America</option>
-      </select>
-      <button id="playBtn" class="buttonPlay">Play Solo</button>
-      <!---
-      <button class="buttonPlay">Play Duo</button>
-      <button class="button_squads">Play Squads</button>
-      <button class="button_Create_party">Create Party</button>
-      -->
+                <div class="news-container-date">May 6th, 2023</div>
+                <div class="news-container-title">Long Live Suroi!</div>
+                <div class="news-container-text">
+                    Welcome to the 2D Battle Royale game, Suroi. Totally free to play, and open-source as well!
+                    Head over and check out the wiki, leaderboards, and more in the dropdown menu, or check out our socials below. Join the discord server to stay updated!
+                </div>
+            </div>
+        </div>
+        <div class="center-menu">
+            <input type="text" class="name-enter" placeholder="Enter Nickname" maxlength="15">
+            <select name="server-select" id="server-select" class="server-cascade">
+                <option value="na" selected>North America</option>
+            </select>
+
+            <button class="buttonPlay">Play Solo</button>
+            <!-- <button class="buttonPlay">Play Duos</button> -->
+            <!-- <button class="buttonPlay">Play Squads</button> -->
+            <!-- <button class="buttonCreateParty">Create Party</button> -->
+        </div>
+        <div class="inventory-menu">Coming Soon!</div>
+    </div>
+
+    <div class="socials-container">
+        <a href="https://discord.gg/suroi" target="_blank" rel="noopener noreferrer" class="social-card-discord"></a>
+        <a href="https://reddit.com" target="_blank" rel="noopener noreferrer" class="social-card-reddit"></a>
+        <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer" class="social-card-youtube"></a>
     </div>
 
     <div class="top-right-menu">
-      <button class="button_topRight"><i class="fa-solid fa-gear"></i></button>
-      <button class="button_topRight"><i class="fa-solid fa-earth-americas"></i></button>
+        <button class="button_topRight"><i class="fa-solid fa-gear"></i></button>
+        <button class="button_topRight"><i class="fa-solid fa-earth-americas"></i></button>
     </div>
-
 
     <div class="bottom-center-menu">
-        <a href="changelog.html">v0.1.0</a>
+        <a href="changelog.html">Ver 0.1.0</a>
     </div>
-  </body>
+</body>
 </html>

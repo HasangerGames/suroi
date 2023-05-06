@@ -97,6 +97,25 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../src/pages/leaderboard.html"),
+            chunks: ["leaderboard"],
+            filename: "leaderboard.html",
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
         new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],

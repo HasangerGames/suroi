@@ -1,5 +1,4 @@
 @import "fonts.scss";
-
 :root {
     --backgroundColor: #3d3e48;
 
@@ -24,13 +23,12 @@
 
 body {
     background-color: var(--backgroundColor);
-    font-family: "Inter", sans-serif;
-
     display: flex;
     flex-direction: column;
-
+    font-family: "Inter", sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0px;
+    padding-bottom: 0px;
 }
 
 ::placeholder {
@@ -60,7 +58,7 @@ body {
     display: inline-block;
     font-size: 20px;
     font-family: "Inter", sans-serif;
-    width: 100%;
+    width: 350px;
     padding: 10px;
     text-align: center;
 }
@@ -115,18 +113,23 @@ body {
     opacity: 0.6;
 }
 
-.menu-column {
-    display: flex;
-    flex-direction: column;
-    border-radius: 15px;
+.center-menu {
+    display: inline-block;
+    border-radius: 30px;
     text-align: center;
     background-color: rgba(22, 22, 22, 0.5);
-    padding: 10px 20px 10px 20px;
-    width: 325px;
-    height: 180px;
+    font: 60px;
+    padding: 20px;
+    width: 350px;
+    height: 200px;
     box-sizing: content-box;
-    align-self: center;
     justify-content: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline-block;
+    top: 0;
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 /* Parties are disabled */
@@ -164,6 +167,7 @@ body {
     background-color: transparent;
     bottom: 0;
     padding-bottom: 20px;
+    display: inline-block;
     list-style: none;
     display: flex;
     flex-direction: row;
@@ -190,6 +194,7 @@ body {
     border-radius: 10px;
     border-bottom: 2px solid var(--btnMoreBottomBorder);
     box-shadow: inset 0 -2px var(--btnMoreBottomBorder);
+    font-weight: bold;
 }
 
 /* On hover/focus */
@@ -215,7 +220,7 @@ body {
     position: absolute;
     background-color: var(--btnDropdownMoreContent);
     min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     margin-left: 10px;
     left: 0;
@@ -246,8 +251,9 @@ body {
 }
 
 .name-enter {
-    width: 100%;
+    width: 345px;
     height: 50px;
+    margin-top: 10px;
     border-radius: 10px;
     border: transparent;
     background-color: white;
@@ -257,22 +263,23 @@ body {
     font-size: 20px;
 }
 
+/* Chrome, Firefox, Opera, Safare 10.1+ */
 .name-enter::placeholder {
     color: #b0b0b0;
     font-size: 20px;
     text-align: center;
 }
 
-/* I hate microsoft edge */
+/* I hate microsfot edge*/
 ::-ms-input-placeholder {
-    color: white;
+    color: #b0b0b0;
     font-size: 20px;
     text-align: center;
 }
 
 .server-cascade {
     background: transparent;
-    width: 100%;
+    width: 350px;
     height: 50px;
     border-radius: 10px;
     border-style: solid;
@@ -284,9 +291,153 @@ body {
     margin-bottom: 10px;
 }
 
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    cursor: crosshair;
+.center-container {
+    background-color: transparent;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 250px;
+    width: 1200px;
+}
+
+.left-menu-container {
+    background-color: rgba(22, 22, 22, 0.5);
+    width: 350px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 30px;
+    border: transparent;
+    display: inline-block;
+}
+
+.inventory-menu {
+    background-color: rgba(22, 22, 22, 0.5);
+    width: 350px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 30px;
+    border: transparent;
+    display: inline-block;
+    text-align: center;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.57);
+    line-height: 180px;
+}
+
+.news {
+    background-color: transparent;
+    height: 200px;
+    width: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.socials-container {
+    background-color: transparent;
+    border-radius: 20px;
+    height: 45px;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
+.social-card-discord,
+.social-card-reddit,
+.social-card-youtube {
+    display: inline-block;
+
+    height: 45px;
+    width: 45px;
+
+    margin: 5px 2.5px;
+
+    font-size: large;
+    text-align: center;
+
+    border: none;
+    border-radius: 12px;
+
+    background-size: 65%;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.social-card-discord {
+    background-image: url("../img/socials/discord.svg");
+    background-color: #5865f2;
+
+    border-bottom: 2px solid #4b56cf;
+    box-shadow: inset 0 -2px #4b56cf;
+}
+
+.social-card-discord:hover {
+    background-color: #404ab2;
+}
+
+.social-card-reddit {
+    background-image: url("../img/socials/reddit.svg");
+    background-color: #ff4500;
+
+    border-bottom: 2px solid #d53900;
+    box-shadow: inset 0 -2px #d53900;
+}
+
+.social-card-reddit:hover {
+    background-color: #b93100;
+}
+
+.social-card-youtube {
+    background-image: url("../img/socials/youtube.svg");
+    background-color: #ff0000;
+
+    border-bottom: 2px solid #de0000;
+    box-shadow: inset 0 -2px #de0000;
+}
+
+.social-card-youtube:hover {
+    background-color: #c50000;
+}
+
+.news-container-header {
+    color: var(--suroiOrange);
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    width: 350px;
+    height: 18px;
+}
+
+.news-container-date {
+    color: gray;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.news-container-title {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.news-container-text {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #626262;
+    border-radius: 10px;
 }
