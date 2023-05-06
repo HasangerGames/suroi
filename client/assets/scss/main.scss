@@ -1,25 +1,26 @@
+@import 'fonts.scss';
+
 :root {
     --backgroundColor: #3d3e48;
     --mainFont: Inter;
 
-    --suroiOrange: #FF7500;
-    --suroiBlue: #008AFF;
+    --suroiOrange: #ff7500;
+    --suroiBlue: #008aff;
 
     --btnTopRightColor: #555555;
     --btnTopRightBorderColor: #3c3c3c;
     --btnTopRightHover: #444444;
 
-    --btnPlayColor: #008AFF;
+    --btnPlayColor: #008aff;
     --btnPlayBottomBorderColor: #007ae4;
     --btnPlayColorHover: #0073d7;
 
-    --btnDropdownMore: #008AFF;
+    --btnDropdownMore: #008aff;
     --btnDropdownMoreHover: #0073d7;
     --btnDropdownTextColor: white;
-    --btnDropdownMoreContent: #008AFF;
+    --btnDropdownMoreContent: #008aff;
     --btnDropdownMoreContentHover: #0079e3;
     --btnMoreBottomBorder: #007ae4;
-
 }
 
 body {
@@ -38,7 +39,7 @@ body {
 
 /* Microsoft Edge (sucks) */
 ::-ms-input-placeholder {
-    font-family: "Inter", sans-serif
+    font-family: "Inter", sans-serif;
 }
 
 .h1 {
@@ -136,7 +137,7 @@ body {
 /* Parties are disabled */
 .button_Create_party {
     color: white;
-    background:  var(--btnPlayColor);
+    background: var(--btnPlayColor);
     border: none;
     border-bottom: 2px solid var(--btnPlayBottomBorderColor);
     text-align: center;
@@ -197,7 +198,8 @@ body {
 }
 
 /* On hover/focus */
-.btn-dropdown-more:hover, .btn-dropdown-more:focus {
+.btn-dropdown-more:hover,
+.btn-dropdown-more:focus {
     background-color: var(--btnDropdownMoreHover);
 }
 
@@ -218,7 +220,7 @@ body {
     position: absolute;
     background-color: var(--btnDropdownMoreContent);
     min-width: 160px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     z-index: 1;
     margin-left: 10px;
     left: 0;

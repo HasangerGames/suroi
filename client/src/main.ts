@@ -2,8 +2,7 @@ import $ from "jquery";
 
 import { Game } from "./game";
 
-import "../assets/css/main.css";
-import "../assets/fonts/inter.css";
+import "../assets/scss/main.scss";
 
 $(() => {
     // Play button logic
