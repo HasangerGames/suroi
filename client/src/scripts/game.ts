@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 import { SuroiScene } from "./suroiScene";
-import { UpdatePacket } from "../../common/src/packets/updatePacket";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../common/src/packets/packet";
-import { type Player } from "../../common/src/objects/player";
+import { UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { PacketType } from "../../../common/src/packets/packet";
+import { type Player } from "../../../common/src/objects/player";
 
 export class Game {
     players: Set<Player> = new Set<Player>();

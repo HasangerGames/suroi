@@ -18,8 +18,7 @@ const config = merge(common, {
         devMiddleware: { publicPath: "http://localhost:3000" },
         static: { directory: path.resolve(__dirname, "../public") },
         historyApiFallback: true,
-        port: 3000,
-        hot: false
+        port: 3000
     },
 
     plugins: [

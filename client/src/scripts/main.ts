@@ -2,8 +2,6 @@ import $ from "jquery";
 
 import { Game } from "./game";
 
-import "../assets/scss/main.scss";
-
 $(() => {
     // Play button logic
     $("#playBtn").on("click", () => {
