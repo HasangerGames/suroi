@@ -16,7 +16,6 @@ export class GameScene extends Phaser.Scene {
     preload (): void {
         for (const object of MapObjects) this.load.svg(object.id, `/assets/img/map/${object.imageName}`, { scale: object.scale });
 
-        this.load.image("kong", "/assets/img/kong.jpg");
         this.load.audio("swing", "/assets/audio/sfx/swing.mp3");
         this.load.audio("grass_step_01", "/assets/audio/sfx/footsteps/grass_01.mp3");
         this.load.audio("grass_step_02", "/assets/audio/sfx/footsteps/grass_02.mp3");
