@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "full-install": "cd common && npm install && cd ../server && npm install && cd ../client && npm install",
-    "build": "cd server && npm run build & cd ../client && npm run build",
+    "full-install": "cd common && pnpm install && cd ../server && pnpm install && cd ../client && pnpm install",
+    "build": "cd server && pnpm build & cd ../client && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "lint": "cd common && npm run lint && cd ../server && npm run lint && cd ../client && npm run lint",
-    "lint:ci": "cd common && npm run lint:ci && cd ../server && npm run lint:ci && cd ../client && npm run lint:ci"
+    "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
+    "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci"
   },
   "dependencies": {
     "typescript": "^5.0.4"

@@ -20,13 +20,14 @@ Suroi is a 2D top-down battle royale game inspired by [surviv.io](https://en.wik
 
 ## Prerequisites
  * [Node.js](https://nodejs.org)
+ * [pnpm](https://pnpm.io)
 
 ## Installation
-This project utilizes [npm](https://npmjs.com). No other package manager is supported for this project.
+This project utilizes [pnpm](https://pnpm.io). No other package manager is supported for this project.
 
 To install dependencies for this project, open a command line interface at the directory of the cloned repository, and run:
 ```sh
-npm run full-install
+pnpm full-install
 ```
 
 This will create a `node_modules` directory in all three folders and link the packages there.
@@ -36,19 +37,19 @@ To run the app locally in development, in the root of the project, open two term
 
 In one terminal, run the following:
 ```sh
-cd client && npm run dev
+cd client && pnpm dev
 ```
 
 In another, run the following:
 ```sh
-cd server && npm run dev
+cd server && pnpm dev
 ```
 
 
 ## Production
 To build for production, in the root of the project, execute
 ```sh
-npm run build
+pnpm build
 ```
 
 Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
