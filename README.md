@@ -13,11 +13,10 @@
   <img src="https://img.shields.io/badge/uwebsockets%20-%23000000.svg?style=for-the-badge" />
   <img src="https://img.shields.io/badge/phaser%20-%232094f3.svg?style=for-the-badge" />
   <img src="https://img.shields.io/badge/webpack-%231C78C0.svg?style=for-the-badge&logo=webpack" />
-  <img src="https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx" />
 </div>
 
 ## About
-Suroi is a 2D top-down battle royale game inspired by surviv.io. Work in progress.
+Suroi is a 2D top-down battle royale game inspired by [surviv.io](https://en.wikipedia.org/wiki/Surviv.io). Work in progress.
 
 ## Prerequisites
  * [Node.js](https://nodejs.org)
@@ -52,4 +51,4 @@ To build for production, in the root of the project, execute
 npm run build
 ```
 
-Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](./nginx.conf)
+Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
