@@ -293,3 +293,7 @@ canvas {
     left: 0;
     cursor: crosshair;
 }
+
+canvas:not(.active) {
+    display: none;
+}

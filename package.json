@@ -13,6 +13,9 @@
   "dependencies": {
     "typescript": "^5.0.4"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "typescript"
+  ],
   "license": "GPL-3.0"
 }
