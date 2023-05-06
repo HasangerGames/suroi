@@ -1,8 +1,7 @@
-@import 'fonts.scss';
+@import "fonts.scss";
 
 :root {
     --backgroundColor: #3d3e48;
-    --mainFont: Inter;
 
     --suroiOrange: #ff7500;
     --suroiBlue: #008aff;
@@ -25,20 +24,16 @@
 
 body {
     background-color: var(--backgroundColor);
+    font-family: "Inter", sans-serif;
+
     display: flex;
     flex-direction: column;
-    font-family: "Inter", sans-serif;
+
     margin: 0;
     padding: 0;
 }
 
-/* Chrome, Firefox, Opera, Safare 10.1+ */
 ::placeholder {
-    font-family: "Inter", sans-serif;
-}
-
-/* Microsoft Edge (sucks) */
-::-ms-input-placeholder {
     font-family: "Inter", sans-serif;
 }
 
