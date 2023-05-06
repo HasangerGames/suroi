@@ -56,7 +56,6 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "howler": "^2.2.3",
     "phaser": "^3.60.0"
   }
 }

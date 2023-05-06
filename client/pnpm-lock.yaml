@@ -4,9 +4,6 @@ dependencies:
   axios:
     specifier: ^1.4.0
     version: 1.4.0
-  howler:
-    specifier: ^2.2.3
-    version: 2.2.3
   phaser:
     specifier: ^3.60.0
     version: 3.60.0
@@ -4112,10 +4109,6 @@ packages:
     hasBin: true
     dev: true
 
-  /howler@2.2.3:
-    resolution: {integrity: sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==}
-    dev: false
-
   /hpack.js@2.1.6:
     resolution: {integrity: sha512-zJxVehUdMGIKsRaNt7apO2Gqp0BdqW5yaiGHXXmbpvxgBYVZnAql+BJb4RO5ad2MgpbZKn5G6nMnegrH1FcNYQ==}
     dependencies:
@@ -6382,8 +6375,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /terser-webpack-plugin@5.3.7(webpack@5.82.0):
-    resolution: {integrity: sha512-AfKwIktyP7Cu50xNjXF/6Qb5lBNzYaWpU6YfoX3uZicTx0zTy0stDDCsvjDapKsSDvOeWo5MEq4TmdBy2cNoHw==}
+  /terser-webpack-plugin@5.3.8(webpack@5.82.0):
+    resolution: {integrity: sha512-WiHL3ElchZMsK27P8uIUh4604IgJyAW47LVXGbEoB21DbQcZ+OuMpGjVYnEUaqcWM6dO8uS2qUbA7LSCWqvsbg==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
       '@swc/core': '*'
@@ -6788,7 +6781,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.1.2
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.7(webpack@5.82.0)
+      terser-webpack-plugin: 5.3.8(webpack@5.82.0)
       watchpack: 2.4.0
       webpack-cli: 5.0.2(webpack-dev-server@4.13.3)(webpack@5.82.0)
       webpack-sources: 3.2.3

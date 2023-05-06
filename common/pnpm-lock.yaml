@@ -7,9 +7,6 @@ dependencies:
   bit-buffer:
     specifier: ^0.2.5
     version: 0.2.5
-  fs:
-    specifier: 0.0.1-security
-    version: 0.0.1-security
   uWebSockets.js:
     specifier: github:uNetworking/uWebSockets.js#v20.24.0
     version: github.com/uNetworking/uWebSockets.js/6545da07696855e77de1480d5b55bb661746ddd3
@@ -925,10 +922,6 @@ packages:
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
-
-  /fs@0.0.1-security:
-    resolution: {integrity: sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w==}
-    dev: false
 
   /function-bind@1.1.1:
     resolution: {integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==}
