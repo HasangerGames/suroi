@@ -3,7 +3,6 @@ name: CI
 on:
   push:
   pull_request:
-    branches: [dependabot/**]
 
 jobs:
   client:
@@ -15,22 +14,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install Packages (Common)
         working-directory: ./common
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Packages (Client)
         working-directory: ./client
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./client
-        run: npm run build
+        run: pnpm build
   server:
     name: Server
     runs-on: ubuntu-latest
@@ -40,19 +46,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+  
       - name: Install Packages (Common)
         working-directory: ./common
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Packages (Server)
         working-directory: ./server
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         working-directory: ./server
-        run: npm run build
+        run: pnpm build

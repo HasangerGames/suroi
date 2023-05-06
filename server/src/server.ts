@@ -1,80 +1,42 @@
+import Config from "../../config.json";
+
 import {
     App,
     DEDICATED_COMPRESSOR_256KB,
+    type HttpResponse,
     SSLApp,
     type WebSocket
 } from "uWebSockets.js";
-import * as fs from "fs";
 
-import {
-    Config,
-    Debug,
-    getContentType,
-    log
-} from "../../common/src/utils/misc";
+import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { type Player } from "../../common/src/objects/player";
+import type { Player } from "../../common/src/objects/player";
 import { Game } from "./game";
 
+/**
+ * Apply CORS headers to a response.
+ * @param res The response sent by the server.
+ */
+const cors = (res: HttpResponse): void => {
+    res.writeHeader("Access-Control-Allow-Origin", "*");
+    res.writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
+    res.writeHeader("Access-Control-Max-Age", "3600");
+};
+
 // Initialize the server
-let app;
-if (Config.https) {
-    app = SSLApp({
-        key_file_name: Config.keyFile,
-        cert_file_name: Config.certFile
-    });
-} else {
-    app = App();
-}
+const app = Config.ssl?.enable
+    ? SSLApp({
+        key_file_name: Config.ssl.keyFile,
+        cert_file_name: Config.ssl.certFile
+    })
+    : App();
 
 const game = new Game();
 
-// Set up static files
-const staticFiles = {};
-function walk (dir: string, files: string[] = []): string[] {
-    if (dir.includes(".git") || dir.includes("src") || dir.includes(".vscode") || dir.includes(".idea")) return files;
-    const dirFiles = fs.readdirSync(dir);
-    for (const f of dirFiles) {
-        const stat = fs.lstatSync(`${dir}/${f}`);
-        if (stat.isDirectory()) {
-            walk(`${dir}/${f}`, files);
-        } else {
-            files.push(`${dir}/${f}`);
-        }
-    }
-    return files;
-}
-for (const file of walk("../client/dist")) {
-    staticFiles[file] = fs.readFileSync(file);
-}
-
-app.get("/*", async (res, req) => {
-    const path: string = req.getUrl() === "/" ? "/index.html" : req.getUrl();
-    let file: Buffer | undefined;
-    if (Debug.disableStaticFileCache) {
-        try {
-            file = fs.readFileSync(`../client/dist${path}`);
-        } catch (e) {
-            file = undefined;
-        }
-    } else {
-        file = staticFiles[path];
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    res.onAborted(() => {});
-
-    if (file === undefined) {
-        res.writeStatus("404 Not Found");
-        res.end(`<!DOCTYPE html><html lang="en"><body><pre>404 Not Found: ${req.getUrl()}</pre></body></html>`);
-        return;
-    }
-
-    res.writeHeader("Content-Type", getContentType(path)).end(file);
-});
-
-app.get("/getGame", (res) => {
-    res.writeHeader("Content-Type", "application/json").end("{ \"addr\": \"ws://127.0.0.1:8000/play\" }");
+app.get("/api/getGame", (res) => {
+    cors(res);
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:${Config.port}/play" }`);
 });
 
 app.ws("/play", {
@@ -85,6 +47,7 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
+        cors(res);
         const player = game.addPlayer();
         res.upgrade(
             {},
@@ -116,9 +79,7 @@ app.ws("/play", {
         const stream = new SuroiBitStream(message);
         try {
             const msgType = stream.readUint8();
-            switch (msgType) {
-
-            }
+            // switch (msgType) {}
         } catch (e) {
             console.warn("Error parsing message:", e);
         }

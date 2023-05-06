@@ -9,15 +9,17 @@ export class UpdatePacket extends Packet {
         this.allocBytes = 8192;
     }
 
-    serialize (stream: SuroiBitStream) {
+    serialize (stream: SuroiBitStream): void {
         super.serialize(stream);
         const p = this.player;
+
         stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
+
         stream.writeBoolean(p.adrenalineDirty);
         if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8);
     }
 
-    deserialize (stream: SuroiBitStream) {
-    }
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    deserialize (stream: SuroiBitStream): void {}
 }

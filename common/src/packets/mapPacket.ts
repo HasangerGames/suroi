@@ -9,10 +9,10 @@ export class MapPacket extends Packet {
         this.allocBytes = 8192;
     }
 
-    serialize (stream: SuroiBitStream) {
+    serialize (stream: SuroiBitStream): void {
         super.serialize(stream);
     }
 
-    deserialize (stream: SuroiBitStream) {
-    }
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    deserialize (stream: SuroiBitStream): void {}
 }

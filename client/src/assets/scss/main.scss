@@ -1,0 +1,445 @@
+@import "fonts.scss";
+:root {
+    --backgroundColor: #3d3e48;
+
+    --suroiOrange: #ff7500;
+    --suroiBlue: #008aff;
+
+    --btnTopRightColor: #555555;
+    --btnTopRightBorderColor: #3c3c3c;
+    --btnTopRightHover: #444444;
+
+    --btnPlayColor: #008aff;
+    --btnPlayBottomBorderColor: #007ae4;
+    --btnPlayColorHover: #0073d7;
+
+    --btnDropdownMore: #008aff;
+    --btnDropdownMoreHover: #0073d7;
+    --btnDropdownTextColor: white;
+    --btnDropdownMoreContent: #008aff;
+    --btnDropdownMoreContentHover: #0079e3;
+    --btnMoreBottomBorder: #007ae4;
+}
+
+body {
+    background-color: var(--backgroundColor);
+    display: flex;
+    flex-direction: column;
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    padding: 0px;
+}
+
+::placeholder {
+    font-family: "Inter", sans-serif;
+}
+
+.h1 {
+    font-size: 60px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.article {
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+/* Buttons for selecting which game mode to play */
+.buttonPlay {
+    background: var(--btnPlayColor);
+    border: none;
+    border-bottom: 2px solid var(--btnPlayBottomBorderColor);
+    border-radius: 10px;
+    box-shadow: inset 0 -2px var(--btnPlayBottomBorderColor);
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    font-family: "Inter", sans-serif;
+    width: 350px;
+    padding: 10px;
+    text-align: center;
+}
+
+.buttonPlay:nth-child(2) {
+    order: 1;
+}
+
+.buttonPlay:hover {
+    background-color: var(--btnPlayColorHover);
+    color: white;
+}
+
+/* Buttons for the bottom right, such as settings and volume control */
+.button_topRight {
+    color: white;
+    background: var(--btnTopRightColor);
+    border: none;
+    border-bottom: 2px solid var(--btnTopRightBorderColor);
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 25px;
+    font-family: "Inter", sans-serif;
+    max-width: 100px;
+    max-height: 100px;
+    box-shadow: inset 0 -2px var(--btnTopRightBorderColor);
+    cursor: pointer;
+}
+
+.button_topRight:hover {
+    background-color: var(--btnTopRightHover);
+    color: white;
+}
+
+/* Squads are Disabled */
+.button_squads {
+    color: white;
+    background: var(--btnPlayColor);
+    border: none;
+    border-bottom: 2px solid var(--btnPlayBottomBorderColor);
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: "Inter", sans-serif;
+    max-width: 300px;
+    width: 50%;
+    margin-top: 10px;
+    box-shadow: inset 0 -2px var(--btnPlayBottomBorderColor);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.center-menu {
+    display: inline-block;
+    border-radius: 30px;
+    text-align: center;
+    background-color: rgba(22, 22, 22, 0.5);
+    padding: 20px;
+    width: 350px;
+    height: 200px;
+    box-sizing: content-box;
+    justify-content: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    display: inline-block;
+    top: 0;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+/* Parties are disabled */
+.button_Create_party {
+    color: white;
+    background: var(--btnPlayColor);
+    border: none;
+    border-bottom: 2px solid var(--btnPlayBottomBorderColor);
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: "Inter", sans-serif;
+    max-width: 300px;
+    width: 50%;
+    margin-top: 10px;
+    box-shadow: inset 0 -2px var(--btnPlayBottomBorderColor);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.top-right-menu {
+    height: 50px;
+    position: absolute;
+    background-color: transparent;
+    top: 0;
+    right: 0;
+    padding-top: 15px;
+    padding-right: 15px;
+}
+
+.bottom-center-menu {
+    height: 20px;
+    position: absolute;
+    background-color: transparent;
+    bottom: 0;
+    padding-bottom: 20px;
+    display: inline-block;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 50px;
+    align-self: center;
+}
+
+.bottom-center-menu a {
+    margin: 0 20px;
+    color: white;
+    text-decoration: none;
+}
+
+/* Dropdown button for the "More" menu */
+.btn-dropdown-more {
+    background-color: var(--btnDropdownMore);
+    color: var(--btnDropdownTextColor);
+    font-family: "Inter", sans-serif;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    border-bottom: 2px solid var(--btnMoreBottomBorder);
+    box-shadow: inset 0 -2px var(--btnMoreBottomBorder);
+    font-weight: bold;
+}
+
+/* On hover/focus */
+.btn-dropdown-more:hover,
+.btn-dropdown-more:focus {
+    background-color: var(--btnDropdownMoreHover);
+}
+
+/* Dropdown content positioning */
+.dropdown-more {
+    float: left;
+    position: relative;
+    display: block;
+    padding-top: 15px;
+    padding-left: 15px;
+    border-radius: 10px;
+}
+
+/* Dropdown content */
+.dropdown-more-content {
+    display: none;
+    border-radius: 10px;
+    position: absolute;
+    background-color: var(--btnDropdownMoreContent);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-left: 10px;
+    left: 0;
+    overflow: auto;
+    font-family: "Inter", sans-serif;
+}
+
+/* Links on dropdown buttons */
+.dropdown-more-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change dropdown color on hover */
+.dropdown-more-content a:hover {
+    background-color: var(--btnDropdownMoreContentHover);
+    border-radius: 10px;
+}
+
+.dropdown-more-show {
+    display: block;
+}
+
+.logo-home {
+    align-self: center;
+}
+
+.name-enter {
+    width: 345px;
+    height: 50px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: transparent;
+    background-color: white;
+    margin-bottom: 10px;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+}
+
+/* Chrome, Firefox, Opera, Safare 10.1+ */
+.name-enter::placeholder {
+    color: #b0b0b0;
+    font-size: 20px;
+    text-align: center;
+}
+
+/* I hate microsoft edge */
+::-ms-input-placeholder {
+    color: #b0b0b0;
+    font-size: 20px;
+    text-align: center;
+}
+
+.server-cascade {
+    background: transparent;
+    width: 350px;
+    height: 50px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: var(--suroiOrange);
+    border-width: 3px;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.center-container {
+    background-color: transparent;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 250px;
+    width: 1200px;
+}
+
+.left-menu-container {
+    background-color: rgba(22, 22, 22, 0.5);
+    width: 350px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 30px;
+    border: transparent;
+    display: inline-block;
+}
+
+.inventory-menu {
+    background-color: rgba(22, 22, 22, 0.5);
+    width: 350px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 30px;
+    border: transparent;
+    display: inline-block;
+    text-align: center;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.57);
+    line-height: 180px;
+}
+
+.news {
+    background-color: transparent;
+    height: 200px;
+    width: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.socials-container {
+    background-color: transparent;
+    border-radius: 20px;
+    height: 45px;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
+.social-card-discord,
+.social-card-reddit,
+.social-card-youtube {
+    display: inline-block;
+
+    height: 45px;
+    width: 45px;
+
+    margin: 5px 2.5px;
+
+    font-size: large;
+    text-align: center;
+
+    border: none;
+    border-radius: 12px;
+
+    background-size: 65%;
+    background-position: center;
+    background-repeat: no-repeat;
+    text-align: center;
+}
+
+.social-card-discord {
+    background-image: url("../img/socials/discord.svg");
+    background-color: #5865f2;
+
+    border-bottom: 2px solid #4b56cf;
+    box-shadow: inset 0 -2px #4b56cf;
+}
+
+.social-card-discord:hover {
+    background-color: #404ab2;
+}
+
+.social-card-reddit {
+    background-image: url("../img/socials/reddit.svg");
+    background-color: #ff4500;
+
+    border-bottom: 2px solid #d53900;
+    box-shadow: inset 0 -2px #d53900;
+}
+
+.social-card-reddit:hover {
+    background-color: #b93100;
+}
+
+.social-card-youtube {
+    background-image: url("../img/socials/youtube.svg");
+    background-color: #ff0000;
+
+    border-bottom: 2px solid #de0000;
+    box-shadow: inset 0 -2px #de0000;
+}
+
+.social-card-youtube:hover {
+    background-color: #c50000;
+}
+
+.news-container-header {
+    color: var(--suroiOrange);
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    width: 350px;
+    height: 18px;
+}
+
+.news-container-date {
+    color: gray;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.news-container-title {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.news-container-text {
+    color: white;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #626262;
+    border-radius: 10px;
+}
+
+canvas:not(.active) {
+    display: none;
+}

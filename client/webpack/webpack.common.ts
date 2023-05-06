@@ -3,7 +3,6 @@ import { version } from "../package.json";
 import * as Webpack from "webpack";
 import type WDS from "webpack-dev-server";
 
-import { WebpackManifestPlugin } from "webpack-manifest-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
 import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
@@ -15,9 +14,9 @@ interface Configuration extends Webpack.Configuration {
 }
 
 const config: Configuration = {
-    entry: { app: path.resolve(__dirname, "../src/main.ts") },
+    entry: { app: path.resolve(__dirname, "../src/index.ts") },
 
-    resolve: { extensions: [".js", ".jsx", ".mjs", ".ts", ".tsx"] },
+    resolve: { extensions: [".js", ".ts"] },
 
     module: {
         rules: [
@@ -65,9 +64,14 @@ const config: Configuration = {
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif|mp3|ttf|woff|woff2|eot|ttf|otf)$/i,
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: { filename: "[path][name][ext]" }
+                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                type: "asset/resource",
+                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
             }
         ]
     },
@@ -75,10 +79,9 @@ const config: Configuration = {
     plugins: [
         new Webpack.ProgressPlugin(),
         new Webpack.DefinePlugin({ APP_VERSION: `"${version}"` }),
-        new WebpackManifestPlugin({}),
         new HTMLWebpackPlugin({
             inject: true,
-            template: path.resolve(__dirname, "../index.html"),
+            template: path.resolve(__dirname, "../src/pages/index.html"),
             chunks: ["app"],
 
             minify: {
@@ -94,7 +97,26 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../src/pages/leaderboard.html"),
+            chunks: ["leaderboard"],
+            filename: "leaderboard.html",
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
+        new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 
