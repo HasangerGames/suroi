@@ -1,6 +1,7 @@
 {
   "host": "127.0.0.1",
   "port": 8000,
+  "webSocketPort": 8001,
   "ssl": {
     "keyFile": "",
     "certFile": "",
