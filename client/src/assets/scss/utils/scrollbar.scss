@@ -10,3 +10,9 @@
     background: #626262;
     border-radius: 10px;
 }
+
+/* firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #626262 transparent;
+}
