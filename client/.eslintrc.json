@@ -38,7 +38,6 @@
         "@typescript-eslint/indent": [1, 4, { "SwitchCase": 1 }],
         "@typescript-eslint/semi": [1, "always"],
         "@typescript-eslint/quotes": [1, "double", "avoid-escape"],
-        "@typescript-eslint/space-before-function-paren": ["error", "never"],
         "no-use-before-define": 0,
         "no-unused-vars": 0,
         "@typescript-eslint/no-use-before-define": 2,

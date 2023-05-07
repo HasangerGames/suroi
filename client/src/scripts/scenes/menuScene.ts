@@ -1,23 +1,23 @@
 import Phaser from "phaser";
 
 export class MenuScene extends Phaser.Scene {
-    constructor() {
+    constructor () {
         super("menu");
     }
 
-    preload(): void {
+    preload (): void {
         this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
     }
 
-    create(): void {
+    create (): void {
         this.startMusic();
     }
 
     menuMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
-    startMusic(): void {
+    startMusic (): void {
         if (this.menuMusic === undefined) {
             this.menuMusic = this.sound.add("menu");
             this.menuMusic.setLoop(true);
@@ -26,7 +26,7 @@ export class MenuScene extends Phaser.Scene {
         this.menuMusic.play();
     }
 
-    stopMusic(): void {
+    stopMusic (): void {
         this.tweens.add({
             targets: this.menuMusic,
             volume: 0,
