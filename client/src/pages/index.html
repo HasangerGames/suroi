@@ -1,103 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=7">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="title" content="Suroi - 2D battle royale game">
-    <meta name="description" content="Suroi is an action-packed 2D Battle Royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience.">
-    <meta name="keywords" content="battle royale, io game, browser game, open source">
+        <meta name="title" content="Suroi - 2D battle royale game" />
+        <meta name="description" content="Suroi is an action-packed 2D Battle Royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
+        <meta name="keywords" content="battle royale, io game, browser game, open source" />
 
-    <meta property="og:title" content="Suroi - 2D battle royale game">
-    <meta property="og:description" content="Suroi is an action-packed 2D Battle Royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience.">
+        <meta property="og:title" content="Suroi - 2D battle royale game" />
+        <meta property="og:description" content="Suroi is an action-packed 2D Battle Royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
 
-    <title>Suroi - 2D battle royale game</title>
+        <title>Suroi - 2D battle royale game</title>
 
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <link rel="icon" type="image/x-icon" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png" />
-    <link rel="icon" type="image/x-icon" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png" />
-    <link rel="icon" type="image/x-icon" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png" />
+        <link rel="icon" type="image/x-icon" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png" />
+        <link rel="icon" type="image/x-icon" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/x-icon" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png" />
 
-    <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div id="splash-ui">
-        <div id="splash-logo">
-            <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo">
-        </div>
-        <div id="splash-modals">
-            <div id="splash-news">
-                <h2>
-                    News
-                    <i class="fa-solid fa-newspaper"></i>
-                </h2>
-                <div>
-                    <article class="splash-news-entry">
-                        <div class="news-date">May 6th, 2023</div>
-                        <div class="news-title">Long Live Suroi!</div>
-                        <span>
-                            Welcome to the 2D Battle Royale game, Suroi. Totally free to play, and open-source as well!
-                            Head over and check out the <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">wiki</a>, <a href="/leaderboard" target="_blank" rel="noopener noreferrer">leaderboards</a>, and more in the dropdown menu, or check out our socials below. Join our <a href="https://discord.gg/j8pPtMa843" target="_blank" rel="noopener noreferrer">Discord</a> server to stay updated!
-                        </span>
-                    </article>
-                </div>
+        <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="splash-ui">
+            <div id="splash-logo">
+                <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo" />
             </div>
-            <div id="splash-center">
-                <div id="splash-options">
-                    <input
-                        type="text"
-                        name="username-input"
-                        id="username-input"
-                        placeholder="Enter a nickname"
-                        maxlength="15"
-                    >
-                    <select name="server-select" id="server-select">
-                        <option value="na" selected>North America</option>
-                    </select>
+            <div id="splash-modals">
+                <div id="splash-news">
+                    <h2>
+                        News
+                        <i class="fa-solid fa-newspaper"></i>
+                    </h2>
+                    <div>
+                        <article class="splash-news-entry">
+                            <div class="news-date">May 6th, 2023</div>
+                            <div class="news-title">Long Live Suroi!</div>
+                            <span>
+                                Welcome to the 2D Battle Royale game, Suroi. Totally free to play, and open-source as well! Head over and check out the <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">wiki</a>, <a href="/leaderboard" target="_blank" rel="noopener noreferrer">leaderboards</a>, and more in the dropdown menu, or check out our socials below. Join our <a href="https://discord.gg/j8pPtMa843" target="_blank" rel="noopener noreferrer">Discord</a> server to stay
+                                updated!
+                            </span>
+                        </article>
+                    </div>
+                </div>
+                <div id="splash-center">
+                    <div id="splash-options">
+                        <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="15" />
+                        <select name="server-select" id="server-select">
+                            <option value="na" selected>North America</option>
+                        </select>
 
-                    <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
-                    <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
-                    <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
-                    <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+                        <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
+                        <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
+                        <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
+                        <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+                    </div>
+                    <div id="splash-socials">
+                        <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-discord"></a>
+                        <a href="https://reddit.com" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit"></a>
+                        <a href="https://twitter.com/HasangerGames" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-twitter"></a>
+                        <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-youtube"></a>
+                        <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-github"></a>
+                    </div>
                 </div>
-                <div id="splash-socials">
-                    <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-discord"></a>
-                    <a href="https://reddit.com" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-reddit"></a>
-                    <a href="https://twitter.com/HasangerGames" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-twitter"></a>
-                    <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-youtube"></a>
-                    <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer" class="btn btn-darken btn-social btn-github"></a>
+                <div id="splash-inventory">
+                    <span>Coming Soon!</span>
                 </div>
-            </div>
-            <div id="splash-inventory">
-                <span>Coming Soon!</span>
-            </div>
-            <div id="splash-more" class="dropdown">
-                <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
-                    More
-                    <i class="fa-solid fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
-                        Wiki
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    <a href="/proxies.txt" target="_blank" rel="noopener noreferrer">
-                        Proxies
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
-                        Leaderboard
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
+                <div id="splash-more" class="dropdown">
+                    <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
+                        More
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
+                            Wiki
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        <a href="/proxies.txt" target="_blank" rel="noopener noreferrer">
+                            Proxies
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                        <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
+                            Leaderboard
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div id="splash-backlinks">
-                <span>v0.1.0</span>
+                <div id="splash-backlinks">
+                    <span>v0.1.0</span>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="game-ui"></div>
-</body>
+        <div id="game-ui"></div>
+    </body>
 </html>
