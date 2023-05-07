@@ -1,0 +1,15 @@
+{
+  "trailingComma": "none",
+  "tabWidth": 4,
+  "semi": true,
+  "overrides": [
+    {
+        "files": ["**/*.html"],
+        "options": {
+            "printWidth": 500,
+            "htmlWhitespaceSensitivity": "strict",
+            "singleAttributePerLine": false
+        }
+    }
+  ]
+}

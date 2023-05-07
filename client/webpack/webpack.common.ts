@@ -1,3 +1,20 @@
+/*
+Copyright (C) 2023 Henry Sanger (https://suroi.io)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 // noinspection SpellCheckingInspection
 
 import { version } from "../package.json";
@@ -70,19 +87,19 @@ const config: Configuration = {
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
             },
             {
-                test: /\.mp3$/,
+                test: /\.(ogg|mp3|wav)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/audio/[filename].[contenthash:8][ext]" }
+                generator: { filename: "assets/audio/static/[contenthash:8][ext]" }
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/img/[filename].[contenthash:8][ext]" }
+                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/fonts/[filename].[contenthash:8][ext]" }
+                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
             }
         ]
     },

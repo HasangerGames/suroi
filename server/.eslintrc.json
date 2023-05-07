@@ -30,6 +30,8 @@
         "@typescript-eslint/no-confusing-void-expression": 0,
         "@typescript-eslint/no-namespace": 0,
         "curly": [1, "multi-line"],
+        "space-before-function-paren": [2, "never"],
+        "@typescript-eslint/space-before-function-paren": [2, "never"],
         "object-curly-newline": [1, {
             "ObjectExpression": { "multiline": true, "minProperties": 3 },
             "ObjectPattern": { "multiline": true },
