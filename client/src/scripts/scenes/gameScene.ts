@@ -14,7 +14,7 @@ export class GameScene extends Phaser.Scene {
     punching = false;
 
     preload(): void {
-        for (const object of MapObjects) this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
+        for (const object of MapObjects) this.load.svg(object.id, require(`../../assets/img/map/${object.imageName}`), { scale: object.scale });
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
         this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
