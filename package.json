@@ -5,7 +5,7 @@
   "scripts": {
     "full-install": "cd common && pnpm install && cd ../server && pnpm install && cd ../client && pnpm install",
     "full-upgrade": "cd common && pnpm up * && cd ../server && pnpm up * && cd ../client && pnpm up *",
-    "build": "cd server && pnpm build & cd ../client && pnpm build",
+    "build": "cd server && pnpm build && cd ../client && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
     "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
     "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci"

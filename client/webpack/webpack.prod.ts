@@ -11,7 +11,7 @@ const config = merge(common, {
 
     output: {
         path: path.resolve(__dirname, "../dist"),
-        filename: "assets/js/[name].[chunkhash:8].js",
+        filename: "js/[name].[chunkhash:8].js",
         clean: true
     },
 

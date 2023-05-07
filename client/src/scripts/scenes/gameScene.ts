@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 import { MapObjects } from "../constants/mapObjects";
 import { MenuScene } from "./menuScene";
-import { degreesToRadians } from "../../../common/src/utils/math";
 
 export class GameScene extends Phaser.Scene {
 
@@ -16,12 +15,11 @@ export class GameScene extends Phaser.Scene {
 
     preload(): void {
         for(const object of MapObjects) {
-            this.load.svg(object.id, `/img/map/${object.imageName}`, { scale: object.scale });
+            this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
         }
-        this.load.image("kong", "/img/kong.jpg");
-        this.load.audio("swing", require("/audio/sfx/swing.mp3"));
-        this.load.audio("grass_step_01", require("/audio/sfx/footsteps/grass_01.mp3"));
-        this.load.audio("grass_step_02", require("/audio/sfx/footsteps/grass_02.mp3"));
+        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
+        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
+        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
             this.player.setRotation(angle);

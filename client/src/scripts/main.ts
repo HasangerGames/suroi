@@ -1,7 +1,5 @@
 import $ from "jquery";
 import { Game } from "./game";
-import "../css/main.css";
-import "../font/inter.css";
 import Phaser from "phaser";
 import { MenuScene } from "./scenes/menuScene";
 import { GameScene } from "./scenes/gameScene";

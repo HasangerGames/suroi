@@ -1,13 +1,12 @@
 import Phaser from "phaser";
 
 export class MenuScene extends Phaser.Scene {
-
     constructor() {
         super("menu");
     }
 
     preload(): void {
-        this.load.audio("menu", require("/audio/music/menu_music.mp3"));
+        this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
     }
@@ -19,7 +18,7 @@ export class MenuScene extends Phaser.Scene {
     menuMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
     startMusic(): void {
-        if(!this.menuMusic) {
+        if (!(this.menuMusic)) {
             this.menuMusic = this.sound.add("menu");
             this.menuMusic.setLoop(true);
         }
@@ -37,5 +36,4 @@ export class MenuScene extends Phaser.Scene {
             }
         });
     }
-
 }
