@@ -1,10 +1,11 @@
 // Game canvas
 body > canvas {
     display: none;
+
     position: absolute;
-    
     top: 0;
     left: 0;
+    cursor: crosshair;
 }
 
 body > canvas.active {
