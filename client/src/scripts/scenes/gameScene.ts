@@ -4,7 +4,7 @@ import { MapObjects } from "../constants/mapObjects";
 import { type MenuScene } from "./menuScene";
 
 export class GameScene extends Phaser.Scene {
-    constructor () {
+    constructor() {
         super("game");
     }
 
@@ -13,7 +13,7 @@ export class GameScene extends Phaser.Scene {
     playerRightFist: Phaser.GameObjects.Polygon;
     punching = false;
 
-    preload (): void {
+    preload(): void {
         for (const object of MapObjects) this.load.svg(object.id, require(`../../assets/img/map/${object.imageName}`), { scale: object.scale });
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
@@ -55,7 +55,7 @@ export class GameScene extends Phaser.Scene {
 
     stepsSinceLastSound = 0;
 
-    create (): void {
+    create(): void {
         (this.scene.get("menu") as MenuScene).stopMusic();
         const keyboard = this.input.keyboard as Phaser.Input.Keyboard.KeyboardPlugin;
         this.upKey = keyboard.addKey("W");
@@ -96,7 +96,7 @@ export class GameScene extends Phaser.Scene {
         this.add.image(1100, -300, "crate_02");
     }
 
-    createPolygon (radius: number, sides: number): number[][] {
+    createPolygon(radius: number, sides: number): number[][] {
         const points: number[][] = [];
         for (let i = 0; i < sides; i++) {
             const angle = (2 * Math.PI * i) / sides;
@@ -107,7 +107,7 @@ export class GameScene extends Phaser.Scene {
         return points;
     }
 
-    update (): void {
+    update(): void {
         if (this.upKey.isDown) this.player.y -= 5;
         if (this.downKey.isDown) this.player.y += 5;
         if (this.leftKey.isDown) this.player.x -= 5;

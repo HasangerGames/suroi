@@ -15,20 +15,20 @@ export class Player extends GameObject {
 
     socket: WebSocket<Player>;
 
-    get health (): number {
+    get health(): number {
         return this._health;
     }
 
-    get adrenaline (): number {
+    get adrenaline(): number {
         return this._adrenaline;
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    deserializePartial (stream: SuroiBitStream): void {}
+    deserializePartial(stream: SuroiBitStream): void {}
 
-    deserializeFull (stream: SuroiBitStream): void {}
+    deserializeFull(stream: SuroiBitStream): void {}
 
-    serializePartial (stream: SuroiBitStream): void {}
+    serializePartial(stream: SuroiBitStream): void {}
 
-    serializeFull (stream: SuroiBitStream): void {}
+    serializeFull(stream: SuroiBitStream): void {}
 }

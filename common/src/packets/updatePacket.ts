@@ -3,13 +3,13 @@ import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Player } from "../objects/player";
 
 export class UpdatePacket extends Packet {
-    constructor (player: Player) {
+    constructor(player: Player) {
         super(player);
         this.type = PacketType.UpdatePacket;
         this.allocBytes = 8192;
     }
 
-    serialize (stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         const p = this.player;
 
@@ -21,5 +21,5 @@ export class UpdatePacket extends Packet {
     }
 
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    deserialize (stream: SuroiBitStream): void {}
+    deserialize(stream: SuroiBitStream): void {}
 }

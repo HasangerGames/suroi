@@ -7,7 +7,7 @@ export class Game {
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
 
-    constructor (address: string) {
+    constructor(address: string) {
         if (address === undefined) return;
 
         const ws = new WebSocket(address);
