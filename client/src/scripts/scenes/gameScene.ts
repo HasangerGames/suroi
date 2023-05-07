@@ -21,6 +21,8 @@ export class GameScene extends Phaser.Scene {
         this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+            if (this.player === undefined) return;
+
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
             this.player.setRotation(angle);
         });
