@@ -10,8 +10,11 @@ import {
 
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import type { Player } from "../../common/src/objects/player";
+import type { Player } from "./objects/player";
 import { Game } from "./game";
+import sanitizeHtml from "sanitize-html";
+import { PacketType } from "../../common/src/constants/packetType";
+import { InputPacket } from "./packets/receiving/inputPacket";
 
 /**
  * Apply CORS headers to a response.
@@ -36,10 +39,17 @@ const game = new Game();
 
 app.get("/api/getGame", (res) => {
     cors(res);
-    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:${Config.port}/play" }`);
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:${Config.port}/api/playGame" }`);
 });
 
-app.ws("/play", {
+export interface PlayerContainer {
+    player: Player
+    playerName: string
+}
+
+app.get("/", (res) => { res.end("test"); });
+
+app.ws("/api/playGame", {
     compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
 
@@ -47,10 +57,24 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
-        cors(res);
-        const player = game.addPlayer();
+        //cors(res);
+        let name: string;
+        if (req.getQuery() !== undefined) {
+            const split: string[] = req.getQuery().split("=");
+            if (split.length !== 2) {
+                name = "Player";
+            } else {
+                name = sanitizeHtml(split[1], {
+                    allowedTags: [],
+                    allowedAttributes: {},
+                    disallowedTagsMode: "recursiveEscape"
+                });
+            }
+        } else {
+            name = "Player";
+        }
         res.upgrade(
-            {},
+            { player: undefined, playerName: name },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
             req.getHeader("sec-websocket-extensions"),
@@ -62,12 +86,9 @@ app.ws("/play", {
      * Handle opening of the socket.
      * @param socket The socket being opened.
      */
-    open: (socket: WebSocket<Player>) => {
-        socket.getUserData().socket = socket;
-        // let playerName = socket.cookies["player-name"]?.trim().substring(0, 16) ?? "Player";
-        // if (typeof playerName !== "string" || playerName.length < 1) playerName = "Player";
-        // log(`"${playerName}" joined the game.`);
-        log("Player joined the game.");
+    open: (socket: WebSocket<PlayerContainer>) => {
+        socket.getUserData().player = game.addPlayer(socket);
+        log(`"${socket.getUserData().playerName}" joined the game`);
     },
 
     /**
@@ -75,11 +96,15 @@ app.ws("/play", {
      * @param socket The socket in question.
      * @param message The message to handle.
      */
-    message: (socket: WebSocket<Player>, message) => {
+    message: (socket: WebSocket<PlayerContainer>, message) => {
         const stream = new SuroiBitStream(message);
         try {
-            const msgType = stream.readUint8();
-            // switch (msgType) {}
+            const packetType = stream.readUint8();
+            switch (packetType) {
+                case PacketType.Input: {
+                    new InputPacket(socket.getUserData().player).deserialize(stream);
+                }
+            }
         } catch (e) {
             console.warn("Error parsing message:", e);
         }
@@ -89,14 +114,14 @@ app.ws("/play", {
      * Handle closing of the socket.
      * @param socket The socket being closed.
      */
-    close: (socket: WebSocket<Player>) => {
-        // log(`"${socket.player.name}" left the game.`);
-
-        game.removePlayer(socket.getUserData());
+    close: (socket: WebSocket<PlayerContainer>) => {
+        const p: Player = socket.getUserData().player;
+        log(`"${p.name}" left the game`);
+        game.removePlayer(p);
     }
 });
 
-// Start the servers
+// Start the server
 log("Suroi v0.1.0");
 app.listen(Config.host, Config.port, () => {
     log(`Listening on ${Config.host}:${Config.port}`);

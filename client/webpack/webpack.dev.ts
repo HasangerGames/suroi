@@ -11,18 +11,18 @@ const config = merge(common, {
 
     output: {
         path: path.resolve(__dirname, "../dist"),
-        filename: "assets/js/[name].[chunkhash:8].js"
+        filename: "js/[name].[chunkhash:8].js"
     },
 
     devServer: {
-        devMiddleware: { publicPath: "http://localhost:3000" },
+        devMiddleware: { publicPath: "http://127.0.0.1:3000" },
         static: { directory: path.resolve(__dirname, "../public") },
         historyApiFallback: true,
         port: 3000
     },
 
     plugins: [
-        new DefinePlugin({ API_URL: "\"http://localhost:8000/api\"" })
+        new DefinePlugin({ API_URL: "\"http://127.0.0.1:8000/api\"" })
     ]
 });
 

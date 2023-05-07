@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "bit-buffer": "^0.2.5",
+    "planck": "1.0.0-alpha.4",
+    "sanitize-html": "^2.10.0",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.24.0"
   }
 }

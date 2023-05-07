@@ -1,3 +1,5 @@
+// noinspection SpellCheckingInspection
+
 import { version } from "../package.json";
 
 import * as Webpack from "webpack";
