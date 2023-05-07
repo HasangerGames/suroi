@@ -1,0 +1,24 @@
+@import "../main.scss";
+@import "../palette.scss";
+
+@import "./client/splash.scss";
+@import "./client/game.scss";
+
+:root {
+    --backgroundColor: #3d3e48;
+
+    --btnTopRightColor: #555555;
+    --btnTopRightBorderColor: #3c3c3c;
+    --btnTopRightHover: #444444;
+}
+
+body {
+    background: var(--backgroundColor);
+
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+    padding: 0;
+}
+
