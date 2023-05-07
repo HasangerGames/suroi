@@ -4,7 +4,6 @@ import { PacketType } from "../../../common/src/packets/packet";
 import { type Player } from "../../../common/src/objects/player";
 
 export class Game {
-
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
 
@@ -25,5 +24,4 @@ export class Game {
         $("canvas").addClass("active");
         global.phaser.scene.start("game");
     }
-
 }
