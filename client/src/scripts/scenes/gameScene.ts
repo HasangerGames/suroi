@@ -4,7 +4,6 @@ import { MapObjects } from "../constants/mapObjects";
 import { type MenuScene } from "./menuScene";
 
 export class GameScene extends Phaser.Scene {
-
     constructor() {
         super("game");
     }
@@ -17,9 +16,9 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         for (const object of MapObjects) this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
 
-        this.load.audio("swing", "../../assets/audio/sfx/swing.mp3");
-        this.load.audio("grass_step_01", "../../assets/audio/sfx/footsteps/grass_01.mp3");
-        this.load.audio("grass_step_02", "../../assets/audio/sfx/footsteps/grass_02.mp3");
+        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
+        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
+        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
@@ -38,11 +37,13 @@ export class GameScene extends Phaser.Scene {
                     yoyo: true,
                     onComplete: () => { this.punching = false; }
                 });
+
                 this.sound.add("swing").play();
             }
         });
+
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
-        //this.cameras.main.setBounds(0, 0, 14400, 14400);
+        // this.cameras.main.setBounds(0, 0, 14400, 14400);
     }
 
     upKey: Phaser.Input.Keyboard.Key;
@@ -74,10 +75,13 @@ export class GameScene extends Phaser.Scene {
         const playerBody = this.add.circle(0, 0, 48, 0xffdbac);
         this.playerLeftFist = this.add.polygon(38, 35, this.createPolygon(16, 5), 0xffdbac).setOrigin(0, 0).setStrokeStyle(5, 0x553000);
         this.playerRightFist = this.add.polygon(38, -35, this.createPolygon(16, 5), 0xffdbac).setOrigin(0, 0).setStrokeStyle(5, 0x553000);
-        //const guide1 = this.add.circle(38, 35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
-        //const guide2 = this.add.circle(38, -35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
+
+        // const guide1 = this.add.circle(38, 35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
+        // const guide2 = this.add.circle(38, -35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
+
         this.player = this.add.container(800, 100, [playerBody, this.playerLeftFist, this.playerRightFist]);
         this.cameras.main.startFollow(this.player);
+
         this.add.image(-150, 500, "stone_01");
         this.add.image(200, -300, "stone_02");
         this.add.image(900, 500, "stone_03");

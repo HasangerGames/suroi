@@ -68,7 +68,7 @@ const config: Configuration = {
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
             },
             {
-                test: /\.mp3$/,
+                test: /\.(ogg|mp3|wav)$/i,
                 type: "asset/resource",
                 generator: { filename: "assets/audio/static/[contenthash:8][ext]" }
             },
