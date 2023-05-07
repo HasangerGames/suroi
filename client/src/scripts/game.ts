@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../common/src/constants/packetType";
 import { type SendingPacket } from "./types/sendingPacket";
