@@ -16,7 +16,7 @@ export const MapObjects = [
     },
     {
         id: "crate_01",
-        imageName: "crate_01.svg",
+        imageName: "crate.svg",
         scale: 2
     },
     {

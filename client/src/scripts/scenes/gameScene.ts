@@ -10,18 +10,21 @@ export class GameScene extends Phaser.Scene {
     }
 
     player: Phaser.GameObjects.Container;
-    playerLeftFist: Phaser.GameObjects.Polygon;
-    playerRightFist: Phaser.GameObjects.Polygon;
+    playerLeftFist: Phaser.GameObjects.Arc;
+    playerRightFist: Phaser.GameObjects.Arc;
     punching = false;
 
     preload(): void {
-        for (const object of MapObjects) this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
+        for (const object of MapObjects) {
+            this.load.svg(object.id, require(`../../assets/img/map/${object.imageName}`), { scale: object.scale });
+        }
 
-        this.load.audio("swing", "../../assets/audio/sfx/swing.mp3");
-        this.load.audio("grass_step_01", "../../assets/audio/sfx/footsteps/grass_01.mp3");
-        this.load.audio("grass_step_02", "../../assets/audio/sfx/footsteps/grass_02.mp3");
+        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
+        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
+        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+            if (this.player === undefined) return;
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
             this.player.setRotation(angle);
         });
@@ -72,8 +75,8 @@ export class GameScene extends Phaser.Scene {
         }
 
         const playerBody = this.add.circle(0, 0, 48, 0xffdbac);
-        this.playerLeftFist = this.add.polygon(38, 35, this.createPolygon(16, 5), 0xffdbac).setOrigin(0, 0).setStrokeStyle(5, 0x553000);
-        this.playerRightFist = this.add.polygon(38, -35, this.createPolygon(16, 5), 0xffdbac).setOrigin(0, 0).setStrokeStyle(5, 0x553000);
+        this.playerLeftFist = this.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
+        this.playerRightFist = this.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         //const guide1 = this.add.circle(38, 35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
         //const guide2 = this.add.circle(38, -35, 15, 0xff0000).setStrokeStyle(3.5, 0xdf0000);
         this.player = this.add.container(800, 100, [playerBody, this.playerLeftFist, this.playerRightFist]);

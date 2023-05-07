@@ -1,13 +1,12 @@
 import Phaser from "phaser";
 
 export class MenuScene extends Phaser.Scene {
-
     constructor() {
         super("menu");
     }
 
     preload(): void {
-        this.load.audio("menu", "../../assets/audio/music/menu_music.mp3");
+        this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
     }

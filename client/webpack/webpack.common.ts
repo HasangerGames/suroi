@@ -70,17 +70,17 @@ const config: Configuration = {
             {
                 test: /\.mp3$/,
                 type: "asset/resource",
-                generator: { filename: "assets/audio/static/[contenthash:8][ext]" }
+                generator: { filename: "assets/audio/[filename].[contenthash:8][ext]" }
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
+                generator: { filename: "assets/img/[filename].[contenthash:8][ext]" }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
+                generator: { filename: "assets/fonts/[filename].[contenthash:8][ext]" }
             }
         ]
     },

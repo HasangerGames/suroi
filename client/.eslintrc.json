@@ -52,6 +52,7 @@
             "ExportDeclaration": { "multiline": true, "minProperties": 1 }
         }],
         "@typescript-eslint/no-var-requires": 0,
-        "import/no-absolute-path": 0
+        "import/no-absolute-path": 0,
+        "spaced-comment": "off"
     }
 }
