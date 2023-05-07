@@ -9,7 +9,7 @@ Commit messages should have a format that includes a `*type`, `scope`, `file`, a
 
 Example — `fix: Stopped players from `
 
-Any line of the commit message cannot be longer 100 characters. This allows the message to be easier to read on GitHub as well as in various git tools.
+Any line of the commit message cannot be longer than 100 characters. This makes the message easier to read on GitHub as well as in various git tools.
 
 ## Type
 Must be one of the following:
