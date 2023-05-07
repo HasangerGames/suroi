@@ -12,7 +12,6 @@
   "dependencies": {
     "@types/node": "^20.1.0",
     "bit-buffer": "^0.2.5",
-    "fs": "^0.0.1-security",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.24.0"
   },
   "devDependencies": {

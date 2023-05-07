@@ -1,2 +1,2 @@
-import "./assets/scss/main.scss";
+import "./assets/scss/pages/client.scss";
 import "./scripts/main";

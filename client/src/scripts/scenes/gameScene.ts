@@ -1,6 +1,7 @@
 import Phaser from "phaser";
+
 import { MapObjects } from "../constants/mapObjects";
-import { MenuScene } from "./menuScene";
+import { type MenuScene } from "./menuScene";
 
 export class GameScene extends Phaser.Scene {
 
@@ -14,16 +15,17 @@ export class GameScene extends Phaser.Scene {
     punching = false;
 
     preload(): void {
-        for(const object of MapObjects) {
-            this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
-        }
-        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
-        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
-        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
+        for (const object of MapObjects) this.load.svg(object.id, `../../assets/img/map/${object.imageName}`, { scale: object.scale });
+
+        this.load.audio("swing", "../../assets/audio/sfx/swing.mp3");
+        this.load.audio("grass_step_01", "../../assets/audio/sfx/footsteps/grass_01.mp3");
+        this.load.audio("grass_step_02", "../../assets/audio/sfx/footsteps/grass_02.mp3");
+
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             const angle: number = Math.atan2(pointer.worldY - this.player.y, pointer.worldX - this.player.x);
             this.player.setRotation(angle);
         });
+
         this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             if (pointer.leftButtonDown() && !this.punching) {
                 this.punching = true;
@@ -34,7 +36,7 @@ export class GameScene extends Phaser.Scene {
                     y: altFist ? 10 : -10,
                     duration: 110,
                     yoyo: true,
-                    onComplete: () => this.punching = false
+                    onComplete: () => { this.punching = false; }
                 });
                 this.sound.add("swing").play();
             }
@@ -108,7 +110,7 @@ export class GameScene extends Phaser.Scene {
             this.stepsSinceLastSound++;
         }
         if (this.stepsSinceLastSound >= 50) {
-            let sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
+            const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
             this.sound.add(sound).play();
             this.stepsSinceLastSound = 0;
         }

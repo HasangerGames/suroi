@@ -1,16 +1,20 @@
 import $ from "jquery";
 import { Game } from "./game";
 import Phaser from "phaser";
+
 import { MenuScene } from "./scenes/menuScene";
 import { GameScene } from "./scenes/gameScene";
 
-import "./ui/splash";
+import { setupDropdown } from "./ui/splash";
 
 declare const API_URL: string;
 
 $(() => {
+    // Enable splash dropdown.
+    setupDropdown();
+
     // Play button logic
-    $("#playBtn").on("click", () => {
+    $("#btn-play-solo").on("click", () => {
         void $.get(`${API_URL}/getGame`, data => {
             /* eslint-disable-next-line no-new */
             new Game(data.addr);
@@ -38,7 +42,6 @@ $(() => {
         scene: [MenuScene, GameScene],
         backgroundColor: "#49993e",
         scale: {
-            parent: "body",
             mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH
         }

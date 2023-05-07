@@ -16,7 +16,9 @@
 </div>
 
 ## About
-Suroi is a 2D top-down battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). Work in progress.
+Suroi is a 2D top-down battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). It is currently a work in progress.
+
+To learn more about the game, join our [Discord](https://discord.suroi.io).
 
 ## Installation
 Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
