@@ -7,14 +7,9 @@ dependencies:
   bit-buffer:
     specifier: ^0.2.5
     version: 0.2.5
-  fs:
-    specifier: ^0.0.1-security
-    version: 0.0.1-security
   uWebSockets.js:
     specifier: github:uNetworking/uWebSockets.js#v20.24.0
     version: github.com/uNetworking/uWebSockets.js/6545da07696855e77de1480d5b55bb661746ddd3
-
-
 
 devDependencies:
   '@typescript-eslint/eslint-plugin':
