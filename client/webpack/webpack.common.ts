@@ -105,7 +105,7 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/changelog.html"),
             chunks: ["changelog"],
-            filename: "changelog.html",
+            filename: "/changelog/index.html",
 
             minify: {
                 removeComments: true,
@@ -124,7 +124,7 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/leaderboard.html"),
             chunks: ["leaderboard"],
-            filename: "leaderboard.html",
+            filename: "/leaderboard/index.html",
 
             minify: {
                 removeComments: true,
