@@ -30,12 +30,14 @@ export class UpdatePacket extends ReceivingPacket {
         if (p === undefined) return;
         p.position = stream.readVector(0, 0, 1024, 1024, 16);
         p.serverData.rotation = stream.readUnitVector(8);
+
         p.scene.tweens.add({
             targets: p.container,
             x: p.position.x * 20,
             y: p.position.y * 20,
             duration: 30
         });
+
         const angleBetween: number = Phaser.Math.Angle.ShortestBetween(p.container.angle, Phaser.Math.RadToDeg(Math.atan2(p.serverData.rotation.y, p.serverData.rotation.x)));
         p.scene.tweens.add({
             targets: p.container,

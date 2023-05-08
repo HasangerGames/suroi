@@ -16,10 +16,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import Phaser from "phaser";
-import { type MenuScene } from "./menuScene";
+
+import core from "../core";
 import { type Game } from "../game";
+import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
+
 import Vector2 = Phaser.Math.Vector2;
 
 export class GameScene extends Phaser.Scene {
@@ -30,10 +33,12 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.activeGame = global.activeGame;
-        /*for (const object of Obstacles) {
-            this.load.svg(object.idString, require(`../../assets/img/map/${object.imageName}`));
-        }*/
+        if (core.game === undefined) return;
+        this.activeGame = core.game;
+
+        // for (const object of Obstacles) {
+        //     this.load.svg(object.idString, require(`../../assets/img/map/${object.imageName}`));
+        // }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
         this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
@@ -43,9 +48,10 @@ export class GameScene extends Phaser.Scene {
             if (this.player === undefined) return;
             const angle: number = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
             this.player.rotation = new Vector2(Math.cos(angle), Math.sin(angle));
-            //this.player.container.setRotation(angle);
+            // this.player.container.setRotation(angle);
             this.player.inputsDirty = true;
         });
+
         this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
             if (pointer.leftButtonDown() && !this.player.punching) {
                 this.player.punching = true;

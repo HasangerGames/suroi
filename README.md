@@ -16,7 +16,7 @@
 </div>
 
 ## About
-Suroi is a 2D top-down battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). Work in progress.
+Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). Work in progress.
 
 To learn more about the game, [join our Discord server.](https://discord.suroi.io)
 
@@ -56,3 +56,9 @@ pnpm build
 ```
 
 Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
+
+
+To start the WebSocket server, run this command in the project root:
+```sh
+pnpm start
+```

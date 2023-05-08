@@ -33,10 +33,10 @@ export class UpdatePacket extends SendingPacket {
         const p = this.player;
         stream.writeVector(Vec2(p.position.x, (720 - p.position.y)), 0, 0, 1024, 1024, 16);
         stream.writeUnitVector(p.rotation, 8);
-        /*stream.writeBoolean(p.healthDirty);
+        /* stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
 
         stream.writeBoolean(p.adrenalineDirty);
-        if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8);*/
+        if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8); */
     }
 }

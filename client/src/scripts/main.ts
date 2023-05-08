@@ -16,8 +16,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import $ from "jquery";
-import { Game } from "./game";
 import Phaser from "phaser";
+
+import core from "./core";
+import { Game } from "./game";
 
 import { MenuScene } from "./scenes/menuScene";
 import { GameScene } from "./scenes/gameScene";
@@ -27,32 +29,14 @@ import { setupDropdown } from "./ui/splash";
 declare const API_URL: string;
 
 $(() => {
-    // Enable splash dropdown.
+    // Enable splash "more" dropdown.
     setupDropdown();
 
-    // Play button logic
-    $("#btn-play-solo").on("click", () => {
-        void $.get(`${API_URL}/getGame`, data => {
-            /* eslint-disable-next-line no-new */
-            new Game(data.addr);
-        });
-    });
-
-    // Dropdown toggle logic
-    $(".btn-dropdown-more").on("click", () => {
-        $("#dropdownMore").toggleClass("dropdown-more-show");
-        $(".fa-solid.fa-caret-down").toggleClass("fa-caret-up");
-    });
-
-    // Close the dropdown menu when user clicks outside it
-    $(document.body).on("click", (event: JQuery.ClickEvent<HTMLElement>) => {
-        if (!(event.target as HTMLElement).matches(".btn-dropdown-more")) {
-            $(".dropdown-more-content").removeClass("dropdown-more-show");
-        }
-    });
+    // Initialize the game object.
+    core.game = new Game();
 
     // Create the Phaser Game
-    global.phaser = new Phaser.Game({
+    core.phaser = new Phaser.Game({
         type: Phaser.AUTO,
         width: 1600,
         height: 900,
@@ -62,5 +46,13 @@ $(() => {
             mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH
         }
+    });
+
+    // Join server when play button is clicked.
+    $("#btn-play-solo").on("click", () => {
+        void $.get(`${API_URL}/getGame`, data => {
+            /* eslint-disable-next-line no-new */
+            core.game?.connect(data.addr);
+        });
     });
 });
