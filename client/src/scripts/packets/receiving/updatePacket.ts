@@ -19,8 +19,6 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import Phaser from "phaser";
-import { type Vector } from "../../../../../common/src/utils/vector";
-import Vector2 = Phaser.Math.Vector2;
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
