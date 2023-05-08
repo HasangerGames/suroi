@@ -18,6 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
+import Phaser from "phaser";
+import { type Vector } from "../../../../../common/src/utils/vector";
+import Vector2 = Phaser.Math.Vector2;
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -37,9 +40,12 @@ export class UpdatePacket extends ReceivingPacket {
             duration: 30
         });
 
+        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(p.container.angle, Phaser.Math.RadToDeg(Math.atan2(p.serverData.rotation.y, p.serverData.rotation.x)));
+        console.log(p.container.angle + angleBetween);
+
         p.scene.tweens.add({
             targets: p.container,
-            rotation: Math.atan2(p.serverData.rotation.y, p.serverData.rotation.x),
+            angle: p.container.angle + angleBetween,
             duration: 30
         });
     }
