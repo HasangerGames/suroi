@@ -1,10 +1,7 @@
-/** @type {import('postcss-load-config').Config} */
-const config = {
+export default {
     plugins: [
         "postcss-preset-env",
         require("autoprefixer"),
         require("postcss-import")
     ]
 };
-
-module.exports = config;
