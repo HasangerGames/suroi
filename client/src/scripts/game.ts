@@ -20,6 +20,7 @@ import { PacketType } from "../../../common/src/constants/packetType";
 import { type SendingPacket } from "./types/sendingPacket";
 import { type Player } from "./objects/player";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
+import core from "./core";
 
 export class Game {
     socket: WebSocket;
@@ -27,11 +28,12 @@ export class Game {
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
 
-    constructor(address: string) {
+    connect(address: string): void {
         if (address === undefined) return;
 
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
+
         this.socket.onmessage = (message: MessageEvent) => {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readUint8()) {
@@ -42,8 +44,7 @@ export class Game {
         };
 
         $("canvas").addClass("active");
-        global.activeGame = this;
-        global.phaser.scene.start("game");
+        core.phaser?.scene.start("game");
     }
 
     sendPacket(packet: SendingPacket): void {
