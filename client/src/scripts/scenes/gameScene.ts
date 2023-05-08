@@ -48,7 +48,7 @@ export class GameScene extends Phaser.Scene {
             if (this.player === undefined) return;
             const angle: number = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
             this.player.rotation = new Vector2(Math.cos(angle), Math.sin(angle));
-            //this.player.container.setRotation(angle);
+            // this.player.container.setRotation(angle);
             this.player.inputsDirty = true;
         });
 

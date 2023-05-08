@@ -74,7 +74,7 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
-        //cors(res);
+        // cors(res);
         let name: string;
         if (req.getQuery() !== undefined) {
             const split: string[] = req.getQuery().split("=");
