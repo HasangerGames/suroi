@@ -82,7 +82,7 @@ export class Game {
             this.tickTimes.push(tickTime + delay);
 
             if (this.tickTimes.length >= 200) {
-                log(`Average ms/tick: ${30 - (this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length)}`);
+                log(`Average ms/tick: ${this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length}`);
                 this.tickTimes = [];
             }
 

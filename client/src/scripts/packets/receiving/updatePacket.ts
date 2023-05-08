@@ -29,12 +29,14 @@ export class UpdatePacket extends ReceivingPacket {
         if (p === undefined) return;
         p.position = stream.readVector(0, 0, 1024, 1024, 16);
         p.serverData.rotation = stream.readUnitVector(8);
+
         p.scene.tweens.add({
             targets: p.container,
             x: p.position.x * 20,
             y: p.position.y * 20,
             duration: 30
         });
+
         p.scene.tweens.add({
             targets: p.container,
             rotation: Math.atan2(p.serverData.rotation.y, p.serverData.rotation.x),
