@@ -56,3 +56,9 @@ pnpm build
 ```
 
 Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
+
+
+To start the WebSocket server, run this command in the project root:
+```sh
+pnpm start
+```
