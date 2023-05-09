@@ -46,8 +46,8 @@ export class GameScene extends Phaser.Scene {
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;
-            const angle: number = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
-            this.player.rotation = new Vector2(Math.cos(angle), Math.sin(angle));
+            this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
+            console.log(this.player.rotation);
             // this.player.container.setRotation(angle);
             this.player.inputsDirty = true;
         });

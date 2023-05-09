@@ -32,7 +32,7 @@ export class UpdatePacket extends SendingPacket {
         super.serialize(stream);
         const p = this.player;
         stream.writeVector(Vec2(p.position.x, (720 - p.position.y)), 0, 0, 1024, 1024, 16);
-        stream.writeUnitVector(p.rotation, 8);
+        stream.writeRotation(p.rotation, 8);
         /* stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
 

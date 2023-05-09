@@ -45,6 +45,14 @@ export class SuroiBitStream extends BitStream {
         return min + (max - min) * this.readBits(bitCount) / range;
     }
 
+    writeRotation(value: number, bitCount: number): void {
+        this.writeFloat(value, -3.2, 3.2, bitCount);
+    }
+
+    readRotation(bitCount: number): number {
+        return this.readFloat(-3.2, 3.2, bitCount);
+    }
+
     writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
         this.writeFloat(vector.x, minX, maxX, bitCount);
         this.writeFloat(vector.y, minY, maxY, bitCount);

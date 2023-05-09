@@ -18,17 +18,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
 import Phaser from "phaser";
-import Vector2 = Phaser.Math.Vector2;
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../../common/src/utils/objectCategory";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GameScene } from "../scenes/gameScene";
-import { type Vector } from "../../../../common/src/utils/vector";
+import Vector2 = Phaser.Math.Vector2;
 
 export class Player extends GameObject {
     name: string;
 
-    serverData: { rotation: Vector };
+    serverData: { rotation: number };
 
     private _health = 100;
     healthDirty = true;
@@ -54,7 +53,7 @@ export class Player extends GameObject {
     constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
         this.scene = scene;
-        this.serverData = { rotation: new Vector2(0, -1) };
+        this.serverData = { rotation: 0 };
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
         this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);

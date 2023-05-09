@@ -27,7 +27,7 @@ export abstract class GameObject {
     game: Game;
 
     _position: Vector;
-    _rotation: Vector;
+    _rotation: number;
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectId;
@@ -44,11 +44,11 @@ export abstract class GameObject {
         this._position = position;
     }
 
-    get rotation(): Vector {
+    get rotation(): number {
         return this._rotation;
     }
 
-    set rotation(rotation: Vector) {
+    set rotation(rotation: number) {
         this._rotation = rotation;
     }
 

@@ -35,6 +35,6 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(p.movingLeft);
         stream.writeBoolean(p.movingRight);
         stream.writeBoolean(p.punching);
-        stream.writeUnitVector(p.rotation, 8);
+        stream.writeRotation(p.rotation, 8);
     }
 }

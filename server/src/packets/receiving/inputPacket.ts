@@ -24,13 +24,13 @@ export class InputPacket extends ReceivingPacket {
         super(player);
     }
 
-    deserialize(stream: SuroiBitStream): void {
+    deserialize(stream: SuroiBitStream): void {sdf
         const p: Player = this.player;
         p.movingUp = stream.readBoolean();
         p.movingDown = stream.readBoolean();
         p.movingLeft = stream.readBoolean();
         p.movingRight = stream.readBoolean();
         stream.readBoolean(); // Punching
-        p.rotation = stream.readUnitVector(8);
+        p.rotation = stream.readRotation(8);
     }
 }

@@ -28,7 +28,7 @@ export abstract class GameObject {
     game: Game;
 
     position: Vector;
-    rotation: Vector;
+    rotation: number;
 
     protected constructor(game: Game, type: ObjectType, position: Vector2) {
         this.game = game;

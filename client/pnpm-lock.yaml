@@ -2522,7 +2522,7 @@ packages:
     dev: true
 
   /batch@0.6.1:
-    resolution: {integrity: sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY=}
+    resolution: {integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw==}
     dev: true
 
   /binary-extensions@2.2.0:
@@ -4133,7 +4133,7 @@ packages:
       he: 1.2.0
       param-case: 3.0.4
       relateurl: 0.2.7
-      terser: 5.17.1
+      terser: 5.17.2
     dev: true
 
   /html-webpack-plugin@5.5.1(webpack@5.82.0):
@@ -6395,12 +6395,12 @@ packages:
       jest-worker: 27.5.1
       schema-utils: 3.1.2
       serialize-javascript: 6.0.1
-      terser: 5.17.1
+      terser: 5.17.2
       webpack: 5.82.0(webpack-cli@5.1.0)
     dev: true
 
-  /terser@5.17.1:
-    resolution: {integrity: sha512-hVl35zClmpisy6oaoKALOpS0rDYLxRFLHhRuDlEGTKey9qHjS1w9GMORjuwIMt70Wan4lwsLYyWDVnWgF+KUEw==}
+  /terser@5.17.2:
+    resolution: {integrity: sha512-1D1aGbOF1Mnayq5PvfMc0amAR1y5Z1nrZaGCvI5xsdEfZEVte8okonk02OiaK5fw5hG1GWuuVsakOnpZW8y25A==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:

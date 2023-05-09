@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
-import Phaser from "phaser";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -29,7 +28,8 @@ export class UpdatePacket extends ReceivingPacket {
         const p: Player = this.player;
         if (p === undefined) return;
         p.position = stream.readVector(0, 0, 1024, 1024, 16);
-        p.serverData.rotation = stream.readUnitVector(8);
+        p.serverData.rotation = stream.readRotation(8);
+        if (p.serverData.rotation === Math.PI) p.serverData.rotation = -Math.PI;
 
         p.scene.tweens.add({
             targets: p.container,
@@ -38,7 +38,7 @@ export class UpdatePacket extends ReceivingPacket {
             duration: 30
         });
 
-        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(p.container.angle, Phaser.Math.RadToDeg(Math.atan2(p.serverData.rotation.y, p.serverData.rotation.x)));
+        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(p.container.angle, Phaser.Math.RadToDeg(p.serverData.rotation));
         p.scene.tweens.add({
             targets: p.container,
             angle: p.container.angle + angleBetween,
