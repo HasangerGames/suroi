@@ -5,7 +5,7 @@
   "scripts": {
     "full-install": "pnpm install && cd common && pnpm install && cd ../server && pnpm install && cd ../client && pnpm install",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml && cd common && rm -r node_modules pnpm-lock.yaml && cd ../server && rm -r node_modules pnpm-lock.yaml && cd ../client && rm -r node_modules pnpm-lock.yaml && cd .. && pnpm full-install",
-    "full-upgrade": "cd common && pnpm up * && cd ../server && pnpm up * && cd ../client && pnpm up *",
+    "full-upgrade": "pnpm up * && cd common && pnpm up * && cd ../server && pnpm up * && cd ../client && pnpm up *",
     "build": "cd server && pnpm build && cd ../client && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
     "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
