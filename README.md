@@ -28,7 +28,7 @@ Next, [click here to download the repo](https://github.com/HasangerGames/suroi/a
 git clone https://github.com/HasangerGames/suroi.git
 ```
 
-To install dependencies, open a command line interface in the repo folder, and run this command:
+To install dependencies, open a terminal in the repo folder, and run this command:
 ```sh
 pnpm full-install
 ```
@@ -55,10 +55,9 @@ To build for production, in the root of the project, execute
 pnpm build
 ```
 
-Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
-
-
-To start the WebSocket server, run this command in the project root:
+To start the WebSocket server, execute
 ```sh
 pnpm start
 ```
+
+Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
