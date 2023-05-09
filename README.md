@@ -47,7 +47,7 @@ In the other, run the following:
 ```sh
 cd server && pnpm dev
 ```
-
+To open the game, go to http://127.0.0.1:3000 in your browser.
 
 ## Production
 To build for production, in the root of the project, execute
