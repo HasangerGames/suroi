@@ -36,7 +36,7 @@ pnpm full-install
 This will create a `node_modules` directory in all three folders and link the packages there.
 
 ## Development
-To run the app locally, in the root of the project, open two terminals.
+To run the app locally, open two terminals in the project root.
 
 In one terminal, run the following:
 ```sh
@@ -50,12 +50,12 @@ cd server && pnpm dev
 To open the game, go to http://127.0.0.1:3000 in your browser.
 
 ## Production
-To build for production, in the root of the project, execute
+To build for production, run this command in the project root:
 ```sh
 pnpm build
 ```
 
-To start the WebSocket server, execute
+To start the WebSocket server, run this command:
 ```sh
 pnpm start
 ```
