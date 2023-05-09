@@ -33,7 +33,7 @@ To install dependencies, open a terminal in the repo folder, and run this comman
 pnpm full-install
 ```
 
-This will create a `node_modules` directory in all three folders and link the packages there.
+This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
 
 ## Development
 To run the app locally, open two terminals in the project root.
