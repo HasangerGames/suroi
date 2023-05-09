@@ -36,7 +36,7 @@ pnpm full-install
 This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
 
 ## Development
-To run the app locally, open two terminals in the project root.
+To run the game locally, open two terminals in the project root.
 
 In one terminal, run the following:
 ```sh
