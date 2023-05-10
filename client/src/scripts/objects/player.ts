@@ -21,7 +21,7 @@ import Phaser from "phaser";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GameScene } from "../scenes/gameScene";
 import Vector2 = Phaser.Math.Vector2;
-import { ObjectCategory } from "../../../../common/src/utils/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class Player extends GameObject {

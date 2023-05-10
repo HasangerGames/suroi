@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { SendingPacket } from "../../types/sendingPacket";
 import { type Player } from "../../objects/player";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../../../common/src/constants/packetType";
+import { PacketType } from "../../../../../common/src/constants";
 
 export class InputPacket extends SendingPacket {
     constructor(player: Player) {

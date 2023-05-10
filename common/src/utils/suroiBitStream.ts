@@ -17,10 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { BitStream } from "bit-buffer";
 import { type Vector } from "./vector";
-import { type ObjectDefinitions, ObjectType } from "./objectType";
+import { ObjectType } from "./objectType";
 import {
-    MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, type ObjectCategory, ObjectDefinitionsList
-} from "./constants";
+    MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, type ObjectCategory
+} from "../constants";
+import { type ObjectDefinitions } from "./objectDefinitions";
+import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {

@@ -26,7 +26,7 @@ import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../common/src/utils/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 
 export class Player extends GameObject {
     name: string;

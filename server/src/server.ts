@@ -26,8 +26,8 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import type { Player } from "./objects/player";
 import { Game } from "./game";
 import sanitizeHtml from "sanitize-html";
-import { PacketType } from "../../common/src/constants/packetType";
 import { InputPacket } from "./packets/receiving/inputPacket";
+import { PacketType } from "../../common/src/constants";
 
 /**
  * Apply CORS headers to a response.
