@@ -31,6 +31,6 @@ export class InputPacket extends ReceivingPacket {
         p.movingLeft = stream.readBoolean();
         p.movingRight = stream.readBoolean();
         stream.readBoolean(); // Punching
-        p.rotation = stream.readRotation(8);
+        p.rotation = stream.readRotation();
     }
 }

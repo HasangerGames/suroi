@@ -19,7 +19,9 @@ import type { WebSocket } from "uWebSockets.js";
 
 import { GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type Body, Circle, Vec2 } from "planck";
+import {
+    type Body, Circle, Vec2
+} from "planck";
 import { type Game } from "../game";
 import { ObjectCategory } from "../../../common/src/utils/objectCategory";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -50,7 +52,7 @@ export class Player extends GameObject {
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
         this.socket = socket;
-        this.rotation = Vec2(0, -1);
+        this.rotation = 0;
 
         // Init body
         this.body = game.world.createBody({

@@ -19,7 +19,6 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { PacketType } from "../../../../common/src/constants/packetType";
-import { Vec2 } from "planck";
 
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {
@@ -31,8 +30,8 @@ export class UpdatePacket extends SendingPacket {
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         const p = this.player;
-        stream.writePositionVector2(p.position.x, 720 - p.position.y);
-        stream.writeRotation(p.rotation, 8);
+        stream.writePositionVector(p.position);
+        stream.writeRotation(p.rotation);
         /* stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
 

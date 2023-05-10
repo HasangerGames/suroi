@@ -102,10 +102,10 @@ export class GameScene extends Phaser.Scene {
         const GRID_HEIGHT = 7200;
         const CELL_SIZE = 160;
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
-            this.add.line(x, 0, x, 0, x, GRID_HEIGHT * 2).setOrigin(0, 0).setStrokeStyle(25, 0x000000, 0.25);
+            this.add.line(x, 0, x, 0, x, GRID_HEIGHT * 2, 0x000000, 0.25).setOrigin(0, 0);
         }
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
-            this.add.line(0, y, 0, y, GRID_WIDTH * 2, y).setOrigin(0, 0).setStrokeStyle(25, 0x000000, 0.25);
+            this.add.line(0, y, 0, y, GRID_WIDTH * 2, y, 0x000000, 0.25).setOrigin(0, 0);
         }
 
         // Create the player
