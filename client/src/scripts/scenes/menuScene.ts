@@ -18,6 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import Phaser from "phaser";
 
 export class MenuScene extends Phaser.Scene {
+    menuMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+
     constructor() {
         super("menu");
     }
@@ -31,8 +33,6 @@ export class MenuScene extends Phaser.Scene {
     create(): void {
         this.startMusic();
     }
-
-    menuMusic: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
     startMusic(): void {
         if (this.menuMusic === undefined) {

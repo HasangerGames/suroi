@@ -52,6 +52,7 @@ export class Player extends GameObject {
 
     constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+
         this.scene = scene;
         this.serverData = { rotation: 0 };
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
@@ -68,6 +69,7 @@ export class Player extends GameObject {
             const y = radius * Math.sin(angle);
             points.push([x, y]);
         }
+
         return points;
     }
 
