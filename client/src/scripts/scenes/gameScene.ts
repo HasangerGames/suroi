@@ -100,7 +100,7 @@ export class GameScene extends Phaser.Scene {
         // Draw grid
         const GRID_WIDTH = 7200;
         const GRID_HEIGHT = 7200;
-        const CELL_SIZE = 240;
+        const CELL_SIZE = 160;
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
             this.add.line(x, 0, x, 0, x, GRID_HEIGHT * 2).setOrigin(0, 0).setStrokeStyle(25, 0x000000, 0.25);
         }

@@ -52,10 +52,27 @@ export class SuroiBitStream extends BitStream {
         this.writeFloat(vector.y, minY, maxY, bitCount);
     }
 
+    writeVector2(x: number, y: number, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
+        this.writeFloat(x, minX, maxX, bitCount);
+        this.writeFloat(y, minY, maxY, bitCount);
+    }
+
     readVector(minX: number, minY: number, maxX: number, maxY: number, bitCount: number): Vector {
         return {
             x: this.readFloat(minX, maxX, bitCount),
             y: this.readFloat(minY, maxY, bitCount)
         };
+    }
+
+    writePositionVector(vector: Vector): void {
+        this.writeVector(vector, 0, 0, 1024, 1024, 16);
+    }
+
+    writePositionVector2(x: number, y: number): void {
+        this.writeVector2(x, y, 0, 0, 1024, 1024, 16);
+    }
+
+    readPositionVector(): Vector {
+        return this.readVector(0, 0, 1024, 1024, 16);
     }
 }

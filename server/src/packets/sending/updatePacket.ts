@@ -31,7 +31,7 @@ export class UpdatePacket extends SendingPacket {
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         const p = this.player;
-        stream.writeVector(Vec2(p.position.x, (720 - p.position.y)), 0, 0, 1024, 1024, 16);
+        stream.writePositionVector2(p.position.x, 720 - p.position.y);
         stream.writeRotation(p.rotation, 8);
         /* stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
