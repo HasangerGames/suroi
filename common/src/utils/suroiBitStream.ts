@@ -19,7 +19,10 @@ import { BitStream } from "bit-buffer";
 import { type Vector } from "./vector";
 import { ObjectType } from "./objectType";
 import {
-    MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, type ObjectCategory
+    MAX_OBJECT_SCALE,
+    MIN_OBJECT_SCALE,
+    OBJECT_CATEGORY_BITS,
+    type ObjectCategory
 } from "../constants";
 import { type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
@@ -37,6 +40,7 @@ export class SuroiBitStream extends BitStream {
         const range = (1 << bitCount) - 1;
         const x = value < max ? (value > min ? value : min) : max;
         const t = (x - min) / (max - min);
+
         this.writeBits(t * range + 0.5, bitCount);
     }
 
@@ -75,6 +79,7 @@ export class SuroiBitStream extends BitStream {
 
     writeObjectType(type: ObjectType): void {
         this.writeBits(type.category, OBJECT_CATEGORY_BITS);
+
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
         if (definitions !== undefined) {
             this.writeBits(type.idNumber, definitions.bitCount);

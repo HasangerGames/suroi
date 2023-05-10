@@ -32,6 +32,7 @@ export class ObjectType {
         type.category = category;
         type.idNumber = -1;
         type.idString = "";
+
         return type;
     }
 
@@ -39,10 +40,12 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idNumber = idNumber;
+
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
             throw new Error(`No definitions found for object category: ${category} (object ID = ${idNumber})`);
         }
+
         type.idString = definitions.definitions[type.idNumber].idString;
         return type;
     }
@@ -51,14 +54,17 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idString = idString;
+
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
             throw new Error(`No definitions found for object category: ${category} (object ID = ${idString})`);
         }
-        // TODO Make this more efficient
+
+        // TODO: Make this more efficient.
         for (let i = 0; i < definitions.definitions.length; i++) {
             if (definitions[i].idString === idString) type.idNumber = i;
         }
+
         return type;
     }
 }
