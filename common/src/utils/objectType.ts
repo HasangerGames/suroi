@@ -15,11 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-    getDefinitionsForCategory,
-    type ObjectCategory,
-    type ObjectDefinition
-} from "./objectCategory";
+import { getDefinitionsForCategory, type ObjectCategory, type ObjectDefinition } from "./objectCategory";
 
 export class ObjectType {
     category: ObjectCategory;

@@ -17,13 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import Config from "../../config.json";
 
-import {
-    App,
-    DEDICATED_COMPRESSOR_256KB,
-    type HttpResponse,
-    SSLApp,
-    type WebSocket
-} from "uWebSockets.js";
+import { App, DEDICATED_COMPRESSOR_256KB, type HttpResponse, SSLApp, type WebSocket } from "uWebSockets.js";
 
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";

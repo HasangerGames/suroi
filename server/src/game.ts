@@ -18,9 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
-import {
-    Box, Settings, Vec2, World
-} from "planck";
+import { Box, Settings, Vec2, World } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
 import { type PlayerContainer } from "./server";

@@ -19,9 +19,7 @@ import type { WebSocket } from "uWebSockets.js";
 
 import { GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 import { type Game } from "../game";
 import { ObjectCategory } from "../../../common/src/utils/objectCategory";
 import { ObjectType } from "../../../common/src/utils/objectType";

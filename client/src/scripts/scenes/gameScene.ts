@@ -23,7 +23,6 @@ import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
 import gsap from "gsap";
-
 import Vector2 = Phaser.Math.Vector2;
 
 export class GameScene extends Phaser.Scene {

@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import Vector2 = Phaser.Math.Vector2;
 import { type Vector } from "../../../../common/src/utils/vector";
+import Vector2 = Phaser.Math.Vector2;
 
 export abstract class GameObject {
     id: number;
