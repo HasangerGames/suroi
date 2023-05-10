@@ -26,11 +26,16 @@ import { type WebSocket } from "uWebSockets.js";
 import { type PlayerContainer } from "./server";
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
+import { type Map } from "./map";
 
 export class Game {
+    map: Map;
+
     world: World;
 
-    objects: Set<GameObject> = new Set<GameObject>();
+    staticObjects = new Set<GameObject>(); // A Set of all the static objects in the world
+    dynamicObjects = new Set<GameObject>(); // A Set of all the dynamic (moving) objects in the world
+    visibleObjects = {};
 
     players: Set<Player> = new Set<Player>();
     tickTimes: number[] = [];

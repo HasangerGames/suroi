@@ -15,10 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
-interface ObstacleDefinition {
-    idString: string
+interface ObstacleDefinition extends ObjectDefinition {
     imageName?: string
     variations?: string[]
 }
