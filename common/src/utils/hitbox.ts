@@ -24,6 +24,7 @@ export class CircleHitbox extends Hitbox {
         } else if (that instanceof RectangleHitbox) {
             return rectangleCollision(that.min, that.max, this.position, this.radius);
         }
+
         throw new Error("Invalid hitbox object");
     }
 
@@ -33,6 +34,7 @@ export class CircleHitbox extends Hitbox {
         } else if (that instanceof RectangleHitbox) {
             return distanceToRectangle(that.min, that.max, this.position, this.radius);
         }
+
         throw new Error("Invalid hitbox object");
     }
 
@@ -47,6 +49,7 @@ export class RectangleHitbox extends Hitbox {
 
     constructor(min: Vector, max: Vector) {
         super();
+
         this.min = min;
         this.max = max;
     }
@@ -57,6 +60,7 @@ export class RectangleHitbox extends Hitbox {
         } else if (that instanceof RectangleHitbox) {
             return rectRectCollision(that.min, that.max, this.min, this.max);
         }
+
         return false;
     }
 
@@ -66,6 +70,7 @@ export class RectangleHitbox extends Hitbox {
         } else if (that instanceof RectangleHitbox) {
             throw new Error("Not supported yet"); // TODO Write a rectangleDistanceToRectangle function
         }
+
         throw new Error("Invalid hitbox object");
     }
 
@@ -85,6 +90,7 @@ function circleCollision(pos1: Vector, r1: number, pos2: Vector, r2: number): bo
     const a = r1 + r2;
     const x = pos1.x - pos2.x;
     const y = pos1.y - pos2.y;
+
     return a * a > x * x + y * y;
 }
 
@@ -93,8 +99,10 @@ function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: number):
         x: clamp(pos.x, min.x, max.x),
         y: clamp(pos.y, min.y, max.y)
     };
+
     const distX = pos.x - cpt.x, distY = pos.y - cpt.y;
     const distSquared = distX * distX + distY * distY;
+
     return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);
 }
 

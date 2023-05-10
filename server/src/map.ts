@@ -34,9 +34,11 @@ export class Map {
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();
         const supportedZoomLevels: number[] = [28];
+
         for (const zoomLevel of supportedZoomLevels) {
             this.game.visibleObjects[zoomLevel] = {};
             const xCullDist = zoomLevel * 1.55; const yCullDist = zoomLevel * 1.25;
+
             for (let x = 0; x <= this.width / 10; x++) {
                 this.game.visibleObjects[zoomLevel][x * 10] = {};
                 for (let y = 0; y <= this.height / 10; y++) {
@@ -45,6 +47,7 @@ export class Map {
                     const minY = (y * 10) - yCullDist;
                     const maxX = (x * 10) + xCullDist;
                     const maxY = (y * 10) + yCullDist;
+
                     for (const object of this.game.staticObjects) {
                         if (object.position.x > minX &&
                             object.position.x < maxX &&
@@ -53,10 +56,12 @@ export class Map {
                             visibleObjects.add(object);
                         }
                     }
+
                     this.game.visibleObjects[zoomLevel][x * 10][y * 10] = visibleObjects;
                 }
             }
         }
+
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 

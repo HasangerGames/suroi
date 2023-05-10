@@ -23,12 +23,14 @@ import { PacketType } from "../../../../../common/src/constants";
 export class InputPacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
+
         this.type = PacketType.Input;
         this.allocBytes = 32;
     }
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
         const p: Player = this.player;
         stream.writeBoolean(p.movingUp);
         stream.writeBoolean(p.movingDown);

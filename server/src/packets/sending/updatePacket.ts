@@ -30,6 +30,7 @@ export class UpdatePacket extends SendingPacket {
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
         const p = this.player;
         stream.writePosition(p.position);
         stream.writeRotation(p.rotation);

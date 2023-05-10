@@ -12,6 +12,7 @@ export class Obstacle extends GameObject {
 
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number) {
         super(game, type, position);
+
         this.rotation = rotation;
         this.scale = scale;
         this.hitbox = (type.definition as ObstacleDefinition).hitbox.clone();
