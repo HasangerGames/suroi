@@ -47,7 +47,6 @@ export class GameScene extends Phaser.Scene {
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;
             this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
-            console.log(this.player.rotation);
             // this.player.container.setRotation(angle);
             this.player.inputsDirty = true;
         });
@@ -116,17 +115,6 @@ export class GameScene extends Phaser.Scene {
 
         // Start the tick loop
         this.tick();
-    }
-
-    createPolygon(radius: number, sides: number): number[][] {
-        const points: number[][] = [];
-        for (let i = 0; i < sides; i++) {
-            const angle = (2 * Math.PI * i) / sides;
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-            points.push([x, y]);
-        }
-        return points;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
+import gsap from "gsap";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -29,20 +30,20 @@ export class UpdatePacket extends ReceivingPacket {
         if (p === undefined) return;
         p.position = stream.readVector(0, 0, 1024, 1024, 16);
         p.serverData.rotation = stream.readRotation(8);
-        if (p.serverData.rotation === Math.PI) p.serverData.rotation = -Math.PI;
-
-        p.scene.tweens.add({
+        const oldAngle: number = p.container.angle;
+        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, Phaser.Math.RadToDeg(p.serverData.rotation));
+        gsap.to(p.container, {
+            x: p.position.x * 20,
+            y: p.position.y * 20,
+            angle: oldAngle + angleBetween,
+            duration: 0.03
+        });
+        /*p.scene.tweens.add({
             targets: p.container,
             x: p.position.x * 20,
             y: p.position.y * 20,
+            angle: oldAngle + angleBetween,
             duration: 30
-        });
-
-        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(p.container.angle, Phaser.Math.RadToDeg(p.serverData.rotation));
-        p.scene.tweens.add({
-            targets: p.container,
-            angle: p.container.angle + angleBetween,
-            duration: 30
-        });
+        });*/
     }
 }

@@ -60,6 +60,17 @@ export class Player extends GameObject {
         this.container = scene.add.container(position.x, position.y, [this.body, this.leftFist, this.rightFist]);
     }
 
+    createPolygon(radius: number, sides: number): number[][] {
+        const points: number[][] = [];
+        for (let i = 0; i < sides; i++) {
+            const angle = (2 * Math.PI * i) / sides;
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+            points.push([x, y]);
+        }
+        return points;
+    }
+
     get health(): number {
         return this._health;
     }

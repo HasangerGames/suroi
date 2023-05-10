@@ -24,7 +24,7 @@ export class InputPacket extends ReceivingPacket {
         super(player);
     }
 
-    deserialize(stream: SuroiBitStream): void {sdf
+    deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         p.movingUp = stream.readBoolean();
         p.movingDown = stream.readBoolean();
