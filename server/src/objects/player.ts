@@ -23,7 +23,7 @@ import {
     type Body, Circle, Vec2
 } from "planck";
 import { type Game } from "../game";
-import { ObjectCategory } from "../../../common/src/utils/objectCategory";
+import { ObjectCategory } from "../../../common/src/utils/objectManager";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";

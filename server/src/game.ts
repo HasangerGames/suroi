@@ -18,14 +18,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
-import { Box, Settings, Vec2, World } from "planck";
+import {
+    Box, Settings, Vec2, World
+} from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
 import { type PlayerContainer } from "./server";
 import { UpdatePacket } from "./packets/sending/updatePacket";
+import { type GameObject } from "./types/gameObject";
 
 export class Game {
     world: World;
+
+    objects: Set<GameObject> = new Set<GameObject>();
 
     players: Set<Player> = new Set<Player>();
     tickTimes: number[] = [];

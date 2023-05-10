@@ -15,9 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-    getDefinitionsForCategory, type ObjectCategory, type ObjectDefinition
-} from "./objectCategory";
+import { Obstacles } from "../objectCategories/obstacles";
+
+export enum ObjectCategory {
+    Player, Obstacle
+}
+
+export const ObjectDefinitionsList: Array<ObjectDefinitions | undefined> = [undefined, Obstacles];
+
+export abstract class ObjectDefinitions {
+    readonly bitCount: number;
+    readonly definitions: ObjectDefinition[];
+}
+
+export interface ObjectDefinition { idString: string }
 
 export class ObjectType {
     category: ObjectCategory;
@@ -39,12 +50,11 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idNumber = idNumber;
-        const definitions: ObjectDefinition[] | undefined = getDefinitionsForCategory(category);
+        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
-            throw new Error(`Could not find definitions for object: category = ${category}, idNumber = ${idNumber}`);
-        } else {
-            type.idString = definitions[type.idNumber].idString;
+            throw new Error(`No definitions found for object category: ${category} (object ID = ${idNumber})`);
         }
+        type.idString = definitions.definitions[type.idNumber].idString;
         return type;
     }
 
@@ -52,13 +62,13 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idString = idString;
-        const definitions: ObjectDefinition[] | undefined = getDefinitionsForCategory(category);
+        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
-            throw new Error(`Could not find definitions for object: category = ${category}, idString = ${idString}`);
-        } else {
-            for (let i = 0; i < definitions.length; i++) {
-                if (definitions[i].idString === idString) type.idNumber = i;
-            }
+            throw new Error(`No definitions found for object category: ${category} (object ID = ${idString})`);
+        }
+        // TODO Make this more efficient
+        for (let i = 0; i < definitions.definitions.length; i++) {
+            if (definitions[i].idString === idString) type.idNumber = i;
         }
         return type;
     }

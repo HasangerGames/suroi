@@ -17,6 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { BitStream } from "bit-buffer";
 import { type Vector } from "./vector";
+import {
+    type ObjectCategory, type ObjectDefinitions, ObjectDefinitionsList, ObjectType
+} from "./objectType";
+import {
+    MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS
+} from "./constants";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -56,15 +62,34 @@ export class SuroiBitStream extends BitStream {
         };
     }
 
-    writePositionVector(vector: Vector): void {
+    readObjectType(): ObjectType {
+        const category: ObjectCategory = this.readBits(OBJECT_CATEGORY_BITS);
+        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
+        if (definitions !== undefined) {
+            const idNumber: number = this.readBits(definitions.bitCount);
+            return ObjectType.fromNumber(category, idNumber);
+        } else {
+            return ObjectType.categoryOnly(category);
+        }
+    }
+
+    writeObjectType(type: ObjectType): void {
+        this.writeBits(type.category, OBJECT_CATEGORY_BITS);
+        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
+        if (definitions !== undefined) {
+            this.writeBits(type.idNumber, definitions.bitCount);
+        }
+    }
+
+    writePosition(vector: Vector): void {
         this.writeVector2(vector.x, 720 - vector.y, 0, 0, 1024, 1024, 16);
     }
 
-    writePositionVector2(x: number, y: number): void {
+    writePosition2(x: number, y: number): void {
         this.writeVector2(x, 720 - y, 0, 0, 1024, 1024, 16);
     }
 
-    readPositionVector(): Vector {
+    readPosition(): Vector {
         return this.readVector(0, 0, 1024, 1024, 16);
     }
 
@@ -74,5 +99,13 @@ export class SuroiBitStream extends BitStream {
 
     readRotation(): number {
         return this.readFloat(-3.2, 3.2, 8);
+    }
+
+    writeScale(value: number): void {
+        this.writeFloat(value, MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 8);
+    }
+
+    readScale(): number {
+        return this.readFloat(MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 8);
     }
 }

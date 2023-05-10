@@ -1,0 +1,2 @@
+export const OBJECT_CATEGORY_BITS = 1;
+export const MIN_OBJECT_SCALE = 0.25, MAX_OBJECT_SCALE = 2;

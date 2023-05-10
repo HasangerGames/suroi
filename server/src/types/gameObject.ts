@@ -28,6 +28,7 @@ export abstract class GameObject {
 
     _position: Vector;
     _rotation: number;
+    scale = 1;
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectId;

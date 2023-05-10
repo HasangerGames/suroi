@@ -28,7 +28,7 @@ export class UpdatePacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         if (p === undefined) return;
-        p.position = stream.readPositionVector();
+        p.position = stream.readPosition();
         p.serverData.rotation = stream.readRotation();
         const oldAngle: number = p.container.angle;
         const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, Phaser.Math.RadToDeg(p.serverData.rotation));
