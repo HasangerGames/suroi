@@ -28,7 +28,7 @@ Next, [click here to download the repo](https://github.com/HasangerGames/suroi/a
 git clone https://github.com/HasangerGames/suroi.git
 ```
 
-To install dependencies, open a terminal in the repo folder, and run this command:
+To install dependencies, open a terminal in the project root, and run this command:
 ```sh
 pnpm full-install
 ```
