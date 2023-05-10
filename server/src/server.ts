@@ -135,8 +135,17 @@ app.ws("/play", {
 });
 
 // Start the server
-log("Suroi v0.1.0");
 app.listen(Config.host, Config.port, () => {
+    log(`
+ _____ _   _______ _____ _____ 
+/  ___| | | | ___ \\  _  |_   _|
+\\ \`--.| | | | |_/ / | | | | |  
+ \`--. \\ | | |    /| | | | | |  
+/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_ 
+\\____/ \\___/\\_| \\_|\\___/ \\___/ 
+        `);
+    log("Suroi Server v0.1.0");
     log(`Listening on ${Config.host}:${Config.port}`);
     log("Press Ctrl+C to exit.");
+    log("===========================");
 });

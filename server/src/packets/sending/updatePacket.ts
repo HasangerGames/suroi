@@ -19,6 +19,7 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { PacketType } from "../../../../common/src/constants";
+import { type GameObject } from "../../types/gameObject";
 
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {
@@ -32,6 +33,35 @@ export class UpdatePacket extends SendingPacket {
         const p = this.player;
         stream.writePosition(p.position);
         stream.writeRotation(p.rotation);
+
+        // Deleted objects
+        /*if (p.deletedObjects.size !== 0) {
+            stream.writeUint16(p.deletedObjects.size);
+            for (const deletedObject of p.deletedObjects) {
+                stream.writeUint16(deletedObject.id);
+            }
+            p.deletedObjects = new Set<GameObject>();
+        }*/
+
+        // Full objects
+        const fullObjectsDirty: boolean = (p.fullDirtyObjects.size !== 0);
+        stream.writeBoolean(fullObjectsDirty);
+        if (fullObjectsDirty) {
+            stream.writeUint16(p.fullDirtyObjects.size);
+            for (const fullObject of p.fullDirtyObjects) {
+                fullObject.serializePartial(stream);
+                fullObject.serializeFull(stream);
+            }
+            p.fullDirtyObjects = new Set<GameObject>();
+        }
+
+        // Partial objects
+        /*stream.writeUint16(p.partialDirtyObjects.size);
+        for (const partialObject of p.partialDirtyObjects) {
+            partialObject.serializePartial(stream);
+        }
+        p.partialDirtyObjects = new Set<GameObject>();*/
+
         /* stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
 

@@ -24,6 +24,7 @@ import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
 import gsap from "gsap";
 import Vector2 = Phaser.Math.Vector2;
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
@@ -36,9 +37,9 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
 
-        // for (const object of Obstacles) {
-        //     this.load.svg(object.idString, require(`../../assets/img/map/${object.imageName}`));
-        // }
+        for (const object of Obstacles.definitions) {
+            this.load.svg(object.idString, require(`../../assets/img/game/${object.images[0]}`));
+        }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
         this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
@@ -47,7 +48,6 @@ export class GameScene extends Phaser.Scene {
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;
             this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
-            // this.player.container.setRotation(angle);
             this.player.inputsDirty = true;
         });
 

@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { type ObjectCategory } from "../constants";
-import { type ObjectDefinitions } from "./objectDefinitions";
+import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
 export class ObjectType {
@@ -26,6 +26,15 @@ export class ObjectType {
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     private constructor() {}
+
+    get definition(): ObjectDefinition {
+        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[this.category];
+        if (definitions !== undefined) {
+            return definitions.definitions[this.idNumber];
+        } else {
+            throw new Error(`No definitions found for object category: ${this.category} (object ID = ${this.idString})`);
+        }
+    }
 
     static categoryOnly(category: ObjectCategory): ObjectType {
         const type = new ObjectType();
@@ -57,7 +66,7 @@ export class ObjectType {
         }
         // TODO Make this more efficient
         for (let i = 0; i < definitions.definitions.length; i++) {
-            if (definitions[i].idString === idString) type.idNumber = i;
+            if (definitions.definitions[i].idString === idString) type.idNumber = i;
         }
         return type;
     }

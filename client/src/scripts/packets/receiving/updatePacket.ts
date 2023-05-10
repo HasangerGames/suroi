@@ -19,6 +19,10 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import gsap from "gsap";
+import { Obstacle } from "../../objects/obstacle";
+import { v2v } from "../../utils";
+import Vector2 = Phaser.Math.Vector2;
+import { type ObjectType } from "../../../../../common/src/utils/objectType";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -28,10 +32,12 @@ export class UpdatePacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         if (p === undefined) return;
+
+        // Update position and rotation
         p.position = stream.readPosition();
-        p.serverData.rotation = stream.readRotation();
         const oldAngle: number = p.container.angle;
-        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, Phaser.Math.RadToDeg(p.serverData.rotation));
+        const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
+        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         gsap.to(p.container, {
             x: p.position.x * 20,
             y: p.position.y * 20,
@@ -39,5 +45,19 @@ export class UpdatePacket extends ReceivingPacket {
             ease: "none",
             duration: 0.03
         });
+
+        // Full objects
+        if (stream.readBoolean()) {
+            const fullObjectCount: number = stream.readUint16();
+            for (let i = 0; i < fullObjectCount; i++) {
+                const type: ObjectType = stream.readObjectType();
+                const id: number = stream.readUint16();
+                const scale: number = stream.readScale();
+                const position: Vector2 = v2v(stream.readPosition());
+                const rotation: number = stream.readRotation();
+                // eslint-disable-next-line no-new
+                new Obstacle(this.player.scene, this.player.game, type, id, position, rotation, scale);
+            }
+        }
     }
 }

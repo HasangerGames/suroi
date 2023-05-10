@@ -16,10 +16,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import {
+    CircleHitbox, type Hitbox, RectangleHitbox
+} from "../utils/hitbox";
+import { v } from "../utils/vector";
 
-interface ObstacleDefinition extends ObjectDefinition {
-    imageName?: string
-    variations?: string[]
+export interface ObstacleDefinition extends ObjectDefinition {
+    hitbox: Hitbox
+    scale: {
+        min: number
+        max: number
+    }
+    images: string[]
 }
 
 export class Obstacles extends ObjectDefinitions {
@@ -27,19 +35,27 @@ export class Obstacles extends ObjectDefinitions {
     static readonly definitions: ObstacleDefinition[] = [
         {
             idString: "tree_oak",
-            variations: ["tree_oak_1.svg", "tree_oak_2.svg", "tree_oak_3.svg"]
+            scale: { min: 0.75, max: 1.25 },
+            hitbox: new CircleHitbox(1.5),
+            images: ["tree_oak_1.svg", "tree_oak_2.svg", "tree_oak_3.svg"]
         },
         {
             idString: "rock",
-            variations: ["rock_1.svg", "rock_2.svg", "rock_3.svg", "rock_4.svg", "rock_5.svg"]
+            scale: { min: 0.75, max: 1.25 },
+            hitbox: new CircleHitbox(1.5),
+            images: ["rock_1.svg", "rock_2.svg", "rock_3.svg", "rock_4.svg", "rock_5.svg"]
         },
         {
             idString: "bush",
-            imageName: "bush.svg"
+            scale: { min: 0.75, max: 1.25 },
+            hitbox: new CircleHitbox(1.5),
+            images: ["bush.svg"]
         },
         {
             idString: "crate_regular",
-            imageName: "crate_regular.svg"
+            scale: { min: 1.0, max: 1.0 },
+            hitbox: new RectangleHitbox(v(-1.5, -1.5), v(1.5, 1.5)),
+            images: ["crate_regular.svg"]
         }
     ];
 }

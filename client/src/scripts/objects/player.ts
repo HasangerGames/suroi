@@ -27,8 +27,6 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 export class Player extends GameObject {
     name: string;
 
-    serverData: { rotation: number };
-
     private _health = 100;
     healthDirty = true;
 
@@ -53,7 +51,6 @@ export class Player extends GameObject {
     constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
         this.scene = scene;
-        this.serverData = { rotation: 0 };
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
         this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);

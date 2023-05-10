@@ -1,9 +1,17 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { type GameObject } from "./types/gameObject";
-import { type ObjectType } from "../../common/src/utils/objectType";
-import { type Vector } from "../../common/src/utils/vector";
+import { ObjectType } from "../../common/src/utils/objectType";
+import { v, type Vector } from "../../common/src/utils/vector";
 import { type Orientation } from "../../common/src/typings";
+import {
+    randomFloat, randomVector, randomRotation
+} from "../../common/src/utils/random";
+import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type Hitbox } from "../../common/src/utils/hitbox";
+import { Obstacle } from "./objects/obstacle";
+import { Config } from "./configuration";
+import { ObjectCategory } from "../../common/src/constants";
 
 export class Map {
     game: Game;
@@ -15,11 +23,12 @@ export class Map {
         const mapStartTime = Date.now();
         this.game = game;
 
-        //if (!Config.debug.disableMapGeneration) {
-
-        //} else {
-        // Obstacle debug code goes here
-        //}
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (!Config.debug.disableMapGeneration) {
+            this.generateObstacles(ObjectType.fromString(ObjectCategory.Obstacle, "tree_oak"), 500);
+        } else {
+            // Obstacle debug code goes here
+        }
         log(`Map generation took ${Date.now() - mapStartTime}ms`);
 
         // Calculate visible objects
@@ -51,49 +60,37 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    getRandomPositionFor(type: ObjectType, scale: number, orientation?: Orientation): Vector {
-        /*let foundPosition = false;
-        let thisPos: Vector;
+    private generateObstacles(type: ObjectType, count: number): void {
+        for (let i = 0; i < count; i++) {
+            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+            const scale = randomFloat(definition.scale.min, definition.scale.max);
+            const obstacle: Obstacle = new Obstacle(
+                this.game,
+                type,
+                this.getRandomPositionFor(type, scale),
+                randomRotation(),
+                scale
+            );
+            this.game.staticObjects.add(obstacle);
+        }
+    }
+
+    private getRandomPositionFor(type: ObjectType, scale: number, orientation?: Orientation): Vector {
+        let collided = true;
+        let position: Vector = v(0, 0);
         let attempts = 0;
-        while (!foundPosition && attempts <= 200) {
+        const hitbox: Hitbox = (type.definition as ObstacleDefinition).hitbox;
+        while (collided && attempts <= 200) {
+            collided = false;
             attempts++;
             if (attempts >= 200) {
-                console.warn("[WARNING] Maximum spawn attempts exceeded for: ", object);
+                console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
             }
-            thisPos = randomVector(0, this.width, 0, this.height);
-            let shouldContinue = false;
-            for (const thisBound of thisBounds) {
-                if (thisBound.type === CollisionType.Rectangle) {
-                    const newBound = rotateRect(thisPos, thisBound.originalMin, thisBound.originalMax, scale, orientation);
-                    thisBound.min = newBound.min;
-                    thisBound.max = newBound.max;
-                }
-                for (const that of this.game.staticObjects) {
-                    if (that instanceof Building) {
-                        // obstacles and players should still spawn on top of bunkers
-                        if ((kind === ObjectKind.Obstacle || kind === ObjectKind.Player) && that.layer === 1) continue;
-                        for (const thatBound of that.mapObstacleBounds) {
-                            if (thisBound.type === CollisionType.Circle) {
-                                if (rectCollision(thatBound.min, thatBound.max, thisPos, thisBound.rad)) {
-                                    shouldContinue = true;
-                                }
-                            } else if (thisBound.type === CollisionType.Rectangle) {
-                                if (rectRectCollision(thatBound.min, thatBound.max, thisBound.min, thisBound.max)) {
-                                    shouldContinue = true;
-                                }
-                            }
-                        }
-                    } else if (that instanceof Obstacle) {
-
-                    }
-                    if (shouldContinue) break;
-                }
-                if (shouldContinue) break;
+            position = randomVector(0, this.width, 0, this.height);
+            for (const object of this.game.staticObjects) {
+                if ((object.hitbox?.collidesWith(hitbox)) === true) collided = true;
             }
-            if (shouldContinue) continue;
-            foundPosition = true;
         }
-        return thisPos!;*/
-        return { x: 0, y: 0 };
+        return position;
     }
 }
