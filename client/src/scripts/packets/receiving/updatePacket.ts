@@ -36,14 +36,8 @@ export class UpdatePacket extends ReceivingPacket {
             x: p.position.x * 20,
             y: p.position.y * 20,
             angle: oldAngle + angleBetween,
+            ease: "none",
             duration: 0.03
         });
-        /*p.scene.tweens.add({
-            targets: p.container,
-            x: p.position.x * 20,
-            y: p.position.y * 20,
-            angle: oldAngle + angleBetween,
-            duration: 30
-        });*/
     }
 }

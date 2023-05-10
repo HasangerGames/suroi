@@ -22,6 +22,7 @@ import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
+import gsap from "gsap";
 
 import Vector2 = Phaser.Math.Vector2;
 
@@ -55,12 +56,13 @@ export class GameScene extends Phaser.Scene {
             if (pointer.leftButtonDown() && !this.player.punching) {
                 this.player.punching = true;
                 const altFist: boolean = Math.random() < 0.5;
-                this.tweens.add({
-                    targets: altFist ? this.player.leftFist : this.player.rightFist,
+                gsap.to(altFist ? this.player.leftFist : this.player.rightFist, {
                     x: 75,
                     y: altFist ? 10 : -10,
-                    duration: 110,
+                    duration: 0.11,
+                    repeat: 1,
                     yoyo: true,
+                    ease: "none",
                     onComplete: () => { this.player.punching = false; }
                 });
                 this.sound.add("swing").play();
