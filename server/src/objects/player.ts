@@ -23,10 +23,10 @@ import {
     type Body, Circle, Vec2
 } from "planck";
 import { type Game } from "../game";
-import { ObjectCategory } from "../../../common/src/utils/objectManager";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectCategory } from "../../../common/src/utils/constants";
 
 export class Player extends GameObject {
     name: string;

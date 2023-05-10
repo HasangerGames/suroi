@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
 import Phaser from "phaser";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../common/src/utils/objectManager";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GameScene } from "../scenes/gameScene";
 import Vector2 = Phaser.Math.Vector2;
+import { ObjectCategory } from "../../../../common/src/utils/constants";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class Player extends GameObject {
     name: string;

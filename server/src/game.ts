@@ -100,7 +100,6 @@ export class Game {
         return player;
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     removePlayer(player: Player): void {
         this.players.delete(player);
         try {

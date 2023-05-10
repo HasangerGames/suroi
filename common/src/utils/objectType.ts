@@ -15,13 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Obstacles } from "../objectCategories/obstacles";
-
-export enum ObjectCategory {
-    Player, Obstacle
-}
-
-export const ObjectDefinitionsList: Array<ObjectDefinitions | undefined> = [undefined, Obstacles];
+import { type ObjectCategory, ObjectDefinitionsList } from "./constants";
 
 export abstract class ObjectDefinitions {
     readonly bitCount: number;
