@@ -15,14 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { type ObjectCategory, ObjectDefinitionsList } from "./constants";
-
-export abstract class ObjectDefinitions {
-    readonly bitCount: number;
-    readonly definitions: ObjectDefinition[];
-}
-
-export interface ObjectDefinition { idString: string }
+import { type ObjectCategory } from "./constants";
+import { type ObjectDefinitions } from "./objectDefinitions";
+import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
 export class ObjectType {
     category: ObjectCategory;
