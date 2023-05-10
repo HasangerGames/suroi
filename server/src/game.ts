@@ -19,7 +19,10 @@ import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
 import {
-    Box, Settings, Vec2, World
+    Box,
+    Settings,
+    Vec2,
+    World
 } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
@@ -59,13 +62,13 @@ export class Game {
             type: "static",
             position: Vec2(x, y)
         });
+
         boundary.createFixture({ shape: Box(width, height) });
     }
 
     tick(delay: number): void {
         setTimeout(() => {
             const tickStart = Date.now();
-
             this.world.step(30);
 
             // First loop over players: Calculate movement
@@ -102,6 +105,7 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         const player = new Player(this, "Player", socket, Vec2(360, 360));
         this.players.add(player);
+
         return player;
     }
 

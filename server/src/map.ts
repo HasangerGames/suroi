@@ -25,9 +25,11 @@ export class Map {
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();
         const supportedZoomLevels: number[] = [28];
+
         for (const zoomLevel of supportedZoomLevels) {
             this.game.visibleObjects[zoomLevel] = {};
             const xCullDist = zoomLevel * 1.55; const yCullDist = zoomLevel * 1.25;
+
             for (let x = 0; x <= this.width / 10; x++) {
                 this.game.visibleObjects[zoomLevel][x * 10] = {};
                 for (let y = 0; y <= this.height / 10; y++) {
@@ -36,6 +38,7 @@ export class Map {
                     const minY = (y * 10) - yCullDist;
                     const maxX = (x * 10) + xCullDist;
                     const maxY = (y * 10) + yCullDist;
+
                     for (const object of this.game.staticObjects) {
                         if (object.position.x > minX &&
                             object.position.x < maxX &&
@@ -44,10 +47,12 @@ export class Map {
                             visibleObjects.add(object);
                         }
                     }
+
                     this.game.visibleObjects[zoomLevel][x * 10][y * 10] = visibleObjects;
                 }
             }
         }
+
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
@@ -60,14 +65,17 @@ export class Map {
             if (attempts >= 200) {
                 console.warn("[WARNING] Maximum spawn attempts exceeded for: ", object);
             }
+
             thisPos = randomVector(0, this.width, 0, this.height);
             let shouldContinue = false;
+
             for (const thisBound of thisBounds) {
                 if (thisBound.type === CollisionType.Rectangle) {
                     const newBound = rotateRect(thisPos, thisBound.originalMin, thisBound.originalMax, scale, orientation);
                     thisBound.min = newBound.min;
                     thisBound.max = newBound.max;
                 }
+
                 for (const that of this.game.staticObjects) {
                     if (that instanceof Building) {
                         // obstacles and players should still spawn on top of bunkers
@@ -86,14 +94,20 @@ export class Map {
                     } else if (that instanceof Obstacle) {
 
                     }
+
                     if (shouldContinue) break;
                 }
+
                 if (shouldContinue) break;
             }
+
             if (shouldContinue) continue;
             foundPosition = true;
         }
         return thisPos!;*/
-        return { x: 0, y: 0 };
+        return {
+            x: 0,
+            y: 0
+        };
     }
 }

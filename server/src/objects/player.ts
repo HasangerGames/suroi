@@ -51,6 +51,7 @@ export class Player extends GameObject {
 
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+
         this.socket = socket;
         this.rotation = 0;
 
@@ -60,6 +61,7 @@ export class Player extends GameObject {
             position,
             fixedRotation: true
         });
+
         this.body.createFixture({
             shape: Circle(1),
             friction: 0.0,
@@ -104,6 +106,7 @@ export class Player extends GameObject {
         } catch (e) {
             console.error("Error serializing packet. Details:", e);
         }
+
         this.sendData(stream);
     }
 

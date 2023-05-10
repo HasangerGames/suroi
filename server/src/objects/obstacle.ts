@@ -7,6 +7,7 @@ import { type Vec2 } from "planck";
 export class Obstacle extends GameObject {
     constructor(game: Game, type: ObjectType, position: Vec2, rotation: number, scale: number) {
         super(game, type, position);
+
         this.rotation = rotation;
         this.scale = scale;
     }
