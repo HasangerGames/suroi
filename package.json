@@ -11,12 +11,12 @@
     "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
     "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci"
   },
-  "dependencies": {
-    "typescript": "^5.0.4"
-  },
   "keywords": [
     "nodejs",
     "typescript"
   ],
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
 }
