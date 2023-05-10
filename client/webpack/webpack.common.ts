@@ -89,17 +89,17 @@ const config: Configuration = {
             {
                 test: /\.(ogg|mp3|wav)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/audio/static/[contenthash:8][ext]" }
+                generator: { filename: "audio/[name].[contenthash:8][ext]" }
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
+                generator: { filename: "img/[name].[contenthash:8][ext]" }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
+                generator: { filename: "fonts/[name].[contenthash:8][ext]" }
             }
         ]
     },
@@ -129,7 +129,7 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/changelog.html"),
             chunks: ["changelog"],
-            filename: "./changelog/index.html",
+            filename: "./changelog.html",
 
             minify: {
                 removeComments: true,
@@ -148,7 +148,7 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/leaderboard.html"),
             chunks: ["leaderboard"],
-            filename: "./leaderboard/index.html",
+            filename: "./leaderboard.html",
 
             minify: {
                 removeComments: true,
@@ -163,7 +163,7 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
+        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 

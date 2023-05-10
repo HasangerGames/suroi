@@ -15,7 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { getDefinitionsForCategory, type ObjectCategory, type ObjectDefinition } from "./objectCategory";
+import {
+    getDefinitionsForCategory, type ObjectCategory, type ObjectDefinition
+} from "./objectCategory";
 
 export class ObjectType {
     category: ObjectCategory;
@@ -37,8 +39,12 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idNumber = idNumber;
-        const definitions: ObjectDefinition[] = getDefinitionsForCategory(category);
-        type.idString = definitions[type.idNumber].idString;
+        const definitions: ObjectDefinition[] | undefined = getDefinitionsForCategory(category);
+        if (definitions === undefined) {
+            throw new Error(`Could not find definitions for object: category = ${category}, idNumber = ${idNumber}`);
+        } else {
+            type.idString = definitions[type.idNumber].idString;
+        }
         return type;
     }
 
@@ -46,9 +52,13 @@ export class ObjectType {
         const type = new ObjectType();
         type.category = category;
         type.idString = idString;
-        const definitions: ObjectDefinition[] = getDefinitionsForCategory(category);
-        for (let i = 0; i < definitions.length; i++) {
-            if (definitions[i].idString === idString) type.idNumber = i;
+        const definitions: ObjectDefinition[] | undefined = getDefinitionsForCategory(category);
+        if (definitions === undefined) {
+            throw new Error(`Could not find definitions for object: category = ${category}, idString = ${idString}`);
+        } else {
+            for (let i = 0; i < definitions.length; i++) {
+                if (definitions[i].idString === idString) type.idNumber = i;
+            }
         }
         return type;
     }
