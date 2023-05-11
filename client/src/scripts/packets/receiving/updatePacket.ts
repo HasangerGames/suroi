@@ -36,6 +36,8 @@ export class UpdatePacket extends ReceivingPacket {
         if (p === undefined) return;
 
         // Update position and rotation
+        const oldX: number = p.position.x;
+        const oldY: number = p.position.y;
         p.position = stream.readPosition();
         const oldAngle: number = p.container.angle;
         const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
@@ -47,6 +49,14 @@ export class UpdatePacket extends ReceivingPacket {
             ease: "none",
             duration: 0.03
         });
+
+        // Play footstep sounds
+        p.distSinceLastFootstep += Phaser.Math.Distance.Between(oldX, oldY, p.position.x, p.position.y);
+        if (p.distSinceLastFootstep > 10) {
+            const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
+            p.scene.sound.add(sound).play();
+            p.distSinceLastFootstep = 0;
+        }
 
         // Full objects
         if (stream.readBoolean()) {

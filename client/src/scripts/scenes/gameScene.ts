@@ -130,9 +130,6 @@ export class GameScene extends Phaser.Scene {
         if (this.player?.inputsDirty) {
             this.player.inputsDirty = false;
             this.activeGame.sendPacket(new InputPacket(this.player));
-            /* const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
-            this.sound.add(sound).play();
-            this.stepsSinceLastSound = 0; */
         }
 
         setTimeout(() => { this.tick(); }, 30);

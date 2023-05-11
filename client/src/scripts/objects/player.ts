@@ -48,6 +48,8 @@ export class Player extends GameObject {
 
     scene: GameScene;
 
+    distSinceLastFootstep = 0;
+
     constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
