@@ -31,6 +31,7 @@
     justify-content: center;
 
     width: 100vw;
+    max-height: 299px;
 
     text-align: center;
 
@@ -64,12 +65,21 @@
         margin-bottom: 0;
     }
 
-    div {
+    ::-webkit-scrollbar-track {
+        margin-bottom: 20px;
+    }
+
+    > div {
+        height: 100%;
         overflow-y: auto;
+        padding-bottom: 20px;
+        padding-right: 15px;
 
         text-align: left;
 
         article {
+            margin-bottom: 25px;
+
             .news-date {
                 color: gray;
                 font-size: 14px;
@@ -162,7 +172,7 @@
 #splash-more {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
 
     button {
         width: 136px;

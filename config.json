@@ -7,6 +7,9 @@
     "certFile": "",
     "enable": false
   },
+
+  "movementSpeed": 0.032,
+
   "debug": {
     "disableStaticFileCache": true
   }
