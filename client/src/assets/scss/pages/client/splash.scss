@@ -38,15 +38,15 @@
 }
 
 #splash-news,
+#splash-socials,
 #splash-options,
 #splash-inventory {
     background: #16161680;
 
     width: 370px;
-    height: 220px;
 
     padding: 20px;
-    border-radius: 30px;
+    border-radius: 20px;
 
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -65,7 +65,6 @@
     }
 
     div {
-        max-height: 150px;
         overflow-y: auto;
 
         text-align: left;
@@ -147,6 +146,9 @@
 
 #splash-socials {
     margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 #splash-inventory {
