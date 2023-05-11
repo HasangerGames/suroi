@@ -18,11 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import Config from "../../config.json";
 
 import {
-    App,
-    DEDICATED_COMPRESSOR_256KB,
-    type HttpResponse,
-    SSLApp,
-    type WebSocket
+    App, DEDICATED_COMPRESSOR_256KB, type HttpResponse, SSLApp, type WebSocket
 } from "uWebSockets.js";
 
 import { log } from "../../common/src/utils/misc";
@@ -32,6 +28,7 @@ import { Game } from "./game";
 import sanitizeHtml from "sanitize-html";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { PacketType } from "../../common/src/constants";
+import { JoinPacket } from "./packets/receiving/joinPacket";
 
 /**
  * Apply CORS headers to a response.
@@ -116,10 +113,16 @@ app.ws("/play", {
     message: (socket: WebSocket<PlayerContainer>, message) => {
         const stream = new SuroiBitStream(message);
         try {
-            const packetType = stream.readUint8();
+            const packetType = stream.readPacketType();
+            const p = socket.getUserData().player;
             switch (packetType) {
+                case PacketType.Join: {
+                    new JoinPacket(p).deserialize(stream);
+                    break;
+                }
                 case PacketType.Input: {
-                    new InputPacket(socket.getUserData().player).deserialize(stream);
+                    new InputPacket(p).deserialize(stream);
+                    break;
                 }
             }
         } catch (e) {

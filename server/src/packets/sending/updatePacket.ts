@@ -30,25 +30,32 @@ export class UpdatePacket extends SendingPacket {
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-
         const p = this.player;
+
+        //
+        // Active player data
+        //
+
+        // Position and rotation
         stream.writePosition(p.position);
         stream.writeRotation(p.rotation);
 
-        // Deleted objects
-        /*if (p.deletedObjects.size !== 0) {
-            stream.writeUint16(p.deletedObjects.size);
-            for (const deletedObject of p.deletedObjects) {
-                stream.writeUint16(deletedObject.id);
-            }
-            p.deletedObjects = new Set<GameObject>();
-        }*/
+        // Health and adrenaline
+        /* stream.writeBoolean(p.healthDirty);
+        if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
+
+        stream.writeBoolean(p.adrenalineDirty);
+        if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8); */
+
+        //
+        // Objects
+        //
 
         // Full objects
         const fullObjectsDirty: boolean = (p.fullDirtyObjects.size !== 0);
         stream.writeBoolean(fullObjectsDirty);
         if (fullObjectsDirty) {
-            stream.writeUint16(p.fullDirtyObjects.size);
+            stream.writeUint8(p.fullDirtyObjects.size);
             for (const fullObject of p.fullDirtyObjects) {
                 fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
@@ -57,16 +64,25 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Partial objects
-        /*stream.writeUint16(p.partialDirtyObjects.size);
-        for (const partialObject of p.partialDirtyObjects) {
-            partialObject.serializePartial(stream);
+        const partialObjectsDirty: boolean = (p.partialDirtyObjects.size !== 0);
+        stream.writeBoolean(partialObjectsDirty);
+        if (partialObjectsDirty) {
+            stream.writeUint8(p.partialDirtyObjects.size);
+            for (const partialObject of p.partialDirtyObjects) {
+                partialObject.serializePartial(stream);
+            }
+            p.partialDirtyObjects = new Set<GameObject>();
         }
-        p.partialDirtyObjects = new Set<GameObject>();*/
 
-        /* stream.writeBoolean(p.healthDirty);
-        if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
-
-        stream.writeBoolean(p.adrenalineDirty);
-        if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8); */
+        // Deleted objects
+        const deletedObjectsDirty: boolean = (p.deletedObjects.size !== 0);
+        stream.writeBoolean(deletedObjectsDirty);
+        if (deletedObjectsDirty) {
+            stream.writeUint8(p.deletedObjects.size);
+            for (const deletedObject of p.deletedObjects) {
+                stream.writeUint16(deletedObject.id);
+            }
+            p.deletedObjects = new Set<GameObject>();
+        }
     }
 }

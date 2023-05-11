@@ -25,6 +25,7 @@ import { Player } from "../objects/player";
 import gsap from "gsap";
 import Vector2 = Phaser.Math.Vector2;
 import { Obstacles } from "../../../../common/src/definitions/obstacles";
+import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
@@ -114,13 +115,16 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create the player
-        this.activeGame.activePlayer = new Player(this, this.activeGame, "Player", this.activeGame.socket, new Vector2(0, 0));
+        this.activeGame.activePlayer = new Player(this.activeGame, this, "Player", this.activeGame.socket, new Vector2(0, 0));
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.container);
 
         // Start the tick loop
         this.tick();
+
+        // Send a packet indicating that the game is now active
+        this.activeGame.sendPacket(new JoinPacket(this.player));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

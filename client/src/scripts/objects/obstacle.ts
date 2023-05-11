@@ -17,34 +17,31 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { type GameScene } from "../scenes/gameScene";
-import { type Game } from "../game";
-import Vector2 = Phaser.Math.Vector2;
-import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Variation } from "../../../../common/src/typings";
+import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 
 export class Obstacle extends GameObject {
     scale: number;
     variation: Variation;
-
-    scene: Phaser.Scene;
     image: Phaser.GameObjects.Image;
 
-    constructor(scene: GameScene, game: Game, type: ObjectType, id: number, position: Vector2, rotation: number, scale: number, variation: Variation) {
-        super(game, type, position);
-        this.scene = scene;
-        this.id = id;
-        this.rotation = rotation;
-        this.scale = scale;
-        this.variation = variation;
-        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, `${type.idString}_${this.variation}`)
+    deserializePartial(stream: SuroiBitStream): void {
+        this.scale = stream.readScale();
+        if (this.image !== undefined) this.image.setScale(this.scale);
+    }
+
+    deserializeFull(stream: SuroiBitStream): void {
+        if (this.image !== undefined) throw new Error("Full update of existing obstacle");
+        this.position = stream.readPosition();
+        const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
+        this.rotation = definition.rotation === "full" ? stream.readRotation() : 0;
+        this.variation = stream.readVariation();
+        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, `${this.type.idString}_${this.variation}`)
             .setRotation(this.rotation)
             .setScale(this.scale);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    deserializePartial(stream: SuroiBitStream): void {}
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    deserializeFull(stream: SuroiBitStream): void {}
+    destroy(): void {
+        this.image.destroy(true);
+    }
 }

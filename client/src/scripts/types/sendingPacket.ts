@@ -29,6 +29,6 @@ export abstract class SendingPacket {
     }
 
     serialize(stream: SuroiBitStream): void {
-        stream.writeUint8(this.type);
+        stream.writePacketType(this.type);
     }
 }

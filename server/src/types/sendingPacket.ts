@@ -24,11 +24,11 @@ export abstract class SendingPacket {
     type: PacketType;
     player: Player;
 
-    protected constructor(player: Player) {
+    constructor(player: Player) {
         this.player = player;
     }
 
     serialize(stream: SuroiBitStream): void {
-        stream.writeUint8(this.type);
+        stream.writePacketType(this.type);
     }
 }

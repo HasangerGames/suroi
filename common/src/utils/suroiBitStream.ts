@@ -22,7 +22,7 @@ import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
     OBJECT_CATEGORY_BITS,
-    type ObjectCategory, VARIATION_BITS
+    type ObjectCategory, PACKET_TYPE_BITS, type PacketType, VARIATION_BITS
 } from "../constants";
 import { type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
@@ -65,6 +65,14 @@ export class SuroiBitStream extends BitStream {
             x: this.readFloat(minX, maxX, bitCount),
             y: this.readFloat(minY, maxY, bitCount)
         };
+    }
+
+    writePacketType(value: PacketType): void {
+        this.writeBits(value, PACKET_TYPE_BITS);
+    }
+
+    readPacketType(): PacketType {
+        return this.readBits(PACKET_TYPE_BITS) as PacketType;
     }
 
     readObjectType(): ObjectType {

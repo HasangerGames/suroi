@@ -81,6 +81,8 @@ export class Game {
 
             // First loop over players: Calculate movement
             for (const p of this.players) {
+                if (!p.joined) continue; // TODO Create a separate Set for active players
+
                 // This system allows opposite movement keys to cancel each other out.
                 let xMovement = 0; let yMovement = 0;
                 if (p.movingUp) yMovement++;
@@ -93,6 +95,8 @@ export class Game {
 
             // Second loop over players: calculate visible objects & send updates
             for (const p of this.players) {
+                if (!p.joined) continue;
+
                 // Calculate visible objects
                 if (p.movesSinceLastUpdate > 8 || this.updateObjects) {
                     p.updateVisibleObjects();
@@ -119,10 +123,9 @@ export class Game {
                 // Deleted objects
                 if (this.deletedObjects.size !== 0) {
                     for (const object of this.deletedObjects) {
-                        /* if(p.visibleObjects.includes(object) && object !== p) {
+                        if (p.visibleObjects.has(object) && object !== p) {
                             p.deletedObjects.add(object);
-                        } */
-                        if (object !== p) p.deletedObjects.add(object);
+                        }
                     }
                 }
 

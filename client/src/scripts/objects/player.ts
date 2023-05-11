@@ -46,14 +46,13 @@ export class Player extends GameObject {
     rightFist: Phaser.GameObjects.Arc;
     container: Phaser.GameObjects.Container;
 
-    scene: GameScene;
-
     distSinceLastFootstep = 0;
 
-    constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
-        super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+    constructor(game: Game, scene: GameScene, name: string, socket: WebSocket, position: Vector2) {
+        super(game, scene);
+        this.type = ObjectType.categoryOnly(ObjectCategory.Player);
+        this.position = position;
 
-        this.scene = scene;
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
         this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
@@ -93,4 +92,11 @@ export class Player extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {}
 
     deserializeFull(stream: SuroiBitStream): void {}
+
+    destroy(): void {
+        this.body.destroy(true);
+        this.leftFist.destroy(true);
+        this.rightFist.destroy(true);
+        this.container.destroy(true);
+    }
 }

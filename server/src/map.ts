@@ -28,8 +28,8 @@ export class Map {
             this.generateObstacles("tree_oak", 200);
             this.generateObstacles("tree_pine", 15);
             this.generateObstacles("rock", 200);
-            this.generateObstacles("crate_regular", 175);
-            this.generateObstacles("barrel", 175);
+            this.generateObstacles("crate_regular", 150);
+            this.generateObstacles("barrel", 150);
         } else {
             // Obstacle debug code goes here
         }

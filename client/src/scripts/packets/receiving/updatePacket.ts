@@ -20,12 +20,11 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { type Player } from "../../objects/player";
 import gsap from "gsap";
 import { Obstacle } from "../../objects/obstacle";
-import { v2v } from "../../utils";
-import Vector2 = Phaser.Math.Vector2;
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { type Variation } from "../../../../../common/src/typings";
 import { distanceSquared } from "../../../../../common/src/utils/math";
+import { ObjectCategory } from "../../../../../common/src/constants";
+import { type GameObject } from "../../types/gameObject";
+import { type Game } from "../../game";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -35,10 +34,15 @@ export class UpdatePacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         if (p === undefined) return;
+        const game: Game = p.game;
+        const scene: Phaser.Scene = p.scene;
 
-        // Update position and rotation
-        const oldX: number = p.position.x;
-        const oldY: number = p.position.y;
+        //
+        // Active player data
+        //
+
+        // Position and rotation
+        const oldX: number = p.position.x, oldY: number = p.position.y;
         p.position = stream.readPosition();
         const oldAngle: number = p.container.angle;
         const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
@@ -55,25 +59,71 @@ export class UpdatePacket extends ReceivingPacket {
         p.distSinceLastFootstep += distanceSquared(oldX, oldY, p.position.x, p.position.y);
         if (p.distSinceLastFootstep > 10) {
             const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
-            p.scene.sound.add(sound).play();
+            scene.sound.add(sound).play();
             p.distSinceLastFootstep = 0;
         }
 
+        //
+        // Objects
+        //
+
         // Full objects
-        if (stream.readBoolean()) {
-            const fullObjectCount: number = stream.readUint16();
+        const fullObjectsDirty: boolean = stream.readBoolean();
+        if (fullObjectsDirty) {
+            const fullObjectCount: number = stream.readUint8();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type: ObjectType = stream.readObjectType();
-                if (type.category === 0) continue;
-                const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
                 const id: number = stream.readUint16();
-                const scale: number = stream.readScale();
-                const position: Vector2 = v2v(stream.readPosition());
-                const rotation: number = definition.rotation === "full" ? stream.readRotation() : 0;
-                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-                const variation: Variation = definition.variations !== undefined ? stream.readVariation() : 0;
-                // eslint-disable-next-line no-new
-                new Obstacle(this.player.scene, this.player.game, type, id, position, rotation, scale, variation);
+                let object: GameObject | undefined;
+                switch (type.category) {
+                    case ObjectCategory.Player: {
+                        break;
+                    }
+                    case ObjectCategory.Obstacle: {
+                        object = new Obstacle(this.player.game, this.player.scene);
+                        break;
+                    }
+                }
+                if (object === undefined) {
+                    console.warn(`Unknown object category: ${type.category}`);
+                    continue;
+                }
+                object.type = type;
+                object.id = id;
+                object.deserializePartial(stream);
+                object.deserializeFull(stream);
+                game.objects.set(object.id, object);
+            }
+        }
+
+        // Partial objects
+        const partialObjectsDirty: boolean = stream.readBoolean();
+        if (partialObjectsDirty) {
+            const partialObjectCount: number = stream.readUint8();
+            for (let i = 0; i < partialObjectCount; i++) {
+                const id: number = stream.readUint16();
+                const object: GameObject | undefined = game.objects.get(id);
+                if (object === undefined) {
+                    console.warn(`Unknown partial object with ID ${id}`);
+                    continue;
+                }
+                object.deserializePartial(stream);
+            }
+        }
+
+        // Deleted objects
+        const deletedObjectsDirty: boolean = stream.readBoolean();
+        if (deletedObjectsDirty) {
+            const deletedObjectCount: number = stream.readUint8();
+            for (let i = 0; i < deletedObjectCount; i++) {
+                const id: number = stream.readUint16();
+                const object: GameObject | undefined = game.objects.get(id);
+                if (object === undefined) {
+                    console.warn(`Trying to delete unknown object with ID ${id}`);
+                    continue;
+                }
+                object.destroy();
+                game.objects.delete(id);
             }
         }
     }

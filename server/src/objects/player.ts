@@ -31,6 +31,8 @@ import { ObjectCategory } from "../../../common/src/constants";
 export class Player extends GameObject {
     name: string;
 
+    joined = false;
+
     private _health = 100;
     healthDirty = true;
 
