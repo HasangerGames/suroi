@@ -27,8 +27,8 @@ export function random(min: number, max: number): number {
  */
 export function randomVector(minX: number, maxX: number, minY: number, maxY: number): Vector {
     return {
-        x: random(minX, maxX),
-        y: random(minY, maxY)
+        x: randomFloat(minX, maxX),
+        y: randomFloat(minY, maxY)
     };
 }
 

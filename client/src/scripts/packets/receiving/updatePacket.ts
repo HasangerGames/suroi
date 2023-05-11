@@ -23,6 +23,8 @@ import { Obstacle } from "../../objects/obstacle";
 import { v2v } from "../../utils";
 import Vector2 = Phaser.Math.Vector2;
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
+import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type Variation } from "../../../../../common/src/typings";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -51,12 +53,16 @@ export class UpdatePacket extends ReceivingPacket {
             const fullObjectCount: number = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type: ObjectType = stream.readObjectType();
+                if (type.category === 0) continue;
+                const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
                 const id: number = stream.readUint16();
                 const scale: number = stream.readScale();
                 const position: Vector2 = v2v(stream.readPosition());
-                const rotation: number = stream.readRotation();
+                const rotation: number = definition.rotation === "full" ? stream.readRotation() : 0;
+                // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+                const variation: Variation = definition.variations !== undefined ? stream.readVariation() : 0;
                 // eslint-disable-next-line no-new
-                new Obstacle(this.player.scene, this.player.game, type, id, position, rotation, scale);
+                new Obstacle(this.player.scene, this.player.game, type, id, position, rotation, scale, variation);
             }
         }
     }

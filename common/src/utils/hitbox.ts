@@ -1,11 +1,13 @@
 import {
-    cloneVector, v, type Vector
+    cloneVector, v, vAdd, type Vector
 } from "./vector";
+import { type Orientation } from "../typings";
 
 export abstract class Hitbox {
     abstract collidesWith(that: Hitbox): boolean;
     abstract distanceTo(that: Hitbox): CollisionRecord;
     abstract clone(): Hitbox;
+    abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -41,6 +43,10 @@ export class CircleHitbox extends Hitbox {
     clone(): CircleHitbox {
         return new CircleHitbox(this.radius, cloneVector(this.position));
     }
+
+    transform(position: Vector, scale = 1, orientation?: Orientation): Hitbox {
+        return new CircleHitbox(this.radius * scale, vAdd(this.position, position));
+    }
 }
 
 export class RectangleHitbox extends Hitbox {
@@ -68,7 +74,7 @@ export class RectangleHitbox extends Hitbox {
         if (that instanceof CircleHitbox) {
             return distanceToRectangle(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
-            throw new Error("Not supported yet"); // TODO Write a rectangleDistanceToRectangle function
+            throw new Error("Not implemented"); // TODO Write a rectangleDistanceToRectangle function
         }
 
         throw new Error("Invalid hitbox object");
@@ -76,6 +82,10 @@ export class RectangleHitbox extends Hitbox {
 
     clone(): RectangleHitbox {
         return new RectangleHitbox(cloneVector(this.min), cloneVector(this.max));
+    }
+
+    transform(position: Vector): Hitbox {
+        return new RectangleHitbox(vAdd(this.min, position), vAdd(this.max, position));
     }
 }
 

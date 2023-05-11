@@ -38,7 +38,9 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
 
         for (const object of Obstacles.definitions) {
-            this.load.svg(object.idString, require(`../../assets/img/game/${object.images[0]}`));
+            for (let i = 0; i < object.images.length; i++) {
+                this.load.svg(`${object.idString}_${i}`, require(`../../assets/img/game/${object.images[i]}`));
+            }
         }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));

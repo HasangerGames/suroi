@@ -65,7 +65,7 @@ export class Player extends GameObject {
 
         this.socket = socket;
         this.rotation = 0;
-        this.zoom = 28;
+        this.zoom = 48;
 
         // Init body
         this.body = game.world.createBody({
@@ -125,7 +125,7 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
         const approximateX = Math.round(this.position.x / 10) * 10; const approximateY = Math.round(this.position.y / 10) * 10;
-        this.nearObjects = this.game.visibleObjects[28][approximateX][approximateY];
+        this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
         const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
         const minX = this.position.x - this.xCullDist;

@@ -3,9 +3,9 @@ import { log } from "../../common/src/utils/misc";
 import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { v, type Vector } from "../../common/src/utils/vector";
-import { type Orientation } from "../../common/src/typings";
+import { type Orientation, type Variation } from "../../common/src/typings";
 import {
-    randomFloat, randomVector, randomRotation
+    randomFloat, randomVector, randomRotation, random
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Hitbox } from "../../common/src/utils/hitbox";
@@ -25,7 +25,11 @@ export class Map {
 
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (!Config.debug.disableMapGeneration) {
-            this.generateObstacles(ObjectType.fromString(ObjectCategory.Obstacle, "tree_oak"), 500);
+            this.generateObstacles("tree_oak", 200);
+            this.generateObstacles("tree_pine", 15);
+            this.generateObstacles("rock", 200);
+            this.generateObstacles("crate_regular", 175);
+            this.generateObstacles("barrel", 175);
         } else {
             // Obstacle debug code goes here
         }
@@ -33,11 +37,11 @@ export class Map {
 
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();
-        const supportedZoomLevels: number[] = [28];
+        const supportedZoomLevels: number[] = [48];
 
         for (const zoomLevel of supportedZoomLevels) {
             this.game.visibleObjects[zoomLevel] = {};
-            const xCullDist = zoomLevel * 1.55; const yCullDist = zoomLevel * 1.25;
+            const xCullDist = zoomLevel * 1.75; const yCullDist = zoomLevel * 1.35;
 
             for (let x = 0; x <= this.width / 10; x++) {
                 this.game.visibleObjects[zoomLevel][x * 10] = {};
@@ -65,16 +69,19 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    private generateObstacles(type: ObjectType, count: number): void {
+    private generateObstacles(idString: string, count: number): void {
+        const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.min, definition.scale.max);
+            const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             const obstacle: Obstacle = new Obstacle(
                 this.game,
                 type,
                 this.getRandomPositionFor(type, scale),
-                randomRotation(),
-                scale
+                definition.rotation === "full" ? randomRotation() : 0,
+                scale,
+                variation
             );
             this.game.staticObjects.add(obstacle);
         }
@@ -84,16 +91,16 @@ export class Map {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
-        const hitbox: Hitbox = (type.definition as ObstacleDefinition).hitbox;
         while (collided && attempts <= 200) {
-            collided = false;
             attempts++;
             if (attempts >= 200) {
                 console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
             }
+            collided = false;
             position = randomVector(0, this.width, 0, this.height);
+            const hitbox: Hitbox = (type.definition as ObstacleDefinition).spawnHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
-                if ((object.hitbox?.collidesWith(hitbox)) === true) collided = true;
+                if (object.spawnHitbox.collidesWith(hitbox)) collided = true;
             }
         }
         return position;

@@ -31,6 +31,7 @@ export abstract class GameObject {
     _rotation: number;
     scale = 1;
     hitbox?: Hitbox;
+    spawnHitbox: Hitbox;
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectId;

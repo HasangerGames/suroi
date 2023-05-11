@@ -22,10 +22,11 @@ import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
     OBJECT_CATEGORY_BITS,
-    type ObjectCategory
+    type ObjectCategory, VARIATION_BITS
 } from "../constants";
 import { type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
+import { type Variation } from "../typings";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -112,5 +113,13 @@ export class SuroiBitStream extends BitStream {
 
     readScale(): number {
         return this.readFloat(MIN_OBJECT_SCALE, MAX_OBJECT_SCALE, 8);
+    }
+
+    writeVariation(value: Variation): void {
+        this.writeBits(value, VARIATION_BITS);
+    }
+
+    readVariation(): Variation {
+        return this.readBits(VARIATION_BITS) as Variation;
     }
 }
