@@ -25,6 +25,7 @@ import Vector2 = Phaser.Math.Vector2;
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type Variation } from "../../../../../common/src/typings";
+import { distanceSquared } from "../../../../../common/src/utils/math";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -51,7 +52,7 @@ export class UpdatePacket extends ReceivingPacket {
         });
 
         // Play footstep sounds
-        p.distSinceLastFootstep += Phaser.Math.Distance.Between(oldX, oldY, p.position.x, p.position.y);
+        p.distSinceLastFootstep += distanceSquared(oldX, oldY, p.position.x, p.position.y);
         if (p.distSinceLastFootstep > 10) {
             const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
             p.scene.sound.add(sound).play();

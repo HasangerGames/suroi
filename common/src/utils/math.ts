@@ -66,11 +66,20 @@ export const degreesToRadians = (degrees: number): number => degrees * (Math.PI 
 export const radiansToDegrees = (radians: number): number => (radians / Math.PI) * 180;
 
 /**
- * Get the distance between two positions.
- * @param p1 The first position.
- * @param p2 The second position.
+ * Get the distance between two points.
+ * @param a The first point.
+ * @param b The second point.
  */
-export const distance = (p1: Vector, p2: Vector): number => Math.sqrt(((p2.x - p1.x) ** 2) + ((p2.y - p1.y) ** 2));
+export const distance = (a: Vector, b: Vector): number => Math.sqrt(((b.x - a.x) ** 2) + ((b.y - a.y) ** 2));
+
+/**
+ * Get the distance between two points squared.
+ * @param x1 The x-coordinate of the first point.
+ * @param y1 The y-coordinate of the first point.
+ * @param x2 The x-coordinate of the second point.
+ * @param y2 The y-coordinate of the second point.
+ */
+export const distanceSquared = (x1: number, y1: number, x2: number, y2: number): number => ((x2 - x1) ** 2) + ((y2 - y1) ** 2);
 
 /**
  * Linearly interpolate between two values.

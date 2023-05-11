@@ -36,5 +36,5 @@ export function randomVector(minX: number, maxX: number, minY: number, maxY: num
  * @return A random angle in radians.
  */
 export function randomRotation(): number {
-    return Math.random() * 2 * Math.PI;
+    return randomFloat(-Math.PI, Math.PI);
 }

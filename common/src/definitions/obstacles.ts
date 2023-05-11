@@ -73,8 +73,8 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "crate_regular",
             scale: { min: 1.0, max: 1.0 },
-            hitbox: new RectangleHitbox(v(-6.4, -6.4), v(6.4, 6.4)),
-            spawnHitbox: new RectangleHitbox(v(-6.4, -6.4), v(6.4, 6.4)),
+            hitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
+            spawnHitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
             rotation: "none",
             images: ["crate_regular.svg"]
         },
