@@ -25,11 +25,11 @@ export class Map {
 
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (!Config.debug.disableMapGeneration) {
-            this.generateObstacles("tree_oak", 200);
-            this.generateObstacles("tree_pine", 15);
             this.generateObstacles("rock", 200);
             this.generateObstacles("crate_regular", 150);
             this.generateObstacles("barrel", 150);
+            this.generateObstacles("tree_oak", 200);
+            this.generateObstacles("tree_pine", 15);
         } else {
             // Obstacle debug code goes here
         }
@@ -97,7 +97,7 @@ export class Map {
                 console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
             }
             collided = false;
-            position = randomVector(0, this.width, 0, this.height);
+            position = randomVector(10, this.width-10, 10, this.height-10);
             const hitbox: Hitbox = (type.definition as ObstacleDefinition).spawnHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
                 if (object.spawnHitbox.collidesWith(hitbox)) collided = true;
