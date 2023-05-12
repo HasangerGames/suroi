@@ -183,25 +183,6 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new HTMLWebpackPlugin({
-            inject: true,
-            template: path.resolve(__dirname, "../src/pages/news.html"),
-            chunks: ["news"],
-            filename: "./news/index.html",
-
-            minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true
-            }
-        }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],

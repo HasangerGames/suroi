@@ -1,19 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=7" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta name="title" content="Suroi - 2D battle royale game" />
-    <meta name="description"
-        content="Suroi is an action-packed 2D battle royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
+    <meta name="description" content="Suroi is an action-packed 2D battle royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
     <meta name="keywords" content="battle royale, io game, browser game, open source" />
 
     <meta property="og:title" content="Suroi - 2D battle royale game" />
-    <meta property="og:description"
-        content="Suroi is an action-packed 2D battle royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
+    <meta property="og:description" content="Suroi is an action-packed 2D battle royale game where players fight to be the last one standing, while the constantly shrinking arena adds to the excitement. With vibrant and dynamic sound effects, Suroi offers an immersive and adrenaline-fueled experience." />
 
     <title>Suroi - 2D battle royale game</title>
 
@@ -24,96 +21,93 @@
     <link rel="icon" type="image/x-icon" sizes="96x96" href="<%=require('/src/assets/img/icons/favicon-96x96.png')%>" />
 
     <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
-    <!--<script src ="../scripts/ui/newswidget.js" type="module">
-    </script>
-    ^^ This won't work because it requires you to do some weird require thing :/
-    -->
-</head>
-<body>
+  </head>
+  <body>
     <div id="splash-ui">
-        <div id="splash-logo">
-            <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo" />
+      <div id="splash-logo">
+        <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo" draggable="false" />
+      </div>
+      <div id="splash-modals">
+        <div id="splash-news">
+          <h2>
+            <i class="fa-solid fa-newspaper"></i>
+            News
+            <a href="/news">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </h2>
+          <div id="news-posts"></div>
         </div>
-        <div id="splash-modals">
-            <div id="splash-news">
-                <h2><a href="/news">
-                    News
-                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                </a></h2>
-                <div id="news-posts">
+        <div id="splash-center">
+          <div id="splash-options">
+            <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname"
+                   maxlength="15" />
+            <select name="server-select" id="server-select">
+              <option value="na" selected>North America</option>
+            </select>
 
-                </div>
-            </div>
-            <div id="splash-center">
-                <div id="splash-options">
-                    <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname"
-                        maxlength="15" />
-                    <select name="server-select" id="server-select">
-                        <option value="na" selected>North America</option>
-                    </select>
-
-                    <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
-                    <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
-                    <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
-                    <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-                </div>
-                <div id="splash-socials">
-                    <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
-                        class="btn btn-darken btn-social btn-discord"></a>
-                    <a href="https://reddit.com" target="_blank" rel="noopener noreferrer"
-                        class="btn btn-darken btn-social btn-reddit"></a>
-                    <a href="https://twitter.com/HasangerGames" target="_blank" rel="noopener noreferrer"
-                        class="btn btn-darken btn-social btn-twitter"></a>
-                    <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer"
-                        class="btn btn-darken btn-social btn-youtube"></a>
-                    <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer"
-                        class="btn btn-darken btn-social btn-github"></a>
-                </div>
-            </div>
-            <div id="splash-inventory">
-                <span>Coming Soon!</span>
-            </div>
-            <div id="splash-more" class="dropdown">
-                <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
-                    More
-                    <i class="fa-solid fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
-                        Wiki
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    <a href="/proxy.txt" target="_blank" rel="noopener noreferrer">
-                        Proxies
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
-                        Leaderboard
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                    <a href="/news" target="_blank" rel="noopener noreferrer">
-                        News
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </a>
-                </div>
-            </div>
-            <div id="splash-backlinks">
-                <a href="/changelog" target="_blank" rel="noopener noreferrer">v0.1.0</a>
-            </div>
-            <div id="splash-settings">
-                <button class="btn btn-darken btn-secondary" id="btn-language"><i
-                        class="fa-solid fa-earth-americas"></i></button>
-                <button class="btn btn-darken btn-secondary" id="btn-volume"><i
-                        class="fa-solid fa-volume-high"></i></button>
-                <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
-            </div>
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+          </div>
+          <div id="splash-socials">
+            <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
+               class="btn btn-darken btn-social btn-discord"></a>
+            <a href="https://reddit.com" target="_blank" rel="noopener noreferrer"
+               class="btn btn-darken btn-social btn-reddit"></a>
+            <a href="https://twitter.com/HasangerGames" target="_blank" rel="noopener noreferrer"
+               class="btn btn-darken btn-social btn-twitter"></a>
+            <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer"
+               class="btn btn-darken btn-social btn-youtube"></a>
+            <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer"
+               class="btn btn-darken btn-social btn-github"></a>
+          </div>
         </div>
+        <div id="splash-inventory">
+          <span>Coming Soon!</span>
+        </div>
+        <div id="splash-more" class="dropdown">
+          <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
+            More
+            <i class="fa-solid fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
+              Wiki
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/proxy.txt" target="_blank" rel="noopener noreferrer">
+              Proxies
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
+              Leaderboard
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/news" target="_blank" rel="noopener noreferrer">
+              News
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </div>
+        <div id="splash-backlinks">
+          <a href="/changelog" target="_blank" rel="noopener noreferrer">v0.1.0</a>
+        </div>
+        <div id="splash-settings">
+          <button class="btn btn-darken btn-secondary" id="btn-language"><i
+            class="fa-solid fa-earth-americas"></i></button>
+          <button class="btn btn-darken btn-secondary" id="btn-volume"><i
+            class="fa-solid fa-volume-high"></i></button>
+          <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
+        </div>
+      </div>
     </div>
     <div id="game-ui" style="display: none">
-        <div id="health-bar-container">
-            <div id="health-bar-animation"></div>
-            <div id="health-bar"></div>
-        </div>
+      <div id="health-bar-container">
+        <div id="health-bar-animation"></div>
+        <div id="health-bar"></div>
+      </div>
     </div>
-    </body>
+  </body>
 </html>

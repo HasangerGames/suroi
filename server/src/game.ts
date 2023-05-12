@@ -50,6 +50,7 @@ export class Game {
 
     constructor() {
         this.world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
+        Settings.maxLinearCorrection = 0; // Prevents collision jitter
         Settings.maxTranslation = 5.0; // Allows bullets to travel fast
 
         // Create world boundaries

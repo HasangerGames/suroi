@@ -16,14 +16,14 @@
 
     margin-top: 3%;
     margin-bottom: 5px;
-}
 
-#splash-logo img {
-    width: 625px;
+    img {
+        width: 625px;
 
-    margin-bottom: 5px;
-    margin-left: auto;
-    margin-right: auto;
+        margin-bottom: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 #splash-modals {
@@ -40,17 +40,22 @@
 
 #splash-news,
 #splash-options,
+#splash-socials,
 #splash-inventory {
     background: $transparent_bg;
 
     width: 370px;
-    height: 280px;
 
     padding: 20px;
-    border-radius: 30px;
+    border-radius: 20px;
 
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+}
+
+#splash-news,
+#splash-inventory {
+    height: 312px;
 }
 
 #splash-news {
@@ -62,7 +67,7 @@
         text-align: center;
 
         margin-top: 0;
-        margin-bottom: 0;
+        margin-bottom: 10px;
 
         a {
             color: inherit;
@@ -78,9 +83,8 @@
         margin-bottom: 15px;
     }
 
-    div {
-        height: 100%;
-        max-height: 220px;
+    > div {
+        height: 240px;
         overflow-y: auto;
         padding-right: 10px;
 
@@ -90,7 +94,7 @@
             .news-date {
                 color: gray;
                 font-size: 14px;
-                
+
                 margin-top: 5px;
                 margin-bottom: 5px;
             }
@@ -107,7 +111,7 @@
                 margin-bottom: 15px;
             }
             p {
-                margin-top: 0px;
+                margin-top: 0;
                 font-size: 13px;
                 line-height: 130%;
             }
@@ -116,18 +120,19 @@
     }
 }
 
-#splash-logo {
-    img {
-        width: 400px;
-    }
+#splash-logo img {
+    width: 550px;
+    user-select: none;
 }
 
 #splash-center {
     margin-right: 15px;
     max-width: 370px;
 }
+
 #splash-options {
     width: 100%;
+
     #username-input {
         background: white;
         color: black;
@@ -140,8 +145,6 @@
 
         font-size: 18px;
         text-align: center;
-        margin-top: 25px;
-        margin-bottom: 15px;
     }
 
     #username-input::placeholder {
@@ -157,8 +160,8 @@
 
         width: 100%;
         height: 50px;
-        margin-top: 15px;
-        margin-bottom: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
 
         border-radius: 10px;
         border: 3px solid $orange;
@@ -168,7 +171,6 @@
         line-height: 1.5;
 
         padding: .375rem 2.25rem .375rem .75rem;
-        margin-top: 0.5rem;
 
         option {
             color: black;
@@ -178,14 +180,11 @@
     .btn {
         font-size: 18px;
         width: 100%;
-
-        margin-top: 0.5rem;
     }
 }
 
 #splash-socials {
-    margin-top: 5px;
-    margin-left: 15px;
+    margin-top: 14px;
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -242,72 +241,5 @@
 
     a {
         color: white;
-    }
-}
-
-#news-page {
-    margin: auto;
-    background: #16161680;
-    width: 80%;
-    //I don't know why no margin bottom shows up
-    margin-bottom: 50px;
-    border-radius: 10px;
-
-    h1 {
-        color: $blue;
-        text-align: center;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 50px;
-    }
-
-    article {
-        width: 80%;
-        background-color: #08122b80;
-        margin: auto;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        padding: 20px;
-        border-radius: 5px;
-
-        .news-date {
-            color: gray;
-            font-size: 14px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-        }
-
-        .news-title {
-            color: $orange;
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        span {
-            color: white;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-        .short-desc {
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-        .long-desc {
-            font-size: 16px;
-            line-height: 150%;
-        }
-        .news-banner {
-            display: flex;
-            margin: auto;
-        }
-        img {
-            height: auto;
-            margin: auto;
-            max-width: 90%;
-        }
-        h2.post-header {
-            font-size: 20px;
-            font-weight: bold;
-            color: lightgrey;
-        }
     }
 }
