@@ -4,12 +4,16 @@ import { type Game } from "../game";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Vector } from "../../../common/src/utils/vector";
-import { bodyFromHitbox } from "../utils";
+import { bodyFromHitbox } from "../utils/misc";
 import { type Body } from "planck";
 import { type Variation } from "../../../common/src/typings";
 
 export class Obstacle extends GameObject {
+    health: number;
+    dead: boolean;
+
     variation: Variation;
+
     body?: Body;
 
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
@@ -28,6 +32,7 @@ export class Obstacle extends GameObject {
     serializePartial(stream: SuroiBitStream): void {
         super.serializePartial(stream);
         stream.writeScale(this.scale);
+        stream.writeBoolean(this.dead);
     }
 
     serializeFull(stream: SuroiBitStream): void {

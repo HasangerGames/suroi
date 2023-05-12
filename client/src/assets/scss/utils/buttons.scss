@@ -23,6 +23,7 @@
 // Button hover interaction
 .btn-darken {
     border: none;
+    transition: filter 0.25s ease;
 }
 
 .link-darken:hover,
@@ -32,7 +33,6 @@
     color: inherit;
 
     filter: brightness(80%);
-    transition: filter 0.25s ease;
 }
 
 // Regular buttons

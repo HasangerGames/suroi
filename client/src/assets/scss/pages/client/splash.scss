@@ -91,6 +91,8 @@
         text-align: left;
 
         article {
+            margin-bottom: 10px;
+
             .news-date {
                 color: gray;
                 font-size: 14px;
@@ -101,21 +103,22 @@
 
             .news-title {
                 color: white;
-                font-size: 18px;
+                font-size: 20px;
                 font-weight: bold;
                 margin-bottom: 5px;
             }
+
             span {
                 color: white;
                 font-size: 13px;
                 margin-bottom: 15px;
             }
+
             p {
                 margin-top: 0;
-                font-size: 13px;
+                font-size: 15px;
                 line-height: 130%;
             }
-            margin-bottom: 10px;
         }
     }
 }
@@ -143,8 +146,20 @@
         border-radius: 10px;
         border: transparent;
 
+        transition: 0.15s box-shadow;
+
         font-size: 18px;
         text-align: center;
+    }
+
+    #username-input:focus,
+    #username-input:active,
+    select:focus,
+    select:active {
+        outline: none;
+        box-shadow: 0 1px 9px 6px rgba(255, 117, 0, 0.5);
+        -webkit-box-shadow: 0 1px 9px 6px rgba(255, 117, 0, 0.5);
+        -moz-box-shadow: 0 1px 9px 6px rgba(255, 117, 0, 0.5);
     }
 
     #username-input::placeholder {
@@ -165,6 +180,8 @@
 
         border-radius: 10px;
         border: 3px solid $orange;
+
+        transition: 0.15s box-shadow;
 
         font-size: 18px;
         text-align-last: center;

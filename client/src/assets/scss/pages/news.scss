@@ -2,68 +2,74 @@
 @import "../pages/client/splash.scss";
 
 #news-page {
-  margin: auto;
-  background: #16161680;
-  width: 80%;
-  // I don't know why no margin bottom shows up
-  margin-bottom: 50px;
-  border-radius: 10px;
-
-  h1 {
-    color: $blue;
-    text-align: center;
-    font-family: "Inter", sans-serif;
-    font-size: 50px;
-  }
-
-  article {
+    background: #16161680;
     width: 80%;
-    background-color: #08122b80;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 20px;
-    border-radius: 5px;
+    max-width: 1200px;
+    margin: auto auto 50px;
+    border-radius: 15px;
 
-    .news-date {
-      color: gray;
-      font-size: 14px;
-      margin-top: 5px;
-      margin-bottom: 10px;
+    h1 {
+        color: $orange;
+        text-align: center;
+        font-family: "Inter", sans-serif;
+        font-size: 50px;
     }
 
-    .news-title {
-      color: $orange;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 10px;
+    article {
+        width: 80%;
+        background-color: #08122b80;
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 25px;
+        border-radius: 5px;
+
+        .news-date {
+            color: gray;
+            font-size: 14px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .news-title {
+            color: $blue;
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        span {
+            color: white;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .short-desc {
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .long-desc {
+            font-size: 16px;
+            line-height: 150%;
+        }
+
+        .news-banner {
+            display: flex;
+            margin: auto;
+        }
+
+        img {
+            height: auto;
+            margin: auto;
+            max-width: 90%;
+        }
+
+        h2.post-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: lightgrey;
+        }
     }
-    span {
-      color: white;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-    .short-desc {
-      font-size: 12px;
-      margin-bottom: 20px;
-    }
-    .long-desc {
-      font-size: 16px;
-      line-height: 150%;
-    }
-    .news-banner {
-      display: flex;
-      margin: auto;
-    }
-    img {
-      height: auto;
-      margin: auto;
-      max-width: 90%;
-    }
-    h2.post-header {
-      font-size: 20px;
-      font-weight: bold;
-      color: lightgrey;
-    }
-  }
 }
