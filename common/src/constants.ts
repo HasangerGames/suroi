@@ -15,31 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-export const Obstacles = [
-    {
-        idString: "tree_oak",
-        variations: [
-            { imageName: "tree_oak_1.svg" },
-            { imageName: "tree_oak_2.svg" },
-            { imageName: "tree_oak_3.svg" }
-        ]
-    },
-    {
-        idString: "rock",
-        variations: [
-            { imageName: "rock_1.svg" },
-            { imageName: "rock_2.svg" },
-            { imageName: "rock_3.svg" },
-            { imageName: "rock_4.svg" },
-            { imageName: "rock_5.svg" }
-        ]
-    },
-    {
-        idString: "bush",
-        imageName: "bush.svg"
-    },
-    {
-        idString: "crate_regular",
-        imageName: "crate_regular.svg"
-    }
-];
+export enum ObjectCategory {
+    Player, Obstacle
+}
+
+export enum PacketType {
+    Join, Joined, Map, Update, Input
+}
+
+export const PACKET_TYPE_BITS = 3;
+export const OBJECT_CATEGORY_BITS = 1;
+export const VARIATION_BITS = 3;
+export const MIN_OBJECT_SCALE = 0.25, MAX_OBJECT_SCALE = 2;

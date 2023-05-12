@@ -18,7 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import Vector2 = Phaser.Math.Vector2;
 import { type Vector } from "../../../../common/src/utils/vector";
 
 export abstract class GameObject {
@@ -26,16 +25,18 @@ export abstract class GameObject {
     type: ObjectType;
 
     game: Game;
+    scene: Phaser.Scene;
 
     position: Vector;
-    rotation: Vector;
+    rotation: number;
 
-    protected constructor(game: Game, type: ObjectType, position: Vector2) {
+    constructor(game: Game, scene: Phaser.Scene) {
         this.game = game;
-        this.type = type;
-        this.position = position;
+        this.scene = scene;
     }
 
     abstract deserializePartial(stream: SuroiBitStream): void;
     abstract deserializeFull(stream: SuroiBitStream): void;
+
+    abstract destroy(): void;
 }

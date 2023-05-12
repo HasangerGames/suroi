@@ -23,13 +23,15 @@ import {
     type Body, Circle, Vec2
 } from "planck";
 import { type Game } from "../game";
-import { ObjectCategory } from "../../../common/src/utils/objectCategory";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectCategory } from "../../../common/src/constants";
 
 export class Player extends GameObject {
     name: string;
+
+    joined = false;
 
     private _health = 100;
     healthDirty = true;
@@ -45,14 +47,27 @@ export class Player extends GameObject {
     movingLeft = false;
     movingRight = false;
 
+    visibleObjects = new Set<GameObject>(); // Objects the player can see
+    nearObjects = new Set<GameObject>(); // Objects the player can see with a 1x scope
+    partialDirtyObjects = new Set<GameObject>(); // Objects that need to be partially updated
+    fullDirtyObjects = new Set<GameObject>(); // Objects that need to be fully updated
+    deletedObjects = new Set<GameObject>(); // Objects that need to be deleted
+
+    private _zoom: number;
+    zoomDirty: boolean;
+    xCullDist: number;
+    yCullDist: number;
+
     socket: WebSocket<PlayerContainer>;
 
     body: Body;
 
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+
         this.socket = socket;
-        this.rotation = Vec2(0, -1);
+        this.rotation = 0;
+        this.zoom = 48;
 
         // Init body
         this.body = game.world.createBody({
@@ -60,6 +75,7 @@ export class Player extends GameObject {
             position,
             fixedRotation: true
         });
+
         this.body.createFixture({
             shape: Circle(1),
             friction: 0.0,
@@ -97,6 +113,60 @@ export class Player extends GameObject {
         this._adrenaline = adrenaline;
     }
 
+    get zoom(): number {
+        return this._zoom;
+    }
+
+    set zoom(zoom: number) {
+        this._zoom = zoom;
+        this.xCullDist = this._zoom * 1.5;
+        this.yCullDist = this._zoom * 1.25;
+        this.zoomDirty = true;
+    }
+
+    updateVisibleObjects(): void {
+        this.movesSinceLastUpdate = 0;
+        const approximateX = Math.round(this.position.x / 10) * 10; const approximateY = Math.round(this.position.y / 10) * 10;
+        this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
+        const visibleAtZoom = this.game.visibleObjects[this.zoom];
+        const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
+        const minX = this.position.x - this.xCullDist;
+        const minY = this.position.y - this.yCullDist;
+        const maxX = this.position.x + this.xCullDist;
+        const maxY = this.position.y + this.yCullDist;
+        for (const object of this.game.dynamicObjects) {
+            if (this === object) continue;
+            if (object.position.x > minX &&
+                object.position.x < maxX &&
+                object.position.y > minY &&
+                object.position.y < maxY) {
+                newVisibleObjects.add(object);
+                if (!this.visibleObjects.has(object)) {
+                    this.fullDirtyObjects.add(object);
+                }
+                if (object instanceof Player && !object.visibleObjects.has(this)) {
+                    object.visibleObjects.add(this);
+                    object.fullDirtyObjects.add(this);
+                }
+            } else {
+                if (this.visibleObjects.has(object)) {
+                    this.deletedObjects.add(object);
+                }
+            }
+        }
+        for (const object of newVisibleObjects) {
+            if (!this.visibleObjects.has(object)) {
+                this.fullDirtyObjects.add(object);
+            }
+        }
+        for (const object of this.visibleObjects) {
+            if (!newVisibleObjects.has(object)) {
+                this.deletedObjects.add(object);
+            }
+        }
+        this.visibleObjects = newVisibleObjects;
+    }
+
     sendPacket(packet: SendingPacket): void {
         const stream = SuroiBitStream.alloc(packet.allocBytes);
         try {
@@ -104,6 +174,7 @@ export class Player extends GameObject {
         } catch (e) {
             console.error("Error serializing packet. Details:", e);
         }
+
         this.sendData(stream);
     }
 
@@ -117,7 +188,9 @@ export class Player extends GameObject {
 
     /* eslint-disable @typescript-eslint/no-empty-function */
 
-    serializePartial(stream: SuroiBitStream): void {}
+    serializePartial(stream: SuroiBitStream): void {
+        super.serializePartial(stream);
+    }
 
     serializeFull(stream: SuroiBitStream): void {}
 }

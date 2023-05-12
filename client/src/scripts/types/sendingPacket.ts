@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
-import { type PacketType } from "../../../../common/src/constants/packetType";
+import { type PacketType } from "../../../../common/src/constants";
 
 export abstract class SendingPacket {
     allocBytes: number;
@@ -29,6 +29,6 @@ export abstract class SendingPacket {
     }
 
     serialize(stream: SuroiBitStream): void {
-        stream.writeUint8(this.type);
+        stream.writePacketType(this.type);
     }
 }

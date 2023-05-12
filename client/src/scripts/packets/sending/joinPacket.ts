@@ -15,18 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Obstacles } from "../constants/obstacles";
+import { SendingPacket } from "../../types/sendingPacket";
+import { type Player } from "../../objects/player";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { PacketType } from "../../../../../common/src/constants";
 
-export enum ObjectCategory {
-    Player, Obstacle
-}
+export class JoinPacket extends SendingPacket {
+    constructor(player: Player) {
+        super(player);
 
-// TODO Better typings
-export interface ObjectDefinition { idString: string }
-
-export function getDefinitionsForCategory(category: ObjectCategory): ObjectDefinition[] {
-    switch (category) {
-        case ObjectCategory.Obstacle: return Obstacles;
+        this.type = PacketType.Join;
+        this.allocBytes = 1;
     }
-    return [];
+
+    serialize(stream: SuroiBitStream): void {
+        super.serialize(stream);
+    }
 }

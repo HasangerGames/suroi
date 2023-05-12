@@ -18,17 +18,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
 import Phaser from "phaser";
-import Vector2 = Phaser.Math.Vector2;
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../common/src/utils/objectCategory";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GameScene } from "../scenes/gameScene";
-import { type Vector } from "../../../../common/src/utils/vector";
+import Vector2 = Phaser.Math.Vector2;
+import { ObjectCategory } from "../../../../common/src/constants";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class Player extends GameObject {
     name: string;
-
-    serverData: { rotation: Vector };
 
     private _health = 100;
     healthDirty = true;
@@ -49,16 +46,29 @@ export class Player extends GameObject {
     rightFist: Phaser.GameObjects.Arc;
     container: Phaser.GameObjects.Container;
 
-    scene: GameScene;
+    distSinceLastFootstep = 0;
 
-    constructor(scene: GameScene, game: Game, name: string, socket: WebSocket, position: Vector2) {
-        super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
-        this.scene = scene;
-        this.serverData = { rotation: new Vector2(0, -1) };
+    constructor(game: Game, scene: GameScene, name: string, socket: WebSocket, position: Vector2) {
+        super(game, scene);
+        this.type = ObjectType.categoryOnly(ObjectCategory.Player);
+        this.position = position;
+
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
         this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.container = scene.add.container(position.x, position.y, [this.body, this.leftFist, this.rightFist]);
+    }
+
+    createPolygon(radius: number, sides: number): number[][] {
+        const points: number[][] = [];
+        for (let i = 0; i < sides; i++) {
+            const angle = (2 * Math.PI * i) / sides;
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+            points.push([x, y]);
+        }
+
+        return points;
     }
 
     get health(): number {
@@ -82,4 +92,11 @@ export class Player extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {}
 
     deserializeFull(stream: SuroiBitStream): void {}
+
+    destroy(): void {
+        this.body.destroy(true);
+        this.leftFist.destroy(true);
+        this.rightFist.destroy(true);
+        this.container.destroy(true);
+    }
 }

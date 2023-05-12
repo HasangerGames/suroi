@@ -16,15 +16,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../common/src/constants/packetType";
 import { type SendingPacket } from "./types/sendingPacket";
 import { type Player } from "./objects/player";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import core from "./core";
+import { PacketType } from "../../../common/src/constants";
+import { type GameObject } from "./types/gameObject";
+import { JoinedPacket } from "./packets/receiving/joinedPacket";
 
 export class Game {
     socket: WebSocket;
 
+    objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
 
@@ -34,17 +37,31 @@ export class Game {
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
-        this.socket.onmessage = (message: MessageEvent) => {
+        // Start the Phaser scene when the socket connects
+        this.socket.onopen = (): void => {
+            core.phaser?.scene.start("game");
+        };
+
+        // Handle incoming messages
+        this.socket.onmessage = (message: MessageEvent): void => {
             const stream = new SuroiBitStream(message.data);
-            switch (stream.readUint8()) {
+            switch (stream.readPacketType()) {
+                case PacketType.Joined: {
+                    new JoinedPacket(this.activePlayer).deserialize(stream);
+                    break;
+                }
                 case PacketType.Update: {
                     new UpdatePacket(this.activePlayer).deserialize(stream);
+                    break;
                 }
             }
         };
 
-        $("canvas").addClass("active");
-        core.phaser?.scene.start("game");
+        // Shut down the Phaser scene when the socket closes
+        this.socket.onclose = (): void => {
+            $("canvas").removeClass("active");
+            core.phaser?.scene.stop("game");
+        };
     }
 
     sendPacket(packet: SendingPacket): void {

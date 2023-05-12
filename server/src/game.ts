@@ -19,15 +19,31 @@ import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
 import {
-    Box, Settings, Vec2, World
+    Box,
+    Settings,
+    Vec2,
+    World
 } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
 import { type PlayerContainer } from "./server";
 import { UpdatePacket } from "./packets/sending/updatePacket";
+import { type GameObject } from "./types/gameObject";
+import { Map } from "./map";
 
 export class Game {
+    map: Map;
+
     world: World;
+
+    staticObjects = new Set<GameObject>(); // A Set of all the static objects in the world
+    dynamicObjects = new Set<GameObject>(); // A Set of all the dynamic (moving) objects in the world
+    visibleObjects = {};
+    updateObjects = false;
+
+    partialDirtyObjects = new Set<GameObject>();
+    fullDirtyObjects = new Set<GameObject>();
+    deletedObjects = new Set<GameObject>();
 
     players: Set<Player> = new Set<Player>();
     tickTimes: number[] = [];
@@ -42,6 +58,9 @@ export class Game {
         this.createWorldBoundary(360, 720.25, 360, 0);
         this.createWorldBoundary(720.25, 360, 0, 360);
 
+        // Generate map
+        this.map = new Map(this);
+
         // Start the tick loop
         this.tick(30);
     }
@@ -51,17 +70,19 @@ export class Game {
             type: "static",
             position: Vec2(x, y)
         });
+
         boundary.createFixture({ shape: Box(width, height) });
     }
 
     tick(delay: number): void {
         setTimeout(() => {
             const tickStart = Date.now();
-
             this.world.step(30);
 
             // First loop over players: Calculate movement
             for (const p of this.players) {
+                if (!p.joined) continue; // TODO Create a separate Set for active players
+
                 // This system allows opposite movement keys to cancel each other out.
                 let xMovement = 0; let yMovement = 0;
                 if (p.movingUp) yMovement++;
@@ -72,17 +93,61 @@ export class Game {
                 p.setVelocity(xMovement * speed, yMovement * speed);
             }
 
-            // Second loop over players: Send updates
+            // Second loop over players: calculate visible objects & send updates
             for (const p of this.players) {
+                if (!p.joined) continue;
+
+                // Calculate visible objects
+                if (p.movesSinceLastUpdate > 8 || this.updateObjects) {
+                    p.updateVisibleObjects();
+                }
+
+                // Full objects
+                if (this.fullDirtyObjects.size !== 0) {
+                    for (const object of this.fullDirtyObjects) {
+                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
+                            p.fullDirtyObjects.add(object);
+                        }
+                    }
+                }
+
+                // Partial objects
+                if (this.partialDirtyObjects.size !== 0) { // && !p.fullUpdate) {
+                    for (const object of this.partialDirtyObjects) {
+                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
+                            p.partialDirtyObjects.add(object);
+                        }
+                    }
+                }
+
+                // Deleted objects
+                if (this.deletedObjects.size !== 0) {
+                    for (const object of this.deletedObjects) {
+                        if (p.visibleObjects.has(object) && object !== p) {
+                            p.deletedObjects.add(object);
+                        }
+                    }
+                }
+
                 p.sendPacket(new UpdatePacket(p));
             }
 
+            // Reset everything
+            if (this.fullDirtyObjects.size !== 0) this.fullDirtyObjects = new Set<GameObject>();
+            if (this.partialDirtyObjects.size !== 0) this.partialDirtyObjects = new Set<GameObject>();
+            if (this.deletedObjects.size !== 0) this.deletedObjects = new Set<GameObject>();
+
             // Record performance and start the next tick
+            // THIS TICK COUNTER IS WORKING CORRECTLY!
+            // It measures the time it takes to calculate a tick, not the time between ticks.
             const tickTime = Date.now() - tickStart;
-            this.tickTimes.push(tickTime + delay);
+            this.tickTimes.push(tickTime);
 
             if (this.tickTimes.length >= 200) {
-                log(`Average ms/tick: ${this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length}`);
+                const mspt: number = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+                log(`Average ms/tick: ${mspt}`);
+                log(`Server load: ${((mspt / 30) * 100).toFixed(1)}%`);
+                log("===========================");
                 this.tickTimes = [];
             }
 
@@ -94,10 +159,11 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         const player = new Player(this, "Player", socket, Vec2(360, 360));
         this.players.add(player);
+        this.updateObjects = true;
+        player.updateVisibleObjects();
         return player;
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     removePlayer(player: Player): void {
         this.players.delete(player);
         try {

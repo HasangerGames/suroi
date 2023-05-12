@@ -22,8 +22,10 @@ import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
-
+import gsap from "gsap";
 import Vector2 = Phaser.Math.Vector2;
+import { Obstacles } from "../../../../common/src/definitions/obstacles";
+import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
@@ -36,9 +38,11 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
 
-        // for (const object of Obstacles) {
-        //     this.load.svg(object.idString, require(`../../assets/img/map/${object.imageName}`));
-        // }
+        for (const object of Obstacles.definitions) {
+            for (let i = 0; i < object.images.length; i++) {
+                this.load.svg(`${object.idString}_${i}`, require(`../../assets/img/game/${object.images[i]}`));
+            }
+        }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
         this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
@@ -46,9 +50,7 @@ export class GameScene extends Phaser.Scene {
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;
-            const angle: number = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
-            this.player.rotation = new Vector2(Math.cos(angle), Math.sin(angle));
-            // this.player.container.setRotation(angle);
+            this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
             this.player.inputsDirty = true;
         });
 
@@ -56,12 +58,13 @@ export class GameScene extends Phaser.Scene {
             if (pointer.leftButtonDown() && !this.player.punching) {
                 this.player.punching = true;
                 const altFist: boolean = Math.random() < 0.5;
-                this.tweens.add({
-                    targets: altFist ? this.player.leftFist : this.player.rightFist,
+                gsap.to(altFist ? this.player.leftFist : this.player.rightFist, {
                     x: 75,
                     y: altFist ? 10 : -10,
-                    duration: 110,
+                    duration: 0.11,
+                    repeat: 1,
                     yoyo: true,
+                    ease: "none",
                     onComplete: () => { this.player.punching = false; }
                 });
                 this.sound.add("swing").play();
@@ -83,6 +86,7 @@ export class GameScene extends Phaser.Scene {
                 this.player[valueToToggle] = true;
                 this.player.inputsDirty = true;
             });
+
             key.on("up", () => {
                 this.player[valueToToggle] = false;
                 this.player.inputsDirty = true;
@@ -100,33 +104,27 @@ export class GameScene extends Phaser.Scene {
         // Draw grid
         const GRID_WIDTH = 7200;
         const GRID_HEIGHT = 7200;
-        const CELL_SIZE = 240;
+        const CELL_SIZE = 160;
+
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
-            this.add.line(x, 0, x, 0, x, GRID_HEIGHT * 2).setOrigin(0, 0).setStrokeStyle(25, 0x000000, 0.25);
+            this.add.line(x, 0, x, 0, x, GRID_HEIGHT * 2, 0x000000, 0.25).setOrigin(0, 0);
         }
+
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
-            this.add.line(0, y, 0, y, GRID_WIDTH * 2, y).setOrigin(0, 0).setStrokeStyle(25, 0x000000, 0.25);
+            this.add.line(0, y, 0, y, GRID_WIDTH * 2, y, 0x000000, 0.25).setOrigin(0, 0);
         }
 
         // Create the player
-        this.activeGame.activePlayer = new Player(this, this.activeGame, "Player", this.activeGame.socket, new Vector2(0, 0));
+        this.activeGame.activePlayer = new Player(this.activeGame, this, "Player", this.activeGame.socket, new Vector2(0, 0));
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.container);
 
         // Start the tick loop
         this.tick();
-    }
 
-    createPolygon(radius: number, sides: number): number[][] {
-        const points: number[][] = [];
-        for (let i = 0; i < sides; i++) {
-            const angle = (2 * Math.PI * i) / sides;
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-            points.push([x, y]);
-        }
-        return points;
+        // Send a packet indicating that the game is now active
+        this.activeGame.sendPacket(new JoinPacket(this.player));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -136,10 +134,8 @@ export class GameScene extends Phaser.Scene {
         if (this.player?.inputsDirty) {
             this.player.inputsDirty = false;
             this.activeGame.sendPacket(new InputPacket(this.player));
-            /* const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
-            this.sound.add(sound).play();
-            this.stepsSinceLastSound = 0; */
         }
+
         setTimeout(() => { this.tick(); }, 30);
     }
 }

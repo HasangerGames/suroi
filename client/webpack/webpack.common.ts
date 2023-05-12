@@ -90,17 +90,17 @@ const config: Configuration = {
             {
                 test: /\.(ogg|mp3|wav)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/audio/static/[contenthash:8][ext]" }
+                generator: { filename: "audio/[name].[contenthash:8][ext]" }
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/img/static/[contenthash:8][ext]" }
+                generator: { filename: "img/[name].[contenthash:8][ext]" }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,
                 type: "asset/resource",
-                generator: { filename: "assets/fonts/static/[contenthash:8][ext]" }
+                generator: { filename: "fonts/[name].[contenthash:8][ext]" }
             }
         ]
     },
@@ -183,7 +183,26 @@ const config: Configuration = {
                 minifyURLs: true
             }
         }),
-        new MiniCSSExtractPlugin({ filename: "assets/css/[name].[contenthash:8].css" }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../src/pages/news.html"),
+            chunks: ["news"],
+            filename: "./news/index.html",
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
+        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 
