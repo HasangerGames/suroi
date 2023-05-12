@@ -56,7 +56,7 @@ export class Player extends GameObject {
         this.body = scene.add.circle(0, 0, 48, 0xffdbac);
         this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
         this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
-        this.container = scene.add.container(position.x, position.y, [this.body, this.leftFist, this.rightFist]);
+        this.container = scene.add.container(position.x, position.y, [this.body, this.leftFist, this.rightFist]).setDepth(1);
     }
 
     createPolygon(radius: number, sides: number): number[][] {
