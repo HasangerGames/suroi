@@ -16,6 +16,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import "./assets/scss/pages/client.scss";
-import "./scripts/main";
+import "./scripts/ui";
 import "./scripts/ui/newsgen.js";
 import "./assets/json/newsposts.json";
