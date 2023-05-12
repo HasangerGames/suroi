@@ -25,11 +25,11 @@ export class Map {
 
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (!Config.debug.disableMapGeneration) {
+            this.generateObstacles("tree_oak", 200);
+            this.generateObstacles("tree_pine", 15);
             this.generateObstacles("rock", 200);
             this.generateObstacles("crate_regular", 150);
             this.generateObstacles("barrel", 150);
-            this.generateObstacles("tree_oak", 200);
-            this.generateObstacles("tree_pine", 15);
         } else {
             // Obstacle debug code goes here
         }
