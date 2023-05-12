@@ -31,6 +31,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     rotation: "full" | "limited" | "none"
     variations?: number
     images: string[]
+    depth?: number // the obstacle z index
 }
 
 export class Obstacles extends ObjectDefinitions {
@@ -43,7 +44,8 @@ export class Obstacles extends ObjectDefinitions {
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
             variations: 3,
-            images: ["tree_oak_1.svg", "tree_oak_2.svg", "tree_oak_3.svg"]
+            images: ["tree_oak_1.svg", "tree_oak_2.svg", "tree_oak_3.svg"],
+            depth: 2
         },
         {
             idString: "tree_pine",
@@ -51,7 +53,8 @@ export class Obstacles extends ObjectDefinitions {
             hitbox: new CircleHitbox(8),
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
-            images: ["tree_pine.svg"]
+            images: ["tree_pine.svg"],
+            depth: 2
         },
         {
             idString: "rock",

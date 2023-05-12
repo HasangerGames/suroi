@@ -38,7 +38,8 @@ export class Obstacle extends GameObject {
         this.variation = stream.readVariation();
         this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, `${this.type.idString}_${this.variation}`)
             .setRotation(this.rotation)
-            .setScale(this.scale);
+            .setScale(this.scale)
+            .setDepth(definition.depth ?? 0);
     }
 
     destroy(): void {
