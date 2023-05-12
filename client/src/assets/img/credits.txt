@@ -1,7 +1,11 @@
 Main logo: Henry Sanger
 Small/square logo: noobsimp
-Regular crate: Henry Sanger
-Soviet crate: DogEnjoyer
-Rocks: Leo
-Oak trees: Asultra
+Barrel: 123OP
+Barrel residue: Dachselt
 Bush: canva.com
+Regular crate: Henry Sanger
+Soviet crate: Henry Sanger, DogEnjoyer
+Death marker: Henry Sanger, 123OP
+Rocks: Leo
+Oak trees: Asultra, Henry Sanger
+Pine tree: SquareCube
