@@ -41,11 +41,17 @@ export class UpdatePacket extends SendingPacket {
         stream.writeRotation(p.rotation);
 
         // Health and adrenaline
-        /* stream.writeBoolean(p.healthDirty);
-        if (p.healthDirty) stream.writeFloat(p.health, 0, 100, 8);
+        stream.writeBoolean(p.healthDirty);
+        if (p.healthDirty) {
+            stream.writeFloat(p.health, 0, 100, 8);
+            p.healthDirty = false;
+        }
 
         stream.writeBoolean(p.adrenalineDirty);
-        if (p.adrenalineDirty) stream.writeFloat(p.adrenaline, 0, 100, 8); */
+        if (p.adrenalineDirty) {
+            stream.writeFloat(p.adrenaline, 0, 100, 8);
+            p.healthDirty = false;
+        }
 
         //
         // Objects

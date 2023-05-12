@@ -1,3 +1,4 @@
+@import "../../palette.scss";
 // Game canvas
 body > canvas {
     display: none;
@@ -10,4 +11,41 @@ body > canvas {
 
 body > canvas.active {
     display: block !important;
+}
+
+#game-ui {
+    z-index: 1;
+}
+
+#health-bar-container {
+    pointer-events: none;
+    background: $transparent_bg;
+    border: 5px solid $transparent_bg;
+    border-radius: 8px;
+    width: 300px;
+    height: 45px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    #health-bar, #health-bar-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 4px;
+        height: 100%;
+        width: 100%;
+    }
+
+    #health-bar {
+        background-color: $light;
+        transition: width ease-in-out 50ms;
+    }
+
+    #health-bar-animation {
+        opacity: 40%;
+        background: #ff0000;
+        transition: width ease-in-out 800ms;
+    }
 }

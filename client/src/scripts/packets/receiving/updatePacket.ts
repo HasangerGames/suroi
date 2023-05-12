@@ -63,6 +63,18 @@ export class UpdatePacket extends ReceivingPacket {
             p.distSinceLastFootstep = 0;
         }
 
+        // health dirty
+        if (stream.readBoolean()) {
+            p.health = stream.readFloat(0, 100, 8);
+            $("#health-bar").width(`${p.health}%`);
+            $("#health-bar-animation").width(`${p.health}%`);
+        }
+
+        // adrenaline dirty
+        if (stream.readBoolean()) {
+            p.adrenaline = stream.readFloat(0, 100, 8);
+        }
+
         //
         // Objects
         //
