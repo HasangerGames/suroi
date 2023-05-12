@@ -103,6 +103,7 @@ export class Player extends GameObject {
 
     set health(health: number) {
         this._health = health;
+        this.healthDirty = true;
     }
 
     get adrenaline(): number {
@@ -111,6 +112,7 @@ export class Player extends GameObject {
 
     set adrenaline(adrenaline: number) {
         this._adrenaline = adrenaline;
+        this.adrenalineDirty = true;
     }
 
     get zoom(): number {
