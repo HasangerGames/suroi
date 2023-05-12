@@ -31,15 +31,14 @@
     justify-content: center;
 
     width: 100vw;
+    max-height: 299px;
 
     text-align: center;
 
     font-size: 20px;
 }
 
-//An error occurs if you use an aspect ratio of 4:3 or lower where the splash-options / splash-center appears much larger than it's supposed to. 
 #splash-news,
-#splash-socials,
 #splash-options,
 #splash-inventory {
     background: #16161680;
@@ -48,7 +47,7 @@
     height: 280px;
 
     padding: 20px;
-    border-radius: 20px;
+    border-radius: 30px;
 
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -76,7 +75,7 @@
     }
 
     ::-webkit-scrollbar-track {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     div {
@@ -88,8 +87,6 @@
         text-align: left;
 
         article {
-            margin-bottom: 25px;
-
             .news-date {
                 color: gray;
                 font-size: 14px;
@@ -112,7 +109,7 @@
             p {
                 margin-top: 0px;
                 font-size: 13px;
-                line-height: 120%;
+                line-height: 130%;
             }
             margin-bottom: 10px;
         }
@@ -127,6 +124,7 @@
 
 #splash-center {
     margin-right: 15px;
+    max-width: 370px;
 }
 #splash-options {
     width: 100%;
@@ -204,8 +202,8 @@
 
 #splash-more {
     position: absolute;
-    top: 1rem;
     right: 1rem;
+    top: 1rem;
 
     button {
         width: 136px;
