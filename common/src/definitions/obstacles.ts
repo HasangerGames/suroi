@@ -50,7 +50,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "tree_pine",
             scale: { min: 0.9, max: 1.1 },
-            hitbox: new CircleHitbox(8),
+            hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
             images: ["tree_pine.svg"],
@@ -58,8 +58,8 @@ export class Obstacles extends ObjectDefinitions {
         },
         {
             idString: "rock",
-            scale: { min: 0.85, max: 1.15 },
-            hitbox: new CircleHitbox(5.5),
+            scale: { min: 0.9, max: 1.1 },
+            hitbox: new CircleHitbox(5.25),
             spawnHitbox: new CircleHitbox(5.5),
             rotation: "full",
             variations: 5,
