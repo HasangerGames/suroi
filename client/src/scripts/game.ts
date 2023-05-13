@@ -13,10 +13,13 @@ export class Game {
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
+    gameStarted: boolean;
 
     connect(address: string): void {
         if (address === undefined) return;
+        if (this.gameStarted) return;
 
+        this.gameStarted = true;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
@@ -45,6 +48,7 @@ export class Game {
             $("canvas").removeClass("active");
             $("#splash-ui").removeClass("fade-out");
             core.phaser?.scene.stop("game");
+            this.gameStarted = false;
         };
     }
 
