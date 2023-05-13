@@ -15,10 +15,10 @@ body > #splash-ui {
     opacity: 1;
 }
 
-body:has(canvas.active) > #splash-ui {
+.fade-out {
     visibility: hidden !important;
-    opacity: 0;
-    transition: visibility 0.25s ease, opacity 0.25s linear;
+    opacity: 0 !important;
+    transition: visibility 0.5s ease, opacity 0.5s linear;
 }
 
 #game-ui {
