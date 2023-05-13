@@ -1,0 +1,6 @@
+.fade-out {
+    visibility: hidden !important;
+    opacity: 0 !important;
+
+    transition: visibility 0.25s ease, opacity 0.25s linear;
+}

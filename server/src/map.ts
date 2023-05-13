@@ -97,7 +97,7 @@ export class Map {
                 console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
             }
             collided = false;
-            position = randomVector(10, this.width-10, 10, this.height-10);
+            position = randomVector(10, this.width - 10, 10, this.height - 10);
             const hitbox: Hitbox = (type.definition as ObstacleDefinition).spawnHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
                 if (object.spawnHitbox.collidesWith(hitbox)) collided = true;

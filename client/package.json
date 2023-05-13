@@ -38,7 +38,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "expose-loader": "^4.1.0",
     "html-webpack-plugin": "^5.5.1",
-    "jquery": "^3.6.4",
+    "jquery": "^3.7.0",
     "mini-css-extract-plugin": "^2.7.5",
     "postcss": "^8.4.23",
     "postcss-import": "^15.1.0",
