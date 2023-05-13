@@ -38,9 +38,7 @@
     font-size: 20px;
 }
 
-#splash-news,
-#splash-options,
-#splash-inventory {
+#splash-news, #splash-options, #splash-inventory {
     background: $transparent_bg;
 
     width: 370px;
@@ -51,8 +49,8 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
-#splash-news,
-#splash-inventory {
+
+#splash-news, #splash-inventory {
     height: 312px;
 }
 
@@ -167,7 +165,9 @@
     select {
         color: white;
 
-        background: transparent url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23ffffff%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e') no-repeat right 10px center;
+        background: transparent
+            url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23ffffff%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e")
+            no-repeat right 10px center;
         background-size: 15px 15px;
         appearance: none;
 
@@ -185,7 +185,7 @@
         text-align-last: center;
         line-height: 1.5;
 
-        padding: .375rem 2.25rem .375rem .75rem;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
 
         option {
             color: black;
