@@ -1,25 +1,10 @@
 @import "../../palette.scss";
+@import "../../utils/animations.scss";
 
 body > canvas {
     cursor: crosshair;
 }
 
-body > #splash-ui {
-    display: block;
-    background-color: var(--backgroundColor);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 1;
-}
-
-.fade-out {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    transition: visibility 0.25s ease, opacity 0.25s linear;
-}
 
 #game-ui {
     z-index: 1;
