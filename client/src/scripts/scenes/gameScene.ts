@@ -23,10 +23,15 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
 
         for (const object of Obstacles.definitions) {
-            for (let i = 0; i < (object.variations ?? 1); i++) {
-                this.load.svg(`${object.idString}_${i}`, require(`../../assets/img/game/${object.idString}_${i}.svg`));
+            if (object.variations === undefined) {
+                this.loadImage(`${object.idString}`, `${object.idString}.svg`);
+            } else {
+                for (let i = 1; i <= object.variations; i++) {
+                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_${i}.svg`);
+                }
             }
             //this.load.svg(`${object.idString}_residue`, require(`../../assets/img/game/${object.idString}_residue.svg`));
+            this.loadSound(`${object.idString}_destroyed`, `sfx/${object.idString}_destroyed.mp3`);
         }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
@@ -62,6 +67,14 @@ export class GameScene extends Phaser.Scene {
         this.addKey("D", "movingRight");
 
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
+    }
+
+    private loadImage(name: string, path: string): void {
+        this.load.svg(name, require(`../../assets/img/game/${path}`));
+    }
+
+    private loadSound(name: string, path: string): void {
+        this.load.audio(name, require(`../../assets/audio/${path}.mp3`));
     }
 
     private addKey(keyString: string, valueToToggle: string): void {
