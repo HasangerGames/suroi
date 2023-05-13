@@ -96,6 +96,26 @@
       </div>
     </div>
     <div id="game-ui" style="display: none">
+      <div class="modal" id="game-menu">
+        <div class="modal-settings-item">
+          <label>
+            <span>Master Volume</span>
+            <input class type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1" />
+          </label>
+        </div>
+        <div class="modal-settings-item">
+          <label>
+            <span>SFX Volume</span>
+            <input class type="range" max="1" min="0" id="slider-sound-volume" step="0.1" value="1" />
+          </label>
+        </div>
+        <div class="modal-settings-item">
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-quite-game" disabled>Quit</button>
+        </div>
+        <div class="modal-settings-item">
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-resume-game">Resume</button>
+        </div>
+      </div>
       <div id="health-bar-container">
         <div id="health-bar-animation"></div>
         <div id="health-bar"></div>

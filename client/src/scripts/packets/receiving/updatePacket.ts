@@ -18,7 +18,7 @@ export class UpdatePacket extends ReceivingPacket {
         const p: Player = this.player;
         if (p === undefined) return;
         const game: Game = p.game;
-        const scene: Phaser.Scene = p.scene;
+        // const scene: Phaser.Scene = p.scene;
 
         //
         // Active player data
@@ -42,7 +42,10 @@ export class UpdatePacket extends ReceivingPacket {
         p.distSinceLastFootstep += distanceSquared(oldX, oldY, p.position.x, p.position.y);
         if (p.distSinceLastFootstep > 10) {
             const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
-            scene.sound.add(sound).play();
+
+            // scene.sound.add(sound).play();
+            p.scene.playSound(sound);
+
             p.distSinceLastFootstep = 0;
         }
 

@@ -19,11 +19,16 @@ export class MenuScene extends Phaser.Scene {
 
     startMusic(): void {
         if (this.menuMusic === undefined) {
-            this.menuMusic = this.sound.add("menu");
+            this.menuMusic = this.sound.add("menu", { volume: 1 });
             this.menuMusic.setLoop(true);
         }
 
         this.menuMusic.play();
+    }
+
+    setMusicVolume(volume: number): void {
+        if (this.menuMusic === undefined) return;
+        this.menuMusic.volume = volume;
     }
 
     stopMusic(): void {
