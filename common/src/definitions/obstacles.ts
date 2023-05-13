@@ -42,7 +42,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "rock",
             scale: { min: 0.9, max: 1.1 },
-            hitbox: new CircleHitbox(5.25),
+            hitbox: new CircleHitbox(5.15),
             spawnHitbox: new CircleHitbox(5.5),
             rotation: "full",
             variations: 5,

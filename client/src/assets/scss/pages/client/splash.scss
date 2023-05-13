@@ -14,7 +14,7 @@
 
     width: 100%;
 
-    margin-top: 3%;
+    margin-top: 1%;
     margin-bottom: 5px;
 
     img {
@@ -40,7 +40,6 @@
 
 #splash-news,
 #splash-options,
-#splash-socials,
 #splash-inventory {
     background: $transparent_bg;
 
@@ -52,7 +51,6 @@
     margin-left: 0.5rem;
     margin-right: 0.5rem;
 }
-
 #splash-news,
 #splash-inventory {
     height: 312px;
@@ -188,6 +186,11 @@
     display: flex;
     justify-content: center;
     gap: 10px;
+    background: $transparent_bg;
+    padding: 20px;
+    border-radius: 20px;
+    margin-left: 10px;
+    margin-right: -10px;
 }
 
 #splash-inventory {
