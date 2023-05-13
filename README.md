@@ -36,16 +36,10 @@ pnpm full-install
 This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
 
 ## Development
-To run the game locally, open two terminals in the project root.
+To run the game locally, open a terminal in the project root and run the following:
 
-In one terminal, run the following:
 ```sh
-cd client && pnpm dev
-```
-
-In the other, run the following:
-```sh
-cd server && pnpm dev
+pnpm dev
 ```
 To open the game, go to http://127.0.0.1:3000 in your browser.
 

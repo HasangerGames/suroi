@@ -9,5 +9,6 @@ export class JoinedPacket extends ReceivingPacket {
 
     deserialize(stream: SuroiBitStream): void {
         $("canvas").addClass("active");
+        $("#splash-ui").addClass("fade-out");
     }
 }

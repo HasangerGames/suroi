@@ -85,7 +85,6 @@ export class GameScene extends Phaser.Scene {
         (this.scene.get("menu") as MenuScene).stopMusic();
 
         $("#game-ui").show();
-        $("#splash-ui").hide();
 
         // Draw grid
         const GRID_WIDTH = 7200;
