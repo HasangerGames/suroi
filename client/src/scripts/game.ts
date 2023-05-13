@@ -43,9 +43,8 @@ export class Game {
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
             $("canvas").removeClass("active");
+            $("#splash-ui").removeClass("fade-out");
             core.phaser?.scene.stop("game");
-            $("#splash-ui").show();
-            $("#game-ui").hide();
         };
     }
 

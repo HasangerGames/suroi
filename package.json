@@ -9,7 +9,10 @@
     "build": "cd server && pnpm build && cd ../client && pnpm build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
     "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
-    "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci"
+    "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci",
+    "dev": "npm-run-all --parallel dev:*",
+    "dev:client": "cd client && pnpm dev",
+    "dev:server": "cd server && pnpm dev"
   },
   "keywords": [
     "nodejs",
@@ -17,6 +20,7 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
+    "npm-run-all": "^4.1.5",
     "typescript": "^5.0.4"
   }
 }
