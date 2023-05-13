@@ -10,7 +10,7 @@ import { type Variation } from "../../../common/src/typings";
 
 export class Obstacle extends GameObject {
     health: number;
-    dead: boolean;
+    destroyed: boolean;
 
     variation: Variation;
 
@@ -32,7 +32,7 @@ export class Obstacle extends GameObject {
     serializePartial(stream: SuroiBitStream): void {
         super.serializePartial(stream);
         stream.writeScale(this.scale);
-        stream.writeBoolean(this.dead);
+        stream.writeBoolean(this.destroyed);
     }
 
     serializeFull(stream: SuroiBitStream): void {
