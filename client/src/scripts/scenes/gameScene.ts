@@ -12,6 +12,7 @@ import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
+    sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
 
     constructor() {
         super("game");
@@ -86,7 +87,7 @@ export class GameScene extends Phaser.Scene {
 
         $("#game-ui").show();
 
-        // Draw grid
+        // Draw the grid
         const GRID_WIDTH = 7200;
         const GRID_HEIGHT = 7200;
         const CELL_SIZE = 160;
@@ -112,8 +113,14 @@ export class GameScene extends Phaser.Scene {
         this.activeGame.sendPacket(new JoinPacket(this.player));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    update(): void {}
+    playSound(name: string): void {
+        const sound: Phaser.Sound.BaseSound | undefined = this.sounds.get(name);
+        if (sound === undefined) {
+            console.warn(`Unknown sound: "${name}"`);
+            return;
+        }
+        sound.play();
+    }
 
     tick(): void {
         if (this.player?.inputsDirty) {
