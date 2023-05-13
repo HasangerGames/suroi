@@ -13,10 +13,13 @@ export class Game {
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
+    gameStarted: boolean;
 
     connect(address: string): void {
         if (address === undefined) return;
+        if (this.gameStarted) return;
 
+        this.gameStarted = true;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
@@ -42,10 +45,15 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            $("canvas").removeClass("active");
-            $("#splash-ui").removeClass("fade-out");
-            core.phaser?.scene.stop("game");
+            this.endGame();
         };
+    }
+
+    endGame(): void {
+        $("canvas").removeClass("active");
+        $("#splash-ui").removeClass("fade-out");
+        core.phaser?.scene.stop("game");
+        this.gameStarted = false;
     }
 
     sendPacket(packet: SendingPacket): void {
