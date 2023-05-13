@@ -9,7 +9,7 @@
 
 ## Artists
 - Asultra
-- Henry Sanger
+- Henry Sanger \(https://github.com/hsanger)
 - Leo \(https://github.com/leo78913)
 - SquareCube
 - DogEnjoyer
