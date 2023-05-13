@@ -5,7 +5,7 @@ import { type ObstacleDefinition } from "../../../../common/src/definitions/obst
 
 export class Obstacle extends GameObject {
     scale: number;
-    dead: boolean;
+    destroyed: boolean;
 
     variation: Variation;
     image: Phaser.GameObjects.Image;
@@ -13,8 +13,8 @@ export class Obstacle extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {
         this.scale = stream.readScale();
         if (this.image !== undefined) this.image.setScale(this.scale);
-        const dead: boolean = stream.readBoolean();
-        if (!this.dead && dead) {
+        const destroyed: boolean = stream.readBoolean();
+        if (!this.destroyed && destroyed) {
             this.image.setTexture("");
         }
     }
