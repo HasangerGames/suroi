@@ -5,6 +5,9 @@ import {
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
+    material: string
+    health: number
+    invulnerable?: boolean
     scale: {
         min: number
         max: number
@@ -13,7 +16,6 @@ export interface ObstacleDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     rotation: "full" | "limited" | "none"
     variations?: number
-    images: string[]
     depth?: number // the obstacle z index
 }
 
@@ -22,55 +24,61 @@ export class Obstacles extends ObjectDefinitions {
     static readonly definitions: ObstacleDefinition[] = [
         {
             idString: "tree_oak",
+            material: "tree",
+            health: 100,
             scale: { min: 0.9, max: 1.1 },
             hitbox: new CircleHitbox(4.5),
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
             variations: 3,
-            images: ["tree_oak_1.svg", "tree_oak_2.svg", "tree_oak_3.svg"],
             depth: 2
         },
         {
             idString: "tree_pine",
+            material: "tree",
+            health: 100,
             scale: { min: 0.9, max: 1.1 },
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
-            images: ["tree_pine.svg"],
             depth: 2
         },
         {
             idString: "rock",
+            material: "stone",
+            health: 100,
             scale: { min: 0.9, max: 1.1 },
             hitbox: new CircleHitbox(5.25),
             spawnHitbox: new CircleHitbox(5.5),
             rotation: "full",
-            variations: 5,
-            images: ["rock_1.svg", "rock_2.svg", "rock_3.svg", "rock_4.svg", "rock_5.svg"]
+            variations: 5
         },
         {
             idString: "bush",
+            material: "bush",
+            health: 100,
             scale: { min: 0.75, max: 1.25 },
             hitbox: new CircleHitbox(1.5),
             spawnHitbox: new CircleHitbox(3),
-            rotation: "full",
-            images: ["bush.svg"]
+            rotation: "full"
         },
         {
             idString: "crate_regular",
+            material: "wood",
+            health: 100,
             scale: { min: 1.0, max: 1.0 },
             hitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
             spawnHitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
-            rotation: "none",
-            images: ["crate_regular.svg"]
+            rotation: "none"
         },
         {
             idString: "barrel",
+            material: "metal",
+            health: 100,
             scale: { min: 1.0, max: 1.0 },
             hitbox: new CircleHitbox(5.2),
             spawnHitbox: new CircleHitbox(5.2),
-            rotation: "full",
-            images: ["barrel.svg"]
+            rotation: "full"
         }
     ];
 }

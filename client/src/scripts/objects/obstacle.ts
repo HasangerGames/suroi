@@ -15,7 +15,8 @@ export class Obstacle extends GameObject {
         if (this.image !== undefined) this.image.setScale(this.scale);
         const destroyed: boolean = stream.readBoolean();
         if (!this.destroyed && destroyed) {
-            this.image.setTexture("");
+            this.scene.playSound(`${this.type.idString}_destroyed`);
+            this.image.setTexture(`${this.type.idString}_residue`);
         }
     }
 
