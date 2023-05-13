@@ -7,6 +7,7 @@ body > canvas {
 
 
 #game-ui {
+    user-select: none;
     z-index: 1;
 }
 
