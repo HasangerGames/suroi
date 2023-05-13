@@ -6,10 +6,17 @@
     {
         "files": ["**/*.html"],
         "options": {
+            "tabWidth": 2,
             "printWidth": 500,
             "htmlWhitespaceSensitivity": "strict",
             "singleAttributePerLine": false
         }
+    },
+    {
+      "files": ["**/*.json"],
+      "options": {
+        "tabWidth": 2
+      }
     }
   ]
 }
