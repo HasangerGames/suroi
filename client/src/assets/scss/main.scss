@@ -7,13 +7,13 @@
     box-sizing: border-box;
 }
 
-html, body {
+/*html, body {
     width: 100vw;
     height: 100vh;
-}
+}*/
 
-body {
-    font-family: "Inter", sans-serif !important;
+body, p, input, button, select {
+    font-family: "Inter", sans-serif;
     font-size: 16px;
 
     color: #ffffff;

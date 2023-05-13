@@ -24,7 +24,13 @@ let newsText = "";
 for (const newsPost of news as NewsPost[]) {
     newsText += '<article class="splash-news-entry">';
     newsText += `<h3 class="news-title">${newsPost.title}</h3>`;
-    newsText += `<div class="news-date">${(new Date(newsPost.date)).toLocaleDateString("default", { month: "long", day: "numeric", year: "numeric" })}`;
+    const date: string = new Date(newsPost.date)
+        .toLocaleDateString("default", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+    newsText += `<div class="news-date">${date}`;
     newsText += `<br><i>Written by: ${newsPost.author}</i>`;
     newsText += "</div>";
     if (newsPost.bannerImage !== undefined) {

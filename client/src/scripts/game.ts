@@ -44,6 +44,8 @@ export class Game {
         this.socket.onclose = (): void => {
             $("canvas").removeClass("active");
             core.phaser?.scene.stop("game");
+            $("#splash-ui").show();
+            $("#game-ui").hide();
         };
     }
 
