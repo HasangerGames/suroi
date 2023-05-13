@@ -13,6 +13,7 @@ import { JoinPacket } from "../packets/sending/joinPacket";
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
+    volume = 1;
 
     constructor() {
         super("game");
@@ -125,7 +126,7 @@ export class GameScene extends Phaser.Scene {
             console.warn(`Unknown sound: "${name}"`);
             return;
         }
-        sound.play();
+        sound.play({ volume: this.volume });
     }
 
     tick(): void {
