@@ -18,7 +18,7 @@ body > #splash-ui {
 .fade-out {
     visibility: hidden !important;
     opacity: 0 !important;
-    transition: visibility 0.5s ease, opacity 0.5s linear;
+    transition: visibility 0.25s ease, opacity 0.25s linear;
 }
 
 #game-ui {
