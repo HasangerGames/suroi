@@ -52,7 +52,7 @@ export class GameScene extends Phaser.Scene {
                     ease: "none",
                     onComplete: () => { this.player.punching = false; }
                 });
-                this.sound.add("swing").play();
+                this.playSound("swing");
             }
         });
 
@@ -111,6 +111,12 @@ export class GameScene extends Phaser.Scene {
 
         // Send a packet indicating that the game is now active
         this.activeGame.sendPacket(new JoinPacket(this.player));
+
+        // Initializes sounds
+        ["swing", "grass_step_01", "grass_step_02"].forEach(item => {
+            const sound = this.sound.add(item, { volume: this.volume });
+            this.sounds.set(item, sound);
+        });
     }
 
     playSound(name: string): void {
