@@ -52,7 +52,10 @@ export class Obstacle extends GameObject {
             .setRotation(this.rotation)
             .setScale(this.scale)
             .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
-        this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, `${this.type.idString}_particle`, {
+        let particleImage = `${this.type.idString}_particle`;
+        //Note: For some reason this makes it where each object/rock only spews the SAME particle; I don't know how to randomize each particle.
+        if (definition.particlevariations !== undefined) particleImage += `_${Math.floor(Math.random()*definition.particlevariations)+1}`;
+        this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, particleImage, {
             quantity: 1,
             rotate: { min: 0, max: 360 },
             lifespan: 1500,

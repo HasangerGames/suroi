@@ -17,6 +17,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     rotation: "full" | "limited" | "none"
     variations?: number
+    particlevariations?: number
     depth?: number // the obstacle z index
 }
 
@@ -30,7 +31,7 @@ export class Obstacles extends ObjectDefinitions {
             material: "tree",
             health: 200,
             scale: {
-                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
+                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.75
             },
             hitbox: new CircleHitbox(4.5),
             spawnHitbox: new CircleHitbox(15),
@@ -43,7 +44,7 @@ export class Obstacles extends ObjectDefinitions {
             material: "tree",
             health: 200,
             scale: {
-                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
+                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.75
             },
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
@@ -55,12 +56,13 @@ export class Obstacles extends ObjectDefinitions {
             material: "stone",
             health: 200,
             scale: {
-                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
+                spawnMin: 0.9, spawnMax: 1.1, destroy: 0.25
             },
             hitbox: new CircleHitbox(5.15),
             spawnHitbox: new CircleHitbox(5.5),
             rotation: "full",
-            variations: 5
+            variations: 5,
+            particlevariations: 2
         },
         {
             idString: "bush",
@@ -87,7 +89,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "barrel",
             material: "metal",
-            health: 175,
+            health: 120,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
