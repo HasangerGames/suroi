@@ -33,21 +33,16 @@ export class GameScene extends Phaser.Scene {
                 }
             }
             this.loadImage(`${object.idString}_residue`, `${object.idString}_residue.svg`);
-            /*
-            This code won't work yet since some particles haven't been added.
+
             if (object.particlevariations === undefined) {
-                this.loadImage(object.idString, `${object.idString}_particle.svg`);
+                this.loadImage(`${object.idString}_particle`, `${object.idString}_particle.svg`);
             } else {
                 for (let i = 0; i < object.particlevariations; i++) {
-                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_particle_${i + 1}.svg`);
+                    this.loadImage(`${object.idString}_particle_${i+1}`, `${object.idString}_particle_${i + 1}.svg`);
                 }
             }
-            */
-        }
-        this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
-        this.loadImage("rock_particle_1", "rock_particle_1.svg");
-        this.loadImage("rock_particle_2", "rock_particle_2.svg");
-        
+            
+        }        
 
         this.loadImage("death_marker", "death_marker.svg");
 
