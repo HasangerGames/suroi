@@ -59,7 +59,6 @@ export class Obstacle extends GameObject {
             const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
-            console.log(this.scale);
             const scaleFactor: number = this.scale / oldScale;
 
             // Transform the Planck.js Body

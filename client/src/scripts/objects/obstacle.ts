@@ -13,9 +13,7 @@ export class Obstacle extends GameObject {
 
     deserializePartial(stream: SuroiBitStream): void {
         const scale: number = stream.readScale();
-        console.log(scale);
         if (this.image !== undefined && scale !== this.scale) {
-            console.log("scale changed");
             this.scale = scale;
             this.image.setScale(this.scale);
             this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);

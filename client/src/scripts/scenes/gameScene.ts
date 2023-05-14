@@ -37,7 +37,6 @@ export class GameScene extends Phaser.Scene {
         this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
 
         for (const material of Materials) {
-            console.log(`${material}_hit_1`);
             this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
             this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
             this.loadSound(`${material}_destroyed`, `sfx/${material}_destroyed`);
