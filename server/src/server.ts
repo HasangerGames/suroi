@@ -66,6 +66,9 @@ app.ws("/play", {
                     allowedAttributes: {},
                     disallowedTagsMode: "recursiveEscape"
                 });
+                if (name.length > 16 || name.trim().length === 0) {
+                    name = "Player";
+                }
             }
         } else {
             name = "Player";
@@ -84,7 +87,7 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open: (socket: WebSocket<PlayerContainer>) => {
-        socket.getUserData().player = game.addPlayer(socket);
+        socket.getUserData().player = game.addPlayer(socket, socket.getUserData().playerName);
         log(`"${socket.getUserData().playerName}" joined the game`);
     },
 

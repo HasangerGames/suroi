@@ -36,6 +36,8 @@ export class GameScene extends Phaser.Scene {
         }
         this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
 
+        this.loadImage("death_marker", "death_marker.svg");
+
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
             this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
@@ -123,6 +125,7 @@ export class GameScene extends Phaser.Scene {
 
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, "Player", this.activeGame.socket, new Vector2(0, 0));
+        this.activeGame.activePlayer.name = $("#username-input").text();
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.container);

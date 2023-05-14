@@ -10,7 +10,7 @@ import {
 } from "planck";
 import { type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { transformRectangle } from "../../../common/src/utils/math";
+import { type CollisionRecord, transformRectangle } from "../../../common/src/utils/math";
 
 export class Obstacle extends GameObject {
     health: number;
@@ -41,10 +41,43 @@ export class Obstacle extends GameObject {
         this.health -= amount;
         if (this.health <= 0) {
             this.health = 0;
-            this.destroyed = true;
+            this.dead = true;
             this.scale = (this.type.definition as ObstacleDefinition).scale.spawnMin;
             if (this.body != null) this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
+
+            // Exploding barrels
+            if (this.type.idString === "barrel") {
+                const minRadius = 8, maxRadius = 16;
+                const hitbox: CircleHitbox = new CircleHitbox(maxRadius, this.position);
+                const visibleObjects: GameObject[] = this.game.visibleObjects[48][Math.round(this.position.x / 10) * 10][Math.round(this.position.y / 10) * 10];
+                for (const object of visibleObjects) {
+                    if (!object.dead && object.hitbox !== undefined) {
+                        const record: CollisionRecord = hitbox.distanceTo(object.hitbox);
+                        if (record.collided) {
+                            let damage = 100;
+                            if (record.distance > minRadius) {
+                                const damagePercent = Math.abs(record.distance / maxRadius - 1);
+                                damage *= damagePercent;
+                            }
+                            object.damage(damage, this);
+                        }
+                    }
+                }
+
+                for (const player of this.game.players) {
+                    const record: CollisionRecord = hitbox.distanceTo(new CircleHitbox(1, player.position));
+                    if (record.collided) {
+                        let damage = 100;
+                        if (record.distance > minRadius) {
+                            const damagePercent = Math.abs(record.distance / maxRadius - 1);
+                            damage *= damagePercent;
+                        }
+                        player.damage(damage);
+                    }
+                }
+            }
+
             /*for (const item of this.loot) {
                 let lootPosition = this.position.clone();
                 // TODO: add a "lootSpawnOffset" property for lockers and deposit boxes.
@@ -91,7 +124,7 @@ export class Obstacle extends GameObject {
 
     serializePartial(stream: SuroiBitStream): void {
         stream.writeScale(this.scale);
-        stream.writeBoolean(this.destroyed);
+        stream.writeBoolean(this.dead);
     }
 
     serializeFull(stream: SuroiBitStream): void {

@@ -23,6 +23,9 @@ export class Obstacle extends GameObject {
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (this.image !== undefined) {
+                if (this.type.idString === "barrel") {
+                    this.scene.cameras.main.shake(250, 0.01);
+                }
                 this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_destroyed`);
                 this.image.setTexture(`${this.type.idString}_residue`);
                 this.image.setRotation(this.rotation).setScale(this.scale);

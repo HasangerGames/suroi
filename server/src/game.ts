@@ -32,6 +32,8 @@ export class Game {
     deletedObjects = new Set<GameObject>();
 
     players: Set<Player> = new Set<Player>();
+    livingPlayers: Set<Player> = new Set<Player>();
+    connectedPlayers: Set<Player> = new Set<Player>();
     tickTimes: number[] = [];
 
     constructor() {
@@ -67,7 +69,7 @@ export class Game {
             this.world.step(30);
 
             // First loop over players: Calculate movement
-            for (const p of this.players) {
+            for (const p of this.livingPlayers) {
                 if (!p.joined) continue; // TODO Create a separate Set for active players
 
                 // This system allows opposite movement keys to cancel each other out.
@@ -85,18 +87,18 @@ export class Game {
                         p.weaponCooldown = Date.now();
                         p.animation = AnimationType.Punch;
 
-                        const offset: Vec2 = Vec2.add(Vec2(1.35, 0), Vec2(1, 0));
+                        const offset: Vec2 = Vec2(1.5, 0);
                         const position: Vector = vAdd(p.position.clone(), vRotate(offset, p.rotation));
-                        const radius = 2;
+                        const radius = 4;
                         const hitbox: Hitbox = new CircleHitbox(radius, position);
 
                         // Damage the closest object
                         let minDist = Number.MAX_VALUE;
                         let closestObject: GameObject | undefined;
                         for (const object of p.nearObjects) {
-                            if (!object.destroyed && object !== p) {
+                            if (!object.dead && object !== p) {
                                 const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
-                                if (record?.collided === true && record.distance !== undefined && record.distance < minDist) {
+                                if (record?.collided === true && record.distance < minDist) {
                                     minDist = record.distance;
                                     closestObject = object;
                                 }
@@ -104,7 +106,7 @@ export class Game {
                         }
                         if (closestObject !== undefined) {
                             setTimeout(() => {
-                                if (closestObject?.destroyed === false) closestObject.damage(24, this);
+                                if (closestObject?.dead === false) closestObject.damage(24, this);
                             }, 50);
                             //if (closestObject.interactable) this.interactWith(closestObject as Obstacle);
                         }
@@ -113,7 +115,7 @@ export class Game {
             }
 
             // Second loop over players: calculate visible objects & send updates
-            for (const p of this.players) {
+            for (const p of this.connectedPlayers) {
                 if (!p.joined) continue;
 
                 // Calculate visible objects
@@ -175,9 +177,11 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        const player = new Player(this, "Player", socket, Vec2(360, 360));
+    addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
+        const player = new Player(this, name, socket, Vec2(360, 360));
         this.players.add(player);
+        this.livingPlayers.add(player);
+        this.connectedPlayers.add(player);
         this.updateObjects = true;
         player.updateVisibleObjects();
         return player;
@@ -185,6 +189,8 @@ export class Game {
 
     removePlayer(player: Player): void {
         this.players.delete(player);
+        this.livingPlayers.delete(player);
+        this.connectedPlayers.delete(player);
         try {
             player.socket.close();
         } catch (e) {}

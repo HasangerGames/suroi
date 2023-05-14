@@ -10,6 +10,7 @@ import {
 } from "../../../../../common/src/constants";
 import { type GameObject } from "../../types/gameObject";
 import { type Game } from "../../game";
+import { DeathMarker } from "../../objects/deathMarker";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -84,6 +85,10 @@ export class UpdatePacket extends ReceivingPacket {
                     }
                     case ObjectCategory.Obstacle: {
                         object = new Obstacle(this.player.game, this.player.scene);
+                        break;
+                    }
+                    case ObjectCategory.DeathMarker: {
+                        object = new DeathMarker(this.player.game, this.player.scene);
                         break;
                     }
                 }

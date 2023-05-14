@@ -9,7 +9,10 @@ import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { AnimationType, ObjectCategory } from "../../../common/src/constants";
+import {
+    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+} from "../../../common/src/constants";
+import { DeathMarker } from "./deathMarker";
 
 export class Player extends GameObject {
     name: string;
@@ -54,6 +57,7 @@ export class Player extends GameObject {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
         this.socket = socket;
+        this.name = name;
         this.rotation = 0;
         this.zoom = 48;
 
@@ -176,11 +180,26 @@ export class Player extends GameObject {
         }
     }
 
+    damage(amount: number, source?): void {
+        this.health = Math.max(0, this.health - amount);
+        if (this.health === 0 && !this.dead) {
+            this.dead = true;
+            this.game.livingPlayers.delete(this);
+            const deathMarker: DeathMarker = new DeathMarker(this);
+            this.game.dynamicObjects.add(deathMarker);
+            this.game.fullDirtyObjects.add(deathMarker);
+        }
+    }
+
     /* eslint-disable @typescript-eslint/no-empty-function */
 
-    serializePartial(stream: SuroiBitStream): void {}
+    serializePartial(stream: SuroiBitStream): void {
+        stream.writePosition(this.position);
+        stream.writeRotation(this.rotation);
+        stream.writeBits(this.animation, ANIMATION_TYPE_BITS);
+    }
 
-    serializeFull(stream: SuroiBitStream): void {}
-
-    damage(amount: number, source?): void {}
+    serializeFull(stream: SuroiBitStream): void {
+        stream.writeBoolean(this.dead);
+    }
 }

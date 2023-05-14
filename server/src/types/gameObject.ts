@@ -13,7 +13,7 @@ export abstract class GameObject {
     _position: Vector;
     _rotation: number;
     scale = 1;
-    destroyed = false;
+    dead = false;
     hitbox?: Hitbox;
     spawnHitbox: Hitbox;
 

@@ -5,6 +5,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 export class InputPacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
+        if (p.dead) return; // Ignore input packets from dead players
         p.movingUp = stream.readBoolean();
         p.movingDown = stream.readBoolean();
         p.movingLeft = stream.readBoolean();

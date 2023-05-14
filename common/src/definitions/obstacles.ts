@@ -28,7 +28,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "tree_oak",
             material: "tree",
-            health: 100,
+            health: 200,
             scale: {
                 spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
             },
@@ -41,7 +41,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "tree_pine",
             material: "tree",
-            health: 100,
+            health: 200,
             scale: {
                 spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
             },
@@ -53,7 +53,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "rock",
             material: "stone",
-            health: 100,
+            health: 200,
             scale: {
                 spawnMin: 0.9, spawnMax: 1.1, destroy: 0.5
             },
@@ -76,7 +76,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "crate_regular",
             material: "crate",
-            health: 100,
+            health: 120,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
@@ -87,7 +87,7 @@ export class Obstacles extends ObjectDefinitions {
         {
             idString: "barrel",
             material: "metal",
-            health: 100,
+            health: 175,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
