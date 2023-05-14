@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="90.504562"
+   height="82.540878"
+   viewBox="0 0 23.945999 21.838941"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="rock_particle_1.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:export-filename="rock_particle_2.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview12"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="1.5397249"
+     inkscape:cx="66.570333"
+     inkscape:cy="37.344333"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g3335"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs2" />
+  <g
+     id="layer1"
+     transform="matrix(1.75,0,0,1.75,-227.95162,-359.10161)">
+    <g
+       id="g3335"
+       transform="translate(-0.26415541,-0.25629137)">
+      <path
+         id="path10556"
+         style="opacity:1;fill:#808080;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linejoin:round"
+         d="m 143.4497,212.29285 c 0,3.35771 -3.27759,3.0533 -6.07968,4.63504 -3.10768,1.22238 -5.91178,-2.12766 -6.07969,-4.63504 -0.22435,-3.35022 2.72197,-6.07969 6.07969,-6.07969 3.35772,0 6.07968,2.72197 6.07968,6.07969 z"
+         sodipodi:nodetypes="scscs" />
+      <path
+         id="path10556-45"
+         style="fill:#666666;stroke:#333333;stroke-width:0;stroke-linejoin:round"
+         d="m 143.4497,212.29285 c 0,3.35771 -0.3375,1.30311 -3.0414,3.40044 -3.10768,1.22238 0.60981,-1.8259 0.4419,-4.33328 -0.22435,-3.35022 -4.62856,-5.14685 -1.27084,-5.14685 2.24659,1.94356 3.87034,2.72197 3.87034,6.07969 z"
+         sodipodi:nodetypes="scscs" />
+      <path
+         id="path10556-4"
+         style="fill:#999999;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linejoin:round"
+         d="m 133.65964,212.35299 c 0,3.35771 2.09838,4.89004 0.40703,4.52456 -1.00653,-0.63469 -1.87287,-2.08255 -2.77634,-4.5847 0.56787,-2.76753 0.4461,-2.89218 2.37447,-4.82055 3.70522,-1.25914 -0.005,1.52297 -0.005,4.88069 z"
+         sodipodi:nodetypes="scccss" />
+      <path
+         id="path10556-7"
+         style="fill:#666666;fill-opacity:0;stroke:#333333;stroke-width:1.5119;stroke-linejoin:round;stroke-dasharray:none"
+         d="m 143.4497,212.29285 c 0,3.35771 -3.27759,3.0533 -6.07968,4.63504 -3.10768,1.22238 -5.91178,-2.12766 -6.07969,-4.63504 -0.22435,-3.35022 2.72197,-6.07969 6.07969,-6.07969 3.35772,0 6.07968,2.72197 6.07968,6.07969 z"
+         sodipodi:nodetypes="scscs" />
+    </g>
+  </g>
+  <metadata
+     id="metadata9389">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -8,7 +8,7 @@ export class InputPacket extends SendingPacket {
         super(player);
 
         this.type = PacketType.Input;
-        this.allocBytes = 32;
+        this.allocBytes = 8;
     }
 
     serialize(stream: SuroiBitStream): void {
@@ -20,6 +20,7 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(p.movingLeft);
         stream.writeBoolean(p.movingRight);
         stream.writeBoolean(p.punching);
+        p.punching = false;
         stream.writeRotation(p.rotation);
     }
 }

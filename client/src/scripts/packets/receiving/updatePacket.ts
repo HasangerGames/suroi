@@ -5,7 +5,9 @@ import gsap from "gsap";
 import { Obstacle } from "../../objects/obstacle";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
-import { ObjectCategory } from "../../../../../common/src/constants";
+import {
+    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+} from "../../../../../common/src/constants";
 import { type GameObject } from "../../types/gameObject";
 import { type Game } from "../../game";
 
@@ -38,6 +40,9 @@ export class UpdatePacket extends ReceivingPacket {
             duration: 0.03
         });
 
+        // Punching
+        if (stream.readBits(ANIMATION_TYPE_BITS) === AnimationType.Punch) p.punch();
+
         // Play footstep sounds
         p.distSinceLastFootstep += distanceSquared(oldX, oldY, p.position.x, p.position.y);
         if (p.distSinceLastFootstep > 10) {
@@ -49,14 +54,14 @@ export class UpdatePacket extends ReceivingPacket {
             p.distSinceLastFootstep = 0;
         }
 
-        // health dirty
+        // Health
         if (stream.readBoolean()) {
             p.health = stream.readFloat(0, 100, 8);
             $("#health-bar").width(`${p.health}%`);
             $("#health-bar-animation").width(`${p.health}%`);
         }
 
-        // adrenaline dirty
+        // Adrenaline
         if (stream.readBoolean()) {
             p.adrenaline = stream.readFloat(0, 100, 8);
         }

@@ -9,7 +9,7 @@ export class InputPacket extends ReceivingPacket {
         p.movingDown = stream.readBoolean();
         p.movingLeft = stream.readBoolean();
         p.movingRight = stream.readBoolean();
-        stream.readBoolean(); // Punching
+        p.punching = stream.readBoolean();
         p.rotation = stream.readRotation();
     }
 }

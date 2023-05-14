@@ -5,14 +5,14 @@ import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
-import gsap from "gsap";
 import Vector2 = Phaser.Math.Vector2;
-import { Obstacles } from "../../../../common/src/definitions/obstacles";
+import { Materials, Obstacles } from "../../../../common/src/definitions/obstacles";
 import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
+    soundsToLoad: Set<string> = new Set<string>();
     volume = 1;
 
     constructor() {
@@ -23,16 +23,24 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
 
+        // Load obstacle images
         for (const object of Obstacles.definitions) {
             if (object.variations === undefined) {
-                this.loadImage(`${object.idString}`, `${object.idString}.svg`);
+                this.loadImage(object.idString, `${object.idString}.svg`);
             } else {
-                for (let i = 1; i <= object.variations; i++) {
-                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_${i}.svg`);
+                for (let i = 0; i < object.variations; i++) {
+                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_${i + 1}.svg`);
                 }
             }
-            //this.load.svg(`${object.idString}_residue`, require(`../../assets/img/game/${object.idString}_residue.svg`));
-            this.loadSound(`${object.idString}_destroyed`, `sfx/${object.idString}_destroyed.mp3`);
+            this.loadImage(`${object.idString}_residue`, `${object.idString}_residue.svg`);
+        }
+        this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
+
+        for (const material of Materials) {
+            console.log(`${material}_hit_1`);
+            this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
+            this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
+            this.loadSound(`${material}_destroyed`, `sfx/${material}_destroyed`);
         }
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
@@ -46,19 +54,9 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-            if (pointer.leftButtonDown() && !this.player.punching) {
+            if (pointer.leftButtonDown()) {
                 this.player.punching = true;
-                const altFist: boolean = Math.random() < 0.5;
-                gsap.to(altFist ? this.player.leftFist : this.player.rightFist, {
-                    x: 75,
-                    y: altFist ? 10 : -10,
-                    duration: 0.11,
-                    repeat: 1,
-                    yoyo: true,
-                    ease: "none",
-                    onComplete: () => { this.player.punching = false; }
-                });
-                this.playSound("swing");
+                this.player.inputsDirty = true;
             }
         });
 
@@ -75,7 +73,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     private loadSound(name: string, path: string): void {
-        this.load.audio(name, require(`../../assets/audio/${path}.mp3`));
+        try {
+            this.load.audio(name, require(`../../assets/audio/${path}.mp3`));
+            this.soundsToLoad.add(name);
+        } catch (e) {
+            console.warn(`Failed to load sound: ${name}`);
+            console.error(e);
+        }
     }
 
     private addKey(keyString: string, valueToToggle: string): void {
@@ -99,6 +103,10 @@ export class GameScene extends Phaser.Scene {
 
     create(): void {
         (this.scene.get("menu") as MenuScene).stopMusic();
+
+        for (const sound of this.soundsToLoad) {
+            this.sounds.set(sound, this.sound.add(sound));
+        }
 
         $("#game-ui").show();
 

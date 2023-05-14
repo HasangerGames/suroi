@@ -9,7 +9,7 @@ import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../common/src/constants";
+import { AnimationType, ObjectCategory } from "../../../common/src/constants";
 
 export class Player extends GameObject {
     name: string;
@@ -29,6 +29,11 @@ export class Player extends GameObject {
     movingDown = false;
     movingLeft = false;
     movingRight = false;
+    punching = false;
+
+    weaponCooldown = 0;
+
+    animation: AnimationType = AnimationType.None;
 
     visibleObjects = new Set<GameObject>(); // Objects the player can see
     nearObjects = new Set<GameObject>(); // Objects the player can see with a 1x scope
@@ -173,9 +178,9 @@ export class Player extends GameObject {
 
     /* eslint-disable @typescript-eslint/no-empty-function */
 
-    serializePartial(stream: SuroiBitStream): void {
-        super.serializePartial(stream);
-    }
+    serializePartial(stream: SuroiBitStream): void {}
 
     serializeFull(stream: SuroiBitStream): void {}
+
+    damage(amount: number, source?): void {}
 }

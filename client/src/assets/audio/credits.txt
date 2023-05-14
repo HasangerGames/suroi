@@ -1,2 +1,7 @@
 Menu music: TTGetDunkedOn
-Sound effects: Katloo (edited by Henry Sanger)
+Bush destroyed: Bush_v1.wav by Abacagi (https://freesound.org/people/Abacagi/sounds/511347/)
+Bush rustle and hit: bush1.wav by schademans (https://freesound.org/people/schademans/sounds/2588/)
+Tree hit: Tree Hit With Axe (Tree Shake) by EminYILDIRIM (https://freesound.org/people/EminYILDIRIM/sounds/608343/)
+Tree destroyed: Falling on foil (mixkit.co)
+Crate destroyed: Crate Break 4.wav by kevinkace (https://freesound.org/people/kevinkace/sounds/66780/)
+All other sound effects: Katloo (edited by Henry Sanger)

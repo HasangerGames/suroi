@@ -6,6 +6,7 @@ import { type GameScene } from "../scenes/gameScene";
 import Vector2 = Phaser.Math.Vector2;
 import { ObjectCategory } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
+import gsap from "gsap";
 
 export class Player extends GameObject {
     name: string;
@@ -52,6 +53,19 @@ export class Player extends GameObject {
         }
 
         return points;
+    }
+
+    punch(): void {
+        const altFist: boolean = Math.random() < 0.5;
+        gsap.to(altFist ? this.leftFist : this.rightFist, {
+            x: 75,
+            y: altFist ? 10 : -10,
+            duration: 0.11,
+            repeat: 1,
+            yoyo: true,
+            ease: "none"
+        });
+        this.scene.playSound("swing");
     }
 
     get health(): number {

@@ -13,6 +13,7 @@ export abstract class GameObject {
     _position: Vector;
     _rotation: number;
     scale = 1;
+    destroyed = false;
     hitbox?: Hitbox;
     spawnHitbox: Hitbox;
 
@@ -39,10 +40,8 @@ export abstract class GameObject {
         this._rotation = rotation;
     }
 
-    serializePartial(stream: SuroiBitStream): void {
-        stream.writeObjectType(this.type);
-        stream.writeUint16(this.id);
-    }
+    abstract damage(amount: number, source?): void;
 
+    abstract serializePartial(stream: SuroiBitStream): void;
     abstract serializeFull(stream: SuroiBitStream): void;
 }

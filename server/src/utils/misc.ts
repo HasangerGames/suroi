@@ -1,6 +1,4 @@
-import {
-    v, vAdd, type Vector, vMul
-} from "../../../common/src/utils/vector";
+import { type Vector } from "../../../common/src/utils/vector";
 import {
     type Body, Box, Circle, Vec2, type World
 } from "planck";
@@ -48,53 +46,4 @@ export function bodyFromHitbox(world: World,
         });
     }
     return body;
-}
-
-export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
-    if (orientation === 0) return vAdd(position1, position2);
-    let xOffset: number, yOffset: number;
-    switch (orientation) {
-        case 1:
-            xOffset = -position2.y;
-            // noinspection JSSuspiciousNameCombination
-            yOffset = position2.x;
-            break;
-        case 2:
-            xOffset = -position2.x;
-            yOffset = -position2.y;
-            break;
-        case 3:
-            // noinspection JSSuspiciousNameCombination
-            xOffset = position2.y;
-            yOffset = -position2.x;
-            break;
-    }
-    return vAdd(position1, v(xOffset, yOffset));
-}
-
-export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { min: Vector, max: Vector } {
-    min = vMul(min, scale);
-    max = vMul(max, scale);
-    if (orientation !== 0) {
-        const minX = min.x; const minY = min.y;
-        const maxX = max.x; const maxY = max.y;
-        switch (orientation) {
-            case 1:
-                min = Vec2(minX, maxY);
-                max = Vec2(maxX, minY);
-                break;
-            case 2:
-                min = Vec2(maxX, maxY);
-                max = Vec2(minX, minY);
-                break;
-            case 3:
-                min = Vec2(maxX, minY);
-                max = Vec2(minX, maxY);
-                break;
-        }
-    }
-    return {
-        min: addAdjust(pos, min, orientation),
-        max: addAdjust(pos, max, orientation)
-    };
 }

@@ -2,10 +2,7 @@ import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
 import {
-    Box,
-    Settings,
-    Vec2,
-    World
+    Box, Settings, Vec2, World
 } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
@@ -13,6 +10,12 @@ import { type PlayerContainer } from "./server";
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 import { Map } from "./map";
+import { AnimationType } from "../../common/src/constants";
+import {
+    vAdd, type Vector, vRotate
+} from "../../common/src/utils/vector";
+import { type CollisionRecord } from "../../common/src/utils/math";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 
 export class Game {
     map: Map;
@@ -75,6 +78,38 @@ export class Game {
                 if (p.movingRight) xMovement++;
                 const speed: number = (xMovement !== 0 && yMovement !== 0) ? Config.diagonalSpeed : Config.movementSpeed;
                 p.setVelocity(xMovement * speed, yMovement * speed);
+
+                if (p.punching) {
+                    p.punching = false;
+                    if (Date.now() - p.weaponCooldown > 250) {
+                        p.weaponCooldown = Date.now();
+                        p.animation = AnimationType.Punch;
+
+                        const offset: Vec2 = Vec2.add(Vec2(1.35, 0), Vec2(1, 0));
+                        const position: Vector = vAdd(p.position.clone(), vRotate(offset, p.rotation));
+                        const radius = 2;
+                        const hitbox: Hitbox = new CircleHitbox(radius, position);
+
+                        // Damage the closest object
+                        let minDist = Number.MAX_VALUE;
+                        let closestObject: GameObject | undefined;
+                        for (const object of p.nearObjects) {
+                            if (!object.destroyed && object !== p) {
+                                const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
+                                if (record?.collided === true && record.distance !== undefined && record.distance < minDist) {
+                                    minDist = record.distance;
+                                    closestObject = object;
+                                }
+                            }
+                        }
+                        if (closestObject !== undefined) {
+                            setTimeout(() => {
+                                if (closestObject?.destroyed === false) closestObject.damage(24, this);
+                            }, 50);
+                            //if (closestObject.interactable) this.interactWith(closestObject as Obstacle);
+                        }
+                    }
+                }
             }
 
             // Second loop over players: calculate visible objects & send updates

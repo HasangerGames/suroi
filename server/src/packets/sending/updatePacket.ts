@@ -1,7 +1,9 @@
 import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
-import { PacketType } from "../../../../common/src/constants";
+import {
+    ANIMATION_TYPE_BITS, AnimationType, PacketType
+} from "../../../../common/src/constants";
 import { type GameObject } from "../../types/gameObject";
 
 export class UpdatePacket extends SendingPacket {
@@ -22,6 +24,8 @@ export class UpdatePacket extends SendingPacket {
         // Position and rotation
         stream.writePosition(p.position);
         stream.writeRotation(p.rotation);
+        stream.writeBits(p.animation, ANIMATION_TYPE_BITS);
+        p.animation = AnimationType.None;
 
         // Health and adrenaline
         stream.writeBoolean(p.healthDirty);
@@ -46,6 +50,8 @@ export class UpdatePacket extends SendingPacket {
         if (fullObjectsDirty) {
             stream.writeUint8(p.fullDirtyObjects.size);
             for (const fullObject of p.fullDirtyObjects) {
+                stream.writeObjectType(fullObject.type);
+                stream.writeUint16(fullObject.id);
                 fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
@@ -58,6 +64,7 @@ export class UpdatePacket extends SendingPacket {
         if (partialObjectsDirty) {
             stream.writeUint8(p.partialDirtyObjects.size);
             for (const partialObject of p.partialDirtyObjects) {
+                stream.writeUint16(partialObject.id);
                 partialObject.serializePartial(stream);
             }
             p.partialDirtyObjects = new Set<GameObject>();
