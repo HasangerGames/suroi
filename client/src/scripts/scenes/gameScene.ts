@@ -6,7 +6,7 @@ import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
 import Vector2 = Phaser.Math.Vector2;
-import { Materials, Obstacles } from "../../../../common/src/definitions/obstacles";
+import { Materials } from "../../../../common/src/definitions/obstacles";
 import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {

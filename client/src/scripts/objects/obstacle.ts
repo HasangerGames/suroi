@@ -47,16 +47,16 @@ export class Obstacle extends GameObject {
         if (hasVariations) this.variation = stream.readVariation();
         let texture: string = this.type.idString;
         if (this.destroyed) texture += "_residue";
-        else if (hasVariations) texture += `_${this.variation+1}`;
-        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", texture + ".svg")
+        else if (hasVariations) texture += `_${this.variation + 1}`;
+        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", `${texture}.svg`)
             .setRotation(this.rotation)
             .setScale(this.scale)
             .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
         let particleImage = `${this.type.idString}_particle`;
         //Note: For some reason this makes it where each object/rock only spews the SAME particle; I don't know how to randomize each particle.
-        if (definition.particlevariations !== undefined) particleImage += `_${Math.floor(Math.random()*definition.particlevariations)+1}`;
+        if (definition.particlevariations !== undefined) particleImage += `_${Math.floor(Math.random() * definition.particlevariations) + 1}`;
         this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, "main", {
-            frame: particleImage + ".svg",
+            frame: `${particleImage}.svg`,
             quantity: 1,
             rotate: { min: 0, max: 360 },
             lifespan: 1500,
