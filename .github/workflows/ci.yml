@@ -36,7 +36,7 @@ jobs:
 
       - name: Build
         working-directory: ./client
-        run: pnpm build-atlas && pnpm build
+        run: pnpm build
   server:
     name: Server
     runs-on: ubuntu-latest
