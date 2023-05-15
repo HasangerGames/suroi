@@ -17,7 +17,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     rotation: "full" | "limited" | "none"
     variations?: number
-    particlevariations?: number
+    particleVariations?: number
     depth?: number // the obstacle z index
 }
 
@@ -62,7 +62,7 @@ export class Obstacles extends ObjectDefinitions {
             spawnHitbox: new CircleHitbox(5.5),
             rotation: "full",
             variations: 5,
-            particlevariations: 2
+            particleVariations: 2
         },
         {
             idString: "bush",

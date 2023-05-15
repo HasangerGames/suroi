@@ -182,6 +182,7 @@ export class Game {
         this.players.add(player);
         this.livingPlayers.add(player);
         this.connectedPlayers.add(player);
+        this.fullDirtyObjects.add(player);
         this.updateObjects = true;
         player.updateVisibleObjects();
         return player;

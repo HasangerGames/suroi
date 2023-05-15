@@ -185,6 +185,8 @@ export class Player extends GameObject {
         if (this.health === 0 && !this.dead) {
             this.dead = true;
             this.game.livingPlayers.delete(this);
+            this.game.fullDirtyObjects.add(this);
+            this.fullDirtyObjects.add(this);
             const deathMarker: DeathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);

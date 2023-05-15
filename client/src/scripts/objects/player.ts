@@ -3,10 +3,12 @@ import { type Game } from "../game";
 import Phaser from "phaser";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GameScene } from "../scenes/gameScene";
-import Vector2 = Phaser.Math.Vector2;
-import { ObjectCategory } from "../../../../common/src/constants";
+import {
+    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+} from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import gsap from "gsap";
+import { type Vector, vClone } from "../../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     name: string;
@@ -16,6 +18,8 @@ export class Player extends GameObject {
 
     private _adrenaline = 100;
     adrenalineDirty = true;
+
+    oldPosition: Vector;
 
     inputsDirty = false;
 
@@ -32,15 +36,13 @@ export class Player extends GameObject {
 
     distSinceLastFootstep = 0;
 
-    constructor(game: Game, scene: GameScene, name: string, socket: WebSocket, position: Vector2) {
+    constructor(game: Game, scene: GameScene) {
         super(game, scene);
         this.type = ObjectType.categoryOnly(ObjectCategory.Player);
-        this.position = position;
-
-        this.body = scene.add.circle(0, 0, 48, 0xffdbac);
-        this.leftFist = scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
-        this.rightFist = scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
-        this.container = scene.add.container(position.x, position.y, [this.body, this.leftFist, this.rightFist]).setDepth(1);
+        this.body = this.scene.add.circle(0, 0, 48, 0xffdbac);
+        this.leftFist = this.scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
+        this.rightFist = this.scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
+        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
     }
 
     createPolygon(radius: number, sides: number): number[][] {
@@ -53,19 +55,6 @@ export class Player extends GameObject {
         }
 
         return points;
-    }
-
-    punch(): void {
-        const altFist: boolean = Math.random() < 0.5;
-        gsap.to(altFist ? this.leftFist : this.rightFist, {
-            x: 75,
-            y: altFist ? 10 : -10,
-            duration: 0.11,
-            repeat: 1,
-            yoyo: true,
-            ease: "none"
-        });
-        this.scene.playSound("swing");
     }
 
     get health(): number {
@@ -86,14 +75,51 @@ export class Player extends GameObject {
 
     /* eslint-disable @typescript-eslint/no-empty-function */
 
-    deserializePartial(stream: SuroiBitStream): void {}
+    deserializePartial(stream: SuroiBitStream): void {
+        // Position and rotation
+        if (this.position !== undefined) this.oldPosition = vClone(this.position);
+        this.position = stream.readPosition();
+        const oldAngle: number = this.container.angle;
+        const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
+        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+        gsap.to(this.container, {
+            x: this.position.x * 20,
+            y: this.position.y * 20,
+            angle: oldAngle + angleBetween,
+            ease: "none",
+            duration: 0.03
+        });
 
-    deserializeFull(stream: SuroiBitStream): void {}
+        // Animation
+        const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
+        switch (animation) {
+            case AnimationType.Punch: {
+                const altFist: boolean = Math.random() < 0.5;
+                gsap.to(altFist ? this.leftFist : this.rightFist, {
+                    x: 75,
+                    y: altFist ? 10 : -10,
+                    duration: 0.11,
+                    repeat: 1,
+                    yoyo: true,
+                    ease: "none"
+                });
+                this.scene.playSound("swing");
+                break;
+            }
+        }
+    }
+
+    deserializeFull(stream: SuroiBitStream): void {
+        const dead: boolean = stream.readBoolean();
+        if (dead && !this.dead) {
+            this.dead = true;
+            this.destroy();
+        }
+    }
 
     destroy(): void {
-        this.body.destroy(true);
-        this.leftFist.destroy(true);
-        this.rightFist.destroy(true);
-        this.container.destroy(true);
+        console.log(this.container);
+        //this.container.remove([this.body, this.leftFist, this.rightFist], true);
+        //this.container.destroy(true);
     }
 }

@@ -14,6 +14,8 @@ export abstract class GameObject {
     position: Vector;
     rotation: number;
 
+    dead = false;
+
     constructor(game: Game, scene: GameScene) {
         this.game = game;
         this.scene = scene;

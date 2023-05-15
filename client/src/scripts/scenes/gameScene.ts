@@ -5,7 +5,6 @@ import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
-import Vector2 = Phaser.Math.Vector2;
 import { Materials, Obstacles } from "../../../../common/src/definitions/obstacles";
 import { JoinPacket } from "../packets/sending/joinPacket";
 
@@ -35,10 +34,10 @@ export class GameScene extends Phaser.Scene {
             this.loadImage(`${object.idString}_residue`, `${object.idString}_residue.svg`);
             /*
             This code won't work yet since some particles haven't been added.
-            if (object.particlevariations === undefined) {
+            if (object.particleVariations === undefined) {
                 this.loadImage(object.idString, `${object.idString}_particle.svg`);
             } else {
-                for (let i = 0; i < object.particlevariations; i++) {
+                for (let i = 0; i < object.particleVariations; i++) {
                     this.loadImage(`${object.idString}_${i}`, `${object.idString}_particle_${i + 1}.svg`);
                 }
             }
@@ -47,7 +46,6 @@ export class GameScene extends Phaser.Scene {
         this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
         this.loadImage("rock_particle_1", "rock_particle_1.svg");
         this.loadImage("rock_particle_2", "rock_particle_2.svg");
-        
 
         this.loadImage("death_marker", "death_marker.svg");
 
@@ -137,7 +135,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create the player
-        this.activeGame.activePlayer = new Player(this.activeGame, this, "Player", this.activeGame.socket, new Vector2(0, 0));
+        this.activeGame.activePlayer = new Player(this.activeGame, this);
         this.activeGame.activePlayer.name = $("#username-input").text();
 
         // Follow the player w/ the camera

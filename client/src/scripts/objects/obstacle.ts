@@ -2,6 +2,7 @@ import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Variation } from "../../../../common/src/typings";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { random } from "../../../../common/src/utils/random";
 
 export class Obstacle extends GameObject {
     scale: number;
@@ -17,7 +18,7 @@ export class Obstacle extends GameObject {
             this.scale = scale;
             this.image.setScale(this.scale);
             this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
-            this.emitter.emitParticle(1);
+            //this.emitter.emitParticle(1);
         }
         const destroyed: boolean = stream.readBoolean();
         if (!this.destroyed && destroyed) {
@@ -53,8 +54,8 @@ export class Obstacle extends GameObject {
             .setScale(this.scale)
             .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
         let particleImage = `${this.type.idString}_particle`;
-        //Note: For some reason this makes it where each object/rock only spews the SAME particle; I don't know how to randomize each particle.
-        if (definition.particlevariations !== undefined) particleImage += `_${Math.floor(Math.random()*definition.particlevariations)+1}`;
+        // Note: For some reason this makes it where each object/rock only spews the SAME particle; I don't know how to randomize each particle.
+        if (definition.particleVariations !== undefined) particleImage += `_${random(1, definition.particleVariations)}`;
         this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, particleImage, {
             quantity: 1,
             rotate: { min: 0, max: 360 },
