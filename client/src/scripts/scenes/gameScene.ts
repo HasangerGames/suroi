@@ -5,7 +5,7 @@ import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
 import { InputPacket } from "../packets/sending/inputPacket";
 import { Player } from "../objects/player";
-import { Materials, Obstacles } from "../../../../common/src/definitions/obstacles";
+import { Materials } from "../../../../common/src/definitions/obstacles";
 import { JoinPacket } from "../packets/sending/joinPacket";
 
 export class GameScene extends Phaser.Scene {
@@ -22,32 +22,7 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
 
-        // Load obstacle images
-        for (const object of Obstacles.definitions) {
-            if (object.variations === undefined) {
-                this.loadImage(object.idString, `${object.idString}.svg`);
-            } else {
-                for (let i = 0; i < object.variations; i++) {
-                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_${i + 1}.svg`);
-                }
-            }
-            this.loadImage(`${object.idString}_residue`, `${object.idString}_residue.svg`);
-            /*
-            This code won't work yet since some particles haven't been added.
-            if (object.particleVariations === undefined) {
-                this.loadImage(object.idString, `${object.idString}_particle.svg`);
-            } else {
-                for (let i = 0; i < object.particleVariations; i++) {
-                    this.loadImage(`${object.idString}_${i}`, `${object.idString}_particle_${i + 1}.svg`);
-                }
-            }
-            */
-        }
-        this.loadImage("crate_regular_particle", "crate_regular_particle.svg");
-        this.loadImage("rock_particle_1", "rock_particle_1.svg");
-        this.loadImage("rock_particle_2", "rock_particle_2.svg");
-
-        this.loadImage("death_marker", "death_marker.svg");
+        this.load.atlas("main", require("../../assets/atlases/main.png"), require("../../assets/atlases/main.json"));
 
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
@@ -78,10 +53,6 @@ export class GameScene extends Phaser.Scene {
         this.addKey("D", "movingRight");
 
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
-    }
-
-    private loadImage(name: string, path: string): void {
-        this.load.svg(name, require(`../../assets/img/game/${path}`));
     }
 
     private loadSound(name: string, path: string): void {

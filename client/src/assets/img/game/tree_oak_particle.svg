@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="63.565865"
+   height="119.98524"
+   viewBox="0 0 63.565865 119.98525"
+   fill="none"
+   version="1.1"
+   id="svg52"
+   sodipodi:docname="tree_oak_particle.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs56" />
+  <sodipodi:namedview
+     id="namedview54"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="2.1686268"
+     inkscape:cx="38.734189"
+     inkscape:cy="60.637451"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg52"
+     height="609.877px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <path
+     d="M 23.51462,63.42463 20.033755,33.901355 41.26269,3.0789049 36.5571,46.306376 48.33707,95.079569 38.570345,116.90606 Z"
+     fill="#6d4a2c"
+     stroke="#1b1917"
+     stroke-width="6.15955"
+     stroke-miterlimit="16"
+     stroke-linejoin="round"
+     id="path4"
+     style="stroke:#312114;stroke-opacity:1"
+     sodipodi:nodetypes="ccccccc" />
+  <path
+     d="M 63.56389,65.81553 C 59.01608,59.18168 44.365565,49.565581 41.13077,59.806875 38.81169,70.29353 56.3069,69.291575 63.562865,65.82066 l 0.003,10e-4 c 0,-0.002 -0.002,-0.0052 -0.002,-0.0061 z"
+     fill="#5f926a"
+     id="path46"
+     style="fill:#588a42;fill-opacity:1;stroke-width:1.02659" />
+  <path
+     d="m 56.232985,33.642086 -0.004,0.0072 C 46.340835,37.114041 29.303485,52.26656 41.129845,59.80689 53.57319,66.278535 58.176435,43.948071 56.23412,33.652366 l 0.004,-0.0072 c -0.001,10e-4 -0.003,0.002 -0.004,0.002 0,-0.002 -10e-4,-0.003 -10e-4,-0.0052 z"
+     fill="#587e60"
+     id="path48"
+     style="fill:#609648;fill-opacity:1;stroke-width:1.02659" />
+  <path
+     d="m 14.980061,41.808246 c 6.63385,-4.54781 16.249945,-19.198324 6.00866,-22.433119 -10.486655,-2.319079 -9.484705,15.176129 -6.013785,22.432094 l -10e-4,0.003 c 0.002,0 0.0052,-0.002 0.0061,-0.002 z"
+     fill="#5f926a"
+     id="path46-6"
+     style="fill:#588a42;fill-opacity:1;stroke-width:1.02659" />
+  <path
+     d="m 7.4999999e-5,6.666058 0.0072,0.004 c 3.464745,9.88815 18.61727,26.9255 26.1576,15.09914 C 32.636515,9.3258529 10.306055,4.7226079 0.01035,6.664923 l -0.0072,-0.004 c 0.001,10e-4 0.002,0.003 0.002,0.004 -0.002,0 -0.003,0.001 -0.00515,0.001 z"
+     fill="#587e60"
+     id="path48-7"
+     style="fill:#609648;fill-opacity:1;stroke-width:1.02659" />
+  <path
+     d="m 36.305775,41.811716 0.001,0.004 C 33.33581,47.683726 32.33591,61.76859 41.12971,59.80677 49.727435,57.108885 41.818555,45.410851 36.31088,41.813666 l -10e-4,-0.003 c 10e-4,-10e-4 0,0 0,0 -10e-4,-10e-4 -0.003,0.002 -0.004,0.001 z"
+     fill="#77a37a"
+     id="path50"
+     style="fill:#588a42;fill-opacity:1;stroke-width:1.02659" />
+  <metadata
+     id="metadata3223">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

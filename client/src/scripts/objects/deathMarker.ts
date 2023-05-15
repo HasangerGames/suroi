@@ -10,7 +10,7 @@ export class DeathMarker extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
         if (this.image === undefined) {
-            this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "death_marker");
+            this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", "death_marker.svg");
         }
     }
 
