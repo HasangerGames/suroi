@@ -3,7 +3,7 @@ export enum ObjectCategory {
 }
 
 export enum PacketType {
-    Join, Joined, Map, Update, Input
+    Join, Joined, Map, Update, Input, GameOver
 }
 
 export enum AnimationType {

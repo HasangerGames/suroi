@@ -49,6 +49,15 @@ export class UpdatePacket extends ReceivingPacket {
             p.adrenaline = stream.readFloat(0, 100, 8);
         }
 
+        // Active player ID
+        if (stream.readBoolean()) {
+            const noID: boolean = game.activePlayer.id === undefined;
+            game.activePlayer.id = stream.readUint16();
+            if (noID) {
+                game.objects.set(game.activePlayer.id, game.activePlayer);
+            }
+        }
+
         //
         // Objects
         //

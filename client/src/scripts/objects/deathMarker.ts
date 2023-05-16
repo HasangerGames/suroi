@@ -35,7 +35,4 @@ export class DeathMarker extends GameObject {
         this.image.destroy(true);
         this.playerNameText.destroy(true);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    die(): void {}
 }

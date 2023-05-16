@@ -6,6 +6,7 @@ import core from "./core";
 import { PacketType } from "../../../common/src/constants";
 import { type GameObject } from "./types/gameObject";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
+import { GameOverPacket } from "./packets/receiving/gameOverPacket";
 
 export class Game {
     socket: WebSocket;
@@ -38,6 +39,10 @@ export class Game {
                 }
                 case PacketType.Update: {
                     new UpdatePacket(this.activePlayer).deserialize(stream);
+                    break;
+                }
+                case PacketType.GameOver: {
+                    new GameOverPacket(this.activePlayer).deserialize(stream);
                     break;
                 }
             }

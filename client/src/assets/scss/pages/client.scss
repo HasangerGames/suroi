@@ -23,7 +23,7 @@ body {
 }
 
 // NOTE: WIP, will refactor later
- 
+
 .modal {
     position: absolute;
     top: 50%;
@@ -36,18 +36,18 @@ body {
     padding: 1rem;
     display: flex;
     flex-direction: column;
-}
 
-.modal .modal-settings-item input[type="range"] {
-    display: block;
-    width: 100%;
-    margin: .7rem 0;
-}
+    .modal-item input[type="range"] {
+        display: block;
+        width: 100%;
+        margin: .7rem 0;
+    }
 
-.modal .modal-settings-item > button {
-    margin: .2rem 0;
-    width: 100%;
-    display: inline-block;
+    .modal-item > button {
+        margin: .2rem 0;
+        width: 100%;
+        display: inline-block;
+    }
 }
 
 #game-menu {

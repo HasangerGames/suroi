@@ -5,6 +5,10 @@ import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 
 export abstract class GameObject {
+    isPlayer: boolean;
+    isObstacle: boolean;
+    collidesWith: { player: boolean, obstacle: boolean };
+
     id: number;
     type: ObjectType;
 

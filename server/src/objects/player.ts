@@ -13,8 +13,16 @@ import {
     ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
+import { GameOverPacket } from "../packets/sending/gameOverPacket";
 
 export class Player extends GameObject {
+    readonly isPlayer = true;
+    readonly isObstacle = false;
+    readonly collidesWith = {
+        player: false,
+        obstacle: true
+    };
+
     name: string;
 
     joined = false;
@@ -33,6 +41,10 @@ export class Player extends GameObject {
     movingLeft = false;
     movingRight = false;
     punching = false;
+
+    deadPosition: Vec2;
+
+    activePlayerIDDirty = true;
 
     weaponCooldown = 0;
 
@@ -80,13 +92,12 @@ export class Player extends GameObject {
     setVelocity(xVelocity: number, yVelocity: number): void {
         this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
         if (xVelocity !== 0 || yVelocity !== 0) {
-            this.moving = true;
             this.movesSinceLastUpdate++;
         }
     }
 
     get position(): Vec2 {
-        return this.body.getPosition();
+        return this.deadPosition ?? this.body.getPosition();
     }
 
     get health(): number {
@@ -181,15 +192,25 @@ export class Player extends GameObject {
     }
 
     damage(amount: number, source?): void {
-        this.health = Math.max(0, this.health - amount);
-        if (this.health === 0 && !this.dead) {
+        this.health -= amount;
+        if (this.health <= 0 && !this.dead) {
+            this.health = 0;
             this.dead = true;
+
+            this.movingUp = false;
+            this.movingDown = false;
+            this.movingLeft = false;
+            this.movingRight = false;
+            this.punching = false;
+            this.deadPosition = this.position;
+
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);
             this.fullDirtyObjects.add(this);
             const deathMarker: DeathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
+            this.sendPacket(new GameOverPacket(this));
         }
     }
 

@@ -1,9 +1,7 @@
 import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
-import {
-    ANIMATION_TYPE_BITS, AnimationType, PacketType
-} from "../../../../common/src/constants";
+import { AnimationType, PacketType } from "../../../../common/src/constants";
 import { type GameObject } from "../../types/gameObject";
 
 export class UpdatePacket extends SendingPacket {
@@ -22,22 +20,28 @@ export class UpdatePacket extends SendingPacket {
         //
 
         // Position and rotation
-        stream.writePosition(p.position);
-        stream.writeRotation(p.rotation);
-        stream.writeBits(p.animation, ANIMATION_TYPE_BITS);
+        p.serializePartial(stream);
         p.animation = AnimationType.None;
 
-        // Health and adrenaline
+        // Health
         stream.writeBoolean(p.healthDirty);
         if (p.healthDirty) {
             stream.writeFloat(p.health, 0, 100, 8);
             p.healthDirty = false;
         }
 
+        // Adrenaline
         stream.writeBoolean(p.adrenalineDirty);
         if (p.adrenalineDirty) {
             stream.writeFloat(p.adrenaline, 0, 100, 8);
-            p.healthDirty = false;
+            p.adrenalineDirty = false;
+        }
+
+        // Active player ID
+        stream.writeBoolean(p.activePlayerIDDirty);
+        if (p.activePlayerIDDirty) {
+            stream.writeUint16(p.id);
+            p.activePlayerIDDirty = false;
         }
 
         //

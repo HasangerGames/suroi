@@ -13,6 +13,13 @@ import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox"
 import { type CollisionRecord, transformRectangle } from "../../../common/src/utils/math";
 
 export class Obstacle extends GameObject {
+    readonly isPlayer = false;
+    readonly isObstacle = true;
+    readonly collidesWith = {
+        player: true,
+        obstacle: false
+    };
+
     health: number;
     maxHealth: number;
     maxScale: number;

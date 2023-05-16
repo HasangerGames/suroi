@@ -79,32 +79,38 @@ export class Player extends GameObject {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
-        const oldAngle: number = this.container.angle;
-        const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
-        const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
-        gsap.to(this.container, {
-            x: this.position.x * 20,
-            y: this.position.y * 20,
-            angle: oldAngle + angleBetween,
-            ease: "none",
-            duration: 0.03
-        });
+        this.rotation = stream.readRotation();
+
+        if (!this.dead) {
+            const oldAngle: number = this.container.angle;
+            const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
+            const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+            gsap.to(this.container, {
+                x: this.position.x * 20,
+                y: this.position.y * 20,
+                angle: oldAngle + angleBetween,
+                ease: "none",
+                duration: 0.03
+            });
+        }
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
-        switch (animation) {
-            case AnimationType.Punch: {
-                const altFist: boolean = Math.random() < 0.5;
-                gsap.to(altFist ? this.leftFist : this.rightFist, {
-                    x: 75,
-                    y: altFist ? 10 : -10,
-                    duration: 0.11,
-                    repeat: 1,
-                    yoyo: true,
-                    ease: "none"
-                });
-                this.scene.playSound("swing");
-                break;
+        if (!this.dead) {
+            switch (animation) {
+                case AnimationType.Punch: {
+                    const altFist: boolean = Math.random() < 0.5;
+                    gsap.to(altFist ? this.leftFist : this.rightFist, {
+                        x: 75,
+                        y: altFist ? 10 : -10,
+                        duration: 0.11,
+                        repeat: 1,
+                        yoyo: true,
+                        ease: "none"
+                    });
+                    this.scene.playSound("swing");
+                    break;
+                }
             }
         }
     }
@@ -118,8 +124,9 @@ export class Player extends GameObject {
     }
 
     destroy(): void {
-        console.log(this.container);
-        //this.container.remove([this.body, this.leftFist, this.rightFist], true);
-        //this.container.destroy(true);
+        this.container.destroy(true);
+        this.body.destroy(true);
+        this.leftFist.destroy(true);
+        this.rightFist.destroy(true);
     }
 }

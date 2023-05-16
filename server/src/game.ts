@@ -2,7 +2,7 @@ import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
 import {
-    Box, Settings, Vec2, World
+    Box, Fixture, Settings, Vec2, World
 } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
@@ -16,6 +16,7 @@ import {
 } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { type Obstacle } from "./objects/obstacle";
 
 export class Game {
     map: Map;
@@ -40,6 +41,23 @@ export class Game {
         this.world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
         Settings.maxLinearCorrection = 0; // Prevents collision jitter
         Settings.maxTranslation = 5.0; // Allows bullets to travel fast
+
+        // Collision filtering code:
+        // - Players should collide with obstacles, but not with each other or with loot.
+        // - Bullets should collide with players and obstacles, but not with each other or with loot.
+        // - Loot should only collide with obstacles and other loot.
+        Fixture.prototype.shouldCollide = function(that: Fixture): boolean {
+            // Get the objects
+            const thisObject = this.getUserData() as GameObject;
+            const thatObject = that.getUserData() as GameObject;
+
+            if (thisObject === null || thatObject === null) return false;
+
+            // Check if they should collide
+            if (thisObject.isPlayer) return (thatObject as Player).collidesWith.player;
+            else if (thisObject.isObstacle) return (thatObject as Obstacle).collidesWith.obstacle;
+            else return false;
+        };
 
         // Create world boundaries
         this.createWorldBoundary(360, -0.25, 360, 0);
@@ -81,6 +99,11 @@ export class Game {
                 const speed: number = (xMovement !== 0 && yMovement !== 0) ? Config.diagonalSpeed : Config.movementSpeed;
                 p.setVelocity(xMovement * speed, yMovement * speed);
 
+                if (p.moving || xMovement !== 0 || yMovement !== 0) {
+                    p.moving = false;
+                    this.partialDirtyObjects.add(p);
+                }
+
                 if (p.punching) {
                     p.punching = false;
                     if (Date.now() - p.weaponCooldown > 250) {
@@ -95,9 +118,10 @@ export class Game {
                         // Damage the closest object
                         let minDist = Number.MAX_VALUE;
                         let closestObject: GameObject | undefined;
-                        for (const object of p.nearObjects) {
+                        for (const object of p.visibleObjects) {
                             if (!object.dead && object !== p) {
-                                const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
+                                const objectHitbox: Hitbox | undefined = object instanceof Player ? new CircleHitbox(1, object.position) : object.hitbox;
+                                const record: CollisionRecord | undefined = objectHitbox?.distanceTo(hitbox);
                                 if (record?.collided === true && record.distance < minDist) {
                                     minDist = record.distance;
                                     closestObject = object;
@@ -135,7 +159,7 @@ export class Game {
                 // Partial objects
                 if (this.partialDirtyObjects.size !== 0) { // && !p.fullUpdate) {
                     for (const object of this.partialDirtyObjects) {
-                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
+                        if (p.visibleObjects.has(object) && !p.partialDirtyObjects.has(object) && !p.fullDirtyObjects.has(object)) {
                             p.partialDirtyObjects.add(object);
                         }
                     }
@@ -182,6 +206,7 @@ export class Game {
         this.players.add(player);
         this.livingPlayers.add(player);
         this.connectedPlayers.add(player);
+        this.dynamicObjects.add(player);
         this.fullDirtyObjects.add(player);
         this.updateObjects = true;
         player.updateVisibleObjects();

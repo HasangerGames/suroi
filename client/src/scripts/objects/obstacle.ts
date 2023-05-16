@@ -18,7 +18,7 @@ export class Obstacle extends GameObject {
             this.scale = scale;
             this.image.setScale(this.scale);
             this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
-            //this.emitter.emitParticle(1);
+            this.emitter.emitParticle(1);
         }
         const destroyed: boolean = stream.readBoolean();
         if (!this.destroyed && destroyed) {
