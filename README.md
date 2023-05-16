@@ -20,7 +20,7 @@ Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://su
 
 To learn more about the game, [join our Discord server.](https://discord.suroi.io)
 
-## Installation
+## Installation and setup
 Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
 
 Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or clone it with the following command:
