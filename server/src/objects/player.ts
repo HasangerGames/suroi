@@ -202,7 +202,7 @@ export class Player extends GameObject {
             this.movingLeft = false;
             this.movingRight = false;
             this.punching = false;
-            this.deadPosition = this.position;
+            this.deadPosition = this.position.clone();
 
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);

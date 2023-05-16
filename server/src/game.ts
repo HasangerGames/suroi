@@ -51,8 +51,6 @@ export class Game {
             const thisObject = this.getUserData() as GameObject;
             const thatObject = that.getUserData() as GameObject;
 
-            if (thisObject === null || thatObject === null) return false;
-
             // Check if they should collide
             if (thisObject.isPlayer) return (thatObject as Player).collidesWith.player;
             else if (thisObject.isObstacle) return (thatObject as Obstacle).collidesWith.obstacle;
@@ -78,7 +76,17 @@ export class Game {
             position: Vec2(x, y)
         });
 
-        boundary.createFixture({ shape: Box(width, height) });
+        boundary.createFixture({
+            shape: Box(width, height),
+            userData: {
+                isPlayer: false,
+                isObstacle: true,
+                collidesWith: {
+                    player: true,
+                    obstacle: false
+                }
+            }
+        });
     }
 
     tick(delay: number): void {
