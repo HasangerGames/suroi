@@ -11,9 +11,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 import { Map } from "./map";
 import { AnimationType } from "../../common/src/constants";
-import {
-    vAdd, type Vector, vRotate
-} from "../../common/src/utils/vector";
+import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { type Obstacle } from "./objects/obstacle";
@@ -110,9 +108,10 @@ export class Game {
                         p.weaponCooldown = Date.now();
                         p.animation = AnimationType.Punch;
 
-                        const offset: Vec2 = Vec2(1.5, 0);
-                        const position: Vector = vAdd(p.position.clone(), vRotate(offset, p.rotation));
-                        const radius = 4;
+                        const offset = Vec2(2.5, 0);
+                        const rotated = vRotate(offset, p.rotation);
+                        const position = Vec2(p.position.x + rotated.x, p.position.y - rotated.y);
+                        const radius = 1;
                         const hitbox: Hitbox = new CircleHitbox(radius, position);
 
                         // Damage the closest object
