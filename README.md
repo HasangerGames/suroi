@@ -20,7 +20,7 @@ Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://su
 
 To learn more about the game, [join our Discord server.](https://discord.suroi.io)
 
-## Installation
+## Installation and setup
 Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
 
 Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or clone it with the following command:
@@ -34,6 +34,11 @@ pnpm full-install
 ```
 
 This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
+
+Finally, to build the texture atlas, run this command in the `client` folder:
+```sh
+pnpm build-atlas
+```
 
 ## Development
 To run the game locally, open a terminal in the project root and run the following:
