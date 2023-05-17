@@ -29,9 +29,9 @@ export class Player extends GameObject {
     movingRight = false;
     punching = false;
 
-    body: Phaser.GameObjects.Arc;
-    leftFist: Phaser.GameObjects.Arc;
-    rightFist: Phaser.GameObjects.Arc;
+    body: Phaser.GameObjects.Image;
+    leftFist: Phaser.GameObjects.Image;
+    rightFist: Phaser.GameObjects.Image;
     container: Phaser.GameObjects.Container;
 
     distSinceLastFootstep = 0;
@@ -79,11 +79,10 @@ export class Player extends GameObject {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
-        this.rotation = stream.readRotation();
 
         if (!this.dead) {
             const oldAngle: number = this.container.angle;
-            const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
+            const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
             const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
             gsap.to(this.container, {
                 x: this.position.x * 20,
@@ -92,6 +91,8 @@ export class Player extends GameObject {
                 ease: "none",
                 duration: 0.03
             });
+        } else {
+            stream.readRotation(); // Discard rotation information
         }
 
         // Animation

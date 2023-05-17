@@ -157,7 +157,7 @@ export class Game {
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
                     for (const object of this.fullDirtyObjects) {
-                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
+                        if (p.visibleObjects.has(object)) {
                             p.fullDirtyObjects.add(object);
                         }
                     }
@@ -166,7 +166,7 @@ export class Game {
                 // Partial objects
                 if (this.partialDirtyObjects.size !== 0) { // && !p.fullUpdate) {
                     for (const object of this.partialDirtyObjects) {
-                        if (p.visibleObjects.has(object) && !p.partialDirtyObjects.has(object) && !p.fullDirtyObjects.has(object)) {
+                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
                             p.partialDirtyObjects.add(object);
                         }
                     }
@@ -209,15 +209,7 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        const player = new Player(this, name, socket, Vec2(360, 360));
-        this.players.add(player);
-        this.livingPlayers.add(player);
-        this.connectedPlayers.add(player);
-        this.dynamicObjects.add(player);
-        this.fullDirtyObjects.add(player);
-        this.updateObjects = true;
-        player.updateVisibleObjects();
-        return player;
+        return new Player(this, name, socket, Vec2(360, 360));
     }
 
     removePlayer(player: Player): void {

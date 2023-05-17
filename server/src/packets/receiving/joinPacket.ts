@@ -4,7 +4,16 @@ import { JoinedPacket } from "../sending/joinedPacket";
 
 export class JoinPacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
-        this.player.joined = true;
-        this.player.sendPacket(new JoinedPacket(this.player));
+        const p = this.player;
+        const game = p.game;
+        game.players.add(p);
+        game.livingPlayers.add(p);
+        game.connectedPlayers.add(p);
+        game.dynamicObjects.add(p);
+        game.fullDirtyObjects.add(p);
+        game.updateObjects = true;
+        p.updateVisibleObjects();
+        p.joined = true;
+        p.sendPacket(new JoinedPacket(p));
     }
 }
