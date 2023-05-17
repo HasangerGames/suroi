@@ -1,10 +1,10 @@
-<div align="center">
-  <img src="./client/src/assets/img/logos/suroi_readme.svg">
+<div style="text-align: center">
+  <img src="./client/src/assets/img/logos/suroi.svg" alt="Suroi logo">
   <hr />
 </div>
 
 
-<div align="center">
+<div style="text-align: center">
   <img src="https://img.shields.io/badge/node.js%20-%23339933.svg?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   <img src="https://img.shields.io/badge/typescript-%233178C6?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/phaser%20-%232094f3.svg?style=for-the-badge" />
