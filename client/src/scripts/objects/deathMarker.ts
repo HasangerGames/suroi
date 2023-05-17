@@ -23,7 +23,7 @@ export class DeathMarker extends GameObject {
                 this.playerName,
                 {
                     fontSize: 36,
-                    fontFamily: "monospace",
+                    fontFamily: "Inter",
                     color: "#dcdcdc"
                 })
                 .setOrigin(0.5, 0.5)
