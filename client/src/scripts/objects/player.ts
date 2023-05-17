@@ -39,9 +39,9 @@ export class Player extends GameObject {
     constructor(game: Game, scene: GameScene) {
         super(game, scene);
         this.type = ObjectType.categoryOnly(ObjectCategory.Player);
-        this.body = this.scene.add.circle(0, 0, 48, 0xffdbac);
-        this.leftFist = this.scene.add.circle(38, 35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
-        this.rightFist = this.scene.add.circle(38, -35, 15, 0xffdbac).setStrokeStyle(5, 0x553000);
+        this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
+        this.leftFist = this.scene.add.image(38, 35, "main", "player_fists.svg");
+        this.rightFist = this.scene.add.image(38, -35, "main", "player_fists.svg");
         this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
     }
 
