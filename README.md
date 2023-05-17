@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./client/src/assets/img/logos/suroi_readme.svg">
+  <img src="./client/src/assets/img/logos/suroi.svg">
   <hr />
 </div>
 
