@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="750"
-   height="300"
+   width="375"
+   height="150"
    viewBox="0 0 99.218747 39.687501"
    version="1.1"
    id="svg5"
@@ -29,15 +29,15 @@
      showgrid="false"
      units="px"
      width="300px"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="137.53227"
-     inkscape:cy="36.062446"
+     inkscape:zoom="4"
+     inkscape:cx="185.25"
+     inkscape:cy="27.5"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="text1684" />
   <defs
      id="defs2">
     <linearGradient
@@ -157,11 +157,11 @@
          id="path12786" />
       <path
          d="m 77.166668,9.0592174 q 0,-1.4477641 -1.447764,-1.4477641 h -4.101998 q -1.447764,0 -1.447764,1.4477641 v 7.7214076 q 0,1.447764 1.447764,1.447764 h 4.101998 q 1.447764,0 1.447764,-1.447764 z m 4.343292,7.7214076 q 0,2.533587 -1.158211,3.691799 -1.134082,1.134081 -3.667669,1.134081 h -6.03235 q -2.533587,0 -3.691798,-1.134081 Q 65.82585,19.314212 65.82585,16.780625 V 9.0592174 q 0,-2.5335871 1.134082,-3.6676689 1.158211,-1.1582112 3.691798,-1.1582112 h 6.03235 q 2.533587,0 3.667669,1.1582112 1.158211,1.1340818 1.158211,3.6676689 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#ff7300;fill-opacity:1;stroke:#321e00;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#ff7300;fill-opacity:1;stroke:#401d00;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path12788" />
       <path
          d="M 91.885589,21.365211 H 83.199004 V 17.987095 H 85.37065 V 7.8527473 h -2.171646 v -3.378116 h 8.686585 v 3.378116 H 89.713943 V 17.987095 h 2.171646 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#ff7300;fill-opacity:1;stroke:#321e00;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#ff7300;fill-opacity:1;stroke:#401d00;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="path12790" />
     </g>
     <g
