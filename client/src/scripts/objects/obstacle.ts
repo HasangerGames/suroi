@@ -86,5 +86,6 @@ export class Obstacle extends GameObject {
 
     destroy(): void {
         this.image.destroy(true);
+        this.emitter.destroy(true);
     }
 }

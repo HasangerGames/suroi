@@ -45,6 +45,16 @@ export class Player extends GameObject {
         this.leftFist = this.scene.add.image(38, 35, "main", "player_fists.svg");
         this.rightFist = this.scene.add.image(38, -35, "main", "player_fists.svg");
         this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
+
+        this.emitter = this.scene.add.particles(0, 0, "main", {
+            frame: `blood_particle.svg`,
+            quantity: 1,
+            rotate: { min: 0, max: 360 },
+            lifespan: 1000,
+            speed: { min: 10, max: 50 },
+            scale: { start: 1, end: 0.8 },
+            emitting: false
+        }).setDepth(2);
     }
 
     createPolygon(radius: number, sides: number): number[][] {
@@ -86,6 +96,8 @@ export class Player extends GameObject {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
 
+        this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
+
         if (!this.dead) {
             const oldAngle: number = this.container.angle;
             const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
@@ -120,17 +132,6 @@ export class Player extends GameObject {
                 }
             }
         }
-
-        
-        this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, "main", {
-            frame: `blood_particle.svg`,
-            quantity: 1,
-            rotate: { min: 0, max: 360 },
-            lifespan: 1000,
-            speed: { min: 10, max: 50 },
-            scale: { start: 1, end: 0.8 },
-            emitting: false
-        }).setDepth(2);
     }
 
     deserializeFull(stream: SuroiBitStream): void {
