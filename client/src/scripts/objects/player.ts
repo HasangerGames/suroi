@@ -34,6 +34,8 @@ export class Player extends GameObject {
     rightFist: Phaser.GameObjects.Image;
     container: Phaser.GameObjects.Container;
 
+    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
     distSinceLastFootstep = 0;
 
     constructor(game: Game, scene: GameScene) {
@@ -62,6 +64,10 @@ export class Player extends GameObject {
     }
 
     set health(health: number) {
+        if (health < this._health) {
+            console.log("hi");
+            this.emitter.emitParticle(1);
+        }
         this._health = health;
     }
 
@@ -114,6 +120,17 @@ export class Player extends GameObject {
                 }
             }
         }
+
+        
+        this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, "main", {
+            frame: `blood_particle.svg`,
+            quantity: 1,
+            rotate: { min: 0, max: 360 },
+            lifespan: 1000,
+            speed: { min: 10, max: 50 },
+            scale: { start: 1, end: 0.8 },
+            emitting: false
+        }).setDepth(2);
     }
 
     deserializeFull(stream: SuroiBitStream): void {

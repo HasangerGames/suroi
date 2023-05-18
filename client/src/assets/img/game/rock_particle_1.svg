@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="29.722578"
-   height="32.77103"
-   viewBox="0 0 7.8640989 8.6706687"
+   width="34.63488"
+   height="38.975433"
+   viewBox="0 0 9.1638122 10.31225"
    version="1.1"
    id="svg5"
    sodipodi:docname="rock_particle_1.svg"
@@ -42,7 +42,7 @@
      id="defs2" />
   <g
      id="layer1"
-     transform="matrix(1.75,0,0,1.75,-228.3375,-356.66076)">
+     transform="matrix(1.75,0,0,1.75,-228.45927,-356.59122)">
     <g
        id="g3335"
        transform="translate(-0.26415541,-0.25629137)">
@@ -53,23 +53,23 @@
         <path
            id="rect790"
            style="fill:#999999;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
-           d="m 170.47782,216.18469 6.84708,2.15531 2.02874,8.41031 -8.77751,-2.03773 c 0,0 -1.64801,-9.0157 -0.0983,-8.52789 z"
+           d="m 170.60328,216.1883 8.14052,2.56245 2.41197,9.99905 -10.43561,-2.42267 c 0,0 -1.95932,-10.71879 -0.11687,-10.13883 z"
            sodipodi:nodetypes="scccs" />
         <path
            id="rect790-3"
            style="fill:#808080;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
-           d="m 177.3249,218.34 2.02874,8.41031 -8.77751,-2.03773 1.6779,-5.08609 z"
+           d="m 178.7438,218.75075 2.41197,9.99905 -10.43561,-2.42267 1.99486,-6.04686 z"
            sodipodi:nodetypes="ccccc" />
         <path
            id="rect790-3-7"
            style="fill:#666666;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
-           d="m 178.33927,222.54515 1.01437,4.20516 -4.38875,-1.01887 0.62112,-2.41538 z"
+           d="m 179.94978,223.75027 1.20599,4.99953 -5.2178,-1.21134 0.73845,-2.87165 z"
            sodipodi:nodetypes="ccccc" />
         <path
            id="rect790-2"
-           style="opacity:1;fill:#999999;fill-opacity:0;stroke:#333333;stroke-width:1.19234;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
-           d="m 170.47782,216.18469 6.84708,2.15531 2.02874,8.41031 -8.77751,-2.03773 c 0,0 -1.64801,-9.0157 -0.0983,-8.52789 z"
-           sodipodi:nodetypes="scccs" />
+           style="opacity:1;fill:#999999;fill-opacity:0;stroke:#333333;stroke-width:1.41758;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
+           d="m 170.60328,216.1883 8.14052,2.56245 c 0,0 2.72432,9.70755 2.41197,9.99905 -0.31235,0.29149 -10.43561,-2.42267 -10.43561,-2.42267 0,0 -1.33195,-10.13883 -0.11687,-10.13883 z"
+           sodipodi:nodetypes="sczcss" />
       </g>
     </g>
   </g>
