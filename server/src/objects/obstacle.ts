@@ -56,7 +56,7 @@ export class Obstacle extends GameObject {
             if (this.body != null) this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
 
-            if (definition.explosion) {
+            if (definition.explosion !== undefined) {
                 const explosion = new Explosion(
                     this.game,
                     ObjectType.fromString(ObjectCategory.Explosion, definition.explosion),

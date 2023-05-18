@@ -1,8 +1,7 @@
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import gsap from "gsap";
-import { Expo } from "gsap";
+import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
+import gsap, { Expo } from "gsap";
 
 export class Explosion extends GameObject {
     image: Phaser.GameObjects.Image;
@@ -19,13 +18,14 @@ export class Explosion extends GameObject {
             scale: 1.5,
             duration: 1,
             ease: Expo.easeOut
-        })
-        gsap.to(this.image, {
+        });
+
+        void gsap.to(this.image, {
             alpha: 0,
             duration: 1.5,
             ease: Expo.easeOut
-        }).then(()=> {
-            this.destroy()
+        }).then(() => {
+            this.destroy();
         });
 
         this.scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);

@@ -91,9 +91,8 @@ export class UpdatePacket extends SendingPacket {
         if (newExplosions) {
             stream.writeUint8(p.game.explosions.size);
             for (const explosion of p.game.explosions) {
-                explosion.serializeFull(stream)
+                explosion.serializeFull(stream);
             }
         }
-
     }
 }

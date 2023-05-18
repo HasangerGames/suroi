@@ -8,7 +8,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
         max: number
     }
     cameraShake: {
-        duration: number,
+        duration: number
         intensity: number
     }
 }
@@ -22,7 +22,7 @@ export class Explosions extends ObjectDefinitions {
             obstacleMultiplier: 2,
             radius: {
                 min: 8,
-                max: 25,
+                max: 25
             },
             cameraShake: {
                 duration: 250,
