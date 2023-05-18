@@ -6,6 +6,7 @@ import { type Player } from "./player";
 
 export class DeathMarker extends GameObject {
     playerName: string;
+    isNew = true;
 
     constructor(player: Player) {
         super(player.game, ObjectType.categoryOnly(ObjectCategory.DeathMarker), player.position);
@@ -21,5 +22,7 @@ export class DeathMarker extends GameObject {
 
     serializeFull(stream: SuroiBitStream): void {
         stream.writeUTF8String(this.playerName, 16);
+        stream.writeBoolean(this.isNew);
+        if (this.isNew) this.isNew = false;
     }
 }

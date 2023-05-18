@@ -84,5 +84,16 @@ export class UpdatePacket extends SendingPacket {
             }
             p.deletedObjects = new Set<GameObject>();
         }
+
+        // Explosions
+        const newExplosions = p.game.explosions.size !== 0;
+        stream.writeBoolean(newExplosions);
+        if (newExplosions) {
+            stream.writeUint8(p.game.explosions.size);
+            for (const explosion of p.game.explosions) {
+                explosion.serializeFull(stream)
+            }
+        }
+
     }
 }

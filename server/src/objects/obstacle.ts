@@ -1,7 +1,7 @@
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Vector, vSub } from "../../../common/src/utils/vector";
 import { bodyFromHitbox } from "../utils/misc";
@@ -10,7 +10,9 @@ import {
 } from "planck";
 import { type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type CollisionRecord, transformRectangle } from "../../../common/src/utils/math";
+import { transformRectangle } from "../../../common/src/utils/math";
+import { ObjectCategory } from "../../../common/src/constants";
+import { Explosion } from "./explosion";
 
 export class Obstacle extends GameObject {
     readonly isPlayer = false;
@@ -46,45 +48,22 @@ export class Obstacle extends GameObject {
     damage(amount: number, source): void {
         if (this.health === 0) return;
         this.health -= amount;
+        const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         if (this.health <= 0) {
             this.health = 0;
             this.dead = true;
-            this.scale = (this.type.definition as ObstacleDefinition).scale.spawnMin;
+            this.scale = definition.scale.spawnMin;
             if (this.body != null) this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
 
-            // Exploding barrels
-            if (this.type.idString === "barrel") {
-                const minRadius = 8, maxRadius = 16;
-                const hitbox: CircleHitbox = new CircleHitbox(maxRadius, this.position);
-                const visibleObjects: GameObject[] = this.game.visibleObjects[48][Math.round(this.position.x / 10) * 10][Math.round(this.position.y / 10) * 10];
-                for (const object of visibleObjects) {
-                    if (!object.dead && object.hitbox !== undefined) {
-                        const record: CollisionRecord = hitbox.distanceTo(object.hitbox);
-                        if (record.collided) {
-                            let damage = 100;
-                            if (record.distance > minRadius) {
-                                const damagePercent = Math.abs(record.distance / maxRadius - 1);
-                                damage *= damagePercent;
-                            }
-                            object.damage(damage, this);
-                        }
-                    }
-                }
-
-                for (const player of this.game.players) {
-                    const record: CollisionRecord = hitbox.distanceTo(new CircleHitbox(1, player.position));
-                    if (record.collided) {
-                        let damage = 100;
-                        if (record.distance > minRadius) {
-                            const damagePercent = Math.abs(record.distance / maxRadius - 1);
-                            damage *= damagePercent;
-                        }
-                        player.damage(damage);
-                    }
-                }
+            if (definition.explosion) {
+                const explosion = new Explosion(
+                    this.game,
+                    ObjectType.fromString(ObjectCategory.Explosion, definition.explosion),
+                    this.position,
+                    source);
+                this.game.explosions.add(explosion);
             }
-
             /*for (const item of this.loot) {
                 let lootPosition = this.position.clone();
                 // TODO: add a "lootSpawnOffset" property for lockers and deposit boxes.
@@ -96,7 +75,6 @@ export class Obstacle extends GameObject {
         } else {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale: number = this.scale;
-            const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
             const scaleFactor: number = this.scale / oldScale;

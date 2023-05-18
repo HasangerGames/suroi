@@ -15,6 +15,7 @@ import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { type Obstacle } from "./objects/obstacle";
+import { type Explosion } from "./objects/explosion";
 
 export class Game {
     map: Map;
@@ -33,6 +34,9 @@ export class Game {
     players: Set<Player> = new Set<Player>();
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
+
+    explosions: Set<Explosion> = new Set<Explosion>();
+
     tickTimes: number[] = [];
 
     constructor() {
@@ -144,6 +148,10 @@ export class Game {
                 }
             }
 
+            for (const explosion of this.explosions) {
+                explosion.explode();
+            }
+
             // Second loop over players: calculate visible objects & send updates
             for (const p of this.connectedPlayers) {
                 if (!p.joined) continue;
@@ -184,9 +192,10 @@ export class Game {
             }
 
             // Reset everything
-            if (this.fullDirtyObjects.size !== 0) this.fullDirtyObjects = new Set<GameObject>();
-            if (this.partialDirtyObjects.size !== 0) this.partialDirtyObjects = new Set<GameObject>();
-            if (this.deletedObjects.size !== 0) this.deletedObjects = new Set<GameObject>();
+            this.fullDirtyObjects.clear();
+            this.partialDirtyObjects.clear();
+            this.deletedObjects.clear();
+            this.explosions.clear();
 
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!

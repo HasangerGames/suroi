@@ -2,6 +2,7 @@ import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Variation } from "../../../../common/src/typings";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import gsap from "gsap"
 
 export class Obstacle extends GameObject {
     scale: number;
@@ -27,9 +28,6 @@ export class Obstacle extends GameObject {
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (this.image !== undefined) {
-                if (this.type.idString === "barrel") {
-                    this.scene.cameras.main.shake(250, 0.01);
-                }
                 this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_destroyed`);
                 this.image.setTexture("main", `${this.type.idString}_residue.svg`);
                 this.image.setRotation(this.rotation).setScale(this.scale);

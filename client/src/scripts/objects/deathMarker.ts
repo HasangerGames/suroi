@@ -1,5 +1,6 @@
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import gsap from "gsap";
 
 export class DeathMarker extends GameObject {
     playerName: string;
@@ -28,6 +29,14 @@ export class DeathMarker extends GameObject {
                 })
                 .setOrigin(0.5, 0.5)
                 .setShadow(2, 2, "#000", 2, true, true);
+        }
+        if (stream.readBoolean()) { // play an animation if its a new death marker
+            this.image.setScale(0.5).setAlpha(0);
+            gsap.to(this.image, {
+                scale: 1,
+                alpha: 1,
+                duration: 0.4,
+            });
         }
     }
 
