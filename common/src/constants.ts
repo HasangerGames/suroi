@@ -1,5 +1,5 @@
 export enum ObjectCategory {
-    Player, Obstacle, DeathMarker
+    Player, Obstacle, Explosion, DeathMarker
 }
 
 export enum PacketType {

@@ -8,6 +8,7 @@ import { ObjectCategory } from "../../../../../common/src/constants";
 import { type GameObject } from "../../types/gameObject";
 import { type Game } from "../../game";
 import { DeathMarker } from "../../objects/deathMarker";
+import { Explosion } from "../../objects/explosion";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -133,6 +134,15 @@ export class UpdatePacket extends ReceivingPacket {
                 }
                 object.destroy();
                 game.objects.delete(id);
+            }
+        }
+
+        // Explosions
+        const newExplosions = stream.readBoolean();
+        if (newExplosions) {
+            const explosionCount = stream.readUint8();
+            for (let i = 0; i < explosionCount; i++) {
+                new Explosion(game, this.player.scene).deserializeFull(stream);
             }
         }
     }

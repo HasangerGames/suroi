@@ -19,6 +19,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     variations?: number
     particleVariations?: number
     depth?: number // the obstacle z index
+    explosion?: string
 }
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
@@ -95,7 +96,8 @@ export class Obstacles extends ObjectDefinitions {
             },
             hitbox: new CircleHitbox(5.2),
             spawnHitbox: new CircleHitbox(5.2),
-            rotation: "full"
+            rotation: "full",
+            explosion: "barrel_explosion"
         }
     ];
 }
