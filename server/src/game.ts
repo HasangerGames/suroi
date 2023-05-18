@@ -127,8 +127,7 @@ export class Game {
                         let closestObject: GameObject | undefined;
                         for (const object of p.visibleObjects) {
                             if (!object.dead && object !== p) {
-                                const objectHitbox: Hitbox | undefined = object instanceof Player ? new CircleHitbox(1, object.position) : object.hitbox;
-                                const record: CollisionRecord | undefined = objectHitbox?.distanceTo(hitbox);
+                                const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
                                 if (record?.collided === true && record.distance < minDist) {
                                     minDist = record.distance;
                                     closestObject = object;
@@ -209,7 +208,7 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        return new Player(this, name, socket, Vec2(360, 360));
+        return new Player(this, name, socket, Vec2(10, 10));
     }
 
     removePlayer(player: Player): void {

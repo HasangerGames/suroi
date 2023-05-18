@@ -42,12 +42,12 @@ export class Player extends GameObject {
         super(game, scene);
         this.type = ObjectType.categoryOnly(ObjectCategory.Player);
         this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
-        this.leftFist = this.scene.add.image(38, 35, "main", "player_fists.svg");
-        this.rightFist = this.scene.add.image(38, -35, "main", "player_fists.svg");
+        this.leftFist = this.scene.add.image(38, 35, "main", "player_fist.svg");
+        this.rightFist = this.scene.add.image(38, -35, "main", "player_fist.svg");
         this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
-            frame: `blood_particle.svg`,
+            frame: "blood_particle.svg",
             quantity: 1,
             rotate: { min: 0, max: 360 },
             lifespan: 1000,
@@ -57,27 +57,11 @@ export class Player extends GameObject {
         }).setDepth(2);
     }
 
-    createPolygon(radius: number, sides: number): number[][] {
-        const points: number[][] = [];
-        for (let i = 0; i < sides; i++) {
-            const angle = (2 * Math.PI * i) / sides;
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-            points.push([x, y]);
-        }
-
-        return points;
-    }
-
     get health(): number {
         return this._health;
     }
 
     set health(health: number) {
-        if (health < this._health) {
-            console.log("hi");
-            this.emitter.emitParticle(1);
-        }
         this._health = health;
     }
 
@@ -131,6 +115,11 @@ export class Player extends GameObject {
                     break;
                 }
             }
+        }
+
+        // Blood effect
+        if (stream.readBoolean()) {
+            this.emitter.emitParticle(1);
         }
     }
 

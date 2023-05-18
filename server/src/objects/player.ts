@@ -14,6 +14,7 @@ import {
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Player extends GameObject {
     readonly isPlayer = true;
@@ -29,6 +30,7 @@ export class Player extends GameObject {
 
     private _health = 100;
     healthDirty = true;
+    bloodEffect = false;
 
     private _adrenaline = 100;
     adrenalineDirty = true;
@@ -81,12 +83,14 @@ export class Player extends GameObject {
         });
 
         this.body.createFixture({
-            shape: Circle(1),
+            shape: Circle(2.5),
             friction: 0.0,
             density: 1000.0,
             restitution: 0.0,
             userData: this
         });
+
+        this.hitbox = new CircleHitbox(2.5, this.position);
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -193,6 +197,9 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         this.health -= amount;
+        this.bloodEffect = true;
+        this.partialDirtyObjects.add(this);
+        this.game.partialDirtyObjects.add(this);
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
@@ -220,6 +227,8 @@ export class Player extends GameObject {
         stream.writePosition(this.position);
         stream.writeRotation(this.rotation);
         stream.writeBits(this.animation, ANIMATION_TYPE_BITS);
+        stream.writeBoolean(this.bloodEffect);
+        this.bloodEffect = false;
     }
 
     serializeFull(stream: SuroiBitStream): void {

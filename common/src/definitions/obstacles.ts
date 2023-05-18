@@ -33,7 +33,7 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 0.9, spawnMax: 1.1, destroy: 0.75
             },
-            hitbox: new CircleHitbox(4.5),
+            hitbox: new CircleHitbox(3),
             spawnHitbox: new CircleHitbox(15),
             rotation: "full",
             variations: 3,
@@ -58,8 +58,8 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 0.9, spawnMax: 1.1, destroy: 0.25
             },
-            hitbox: new CircleHitbox(5.15),
-            spawnHitbox: new CircleHitbox(5.5),
+            hitbox: new CircleHitbox(3.85),
+            spawnHitbox: new CircleHitbox(4.5),
             rotation: "full",
             variations: 5,
             particleVariations: 2
@@ -82,8 +82,8 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
-            hitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
-            spawnHitbox: new RectangleHitbox(v(-6, -6), v(6, 6)),
+            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+            spawnHitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
             rotation: "none"
         },
         {
@@ -93,8 +93,8 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
-            hitbox: new CircleHitbox(5.2),
-            spawnHitbox: new CircleHitbox(5.2),
+            hitbox: new CircleHitbox(3.45),
+            spawnHitbox: new CircleHitbox(3.45),
             rotation: "full"
         }
     ];
