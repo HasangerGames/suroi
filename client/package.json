@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "pnpm run build-atlas && webpack --config ./webpack/webpack.prod.ts",
+    "build": "webpack --config ./webpack/webpack.prod.ts",
     "dev": "webpack serve --config ./webpack/webpack.dev.ts",
     "lint": "eslint . --fix --ext .js,.ts,.tsx",
     "lint:ci": "eslint . --ext .js,.ts,.tsx",
@@ -48,6 +48,7 @@
     "postcss-preset-env": "^8.3.2",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
+    "spritesheet-webpack-plugin": "^0.0.1",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",

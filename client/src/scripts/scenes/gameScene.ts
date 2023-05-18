@@ -22,7 +22,7 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
 
-        this.load.atlas("main", require("../../assets/atlases/main.png"), require("../../assets/atlases/main.json"));
+        this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
 
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);

@@ -6,6 +6,7 @@ import type WDS from "webpack-dev-server";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
 import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
+import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
 
 import * as path from "path";
 
@@ -163,6 +164,13 @@ const config: Configuration = {
                 minifyCSS: true,
                 minifyURLs: true
             }
+        }),
+        new SpritesheetWebpackPlugin({
+            patterns: [{
+                rootDir: path.resolve(__dirname, "../src/assets/img/game"),
+                outDir: "img/atlases",
+                filename: "main.png"
+            }]
         }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
