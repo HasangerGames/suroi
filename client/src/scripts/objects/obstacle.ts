@@ -13,9 +13,9 @@ export class Obstacle extends GameObject {
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     deserializePartial(stream: SuroiBitStream): void {
-        const scale: number = stream.readScale();
-        if (this.image !== undefined && scale !== this.scale) {
-            this.scale = scale;
+        const oldScale: number = this.scale;
+        this.scale = stream.readScale();
+        if (this.image !== undefined && oldScale !== this.scale) {
             this.image.setScale(this.scale);
             this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
             this.emitter.emitParticle(1);

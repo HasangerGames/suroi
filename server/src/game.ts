@@ -119,7 +119,7 @@ export class Game {
                         const offset = Vec2(2.5, 0);
                         const rotated = vRotate(offset, p.rotation);
                         const position = Vec2(p.position.x + rotated.x, p.position.y - rotated.y);
-                        const radius = 1;
+                        const radius = 1.5;
                         const hitbox: Hitbox = new CircleHitbox(radius, position);
 
                         // Damage the closest object
