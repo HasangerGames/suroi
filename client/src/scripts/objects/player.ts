@@ -51,8 +51,9 @@ export class Player extends GameObject {
             quantity: 1,
             rotate: { min: 0, max: 360 },
             lifespan: 1000,
-            speed: { min: 10, max: 50 },
+            speed: { min: 40, max: 80 },
             scale: { start: 1, end: 0.8 },
+            alpha: { start: 1, end: 0},
             emitting: false
         }).setDepth(2);
     }

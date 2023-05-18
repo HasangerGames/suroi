@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="57.774025"
-   height="53.717651"
-   viewBox="0 0 15.286043 14.212794"
+   width="34.231323"
+   height="31.827906"
+   viewBox="0 0 9.057037 8.4211326"
    version="1.1"
    id="svg901"
-   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    sodipodi:docname="blood_particle.svg"
    inkscape:export-xdpi="120.95238"
    inkscape:export-ydpi="120.95238"
@@ -29,12 +29,12 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="8.4057621"
-     inkscape:cx="30.217367"
-     inkscape:cy="17.785419"
-     inkscape:window-width="1280"
-     inkscape:window-height="658"
-     inkscape:window-x="-6"
-     inkscape:window-y="-6"
+     inkscape:cx="18.2018"
+     inkscape:cy="6.9595117"
+     inkscape:window-width="1440"
+     inkscape:window-height="827"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="g858"
      width="175px"
@@ -47,14 +47,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-3.1603502,-3.1341989)">
+     transform="translate(-6.2748534,-6.0300296)">
     <g
        id="g858"
        transform="matrix(0.3673072,0,0,0.3673072,3.8616504e-5,3.8616504e-5)">
       <path
          id="path291"
          style="fill:#800000;stroke:#333333;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none"
-         d="m 30.709888,17.53282 c 5.5965,2.374909 15.348971,-2.539617 18.001673,2.930683 4.451238,9.179166 -1.077193,26.764081 -14.843519,26.763871 -6.946481,-1.06e-4 -2.707438,-9.827152 -6.636793,-12.36575 C 22.524795,31.820975 13.651663,38.309368 10.461525,33.702931 5.188212,26.088471 12.653804,24.309495 14.255333,19.770513 15.580455,16.014911 15.1462,9.6345004 19.045651,8.8253192 28.666553,6.8288701 26.24343,15.637451 30.709888,17.53282 Z"
+         d="m 30.181107,21.749294 c 3.315947,1.407142 9.094322,-1.504732 10.666058,1.736441 2.637375,5.438689 -0.638241,15.857816 -8.79484,15.857691 -4.115815,-6.2e-5 -1.604167,-5.822623 -3.932324,-7.326752 -2.788591,-1.801596 -8.045955,2.042801 -9.936123,-0.68653 -3.124457,-4.511595 1.298933,-5.565645 2.247845,-8.255008 0.78514,-2.225208 0.527842,-6.005625 2.838281,-6.485068 5.70042,-1.182903 4.264711,4.036213 6.911103,5.159226 z"
          sodipodi:nodetypes="aasasasa" />
     </g>
   </g>
