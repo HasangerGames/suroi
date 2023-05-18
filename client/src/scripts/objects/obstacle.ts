@@ -2,7 +2,6 @@ import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Variation } from "../../../../common/src/typings";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { random } from "../../../../common/src/utils/random";
 
 export class Obstacle extends GameObject {
     scale: number;
@@ -15,11 +14,15 @@ export class Obstacle extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {
         const oldScale: number = this.scale;
         this.scale = stream.readScale();
+
+        // Play a sound and emit a particle if the scale changes after the obstacle's creation
         if (this.image !== undefined && oldScale !== this.scale) {
             this.image.setScale(this.scale);
             this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
             this.emitter.emitParticle(1);
         }
+
+        // Change the texture of the obstacle and play a sound when it's destroyed
         const destroyed: boolean = stream.readBoolean();
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
@@ -37,10 +40,13 @@ export class Obstacle extends GameObject {
     }
 
     deserializeFull(stream: SuroiBitStream): void {
+        // Obstacles should only be fully updated on creation
         if (this.image !== undefined) {
             console.warn("Full update of existing obstacle");
             return;
         }
+
+        // Get position, rotation, and variations
         this.position = stream.readPosition();
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         this.rotation = definition.rotation === "full" ? stream.readRotation() : 0;
@@ -49,15 +55,26 @@ export class Obstacle extends GameObject {
         let texture: string = this.type.idString;
         if (this.destroyed) texture += "_residue";
         else if (hasVariations) texture += `_${this.variation + 1}`;
+
+        // Create the obstacle image
         this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", `${texture}.svg`)
             .setRotation(this.rotation)
             .setScale(this.scale)
             .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
-        let particleImage = `${this.type.idString}_particle`;
-        // Note: For some reason this makes it where each object/rock only spews the SAME particle; I don't know how to randomize each particle.
-        if (definition.particleVariations !== undefined) particleImage += `_${random(1, definition.particleVariations)}`;
+
+        // If there are multiple particle variations, generate a list of variation image names
+        const particleImage = `${this.type.idString}_particle`;
+        let frames: string[] | undefined;
+        if (definition.particleVariations !== undefined) {
+            frames = [];
+            for (let i = 0; i < definition.particleVariations; i++) {
+                frames.push(`${particleImage}_${i + 1}.svg`);
+            }
+        }
+
+        // Create the particle emitter
         this.emitter = this.scene.add.particles(this.position.x * 20, this.position.y * 20, "main", {
-            frame: `${particleImage}.svg`,
+            frame: definition.particleVariations === undefined ? `${particleImage}.svg` : frames,
             quantity: 1,
             rotate: { min: 0, max: 360 },
             lifespan: 1500,
