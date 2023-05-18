@@ -75,7 +75,6 @@ export class Player extends GameObject {
 
     set health(health: number) {
         if (health < this._health) {
-            console.log("hi");
             this.emitter.emitParticle(1);
         }
         this._health = health;
