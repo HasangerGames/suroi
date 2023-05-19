@@ -42,7 +42,6 @@ export class Explosion extends GameObject {
                 let damage = definition.damage;
                 if (dist > definition.radius.min) {
                     const damagePercent = Math.abs(dist / definition.radius.max - 1);
-                    console.log(damagePercent);
                     damage *= damagePercent;
                 }
                 player.damage(damage, this.source);
