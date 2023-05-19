@@ -53,7 +53,7 @@ export class Player extends GameObject {
             lifespan: 1000,
             speed: { min: 20, max: 30 },
             scale: { start: 0.5, end: 1 },
-            alpha: { start: 1, end: 0},
+            alpha: { start: 1, end: 0 },
             emitting: false
         }).setDepth(2);
     }
