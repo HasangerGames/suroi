@@ -9,19 +9,11 @@ Fields:
 - longContent (optional): Longer info for the news page. If no longContent is set, then the content becomes the long content. Supports HTML.
 */
 
-import news from "../../assets/json/news.json";
+import { news } from "./newsPosts";
 
-export interface NewsPost {
-    date: number
-    author: string
-    title: string
-    bannerImage?: string
-    content: string
-    longContent?: string
-}
 
 let newsText = "";
-for (const newsPost of news as NewsPost[]) {
+for (const newsPost of news) {
     newsText += '<article class="splash-news-entry">';
     newsText += `<h3 class="news-title">${newsPost.title}</h3>`;
     const date: string = new Date(newsPost.date)

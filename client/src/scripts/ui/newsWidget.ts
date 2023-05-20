@@ -1,8 +1,7 @@
-import news from "../../assets/json/news.json";
-import { type NewsPost } from "./newsGenerator";
+import { news } from "./newsPosts";
 
 let newsText = "";
-for (const newsPost of news.slice(0, 5) as NewsPost[]) {
+for (const newsPost of news.slice(0, 5)) {
     newsText += '<article class="splash-news-entry">';
     const date: string = new Date(newsPost.date)
         .toLocaleDateString("default", {
