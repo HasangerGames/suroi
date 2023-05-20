@@ -12,6 +12,7 @@ body > canvas {
 }
 
 .ui-leaderboard {
+    pointer-events: none;
     position: absolute;
     top: .5rem;
     right: .5rem;
