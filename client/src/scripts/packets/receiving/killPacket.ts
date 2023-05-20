@@ -3,7 +3,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { type Player } from "../../objects/player";
 import $ from "jquery";
 
-let timeoutId: any;
+let timeoutId: number;
 
 export class KillPacket extends ReceivingPacket {
     public constructor(player: Player) {
@@ -22,7 +22,7 @@ export class KillPacket extends ReceivingPacket {
             // so it wont fade away too fast if the player makes more than one kill in a short time span
             if (timeoutId !== undefined) clearTimeout(timeoutId);
 
-            timeoutId = setTimeout(() => {
+            timeoutId = window.setTimeout(() => {
                 killModal.fadeOut(350);
             }, 3000);
         });
