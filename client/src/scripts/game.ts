@@ -1,14 +1,18 @@
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type SendingPacket } from "./types/sendingPacket";
-import { type Player } from "./objects/player";
-import { UpdatePacket } from "./packets/receiving/updatePacket";
+import $ from "jquery";
+
 import core from "./core";
-import { PacketType } from "../../../common/src/constants";
-import { type GameObject } from "./types/gameObject";
+
+import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { GameOverPacket } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
-import $ from "jquery";
+
+import { type Player } from "./objects/player";
+import { type SendingPacket } from "./types/sendingPacket";
+import { type GameObject } from "./types/gameObject";
+
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { PacketType } from "../../../common/src/constants";
 
 export class Game {
     socket: WebSocket;

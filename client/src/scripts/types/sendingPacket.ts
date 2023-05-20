@@ -1,5 +1,6 @@
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
+
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type PacketType } from "../../../../common/src/constants";
 
 export abstract class SendingPacket {

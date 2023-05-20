@@ -1,9 +1,10 @@
+import gsap, { Expo } from "gsap";
+
+import core from "../core";
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import gsap, { Expo } from "gsap";
-import core from '../core';
-import { distance } from '../../../../common/src/utils/math';
+import { distance } from "../../../../common/src/utils/math";
 
 export class Explosion extends GameObject {
     image: Phaser.GameObjects.Image;

@@ -1,6 +1,7 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
+import { ReceivingPacket } from "../../types/receivingPacket";
+
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class GameOverPacket extends ReceivingPacket {
     public constructor(player: Player) {

@@ -1,7 +1,9 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type Player } from "../../objects/player";
 import $ from "jquery";
+
+import { type Player } from "../../objects/player";
+import { ReceivingPacket } from "../../types/receivingPacket";
+
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 let timeoutId: number;
 

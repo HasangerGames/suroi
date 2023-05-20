@@ -1,8 +1,9 @@
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
+import { type GameScene } from "../scenes/gameScene";
+
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector } from "../../../../common/src/utils/vector";
-import { type GameScene } from "../scenes/gameScene";
 
 export abstract class GameObject {
     id: number;

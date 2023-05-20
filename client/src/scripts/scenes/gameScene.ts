@@ -3,10 +3,12 @@ import Phaser from "phaser";
 import core from "../core";
 import { type Game } from "../game";
 import { type MenuScene } from "./menuScene";
+
 import { InputPacket } from "../packets/sending/inputPacket";
-import { Player } from "../objects/player";
-import { Materials } from "../../../../common/src/definitions/obstacles";
 import { JoinPacket } from "../packets/sending/joinPacket";
+import { Player } from "../objects/player";
+
+import { Materials } from "../../../../common/src/definitions/obstacles";
 
 export class GameScene extends Phaser.Scene {
     activeGame: Game;

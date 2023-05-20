@@ -1,6 +1,10 @@
 import {
-    v, vAdd, type Vector, vMul
+    v,
+    vAdd,
+    type Vector,
+    vMul
 } from "./vector";
+
 import { type Orientation } from "../typings";
 
 /**
