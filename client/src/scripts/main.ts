@@ -14,7 +14,7 @@ $(() => {
     $("#btn-play-solo").on("click", () => {
         void $.get(`${API_URL}/getGame`, data => {
             /* eslint-disable-next-line no-new,@typescript-eslint/restrict-template-expressions */
-            core.game?.connect(`${data.addr}?name=${$("#username-input").text()}`);
+            core.game?.connect(`${data.addr}?name=${$("#username-input").val()}`);
         });
     });
 
