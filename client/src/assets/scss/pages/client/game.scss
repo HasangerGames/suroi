@@ -11,6 +11,33 @@ body > canvas {
     z-index: 1;
 }
 
+.ui-leaderboard {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    background: $transparent_bg;
+    border-radius: 8px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    padding: .6rem;
+    gap: .6rem;
+}
+
+.ui-leaderboard .devider {
+    height: 100%;
+    width: 2px;
+    background-color: white;
+    display: inline-block;
+}
+
+.ui-leaderboard #ui-players-alive {
+    font-size: larger;
+}
+
 #health-bar-container {
     pointer-events: none;
     background: $transparent_bg;
