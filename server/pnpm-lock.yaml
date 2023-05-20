@@ -770,8 +770,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-es-x@6.1.0(eslint@8.40.0):
-    resolution: {integrity: sha512-f6dHOuVDDYHOCu3w+EledZnUkDdCa71GGHxZ0DMNfalM/2Upl0t/ks0+d5W5YDQJEQmvthE3WYv7RI/9Fl+csQ==}
+  /eslint-plugin-es-x@6.2.1(eslint@8.40.0):
+    resolution: {integrity: sha512-uR34zUhZ9EBoiSD2DdV5kHLpydVEvwWqjteUr9sXRgJknwbKZJZhdJ7uFnaTtd+Nr/2G3ceJHnHXrFhJ67n3Tw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=8'
@@ -823,7 +823,7 @@ packages:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.40.0)
       builtins: 5.0.1
       eslint: 8.40.0
-      eslint-plugin-es-x: 6.1.0(eslint@8.40.0)
+      eslint-plugin-es-x: 6.2.1(eslint@8.40.0)
       ignore: 5.2.4
       is-core-module: 2.12.1
       minimatch: 3.1.2
