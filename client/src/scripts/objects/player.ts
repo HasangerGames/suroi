@@ -9,6 +9,7 @@ import {
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import gsap from "gsap";
 import { type Vector, vClone } from "../../../../common/src/utils/vector";
+import { randomBoolean } from "../../../../common/src/utils/random";
 
 export class Player extends GameObject {
     name: string;
@@ -52,7 +53,7 @@ export class Player extends GameObject {
             rotate: { min: 0, max: 360 },
             lifespan: 1000,
             speed: { min: 20, max: 30 },
-            scale: { start: 0.5, end: 1 },
+            scale: { start: 0.75, end: 1 },
             alpha: { start: 1, end: 0 },
             emitting: false
         }).setDepth(2);
@@ -118,9 +119,10 @@ export class Player extends GameObject {
             }
         }
 
-        // Blood effect
+        // Hit effect
         if (stream.readBoolean()) {
             this.emitter.emitParticle(1);
+            this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
     }
 

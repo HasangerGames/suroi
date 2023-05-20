@@ -18,6 +18,7 @@ export class GameScene extends Phaser.Scene {
         super("game");
     }
 
+    // noinspection JSUnusedGlobalSymbols
     preload(): void {
         if (core.game === undefined) return;
         this.activeGame = core.game;
@@ -29,6 +30,8 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
             this.loadSound(`${material}_destroyed`, `sfx/${material}_destroyed`);
         }
+        this.loadSound("player_hit_1", "sfx/player_hit_1");
+        this.loadSound("player_hit_2", "sfx/player_hit_2");
 
         this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
         this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));

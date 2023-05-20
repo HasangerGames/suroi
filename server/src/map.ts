@@ -28,8 +28,10 @@ export class Map {
             this.generateObstacles("tree_oak", 200);
             this.generateObstacles("tree_pine", 15);
             this.generateObstacles("rock", 200);
-            this.generateObstacles("crate_regular", 150);
-            this.generateObstacles("barrel", 150);
+            this.generateObstacles("bush", 150);
+            this.generateObstacles("crate_regular", 125);
+            this.generateObstacles("barrel", 75);
+            this.generateObstacles("super_barrel", 25);
         } else {
             // Obstacle debug code goes here
         }
@@ -74,6 +76,7 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+            if (type.idString === "barrel") console.log(scale);
             const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             const obstacle: Obstacle = new Obstacle(
                 this.game,
@@ -91,6 +94,8 @@ export class Map {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
+        const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+        const initialHitbox: Hitbox = definition.spawnHitbox ?? definition.hitbox;
         while (collided && attempts <= 200) {
             attempts++;
             if (attempts >= 200) {
@@ -98,7 +103,7 @@ export class Map {
             }
             collided = false;
             position = randomVector(10, this.width - 10, 10, this.height - 10);
-            const hitbox: Hitbox = (type.definition as ObstacleDefinition).spawnHitbox.transform(position, scale);
+            const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
                 if (object.spawnHitbox.collidesWith(hitbox)) collided = true;
             }

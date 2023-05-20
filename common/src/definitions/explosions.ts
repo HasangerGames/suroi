@@ -14,7 +14,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 }
 
 export class Explosions extends ObjectDefinitions {
-    static readonly bitCount = 4;
+    static readonly bitCount = 1;
     static readonly definitions: ExplosionDefinition[] = [
         {
             idString: "barrel_explosion",
@@ -27,6 +27,19 @@ export class Explosions extends ObjectDefinitions {
             cameraShake: {
                 duration: 250,
                 intensity: 0.02
+            }
+        },
+        {
+            idString: "super_barrel_explosion",
+            damage: 160,
+            obstacleMultiplier: 3,
+            radius: {
+                min: 12,
+                max: 36
+            },
+            cameraShake: {
+                duration: 500,
+                intensity: 0.03
             }
         }
     ];

@@ -8,6 +8,6 @@ export class GameOverPacket extends ReceivingPacket {
     }
 
     deserialize(stream: SuroiBitStream): void {
-        setTimeout(() => $("#game-over-screen").fadeIn(1000), 1000);
+        setTimeout(() => $("#game-over-screen").fadeIn(1000), 3000);
     }
 }

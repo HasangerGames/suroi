@@ -30,7 +30,7 @@ export class Player extends GameObject {
 
     private _health = 100;
     healthDirty = true;
-    bloodEffect = false;
+    hitEffect = false;
 
     private _adrenaline = 100;
     adrenalineDirty = true;
@@ -197,7 +197,7 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         this.health -= amount;
-        this.bloodEffect = true;
+        this.hitEffect = true;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
         if (this.health <= 0 && !this.dead) {
@@ -227,8 +227,8 @@ export class Player extends GameObject {
         stream.writePosition(this.position);
         stream.writeRotation(this.rotation);
         stream.writeBits(this.animation, ANIMATION_TYPE_BITS);
-        stream.writeBoolean(this.bloodEffect);
-        this.bloodEffect = false;
+        stream.writeBoolean(this.hitEffect);
+        this.hitEffect = false;
     }
 
     serializeFull(stream: SuroiBitStream): void {

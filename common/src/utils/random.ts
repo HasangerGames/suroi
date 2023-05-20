@@ -19,6 +19,13 @@ export function random(min: number, max: number): number {
 }
 
 /**
+ * @return A random boolean.
+ */
+export function randomBoolean(): boolean {
+    return Math.random() < 0.5;
+}
+
+/**
  * Generate a vector of random direction and magnitude.
  * @param minX The minimum length in the x-direction.
  * @param maxX The maximum length in the x-direction.

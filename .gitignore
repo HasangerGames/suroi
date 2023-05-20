@@ -12,5 +12,3 @@ dist/
 
 # Environment variables
 .env
-
-client/src/assets/atlases/*

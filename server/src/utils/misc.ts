@@ -16,6 +16,7 @@ export function bodyFromHitbox(world: World,
     hitbox: Hitbox,
     orientation: Orientation = 0,
     scale = 1,
+    noCollisions = false,
     obstacle: Obstacle
 ): Body | undefined {
     let body: Body | undefined;
@@ -27,7 +28,8 @@ export function bodyFromHitbox(world: World,
         });
         body.createFixture({
             shape: Circle(hitbox.radius * scale),
-            userData: obstacle
+            userData: obstacle,
+            isSensor: noCollisions
         });
     } else if (hitbox instanceof RectangleHitbox) {
         const width = (hitbox.max.x - hitbox.min.x) / 2;
@@ -42,7 +44,8 @@ export function bodyFromHitbox(world: World,
         });
         body.createFixture({
             shape: Box(width, height),
-            userData: obstacle
+            userData: obstacle,
+            isSensor: noCollisions
         });
     }
     return body;

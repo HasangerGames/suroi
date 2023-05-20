@@ -41,8 +41,8 @@ export class Obstacle extends GameObject {
         const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
         this.health = this.maxHealth = definition.health;
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
-        this.spawnHitbox = definition.spawnHitbox.transform(this.position, this.scale);
-        this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, this);
+        this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale);
+        this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
     }
 
     damage(amount: number, source): void {
