@@ -216,7 +216,10 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
-            if (!this.disconnected) this.game.aliveCount--;
+            if (!this.disconnected) {
+                this.game.aliveCount--;
+                this.sendPacket(new GameOverPacket(this));
+            }
 
             this.movingUp = false;
             this.movingDown = false;
@@ -236,7 +239,6 @@ export class Player extends GameObject {
             const deathMarker: DeathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
-            this.sendPacket(new GameOverPacket(this));
         }
     }
 

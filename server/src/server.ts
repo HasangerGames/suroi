@@ -53,7 +53,7 @@ app.ws("/play", {
      */
     upgrade: (res, req, context) => {
         const split: string[] = req.getQuery().split("=");
-        let name: string = split[1];
+        let name: string = decodeURIComponent(split[1]);
         if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
             name = "Player";
         } else {
