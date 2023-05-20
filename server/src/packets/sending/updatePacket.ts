@@ -1,7 +1,7 @@
 import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
-import { AnimationType, PacketType } from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {

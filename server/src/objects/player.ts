@@ -61,7 +61,7 @@ export class Player extends GameObject {
     animation = {
         type: AnimationType.None,
         seq: false
-    }
+    };
 
     visibleObjects = new Set<GameObject>(); // Objects the player can see
     nearObjects = new Set<GameObject>(); // Objects the player can see with a 1x scope

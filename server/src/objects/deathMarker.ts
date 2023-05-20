@@ -12,7 +12,7 @@ export class DeathMarker extends GameObject {
         super(player.game, ObjectType.categoryOnly(ObjectCategory.DeathMarker), player.position);
         this.playerName = player.name;
 
-        setTimeout(() => this.isNew = false, 100);
+        setTimeout(() => { this.isNew = false; }, 100);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
