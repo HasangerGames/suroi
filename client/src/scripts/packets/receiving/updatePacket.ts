@@ -70,7 +70,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < fullObjectCount; i++) {
                 const type: ObjectType = stream.readObjectType();
                 const id: number = stream.readUint16();
-                let object: GameObject;
+                let object: GameObject | undefined;
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {

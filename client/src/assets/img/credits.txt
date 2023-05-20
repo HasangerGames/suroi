@@ -1,5 +1,6 @@
 Main logo: Henry Sanger
 Small/square logo: Glek
+Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm. Edited by Henry Sanger
 Barrel: 123OP
 Barrel residue: Dachselt, Leo
 Bush: canva.com
