@@ -21,8 +21,10 @@ export class Game {
     players: Set<Player> = new Set<Player>();
     activePlayer: Player;
     gameStarted: boolean;
+    error = false;
 
     connect(address: string): void {
+        this.error = false;
         if (address === undefined) return;
         if (this.gameStarted) return;
 
@@ -59,13 +61,14 @@ export class Game {
         };
 
         this.socket.onerror = (): void => {
+            this.error = true;
             $("#splash-server-message-text").text("Error joining game.");
             $("#splash-server-message").show();
         };
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            this.endGame();
+            if (!this.error) this.endGame();
         };
     }
 

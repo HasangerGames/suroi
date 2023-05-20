@@ -3,7 +3,7 @@ import { Vec2 } from "planck";
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
-    domain: "",
+    webSocketAddress: "127.0.0.1:8000",
     ssl: {
         keyFile: "",
         certFile: "",

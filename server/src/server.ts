@@ -39,7 +39,7 @@ const game = new Game();
 
 app.get("/api/getGame", (res) => {
     cors(res);
-    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "ws://127.0.0.1:${Config.port}/play" }`);
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.ssl?.enable ? "wss://" : "ws://"}${Config.webSocketAddress}/play" }`);
 });
 
 export interface PlayerContainer {
