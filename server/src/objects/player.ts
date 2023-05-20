@@ -27,6 +27,7 @@ export class Player extends GameObject {
     name: string;
 
     joined = false;
+    disconnected = false;
 
     private _health = 100;
     healthDirty = true;
@@ -64,6 +65,8 @@ export class Player extends GameObject {
     yCullDist: number;
 
     socket: WebSocket<PlayerContainer>;
+
+    fullUpdate = true;
 
     body: Body;
 
@@ -203,6 +206,7 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
+            if (!this.disconnected) this.game.aliveCount--;
 
             this.movingUp = false;
             this.movingDown = false;

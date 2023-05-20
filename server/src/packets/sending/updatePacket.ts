@@ -14,6 +14,7 @@ export class UpdatePacket extends SendingPacket {
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         const p = this.player;
+        const game = p.game;
 
         //
         // Active player data
@@ -95,9 +96,12 @@ export class UpdatePacket extends SendingPacket {
             }
         }
 
-        stream.writeBoolean(p.game.aliveCountDirty)
-        if(p.game.aliveCountDirty) {
-            stream.writeUint8(p.game.aliveCount);
+        const aliveCountDirty: boolean = game.aliveCountDirty || p.fullUpdate;
+        stream.writeBoolean(aliveCountDirty);
+        if (aliveCountDirty) {
+            stream.writeBits(game.aliveCount, 7);
         }
+
+        p.fullUpdate = false;
     }
 }

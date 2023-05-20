@@ -147,9 +147,9 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
-        // Alive Players
+        // Alive count
         if (stream.readBoolean()) {
-            const aliveCount = stream.readUint8();
+            const aliveCount = stream.readBits(7);
             $("#ui-players-alive").text(aliveCount);
         }
     }

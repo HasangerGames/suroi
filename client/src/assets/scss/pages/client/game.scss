@@ -15,27 +15,35 @@ body > canvas {
     position: absolute;
     top: .5rem;
     right: .5rem;
-    font-weight: bold;
-    font-size: large;
     display: flex;
     background: $transparent_bg;
     border-radius: 8px;
-    display: flex;
-    justify-items: center;
+    justify-content: center;
     align-items: center;
     padding: .6rem;
     gap: .6rem;
-}
 
-.ui-leaderboard .devider {
-    height: 100%;
-    width: 2px;
-    background-color: white;
-    display: inline-block;
-}
+    .divider {
+        display: inline-block;
+        height: 50px;
+        width: 2px;
+        background-color: white;
+    }
 
-.ui-leaderboard #ui-players-alive {
-    font-size: larger;
+    #ui-alive-text {
+        font-family: "Russo One", sans-serif;
+        font-size: 32px;
+        padding-right: 8px;
+        position: relative;
+        bottom: -1px;
+    }
+
+    #ui-players-alive {
+        padding-left: 5px;
+        padding-right: 8px;
+        font-weight: bold;
+        font-size: 50px;
+    }
 }
 
 #health-bar-container {

@@ -27,7 +27,8 @@ export class Game {
     visibleObjects = {};
     updateObjects = false;
 
-    aliveCount: number = 0;
+    private _aliveCount = 0;
+    aliveCountDirty = false;
 
     partialDirtyObjects = new Set<GameObject>();
     fullDirtyObjects = new Set<GameObject>();
@@ -37,7 +38,6 @@ export class Game {
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
-    aliveCountDirty = true;
     explosions: Set<Explosion> = new Set<Explosion>();
 
     tickTimes: number[] = [];
@@ -98,8 +98,6 @@ export class Game {
         setTimeout(() => {
             const tickStart = Date.now();
             this.world.step(30);
-            //! find a better solution than this
-            this.aliveCountDirty = true;
 
             // First loop over players: Calculate movement
             for (const p of this.livingPlayers) {
@@ -202,7 +200,7 @@ export class Game {
             this.deletedObjects.clear();
             this.explosions.clear();
             this.aliveCountDirty = false;
-            
+
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
             // It measures the time it takes to calculate a tick, not the time between ticks.
@@ -227,20 +225,30 @@ export class Game {
         this.players.add(player);
         this.livingPlayers.add(player);
         this.aliveCount++;
-        this.aliveCountDirty = true;
         this.connectedPlayers.add(player);
-        return player
+        return player;
     }
 
     removePlayer(player: Player): void {
+        player.disconnected = true;
+        if (!player.dead) this.aliveCount--;
+        player.rotation = 0;
+        this.partialDirtyObjects.add(player);
         this.players.delete(player);
         this.livingPlayers.delete(player);
-        this.aliveCount--;
-        this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();
         } catch (e) {}
+    }
+
+    get aliveCount(): number {
+        return this._aliveCount;
+    }
+
+    set aliveCount(aliveCount: number) {
+        this._aliveCount = aliveCount;
+        this.aliveCountDirty = true;
     }
 
     _nextObjectId = -1;
