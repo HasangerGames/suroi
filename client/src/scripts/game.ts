@@ -8,6 +8,7 @@ import { type GameObject } from "./types/gameObject";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { GameOverPacket } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
+import $ from "jquery";
 
 export class Game {
     socket: WebSocket;
@@ -53,6 +54,11 @@ export class Game {
             }
         };
 
+        this.socket.onerror = (): void => {
+            $("#splash-server-message-text").text("Error joining game.");
+            $("#splash-server-message").show();
+        };
+
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
             this.endGame();
@@ -60,10 +66,13 @@ export class Game {
     }
 
     endGame(): void {
+        window.history.pushState(null, "", "?connectionLost");
+        window.location.reload();
+        /*$("#game-ui").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").removeClass("fade-out");
         core.phaser?.scene.stop("game");
-        this.gameStarted = false;
+        this.gameStarted = false;*/
     }
 
     sendPacket(packet: SendingPacket): void {

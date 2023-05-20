@@ -46,7 +46,10 @@
     font-size: 20px;
 }
 
-#splash-news, #splash-options, #splash-inventory {
+#splash-news,
+#splash-options,
+#splash-inventory,
+#splash-server-message {
     background: $transparent_bg;
 
     width: 370px;
@@ -124,6 +127,14 @@
                 line-height: 130%;
             }
         }
+    }
+}
+
+#splash-server-message {
+    margin-bottom: 15px;
+
+    span {
+        color: red;
     }
 }
 
