@@ -7,7 +7,7 @@ export class MapPacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
         this.type = PacketType.Map;
-        this.allocBytes = 8192;
+        this.allocBytes = 1 << 13;
     }
 
     serialize(stream: SuroiBitStream): void {

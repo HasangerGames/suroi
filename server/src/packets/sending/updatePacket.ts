@@ -2,13 +2,12 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { AnimationType, PacketType } from "../../../../common/src/constants";
-import { type GameObject } from "../../types/gameObject";
 
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
         this.type = PacketType.Update;
-        this.allocBytes = 8192;
+        this.allocBytes = 1 << 13;
     }
 
     serialize(stream: SuroiBitStream): void {
@@ -50,7 +49,7 @@ export class UpdatePacket extends SendingPacket {
         //
 
         // Full objects
-        const fullObjectsDirty: boolean = (p.fullDirtyObjects.size !== 0);
+        const fullObjectsDirty = p.fullDirtyObjects.size !== 0;
         stream.writeBoolean(fullObjectsDirty);
         if (fullObjectsDirty) {
             stream.writeUint8(p.fullDirtyObjects.size);
@@ -60,11 +59,11 @@ export class UpdatePacket extends SendingPacket {
                 fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
-            p.fullDirtyObjects = new Set<GameObject>();
+            p.fullDirtyObjects.clear();
         }
 
         // Partial objects
-        const partialObjectsDirty: boolean = (p.partialDirtyObjects.size !== 0);
+        const partialObjectsDirty = p.partialDirtyObjects.size !== 0;
         stream.writeBoolean(partialObjectsDirty);
         if (partialObjectsDirty) {
             stream.writeUint8(p.partialDirtyObjects.size);
@@ -72,18 +71,18 @@ export class UpdatePacket extends SendingPacket {
                 stream.writeUint16(partialObject.id);
                 partialObject.serializePartial(stream);
             }
-            p.partialDirtyObjects = new Set<GameObject>();
+            p.partialDirtyObjects.clear();
         }
 
         // Deleted objects
-        const deletedObjectsDirty: boolean = (p.deletedObjects.size !== 0);
+        const deletedObjectsDirty = p.deletedObjects.size !== 0;
         stream.writeBoolean(deletedObjectsDirty);
         if (deletedObjectsDirty) {
             stream.writeUint8(p.deletedObjects.size);
             for (const deletedObject of p.deletedObjects) {
                 stream.writeUint16(deletedObject.id);
             }
-            p.deletedObjects = new Set<GameObject>();
+            p.deletedObjects.clear();
         }
 
         // Explosions
