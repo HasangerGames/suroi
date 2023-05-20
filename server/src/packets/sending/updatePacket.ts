@@ -94,5 +94,10 @@ export class UpdatePacket extends SendingPacket {
                 explosion.serializeFull(stream);
             }
         }
+
+        stream.writeBoolean(p.game.aliveCountDirty)
+        if(p.game.aliveCountDirty) {
+            stream.writeUint8(p.game.aliveCount);
+        }
     }
 }

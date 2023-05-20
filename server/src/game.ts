@@ -27,6 +27,8 @@ export class Game {
     visibleObjects = {};
     updateObjects = false;
 
+    aliveCount: number = 0;
+
     partialDirtyObjects = new Set<GameObject>();
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
@@ -35,6 +37,7 @@ export class Game {
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
+    aliveCountDirty = true;
     explosions: Set<Explosion> = new Set<Explosion>();
 
     tickTimes: number[] = [];
@@ -95,6 +98,8 @@ export class Game {
         setTimeout(() => {
             const tickStart = Date.now();
             this.world.step(30);
+            //! find a better solution than this
+            this.aliveCountDirty = true;
 
             // First loop over players: Calculate movement
             for (const p of this.livingPlayers) {
@@ -196,7 +201,8 @@ export class Game {
             this.partialDirtyObjects.clear();
             this.deletedObjects.clear();
             this.explosions.clear();
-
+            this.aliveCountDirty = false;
+            
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
             // It measures the time it takes to calculate a tick, not the time between ticks.
@@ -217,12 +223,20 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        return new Player(this, name, socket, Vec2(10, 10));
+        const player = new Player(this, name, socket, Vec2(10, 10));
+        this.players.add(player);
+        this.livingPlayers.add(player);
+        this.aliveCount++;
+        this.aliveCountDirty = true;
+        this.connectedPlayers.add(player);
+        return player
     }
 
     removePlayer(player: Player): void {
         this.players.delete(player);
         this.livingPlayers.delete(player);
+        this.aliveCount--;
+        this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();

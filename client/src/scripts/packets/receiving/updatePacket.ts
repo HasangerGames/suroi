@@ -83,6 +83,7 @@ export class UpdatePacket extends ReceivingPacket {
                         }
                         case ObjectCategory.DeathMarker: {
                             object = new DeathMarker(this.player.game, this.player.scene);
+
                             break;
                         }
                     }
@@ -144,6 +145,12 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 new Explosion(game, this.player.scene).deserializeFull(stream);
             }
+        }
+
+        // Alive Players
+        if (stream.readBoolean()) {
+            const aliveCount = stream.readUint8();
+            $("#ui-players-alive").text(aliveCount);
         }
     }
 }
