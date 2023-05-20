@@ -78,9 +78,7 @@ app.ws("/play", {
      */
     open: (socket: WebSocket<PlayerContainer>) => {
         socket.getUserData().player = game.addPlayer(socket, socket.getUserData().playerName);
-        log("===========================");
         log(`"${socket.getUserData().playerName}" joined the game`);
-        log("===========================");
     },
 
     /**
@@ -114,9 +112,7 @@ app.ws("/play", {
      */
     close: (socket: WebSocket<PlayerContainer>) => {
         const p: Player = socket.getUserData().player;
-        log("===========================");
         log(`"${p.name}" left the game`);
-        log("===========================");
         game.removePlayer(p);
     }
 });
@@ -131,8 +127,7 @@ app.listen(Config.host, Config.port, () => {
 /\\__/ / |_| | |\\ \\\\ \\_/ /_| |_ 
 \\____/ \\___/\\_| \\_|\\___/ \\___/ 
         `);
-    log("Suroi Server v0.1.0");
-    log(`Listening on ${Config.host}:${Config.port}`);
+    log("Suroi Server v0.1.0", true);
+    log(`Listening on ${Config.host}:${Config.port}`, true);
     log("Press Ctrl+C to exit.");
-    log("===========================");
 });

@@ -209,9 +209,8 @@ export class Game {
 
             if (this.tickTimes.length >= 200) {
                 const mspt: number = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-                log(`Average ms/tick: ${mspt}`);
+                log(`Average ms/tick: ${mspt}`, true);
                 log(`Server load: ${((mspt / 30) * 100).toFixed(1)}%`);
-                log("===========================");
                 this.tickTimes = [];
             }
 

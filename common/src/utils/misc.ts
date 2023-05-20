@@ -7,10 +7,12 @@ import * as fs from "fs";
  */
 export const readJSON = <T>(path: string): T => JSON.parse(fs.readFileSync(path, "utf-8")) as T;
 
-export const log = (message: string): void => {
+export function log(message: string, noLine = false): void {
     const date: Date = new Date();
-    console.log(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}] ${message}`);
-};
+    const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
+    console.log(`${dateString} ${message}`);
+    if (!noLine) console.log(`${dateString} ===========================`);
+}
 
 /**
  * Get the MIME type of a file.
