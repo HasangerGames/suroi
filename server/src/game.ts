@@ -143,7 +143,7 @@ export class Game {
                         }
                         if (closestObject !== undefined) {
                             setTimeout(() => {
-                                if (closestObject?.dead === false) closestObject.damage(20, this);
+                                if (closestObject?.dead === false) closestObject.damage(20, p);
                             }, 50);
                             //if (closestObject.interactable) this.interactWith(closestObject as Obstacle);
                         }

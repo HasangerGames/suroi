@@ -7,6 +7,7 @@ import { PacketType } from "../../../common/src/constants";
 import { type GameObject } from "./types/gameObject";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { GameOverPacket } from "./packets/receiving/gameOverPacket";
+import { KillPacket } from "./packets/receiving/killPacket";
 
 export class Game {
     socket: WebSocket;
@@ -43,6 +44,10 @@ export class Game {
                 }
                 case PacketType.GameOver: {
                     new GameOverPacket(this.activePlayer).deserialize(stream);
+                    break;
+                }
+                case PacketType.Kill: {
+                    new KillPacket(this.activePlayer).deserialize(stream);
                     break;
                 }
             }

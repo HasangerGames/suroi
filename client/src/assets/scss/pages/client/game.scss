@@ -78,3 +78,25 @@ body > canvas {
         transition: width ease-in-out 800ms;
     }
 }
+
+#kill-msg {
+    pointer-events: none;
+    background: $transparent_bg;
+    padding: 10px;
+    border-radius: 8px;
+    width: 250px;
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+
+    #kill-msg-player-name {
+
+    }
+    #kill-msg-kills {
+        font-weight: bold;
+        font-size: xx-large;
+        color: $blue;
+    }
+}
