@@ -94,7 +94,7 @@ export class Obstacles extends ObjectDefinitions {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotation: "none"
+            rotation: "limited"
         },
         {
             idString: "barrel",

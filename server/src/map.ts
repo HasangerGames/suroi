@@ -77,11 +77,42 @@ export class Map {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
             const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+            let rotation: number | undefined;
+            // TODO For objects with limited rotation, send orientation instead of rotation (2 bits vs. 8; saving of 6 bits)
+            // TODO Also, add extra limited rotation (2 possible states = only 1 bit)
+            switch (definition.rotation) {
+                case "full":
+                    rotation = randomRotation();
+                    break;
+                case "limited":
+                    switch (random(1, 4)) {
+                        case 1:
+                            rotation = -Math.PI;
+                            break;
+                        case 2:
+                            rotation = -Math.PI / 2;
+                            break;
+                        case 3:
+                            rotation = Math.PI / 2;
+                            break;
+                        case 4:
+                            rotation = Math.PI;
+                            break;
+                    }
+                    break;
+                case "none":
+                default:
+                    rotation = 0;
+                    break;
+            }
+            if (rotation === undefined) {
+                throw new Error("Unknown rotation type");
+            }
             const obstacle: Obstacle = new Obstacle(
                 this.game,
                 type,
                 this.getRandomPositionFor(type, scale),
-                definition.rotation === "full" ? randomRotation() : 0,
+                rotation,
                 scale,
                 variation
             );

@@ -115,7 +115,7 @@ export class Obstacle extends GameObject {
     serializeFull(stream: SuroiBitStream): void {
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
-        if (definition.rotation === "full") stream.writeRotation(this.rotation);
+        if (definition.rotation !== "none") stream.writeRotation(this.rotation);
         if (definition.variations !== undefined) stream.writeVariation(this.variation);
     }
 }

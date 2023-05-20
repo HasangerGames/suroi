@@ -46,7 +46,7 @@ export class Obstacle extends GameObject {
         // Get position, rotation, and variations
         this.position = stream.readPosition();
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
-        this.rotation = definition.rotation === "full" ? stream.readRotation() : 0;
+        this.rotation = definition.rotation !== "none" ? stream.readRotation() : 0;
         const hasVariations: boolean = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
         let texture: string = this.type.idString;
