@@ -7,7 +7,8 @@
     "build": "webpack --config ./webpack/webpack.prod.ts",
     "dev": "webpack serve --config ./webpack/webpack.dev.ts",
     "lint": "eslint . --fix --ext .js,.ts,.tsx",
-    "lint:ci": "eslint . --ext .js,.ts,.tsx"
+    "lint:ci": "eslint . --ext .js,.ts,.tsx",
+    "build-atlas": "spritesheet *.svg -c src/assets/img/game -o src/assets/atlases/ --name main"
   },
   "engines": {
     "node": ">=18.8.0"
