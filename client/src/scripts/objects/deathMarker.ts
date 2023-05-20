@@ -35,7 +35,7 @@ export class DeathMarker extends GameObject {
             gsap.to(this.image, {
                 scale: 1,
                 alpha: 1,
-                duration: 0.4,
+                duration: 0.4
             });
         }
     }

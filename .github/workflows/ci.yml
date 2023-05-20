@@ -40,7 +40,7 @@ jobs:
   server:
     name: Server
     runs-on: ubuntu-latest
-    concurrency: ci-serveri-${{ github.ref }}
+    concurrency: ci-server-${{ github.ref }}
 
     steps:
       - name: Checkout Repository

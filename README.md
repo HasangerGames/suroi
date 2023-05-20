@@ -16,14 +16,14 @@
 </div>
 
 ## About
-Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). Work in progress.
+Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). It is currently a work in progress and may not be fully functional.
 
 To learn more about the game, [join our Discord server.](https://discord.suroi.io)
 
 ## Installation and setup
 Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
 
-Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or clone it with the following command:
+Next, [click here](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or use the following command to clone the repo:
 ```sh
 git clone https://github.com/HasangerGames/suroi.git
 ```
@@ -34,11 +34,6 @@ pnpm full-install
 ```
 
 This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
-
-Finally, to build the texture atlas, run this command in the `client` folder:
-```sh
-pnpm build-atlas
-```
 
 ## Development
 To run the game locally, open a terminal in the project root and run the following:
@@ -59,4 +54,4 @@ To start the WebSocket server, run this command:
 pnpm start
 ```
 
-Production builds are served using [NGINX](https://nginx.org). A config file can be found [here](nginx.conf).
+Production builds are served using [NGINX](https://nginx.org). A sample configuration file can be found [here](nginx.conf).

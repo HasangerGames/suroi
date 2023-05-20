@@ -1,8 +1,7 @@
 import { GameObject } from "../types/gameObject";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { type Variation } from "../../../../common/src/typings";
-import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import gsap from "gsap"
+import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import type { Variation } from "../../../../common/src/typings";
+import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 
 export class Obstacle extends GameObject {
     scale: number;

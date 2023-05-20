@@ -1,20 +1,22 @@
 import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ExplosionDefinition } from "../../../common/src/definitions/explosions";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { distance } from "../../../common/src/utils/math";
 
 export class Explosion extends GameObject {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     source: any;
 
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     constructor(game: Game, type: ObjectType, position: Vector, source: any) {
         super(game, type, position);
         this.source = source;
     }
 
-    explode() {
+    explode(): void {
         // NOTE: the CircleHitbox distance was returing weird values and i was lazy to debug it
         // so for now its just checking if the obstacle distance is in range
         const definition = this.type.definition as ExplosionDefinition;
@@ -40,13 +42,13 @@ export class Explosion extends GameObject {
                 let damage = definition.damage;
                 if (dist > definition.radius.min) {
                     const damagePercent = Math.abs(dist / definition.radius.max - 1);
-                    console.log(damagePercent);
                     damage *= damagePercent;
                 }
                 player.damage(damage, this.source);
             }
         }
     }
+
     /* eslint-disable @typescript-eslint/no-empty-function */
     damage(amount: number, source): void {}
     serializePartial(stream: SuroiBitStream): void {}
