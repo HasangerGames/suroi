@@ -100,3 +100,36 @@ body > canvas {
         color: $blue;
     }
 }
+
+#game-over-screen {
+    text-align: center;
+
+    .modal-item {
+        margin-bottom: 0px;
+    }
+
+    h1, h2 {
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+
+    #game-over-stats {
+        width: 250px;
+        margin: auto;
+        padding: 20px;
+
+        .stat {
+            font-weight: bold;
+            width: 100%;
+            display: flex;
+            padding: .5rem 0
+        }
+        .stat-name {
+            text-align: left;
+        }
+        .stat-value {
+            text-align: right;
+            margin-left: auto;
+        }
+    }
+}
