@@ -35,6 +35,11 @@
     filter: brightness(80%);
 }
 
+.btn-disabled {
+    filter: brightness(70%);
+    pointer-events: none;
+}
+
 // Regular buttons
 .btn-primary {
     background: $blue !important;

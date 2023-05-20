@@ -19,17 +19,28 @@ $(() => {
     }
 
     // Join server when play button is clicked
-    $("#btn-play-solo").on("click", (): void => {
+    const playSoloBtn: JQuery = $("#btn-play-solo");
+    const reEnablePlayButton = (): void => {
+        playSoloBtn.removeClass("btn-disabled");
+        playSoloBtn.prop("disabled", false);
+        playSoloBtn.text("Play Solo");
+    };
+    playSoloBtn.on("click", (): void => {
+        playSoloBtn.addClass("btn-disabled");
+        playSoloBtn.prop("disabled", true);
+        playSoloBtn.text("Connecting...");
         void $.get(`${API_URL}/getGame`, data => {
             /* eslint-disable-next-line no-new,@typescript-eslint/restrict-template-expressions */
             core.game?.connect(`${data.addr}?name=${$("#username-input").val()}`);
+            reEnablePlayButton();
         }).fail((): void => {
             $("#splash-server-message-text").text("Error finding game.");
             $("#splash-server-message").show();
+            reEnablePlayButton();
         });
     });
 
-    const usernameField: JQuery<HTMLElement> = $("#username-input");
+    const usernameField: JQuery = $("#username-input");
     const nickname: string | null = localStorage.getItem("nickname");
     if (nickname !== null) {
         usernameField.val(nickname);
