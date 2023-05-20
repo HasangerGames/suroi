@@ -4,11 +4,12 @@ import { type GameScene } from "./scenes/gameScene";
 import core from "./core";
 
 $(() => {
-    // Enable splash "more" dropdown
+    // Enable splash "more" dropdown.
     const dropdownCaret = $("#btn-dropdown-more i");
     const dropdown = $("#splash-more .dropdown-content");
+
     $(document.body).on("click", (e: JQuery.ClickEvent): void => {
-        const target = e.target as HTMLElement;
+        const target = e.target as HTMLElement | null;
 
         if (target?.id === "btn-dropdown-more") {
             if (dropdown.hasClass("active")) {
@@ -42,7 +43,7 @@ $(() => {
         const target = e.target as HTMLInputElement;
 
         if (target?.id === "slider-sound-volume") {
-            (core.phaser?.scene.getScene("menu") as MenuScene).setMusicVolume(Number(target.value));
+            core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(Number(target.value));
         } else if (target?.id === "slider-master-volume") {
             (core.phaser?.scene.getScene("game") as GameScene).volume = Number(target.value);
         }

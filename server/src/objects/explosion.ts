@@ -1,3 +1,4 @@
+import type { Player } from "./player";
 import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -8,10 +9,10 @@ import { distance } from "../../../common/src/utils/math";
 
 export class Explosion extends GameObject {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    source: any;
+    source: Player;
 
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    constructor(game: Game, type: ObjectType, position: Vector, source: any) {
+    constructor(game: Game, type: ObjectType, position: Vector, source: Player) {
         super(game, type, position);
         this.source = source;
     }

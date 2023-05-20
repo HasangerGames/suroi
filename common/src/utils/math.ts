@@ -8,7 +8,7 @@ import { type Orientation } from "../typings";
  * @param a The dividend.
  * @param n The divisor.
  */
-export const signedModulo = (a: number, n: number): number => a - Math.floor(a / n) * n;
+export const mod = (a: number, n: number): number => a - Math.floor(a / n) * n;
 
 /**
  * Normalize an angle to a value between 0 and 2π.

@@ -14,7 +14,7 @@ export class DeathMarker extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    damage(amount: number, source): void {}
+    damage(amount: number, source: GameObject): void {}
 
     serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
