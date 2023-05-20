@@ -37,6 +37,9 @@ export class Player extends GameObject {
     adrenalineDirty = true;
 
     kills = 0;
+    damageDone = 0;
+    damageTaken = 0;
+    joinTime: number;
 
     moving = false;
     movesSinceLastUpdate = 0;
@@ -87,6 +90,8 @@ export class Player extends GameObject {
         this.name = name;
         this.rotation = 0;
         this.zoom = 48;
+
+        this.joinTime = Date.now();
 
         // Init body
         this.body = game.world.createBody({
@@ -210,6 +215,10 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         this.health -= amount;
+        this.damageTaken -= amount;
+        if (source instanceof Player && source !== this) {
+            source.damageDone += amount;
+        }
         this.hitEffect = !this.hitEffect;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);

@@ -130,7 +130,26 @@
         </div>
       </div>
       <div class="modal" id="game-over-screen" style="display: none">
-        <h1 class="modal-item" style="text-align: center; margin-bottom: 169px">You died.</h1>
+        <h1 class="modal-item">You died.</h1>
+        <div class="modal-item" id="game-over-stats">
+          <h2 id="game-over-player-name">Player</h2>
+          <div class="stat">
+            <span class="stat-name">Kills:</span>
+            <span class="stat-value" id="game-over-kills"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage done:</span>
+            <span class="stat-value" id="game-over-damage-done"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage taken:</span>
+            <span class="stat-value" id="game-over-damage-taken"></span>
+          </div>
+<!--          <div class="stat">
+            <span class="stat-name">Time alive:</span>
+            <span class="stat-value" id="game-over-time"></span>
+          </div>-->
+        </div>
         <div class="modal-item">
           <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
         </div>

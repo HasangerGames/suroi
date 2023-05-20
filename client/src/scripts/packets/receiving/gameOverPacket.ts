@@ -8,6 +8,13 @@ export class GameOverPacket extends ReceivingPacket {
     }
 
     deserialize(stream: SuroiBitStream): void {
+        $("#game-over-player-name").text(stream.readUTF8String(16)); // player name
+        $("#game-over-kills").text(stream.readUint8()); // kills
+        $("#game-over-damage-done").text(stream.readUint16()); // damage done
+        $("#game-over-damage-taken").text(stream.readUint16()); // damage taken
+
+        // const timeAlive = new Date(stream.readUint16() * 1000); // time alive
+
         setTimeout(() => $("#game-over-screen").fadeIn(1000), 3000);
     }
 }
