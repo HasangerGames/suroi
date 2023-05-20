@@ -44,8 +44,6 @@ export interface PlayerContainer {
     playerName: string
 }
 
-app.get("/", (res) => { res.end("test"); });
-
 app.ws("/play", {
     compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
@@ -54,24 +52,16 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
-        // cors(res);
-        let name: string;
-        if (req.getQuery() !== undefined) {
-            const split: string[] = req.getQuery().split("=");
-            if (split.length !== 2) {
-                name = "Player";
-            } else {
-                name = sanitizeHtml(split[1], {
-                    allowedTags: [],
-                    allowedAttributes: {},
-                    disallowedTagsMode: "recursiveEscape"
-                });
-                if (name.length > 16 || name.trim().length === 0) {
-                    name = "Player";
-                }
-            }
-        } else {
+        const split: string[] = req.getQuery().split("=");
+        let name: string = split[1];
+        if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
             name = "Player";
+        } else {
+            name = sanitizeHtml(name, {
+                allowedTags: [],
+                allowedAttributes: {},
+                disallowedTagsMode: "recursiveEscape"
+            });
         }
         res.upgrade(
             { player: undefined, playerName: name },
