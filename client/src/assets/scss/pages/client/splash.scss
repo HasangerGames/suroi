@@ -6,6 +6,9 @@
     display: block;
     position: absolute;
 
+    overflow-y: auto;
+    overflow-x: hidden;
+
     background-color: $bg;
 
     width: 100%;
@@ -273,7 +276,9 @@
 
 #splash-backlinks {
     position: absolute;
-    bottom: 1rem;
+
+    bottom: 0.5rem;
+    left: 0.75rem;
 
     font-size: 16px;
 
