@@ -35,7 +35,7 @@ export class Map {
         } else {
             // Obstacle debug code goes here
         }
-        log(`Map generation took ${Date.now() - mapStartTime}ms`);
+        log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
 
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();

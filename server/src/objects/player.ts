@@ -14,6 +14,7 @@ import {
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
+import { KillPacket } from "../packets/sending/killPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Player extends GameObject {
@@ -35,6 +36,8 @@ export class Player extends GameObject {
 
     private _adrenaline = 100;
     adrenalineDirty = true;
+
+    kills = 0;
 
     moving = false;
     movesSinceLastUpdate = 0;
@@ -214,6 +217,11 @@ export class Player extends GameObject {
             this.movingRight = false;
             this.punching = false;
             this.deadPosition = this.position.clone();
+
+            if (source instanceof Player && source !== this) {
+                source.kills++;
+                source.sendPacket(new KillPacket(source, this));
+            }
 
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);

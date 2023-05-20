@@ -44,8 +44,6 @@ export interface PlayerContainer {
     playerName: string
 }
 
-app.get("/", (res) => { res.end("test"); });
-
 app.ws("/play", {
     compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
@@ -54,24 +52,16 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
-        // cors(res);
-        let name: string;
-        if (req.getQuery() !== undefined) {
-            const split: string[] = req.getQuery().split("=");
-            if (split.length !== 2) {
-                name = "Player";
-            } else {
-                name = sanitizeHtml(split[1], {
-                    allowedTags: [],
-                    allowedAttributes: {},
-                    disallowedTagsMode: "recursiveEscape"
-                });
-                if (name.length > 16 || name.trim().length === 0) {
-                    name = "Player";
-                }
-            }
-        } else {
+        const split: string[] = req.getQuery().split("=");
+        let name: string = split[1];
+        if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
             name = "Player";
+        } else {
+            name = sanitizeHtml(name, {
+                allowedTags: [],
+                allowedAttributes: {},
+                disallowedTagsMode: "recursiveEscape"
+            });
         }
         res.upgrade(
             { player: undefined, playerName: name },
@@ -88,9 +78,7 @@ app.ws("/play", {
      */
     open: (socket: WebSocket<PlayerContainer>) => {
         socket.getUserData().player = game.addPlayer(socket, socket.getUserData().playerName);
-        log("===========================");
         log(`"${socket.getUserData().playerName}" joined the game`);
-        log("===========================");
     },
 
     /**
@@ -124,9 +112,7 @@ app.ws("/play", {
      */
     close: (socket: WebSocket<PlayerContainer>) => {
         const p: Player = socket.getUserData().player;
-        log("===========================");
         log(`"${p.name}" left the game`);
-        log("===========================");
         game.removePlayer(p);
     }
 });
@@ -141,8 +127,7 @@ app.listen(Config.host, Config.port, () => {
 /\\__/ / |_| | |\\ \\\\ \\_/ /_| |_ 
 \\____/ \\___/\\_| \\_|\\___/ \\___/ 
         `);
-    log("Suroi Server v0.1.0");
-    log(`Listening on ${Config.host}:${Config.port}`);
+    log("Suroi Server v0.1.0", true);
+    log(`Listening on ${Config.host}:${Config.port}`, true);
     log("Press Ctrl+C to exit.");
-    log("===========================");
 });
