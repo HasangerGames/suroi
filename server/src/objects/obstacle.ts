@@ -6,7 +6,9 @@ import { type ObstacleDefinition } from "../../../common/src/definitions/obstacl
 import { type Vector, vSub } from "../../../common/src/utils/vector";
 import { bodyFromHitbox } from "../utils/misc";
 import {
-    type Body, type Shape, type Vec2
+    type Body,
+    type Shape,
+    type Vec2
 } from "planck";
 import { type Variation } from "../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
@@ -45,7 +47,7 @@ export class Obstacle extends GameObject {
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
     }
 
-    damage(amount: number, source): void {
+    damage(amount: number, source: GameObject): void {
         if (this.health === 0) return;
         this.health -= amount;
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
