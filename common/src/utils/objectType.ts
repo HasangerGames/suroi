@@ -1,6 +1,7 @@
-import { type ObjectCategory } from "../constants";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
+
+import { type ObjectCategory } from "../constants";
 
 export class ObjectType {
     category: ObjectCategory;

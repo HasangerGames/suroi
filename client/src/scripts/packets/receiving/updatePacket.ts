@@ -1,14 +1,17 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { type Game } from "../../game";
+
+import { DeathMarker } from "../../objects/deathMarker";
+import { Explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { Obstacle } from "../../objects/obstacle";
+
+import { ReceivingPacket } from "../../types/receivingPacket";
+import { type GameObject } from "../../types/gameObject";
+
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { type GameObject } from "../../types/gameObject";
-import { type Game } from "../../game";
-import { DeathMarker } from "../../objects/deathMarker";
-import { Explosion } from "../../objects/explosion";
 
 export class UpdatePacket extends ReceivingPacket {
     public constructor(player: Player) {

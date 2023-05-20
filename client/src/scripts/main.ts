@@ -4,8 +4,8 @@ import Phaser from "phaser";
 import core from "./core";
 import { Game } from "./game";
 
-import { MenuScene } from "./scenes/menuScene";
 import { GameScene } from "./scenes/gameScene";
+import { MenuScene } from "./scenes/menuScene";
 
 declare const API_URL: string;
 

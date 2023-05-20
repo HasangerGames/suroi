@@ -1,7 +1,9 @@
 import {
-    vClone, v, vAdd, type Vector
+    vClone,
+    v,
+    vAdd,
+    type Vector
 } from "./vector";
-import { type Orientation } from "../typings";
 import {
     circleCollision,
     type CollisionRecord,
@@ -10,6 +12,8 @@ import {
     rectangleCollision,
     rectRectCollision
 } from "./math";
+
+import { type Orientation } from "../typings";
 
 export abstract class Hitbox {
     abstract collidesWith(that: Hitbox): boolean;

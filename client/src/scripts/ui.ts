@@ -1,7 +1,9 @@
 import $ from "jquery";
+
+import core from "./core";
+
 import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
-import core from "./core";
 
 $(() => {
     // Enable splash "more" dropdown.

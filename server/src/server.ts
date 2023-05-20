@@ -1,5 +1,9 @@
 import {
-    App, DEDICATED_COMPRESSOR_256KB, type HttpResponse, SSLApp, type WebSocket
+    App,
+    DEDICATED_COMPRESSOR_256KB,
+    type HttpResponse,
+    SSLApp,
+    type WebSocket
 } from "uWebSockets.js";
 
 import { log } from "../../common/src/utils/misc";

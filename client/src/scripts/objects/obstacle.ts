@@ -1,4 +1,5 @@
 import { GameObject } from "../types/gameObject";
+
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { Variation } from "../../../../common/src/typings";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";

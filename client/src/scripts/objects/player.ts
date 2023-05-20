@@ -1,13 +1,17 @@
-import { GameObject } from "../types/gameObject";
-import { type Game } from "../game";
 import Phaser from "phaser";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import gsap from "gsap";
+
+import { type Game } from "../game";
 import { type GameScene } from "../scenes/gameScene";
+import { GameObject } from "../types/gameObject";
+
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+    ANIMATION_TYPE_BITS,
+    AnimationType,
+    ObjectCategory
 } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import gsap from "gsap";
 import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 

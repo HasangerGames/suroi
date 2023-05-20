@@ -1,14 +1,19 @@
 import { BitStream } from "bit-buffer";
+
 import { type Vector } from "./vector";
 import { ObjectType } from "./objectType";
+
+import { type ObjectDefinitions } from "./objectDefinitions";
+import { ObjectDefinitionsList } from "./objectDefinitionsList";
+
 import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
     OBJECT_CATEGORY_BITS,
-    type ObjectCategory, PACKET_TYPE_BITS, type PacketType, VARIATION_BITS
+    type ObjectCategory, PACKET_TYPE_BITS,
+    type PacketType,
+    VARIATION_BITS
 } from "../constants";
-import { type ObjectDefinitions } from "./objectDefinitions";
-import { ObjectDefinitionsList } from "./objectDefinitionsList";
 import { type Variation } from "../typings";
 
 export class SuroiBitStream extends BitStream {

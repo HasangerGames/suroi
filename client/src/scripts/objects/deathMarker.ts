@@ -1,6 +1,8 @@
-import { GameObject } from "../types/gameObject";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import gsap from "gsap";
+
+import { GameObject } from "../types/gameObject";
+
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class DeathMarker extends GameObject {
     playerName: string;
