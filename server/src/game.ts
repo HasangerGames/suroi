@@ -2,7 +2,11 @@ import { log } from "../../common/src/utils/misc";
 
 import { Player } from "./objects/player";
 import {
-    Box, Fixture, Settings, Vec2, World
+    Box,
+    Fixture,
+    Settings,
+    Vec2,
+    World
 } from "planck";
 import { Config } from "./configuration";
 import { type WebSocket } from "uWebSockets.js";
@@ -122,6 +126,8 @@ export class Game {
                     if (Date.now() - p.weaponCooldown > 250) {
                         p.weaponCooldown = Date.now();
                         p.animation.type = AnimationType.Punch;
+
+                        /* eslint-disable-next-line @typescript-eslint/strict-boolean-expressions */
                         p.animation.seq = !p.animation.seq;
 
                         const offset = Vec2(2.5, 0);

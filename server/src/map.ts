@@ -5,7 +5,10 @@ import { ObjectType } from "../../common/src/utils/objectType";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import {
-    randomFloat, randomVector, randomRotation, random
+    randomFloat,
+    randomVector,
+    randomRotation,
+    random
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Hitbox } from "../../common/src/utils/hitbox";

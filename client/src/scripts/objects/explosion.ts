@@ -12,8 +12,10 @@ export class Explosion extends GameObject {
     deserializeFull(stream: SuroiBitStream): void {
         this.type = stream.readObjectType();
         const definition = this.type.definition as ExplosionDefinition;
+
         this.position = stream.readPosition();
-        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", definition.frame).setScale(0);
+        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", definition.animation.frame).setScale(0);
+
         gsap.to(this.image, {
             scale: definition.animation.scale,
             duration: 1,

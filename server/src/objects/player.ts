@@ -10,7 +10,9 @@ import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import {
-    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+    ANIMATION_TYPE_BITS,
+    AnimationType,
+    ObjectCategory
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
