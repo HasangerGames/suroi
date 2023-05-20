@@ -215,7 +215,7 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         this.health -= amount;
-        this.damageTaken -= amount;
+        this.damageTaken += amount;
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
