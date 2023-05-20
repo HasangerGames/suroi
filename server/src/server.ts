@@ -14,7 +14,8 @@ import sanitizeHtml from "sanitize-html";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { PacketType } from "../../common/src/constants";
 import { JoinPacket } from "./packets/receiving/joinPacket";
-import { Config } from "./config";
+import { Config, Debug } from "./config";
+import process from "node:process";
 
 /**
  * Apply CORS headers to a response.
@@ -132,5 +133,12 @@ app.listen(Config.host, Config.port, () => {
         `);
     log("Suroi Server v0.1.0", true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
+    if (Debug.stopServerAfter !== -1) {
+        log(`Automatically stopping server after ${Debug.stopServerAfter} ms`, true);
+        setTimeout(() => {
+            log("Stopping server...", true);
+            process.exit(1);
+        }, Debug.stopServerAfter);
+    }
     log("Press Ctrl+C to exit.");
 });

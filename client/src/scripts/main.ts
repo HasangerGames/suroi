@@ -13,7 +13,7 @@ $(() => {
     // Show "Connection lost." message if the socket disconnects
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has("connectionLost")) {
-        $("#splash-server-message-text").text("Connection lost.");
+        $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
         $("#splash-server-message").show();
         window.history.replaceState({}, "", "/");
     }

@@ -15,7 +15,7 @@ export const Config = {
         spawnLocation: Vec2(360, 360),
         fixedSpawnLocation: false,
         disableMapGeneration: false,
-        disableStaticFileCache: true
+        stopServerAfter: 10000
     }
 };
 export const Debug = Config.debug;
