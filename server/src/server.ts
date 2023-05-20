@@ -1,5 +1,3 @@
-import Config from "../../config.json";
-
 import {
     App, DEDICATED_COMPRESSOR_256KB, type HttpResponse, SSLApp, type WebSocket
 } from "uWebSockets.js";
@@ -12,6 +10,7 @@ import sanitizeHtml from "sanitize-html";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { PacketType } from "../../common/src/constants";
 import { JoinPacket } from "./packets/receiving/joinPacket";
+import { Config } from "./config";
 
 /**
  * Apply CORS headers to a response.

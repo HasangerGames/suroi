@@ -3,15 +3,15 @@ import { log } from "../../common/src/utils/misc";
 import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { v, type Vector } from "../../common/src/utils/vector";
-import { type Orientation, type Variation } from "../../common/src/typings";
+import { type Variation } from "../../common/src/typings";
 import {
-    randomFloat, randomVector, randomRotation, random
+    random, randomFloat, randomRotation, randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { Config } from "./configuration";
 import { ObjectCategory } from "../../common/src/constants";
+import { Debug } from "./config";
 
 export class Map {
     game: Game;
@@ -23,8 +23,7 @@ export class Map {
         const mapStartTime = Date.now();
         this.game = game;
 
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-        if (!Config.debug.disableMapGeneration) {
+        if (!Debug.disableMapGeneration) {
             this.generateObstacles("tree_oak", 200);
             this.generateObstacles("tree_pine", 15);
             this.generateObstacles("rock", 200);
@@ -121,12 +120,24 @@ export class Map {
         }
     }
 
-    private getRandomPositionFor(type: ObjectType, scale: number, orientation?: Orientation): Vector {
+    getRandomPositionFor(type: ObjectType, scale = 1): Vector {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
-        const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-        const initialHitbox: Hitbox = definition.spawnHitbox ?? definition.hitbox;
+        let initialHitbox: Hitbox | undefined;
+
+        // Set up the hitbox
+        if (type.category === ObjectCategory.Obstacle) {
+            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+            initialHitbox = definition.spawnHitbox ?? definition.hitbox;
+        } else if (type.category === ObjectCategory.Player) {
+            initialHitbox = new CircleHitbox(2.5);
+        }
+        if (initialHitbox === undefined) {
+            throw new Error(`Unsupported object category: ${type.category}`);
+        }
+
+        // Find a valid position
         while (collided && attempts <= 200) {
             attempts++;
             if (attempts >= 200) {

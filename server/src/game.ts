@@ -4,18 +4,20 @@ import { Player } from "./objects/player";
 import {
     Box, Fixture, Settings, Vec2, World
 } from "planck";
-import { Config } from "./configuration";
+import { Config, Debug } from "./config";
 import { type WebSocket } from "uWebSockets.js";
 import { type PlayerContainer } from "./server";
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 import { Map } from "./map";
-import { AnimationType } from "../../common/src/constants";
+import { AnimationType, ObjectCategory } from "../../common/src/constants";
 import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { type Obstacle } from "./objects/obstacle";
 import { type Explosion } from "./objects/explosion";
+import { ObjectType } from "../../common/src/utils/objectType";
+import { v2v } from "./utils/misc";
 
 export class Game {
     map: Map;
@@ -221,7 +223,13 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        const player = new Player(this, name, socket, Vec2(10, 10));
+        let spawnLocation: Vec2;
+        if (Debug.fixedSpawnLocation) {
+            spawnLocation = Debug.spawnLocation;
+        } else {
+            spawnLocation = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+        }
+        const player = new Player(this, name, socket, spawnLocation);
         this.players.add(player);
         this.livingPlayers.add(player);
         this.aliveCount++;

@@ -1,12 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
 
-/**
- * Read a JSON file.
- * @param path The path to the JSON file.
- */
-export const readJSON = <T>(path: string): T => JSON.parse(fs.readFileSync(path, "utf-8")) as T;
-
 export function log(message: string, noLine = false): void {
     const date: Date = new Date();
     const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
