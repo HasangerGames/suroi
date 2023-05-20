@@ -20,17 +20,16 @@
     display: flex;
     justify-content: center;
 
-    width: 100%;
+    max-width: 625px;
 
     margin-top: 75px;
     margin-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
 
     img {
-        width: 625px;
-
-        margin-bottom: 5px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+        user-select: none;
     }
 }
 
@@ -127,10 +126,6 @@
     }
 }
 
-#splash-logo img {
-    width: 550px;
-    user-select: none;
-}
 
 #splash-center {
     margin-right: 15px;
