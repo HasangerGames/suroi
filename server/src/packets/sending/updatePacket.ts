@@ -21,7 +21,6 @@ export class UpdatePacket extends SendingPacket {
 
         // Position and rotation
         p.serializePartial(stream);
-        p.animation = AnimationType.None;
 
         // Health
         stream.writeBoolean(p.healthDirty);

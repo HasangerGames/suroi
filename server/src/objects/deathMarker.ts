@@ -11,6 +11,8 @@ export class DeathMarker extends GameObject {
     constructor(player: Player) {
         super(player.game, ObjectType.categoryOnly(ObjectCategory.DeathMarker), player.position);
         this.playerName = player.name;
+
+        setTimeout(() => this.isNew = false, 100);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
@@ -23,6 +25,5 @@ export class DeathMarker extends GameObject {
     serializeFull(stream: SuroiBitStream): void {
         stream.writeUTF8String(this.playerName, 16);
         stream.writeBoolean(this.isNew);
-        if (this.isNew) this.isNew = false;
     }
 }
