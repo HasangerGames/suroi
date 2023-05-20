@@ -32,6 +32,9 @@ export class Player extends GameObject {
 
     private _health = 100;
     healthDirty = true;
+
+    // This is flipped when the player takes damage.
+    // When the value changes it plays the hit sound and particle on the client.
     hitEffect = false;
 
     private _adrenaline = 100;
@@ -203,7 +206,7 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         this.health -= amount;
-        this.hitEffect = true;
+        this.hitEffect = !this.hitEffect;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
         if (this.health <= 0 && !this.dead) {
@@ -240,7 +243,6 @@ export class Player extends GameObject {
         stream.writeRotation(this.rotation);
         stream.writeBits(this.animation, ANIMATION_TYPE_BITS);
         stream.writeBoolean(this.hitEffect);
-        this.hitEffect = false;
     }
 
     serializeFull(stream: SuroiBitStream): void {

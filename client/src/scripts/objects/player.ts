@@ -30,6 +30,8 @@ export class Player extends GameObject {
     movingRight = false;
     punching = false;
 
+    hitEffect: boolean;
+
     body: Phaser.GameObjects.Image;
     leftFist: Phaser.GameObjects.Image;
     rightFist: Phaser.GameObjects.Image;
@@ -120,10 +122,12 @@ export class Player extends GameObject {
         }
 
         // Hit effect
-        if (stream.readBoolean()) {
+        const hitEffect = stream.readBoolean();
+        if (hitEffect !== this.hitEffect && this.hitEffect !== undefined) {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
+        this.hitEffect = hitEffect;
     }
 
     deserializeFull(stream: SuroiBitStream): void {
