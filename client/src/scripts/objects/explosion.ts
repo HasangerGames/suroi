@@ -2,6 +2,8 @@ import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import gsap, { Expo } from "gsap";
+import core from '../core';
+import { distance } from '../../../../common/src/utils/math';
 
 export class Explosion extends GameObject {
     image: Phaser.GameObjects.Image;
@@ -30,7 +32,9 @@ export class Explosion extends GameObject {
             this.destroy();
         });
 
-        this.scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+        if (core.game?.activePlayer !== undefined && distance(core.game.activePlayer.position, this.position) <= 70) {
+            this.scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+        }
     }
 
     destroy(): void {
