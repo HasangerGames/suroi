@@ -30,6 +30,8 @@ export class Player extends GameObject {
     movingRight = false;
     punching = false;
 
+    animationSeq: boolean;
+
     hitEffect: boolean;
 
     body: Phaser.GameObjects.Image;
@@ -103,7 +105,8 @@ export class Player extends GameObject {
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
-        if (!this.dead) {
+        const animationSeq = stream.readBoolean();
+        if (!this.dead && this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
             switch (animation) {
                 case AnimationType.Punch: {
                     const altFist: boolean = Math.random() < 0.5;
@@ -120,6 +123,7 @@ export class Player extends GameObject {
                 }
             }
         }
+        this.animationSeq = animationSeq;
 
         // Hit effect
         const hitEffect = stream.readBoolean();

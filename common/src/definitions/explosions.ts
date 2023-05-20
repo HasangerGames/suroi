@@ -11,6 +11,10 @@ export interface ExplosionDefinition extends ObjectDefinition {
         duration: number
         intensity: number
     }
+    animation: {
+        frame: string
+        scale: number
+    }
 }
 
 export class Explosions extends ObjectDefinitions {
@@ -27,6 +31,10 @@ export class Explosions extends ObjectDefinitions {
             cameraShake: {
                 duration: 250,
                 intensity: 0.02
+            },
+            animation: {
+                frame: "barrel_explosion.svg",
+                scale: 1.5
             }
         },
         {
@@ -40,6 +48,10 @@ export class Explosions extends ObjectDefinitions {
             cameraShake: {
                 duration: 500,
                 intensity: 0.03
+            },
+            animation: {
+                frame: "barrel_explosion.svg",
+                scale: 2.5
             }
         }
     ];

@@ -33,10 +33,6 @@ export class Player extends GameObject {
     private _health = 100;
     healthDirty = true;
 
-    // This is flipped when the player takes damage.
-    // When the value changes it plays the hit sound and particle on the client.
-    hitEffect = false;
-
     private _adrenaline = 100;
     adrenalineDirty = true;
 
@@ -57,7 +53,15 @@ export class Player extends GameObject {
 
     weaponCooldown = 0;
 
-    animation: AnimationType = AnimationType.None;
+    // This is flipped when the player takes damage.
+    // When the value changes it plays the hit sound and particle on the client.
+    // same logic applies for animation.seq
+    hitEffect = false;
+
+    animation = {
+        type: AnimationType.None,
+        seq: false
+    };
 
     visibleObjects = new Set<GameObject>(); // Objects the player can see
     nearObjects = new Set<GameObject>(); // Objects the player can see with a 1x scope
@@ -241,7 +245,8 @@ export class Player extends GameObject {
     serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
         stream.writeRotation(this.rotation);
-        stream.writeBits(this.animation, ANIMATION_TYPE_BITS);
+        stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
+        stream.writeBoolean(this.animation.seq);
         stream.writeBoolean(this.hitEffect);
     }
 

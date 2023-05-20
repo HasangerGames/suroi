@@ -121,7 +121,8 @@ export class Game {
                     p.punching = false;
                     if (Date.now() - p.weaponCooldown > 250) {
                         p.weaponCooldown = Date.now();
-                        p.animation = AnimationType.Punch;
+                        p.animation.type = AnimationType.Punch;
+                        p.animation.seq = !p.animation.seq;
 
                         const offset = Vec2(2.5, 0);
                         const rotated = vRotate(offset, p.rotation);

@@ -13,9 +13,9 @@ export class Explosion extends GameObject {
         this.type = stream.readObjectType();
         const definition = this.type.definition as ExplosionDefinition;
         this.position = stream.readPosition();
-        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", `${this.type.idString}.svg`).setScale(0);
+        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", definition.frame).setScale(0);
         gsap.to(this.image, {
-            scale: 1.5,
+            scale: definition.animation.scale,
             duration: 1,
             ease: Expo.easeOut
         });
