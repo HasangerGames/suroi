@@ -26,10 +26,7 @@
 
     max-width: 625px;
 
-    margin-top: 75px;
-    margin-bottom: 5px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 75px auto 25px auto;
 
     img {
         width: 100%;
@@ -153,11 +150,6 @@
     span {
         color: red;
     }
-}
-
-#splash-logo img {
-    width: 550px;
-    user-select: none;
 }
 
 #splash-center {
