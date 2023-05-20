@@ -29,6 +29,18 @@ $(() => {
         });
     });
 
+    const usernameField: JQuery<HTMLElement> = $("#username-input");
+    const nickname: string | null = localStorage.getItem("nickname");
+    if (nickname !== null) {
+        usernameField.val(nickname);
+    }
+
+    usernameField.on("input", (): void => {
+        if (usernameField.val() !== undefined && (usernameField.val() as string).trim().length > 0) {
+            localStorage.setItem("nickname", usernameField.val() as string);
+        }
+    });
+
     // Initialize the game object
     core.game = new Game();
 
