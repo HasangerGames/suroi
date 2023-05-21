@@ -218,12 +218,19 @@ export class Player extends GameObject {
     }
 
     damage(amount: number, source?): void {
+        if (this.health - amount > 100) {
+            amount = 100-this.health;
+        }
+        if (this.health - amount <=0) {
+            amount = this.health;
+        }
         this.health -= amount;
         this.damageTaken += amount;
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
         this.hitEffect = !this.hitEffect;
+        if (amount <= 0) this.hitEffect = !this.hitEffect;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
         if (this.health <= 0 && !this.dead) {
