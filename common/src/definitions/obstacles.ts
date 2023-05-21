@@ -117,6 +117,17 @@ export class Obstacles extends ObjectDefinitions {
             hitbox: new CircleHitbox(3.45),
             rotation: "full",
             explosion: "super_barrel_explosion"
-        }
+        },
+        {
+            idString: "crate_health",
+            material: "crate",
+            health: 150,
+            scale: {
+                spawnMin: 1.0, spawnMax: 1.0, destroy: 0.6
+            },
+            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+            rotation: "limited",
+            explosion: "crate_health_explosion"
+        },
     ];
 }
