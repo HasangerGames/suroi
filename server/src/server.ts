@@ -38,6 +38,10 @@ const app = Config.ssl?.enable
 
 const game = new Game();
 
+const playerCounts = {};
+let connectionAttempts = {};
+const bannedIPs: string[] = [];
+
 app.get("/api/getGame", (res) => {
     cors(res);
     res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.webSocketAddress}/play" }`);
@@ -46,6 +50,7 @@ app.get("/api/getGame", (res) => {
 export interface PlayerContainer {
     player: Player
     playerName: string
+    ip: string | undefined
 }
 
 app.ws("/play", {
@@ -56,6 +61,23 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
+        let ip: string | undefined;
+        if (Config.botProtection) {
+            ip = req.getHeader("cf-connecting-ip");
+            if (bannedIPs.includes(ip) || playerCounts[ip] >= 3 || connectionAttempts[ip] >= 7) {
+                if (!bannedIPs.includes(ip)) bannedIPs.push(ip);
+                res.endWithoutBody(0, true);
+                log(`Connection blocked: ${ip}`);
+                return;
+            } else {
+                if (!playerCounts[ip]) playerCounts[ip] = 1;
+                else playerCounts[ip]++;
+                if (!connectionAttempts[ip]) connectionAttempts[ip] = 1;
+                else connectionAttempts[ip]++;
+                log(`${playerCounts[ip]} simultaneous connections: ${ip}`);
+                log(`${connectionAttempts[ip]} connection attempts in the last 5 seconds: ${ip}`);
+            }
+        }
         const split: string[] = req.getQuery().split("=");
         let name: string = decodeURIComponent(split[1]);
         if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
@@ -68,7 +90,9 @@ app.ws("/play", {
             });
         }
         res.upgrade(
-            { player: undefined, playerName: name },
+            {
+                player: undefined, playerName: name, ip
+            },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
             req.getHeader("sec-websocket-extensions"),
@@ -116,6 +140,7 @@ app.ws("/play", {
      */
     close: (socket: WebSocket<PlayerContainer>) => {
         const p: Player = socket.getUserData().player;
+        if (Config.botProtection) playerCounts[socket.getUserData().ip as string]--;
         log(`"${p.name}" left the game`);
         game.removePlayer(p);
     }
@@ -141,4 +166,10 @@ app.listen(Config.host, Config.port, () => {
         }, Debug.stopServerAfter);
     }
     log("Press Ctrl+C to exit.");
+
+    if (Config.botProtection) {
+        setInterval(() => {
+            connectionAttempts = {};
+        }, 5000);
+    }
 });
