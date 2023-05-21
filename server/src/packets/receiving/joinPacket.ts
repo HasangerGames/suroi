@@ -1,6 +1,7 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { JoinedPacket } from "../sending/joinedPacket";
+
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class JoinPacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {

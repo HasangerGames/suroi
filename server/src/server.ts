@@ -90,6 +90,7 @@ app.ws("/play", {
                 log(`${connectionAttempts[ip] as number} connection attempts in the last 5 seconds: ${ip}`);
             }
         }
+
         const split: string[] = req.getQuery().split("=");
         let name: string = decodeURIComponent(split[1]);
         if (Config.randomUsernames) {
@@ -111,6 +112,7 @@ app.ws("/play", {
                 });
             }
         }
+
         res.upgrade(
             {
                 player: undefined,
@@ -180,8 +182,10 @@ app.listen(Config.host, Config.port, () => {
 /\\__/ / |_| | |\\ \\\\ \\_/ /_| |_ 
 \\____/ \\___/\\_| \\_|\\___/ \\___/ 
         `);
+
     log("Suroi Server v0.1.0", true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
+
     if (Debug.stopServerAfter !== -1) {
         log(`Automatically stopping server after ${Debug.stopServerAfter} ms`, true);
         setTimeout(() => {
@@ -189,6 +193,7 @@ app.listen(Config.host, Config.port, () => {
             process.exit(1);
         }, Debug.stopServerAfter);
     }
+
     log("Press Ctrl+C to exit.");
 
     if (Config.botProtection) {

@@ -1,5 +1,6 @@
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
+
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";

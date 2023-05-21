@@ -1,6 +1,7 @@
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
+
 import { type PacketType } from "../../../common/src/constants";
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 
 export abstract class SendingPacket {
     allocBytes: number;

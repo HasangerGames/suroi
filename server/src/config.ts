@@ -20,5 +20,6 @@ export const Config = {
         stopServerAfter: -1
     }
 };
+
 export const Debug = Config.debug;
 Config.diagonalSpeed = Config.movementSpeed / Math.SQRT2;

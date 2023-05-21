@@ -1,12 +1,20 @@
-import { type Vector } from "../../../common/src/utils/vector";
 import {
-    type Body, Box, Circle, Vec2, type World
+    type Body,
+    Box,
+    Circle,
+    Vec2,
+    type World
 } from "planck";
+
+import { type Obstacle } from "../objects/obstacle";
+
 import {
-    CircleHitbox, type Hitbox, RectangleHitbox
+    CircleHitbox,
+    type Hitbox,
+    RectangleHitbox
 } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
-import { type Obstacle } from "../objects/obstacle";
+import { type Vector } from "../../../common/src/utils/vector";
 
 export function v2v(v: Vector): Vec2 {
     return Vec2(v.x, v.y);

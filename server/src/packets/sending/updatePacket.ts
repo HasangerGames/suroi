@@ -1,7 +1,8 @@
 import { SendingPacket } from "../../types/sendingPacket";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
+
 import { PacketType } from "../../../../common/src/constants";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {

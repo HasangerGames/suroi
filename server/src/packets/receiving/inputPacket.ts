@@ -1,5 +1,6 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { type Player } from "../../objects/player";
+
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class InputPacket extends ReceivingPacket {
