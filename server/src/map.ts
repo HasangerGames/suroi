@@ -76,9 +76,12 @@ export class Map {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
             const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+
+            /**
+             * @todo For objects with limited rotation, send orientation instead of rotation (2 bits vs. 8), saving 6 bits.
+             * @todo Add extra limited rotation (2 possible states = 1 bit).
+             */
             let rotation: number | undefined;
-            // TODO For objects with limited rotation, send orientation instead of rotation (2 bits vs. 8; saving of 6 bits)
-            // TODO Also, add extra limited rotation (2 possible states = only 1 bit)
             switch (definition.rotation) {
                 case "full":
                     rotation = randomRotation();
@@ -104,9 +107,11 @@ export class Map {
                     rotation = 0;
                     break;
             }
+
             if (rotation === undefined) {
                 throw new Error("Unknown rotation type");
             }
+
             const obstacle: Obstacle = new Obstacle(
                 this.game,
                 type,
@@ -140,16 +145,20 @@ export class Map {
         // Find a valid position
         while (collided && attempts <= 200) {
             attempts++;
+
             if (attempts >= 200) {
                 console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
             }
+
             collided = false;
             position = randomVector(10, this.width - 10, 10, this.height - 10);
+
             const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
                 if (object.spawnHitbox.collidesWith(hitbox)) collided = true;
             }
         }
+
         return position;
     }
 }
