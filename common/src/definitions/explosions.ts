@@ -53,6 +53,23 @@ export class Explosions extends ObjectDefinitions {
                 frame: "barrel_explosion.svg",
                 scale: 2.5
             }
+        },
+        {
+            idString: "crate_health_explosion",
+            damage: -50,
+            obstacleMultiplier: 0.5,
+            radius: {
+                min: 12,
+                max: 36
+            },
+            cameraShake: {
+                duration: 500,
+                intensity: 0.00
+            },
+            animation: {
+                frame: "crate_health_explosion.svg",
+                scale: 2.5
+            }
         }
     ];
 }
