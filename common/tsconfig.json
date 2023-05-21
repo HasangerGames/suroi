@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "strictNullChecks": true
   },
-  "include": ["**/*.js", "**/*.ts", "**/*.tsx"]
+  "exclude": ["node_modules"]
 }

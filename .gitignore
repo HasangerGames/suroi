@@ -1,6 +1,5 @@
-# Misc
-.idea
-.DS_Store
+# Build
+dist/
 
 # Node
 node_modules/
@@ -8,7 +7,6 @@ node_modules/
 package-lock.json
 yarn.lock
 
-dist/
-
-# Environment variables
-.env
+# IDE garbage
+.idea
+.DS_Store
