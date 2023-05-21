@@ -1,6 +1,5 @@
-import { log } from "../../common/src/utils/misc";
+import { Config, Debug } from "./config";
 
-import { Player } from "./objects/player";
 import {
     Box,
     Fixture,
@@ -8,20 +7,25 @@ import {
     Vec2,
     World
 } from "planck";
-import { Config, Debug } from "./config";
-import { type WebSocket } from "uWebSockets.js";
+import type { WebSocket } from "uWebSockets.js";
+
 import { type PlayerContainer } from "./server";
+import { Map } from "./map";
+
+import { Player } from "./objects/player";
+import { type Obstacle } from "./objects/obstacle";
+import { type Explosion } from "./objects/explosion";
+import { v2v } from "./utils/misc";
+
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
-import { Map } from "./map";
+
+import { log } from "../../common/src/utils/misc";
 import { AnimationType, ObjectCategory } from "../../common/src/constants";
 import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { type Obstacle } from "./objects/obstacle";
-import { type Explosion } from "./objects/explosion";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v2v } from "./utils/misc";
 
 export class Game {
     map: Map;

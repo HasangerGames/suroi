@@ -1,5 +1,7 @@
-import { GameObject } from "../types/gameObject";
 import { type Game } from "../game";
+
+import { GameObject } from "../types/gameObject";
+
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";

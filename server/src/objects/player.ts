@@ -1,10 +1,12 @@
+import {
+    type Body,
+    Circle,
+    Vec2
+} from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import {
-    type Body, Circle, Vec2
-} from "planck";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";

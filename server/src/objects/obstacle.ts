@@ -1,20 +1,24 @@
-import { GameObject } from "../types/gameObject";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type Game } from "../game";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { type Vector, vSub } from "../../../common/src/utils/vector";
-import { bodyFromHitbox } from "../utils/misc";
 import {
     type Body,
     type Shape,
     type Vec2
 } from "planck";
-import { type Variation } from "../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { transformRectangle } from "../../../common/src/utils/math";
-import { ObjectCategory } from "../../../common/src/constants";
+
+import { type Game } from "../game";
+
 import { Explosion } from "./explosion";
+
+import { GameObject } from "../types/gameObject";
+import { bodyFromHitbox } from "../utils/misc";
+
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { type Vector, vSub } from "../../../common/src/utils/vector";
+import { transformRectangle } from "../../../common/src/utils/math";
+import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { ObjectCategory } from "../../../common/src/constants";
+import { type Variation } from "../../../common/src/typings";
 
 export class Obstacle extends GameObject {
     readonly isPlayer = false;

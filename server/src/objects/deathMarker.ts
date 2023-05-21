@@ -1,8 +1,9 @@
 import { GameObject } from "../types/gameObject";
+import { type Player } from "./player";
+
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Player } from "./player";
 
 export class DeathMarker extends GameObject {
     playerName: string;
