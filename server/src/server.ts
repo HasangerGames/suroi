@@ -72,6 +72,8 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
+        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+        res.onAborted(() => {});
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
             if (bannedIPs.includes(ip) || playerCounts[ip] >= 3 || connectionAttempts[ip] >= 7) {
