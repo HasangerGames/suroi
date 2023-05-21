@@ -11,6 +11,7 @@ export const Config = {
     },
     movementSpeed: 0.032,
     diagonalSpeed: 0, // Assigned below
+    botProtection: false,
     debug: {
         spawnLocation: Vec2(360, 360),
         fixedSpawnLocation: false,
