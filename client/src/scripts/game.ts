@@ -97,7 +97,7 @@ export class Game {
 
     sendData(stream: SuroiBitStream): void {
         try {
-            this.socket.send(stream.buffer.subarray(0, Math.ceil(stream.index / 8)));
+            this.socket.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
