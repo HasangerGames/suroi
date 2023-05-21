@@ -128,6 +128,6 @@ export class Obstacles extends ObjectDefinitions {
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
             rotation: "limited",
             explosion: "crate_health_explosion"
-        },
+        }
     ];
 }

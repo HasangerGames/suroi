@@ -16,7 +16,7 @@ export class GameOverPacket extends ReceivingPacket {
         const timeAlive = new Date(stream.readUint16() * 1000); // time alive
         let timeString = "";
         if (timeAlive.getMinutes() > 0) timeString += `${timeAlive.getMinutes()}m`;
-        timeString += `${timeAlive.getSeconds()}s`
+        timeString += `${timeAlive.getSeconds()}s`;
         $("#game-over-time").text(timeString);
 
         setTimeout(() => $("#game-over-screen").fadeIn(1000), 3000);
