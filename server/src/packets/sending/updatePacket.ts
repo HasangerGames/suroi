@@ -7,12 +7,14 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 export class UpdatePacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
+
         this.type = PacketType.Update;
         this.allocBytes = 1 << 13;
     }
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
         const p = this.player;
         const game = p.game;
 
@@ -51,6 +53,7 @@ export class UpdatePacket extends SendingPacket {
         // Full objects
         const fullObjectsDirty = p.fullDirtyObjects.size !== 0;
         stream.writeBoolean(fullObjectsDirty);
+
         if (fullObjectsDirty) {
             stream.writeUint8(p.fullDirtyObjects.size);
             for (const fullObject of p.fullDirtyObjects) {
@@ -65,6 +68,7 @@ export class UpdatePacket extends SendingPacket {
         // Partial objects
         const partialObjectsDirty = p.partialDirtyObjects.size !== 0;
         stream.writeBoolean(partialObjectsDirty);
+
         if (partialObjectsDirty) {
             stream.writeUint8(p.partialDirtyObjects.size);
             for (const partialObject of p.partialDirtyObjects) {
@@ -77,17 +81,20 @@ export class UpdatePacket extends SendingPacket {
         // Deleted objects
         const deletedObjectsDirty = p.deletedObjects.size !== 0;
         stream.writeBoolean(deletedObjectsDirty);
+
         if (deletedObjectsDirty) {
             stream.writeUint8(p.deletedObjects.size);
             for (const deletedObject of p.deletedObjects) {
                 stream.writeUint16(deletedObject.id);
             }
+
             p.deletedObjects.clear();
         }
 
         // Explosions
         const explosionsDirty = p.game.explosions.size !== 0;
         stream.writeBoolean(explosionsDirty);
+
         if (explosionsDirty) {
             stream.writeUint8(p.game.explosions.size);
             for (const explosion of p.game.explosions) {

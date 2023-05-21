@@ -9,6 +9,7 @@ export class KillPacket extends SendingPacket {
 
     constructor(player: Player, killed: Player) {
         super(player);
+
         this.type = PacketType.Kill;
         this.allocBytes = 1 << 5;
 
@@ -17,6 +18,7 @@ export class KillPacket extends SendingPacket {
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
         stream.writeUint8(this.player.kills);
         stream.writeUTF8String(this.killed.name, 16);
     }

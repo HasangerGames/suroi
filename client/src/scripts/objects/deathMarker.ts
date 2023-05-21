@@ -19,6 +19,7 @@ export class DeathMarker extends GameObject {
 
     deserializeFull(stream: SuroiBitStream): void {
         this.playerName = stream.readUTF8String(16);
+
         if (this.playerNameText === undefined) {
             this.playerNameText = this.scene.add.text(
                 this.position.x * 20,
@@ -32,6 +33,7 @@ export class DeathMarker extends GameObject {
                 .setOrigin(0.5, 0.5)
                 .setShadow(2, 2, "#000", 2, true, true);
         }
+
         if (stream.readBoolean()) { // play an animation if its a new death marker
             this.image.setScale(0.5).setAlpha(0);
             gsap.to(this.image, {

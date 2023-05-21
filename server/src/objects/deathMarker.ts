@@ -11,6 +11,7 @@ export class DeathMarker extends GameObject {
 
     constructor(player: Player) {
         super(player.game, ObjectType.categoryOnly(ObjectCategory.DeathMarker), player.position);
+
         this.playerName = player.name;
 
         setTimeout(() => { this.isNew = false; }, 100);

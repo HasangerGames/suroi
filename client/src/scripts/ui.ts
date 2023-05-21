@@ -28,7 +28,7 @@ $(() => {
 
         if (target?.id === "btn-quit-game" || target?.id === "btn-play-again") {
             // something like this Game.endGame();
-            //$("#game-menu").hide();
+            // $("#game-menu").hide();
             window.location.reload(); // TODO Find a more elegant solution
         } else if (target?.id === "btn-resume-game") {
             $("#game-menu").hide();

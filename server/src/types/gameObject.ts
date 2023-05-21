@@ -45,7 +45,7 @@ export abstract class GameObject {
         this._rotation = rotation;
     }
 
-    abstract damage(amount: number, source?): void;
+    abstract damage(amount: number, source?: GameObject): void;
 
     abstract serializePartial(stream: SuroiBitStream): void;
     abstract serializeFull(stream: SuroiBitStream): void;

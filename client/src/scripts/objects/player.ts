@@ -96,6 +96,7 @@ export class Player extends GameObject {
             const oldAngle: number = this.container.angle;
             const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
             const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+
             gsap.to(this.container, {
                 x: this.position.x * 20,
                 y: this.position.y * 20,
@@ -122,6 +123,7 @@ export class Player extends GameObject {
                         yoyo: true,
                         ease: "none"
                     });
+
                     this.scene.playSound("swing");
                     break;
                 }
@@ -135,6 +137,7 @@ export class Player extends GameObject {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
+
         this.hitEffect = hitEffect;
     }
 

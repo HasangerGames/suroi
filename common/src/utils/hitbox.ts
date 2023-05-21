@@ -28,6 +28,7 @@ export class CircleHitbox extends Hitbox {
 
     constructor(radius: number, position?: Vector) {
         super();
+
         this.position = position ?? v(0, 0);
         this.radius = radius;
     }

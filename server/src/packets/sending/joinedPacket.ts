@@ -7,6 +7,7 @@ import { PacketType } from "../../../../common/src/constants";
 export class JoinedPacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
+
         this.type = PacketType.Joined;
         this.allocBytes = 1;
     }

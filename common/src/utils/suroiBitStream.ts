@@ -66,6 +66,7 @@ export class SuroiBitStream extends BitStream {
     readObjectType(): ObjectType {
         const category: ObjectCategory = this.readBits(OBJECT_CATEGORY_BITS);
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
+
         if (definitions !== undefined) {
             const idNumber: number = this.readBits(definitions.bitCount);
             return ObjectType.fromNumber(category, idNumber);

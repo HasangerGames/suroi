@@ -34,6 +34,7 @@ export function bodyFromHitbox(world: World,
             position: v2v(hitbox.position),
             fixedRotation: true
         });
+
         body.createFixture({
             shape: Circle(hitbox.radius * scale),
             userData: obstacle,
@@ -42,14 +43,18 @@ export function bodyFromHitbox(world: World,
     } else if (hitbox instanceof RectangleHitbox) {
         const width = (hitbox.max.x - hitbox.min.x) / 2;
         const height = (hitbox.max.y - hitbox.min.y) / 2;
+
         if (width === 0 || height === 0) return undefined;
-        //obstacle.collision.halfWidth = width;
-        //obstacle.collision.halfHeight = height;
+
+        // obstacle.collision.halfWidth = width;
+        // obstacle.collision.halfHeight = height;
+
         body = world.createBody({
             type: "static",
             position: Vec2(hitbox.min.x + width, hitbox.min.y + height),
             fixedRotation: true
         });
+
         body.createFixture({
             shape: Box(width, height),
             userData: obstacle,

@@ -4,6 +4,7 @@ import * as fs from "fs";
 export function log(message: string, noLine = false): void {
     const date: Date = new Date();
     const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
+
     console.log(`${dateString} ${message}`);
     if (!noLine) console.log(`${dateString} ===========================`);
 }

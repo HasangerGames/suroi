@@ -33,6 +33,7 @@ export class Explosion extends GameObject {
                         const damagePercent = Math.abs(dist / definition.radius.max - 1);
                         damage *= damagePercent;
                     }
+
                     object.damage(damage, this.source);
                 }
             }
@@ -46,6 +47,7 @@ export class Explosion extends GameObject {
                     const damagePercent = Math.abs(dist / definition.radius.max - 1);
                     damage *= damagePercent;
                 }
+
                 player.damage(damage, this.source);
             }
         }

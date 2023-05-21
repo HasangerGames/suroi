@@ -45,6 +45,7 @@ export class Obstacle extends GameObject {
         this.variation = variation;
 
         const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+
         this.health = this.maxHealth = definition.health;
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale);
@@ -54,11 +55,14 @@ export class Obstacle extends GameObject {
     damage(amount: number, source: GameObject): void {
         if (this.health === 0) return;
         this.health -= amount;
+
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         if (this.health <= 0) {
             this.health = 0;
             this.dead = true;
+
             this.scale = definition.scale.spawnMin;
+
             if (this.body != null) this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
 
@@ -70,17 +74,19 @@ export class Obstacle extends GameObject {
                     source);
                 this.game.explosions.add(explosion);
             }
-            /*for (const item of this.loot) {
+
+            /* for (const item of this.loot) {
                 let lootPosition = this.position.clone();
                 // TODO: add a "lootSpawnOffset" property for lockers and deposit boxes.
                 if (this.typeString.includes("locker") || this.typeString.includes("deposit_box")) lootPosition = addAdjust(lootPosition, Vec2(0, -2), this.orientation);
 
                 // eslint-disable-next-line no-new
                 new Loot(this.game, item.type, lootPosition, this.layer, item.count);
-            }*/
+            } */
         } else {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale: number = this.scale;
+
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
             const scaleFactor: number = this.scale / oldScale;
@@ -106,9 +112,11 @@ export class Obstacle extends GameObject {
                     vSub(this.hitbox.min, this.position),
                     vSub(this.hitbox.max, this.position),
                     scaleFactor, 0);
+
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
             }
+
             this.game.partialDirtyObjects.add(this);
         }
     }
@@ -121,6 +129,7 @@ export class Obstacle extends GameObject {
     serializeFull(stream: SuroiBitStream): void {
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
+
         if (definition.rotation !== "none") stream.writeRotation(this.rotation);
         if (definition.variations !== undefined) stream.writeVariation(this.variation);
     }

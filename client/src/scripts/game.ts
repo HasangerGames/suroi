@@ -25,6 +25,7 @@ export class Game {
 
     connect(address: string): void {
         this.error = false;
+
         if (address === undefined) return;
         if (this.gameStarted) return;
 
@@ -62,6 +63,7 @@ export class Game {
 
         this.socket.onerror = (): void => {
             this.error = true;
+
             $("#splash-server-message-text").text("Error joining game.");
             $("#splash-server-message").show();
         };
@@ -75,11 +77,11 @@ export class Game {
     endGame(): void {
         window.history.pushState(null, "", "?connectionLost");
         window.location.reload();
-        /*$("#game-ui").hide();
+        /* $("#game-ui").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").removeClass("fade-out");
         core.phaser?.scene.stop("game");
-        this.gameStarted = false;*/
+        this.gameStarted = false; */
     }
 
     sendPacket(packet: SendingPacket): void {
@@ -89,6 +91,7 @@ export class Game {
         } catch (e) {
             console.error("Error serializing packet. Details:", e);
         }
+
         this.sendData(stream);
     }
 
