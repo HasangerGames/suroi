@@ -4906,8 +4906,8 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
-  /minimatch@9.0.0:
-    resolution: {integrity: sha512-0jJj8AvgKqWN05mrwuqi8QYKx1WmYSUoKSxu5Qhs9prezTz10sxAHGNZe9J9cqIJzta8DWsleh2KaVaLl6Ru2w==}
+  /minimatch@9.0.1:
+    resolution: {integrity: sha512-0jWhJpD/MdhPXwPuiRkCbfYfSKp2qnn2eOc279qI7f+osl/l+prKSrvhg157zSYvx/1nmgn2NqdT6k2Z7zSH9w==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
@@ -6481,7 +6481,7 @@ packages:
       '@pencil.js/spritesheet': 1.5.1
       bin-pack: 1.0.2
       canvas: 2.11.2
-      minimatch: 9.0.0
+      minimatch: 9.0.1
       webpack: 5.83.1(webpack-cli@5.1.1)
     transitivePeerDependencies:
       - encoding

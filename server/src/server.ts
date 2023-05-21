@@ -1,3 +1,5 @@
+import { Config, Debug } from "./config";
+
 import {
     App,
     DEDICATED_COMPRESSOR_256KB,
@@ -5,21 +7,26 @@ import {
     SSLApp,
     type WebSocket
 } from "uWebSockets.js";
+import BadWordsFilter from "bad-words";
+import * as adjectives from "adjectives";
+import * as animals from "animals";
+import sanitizeHtml from "sanitize-html";
+import process from "node:process";
+
+import { Game } from "./game";
+import type { Player } from "./objects/player";
+
+import { InputPacket } from "./packets/receiving/inputPacket";
+import { JoinPacket } from "./packets/receiving/joinPacket";
 
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import type { Player } from "./objects/player";
-import { Game } from "./game";
-import sanitizeHtml from "sanitize-html";
-import { InputPacket } from "./packets/receiving/inputPacket";
 import { PacketType } from "../../common/src/constants";
-import { JoinPacket } from "./packets/receiving/joinPacket";
-import { Config, Debug } from "./config";
-import process from "node:process";
-// This variable controls whether random usernames are on.
-const randomUsernames = true;
-let adj = require('adjectives');
-let animals = require('animals');
+
+const filter = new BadWordsFilter({
+    splitRegex: /(?:(?=[a-zA-Z0-9]))(?<![a-zA-Z0-9])|(?<=[a-zA-Z0-9])(?![a-zA-Z0-9])/,
+    exclude: ["ass", "butt", "crap", "fart", "god", "shit"]
+});
 
 /**
  * Apply CORS headers to a response.
@@ -65,36 +72,39 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
-        let ip: string | undefined;
+        const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
-            ip = req.getHeader("cf-connecting-ip");
             if (bannedIPs.includes(ip) || playerCounts[ip] >= 3 || connectionAttempts[ip] >= 7) {
                 if (!bannedIPs.includes(ip)) bannedIPs.push(ip);
                 res.endWithoutBody(0, true);
                 log(`Connection blocked: ${ip}`);
                 return;
             } else {
-                if (!playerCounts[ip]) playerCounts[ip] = 1;
+                if (playerCounts[ip] === undefined) playerCounts[ip] = 1;
                 else playerCounts[ip]++;
-                if (!connectionAttempts[ip]) connectionAttempts[ip] = 1;
+
+                if (connectionAttempts[ip] === undefined) connectionAttempts[ip] = 1;
                 else connectionAttempts[ip]++;
-                log(`${playerCounts[ip]} simultaneous connections: ${ip}`);
-                log(`${connectionAttempts[ip]} connection attempts in the last 5 seconds: ${ip}`);
+
+                log(`${playerCounts[ip] as number} simultaneous connections: ${ip}`);
+                log(`${connectionAttempts[ip] as number} connection attempts in the last 5 seconds: ${ip}`);
             }
         }
         const split: string[] = req.getQuery().split("=");
         let name: string = decodeURIComponent(split[1]);
-        if (randomUsernames) {
-            let adjectiveString = adj[Math.floor(Math.random()*adj.length)];
+        if (Config.randomUsernames) {
+            let adjectiveString: string = adjectives[Math.floor(Math.random() * adjectives.length)];
+            let animalString: string = animals();
+
             adjectiveString = adjectiveString.charAt(0).toUpperCase() + adjectiveString.slice(1);
-            let animalString = animals();
             animalString = animalString.charAt(0).toUpperCase() + animalString.slice(1);
+
             name = adjectiveString + animalString;
         } else {
             if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
                 name = "Player";
             } else {
-                name = sanitizeHtml(name, {
+                name = sanitizeHtml(filter.clean(name), {
                     allowedTags: [],
                     allowedAttributes: {},
                     disallowedTagsMode: "recursiveEscape"
@@ -103,7 +113,9 @@ app.ws("/play", {
         }
         res.upgrade(
             {
-                player: undefined, playerName: name, ip
+                player: undefined,
+                playerName: name,
+                ip
             },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),

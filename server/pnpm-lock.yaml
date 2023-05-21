@@ -7,6 +7,9 @@ dependencies:
   animals:
     specifier: ^0.0.3
     version: 0.0.3
+  bad-words:
+    specifier: ^3.0.4
+    version: 3.0.4
   bit-buffer:
     specifier: ^0.2.5
     version: 0.2.5
@@ -21,6 +24,9 @@ dependencies:
     version: github.com/uNetworking/uWebSockets.js/6545da07696855e77de1480d5b55bb661746ddd3
 
 devDependencies:
+  '@types/bad-words':
+    specifier: ^3.0.1
+    version: 3.0.1
   '@types/node':
     specifier: ^20.2.1
     version: 20.2.1
@@ -172,6 +178,10 @@ packages:
 
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+    dev: true
+
+  /@types/bad-words@3.0.1:
+    resolution: {integrity: sha512-7la3ZDJG1tlRqySO+pnXycZpacaMEw/iLEm8kc4l+I+jN8KjBfoQVwO6jm98xzXVLrxV8vDrB5TaMoop8sKclQ==}
     dev: true
 
   /@types/json-schema@7.0.11:
@@ -450,6 +460,17 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /bad-words@3.0.4:
+    resolution: {integrity: sha512-v/Q9uRPH4+yzDVLL4vR1+S9KoFgOEUl5s4axd6NIAq8SV2mradgi4E8lma/Y0cw1ltVdvyegCQQKffCPRCp8fg==}
+    engines: {node: '>=8.0.0'}
+    dependencies:
+      badwords-list: 1.0.0
+    dev: false
+
+  /badwords-list@1.0.0:
+    resolution: {integrity: sha512-oWhaSG67e+HQj3OGHQt2ucP+vAPm1wTbdp2aDHeuh4xlGXBdWwzZ//pfu6swf5gZ8iX0b7JgmSo8BhgybbqszA==}
+    dev: false
 
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
