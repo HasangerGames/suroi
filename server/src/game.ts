@@ -1,4 +1,4 @@
-import { Config, Debug } from "./config";
+import { Config, Debug } from "./.config/config";
 
 import {
     Box,

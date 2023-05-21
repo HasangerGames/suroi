@@ -31,8 +31,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "adjectives": "^1.0.2",
-    "animals": "^0.0.3",
     "bad-words": "^3.0.4",
     "bit-buffer": "^0.2.5",
     "planck": "1.0.0-alpha.4",

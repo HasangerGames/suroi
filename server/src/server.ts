@@ -1,4 +1,6 @@
-import { Config, Debug } from "./config";
+import { Config, Debug } from "./.config/config";
+import adjectives from "./.config/adjectives.json";
+import animals from "./.config/animals.json";
 
 import {
     App,
@@ -8,8 +10,6 @@ import {
     type WebSocket
 } from "uWebSockets.js";
 import BadWordsFilter from "bad-words";
-import * as adjectives from "adjectives";
-import * as animals from "animals";
 import sanitizeHtml from "sanitize-html";
 import process from "node:process";
 
@@ -93,9 +93,10 @@ app.ws("/play", {
 
         const split: string[] = req.getQuery().split("=");
         let name: string = decodeURIComponent(split[1]);
+
         if (Config.randomUsernames) {
-            let adjectiveString: string = adjectives[Math.floor(Math.random() * adjectives.length)];
-            let animalString: string = animals();
+            let adjectiveString = adjectives[Math.floor(Math.random() * adjectives.length)];
+            let animalString = animals[Math.floor(Math.random() * animals.length)];
 
             adjectiveString = adjectiveString.charAt(0).toUpperCase() + adjectiveString.slice(1);
             animalString = animalString.charAt(0).toUpperCase() + animalString.slice(1);

@@ -1,12 +1,6 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  adjectives:
-    specifier: ^1.0.2
-    version: 1.0.2
-  animals:
-    specifier: ^0.0.3
-    version: 0.0.3
   bad-words:
     specifier: ^3.0.4
     version: 3.0.4
@@ -366,10 +360,6 @@ packages:
     hasBin: true
     dev: true
 
-  /adjectives@1.0.2:
-    resolution: {integrity: sha512-gaoTLTymNfCmuCPsLSDcz/WWFBxNlAOoDzWt2fInQqQ2BTT57lG0RHzBujS0QkwbGw4lHgpkOmYcQ9rktKfBmw==}
-    dev: false
-
   /ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
     dependencies:
@@ -378,15 +368,6 @@ packages:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
     dev: true
-
-  /animals@0.0.3:
-    resolution: {integrity: sha512-dng+h/BHEBDbShw/xCDnD/GSgFaQpKaFHTf7AmHnjJDz2Hey2tFT6f8ZbrJSLFZCt2hDqQl6QeAjFBK0UDcOiQ==}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
-    dependencies:
-      minimist: 0.2.4
-      unique-random: 0.1.1
-    dev: false
 
   /ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -1474,10 +1455,6 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
-  /minimist@0.2.4:
-    resolution: {integrity: sha512-Pkrrm8NjyQ8yVt8Am9M+yUt74zE3iokhzbG1bFVNjLB92vwM71hf40RkEsryg98BujhVOncKm/C1xROxZ030LQ==}
-    dev: false
-
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
     dev: true
@@ -1981,11 +1958,6 @@ packages:
       has-symbols: 1.0.3
       which-boxed-primitive: 1.0.2
     dev: true
-
-  /unique-random@0.1.1:
-    resolution: {integrity: sha512-lwUnHNj3lGKxLWkt6Mv5ZDIFpA68Y3IBstzCmCPjyRRnL7MSFgBfOyU+35RuzgQ7yRAnRw9o25e28YqvpZfYug==}
-    engines: {node: '>=0.8.0'}
-    dev: false
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

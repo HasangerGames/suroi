@@ -11,7 +11,7 @@ import { type ObstacleDefinition } from "../../common/src/definitions/obstacles"
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
-import { Debug } from "./config";
+import { Debug } from "./.config/config";
 
 export class Map {
     game: Game;
