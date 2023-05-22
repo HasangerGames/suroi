@@ -26,7 +26,7 @@ export class Melees extends ObjectDefinitions {
             obstacleMultiplier: 2,
             radius: 1.5,
             offset: v(2.5, 0),
-            cooldown: 110,
+            cooldown: 250,
             fists: {
                 animationDuration: 110,
                 randomFist: true,
