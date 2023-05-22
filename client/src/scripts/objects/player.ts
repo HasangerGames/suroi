@@ -14,6 +14,7 @@ import {
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
+import { MeleeDefinition } from "../../../../common/src/definitions/melees";
 
 export class Player extends GameObject {
     name: string;
@@ -45,14 +46,21 @@ export class Player extends GameObject {
 
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
+    weapon = ObjectType.fromString(ObjectCategory.Loot, "fists");
+
     distSinceLastFootstep = 0;
 
     constructor(game: Game, scene: GameScene) {
         super(game, scene);
         this.type = ObjectType.categoryOnly(ObjectCategory.Player);
+
+        const weaponDef = this.weapon.definition as MeleeDefinition;
+
         this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
-        this.leftFist = this.scene.add.image(38, 35, "main", "player_fist.svg");
-        this.rightFist = this.scene.add.image(38, -35, "main", "player_fist.svg");
+        this.leftFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
+        this.rightFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
+        this.updateFistsPosition();
+
         this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
@@ -114,15 +122,32 @@ export class Player extends GameObject {
         if (!this.dead && this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
             switch (animation) {
                 case AnimationType.Punch: {
-                    const altFist: boolean = Math.random() < 0.5;
-                    gsap.to(altFist ? this.leftFist : this.rightFist, {
-                        x: 75,
-                        y: altFist ? 10 : -10,
-                        duration: 0.11,
-                        repeat: 1,
-                        yoyo: true,
-                        ease: "none"
-                    });
+                    this.updateFistsPosition();
+                    const weaponDef = this.weapon.definition as MeleeDefinition;
+                    let altFist: boolean;
+                    altFist = Math.random() < 0.5;
+                    if (!weaponDef.fists.randomFist) altFist = true;
+
+                    if (!weaponDef.fists.randomFist || !altFist) {
+                        this.scene.tweens.add({
+                            targets: this.leftFist,
+                            x: weaponDef.fists.useLeft.x,
+                            y: weaponDef.fists.useLeft.y,
+                            duration: weaponDef.fists.animationDelay,
+                            yoyo: true,
+                            ease: "Linear"
+                        });
+                    }
+                    if (altFist) {
+                        this.scene.tweens.add({
+                            targets: this.rightFist,
+                            x: weaponDef.fists.useRight.x,
+                            y: weaponDef.fists.useRight.y,
+                            duration: weaponDef.fists.animationDelay,
+                            yoyo: true,
+                            ease: "Linear"
+                        });
+                    }
 
                     this.scene.playSound("swing");
                     break;
@@ -146,7 +171,16 @@ export class Player extends GameObject {
         if (dead && !this.dead) {
             this.dead = true;
             this.destroy();
+            return;
         }
+        this.weapon = stream.readObjectType();
+        this.updateFistsPosition();
+    }
+
+    updateFistsPosition(): void {
+        const weaponDef = this.weapon.definition as MeleeDefinition;
+        this.leftFist.setPosition(weaponDef.fists.normalLeft.x, weaponDef.fists.normalLeft.y);
+        this.rightFist.setPosition(weaponDef.fists.normalRight.x, weaponDef.fists.normalRight.y);
     }
 
     destroy(): void {
