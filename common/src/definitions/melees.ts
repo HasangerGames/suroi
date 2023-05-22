@@ -8,7 +8,7 @@ export interface MeleeDefinition extends ObjectDefinition {
     offset: Vector
     cooldown: number
     fists: {
-        animationDelay: number
+        animationDuration: number
         randomFist: boolean
         normalLeft: Vector
         normalRight: Vector
@@ -28,7 +28,7 @@ export class Melees extends ObjectDefinitions {
             offset: v(2.5, 0),
             cooldown: 110,
             fists: {
-                animationDelay: 110,
+                animationDuration: 110,
                 randomFist: true,
                 normalLeft: v(38, 35),
                 normalRight: v(38, -35),

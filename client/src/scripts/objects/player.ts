@@ -133,7 +133,7 @@ export class Player extends GameObject {
                             targets: this.leftFist,
                             x: weaponDef.fists.useLeft.x,
                             y: weaponDef.fists.useLeft.y,
-                            duration: weaponDef.fists.animationDelay,
+                            duration: weaponDef.fists.animationDuration,
                             yoyo: true,
                             ease: "Linear"
                         });
@@ -143,7 +143,7 @@ export class Player extends GameObject {
                             targets: this.rightFist,
                             x: weaponDef.fists.useRight.x,
                             y: weaponDef.fists.useRight.y,
-                            duration: weaponDef.fists.animationDelay,
+                            duration: weaponDef.fists.animationDuration,
                             yoyo: true,
                             ease: "Linear"
                         });
