@@ -66,13 +66,13 @@ export class Explosions extends ObjectDefinitions {
             },
             particle: {
                 duration: 5,
-                idParticle: "barrel_fire"
+                idParticle: "super_barrel_fire"
             }
         },
         {
             idString: "crate_health_explosion",
             damage: -50,
-            obstacleMultiplier: 0.5,
+            obstacleMultiplier: 0.25,
             duration: 2,
             radius: {
                 min: 12,

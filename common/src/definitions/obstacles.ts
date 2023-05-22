@@ -79,7 +79,7 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
-                destroy: 0.75
+                destroy: 0.8
             },
             hitbox: new CircleHitbox(4),
             noCollisions: true,

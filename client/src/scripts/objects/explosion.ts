@@ -35,9 +35,9 @@ export class Explosion extends GameObject {
             },
             quantity: 1,
             lifespan: definition.particle.duration * 750,
-            speed: { min: 5, max: 20 },
+            speed: { min: 0, max: 15 },
             scale: { start: 1, end: 0.75 },
-            alpha: { start: 1, end: 0.25 },
+            alpha: { start: 1, end: 0.1 },
             emitting: false,
         }).explode(20);
 

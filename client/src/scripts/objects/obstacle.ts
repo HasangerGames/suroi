@@ -16,11 +16,15 @@ export class Obstacle extends GameObject {
         const oldScale: number = this.scale;
         this.scale = stream.readScale();
 
-        // Play a sound and emit a particle if the scale changes after the obstacle's creation
+        // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
         if (this.image !== undefined && oldScale !== this.scale) {
-            this.image.setScale(this.scale);
-            this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
-            this.emitter.emitParticle(1);
+            if (oldScale < this.scale) {
+                this.image.setScale(oldScale);
+            } else {
+                this.image.setScale(this.scale);
+                this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
+                this.emitter.emitParticle(1);
+            }
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
