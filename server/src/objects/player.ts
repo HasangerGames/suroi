@@ -5,23 +5,22 @@ import {
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { DeathMarker } from "./deathMarker";
+import { GameObject } from "../types/gameObject";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
-import { GameObject } from "../types/gameObject";
 import { type SendingPacket } from "../types/sendingPacket";
 
-import { GameOverPacket } from "../packets/sending/gameOverPacket";
-import { KillPacket } from "../packets/sending/killPacket";
-
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
     ObjectCategory
 } from "../../../common/src/constants";
+import { DeathMarker } from "./deathMarker";
+import { GameOverPacket } from "../packets/sending/gameOverPacket";
+import { KillPacket } from "../packets/sending/killPacket";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Player extends GameObject {
     readonly isPlayer = true;
@@ -159,18 +158,14 @@ export class Player extends GameObject {
 
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
-
         const approximateX = Math.round(this.position.x / 10) * 10; const approximateY = Math.round(this.position.y / 10) * 10;
         this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
-
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
         const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
-
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
-
         for (const object of this.game.dynamicObjects) {
             if (this === object) continue;
             if (object.position.x > minX &&
@@ -178,11 +173,9 @@ export class Player extends GameObject {
                 object.position.y > minY &&
                 object.position.y < maxY) {
                 newVisibleObjects.add(object);
-
                 if (!this.visibleObjects.has(object)) {
                     this.fullDirtyObjects.add(object);
                 }
-
                 if (object instanceof Player && !object.visibleObjects.has(this)) {
                     object.visibleObjects.add(this);
                     object.fullDirtyObjects.add(this);
@@ -191,19 +184,16 @@ export class Player extends GameObject {
                 this.deletedObjects.add(object);
             }
         }
-
         for (const object of newVisibleObjects) {
             if (!this.visibleObjects.has(object)) {
                 this.fullDirtyObjects.add(object);
             }
         }
-
         for (const object of this.visibleObjects) {
             if (!newVisibleObjects.has(object)) {
                 this.deletedObjects.add(object);
             }
         }
-
         this.visibleObjects = newVisibleObjects;
     }
 
@@ -228,31 +218,24 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         if (this.health - amount > 100) {
-            amount = 100 - this.health;
+            amount = -(100-this.health);
         }
-
         if (this.health - amount <= 0) {
             amount = this.health;
         }
-
+        if (this.dead) amount = 0;
         this.health -= amount;
-        this.damageTaken += amount;
-
+        if (amount > 0) this.damageTaken += amount;
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
-
         this.hitEffect = !this.hitEffect;
-
         if (amount <= 0) this.hitEffect = !this.hitEffect;
-
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
-
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
-
             if (!this.disconnected) {
                 this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
@@ -273,9 +256,7 @@ export class Player extends GameObject {
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);
             this.fullDirtyObjects.add(this);
-
             const deathMarker: DeathMarker = new DeathMarker(this);
-
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
         }
