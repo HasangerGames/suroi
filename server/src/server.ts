@@ -40,7 +40,7 @@ const cors = (res: HttpResponse): void => {
 };
 
 // Initialize the server
-const app = Config.ssl?.enable
+const app = Config.ssl.enable
     ? SSLApp({
         key_file_name: Config.ssl.keyFile,
         cert_file_name: Config.ssl.certFile
@@ -49,8 +49,8 @@ const app = Config.ssl?.enable
 
 const game = new Game();
 
-const playerCounts = {};
-let connectionAttempts = {};
+const playerCounts: Record<string, number> = {};
+let connectionAttempts: Record<string, number> = {};
 const bannedIPs: string[] = [];
 
 app.get("/api/getGame", (res) => {
@@ -92,8 +92,8 @@ app.ws("/play", {
                 if (connectionAttempts[ip] === undefined) connectionAttempts[ip] = 1;
                 else connectionAttempts[ip]++;
 
-                log(`${playerCounts[ip] as number} simultaneous connections: ${ip}`);
-                log(`${connectionAttempts[ip] as number} connection attempts in the last 5 seconds: ${ip}`);
+                log(`${playerCounts[ip]} simultaneous connections: ${ip}`);
+                log(`${connectionAttempts[ip]} connection attempts in the last 5 seconds: ${ip}`);
             }
         }
 

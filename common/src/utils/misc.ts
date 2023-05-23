@@ -58,7 +58,7 @@ export const readDirectory = (dir: string): string[] => {
         const filePath = path.resolve(dir, file);
         const stat = fs.statSync(filePath);
 
-        if (stat?.isDirectory()) {
+        if (stat.isDirectory()) {
             const res = readDirectory(filePath);
             results = results.concat(res);
         } else results.push(filePath);

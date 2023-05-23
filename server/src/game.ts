@@ -26,7 +26,7 @@ import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { MeleeDefinition } from "../../common/src/definitions/melees";
+import { type MeleeDefinition } from "../../common/src/definitions/melees";
 
 export class Game {
     map: Map;
@@ -35,7 +35,7 @@ export class Game {
 
     staticObjects = new Set<GameObject>(); // A Set of all the static objects in the world
     dynamicObjects = new Set<GameObject>(); // A Set of all the dynamic (moving) objects in the world
-    visibleObjects = {};
+    visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
     updateObjects = false;
 
     private _aliveCount = 0;

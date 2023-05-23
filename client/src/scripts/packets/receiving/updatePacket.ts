@@ -14,11 +14,7 @@ import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 
 export class UpdatePacket extends ReceivingPacket {
-    public constructor(player: Player) {
-        super(player);
-    }
-
-    deserialize(stream: SuroiBitStream): void {
+    override deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         if (p === undefined) return;
         const game: Game = p.game;
@@ -47,11 +43,11 @@ export class UpdatePacket extends ReceivingPacket {
             $("#health-bar").width(`${p.health}%`);
             $("#health-bar-animation").width(`${p.health}%`);
             if (p.health < 60 && p.health > 10) {
-                $('#health-bar').css('background-color', `rgb(255, ${(p.health-10)*4}, ${(p.health-10)*4})`);
+                $("#health-bar").css("background-color", `rgb(255, ${(p.health - 10) * 4}, ${(p.health - 10) * 4})`);
             } else if (p.health <= 10) {
-                $('#health-bar').css('background-color', `rgb(${p.health * 10 + 155}, 0, 0)`);
+                $("#health-bar").css("background-color", `rgb(${p.health * 10 + 155}, 0, 0)`);
             } else {
-                $('#health-bar').css('background-color', "#f8f9fa");
+                $("#health-bar").css("background-color", "#f8f9fa");
             }
         }
 
@@ -93,7 +89,6 @@ export class UpdatePacket extends ReceivingPacket {
                         }
                         case ObjectCategory.DeathMarker: {
                             object = new DeathMarker(this.player.game, this.player.scene);
-
                             break;
                         }
                     }
@@ -101,7 +96,7 @@ export class UpdatePacket extends ReceivingPacket {
                         console.warn(`Unknown object category: ${type.category}`);
                         continue;
                     }
-                    object.type = type;
+                    // Make the constructor take an id as argument?
                     object.id = id;
                     game.objects.set(object.id, object);
                 } else {

@@ -14,10 +14,12 @@ import {
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
-import { MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 
 export class Player extends GameObject {
-    name: string;
+    override readonly type = ObjectType.categoryOnly(ObjectCategory.Player);
+
+    name!: string;
 
     private _health = 100;
     healthDirty = true;
@@ -25,19 +27,22 @@ export class Player extends GameObject {
     private _adrenaline = 100;
     adrenalineDirty = true;
 
-    oldPosition: Vector;
+    oldPosition!: Vector;
 
     inputsDirty = false;
 
-    movingUp = false;
-    movingDown = false;
-    movingLeft = false;
-    movingRight = false;
+    movement = {
+        up: false,
+        left: false,
+        down: false,
+        right: false
+    };
+
     punching = false;
 
-    animationSeq: boolean;
+    animationSeq!: boolean;
 
-    hitEffect: boolean;
+    hitEffect!: boolean;
 
     body: Phaser.GameObjects.Image;
     leftFist: Phaser.GameObjects.Image;
@@ -52,9 +57,8 @@ export class Player extends GameObject {
 
     constructor(game: Game, scene: GameScene) {
         super(game, scene);
-        this.type = ObjectType.categoryOnly(ObjectCategory.Player);
 
-        const weaponDef = this.weapon.definition as MeleeDefinition;
+        // const weaponDef = this.weapon.definition as MeleeDefinition;
 
         this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
         this.leftFist = this.scene.add.image(0, 0, "main", "player_fist.svg");

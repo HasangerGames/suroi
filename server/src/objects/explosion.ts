@@ -7,22 +7,29 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { distance } from "../../../common/src/utils/math";
+import { type Player } from "./player";
 
 export class Explosion extends GameObject {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    override readonly isPlayer = false;
+    override readonly isObstacle = false;
+    override readonly collidesWith = {
+        player: true,
+        obstacle: true
+    };
+
     source: GameObject;
 
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     constructor(game: Game, type: ObjectType, position: Vector, source: GameObject) {
         super(game, type, position);
         this.source = source;
     }
 
     explode(): void {
-        // NOTE: the CircleHitbox distance was returing weird values and i was lazy to debug it
+        // NOTE: the CircleHitbox distance was returning weird values and i was lazy to debug it
         // so for now its just checking if the obstacle distance is in range
         const definition = this.type.definition as ExplosionDefinition;
-        const visibleObjects: GameObject[] = this.game.visibleObjects[48][Math.round(this.position.x / 10) * 10][Math.round(this.position.y / 10) * 10];
+        const visibleObjects: Set<GameObject> = this.game.visibleObjects[48][Math.round(this.position.x / 10) * 10][Math.round(this.position.y / 10) * 10];
+        //                                                               ^^ magic number?
 
         for (const object of visibleObjects) {
             if (!object.dead && object.hitbox !== undefined) {
@@ -54,10 +61,10 @@ export class Explosion extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    damage(amount: number, source): void {}
-    serializePartial(stream: SuroiBitStream): void {}
+    override damage(amount: number, source: Player): void { }
+    override serializePartial(stream: SuroiBitStream): void { }
 
-    serializeFull(stream: SuroiBitStream): void {
+    override serializeFull(stream: SuroiBitStream): void {
         stream.writeObjectType(this.type);
         stream.writePosition(this.position);
     }

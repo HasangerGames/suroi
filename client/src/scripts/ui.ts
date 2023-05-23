@@ -9,8 +9,9 @@ $(() => {
     // Enable splash "more" dropdown.
     const dropdownCaret = $("#btn-dropdown-more i");
     const dropdown = $("#splash-more .dropdown-content");
+    const body = $(document.body);
 
-    $(document.body).on("click", (e: JQuery.ClickEvent): void => {
+    body.on("click", (e: JQuery.ClickEvent): void => {
         const target = e.target as HTMLElement | null;
 
         if (target?.id === "btn-dropdown-more") {
@@ -35,13 +36,13 @@ $(() => {
         }
     });
 
-    $(document.body).on("keydown", (e: JQuery.KeyDownEvent) => {
+    body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape" && $("canvas").hasClass("active")) {
             $("#game-menu").toggle();
         }
     });
 
-    $(document.body).on("change", (e: JQuery.ChangeEvent) => {
+    body.on("change", (e: JQuery.ChangeEvent) => {
         const target = e.target as HTMLInputElement;
 
         if (target?.id === "slider-sound-volume") {

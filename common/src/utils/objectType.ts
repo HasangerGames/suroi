@@ -9,7 +9,11 @@ export class ObjectType {
     idString: string;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() {}
+    private constructor(category: ObjectCategory, idNumber: number, idString: string) {
+        this.category = category;
+        this.idNumber = idNumber;
+        this.idString = idString;
+    }
 
     get definition(): ObjectDefinition {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[this.category];
@@ -21,20 +25,11 @@ export class ObjectType {
     }
 
     static categoryOnly(category: ObjectCategory): ObjectType {
-        const type = new ObjectType();
-
-        type.category = category;
-        type.idNumber = -1;
-        type.idString = "";
-
-        return type;
+        return new ObjectType(category, -1, "");
     }
 
     static fromNumber(category: ObjectCategory, idNumber: number): ObjectType {
-        const type = new ObjectType();
-
-        type.category = category;
-        type.idNumber = idNumber;
+        const type = new ObjectType(category, idNumber, "");
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
@@ -46,10 +41,7 @@ export class ObjectType {
     }
 
     static fromString(category: ObjectCategory, idString: string): ObjectType {
-        const type = new ObjectType();
-
-        type.category = category;
-        type.idString = idString;
+        const type = new ObjectType(category, -1, idString);
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {

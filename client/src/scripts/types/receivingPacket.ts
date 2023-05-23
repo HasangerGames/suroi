@@ -5,7 +5,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 export abstract class ReceivingPacket {
     player: Player;
 
-    protected constructor(player: Player) {
+    constructor(player: Player) {
         this.player = player;
     }
 

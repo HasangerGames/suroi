@@ -6,6 +6,13 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 
 export class DeathMarker extends GameObject {
+    override readonly isPlayer = false;
+    override readonly isObstacle = false;
+    override readonly collidesWith = {
+        player: false,
+        obstacle: false
+    };
+
     playerName: string;
     isNew = true;
 
@@ -18,13 +25,13 @@ export class DeathMarker extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    damage(amount: number, source: GameObject): void {}
+    override damage(amount: number, source: GameObject): void {}
 
-    serializePartial(stream: SuroiBitStream): void {
+    override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
     }
 
-    serializeFull(stream: SuroiBitStream): void {
+    override serializeFull(stream: SuroiBitStream): void {
         stream.writeUTF8String(this.playerName, 16);
         stream.writeBoolean(this.isNew);
     }

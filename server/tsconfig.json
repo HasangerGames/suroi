@@ -8,7 +8,8 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
   "exclude": ["node_modules"]
 }
