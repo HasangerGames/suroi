@@ -14,7 +14,6 @@ import { type SendingPacket } from "../types/sendingPacket";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     ANIMATION_TYPE_BITS,
-    WEAPON_TYPE_BITS,
     AnimationType,
     ObjectCategory
 } from "../../../common/src/constants";
@@ -24,9 +23,9 @@ import { KillPacket } from "../packets/sending/killPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Player extends GameObject {
-    readonly isPlayer = true;
-    readonly isObstacle = false;
-    readonly collidesWith = {
+    override readonly isPlayer = true;
+    override readonly isObstacle = false;
+    override readonly collidesWith = {
         player: false,
         obstacle: true
     };
@@ -56,7 +55,7 @@ export class Player extends GameObject {
     movingRight = false;
     punching = false;
 
-    deadPosition: Vec2;
+    deadPosition?: Vec2;
 
     activePlayerIDDirty = true;
 
@@ -80,10 +79,10 @@ export class Player extends GameObject {
     fullDirtyObjects = new Set<GameObject>(); // Objects that need to be fully updated
     deletedObjects = new Set<GameObject>(); // Objects that need to be deleted
 
-    private _zoom: number;
-    zoomDirty: boolean;
-    xCullDist: number;
-    yCullDist: number;
+    private _zoom!: number;
+    zoomDirty!: boolean;
+    xCullDist!: number;
+    yCullDist!: number;
 
     socket: WebSocket<PlayerContainer>;
 
@@ -98,6 +97,7 @@ export class Player extends GameObject {
         this.name = name;
         this.rotation = 0;
         this.zoom = 48;
+        // fixme    ^^ magic number
 
         this.joinTime = Date.now();
 
@@ -227,9 +227,9 @@ export class Player extends GameObject {
         }
     }
 
-    damage(amount: number, source?): void {
+    override damage(amount: number, source?: GameObject): void {
         if (this.health - amount > 100) {
-            amount = -(100-this.health);
+            amount = -(100 - this.health);
         }
         if (this.health - amount <= 0) {
             amount = this.health;
@@ -273,7 +273,7 @@ export class Player extends GameObject {
         }
     }
 
-    serializePartial(stream: SuroiBitStream): void {
+    override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
         stream.writeRotation(this.rotation);
         stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
@@ -281,7 +281,7 @@ export class Player extends GameObject {
         stream.writeBoolean(this.hitEffect);
     }
 
-    serializeFull(stream: SuroiBitStream): void {
+    override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.dead);
         if (this.dead) return;
         stream.writeObjectType(this.weapon);

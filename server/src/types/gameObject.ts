@@ -6,9 +6,9 @@ import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 
 export abstract class GameObject {
-    isPlayer: boolean;
-    isObstacle: boolean;
-    collidesWith: { player: boolean, obstacle: boolean };
+    abstract isPlayer: boolean;
+    abstract isObstacle: boolean;
+    abstract collidesWith: { player: boolean, obstacle: boolean };
 
     id: number;
     type: ObjectType;
@@ -16,11 +16,10 @@ export abstract class GameObject {
     game: Game;
 
     _position: Vector;
-    _rotation: number;
+    _rotation = 0;
     scale = 1;
     dead = false;
     hitbox?: Hitbox;
-    spawnHitbox: Hitbox;
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectId;

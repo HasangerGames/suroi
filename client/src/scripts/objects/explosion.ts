@@ -2,26 +2,20 @@ import gsap, { Expo } from "gsap";
 
 import core from "../core";
 
-import { type Game } from "../game";
-import { type GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { distance } from "../../../../common/src/utils/math";
+import { type ObjectCategory } from "../../../../common/src/constants";
 
-export class Explosion extends GameObject {
-    image: Phaser.GameObjects.Image;
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
-    constructor(game: Game, scene: GameScene) {
-        super(game, scene);
-    }
+export class Explosion extends GameObject<ObjectCategory.Explosion> {
+    image!: Phaser.GameObjects.Image;
+    emitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
     /* eslint-disable @typescript-eslint/no-empty-function */
     deserializePartial(stream: SuroiBitStream): void {}
 
     deserializeFull(stream: SuroiBitStream): void {
-        this.type = stream.readObjectType();
         const definition = this.type.definition as ExplosionDefinition;
 
         this.position = stream.readPosition();
@@ -31,14 +25,14 @@ export class Explosion extends GameObject {
             frame: `${definition.particle.idParticle}_particle.svg`,
             emitZone: {
                 type: "random",
-                source: new Phaser.Geom.Circle(this.position.x * 20, this.position.y * 20, 350) as Phaser.Types.GameObjects.Particles.RandomZoneSource,
+                source: new Phaser.Geom.Circle(this.position.x * 20, this.position.y * 20, 350) as Phaser.Types.GameObjects.Particles.RandomZoneSource
             },
             quantity: 1,
             lifespan: definition.particle.duration * 750,
             speed: { min: 0, max: 15 },
             scale: { start: 1, end: 0.75 },
             alpha: { start: 1, end: 0.1 },
-            emitting: false,
+            emitting: false
         }).explode(20);
 
         gsap.to(this.image, {
@@ -61,7 +55,7 @@ export class Explosion extends GameObject {
     }
 
     destroy(): void {
-        //this.emitter.destroy(true);
+        // this.emitter.destroy(true);
         this.image.destroy(true);
     }
 }

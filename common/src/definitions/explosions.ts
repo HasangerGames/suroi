@@ -1,30 +1,30 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface ExplosionDefinition extends ObjectDefinition {
-    damage: number
-    obstacleMultiplier: number
-    duration: number
-    radius: {
-        min: number
-        max: number
+    readonly damage: number
+    readonly obstacleMultiplier: number
+    readonly duration: number
+    readonly radius: {
+        readonly min: number
+        readonly max: number
     }
-    cameraShake: {
-        duration: number
-        intensity: number
+    readonly cameraShake: {
+        readonly duration: number
+        readonly intensity: number
     }
-    animation: {
-        frame: string
-        scale: number
-    } 
-    particle: {
-        duration: number
-        idParticle: string
+    readonly animation: {
+        readonly frame: string
+        readonly scale: number
+    }
+    readonly particle: {
+        readonly duration: number
+        readonly idParticle: string
     }
 }
 
-export class Explosions extends ObjectDefinitions {
-    static readonly bitCount = 2;
-    static readonly definitions: ExplosionDefinition[] = [
+export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
+    2,
+    [
         {
             idString: "barrel_explosion",
             damage: 130,
@@ -91,5 +91,5 @@ export class Explosions extends ObjectDefinitions {
                 idParticle: "heal_mass"
             }
         }
-    ];
-}
+    ]
+);

@@ -1,18 +1,13 @@
 import { SendingPacket } from "../../types/sendingPacket";
-import { type Player } from "../../objects/player";
 
 import { PacketType } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class UpdatePacket extends SendingPacket {
-    constructor(player: Player) {
-        super(player);
+    override readonly allocBytes = 1 << 13;
+    override readonly type = PacketType.Update;
 
-        this.type = PacketType.Update;
-        this.allocBytes = 1 << 13;
-    }
-
-    serialize(stream: SuroiBitStream): void {
+    override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
         const p = this.player;

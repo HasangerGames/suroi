@@ -10,7 +10,7 @@ export const Config = {
         enable: false
     },
     movementSpeed: 0.032,
-    diagonalSpeed: 0, // Assigned below
+    get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
     botProtection: false,
     randomUsernames: false,
     debug: {
@@ -22,4 +22,3 @@ export const Config = {
 };
 
 export const Debug = Config.debug;
-Config.diagonalSpeed = Config.movementSpeed / Math.SQRT2;

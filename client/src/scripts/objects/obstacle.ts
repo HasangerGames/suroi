@@ -3,16 +3,17 @@ import { GameObject } from "../types/gameObject";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { Variation } from "../../../../common/src/typings";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { type ObjectCategory } from "../../../../common/src/constants";
 
-export class Obstacle extends GameObject {
-    scale: number;
-    destroyed: boolean;
+export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
+    scale!: number;
+    destroyed!: boolean;
 
-    variation: Variation;
-    image: Phaser.GameObjects.Image;
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+    variation!: Variation;
+    image!: Phaser.GameObjects.Image;
+    emitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
-    deserializePartial(stream: SuroiBitStream): void {
+    override deserializePartial(stream: SuroiBitStream): void {
         const oldScale: number = this.scale;
         this.scale = stream.readScale();
 
@@ -41,7 +42,7 @@ export class Obstacle extends GameObject {
         }
     }
 
-    deserializeFull(stream: SuroiBitStream): void {
+    override deserializeFull(stream: SuroiBitStream): void {
         // Obstacles should only be fully updated on creation
         if (this.image !== undefined) {
             console.warn("Full update of existing obstacle");
@@ -90,7 +91,7 @@ export class Obstacle extends GameObject {
         }).setDepth((definition.depth ?? 0) + 1);
     }
 
-    destroy(): void {
+    override destroy(): void {
         this.image.destroy(true);
         this.emitter.destroy(true);
     }

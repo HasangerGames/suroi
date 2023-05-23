@@ -156,7 +156,11 @@ export class Map {
 
             const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
-                if (object.spawnHitbox.collidesWith(hitbox)) collided = true;
+                if (object instanceof Obstacle) {
+                    if (object.spawnHitbox.collidesWith(hitbox)) {
+                        collided = true;
+                    }
+                }
             }
         }
 

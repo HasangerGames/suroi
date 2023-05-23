@@ -4,11 +4,11 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { type PacketType } from "../../../../common/src/constants";
 
 export abstract class SendingPacket {
-    allocBytes: number;
-    type: PacketType;
+    abstract allocBytes: number;
+    abstract type: PacketType;
     player: Player;
 
-    protected constructor(player: Player) {
+    constructor(player: Player) {
         this.player = player;
     }
 

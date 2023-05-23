@@ -11,7 +11,7 @@ import { Player } from "../objects/player";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 
 export class GameScene extends Phaser.Scene {
-    activeGame: Game;
+    activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
     volume = 1;
@@ -53,10 +53,10 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
-        this.addKey("W", "movingUp");
-        this.addKey("S", "movingDown");
-        this.addKey("A", "movingLeft");
-        this.addKey("D", "movingRight");
+        this.addKey("W", "up");
+        this.addKey("S", "down");
+        this.addKey("A", "left");
+        this.addKey("D", "right");
 
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
@@ -71,16 +71,16 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    private addKey(keyString: string, valueToToggle: string): void {
+    private addKey(keyString: string, valueToToggle: keyof Player["movement"]): void {
         const key: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(keyString);
         if (key !== undefined) {
             key.on("down", () => {
-                this.player[valueToToggle] = true;
+                this.player.movement[valueToToggle] = true;
                 this.player.inputsDirty = true;
             });
 
             key.on("up", () => {
-                this.player[valueToToggle] = false;
+                this.player.movement[valueToToggle] = false;
                 this.player.inputsDirty = true;
             });
         }

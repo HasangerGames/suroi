@@ -15,15 +15,19 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector, vSub } from "../../../common/src/utils/vector";
 import { transformRectangle } from "../../../common/src/utils/math";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import {
+    CircleHitbox,
+    type Hitbox,
+    RectangleHitbox
+} from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
 
 export class Obstacle extends GameObject {
-    readonly isPlayer = false;
-    readonly isObstacle = true;
-    readonly collidesWith = {
+    override readonly isPlayer = false;
+    override readonly isObstacle = true;
+    override readonly collidesWith = {
         player: true,
         obstacle: false
     };
@@ -31,11 +35,12 @@ export class Obstacle extends GameObject {
     health: number;
     maxHealth: number;
     maxScale: number;
-    healthFraction: number;
+    healthFraction = 1;
 
     variation: Variation;
 
     body?: Body;
+    spawnHitbox: Hitbox;
 
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
         super(game, type, position);
@@ -52,7 +57,7 @@ export class Obstacle extends GameObject {
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
     }
 
-    damage(amount: number, source: GameObject): void {
+    override damage(amount: number, source: GameObject): void {
         if (this.health === 0) return;
         this.health -= amount;
 
@@ -121,12 +126,12 @@ export class Obstacle extends GameObject {
         }
     }
 
-    serializePartial(stream: SuroiBitStream): void {
+    override serializePartial(stream: SuroiBitStream): void {
         stream.writeScale(this.scale);
         stream.writeBoolean(this.dead);
     }
 
-    serializeFull(stream: SuroiBitStream): void {
+    override serializeFull(stream: SuroiBitStream): void {
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
 
