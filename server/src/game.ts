@@ -26,6 +26,7 @@ import { vRotate } from "../../common/src/utils/vector";
 import { type CollisionRecord } from "../../common/src/utils/math";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { ObjectType } from "../../common/src/utils/objectType";
+import { MeleeDefinition } from "../../common/src/definitions/melees";
 
 export class Game {
     map: Map;
@@ -129,18 +130,17 @@ export class Game {
 
                 if (p.punching) {
                     p.punching = false;
-                    if (Date.now() - p.weaponCooldown > 250) {
+                    const weaponDef = p.weapon.definition as MeleeDefinition;
+                    if (Date.now() - p.weaponCooldown > weaponDef.cooldown) {
                         p.weaponCooldown = Date.now();
                         p.animation.type = AnimationType.Punch;
 
                         /* eslint-disable-next-line @typescript-eslint/strict-boolean-expressions */
                         p.animation.seq = !p.animation.seq;
 
-                        const offset = Vec2(2.5, 0);
-                        const rotated = vRotate(offset, p.rotation);
+                        const rotated = vRotate(weaponDef.offset, p.rotation);
                         const position = Vec2(p.position.x + rotated.x, p.position.y - rotated.y);
-                        const radius = 1.5;
-                        const hitbox: Hitbox = new CircleHitbox(radius, position);
+                        const hitbox: Hitbox = new CircleHitbox(weaponDef.radius, position);
 
                         // Damage the closest object
                         let minDist = Number.MAX_VALUE;
@@ -156,9 +156,9 @@ export class Game {
                         }
                         if (closestObject !== undefined) {
                             setTimeout(() => {
-                                if (closestObject?.dead === false) closestObject.damage(20, p);
+                                if (closestObject?.dead === false) closestObject.damage(weaponDef.damage, p);
                             }, 50);
-                            //if (closestObject.interactable) this.interactWith(closestObject as Obstacle);
+                            // if (closestObject.interactable) this.interactWith(closestObject as Obstacle);
                         }
                     }
                 }

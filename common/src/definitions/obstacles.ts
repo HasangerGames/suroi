@@ -79,7 +79,7 @@ export class Obstacles extends ObjectDefinitions {
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
-                destroy: 0.75
+                destroy: 0.8
             },
             hitbox: new CircleHitbox(4),
             noCollisions: true,
@@ -128,6 +128,6 @@ export class Obstacles extends ObjectDefinitions {
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
             rotation: "limited",
             explosion: "crate_health_explosion"
-        },
+        }
     ];
 }

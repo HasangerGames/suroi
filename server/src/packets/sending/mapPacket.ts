@@ -7,6 +7,7 @@ import { PacketType } from "../../../../common/src/constants";
 export class MapPacket extends SendingPacket {
     constructor(player: Player) {
         super(player);
+
         this.type = PacketType.Map;
         this.allocBytes = 1 << 13;
     }

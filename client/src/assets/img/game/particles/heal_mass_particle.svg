@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="33.790043"
+   height="33.790054"
+   viewBox="0 0 8.9402813 8.9402847"
+   version="1.1"
+   id="svg901"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   sodipodi:docname="heal_mass_particle.svg"
+   inkscape:export-xdpi="120.95238"
+   inkscape:export-ydpi="120.95238"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview903"
+     pagecolor="#505050"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="5.9437714"
+     inkscape:cx="-8.4121674"
+     inkscape:cy="17.413187"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g858"
+     width="175px"
+     units="px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs898" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-6.2566755,-5.9015302)">
+    <g
+       id="g858"
+       transform="matrix(0.3673072,0,0,0.3673072,3.8616504e-5,3.8616504e-5)">
+      <path
+         id="rect4509"
+         style="fill:#0000ff;fill-opacity:1;stroke:#00479a;stroke-width:1.08049875;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m 25.778971,16.427076 v 8.385007 h -8.385006 v 6.849727 h 8.385006 v 8.385007 h 6.849721 V 31.66181 h 8.385007 v -6.849727 h -8.385007 v -8.385007 z" />
+    </g>
+  </g>
+  <metadata
+     id="metadata5819">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

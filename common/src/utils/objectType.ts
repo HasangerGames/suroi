@@ -22,6 +22,7 @@ export class ObjectType {
 
     static categoryOnly(category: ObjectCategory): ObjectType {
         const type = new ObjectType();
+
         type.category = category;
         type.idNumber = -1;
         type.idString = "";
@@ -31,6 +32,7 @@ export class ObjectType {
 
     static fromNumber(category: ObjectCategory, idNumber: number): ObjectType {
         const type = new ObjectType();
+
         type.category = category;
         type.idNumber = idNumber;
 
@@ -45,6 +47,7 @@ export class ObjectType {
 
     static fromString(category: ObjectCategory, idString: string): ObjectType {
         const type = new ObjectType();
+
         type.category = category;
         type.idString = idString;
 

@@ -3,6 +3,7 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 export interface ExplosionDefinition extends ObjectDefinition {
     damage: number
     obstacleMultiplier: number
+    duration: number
     radius: {
         min: number
         max: number
@@ -14,16 +15,21 @@ export interface ExplosionDefinition extends ObjectDefinition {
     animation: {
         frame: string
         scale: number
+    } 
+    particle: {
+        duration: number
+        idParticle: string
     }
 }
 
 export class Explosions extends ObjectDefinitions {
-    static readonly bitCount = 1;
+    static readonly bitCount = 2;
     static readonly definitions: ExplosionDefinition[] = [
         {
             idString: "barrel_explosion",
             damage: 130,
             obstacleMultiplier: 2,
+            duration: 1,
             radius: {
                 min: 8,
                 max: 25
@@ -35,12 +41,17 @@ export class Explosions extends ObjectDefinitions {
             animation: {
                 frame: "barrel_explosion.svg",
                 scale: 1.5
+            },
+            particle: {
+                duration: 3,
+                idParticle: "barrel_fire"
             }
         },
         {
             idString: "super_barrel_explosion",
             damage: 160,
             obstacleMultiplier: 3,
+            duration: 1.5,
             radius: {
                 min: 12,
                 max: 36
@@ -52,12 +63,17 @@ export class Explosions extends ObjectDefinitions {
             animation: {
                 frame: "barrel_explosion.svg",
                 scale: 2.5
+            },
+            particle: {
+                duration: 5,
+                idParticle: "super_barrel_fire"
             }
         },
         {
             idString: "crate_health_explosion",
             damage: -50,
-            obstacleMultiplier: 0.5,
+            obstacleMultiplier: 0.25,
+            duration: 2,
             radius: {
                 min: 12,
                 max: 36
@@ -69,6 +85,10 @@ export class Explosions extends ObjectDefinitions {
             animation: {
                 frame: "crate_health_explosion.svg",
                 scale: 2.5
+            },
+            particle: {
+                duration: 2,
+                idParticle: "heal_mass"
             }
         }
     ];

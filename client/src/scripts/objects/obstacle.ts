@@ -16,11 +16,15 @@ export class Obstacle extends GameObject {
         const oldScale: number = this.scale;
         this.scale = stream.readScale();
 
-        // Play a sound and emit a particle if the scale changes after the obstacle's creation
+        // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
         if (this.image !== undefined && oldScale !== this.scale) {
-            this.image.setScale(this.scale);
-            this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
-            this.emitter.emitParticle(1);
+            if (oldScale < this.scale) {
+                this.image.setScale(oldScale);
+            } else {
+                this.image.setScale(this.scale);
+                this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
+                this.emitter.emitParticle(1);
+            }
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
@@ -46,10 +50,13 @@ export class Obstacle extends GameObject {
 
         // Get position, rotation, and variations
         this.position = stream.readPosition();
+
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         this.rotation = definition.rotation !== "none" ? stream.readRotation() : 0;
+
         const hasVariations: boolean = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
+
         let texture: string = this.type.idString;
         if (this.destroyed) texture += "_residue";
         else if (hasVariations) texture += `_${this.variation + 1}`;
@@ -63,6 +70,7 @@ export class Obstacle extends GameObject {
         // If there are multiple particle variations, generate a list of variation image names
         const particleImage = `${this.type.idString}_particle`;
         let frames: string[] | undefined;
+
         if (definition.particleVariations !== undefined) {
             frames = [];
             for (let i = 0; i < definition.particleVariations; i++) {

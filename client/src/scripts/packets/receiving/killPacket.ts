@@ -15,6 +15,7 @@ export class KillPacket extends ReceivingPacket {
     deserialize(stream: SuroiBitStream): void {
         const kills = stream.readUint8();
         const killText = `Kills: ${kills}`;
+
         $("#kill-msg-kills").text(killText);
         $("#kill-msg-player-name").text(stream.readUTF8String(16)); // name
 

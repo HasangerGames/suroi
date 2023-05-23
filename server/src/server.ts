@@ -54,6 +54,9 @@ let connectionAttempts = {};
 const bannedIPs: string[] = [];
 
 app.get("/api/getGame", (res) => {
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+    res.onAborted(() => {});
+
     cors(res);
     res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.webSocketAddress}/play" }`);
 });
@@ -72,6 +75,9 @@ app.ws("/play", {
      * Upgrade the connection to WebSocket.
      */
     upgrade: (res, req, context) => {
+        /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+        res.onAborted(() => {});
+
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
             if (bannedIPs.includes(ip) || playerCounts[ip] >= 3 || connectionAttempts[ip] >= 7) {

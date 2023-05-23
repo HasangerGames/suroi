@@ -100,7 +100,7 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
         y: clamp(pos.y, min.y, max.y)
     };
 
-    const distX = pos.x - cpt.x, distY = pos.y - cpt.y;
+    const distX = pos.x - cpt.x; const distY = pos.y - cpt.y;
     const distSquared = distX * distX + distY * distY;
 
     return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);

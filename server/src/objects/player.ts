@@ -10,9 +10,11 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
+
 import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     ANIMATION_TYPE_BITS,
+    WEAPON_TYPE_BITS,
     AnimationType,
     ObjectCategory
 } from "../../../common/src/constants";
@@ -59,6 +61,8 @@ export class Player extends GameObject {
     activePlayerIDDirty = true;
 
     weaponCooldown = 0;
+
+    weapon = ObjectType.fromString(ObjectCategory.Loot, "fists");
 
     // This is flipped when the player takes damage.
     // When the value changes it plays the hit sound and particle on the client.
@@ -157,14 +161,19 @@ export class Player extends GameObject {
 
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
-        const approximateX = Math.round(this.position.x / 10) * 10; const approximateY = Math.round(this.position.y / 10) * 10;
+
+        const approximateX = Math.round(this.position.x / 10) * 10;
+        const approximateY = Math.round(this.position.y / 10) * 10;
         this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
+
         const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
+
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
+
         for (const object of this.game.dynamicObjects) {
             if (this === object) continue;
             if (object.position.x > minX &&
@@ -179,22 +188,23 @@ export class Player extends GameObject {
                     object.visibleObjects.add(this);
                     object.fullDirtyObjects.add(this);
                 }
-            } else {
-                if (this.visibleObjects.has(object)) {
-                    this.deletedObjects.add(object);
-                }
+            } else if (this.visibleObjects.has(object)) {
+                this.deletedObjects.add(object);
             }
         }
+
         for (const object of newVisibleObjects) {
             if (!this.visibleObjects.has(object)) {
                 this.fullDirtyObjects.add(object);
             }
         }
+
         for (const object of this.visibleObjects) {
             if (!newVisibleObjects.has(object)) {
                 this.deletedObjects.add(object);
             }
         }
+
         this.visibleObjects = newVisibleObjects;
     }
 
@@ -219,13 +229,14 @@ export class Player extends GameObject {
 
     damage(amount: number, source?): void {
         if (this.health - amount > 100) {
-            amount = 100-this.health;
+            amount = -(100-this.health);
         }
-        if (this.health - amount <=0) {
+        if (this.health - amount <= 0) {
             amount = this.health;
         }
+        if (this.dead) amount = 0;
         this.health -= amount;
-        this.damageTaken += amount;
+        if (amount > 0) this.damageTaken += amount;
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
@@ -262,8 +273,6 @@ export class Player extends GameObject {
         }
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-
     serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
         stream.writeRotation(this.rotation);
@@ -274,5 +283,7 @@ export class Player extends GameObject {
 
     serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.dead);
+        if (this.dead) return;
+        stream.writeObjectType(this.weapon);
     }
 }

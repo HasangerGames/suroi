@@ -31,7 +31,7 @@ export class Map {
             this.generateObstacles("crate_regular", 125);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
-            this.generateObstacles("crate_health", 25);
+            this.generateObstacles("crate_health", 20);
         } else {
             // Obstacle debug code goes here
         }
