@@ -9,7 +9,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type ObjectType } from "../../../../../common/src/utils/objectType";
+import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 
@@ -77,27 +77,28 @@ export class UpdatePacket extends ReceivingPacket {
                 const type: ObjectType = stream.readObjectType();
                 const id: number = stream.readUint16();
                 let object: GameObject | undefined;
+
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            object = new Player(this.player.game, this.player.scene);
+                            object = new Player(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }
                         case ObjectCategory.Obstacle: {
-                            object = new Obstacle(this.player.game, this.player.scene);
+                            object = new Obstacle(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Obstacle>, id);
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(this.player.game, this.player.scene);
+                            object = new DeathMarker(this.player.game, this.player.scene, type, id);
                             break;
                         }
                     }
+
                     if (object === undefined) {
                         console.warn(`Unknown object category: ${type.category}`);
                         continue;
                     }
-                    // Make the constructor take an id as argument?
-                    object.id = id;
+
                     game.objects.set(object.id, object);
                 } else {
                     const objectFromSet: GameObject | undefined = game.objects.get(id);
@@ -148,7 +149,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (newExplosions) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                new Explosion(game, this.player.scene).deserializeFull(stream);
+                new Explosion(game, this.player.scene, ObjectType.categoryOnly(ObjectCategory.Explosion), -1).deserializeFull(stream);
             }
         }
 

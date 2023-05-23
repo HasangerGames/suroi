@@ -3,12 +3,9 @@ import { GameObject } from "../types/gameObject";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { Variation } from "../../../../common/src/typings";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory } from "../../../../common/src/constants";
 
-export class Obstacle extends GameObject {
-    override readonly type = ObjectType.categoryOnly(ObjectCategory.Obstacle);
-
+export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     scale!: number;
     destroyed!: boolean;
 
@@ -37,7 +34,7 @@ export class Obstacle extends GameObject {
             this.destroyed = true;
             if (this.image !== undefined) {
                 this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_destroyed`);
-                this.image.setTexture("main", `${this.type.idString}_residue.svg`);
+                this.image.setTexture("main", `${this.type.idString as string}_residue.svg`);
                 this.image.setRotation(this.rotation).setScale(this.scale);
                 this.image.setDepth(0);
                 this.emitter.explode(10);
@@ -72,7 +69,7 @@ export class Obstacle extends GameObject {
             .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
 
         // If there are multiple particle variations, generate a list of variation image names
-        const particleImage = `${this.type.idString}_particle`;
+        const particleImage = `${this.type.idString as string}_particle`;
         let frames: string[] | undefined;
 
         if (definition.particleVariations !== undefined) {

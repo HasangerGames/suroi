@@ -16,9 +16,7 @@ import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 
-export class Player extends GameObject {
-    override readonly type = ObjectType.categoryOnly(ObjectCategory.Player);
-
+export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
 
     private _health = 100;
@@ -55,8 +53,8 @@ export class Player extends GameObject {
 
     distSinceLastFootstep = 0;
 
-    constructor(game: Game, scene: GameScene) {
-        super(game, scene);
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number) {
+        super(game, scene, type, id);
 
         // const weaponDef = this.weapon.definition as MeleeDefinition;
 
@@ -177,7 +175,7 @@ export class Player extends GameObject {
             this.destroy();
             return;
         }
-        this.weapon = stream.readObjectType();
+        this.weapon = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
         this.updateFistsPosition();
     }
 

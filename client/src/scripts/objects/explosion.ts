@@ -6,12 +6,9 @@ import { GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { distance } from "../../../../common/src/utils/math";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory } from "../../../../common/src/constants";
 
-export class Explosion extends GameObject {
-    override readonly type = ObjectType.categoryOnly(ObjectCategory.Explosion);
-
+export class Explosion extends GameObject<ObjectCategory.Explosion> {
     image!: Phaser.GameObjects.Image;
     emitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
