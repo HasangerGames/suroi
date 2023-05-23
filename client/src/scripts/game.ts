@@ -79,7 +79,7 @@ export class Game {
         window.location.reload();
         /* $("#game-ui").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").removeClass("fade-out");
+        $("#splash-ui").fadeIn();
         core.phaser?.scene.stop("game");
         this.gameStarted = false; */
     }
