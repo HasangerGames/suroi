@@ -19,6 +19,7 @@ export class Explosion extends GameObject {
     deserializePartial(stream: SuroiBitStream): void {}
 
     deserializeFull(stream: SuroiBitStream): void {
+        stream.readObjectType();
         const definition = this.type.definition as ExplosionDefinition;
 
         this.position = stream.readPosition();
