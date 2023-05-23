@@ -37,6 +37,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     };
 
     punching = false;
+    switchGun = false;
 
     animationSeq!: boolean;
 
@@ -45,6 +46,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     body: Phaser.GameObjects.Image;
     leftFist: Phaser.GameObjects.Image;
     rightFist: Phaser.GameObjects.Image;
+    weaponImg: Phaser.GameObjects.Image;
     container: Phaser.GameObjects.Container;
 
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -61,9 +63,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
         this.leftFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
         this.rightFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
+        this.weaponImg = this.scene.add.image(0, 0, "main");
         this.updateFistsPosition();
 
-        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist]).setDepth(1);
+        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist, this.weaponImg]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
             frame: "blood_particle.svg",
@@ -181,8 +184,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     updateFistsPosition(): void {
         const weaponDef = this.weapon.definition as MeleeDefinition;
-        this.leftFist.setPosition(weaponDef.fists.normalLeft.x, weaponDef.fists.normalLeft.y);
-        this.rightFist.setPosition(weaponDef.fists.normalRight.x, weaponDef.fists.normalRight.y);
+        /*this.scene.tweens.add({
+            targets: this.leftFist,
+            x: weaponDef.fists.left.x,
+            y: weaponDef.fists.left.y,
+            duration: weaponDef.fists.animationDuration,
+            ease: "Linear"
+        });
+        this.scene.tweens.add({
+            targets: this.rightFist,
+            x: weaponDef.fists.right.x,
+            y: weaponDef.fists.right.y,
+            duration: weaponDef.fists.animationDuration,
+            ease: "Linear"
+        });*/
+        this.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
+        this.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+        this.weaponImg.setVisible(weaponDef.image !== undefined);
+        if (weaponDef.image !== undefined) {
+            this.weaponImg.setFrame(weaponDef.image?.frame);
+            this.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+        }
     }
 
     destroy(): void {
@@ -190,6 +212,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.body.destroy(true);
         this.leftFist.destroy(true);
         this.rightFist.destroy(true);
+        this.weaponImg?.destroy(true);
         this.emitter.destroy(true);
     }
 }

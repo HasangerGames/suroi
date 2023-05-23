@@ -10,31 +10,34 @@ export interface MeleeDefinition extends ObjectDefinition {
     readonly fists: {
         readonly animationDuration: number
         readonly randomFist: boolean
-        readonly normalLeft: Vector
-        readonly normalRight: Vector
+        readonly left: Vector
+        readonly right: Vector
         readonly useLeft: Vector
         readonly useRight: Vector
     }
+    image?: {
+        frame: string
+        position: Vector
+    }
 }
 
-export const Melees = new ObjectDefinitions<MeleeDefinition>(
-    1,
-    [
-        {
-            idString: "fists",
-            damage: 20,
-            obstacleMultiplier: 2,
-            radius: 1.5,
-            offset: v(2.5, 0),
-            cooldown: 250,
-            fists: {
-                animationDuration: 110,
-                randomFist: true,
-                normalLeft: v(38, 35),
-                normalRight: v(38, -35),
-                useLeft: v(75, 10),
-                useRight: v(75, -10)
-            }
+export const Melees: MeleeDefinition[] =
+[
+    {
+        idString: "fists",
+        damage: 20,
+        obstacleMultiplier: 2,
+        radius: 1.5,
+        offset: v(2.5, 0),
+        cooldown: 250,
+        fists: {
+            animationDuration: 110,
+            randomFist: true,
+            left: v(38, 35),
+            right: v(38, -35),
+            useLeft: v(75, 10),
+            useRight: v(75, -10)
         }
-    ]
-);
+    },
+]
+

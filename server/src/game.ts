@@ -130,8 +130,10 @@ export class Game {
 
                 if (p.punching) {
                     p.punching = false;
-                    const weaponDef = p.weapon.definition as MeleeDefinition;
-                    if (Date.now() - p.weaponCooldown > weaponDef.cooldown) {
+
+                    const weaponDef = p.activeWeaponDef as MeleeDefinition;
+
+                    if (Date.now() - p.weaponCooldown > weaponDef.cooldown && p.activeWeapon.category == "melee") {
                         p.weaponCooldown = Date.now();
                         p.animation.type = AnimationType.Punch;
 

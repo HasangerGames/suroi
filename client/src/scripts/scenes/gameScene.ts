@@ -61,6 +61,14 @@ export class GameScene extends Phaser.Scene {
         this.addKey("A", "left");
         this.addKey("D", "right");
 
+        const key = this.input.keyboard?.addKey("Q");
+        if (key !== undefined) {
+            key.on("down", () => {
+                this.player.switchGun = true;
+                this.player.inputsDirty = true;
+            });
+        }
+
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
 

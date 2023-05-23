@@ -21,6 +21,8 @@ import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { MeleeDefinition } from "../../../common/src/definitions/melees";
+import { GunDefinition } from "../../../common/src/definitions/guns";
 
 export class Player extends GameObject {
     override readonly isPlayer = true;
@@ -54,6 +56,7 @@ export class Player extends GameObject {
     movingLeft = false;
     movingRight = false;
     punching = false;
+    switchWeapon = false;
 
     deadPosition?: Vec2;
 
@@ -61,7 +64,18 @@ export class Player extends GameObject {
 
     weaponCooldown = 0;
 
-    weapon = ObjectType.fromString(ObjectCategory.Loot, "fists");
+    weapons = [
+        {
+            category: "melee",
+            type: ObjectType.fromString(ObjectCategory.Loot, "fists")
+        },
+        {
+            category: "gun",
+            type: ObjectType.fromString(ObjectCategory.Loot, "ak47")
+        },
+    ]
+
+    activeWeapon = this.weapons[0];
 
     // This is flipped when the player takes damage.
     // When the value changes it plays the hit sound and particle on the client.
@@ -157,6 +171,10 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.5;
         this.yCullDist = this._zoom * 1.25;
         this.zoomDirty = true;
+    }
+
+    get activeWeaponDef(): MeleeDefinition | GunDefinition {
+        return this.activeWeapon.type.definition as MeleeDefinition | GunDefinition;
     }
 
     updateVisibleObjects(): void {
@@ -284,6 +302,6 @@ export class Player extends GameObject {
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.dead);
         if (this.dead) return;
-        stream.writeObjectType(this.weapon);
+        stream.writeObjectType(this.activeWeapon.type);
     }
 }
