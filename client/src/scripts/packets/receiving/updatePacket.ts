@@ -9,7 +9,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 
@@ -149,7 +149,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (newExplosions) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                new Explosion(game, this.player.scene, ObjectType.categoryOnly(ObjectCategory.Explosion), -1).deserializeFull(stream);
+                new Explosion(game, this.player.scene, stream.readObjectType() as ObjectType<ObjectCategory.Explosion>, -1).deserializeFull(stream);
             }
         }
 
