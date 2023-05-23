@@ -10,6 +10,18 @@ $(() => {
     const dropdownCaret = $("#btn-dropdown-more i");
     const dropdown = $("#splash-more .dropdown-content");
     const body = $(document.body);
+    const usernameField = $("#username-input");
+
+    usernameField.val(localStorageInstance.config.playerName);
+
+    usernameField.on("input", (): void => {
+        if (usernameField.val() !== undefined && (usernameField.val() as string).trim().length > 0) {
+            localStorageInstance.update({ playerName: usernameField.val() as string });
+        }
+    });
+
+    $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
+    $("#slider-sound-volume").val(localStorageInstance.config.musicVolume);
 
     body.on("click", (e: JQuery.ClickEvent): void => {
         const target = e.target as HTMLElement | null;
