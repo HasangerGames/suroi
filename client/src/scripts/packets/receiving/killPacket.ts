@@ -4,7 +4,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
-let timeoutId: number | undefined;
+let timeoutId: number;
 
 export class KillPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -22,7 +22,6 @@ export class KillPacket extends ReceivingPacket {
 
             timeoutId = window.setTimeout(() => {
                 killModal.fadeOut(350);
-                timeoutId = undefined;
             }, 3000);
         });
     }
