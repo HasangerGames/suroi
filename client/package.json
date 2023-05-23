@@ -7,8 +7,8 @@
     "build": "webpack --config ./webpack/webpack.prod.ts",
     "test": "webpack --config ./webpack/webpack.test.ts",
     "dev": "webpack serve --config ./webpack/webpack.dev.ts",
-    "lint": "eslint . --fix --ext .js,.ts,.tsx",
-    "lint:ci": "eslint . --ext .js,.ts,.tsx"
+    "lint": "eslint . --fix --ext .js,.ts",
+    "lint:ci": "eslint . --ext .js,.ts"
   },
   "engines": {
     "node": ">=18.8.0"
