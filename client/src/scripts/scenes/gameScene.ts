@@ -9,12 +9,13 @@ import { JoinPacket } from "../packets/sending/joinPacket";
 import { Player } from "../objects/player";
 
 import { Materials } from "../../../../common/src/definitions/obstacles";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
-    volume = 1;
+    volume = localStorageInstance.config.masterVolume ?? 1;
 
     constructor() {
         super("game");

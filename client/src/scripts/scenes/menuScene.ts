@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class MenuScene extends Phaser.Scene {
     menuMusic?: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
@@ -18,8 +19,10 @@ export class MenuScene extends Phaser.Scene {
     }
 
     startMusic(): void {
+        const volume = localStorageInstance.config.musicVolume ?? 1;
+
         if (this.menuMusic === undefined) {
-            this.menuMusic = this.sound.add("menu", { volume: 1 });
+            this.menuMusic = this.sound.add("menu", { volume });
             this.menuMusic.setLoop(true);
         }
 
