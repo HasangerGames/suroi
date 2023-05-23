@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "cross-env ALIEN_UWS=1 node dist/server/src/server.js",
-    "dev": "cross-env ALIEN_UWS=1 ts-node-dev --respawn --transpile-only src/server.ts",
+    "start": "node dist/server/src/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "lint": "eslint . --fix --ext .ts",
     "lint:ci": "eslint . --ext .ts"
   },
