@@ -97,11 +97,11 @@ export class SuroiBitStream extends BitStream {
     }
 
     writeRotation(value: number): void {
-        this.writeFloat(value, -3.2, 3.2, 8);
+        this.writeFloat(value, -Math.PI, Math.PI, 8);
     }
 
     readRotation(): number {
-        return this.readFloat(-3.2, 3.2, 8);
+        return this.readFloat(-Math.PI, Math.PI, 8);
     }
 
     writeScale(value: number): void {

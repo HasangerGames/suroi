@@ -1,3 +1,4 @@
+// noinspection ES6PreferShortImport
 import { Config, Debug } from "./.config/config";
 import adjectives from "./.config/adjectives.json";
 import animals from "./.config/animals.json";
@@ -58,7 +59,7 @@ app.get("/api/getGame", (res) => {
     res.onAborted(() => {});
 
     cors(res);
-    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.webSocketAddress}/play" }`);
+    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.address}/play" }`);
 });
 
 export interface PlayerContainer {

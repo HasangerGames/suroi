@@ -1,13 +1,14 @@
+All images edited by Henry Sanger
 Main logo: Henry Sanger
 Small/square logo: Glek
-Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm. Edited by Henry Sanger
-Barrel: 123OP
-Barrel residue: Dachselt, Leo
-Bush: canva.com
-Regular crate: Henry Sanger
-Soviet crate: Henry Sanger, DogEnjoyer
+Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
+Barrel: 123OP, Asultra, Henry Sanger
+Barrel residue: Dachselt, Leo, Henry Sanger
+Bush: Glek
+Regular crate: Henry Sanger, 123OP
+Soviet crate: Henry Sanger, DogEnjoyer, 123OP
 Death marker: Henry Sanger, 123OP
 Rocks: Leo
 Rock particles: Radians
-Oak trees: Asultra, Henry Sanger
+Oak trees: Asultra
 Pine tree: SquareCube
