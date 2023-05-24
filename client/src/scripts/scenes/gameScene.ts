@@ -37,9 +37,11 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("player_hit_1", "sfx/player_hit_1");
         this.loadSound("player_hit_2", "sfx/player_hit_2");
 
-        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
-        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
-        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
+        this.loadSound("health_explosion", "sfx/health_explosion");
+
+        this.loadSound("swing", "sfx/swing");
+        this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
+        this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;

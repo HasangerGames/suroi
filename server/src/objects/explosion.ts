@@ -1,26 +1,23 @@
 import { type Game } from "../game";
 
-import { GameObject } from "../types/gameObject";
+import { type GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { distance } from "../../../common/src/utils/math";
-import { type Player } from "./player";
 
-export class Explosion extends GameObject {
-    override readonly isPlayer = false;
-    override readonly isObstacle = false;
-    override readonly collidesWith = {
-        player: true,
-        obstacle: true
-    };
-
+export class Explosion {
+    game: Game;
+    type: ObjectType;
+    position: Vector;
     source: GameObject;
 
     constructor(game: Game, type: ObjectType, position: Vector, source: GameObject) {
-        super(game, type, position);
+        this.game = game;
+        this.type = type;
+        this.position = position;
         this.source = source;
     }
 
@@ -60,11 +57,7 @@ export class Explosion extends GameObject {
         }
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-    override damage(amount: number, source: Player): void { }
-    override serializePartial(stream: SuroiBitStream): void { }
-
-    override serializeFull(stream: SuroiBitStream): void {
+    serialize(stream: SuroiBitStream): void {
         stream.writeObjectType(this.type);
         stream.writePosition(this.position);
     }

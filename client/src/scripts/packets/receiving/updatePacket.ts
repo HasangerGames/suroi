@@ -1,7 +1,7 @@
 import { type Game } from "../../game";
 
 import { DeathMarker } from "../../objects/deathMarker";
-import { Explosion } from "../../objects/explosion";
+import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { Obstacle } from "../../objects/obstacle";
 
@@ -149,7 +149,10 @@ export class UpdatePacket extends ReceivingPacket {
         if (newExplosions) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                new Explosion(game, this.player.scene, stream.readObjectType() as ObjectType<ObjectCategory.Explosion>, -1).deserializeFull(stream);
+                explosion(game,
+                    this.player.scene,
+                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
+                    stream.readPosition());
             }
         }
 
