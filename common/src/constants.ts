@@ -1,13 +1,24 @@
 export enum ObjectCategory {
-    Player, Obstacle, Explosion, DeathMarker, Loot
+    Player,
+    Obstacle,
+    Explosion,
+    DeathMarker,
+    Loot
 }
 
 export enum PacketType {
-    Join, Joined, Map, Update, Input, GameOver, Kill
+    Join,
+    Joined,
+    Map,
+    Update,
+    Input,
+    GameOver,
+    Kill
 }
 
 export enum AnimationType {
-    None, Punch
+    None,
+    Punch
 }
 
 export enum WeaponType {
@@ -20,4 +31,5 @@ export const OBJECT_CATEGORY_BITS = 3;
 export const VARIATION_BITS = 3;
 export const ANIMATION_TYPE_BITS = 1;
 export const WEAPON_TYPE_BITS = 1;
-export const MIN_OBJECT_SCALE = 0.25; export const MAX_OBJECT_SCALE = 2;
+export const MIN_OBJECT_SCALE = 0.25;
+export const MAX_OBJECT_SCALE = 2;

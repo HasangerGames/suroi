@@ -4,13 +4,27 @@ import core from "./core";
 
 import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
+import { localStorageInstance } from "./utils/localStorageHandler";
 
 $(() => {
     // Enable splash "more" dropdown.
     const dropdownCaret = $("#btn-dropdown-more i");
     const dropdown = $("#splash-more .dropdown-content");
+    const body = $(document.body);
+    const usernameField = $("#username-input");
 
-    $(document.body).on("click", (e: JQuery.ClickEvent): void => {
+    usernameField.val(localStorageInstance.config.playerName);
+
+    usernameField.on("input", (): void => {
+        if (usernameField.val() !== undefined && (usernameField.val() as string).trim().length > 0) {
+            localStorageInstance.update({ playerName: usernameField.val() as string });
+        }
+    });
+
+    $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
+    $("#slider-sound-volume").val(localStorageInstance.config.musicVolume);
+
+    body.on("click", (e: JQuery.ClickEvent): void => {
         const target = e.target as HTMLElement | null;
 
         if (target?.id === "btn-dropdown-more") {
@@ -35,19 +49,23 @@ $(() => {
         }
     });
 
-    $(document.body).on("keydown", (e: JQuery.KeyDownEvent) => {
+    body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape" && $("canvas").hasClass("active")) {
             $("#game-menu").toggle();
         }
     });
 
-    $(document.body).on("change", (e: JQuery.ChangeEvent) => {
+    body.on("change", (e: JQuery.ChangeEvent) => {
         const target = e.target as HTMLInputElement;
 
         if (target?.id === "slider-sound-volume") {
-            core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(Number(target.value));
+            const volume = Number(target.value);
+            core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
+            localStorageInstance.update({ musicVolume: volume });
         } else if (target?.id === "slider-master-volume") {
-            (core.phaser?.scene.getScene("game") as GameScene).volume = Number(target.value);
+            const volume = Number(target.value);
+            (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
+            localStorageInstance.update({ masterVolume: volume });
         }
     });
 });

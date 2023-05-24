@@ -5,29 +5,31 @@ import {
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    material: string
-    health: number
-    invulnerable?: boolean
-    scale: {
-        spawnMin: number
-        spawnMax: number
-        destroy: number
+    readonly material: string
+    readonly health: number
+    readonly invulnerable?: boolean
+    readonly scale: {
+        readonly spawnMin: number
+        readonly spawnMax: number
+        readonly destroy: number
     }
-    hitbox: Hitbox
-    spawnHitbox?: Hitbox
-    noCollisions?: boolean
-    rotation: "full" | "limited" | "none"
-    variations?: number
-    particleVariations?: number
-    depth?: number // the obstacle z index
-    explosion?: string
+    readonly hitbox: Hitbox
+    readonly spawnHitbox?: Hitbox
+    readonly noCollisions?: boolean
+    // Maybe rename to "rotationMode" to more accurately reflect
+    // that this is describing the way in which this obstacle may rotate
+    readonly rotation: "full" | "limited" | "none"
+    readonly variations?: number
+    readonly particleVariations?: number
+    readonly depth?: number // the obstacle z index
+    readonly explosion?: string
 }
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
-export class Obstacles extends ObjectDefinitions {
-    static readonly bitCount = 3;
-    static readonly definitions: ObstacleDefinition[] = [
+export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
+    3,
+    [
         {
             idString: "tree_oak",
             material: "tree",
@@ -129,5 +131,5 @@ export class Obstacles extends ObjectDefinitions {
             rotation: "limited",
             explosion: "crate_health_explosion"
         }
-    ];
-}
+    ]
+);

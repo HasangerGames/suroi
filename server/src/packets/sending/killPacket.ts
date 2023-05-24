@@ -5,18 +5,18 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { PacketType } from "../../../../common/src/constants";
 
 export class KillPacket extends SendingPacket {
+    override readonly allocBytes = 1 << 5;
+    override readonly type = PacketType.Kill;
+
     readonly killed: Player;
 
     constructor(player: Player, killed: Player) {
         super(player);
 
-        this.type = PacketType.Kill;
-        this.allocBytes = 1 << 5;
-
         this.killed = killed;
     }
 
-    serialize(stream: SuroiBitStream): void {
+    override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
         stream.writeUint8(this.player.kills);

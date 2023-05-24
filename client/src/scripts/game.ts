@@ -15,12 +15,12 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../common/src/constants";
 
 export class Game {
-    socket: WebSocket;
+    socket!: WebSocket;
 
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
-    activePlayer: Player;
-    gameStarted: boolean;
+    activePlayer!: Player;
+    gameStarted = false;
     error = false;
 
     connect(address: string): void {
@@ -79,7 +79,7 @@ export class Game {
         window.location.reload();
         /* $("#game-ui").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").removeClass("fade-out");
+        $("#splash-ui").fadeIn();
         core.phaser?.scene.stop("game");
         this.gameStarted = false; */
     }
