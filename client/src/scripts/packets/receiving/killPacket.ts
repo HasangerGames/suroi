@@ -3,6 +3,7 @@ import $ from "jquery";
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { random } from "../../../../../common/src/utils/random";
 
 let timeoutId: number;
 
@@ -11,7 +12,9 @@ export class KillPacket extends ReceivingPacket {
         const kills = stream.readUint8();
         const killText = `Kills: ${kills}`;
 
+        const killWords: string[] = ["killed", "destroyed", "ended", "murdered", "wiped out", "annihilated", "slaughtered", "obliterated"];
         $("#kill-msg-kills").text(killText);
+        $("#kill-msg-word").text(killWords[random(0, killWords.length - 1)]);
         $("#kill-msg-player-name").text(stream.readUTF8String(16)); // name
 
         const killModal = $("#kill-msg");
