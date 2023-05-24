@@ -66,7 +66,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.weaponImg = this.scene.add.image(0, 0, "main");
         this.updateFistsPosition();
 
-        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist, this.weaponImg]).setDepth(1);
+        this.container = this.scene.add.container(360, 360, [this.weaponImg, this.body, this.leftFist, this.rightFist]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
             frame: "blood_particle.svg",

@@ -20,7 +20,7 @@ export const Guns: GunDefinition[] =
         cooldown: 250,
         fists: {
             left: v(70, 0),
-            right: v(130, 5),
+            right: v(130, 10),
         },
         image: {
             frame: "ak-47-top.svg",
