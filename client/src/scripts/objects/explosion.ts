@@ -40,6 +40,9 @@ export function explosion(game: Game, scene: GameScene, type: ObjectType, positi
     });
     emitter.explode(definition.particles.count);
 
+    // destroy particle emitter
+    setTimeout(()=> { emitter.destroy() }, definition.particles.duration);
+
     scene.tweens.add({
         targets: image,
         scale: definition.animation.scale,
