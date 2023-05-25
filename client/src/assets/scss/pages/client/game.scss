@@ -59,7 +59,7 @@ body > canvas {
     transform: translateX(-50%);
 
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     #health-bar, #health-bar-animation {
@@ -87,6 +87,7 @@ body > canvas {
         color: black;
         filter: invert(1);
         mix-blend-mode: difference;
+        margin-left: 8px;
     }
 }
 

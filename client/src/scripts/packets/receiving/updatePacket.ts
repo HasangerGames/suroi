@@ -40,10 +40,11 @@ export class UpdatePacket extends ReceivingPacket {
         // Health
         if (stream.readBoolean()) {
             p.health = stream.readFloat(0, 100, 8);
-            const healthPercentage = `${Math.round(p.health)}%`;
+            const roundedHealth = Math.round(p.health);
+            const healthPercentage = `${roundedHealth}%`;
             $("#health-bar").width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
-            $("#health-bar-percentage").text(healthPercentage);
+            $("#health-bar-percentage").text(roundedHealth);
             if (p.health < 60 && p.health > 10) {
                 $("#health-bar").css("background-color", `rgb(255, ${(p.health - 10) * 4}, ${(p.health - 10) * 4})`);
             } else if (p.health <= 10) {
