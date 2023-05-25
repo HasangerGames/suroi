@@ -337,6 +337,7 @@ export class Player extends GameObject {
             this.movingRight = false;
             this.attackStart = false;
             this.deadPosition = this.position.clone();
+            this.game.world.destroyBody(this.body);
 
             if (source instanceof Player && source !== this) {
                 source.kills++;
