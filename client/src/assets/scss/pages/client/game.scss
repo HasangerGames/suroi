@@ -58,6 +58,10 @@ body > canvas {
     left: 50%;
     transform: translateX(-50%);
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     #health-bar, #health-bar-animation {
         position: absolute;
         top: 0;
@@ -76,6 +80,13 @@ body > canvas {
         opacity: 50%;
         background: #ff0000;
         transition: width ease-in-out 800ms;
+    }
+
+    #health-bar-percentage {
+        font-size: 20px;
+        color: black;
+        filter: invert(1);
+        mix-blend-mode: difference;
     }
 }
 

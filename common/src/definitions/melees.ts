@@ -1,4 +1,4 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ObjectDefinition } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
 export interface MeleeDefinition extends ObjectDefinition {
@@ -38,6 +38,5 @@ export const Melees: MeleeDefinition[] =
             useLeft: v(75, 10),
             useRight: v(75, -10)
         }
-    },
-]
-
+    }
+];
