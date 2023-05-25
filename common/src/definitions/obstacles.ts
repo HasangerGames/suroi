@@ -33,7 +33,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "tree_oak",
             material: "tree",
-            health: 200,
+            health: 180,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
@@ -48,7 +48,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "tree_pine",
             material: "tree",
-            health: 200,
+            health: 180,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
@@ -62,7 +62,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "rock",
             material: "stone",
-            health: 200,
+            health: 180,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
@@ -77,7 +77,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "bush",
             material: "bush",
-            health: 100,
+            health: 80,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
@@ -91,7 +91,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "crate_regular",
             material: "crate",
-            health: 120,
+            health: 100,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
@@ -101,7 +101,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "barrel",
             material: "metal",
-            health: 120,
+            health: 160,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.5
             },
@@ -123,7 +123,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "crate_health",
             material: "crate",
-            health: 150,
+            health: 120,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.6
             },
