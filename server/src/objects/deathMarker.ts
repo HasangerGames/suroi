@@ -1,4 +1,4 @@
-import { GameObject } from "../types/gameObject";
+import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -6,11 +6,16 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 
 export class DeathMarker extends GameObject {
-    override readonly isPlayer = false;
-    override readonly isObstacle = false;
-    override readonly collidesWith = {
+    readonly is: CollisionFilter = {
         player: false,
-        obstacle: false
+        obstacle: false,
+        bullet: false
+    };
+
+    readonly collidesWith: CollisionFilter = {
+        player: false,
+        obstacle: false,
+        bullet: false
     };
 
     playerName: string;

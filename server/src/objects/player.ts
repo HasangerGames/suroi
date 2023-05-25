@@ -5,7 +5,7 @@ import {
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { GameObject } from "../types/gameObject";
+import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
@@ -21,15 +21,20 @@ import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { MeleeDefinition } from "../../../common/src/definitions/melees";
-import { GunDefinition } from "../../../common/src/definitions/guns";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
 
 export class Player extends GameObject {
-    override readonly isPlayer = true;
-    override readonly isObstacle = false;
-    override readonly collidesWith = {
+    override readonly is: CollisionFilter = {
+        player: true,
+        obstacle: false,
+        bullet: false
+    };
+
+    override readonly collidesWith: CollisionFilter = {
         player: false,
-        obstacle: true
+        obstacle: true,
+        bullet: true
     };
 
     name: string;
@@ -55,7 +60,7 @@ export class Player extends GameObject {
     movingDown = false;
     movingLeft = false;
     movingRight = false;
-    punching = false;
+    attacking = false;
     switchWeapon = false;
 
     deadPosition?: Vec2;
@@ -72,8 +77,8 @@ export class Player extends GameObject {
         {
             category: "gun",
             type: ObjectType.fromString(ObjectCategory.Loot, "ak47")
-        },
-    ]
+        }
+    ];
 
     activeWeapon = this.weapons[0];
 
@@ -274,7 +279,7 @@ export class Player extends GameObject {
             this.movingDown = false;
             this.movingLeft = false;
             this.movingRight = false;
-            this.punching = false;
+            this.attacking = false;
             this.deadPosition = this.position.clone();
 
             if (source instanceof Player && source !== this) {
@@ -293,7 +298,7 @@ export class Player extends GameObject {
 
     override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
-        stream.writeRotation(this.rotation);
+        stream.writeRotation(this.rotation, 16);
         stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
         stream.writeBoolean(this.animation.seq);
         stream.writeBoolean(this.hitEffect);

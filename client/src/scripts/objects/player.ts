@@ -107,7 +107,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (!this.dead) {
             const oldAngle: number = this.container.angle;
-            const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation());
+            const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation(16));
             const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
 
             gsap.to(this.container, {
@@ -118,7 +118,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 duration: 0.03
             });
         } else {
-            stream.readRotation(); // Discard rotation information
+            stream.readRotation(16); // Discard rotation information
         }
 
         // Animation

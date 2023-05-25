@@ -1,6 +1,7 @@
 export enum ObjectCategory {
     Player,
     Obstacle,
+    Bullet,
     Explosion,
     DeathMarker,
     Loot
@@ -22,7 +23,8 @@ export enum AnimationType {
 }
 
 export enum WeaponType {
-    Melee
+    Melee,
+    Gun
 }
 // NOTE: remember to increase these values when adding stuff to enums
 

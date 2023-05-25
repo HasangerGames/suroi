@@ -8,7 +8,7 @@ import { type Game } from "../game";
 
 import { Explosion } from "./explosion";
 
-import { GameObject } from "../types/gameObject";
+import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { bodyFromHitbox } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -25,11 +25,16 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
 
 export class Obstacle extends GameObject {
-    override readonly isPlayer = false;
-    override readonly isObstacle = true;
-    override readonly collidesWith = {
+    override readonly is: CollisionFilter = {
+        player: false,
+        obstacle: true,
+        bullet: false
+    };
+
+    override readonly collidesWith: CollisionFilter = {
         player: true,
-        obstacle: false
+        obstacle: false,
+        bullet: true
     };
 
     health: number;
@@ -135,7 +140,7 @@ export class Obstacle extends GameObject {
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
 
-        if (definition.rotation !== "none") stream.writeRotation(this.rotation);
+        if (definition.rotation !== "none") stream.writeRotation(this.rotation, 8);
         if (definition.variations !== undefined) stream.writeVariation(this.variation);
     }
 }

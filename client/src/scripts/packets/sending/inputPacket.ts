@@ -20,6 +20,6 @@ export class InputPacket extends SendingPacket {
         player.punching = false;
         stream.writeBoolean(player.switchGun);
         player.switchGun = false;
-        stream.writeRotation(player.rotation);
+        stream.writeRotation(player.rotation, 16);
     }
 }

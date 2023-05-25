@@ -96,12 +96,12 @@ export class SuroiBitStream extends BitStream {
         return this.readVector(0, 0, 1024, 1024, 16);
     }
 
-    writeRotation(value: number): void {
-        this.writeFloat(value, -3.2, 3.2, 8);
+    writeRotation(value: number, bitCount: number): void {
+        this.writeFloat(value, -Math.PI, Math.PI, bitCount);
     }
 
-    readRotation(): number {
-        return this.readFloat(-3.2, 3.2, 8);
+    readRotation(bitCount: number): number {
+        return this.readFloat(-Math.PI, Math.PI, bitCount);
     }
 
     writeScale(value: number): void {

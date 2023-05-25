@@ -29,13 +29,13 @@ export class GameScene extends Phaser.Scene {
         this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
 
         for (const material of Materials) {
-            this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
-            this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
-            this.loadSound(`${material}_destroyed`, `sfx/${material}_destroyed`);
+            this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
+            this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
+            this.loadSound(`${material}_destroyed`, `sfx/hits/${material}_destroyed`);
         }
 
-        this.loadSound("player_hit_1", "sfx/player_hit_1");
-        this.loadSound("player_hit_2", "sfx/player_hit_2");
+        this.loadSound("player_hit_1", "sfx/hits/player_hit_1");
+        this.loadSound("player_hit_2", "sfx/hits/player_hit_2");
 
         this.loadSound("health_explosion", "sfx/health_explosion");
 
