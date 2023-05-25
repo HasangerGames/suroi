@@ -13,9 +13,10 @@ export class InputPacket extends ReceivingPacket {
         p.movingDown = stream.readBoolean();
         p.movingLeft = stream.readBoolean();
         p.movingRight = stream.readBoolean();
-        p.attacking = stream.readBoolean();
+        p.attackStart = stream.readBoolean();
+        p.attackHold = stream.readBoolean();
 
-        if (stream.readBoolean()) {
+        if (stream.readBoolean()) { // switch guns
             if (p.activeWeapon.category === "melee") {
                 p.activeWeapon = p.weapons[1];
             } else {

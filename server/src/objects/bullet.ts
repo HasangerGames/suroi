@@ -7,7 +7,7 @@ import { type BulletDefinition } from "../../../common/src/definitions/bullets";
 import { type Player } from "./player";
 import { type Game } from "../game";
 import { randomFloat } from "../../../common/src/utils/random";
-import { distanceSquared } from "../../../common/src/utils/math";
+import { distance } from "../../../common/src/utils/math";
 
 export class Bullet {
     readonly is: CollisionFilter = {
@@ -68,7 +68,7 @@ export class Bullet {
             center: Vec2(0, 0),
             mass: 0.0
         });
-        this.body.setLinearVelocity(Vec2(Math.sin(rotation), Math.cos(rotation)).mul((definition.speed / 1000) * (this.speedVariance + 1)));
+        this.body.setLinearVelocity(Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1)));
     }
 
     get position(): Vec2 {
@@ -76,7 +76,7 @@ export class Bullet {
     }
 
     get distance(): number {
-        return distanceSquared(this.initialPosition.x, this.initialPosition.y, this.body.getPosition().x, this.body.getPosition().y);
+        return distance(this.initialPosition, this.body.getPosition());
     }
 }
 

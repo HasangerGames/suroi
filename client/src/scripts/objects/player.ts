@@ -36,7 +36,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         right: false
     };
 
-    punching = false;
+    attackStart = false;
+    attackHold = false;
     switchGun = false;
 
     animationSeq!: boolean;

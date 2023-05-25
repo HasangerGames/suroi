@@ -20,7 +20,7 @@ export const Guns: GunDefinition[] =
 [
     {
         idString: "ak47",
-        cooldown: 250,
+        cooldown: 50,
         fireMode: "auto",
         shotSpread: 0,
         fists: {

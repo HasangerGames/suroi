@@ -119,11 +119,18 @@ export class SuroiBitStream extends BitStream {
 
     /**
     * Write a game object type to the stream.
-    * @param type The game object type,
+    * @param type The ObjectType
     */
     writeObjectType(type: ObjectType): void {
         this.writeBits(type.category, OBJECT_CATEGORY_BITS);
+        this.writeObjectTypeNoCategory(type);
+    }
 
+    /**
+     * Write a game object type, minus the category, to the stream.
+     * @param type The ObjectType
+     */
+    writeObjectTypeNoCategory(type: ObjectType): void {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
         if (definitions !== undefined) {
             this.writeBits(type.idNumber, definitions.bitCount);
@@ -136,6 +143,15 @@ export class SuroiBitStream extends BitStream {
     */
     readObjectType(): ObjectType {
         const category: ObjectCategory = this.readBits(OBJECT_CATEGORY_BITS);
+        return this.readObjectTypeNoCategory(category);
+    }
+
+    /**
+     * Read a game object type, minus the category, from stream.
+     * @param category The object category
+     * @return The object type
+     */
+    readObjectTypeNoCategory(category: ObjectCategory): ObjectType {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
 
         if (definitions !== undefined) {
@@ -177,7 +193,8 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a rotation to the stream.
-     * @param value The rotation to write, in radians.
+     * @param value The rotation to write, in radians
+     * @param bitCount The number of bits to write
      */
     writeRotation(value: number, bitCount: number): void {
         this.writeFloat(value, -Math.PI, Math.PI, bitCount);

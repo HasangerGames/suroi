@@ -18,16 +18,11 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { AnimationType, ObjectCategory } from "../../common/src/constants";
-import { v, vRotate } from "../../common/src/utils/vector";
-import { type CollisionRecord, degreesToRadians } from "../../common/src/utils/math";
-import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { type MeleeDefinition } from "../../common/src/definitions/melees";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { type BulletDefinition } from "../../common/src/definitions/bullets";
 import { type GunDefinition } from "../../common/src/definitions/guns";
-import { randomFloat } from "../../common/src/utils/random";
 
 export class Game {
     map: Map;
@@ -61,7 +56,7 @@ export class Game {
     constructor() {
         this.world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
         Settings.maxLinearCorrection = 0; // Prevents collision jitter
-        Settings.maxTranslation = 5.0; // Allows bullets to travel fast
+        Settings.maxTranslation = 12.5; // Allows bullets to travel fast
 
         // Collision filtering code:
         // - Players should collide with obstacles, but not with each other or with loot.
@@ -85,8 +80,6 @@ export class Game {
             const objectB = contact.getFixtureB().getUserData();
             if (objectA instanceof Bullet && objectA.distance <= objectA.maxDistance && !objectA.dead) {
                 objectA.dead = true;
-                this.world.destroyBody(objectA.body);
-                this.bullets.delete(objectA);
                 this.damageRecords.add(new DamageRecord(objectB as GameObject, objectA.shooter, objectA));
             } else if (objectB instanceof Bullet && objectB.distance <= objectB.maxDistance && !objectB.dead) {
                 objectB.dead = true;
@@ -147,18 +140,17 @@ export class Game {
                 //if (damageRecord.damaged.damageable) {
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager);
-                } else {
+                } else if (damageRecord.damaged.damage !== undefined) {
                     damageRecord.damaged.damage(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
                 }
                 //}
                 this.world.destroyBody(bullet.body);
                 this.bullets.delete(bullet);
+                this.damageRecords.delete(damageRecord);
             }
 
             // Update physics
             this.world.step(30);
-
-            console.log(this.bullets.size);
 
             // First loop over players: Calculate movement
             for (const p of this.livingPlayers) {
@@ -176,56 +168,14 @@ export class Game {
                     this.partialDirtyObjects.add(p);
                 }
 
-                if (p.attacking) {
-                    p.attacking = false;
-
-                    if (Date.now() - p.weaponCooldown > p.activeWeaponDef.cooldown) {
-                        p.weaponCooldown = Date.now();
-                        console.log(p.activeWeapon.category);
-
-                        if (p.activeWeapon.category === "melee") {
-                            p.animation.type = AnimationType.Punch;
-                            p.animation.seq = !p.animation.seq;
-                            setTimeout(() => {
-                                const definition = p.activeWeaponDef as MeleeDefinition;
-                                const rotated = vRotate(definition.offset, p.rotation);
-                                const position = Vec2(p.position.x + rotated.x, p.position.y - rotated.y);
-                                const hitbox: Hitbox = new CircleHitbox(definition.radius, position);
-
-                                // Damage the closest object
-                                let minDist = Number.MAX_VALUE;
-                                let closestObject: GameObject | undefined;
-                                for (const object of p.visibleObjects) {
-                                    if (!object.dead && object !== p) {
-                                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
-                                        if (record?.collided === true && record.distance < minDist) {
-                                            minDist = record.distance;
-                                            closestObject = object;
-                                        }
-                                    }
-                                }
-                                if (closestObject?.dead === false) {
-                                    closestObject.damage(definition.damage, p);
-                                }
-                            }, 50);
-                        } else if (p.activeWeapon.category === "gun") {
-                            const definition = p.activeWeaponDef as GunDefinition;
-                            const spread = degreesToRadians(definition.shotSpread);
-                            for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-                                const angle: number = p.rotation + randomFloat(-spread, spread);
-                                const rotated = vRotate(v(3.5, 0), p.rotation);
-                                const bullet = new Bullet(
-                                    this,
-                                    ObjectType.fromString(ObjectCategory.Bullet, `${p.activeWeapon.type.idString}_bullet`),
-                                    Vec2(p.position.x + rotated.x, p.position.y - rotated.y),
-                                    angle,
-                                    p
-                                );
-                                this.bullets.add(bullet);
-                                this.newBullets.add(bullet);
-                            }
-                        }
+                if (p.attackStart) {
+                    p.attackStart = false;
+                    if (p.weaponCooldownOver) {
+                        if (p.activeWeapon.category === "melee") p.useMelee();
+                        else if (p.activeWeapon.category === "gun") p.shootGun();
                     }
+                } else if (p.attackHold && p.activeWeapon.category === "gun" && (p.activeWeaponDef as GunDefinition).fireMode === "auto") {
+                    if (p.weaponCooldownOver) p.shootGun();
                 }
             }
 

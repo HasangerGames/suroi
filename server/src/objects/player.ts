@@ -20,9 +20,13 @@ import {
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { type CollisionRecord, degreesToRadians } from "../../../common/src/utils/math";
+import { randomFloat } from "../../../common/src/utils/random";
+import { v, vRotate } from "../../../common/src/utils/vector";
+import { Bullet } from "./bullet";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -60,8 +64,8 @@ export class Player extends GameObject {
     movingDown = false;
     movingLeft = false;
     movingRight = false;
-    attacking = false;
-    switchWeapon = false;
+    attackStart = false;
+    attackHold = false;
 
     deadPosition?: Vec2;
 
@@ -182,6 +186,58 @@ export class Player extends GameObject {
         return this.activeWeapon.type.definition as MeleeDefinition | GunDefinition;
     }
 
+    get weaponCooldownOver(): boolean {
+        const cooldownOver: boolean = Date.now() - this.weaponCooldown > this.activeWeaponDef.cooldown;
+        if (cooldownOver) this.weaponCooldown = Date.now();
+        return cooldownOver;
+    }
+
+    useMelee(): void {
+        this.animation.type = AnimationType.Punch;
+        this.animation.seq = !this.animation.seq;
+        setTimeout(() => {
+            const definition = this.activeWeaponDef as MeleeDefinition;
+            const rotated = vRotate(definition.offset, this.rotation);
+            const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
+            const hitbox: Hitbox = new CircleHitbox(definition.radius, position);
+
+            // Damage the closest object
+            let minDist = Number.MAX_VALUE;
+            let closestObject: GameObject | undefined;
+            for (const object of this.visibleObjects) {
+                if (!object.dead && object !== this) {
+                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
+                    if (record?.collided === true && record.distance < minDist) {
+                        minDist = record.distance;
+                        closestObject = object;
+                    }
+                }
+            }
+            if (closestObject?.dead === false) {
+                closestObject.damage(definition.damage, this);
+            }
+        }, 50);
+    }
+
+    shootGun(): void {
+        const definition = this.activeWeaponDef as GunDefinition;
+        const spread = degreesToRadians(definition.shotSpread);
+        const angle: number = this.rotation + randomFloat(-spread, spread) + Math.PI / 2;
+        const rotated = vRotate(v(3.5, 0), this.rotation);
+        const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
+        for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
+            const bullet = new Bullet(
+                this.game,
+                ObjectType.fromString(ObjectCategory.Bullet, `${this.activeWeapon.type.idString}_bullet`),
+                position,
+                angle,
+                this
+            );
+            this.game.bullets.add(bullet);
+            this.game.newBullets.add(bullet);
+        }
+    }
+
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
 
@@ -279,7 +335,7 @@ export class Player extends GameObject {
             this.movingDown = false;
             this.movingLeft = false;
             this.movingRight = false;
-            this.attacking = false;
+            this.attackStart = false;
             this.deadPosition = this.position.clone();
 
             if (source instanceof Player && source !== this) {
