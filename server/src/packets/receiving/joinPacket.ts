@@ -14,6 +14,7 @@ export class JoinPacket extends ReceivingPacket {
         game.dynamicObjects.add(p);
         game.fullDirtyObjects.add(p);
         game.updateObjects = true;
+        game.aliveCount++;
 
         p.updateVisibleObjects();
         p.joined = true;

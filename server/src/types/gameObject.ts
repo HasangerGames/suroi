@@ -5,10 +5,11 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 
+export interface CollisionFilter { player: boolean, obstacle: boolean, bullet: boolean }
+
 export abstract class GameObject {
-    abstract isPlayer: boolean;
-    abstract isObstacle: boolean;
-    abstract collidesWith: { player: boolean, obstacle: boolean };
+    abstract is: CollisionFilter;
+    abstract collidesWith: CollisionFilter;
 
     id: number;
     type: ObjectType;

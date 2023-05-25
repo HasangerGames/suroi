@@ -13,7 +13,19 @@ export class InputPacket extends ReceivingPacket {
         p.movingDown = stream.readBoolean();
         p.movingLeft = stream.readBoolean();
         p.movingRight = stream.readBoolean();
-        p.punching = stream.readBoolean();
-        p.rotation = stream.readRotation();
+        p.attackStart = stream.readBoolean();
+        p.attackHold = stream.readBoolean();
+
+        if (stream.readBoolean()) { // switch guns
+            if (p.activeWeapon.category === "melee") {
+                p.activeWeapon = p.weapons[1];
+            } else {
+                p.activeWeapon = p.weapons[0];
+            }
+            p.game.fullDirtyObjects.add(p);
+            p.fullDirtyObjects.add(p);
+        }
+
+        p.rotation = stream.readRotation(16);
     }
 }

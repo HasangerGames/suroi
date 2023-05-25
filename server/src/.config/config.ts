@@ -15,7 +15,7 @@ export const Config = {
     randomUsernames: false,
     debug: {
         spawnLocation: Vec2(360, 360),
-        fixedSpawnLocation: false,
+        fixedSpawnLocation: true,
         disableMapGeneration: false,
         stopServerAfter: -1
     }

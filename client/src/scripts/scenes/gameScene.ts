@@ -10,6 +10,9 @@ import { Player } from "../objects/player";
 
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { localStorageInstance } from "../utils/localStorageHandler";
+import { ObjectType } from "../../../../common/src/utils/objectType";
+import { ObjectCategory } from "../../../../common/src/constants";
+import { Guns } from "../../../../common/src/definitions/guns";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -29,13 +32,17 @@ export class GameScene extends Phaser.Scene {
         this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
 
         for (const material of Materials) {
-            this.loadSound(`${material}_hit_1`, `sfx/${material}_hit_1`);
-            this.loadSound(`${material}_hit_2`, `sfx/${material}_hit_2`);
-            this.loadSound(`${material}_destroyed`, `sfx/${material}_destroyed`);
+            this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
+            this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
+            this.loadSound(`${material}_destroyed`, `sfx/hits/${material}_destroyed`);
         }
 
-        this.loadSound("player_hit_1", "sfx/player_hit_1");
-        this.loadSound("player_hit_2", "sfx/player_hit_2");
+        for (const gun of Guns) {
+            this.loadSound(gun.idString, `sfx/guns/${gun.idString}`);
+        }
+
+        this.loadSound("player_hit_1", "sfx/hits/player_hit_1");
+        this.loadSound("player_hit_2", "sfx/hits/player_hit_2");
 
         this.loadSound("health_explosion", "sfx/health_explosion");
 
@@ -43,15 +50,23 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+        this.input.on("pointermove", (pointer: Phaser.Input.Pointer): void => {
             if (this.player === undefined) return;
             this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
             this.player.inputsDirty = true;
         });
 
-        this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+        this.input.on("pointerdown", (pointer: Phaser.Input.Pointer): void => {
             if (pointer.leftButtonDown()) {
-                this.player.punching = true;
+                this.player.attackStart = true;
+                this.player.attackHold = true;
+                this.player.inputsDirty = true;
+            }
+        });
+
+        this.input.on("pointerup", (pointer: Phaser.Input.Pointer): void => {
+            if (!pointer.leftButtonDown()) {
+                this.player.attackHold = false;
                 this.player.inputsDirty = true;
             }
         });
@@ -60,6 +75,14 @@ export class GameScene extends Phaser.Scene {
         this.addKey("S", "down");
         this.addKey("A", "left");
         this.addKey("D", "right");
+
+        const key = this.input.keyboard?.addKey("Q");
+        if (key !== undefined) {
+            key.on("down", () => {
+                this.player.switchGun = true;
+                this.player.inputsDirty = true;
+            });
+        }
 
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
@@ -115,7 +138,9 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create the player
-        this.activeGame.activePlayer = new Player(this.activeGame, this);
+        // TODO fix this, lol
+        // > undefined as unknown as number
+        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
         this.activeGame.activePlayer.name = $("#username-input").text();
 
         // Follow the player w/ the camera

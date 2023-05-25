@@ -40,8 +40,11 @@ export class UpdatePacket extends ReceivingPacket {
         // Health
         if (stream.readBoolean()) {
             p.health = stream.readFloat(0, 100, 8);
-            $("#health-bar").width(`${p.health}%`);
-            $("#health-bar-animation").width(`${p.health}%`);
+            const roundedHealth = Math.round(p.health);
+            const healthPercentage = `${roundedHealth}%`;
+            $("#health-bar").width(healthPercentage);
+            $("#health-bar-animation").width(healthPercentage);
+            $("#health-bar-percentage").text(roundedHealth);
             if (p.health < 60 && p.health > 10) {
                 $("#health-bar").css("background-color", `rgb(255, ${(p.health - 10) * 4}, ${(p.health - 10) * 4})`);
             } else if (p.health <= 10) {
@@ -70,8 +73,7 @@ export class UpdatePacket extends ReceivingPacket {
         //
 
         // Full objects
-        const fullObjectsDirty: boolean = stream.readBoolean();
-        if (fullObjectsDirty) {
+        if (stream.readBoolean()) {
             const fullObjectCount: number = stream.readUint8();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type: ObjectType = stream.readObjectType();
@@ -114,8 +116,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Partial objects
-        const partialObjectsDirty: boolean = stream.readBoolean();
-        if (partialObjectsDirty) {
+        if (stream.readBoolean()) {
             const partialObjectCount: number = stream.readUint8();
             for (let i = 0; i < partialObjectCount; i++) {
                 const id: number = stream.readUint16();
@@ -129,8 +130,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Deleted objects
-        const deletedObjectsDirty: boolean = stream.readBoolean();
-        if (deletedObjectsDirty) {
+        if (stream.readBoolean()) {
             const deletedObjectCount: number = stream.readUint8();
             for (let i = 0; i < deletedObjectCount; i++) {
                 const id: number = stream.readUint16();
@@ -144,9 +144,17 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
+        // Bullets
+        if (stream.readBoolean()) {
+            const bulletCount: number = stream.readUint8();
+            for (let i = 0; i < bulletCount; i++) {
+                const type: ObjectType = stream.readObjectTypeNoCategory(ObjectCategory.Bullet);
+                p.scene.playSound(type.idString.substring(0, type.idString.length - 7)); // Remove "_bullet" from the end of the string
+            }
+        }
+
         // Explosions
-        const newExplosions = stream.readBoolean();
-        if (newExplosions) {
+        if (stream.readBoolean()) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
                 explosion(game,

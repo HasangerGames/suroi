@@ -86,13 +86,22 @@ export class UpdatePacket extends SendingPacket {
             p.deletedObjects.clear();
         }
 
-        // Explosions
-        const explosionsDirty = p.game.explosions.size !== 0;
-        stream.writeBoolean(explosionsDirty);
+        // Bullets
+        const bulletsDirty = game.newBullets.size !== 0;
+        stream.writeBoolean(bulletsDirty);
+        if (bulletsDirty) {
+            stream.writeUint8(game.newBullets.size);
+            for (const bullet of game.newBullets) {
+                stream.writeObjectTypeNoCategory(bullet.type);
+            }
+        }
 
+        // Explosions
+        const explosionsDirty = game.explosions.size !== 0;
+        stream.writeBoolean(explosionsDirty);
         if (explosionsDirty) {
-            stream.writeUint8(p.game.explosions.size);
-            for (const explosion of p.game.explosions) {
+            stream.writeUint8(game.explosions.size);
+            for (const explosion of game.explosions) {
                 explosion.serialize(stream);
             }
         }

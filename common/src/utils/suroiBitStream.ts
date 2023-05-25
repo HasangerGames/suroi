@@ -59,7 +59,7 @@ export class SuroiBitStream extends BitStream {
 
     /**
     * Write a position Vector to the stream.
-    * @param Vector The Vector.
+    * @param vector The Vector.
     * @param minX The minimum X position.
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
@@ -119,11 +119,18 @@ export class SuroiBitStream extends BitStream {
 
     /**
     * Write a game object type to the stream.
-    * @param type The game object type,
+    * @param type The ObjectType
     */
     writeObjectType(type: ObjectType): void {
         this.writeBits(type.category, OBJECT_CATEGORY_BITS);
+        this.writeObjectTypeNoCategory(type);
+    }
 
+    /**
+     * Write a game object type, minus the category, to the stream.
+     * @param type The ObjectType
+     */
+    writeObjectTypeNoCategory(type: ObjectType): void {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
         if (definitions !== undefined) {
             this.writeBits(type.idNumber, definitions.bitCount);
@@ -136,6 +143,15 @@ export class SuroiBitStream extends BitStream {
     */
     readObjectType(): ObjectType {
         const category: ObjectCategory = this.readBits(OBJECT_CATEGORY_BITS);
+        return this.readObjectTypeNoCategory(category);
+    }
+
+    /**
+     * Read a game object type, minus the category, from stream.
+     * @param category The object category
+     * @return The object type
+     */
+    readObjectTypeNoCategory(category: ObjectCategory): ObjectType {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
 
         if (definitions !== undefined) {
@@ -160,7 +176,8 @@ export class SuroiBitStream extends BitStream {
     * Write a position Vector to the stream with the game default max and minimum X and Y.
     * This is used to write positions from the server to the client.
     * And the Y position is subtracted from 720 because phaser Y axis is inverted.
-    * @param vector The vector to write.
+    * @param x The x-coordinate of the vector to write
+    * @param y The y-coordinate of the vector to write
     */
     writePosition2(x: number, y: number): void {
         this.writeVector2(x, 720 - y, 0, 0, 1024, 1024, 16);
@@ -175,19 +192,20 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-    * Write a rotation to the stream.
-    * @param value The rotation to write, in radians.
-    */
-    writeRotation(value: number): void {
-        this.writeFloat(value, -Math.PI, Math.PI, 8);
+     * Write a rotation to the stream.
+     * @param value The rotation to write, in radians
+     * @param bitCount The number of bits to write
+     */
+    writeRotation(value: number, bitCount: number): void {
+        this.writeFloat(value, -Math.PI, Math.PI, bitCount);
     }
 
     /**
-    * Read a rotation from the stream.
-    * @return The rotation in radians.
-    */
-    readRotation(): number {
-        return this.readFloat(-Math.PI, Math.PI, 8);
+     * Read a rotation from the stream.
+     * @return The rotation in radians.
+     */
+    readRotation(bitCount: number): number {
+        return this.readFloat(-Math.PI, Math.PI, bitCount);
     }
 
     /**
