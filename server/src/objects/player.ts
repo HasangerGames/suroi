@@ -195,26 +195,29 @@ export class Player extends GameObject {
     useMelee(): void {
         this.animation.type = AnimationType.Punch;
         this.animation.seq = !this.animation.seq;
+        const weaponIDString: string = this.activeWeapon.type.idString;
         setTimeout(() => {
-            const definition = this.activeWeaponDef as MeleeDefinition;
-            const rotated = vRotate(definition.offset, this.rotation);
-            const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
-            const hitbox: Hitbox = new CircleHitbox(definition.radius, position);
+            if (this.activeWeapon.type.idString === weaponIDString) {
+                const definition = this.activeWeaponDef as MeleeDefinition;
+                const rotated = vRotate(definition.offset, this.rotation);
+                const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
+                const hitbox: Hitbox = new CircleHitbox(definition.radius, position);
 
-            // Damage the closest object
-            let minDist = Number.MAX_VALUE;
-            let closestObject: GameObject | undefined;
-            for (const object of this.visibleObjects) {
-                if (!object.dead && object !== this) {
-                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
-                    if (record?.collided === true && record.distance < minDist) {
-                        minDist = record.distance;
-                        closestObject = object;
+                // Damage the closest object
+                let minDist = Number.MAX_VALUE;
+                let closestObject: GameObject | undefined;
+                for (const object of this.visibleObjects) {
+                    if (!object.dead && object !== this) {
+                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
+                        if (record?.collided === true && record.distance < minDist) {
+                            minDist = record.distance;
+                            closestObject = object;
+                        }
                     }
                 }
-            }
-            if (closestObject?.dead === false) {
-                closestObject.damage(definition.damage, this);
+                if (closestObject?.dead === false) {
+                    closestObject.damage(definition.damage, this);
+                }
             }
         }, 50);
     }
