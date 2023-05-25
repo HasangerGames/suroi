@@ -5,23 +5,19 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { PacketType } from "../../../../../common/src/constants";
 
 export class InputPacket extends SendingPacket {
-    constructor(player: Player) {
-        super(player);
+    override readonly allocBytes = 8;
+    override readonly type = PacketType.Input;
 
-        this.type = PacketType.Input;
-        this.allocBytes = 8;
-    }
-
-    serialize(stream: SuroiBitStream): void {
+    override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        const p: Player = this.player;
-        stream.writeBoolean(p.movingUp);
-        stream.writeBoolean(p.movingDown);
-        stream.writeBoolean(p.movingLeft);
-        stream.writeBoolean(p.movingRight);
-        stream.writeBoolean(p.punching);
-        p.punching = false;
-        stream.writeRotation(p.rotation);
+        const player: Player = this.player;
+        stream.writeBoolean(player.movement.up);
+        stream.writeBoolean(player.movement.down);
+        stream.writeBoolean(player.movement.left);
+        stream.writeBoolean(player.movement.right);
+        stream.writeBoolean(player.punching);
+        player.punching = false;
+        stream.writeRotation(player.rotation);
     }
 }

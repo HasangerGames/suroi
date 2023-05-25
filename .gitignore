@@ -10,3 +10,4 @@ yarn.lock
 # IDE garbage
 .idea
 .DS_Store
+.vscode

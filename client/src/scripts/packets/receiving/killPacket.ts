@@ -1,6 +1,5 @@
 import $ from "jquery";
 
-import { type Player } from "../../objects/player";
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -8,11 +7,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 let timeoutId: number;
 
 export class KillPacket extends ReceivingPacket {
-    public constructor(player: Player) {
-        super(player);
-    }
-
-    deserialize(stream: SuroiBitStream): void {
+    override deserialize(stream: SuroiBitStream): void {
         const kills = stream.readUint8();
         const killText = `Kills: ${kills}`;
 

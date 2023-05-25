@@ -4,7 +4,7 @@ import { JoinedPacket } from "../sending/joinedPacket";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 
 export class JoinPacket extends ReceivingPacket {
-    deserialize(stream: SuroiBitStream): void {
+    override deserialize(stream: SuroiBitStream): void {
         const p = this.player;
         const game = p.game;
 

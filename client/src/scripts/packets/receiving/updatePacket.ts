@@ -1,7 +1,7 @@
 import { type Game } from "../../game";
 
 import { DeathMarker } from "../../objects/deathMarker";
-import { Explosion } from "../../objects/explosion";
+import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { Obstacle } from "../../objects/obstacle";
 
@@ -14,11 +14,7 @@ import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 
 export class UpdatePacket extends ReceivingPacket {
-    public constructor(player: Player) {
-        super(player);
-    }
-
-    deserialize(stream: SuroiBitStream): void {
+    override deserialize(stream: SuroiBitStream): void {
         const p: Player = this.player;
         if (p === undefined) return;
         const game: Game = p.game;
@@ -47,11 +43,11 @@ export class UpdatePacket extends ReceivingPacket {
             $("#health-bar").width(`${p.health}%`);
             $("#health-bar-animation").width(`${p.health}%`);
             if (p.health < 60 && p.health > 10) {
-                $('#health-bar').css('background-color', `rgb(255, ${(p.health-10)*4}, ${(p.health-10)*4})`);
+                $("#health-bar").css("background-color", `rgb(255, ${(p.health - 10) * 4}, ${(p.health - 10) * 4})`);
             } else if (p.health <= 10) {
-                $('#health-bar').css('background-color', `rgb(${p.health * 10 + 155}, 0, 0)`);
+                $("#health-bar").css("background-color", `rgb(${p.health * 10 + 155}, 0, 0)`);
             } else {
-                $('#health-bar').css('background-color', "#f8f9fa");
+                $("#health-bar").css("background-color", "#f8f9fa");
             }
         }
 
@@ -81,28 +77,28 @@ export class UpdatePacket extends ReceivingPacket {
                 const type: ObjectType = stream.readObjectType();
                 const id: number = stream.readUint16();
                 let object: GameObject | undefined;
+
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            object = new Player(this.player.game, this.player.scene);
+                            object = new Player(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }
                         case ObjectCategory.Obstacle: {
-                            object = new Obstacle(this.player.game, this.player.scene);
+                            object = new Obstacle(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Obstacle>, id);
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(this.player.game, this.player.scene);
-
+                            object = new DeathMarker(this.player.game, this.player.scene, type, id);
                             break;
                         }
                     }
+
                     if (object === undefined) {
                         console.warn(`Unknown object category: ${type.category}`);
                         continue;
                     }
-                    object.type = type;
-                    object.id = id;
+
                     game.objects.set(object.id, object);
                 } else {
                     const objectFromSet: GameObject | undefined = game.objects.get(id);
@@ -153,7 +149,10 @@ export class UpdatePacket extends ReceivingPacket {
         if (newExplosions) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                new Explosion(game, this.player.scene).deserializeFull(stream);
+                explosion(game,
+                    this.player.scene,
+                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
+                    stream.readPosition());
             }
         }
 

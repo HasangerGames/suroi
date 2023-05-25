@@ -7,8 +7,8 @@
     "build": "webpack --config ./webpack/webpack.prod.ts",
     "test": "webpack --config ./webpack/webpack.test.ts",
     "dev": "webpack serve --config ./webpack/webpack.dev.ts",
-    "lint": "eslint . --fix --ext .js,.ts,.tsx",
-    "lint:ci": "eslint . --ext .js,.ts,.tsx"
+    "lint": "eslint . --fix --ext .js,.ts",
+    "lint:ci": "eslint . --ext .js,.ts"
   },
   "engines": {
     "node": ">=18.8.0"
@@ -26,8 +26,8 @@
     "@babel/preset-env": "^7.21.5",
     "@types/jquery": "^3.5.16",
     "@types/node": "^20.2.3",
-    "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
     "copy-webpack-plugin": "^11.0.0",
@@ -47,15 +47,15 @@
     "postcss-loader": "^7.3.0",
     "postcss-preset-env": "^8.4.1",
     "sass": "^1.62.1",
-    "sass-loader": "^13.2.2",
+    "sass-loader": "^13.3.0",
     "spritesheet-webpack-plugin": "^0.0.1",
-    "ts-loader": "^9.4.2",
+    "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "webpack": "^5.83.1",
     "webpack-cli": "^5.1.1",
     "webpack-dev-server": "^4.15.0",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.9.0"
   },
   "dependencies": {
     "axios": "^1.4.0",

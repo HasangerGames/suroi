@@ -10,7 +10,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "strictNullChecks": true
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "strict": true
   },
   "exclude": ["node_modules"]
 }

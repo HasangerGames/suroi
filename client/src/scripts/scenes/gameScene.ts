@@ -9,12 +9,13 @@ import { JoinPacket } from "../packets/sending/joinPacket";
 import { Player } from "../objects/player";
 
 import { Materials } from "../../../../common/src/definitions/obstacles";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class GameScene extends Phaser.Scene {
-    activeGame: Game;
+    activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
-    volume = 1;
+    volume = localStorageInstance.config.masterVolume ?? 1;
 
     constructor() {
         super("game");
@@ -36,9 +37,11 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("player_hit_1", "sfx/player_hit_1");
         this.loadSound("player_hit_2", "sfx/player_hit_2");
 
-        this.load.audio("swing", require("../../assets/audio/sfx/swing.mp3"));
-        this.load.audio("grass_step_01", require("../../assets/audio/sfx/footsteps/grass_01.mp3"));
-        this.load.audio("grass_step_02", require("../../assets/audio/sfx/footsteps/grass_02.mp3"));
+        this.loadSound("health_explosion", "sfx/health_explosion");
+
+        this.loadSound("swing", "sfx/swing");
+        this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
+        this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
         this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
             if (this.player === undefined) return;
@@ -53,10 +56,10 @@ export class GameScene extends Phaser.Scene {
             }
         });
 
-        this.addKey("W", "movingUp");
-        this.addKey("S", "movingDown");
-        this.addKey("A", "movingLeft");
-        this.addKey("D", "movingRight");
+        this.addKey("W", "up");
+        this.addKey("S", "down");
+        this.addKey("A", "left");
+        this.addKey("D", "right");
 
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
@@ -71,16 +74,16 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    private addKey(keyString: string, valueToToggle: string): void {
+    private addKey(keyString: string, valueToToggle: keyof Player["movement"]): void {
         const key: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(keyString);
         if (key !== undefined) {
             key.on("down", () => {
-                this.player[valueToToggle] = true;
+                this.player.movement[valueToToggle] = true;
                 this.player.inputsDirty = true;
             });
 
             key.on("up", () => {
-                this.player[valueToToggle] = false;
+                this.player.movement[valueToToggle] = false;
                 this.player.inputsDirty = true;
             });
         }

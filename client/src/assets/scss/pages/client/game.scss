@@ -1,5 +1,4 @@
 @import "../../palette.scss";
-@import "../../utils/animations.scss";
 
 body > canvas {
     cursor: crosshair;
@@ -93,8 +92,10 @@ body > canvas {
     text-align: center;
 
     #kill-msg-player-name {
-
+        font-weight: bold;
+        color: $orange;
     }
+
     #kill-msg-kills {
         font-weight: bold;
         font-size: xx-large;

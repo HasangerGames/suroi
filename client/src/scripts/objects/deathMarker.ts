@@ -3,21 +3,25 @@ import gsap from "gsap";
 import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { ObjectType } from "../../../../common/src/utils/objectType";
+import { ObjectCategory } from "../../../../common/src/constants";
 
 export class DeathMarker extends GameObject {
-    playerName: string;
+    override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
 
-    image: Phaser.GameObjects.Image;
-    playerNameText: Phaser.GameObjects.Text;
+    playerName!: string;
 
-    deserializePartial(stream: SuroiBitStream): void {
+    image!: Phaser.GameObjects.Image;
+    playerNameText!: Phaser.GameObjects.Text;
+
+    override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
         if (this.image === undefined) {
             this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", "death_marker.svg");
         }
     }
 
-    deserializeFull(stream: SuroiBitStream): void {
+    override deserializeFull(stream: SuroiBitStream): void {
         this.playerName = stream.readUTF8String(16);
 
         if (this.playerNameText === undefined) {
@@ -44,7 +48,7 @@ export class DeathMarker extends GameObject {
         }
     }
 
-    destroy(): void {
+    override destroy(): void {
         this.image.destroy(true);
         this.playerNameText.destroy(true);
     }

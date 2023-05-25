@@ -1,67 +1,64 @@
-import gsap, { Expo } from "gsap";
-
-import core from "../core";
-
 import { type Game } from "../game";
 import { type GameScene } from "../scenes/gameScene";
-import { GameObject } from "../types/gameObject";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { distance } from "../../../../common/src/utils/math";
+import { type Vector, vMul } from "../../../../common/src/utils/vector";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 
-export class Explosion extends GameObject {
-    image: Phaser.GameObjects.Image;
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+// custom particle class that adds friction to the velocity
+class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
+    friction = 0.95;
 
-    constructor(game: Game, scene: GameScene) {
-        super(game, scene);
+    update(delta: number, step: number, processors: Phaser.GameObjects.Particles.ParticleProcessor[]): boolean {
+        const updated = super.update(delta, step, processors);
+        this.velocityX *= this.friction;
+        this.velocityY *= this.friction;
+        return updated;
     }
+}
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-    deserializePartial(stream: SuroiBitStream): void {}
+export function explosion(game: Game, scene: GameScene, type: ObjectType, position: Vector): void {
+    const definition = type.definition as ExplosionDefinition;
 
-    deserializeFull(stream: SuroiBitStream): void {
-        this.type = stream.readObjectType();
-        const definition = this.type.definition as ExplosionDefinition;
+    const phaserPos = vMul(position, 20);
 
-        this.position = stream.readPosition();
-        this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", definition.animation.frame).setScale(0);
+    const image = scene.add.image(phaserPos.x, phaserPos.y, "main", definition.animation.frame).setScale(0);
 
-        this.scene.add.particles(0, 0, "main", {
-            frame: `${definition.particle.idParticle}_particle.svg`,
-            emitZone: {
-                type: "random",
-                source: new Phaser.Geom.Circle(this.position.x * 20, this.position.y * 20, 350) as Phaser.Types.GameObjects.Particles.RandomZoneSource,
-            },
-            quantity: 1,
-            lifespan: definition.particle.duration * 750,
-            speed: { min: 0, max: 15 },
-            scale: { start: 1, end: 0.75 },
-            alpha: { start: 1, end: 0.1 },
-            emitting: false,
-        }).explode(20);
+    const emitter = scene.add.particles(phaserPos.x, phaserPos.y, "main", {
+        frame: definition.particles.frame,
+        lifespan: definition.particles.duration,
+        speed: { min: 0, max: definition.radius.max * 60 },
+        // https://phaser.discourse.group/t/perticle-emitters-how-to-fade-particles-in-from-0-then-back-out-to-0/1901
+        alpha: {
+            onUpdate: (p: Phaser.GameObjects.Particles.Particle, k: string, t: number): number => {
+                return 1 - 2 * Math.abs(t - 0.5);
+            }
+        },
+        particleClass: ExplosionParticle,
+        emitting: false
+    });
+    emitter.explode(definition.particles.count);
 
-        gsap.to(this.image, {
-            scale: definition.animation.scale,
-            duration: definition.duration,
-            ease: Expo.easeOut
-        });
+    scene.tweens.add({
+        targets: image,
+        scale: definition.animation.scale,
+        duration: definition.animation.duration,
+        ease: "Expo.Out"
+    });
 
-        void gsap.to(this.image, {
-            alpha: 0,
-            duration: definition.duration * 1.5,
-            ease: Expo.easeOut
-        }).then(() => {
-            this.destroy();
-        });
+    scene.tweens.add({
+        targets: image,
+        alpha: 0,
+        duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
+        ease: "Expo.Out"
+    }).on("complete", () => {
+        image.destroy();
+    });
 
-        if (core.game?.activePlayer !== undefined && distance(core.game.activePlayer.position, this.position) <= 70) {
-            this.scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
-        }
-    }
+    if (game?.activePlayer !== undefined && distance(game.activePlayer.position, position) <= 70) {
+        scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
 
-    destroy(): void {
-        //this.emitter.destroy(true);
-        this.image.destroy(true);
+        if (definition.sound !== undefined) scene.playSound(definition.sound);
     }
 }
