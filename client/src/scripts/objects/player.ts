@@ -36,12 +36,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         down: false,
         right: false
     };
-    movementkeys = {
+
+    movementKeys = {
         up: "W",
         down: "S",
         left: "A",
         right: "D"
-    }
+    };
 
     attackStart = false;
     attackHold = false;
@@ -220,6 +221,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (weaponDef.image !== undefined) {
             this.weaponImg.setFrame(weaponDef.image?.frame);
             this.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.scene.playSound(`${this.weapon.idString}_switch`);
             if (this.container !== undefined) this.container.bringToTop(this.body);
         } else {
             if (this.container !== undefined) this.container.sendToBack(this.body);

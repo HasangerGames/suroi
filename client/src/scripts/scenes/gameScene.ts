@@ -112,13 +112,13 @@ export class GameScene extends Phaser.Scene {
             });
         }
     }
+
     changeKey(newKeyString: string, valueToToggle: keyof Player["movement"]): void {
-        this.input.keyboard?.removeKey(this.player.movementkeys[valueToToggle]);
-        this.player.movementkeys[valueToToggle] = newKeyString;
-        console.warn("test")
+        this.input.keyboard?.removeKey(this.player.movementKeys[valueToToggle]);
+        this.player.movementKeys[valueToToggle] = newKeyString;
+        console.warn("test");
         const newKey: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(newKeyString);
         if (newKey !== undefined) {
-
             newKey.on("down", () => {
                 this.player.movement[valueToToggle] = true;
                 this.player.inputsDirty = true;
@@ -166,14 +166,14 @@ export class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player.container);
 
         // Load the player keys
-        this.addKey(this.player.movementkeys["up"], "up");
-        this.addKey(this.player.movementkeys["down"], "down");
-        this.addKey(this.player.movementkeys["left"], "left");
-        this.addKey(this.player.movementkeys["right"], "right");
-        $("#key-input-up").val(this.player.movementkeys["up"]);
-        $("#key-input-down").val(this.player.movementkeys["down"]);
-        $("#key-input-left").val(this.player.movementkeys["left"]);
-        $("#key-input-right").val(this.player.movementkeys["right"]);
+        this.addKey(this.player.movementKeys.up, "up");
+        this.addKey(this.player.movementKeys.down, "down");
+        this.addKey(this.player.movementKeys.left, "left");
+        this.addKey(this.player.movementKeys.right, "right");
+        $("#key-input-up").val(this.player.movementKeys.up);
+        $("#key-input-down").val(this.player.movementKeys.down);
+        $("#key-input-left").val(this.player.movementKeys.left);
+        $("#key-input-right").val(this.player.movementKeys.right);
 
         // Start the tick loop
         this.tick();
