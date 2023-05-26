@@ -149,7 +149,7 @@ export class UpdatePacket extends ReceivingPacket {
             const bulletCount: number = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 const type: ObjectType = stream.readObjectTypeNoCategory(ObjectCategory.Bullet);
-                p.scene.playSound(type.idString.substring(0, type.idString.length - 7)); // Remove "_bullet" from the end of the string
+                p.scene.playSound(`${type.idString.substring(0, type.idString.length - 7)}_fire`); // Remove "_bullet" from the end of the string
             }
         }
 

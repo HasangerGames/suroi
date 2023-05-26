@@ -9,6 +9,7 @@ export interface GunDefinition extends ObjectDefinition {
     readonly fists: {
         readonly left: Vector
         readonly right: Vector
+        readonly animationDuration: number
     }
     image?: {
         frame: string
@@ -25,7 +26,8 @@ export const Guns: GunDefinition[] =
         shotSpread: 0.25,
         fists: {
             left: v(65, 0),
-            right: v(140, -10)
+            right: v(140, -10),
+            animationDuration: 100
         },
         image: {
             frame: "ak47-top.svg",

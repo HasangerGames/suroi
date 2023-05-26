@@ -15,6 +15,7 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -39,6 +40,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     attackStart = false;
     attackHold = false;
     switchGun = false;
+
+    isNew = true;
 
     animationSeq!: boolean;
 
@@ -67,7 +70,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.weaponImg = this.scene.add.image(0, 0, "main");
         this.updateFistsPosition();
 
-        this.container = this.scene.add.container(360, 360, [this.weaponImg, this.body, this.leftFist, this.rightFist]).setDepth(1);
+        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist, this.weaponImg]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
             frame: "blood_particle.svg",
@@ -130,6 +133,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 case AnimationType.Punch: {
                     this.updateFistsPosition();
                     const weaponDef = this.weapon.definition as MeleeDefinition;
+                    if (weaponDef.fists.useLeft === undefined) break;
+
                     let altFist: boolean;
                     altFist = Math.random() < 0.5;
                     if (!weaponDef.fists.randomFist) altFist = true;
@@ -141,7 +146,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             y: weaponDef.fists.useLeft.y,
                             duration: weaponDef.fists.animationDuration,
                             yoyo: true,
-                            ease: "Linear"
+                            ease: Phaser.Math.Easing.Cubic.Out
                         });
                     }
                     if (altFist) {
@@ -151,7 +156,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             y: weaponDef.fists.useRight.y,
                             duration: weaponDef.fists.animationDuration,
                             yoyo: true,
-                            ease: "Linear"
+                            ease: Phaser.Math.Easing.Cubic.Out
                         });
                     }
 
@@ -184,27 +189,34 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(): void {
-        const weaponDef = this.weapon.definition as MeleeDefinition;
-        /*this.scene.tweens.add({
-            targets: this.leftFist,
-            x: weaponDef.fists.left.x,
-            y: weaponDef.fists.left.y,
-            duration: weaponDef.fists.animationDuration,
-            ease: "Linear"
-        });
-        this.scene.tweens.add({
-            targets: this.rightFist,
-            x: weaponDef.fists.right.x,
-            y: weaponDef.fists.right.y,
-            duration: weaponDef.fists.animationDuration,
-            ease: "Linear"
-        });*/
-        this.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
-        this.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+        const weaponDef = this.weapon.definition as GunDefinition | MeleeDefinition;
+        if (this.isNew) {
+            this.isNew = false;
+            this.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
+            this.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+        } else {
+            this.scene.tweens.add({
+                targets: this.leftFist,
+                x: weaponDef.fists.left.x,
+                y: weaponDef.fists.left.y,
+                duration: weaponDef.fists.animationDuration,
+                ease: "Linear"
+            });
+            this.scene.tweens.add({
+                targets: this.rightFist,
+                x: weaponDef.fists.right.x,
+                y: weaponDef.fists.right.y,
+                duration: weaponDef.fists.animationDuration,
+                ease: "Linear"
+            });
+        }
         this.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
             this.weaponImg.setFrame(weaponDef.image?.frame);
             this.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            if (this.container !== undefined) this.container.bringToTop(this.body);
+        } else {
+            if (this.container !== undefined) this.container.sendToBack(this.body);
         }
     }
 

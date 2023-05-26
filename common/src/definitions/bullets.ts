@@ -13,9 +13,9 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>(
     [
         {
             idString: "ak47_bullet",
-            damage: 7.5,
-            obstacleMultiplier: 2,
-            speed: 10000,
+            damage: 8.5,
+            obstacleMultiplier: 2.5,
+            speed: 1,
             speedVariance: 0,
             maxDistance: 1000
         }

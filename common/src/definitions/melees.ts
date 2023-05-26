@@ -31,7 +31,7 @@ export const Melees: MeleeDefinition[] =
         offset: v(2.5, 0),
         cooldown: 250,
         fists: {
-            animationDuration: 110,
+            animationDuration: 125,
             randomFist: true,
             left: v(38, 35),
             right: v(38, -35),
