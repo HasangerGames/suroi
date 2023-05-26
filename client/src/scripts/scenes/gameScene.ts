@@ -112,6 +112,24 @@ export class GameScene extends Phaser.Scene {
             });
         }
     }
+    changeKey(newKeyString: string, valueToToggle: keyof Player["movement"]): void {
+        this.input.keyboard?.removeKey(this.player.movementkeys[valueToToggle]);
+        this.player.movementkeys[valueToToggle] = newKeyString;
+        console.warn("test")
+        const newKey: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(newKeyString);
+        if (newKey !== undefined) {
+
+            newKey.on("down", () => {
+                this.player.movement[valueToToggle] = true;
+                this.player.inputsDirty = true;
+            });
+
+            newKey.on("up", () => {
+                this.player.movement[valueToToggle] = false;
+                this.player.inputsDirty = true;
+            });
+        }
+    }
 
     get player(): Player {
         return this.activeGame.activePlayer;
@@ -146,6 +164,16 @@ export class GameScene extends Phaser.Scene {
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.container);
+
+        // Load the player keys
+        this.addKey(this.player.movementkeys["up"], "up");
+        this.addKey(this.player.movementkeys["down"], "down");
+        this.addKey(this.player.movementkeys["left"], "left");
+        this.addKey(this.player.movementkeys["right"], "right");
+        $("#key-input-up").val(this.player.movementkeys["up"]);
+        $("#key-input-down").val(this.player.movementkeys["down"]);
+        $("#key-input-left").val(this.player.movementkeys["left"]);
+        $("#key-input-right").val(this.player.movementkeys["right"]);
 
         // Start the tick loop
         this.tick();
