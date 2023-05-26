@@ -46,12 +46,31 @@ $(() => {
             window.location.reload(); // TODO Find a more elegant solution
         } else if (target?.id === "btn-resume-game") {
             $("#game-menu").hide();
+        } else if (target?.id === "btn-controls-game") {
+            $("#game-menu").hide();
+            $("#controls-menu").show();
+        } else if (target?.id === "btn-controls-quit-menu"){
+            $("#controls-menu").hide();
+            $("#game-menu").show();
+        } else if (target?.id === "btn-controls-resume-game"){
+            $("#controls-menu").hide();
+        } else if (target?.id === "btn-save-inputs"){
+            $("#controls-menu").hide();
+            const up_input = $("#key-input-up").val();
+            const down_input = $("#key-input-down").val();
+            const left_input = $("#key-input-left").val();
+            const right_input = $("#key-input-right").val();
+            (core.phaser?.scene.getScene("game") as GameScene).changeKey(up_input,"up");
+            (core.phaser?.scene.getScene("game") as GameScene).changeKey(down_input,"down");
+            (core.phaser?.scene.getScene("game") as GameScene).changeKey(left_input,"left");
+            (core.phaser?.scene.getScene("game") as GameScene).changeKey(right_input,"right");
         }
     });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape" && $("canvas").hasClass("active")) {
             $("#game-menu").toggle();
+            $("#controls-menu").hide();
         }
     });
 
