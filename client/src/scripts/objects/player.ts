@@ -35,6 +35,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         down: false,
         right: false
     };
+    movementkeys = {
+        up: "W",
+        down: "S",
+        left: "A",
+        right: "D"
+    }
 
     attackStart = false;
     attackHold = false;
