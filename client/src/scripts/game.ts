@@ -6,6 +6,7 @@ import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { GameOverPacket } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
+import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 
 import { type Player } from "./objects/player";
 import { type SendingPacket } from "./types/sendingPacket";
@@ -58,6 +59,10 @@ export class Game {
                 }
                 case PacketType.Kill: {
                     new KillPacket(this.activePlayer).deserialize(stream);
+                    break;
+                }
+                case PacketType.KillFeed: {
+                    new KillFeedPacket(this.activePlayer).deserialize(stream);
                     break;
                 }
             }

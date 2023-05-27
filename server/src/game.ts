@@ -21,6 +21,9 @@ import { log } from "../../common/src/utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
+import { type BulletDefinition } from "../../common/src/definitions/bullets";
+import { type GunDefinition } from "../../common/src/definitions/guns";
+import { type KillFeedPacket } from "./packets/sending/killFeedPacket";
 
 export class Game {
     map: Map;
@@ -39,11 +42,12 @@ export class Game {
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
 
+    kills = new Set<KillFeedPacket>(); // All kills this tick
+
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
     explosions: Set<Explosion> = new Set<Explosion>();
-
     bullets = new Set<Bullet>(); // All bullets that currently exist
     newBullets = new Set<Bullet>(); // All bullets created this tick
     deletedBulletIDs = new Set<number>();
@@ -229,6 +233,7 @@ export class Game {
                     }
                 }
 
+                for (const kill of this.kills) p.sendPacket(kill);
                 p.sendPacket(new UpdatePacket(p));
             }
 
@@ -240,6 +245,7 @@ export class Game {
             this.deletedBulletIDs.clear();
             this.explosions.clear();
             this.aliveCountDirty = false;
+            if (this.kills.size > 0) this.kills = new Set<KillFeedPacket>();
 
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!

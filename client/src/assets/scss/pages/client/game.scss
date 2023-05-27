@@ -15,34 +15,52 @@ body > canvas {
     position: absolute;
     top: .5rem;
     right: .5rem;
-    display: flex;
-    background: $transparent_bg;
-    border-radius: 8px;
-    justify-content: center;
-    align-items: center;
-    padding: .6rem;
-    gap: .6rem;
 
-    .divider {
-        display: inline-block;
-        height: 50px;
-        width: 2px;
-        background-color: white;
+    .alive-counter {
+        margin-left: auto;
+        max-width: 200px;
+        display: flex;
+        background: $transparent_bg;
+        border-radius: 8px;
+        justify-content: center;
+        align-items: center;
+        padding: .6rem;
+        gap: .6rem;
+        
+        .divider {
+            display: inline-block;
+            height: 50px;
+            width: 2px;
+            background-color: white;
+        }
+
+        #ui-alive-text {
+            font-family: "Russo One", sans-serif;
+            font-size: 32px;
+            padding-right: 8px;
+            position: relative;
+            bottom: -1px;
+        }
+
+        #ui-players-alive {
+            padding-left: 5px;
+            padding-right: 8px;
+            font-weight: bold;
+            font-size: 50px;
+        }
     }
 
-    #ui-alive-text {
-        font-family: "Russo One", sans-serif;
-        font-size: 32px;
-        padding-right: 8px;
-        position: relative;
-        bottom: -1px;
-    }
-
-    #ui-players-alive {
-        padding-left: 5px;
-        padding-right: 8px;
-        font-weight: bold;
-        font-size: 50px;
+    #kill-feed {
+        max-height: 200px;
+        overflow: hidden;
+        
+        .kill-feed-item {
+            max-width: fit-content;
+            padding: .5rem;
+            margin: .3rem 0 .3rem auto;
+            background: $transparent_bg;
+            border-radius: 4px;
+        }
     }
 }
 

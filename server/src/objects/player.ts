@@ -25,6 +25,11 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
+import { type CollisionRecord, degreesToRadians } from "../../../common/src/utils/math";
+import { randomFloat } from "../../../common/src/utils/random";
+import { v, vRotate } from "../../../common/src/utils/vector";
+import { Bullet } from "./bullet";
+import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -47,6 +52,8 @@ export class Player extends GameObject {
     private _health = 100;
 
     private _adrenaline = 100;
+
+    killedBy?: Player;
 
     kills = 0;
     damageDone = 0;
@@ -307,6 +314,9 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
+            // Set killedBy
+            if (source instanceof Player && source !== this) this.killedBy = source;
+
             if (!this.disconnected) {
                 this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
@@ -323,6 +333,7 @@ export class Player extends GameObject {
             if (source instanceof Player && source !== this) {
                 source.kills++;
                 source.sendPacket(new KillPacket(source, this));
+                this.game.kills.add(new KillFeedPacket(source, this));
             }
 
             this.game.livingPlayers.delete(this);
