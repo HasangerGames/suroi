@@ -75,7 +75,7 @@ app.ws("/play", {
     /**
      * Upgrade the connection to WebSocket.
      */
-    upgrade: (res, req, context) => {
+    upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted(() => {});
 
@@ -87,11 +87,8 @@ app.ws("/play", {
                 log(`Connection blocked: ${ip}`);
                 return;
             } else {
-                if (playerCounts[ip] === undefined) playerCounts[ip] = 1;
-                else playerCounts[ip]++;
-
-                if (connectionAttempts[ip] === undefined) connectionAttempts[ip] = 1;
-                else connectionAttempts[ip]++;
+                playerCounts[ip] = (playerCounts[ip] ?? 0) + 1;
+                connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
 
                 log(`${playerCounts[ip]} simultaneous connections: ${ip}`);
                 log(`${connectionAttempts[ip]} connection attempts in the last 5 seconds: ${ip}`);
@@ -138,7 +135,7 @@ app.ws("/play", {
      * Handle opening of the socket.
      * @param socket The socket being opened.
      */
-    open: (socket: WebSocket<PlayerContainer>) => {
+    open(socket: WebSocket<PlayerContainer>) {
         socket.getUserData().player = game.addPlayer(socket, socket.getUserData().playerName);
         log(`"${socket.getUserData().playerName}" joined the game`);
     },
@@ -148,18 +145,18 @@ app.ws("/play", {
      * @param socket The socket in question.
      * @param message The message to handle.
      */
-    message: (socket: WebSocket<PlayerContainer>, message) => {
+    message(socket: WebSocket<PlayerContainer>, message) {
         const stream = new SuroiBitStream(message);
         try {
             const packetType = stream.readPacketType();
-            const p = socket.getUserData().player;
+            const player = socket.getUserData().player;
             switch (packetType) {
                 case PacketType.Join: {
-                    new JoinPacket(p).deserialize(stream);
+                    new JoinPacket(player).deserialize(stream);
                     break;
                 }
                 case PacketType.Input: {
-                    new InputPacket(p).deserialize(stream);
+                    new InputPacket(player).deserialize(stream);
                     break;
                 }
             }
@@ -172,7 +169,7 @@ app.ws("/play", {
      * Handle closing of the socket.
      * @param socket The socket being closed.
      */
-    close: (socket: WebSocket<PlayerContainer>) => {
+    close(socket: WebSocket<PlayerContainer>) {
         const p: Player = socket.getUserData().player;
         if (Config.botProtection) playerCounts[socket.getUserData().ip as string]--;
         log(`"${p.name}" left the game`);
@@ -183,12 +180,12 @@ app.ws("/play", {
 // Start the server
 app.listen(Config.host, Config.port, () => {
     log(`
- _____ _   _______ _____ _____ 
+ _____ _   _______ _____ _____
 /  ___| | | | ___ \\  _  |_   _|
-\\ \`--.| | | | |_/ / | | | | |  
- \`--. \\ | | |    /| | | | | |  
-/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_ 
-\\____/ \\___/\\_| \\_|\\___/ \\___/ 
+\\ \`--.| | | | |_/ / | | | | |
+ \`--. \\ | | |    /| | | | | |
+/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
+\\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
     log("Suroi Server v0.1.0", true);

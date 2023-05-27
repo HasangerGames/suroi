@@ -7,64 +7,79 @@ import { type GameScene } from "./scenes/gameScene";
 import { localStorageInstance } from "./utils/localStorageHandler";
 
 $(() => {
-    // Enable splash "more" dropdown.
-    const dropdownCaret = $("#btn-dropdown-more i");
-    const dropdown = $("#splash-more .dropdown-content");
+    const dropdown = {
+        main: $("#splash-more .dropdown-content"),
+        caret: $("#btn-dropdown-more i"),
+        active: false,
+        show() {
+            this.active = true;
+            this.main.addClass("active");
+            this.caret.removeClass("fa-caret-down").addClass("fa-caret-up");
+        },
+        hide() {
+            this.active = false;
+            this.main.removeClass("active");
+            this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
+        },
+        toggle() {
+            this.active
+                ? this.hide()
+                : this.show();
+        }
+    };
     const body = $(document.body);
     const usernameField = $("#username-input");
+
+    const gameMenu = $("#game-menu");
+    const controlsMenu = $("#controls-menu");
 
     usernameField.val(localStorageInstance.config.playerName);
 
     usernameField.on("input", (): void => {
-        if (usernameField.val() !== undefined && (usernameField.val() as string).trim().length > 0) {
-            localStorageInstance.update({ playerName: usernameField.val() as string });
+        const value = usernameField.val() as string | undefined;
+
+        if (value !== undefined && value.trim().length > 0) {
+            localStorageInstance.update({ playerName: value });
         }
     });
 
     $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
     $("#slider-sound-volume").val(localStorageInstance.config.musicVolume);
 
-    body.on("click", (e: JQuery.ClickEvent): void => {
-        const target = e.target as HTMLElement | null;
+    // todo find a better way to do these two handlers
+    $("#btn-dropdown-more").on("click", ev => {
+        dropdown.toggle();
+        ev.stopPropagation();
+    });
+    body.on("click", () => { dropdown.hide(); });
 
-        if (target?.id === "btn-dropdown-more") {
-            if (dropdown.hasClass("active")) {
-                dropdown.removeClass("active");
-                dropdownCaret.removeClass("fa-caret-up").addClass("fa-caret-down");
-            } else {
-                dropdown.addClass("active");
-                dropdownCaret.removeClass("fa-caret-down").addClass("fa-caret-up");
-            }
-        } else {
-            dropdown.removeClass("active");
-            dropdownCaret.removeClass("fa-caret-up").addClass("fa-caret-down");
-        }
+    $("#btn-quit-game").on("click", () => { window.location.reload(); });
+    $("#btn-play-again").on("click", () => { window.location.reload(); });
 
-        if (target?.id === "btn-quit-game" || target?.id === "btn-play-again") {
-            // something like this Game.endGame();
-            // $("#game-menu").hide();
-            window.location.reload(); // TODO Find a more elegant solution
-        } else if (target?.id === "btn-resume-game") {
-            $("#game-menu").hide();
-        } else if (target?.id === "btn-controls-game") {
-            $("#game-menu").hide();
-            $("#controls-menu").show();
-        } else if (target?.id === "btn-controls-quit-menu"){
-            $("#controls-menu").hide();
-            $("#game-menu").show();
-        } else if (target?.id === "btn-controls-resume-game"){
-            $("#controls-menu").hide();
-        } else if (target?.id === "btn-save-inputs"){
-            $("#controls-menu").hide();
-            const up_input = $("#key-input-up").val();
-            const down_input = $("#key-input-down").val();
-            const left_input = $("#key-input-left").val();
-            const right_input = $("#key-input-right").val();
-            (core.phaser?.scene.getScene("game") as GameScene).changeKey(up_input,"up");
-            (core.phaser?.scene.getScene("game") as GameScene).changeKey(down_input,"down");
-            (core.phaser?.scene.getScene("game") as GameScene).changeKey(left_input,"left");
-            (core.phaser?.scene.getScene("game") as GameScene).changeKey(right_input,"right");
-        }
+    $("#btn-resume-game").on("click", () => gameMenu.hide());
+    $("#btn-controls-game").on("click", (): void => {
+        gameMenu.hide();
+        controlsMenu.show();
+    });
+    $("#btn-controls-quit-menu").on("click", (): void => {
+        gameMenu.show();
+        controlsMenu.hide();
+    });
+    $("#btn-controls-resume-game").on("click", () => controlsMenu.hide());
+    $("#btn-save-inputs").on("click", () => {
+        //fixme
+        // controlsMenu.hide();
+        // const upInput = $<HTMLInputElement>("#key-input-up").val() as string;
+        // const downInput = $<HTMLInputElement>("#key-input-down").val() as string;
+        // const leftInput = $<HTMLInputElement>("#key-input-left").val() as string;
+        // const rightInput = $<HTMLInputElement>("#key-input-right").val() as string;
+
+        // const scene = core.phaser?.scene.getScene("game") as GameScene;
+
+        // scene.changeKey(upInput, "up");
+        // scene.changeKey(downInput, "down");
+        // scene.changeKey(leftInput, "left");
+        // scene.changeKey(rightInput, "right");
     });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
@@ -74,17 +89,15 @@ $(() => {
         }
     });
 
-    body.on("change", (e: JQuery.ChangeEvent) => {
-        const target = e.target as HTMLInputElement;
+    $("#slider-sound-volume").on("change", function(this: HTMLInputElement) {
+        const volume = Number(this.value);
+        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
+        localStorageInstance.update({ musicVolume: volume });
+    });
 
-        if (target?.id === "slider-sound-volume") {
-            const volume = Number(target.value);
-            core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
-            localStorageInstance.update({ musicVolume: volume });
-        } else if (target?.id === "slider-master-volume") {
-            const volume = Number(target.value);
-            (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
-            localStorageInstance.update({ masterVolume: volume });
-        }
+    $("#slider-master-volume").on("change", function(this: HTMLInputElement) {
+        const volume = Number(this.value);
+        (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
+        localStorageInstance.update({ masterVolume: volume });
     });
 });

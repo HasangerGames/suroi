@@ -16,11 +16,8 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(player.movement.down);
         stream.writeBoolean(player.movement.left);
         stream.writeBoolean(player.movement.right);
-        stream.writeBoolean(player.attackStart);
-        player.attackStart = false;
-        stream.writeBoolean(player.attackHold);
-        stream.writeBoolean(player.switchGun);
-        player.switchGun = false;
+        stream.writeBoolean(player.attacking);
+        stream.writeUint8(player.activeItemIndex);
         stream.writeRotation(player.rotation, 16);
     }
 }

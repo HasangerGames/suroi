@@ -2,12 +2,11 @@ import {
     type Body, Circle, Vec2
 } from "planck";
 import { type CollisionFilter, type GameObject } from "../types/gameObject";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { type BulletDefinition } from "../../../common/src/definitions/bullets";
 import { type Player } from "./player";
 import { type Game } from "../game";
 import { randomFloat } from "../../../common/src/utils/random";
 import { distance } from "../../../common/src/utils/math";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
 
 export class Bullet {
     readonly is: CollisionFilter = {
@@ -22,8 +21,6 @@ export class Bullet {
         bullet: false
     };
 
-    type: ObjectType;
-
     initialPosition: Vec2;
     rotation: number;
 
@@ -35,15 +32,16 @@ export class Bullet {
 
     body: Body;
 
-    shooter?: Player;
+    source: GunDefinition;
+    shooter: Player;
 
-    constructor(game: Game, type: ObjectType, position: Vec2, rotation: number, shooter?: Player) {
-        this.type = type;
+    constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, shooter: Player) {
         this.initialPosition = position;
         this.rotation = rotation;
+        this.source = source;
         this.shooter = shooter;
 
-        const definition: BulletDefinition = type.definition as BulletDefinition;
+        const definition = this.source.ballistics;
 
         // explosion shrapnel variance
         this.speedVariance = randomFloat(0, definition.speedVariance);
@@ -56,6 +54,7 @@ export class Bullet {
             fixedRotation: true,
             bullet: true
         });
+
         this.body.createFixture({
             shape: Circle(0),
             friction: 0.0,
@@ -63,11 +62,13 @@ export class Bullet {
             restitution: 0.0,
             userData: this
         });
+
         this.body.setMassData({
             I: 0,
             center: Vec2(0, 0),
             mass: 0.0
         });
+
         this.body.setLinearVelocity(Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1)));
     }
 

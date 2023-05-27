@@ -1,7 +1,9 @@
-import { type ObjectDefinition } from "../utils/objectDefinitions";
+import { type ItemDefinition } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
-export interface MeleeDefinition extends ObjectDefinition {
+export interface MeleeDefinition extends ItemDefinition {
+    readonly type: "melee"
+
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly radius: number
@@ -15,16 +17,18 @@ export interface MeleeDefinition extends ObjectDefinition {
         readonly useLeft: Vector
         readonly useRight: Vector
     }
-    image?: {
-        frame: string
-        position: Vector
+    readonly image?: {
+        readonly position: Vector
+        readonly angle?: number
     }
+    readonly fireMode?: "single" | "auto"
 }
 
 export const Melees: MeleeDefinition[] =
 [
     {
         idString: "fists",
+        type: "melee",
         damage: 20,
         obstacleMultiplier: 2,
         radius: 1.5,

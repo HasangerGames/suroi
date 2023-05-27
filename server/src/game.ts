@@ -21,8 +21,6 @@ import { log } from "../../common/src/utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
-import { type BulletDefinition } from "../../common/src/definitions/bullets";
-import { type GunDefinition } from "../../common/src/definitions/guns";
 
 export class Game {
     map: Map;
@@ -74,17 +72,19 @@ export class Game {
             else return false;
         };
 
+        // this return type is technically not true, but it gets typescript to shut up
+        const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distance <= object.maxDistance && !object.dead;
+
         // Handle bullet collisions
         this.world.on("begin-contact", contact => {
             const objectA = contact.getFixtureA().getUserData();
             const objectB = contact.getFixtureB().getUserData();
-            if (objectA instanceof Bullet && objectA.distance <= objectA.maxDistance && !objectA.dead) {
+
+            if (shouldDie(objectA)) {
                 objectA.dead = true;
                 this.damageRecords.add(new DamageRecord(objectB as GameObject, objectA.shooter, objectA));
-            } else if (objectB instanceof Bullet && objectB.distance <= objectB.maxDistance && !objectB.dead) {
+            } else if (shouldDie(objectB)) {
                 objectB.dead = true;
-                this.world.destroyBody(objectB.body);
-                this.bullets.delete(objectB);
                 this.damageRecords.add(new DamageRecord(objectA as GameObject, objectB.shooter, objectB));
             }
         });
@@ -136,7 +136,7 @@ export class Game {
             // Do damage to objects hit by bullets
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
-                const definition = bullet.type.definition as BulletDefinition;
+                const definition = bullet.source.ballistics;
                 //if (damageRecord.damaged.damageable) {
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager);
@@ -153,30 +153,36 @@ export class Game {
             this.world.step(30);
 
             // First loop over players: Calculate movement
-            for (const p of this.livingPlayers) {
+            for (const player of this.livingPlayers) {
                 // This system allows opposite movement keys to cancel each other out.
-                let xMovement = 0; let yMovement = 0;
-                if (p.movingUp) yMovement++;
-                if (p.movingDown) yMovement--;
-                if (p.movingLeft) xMovement--;
-                if (p.movingRight) xMovement++;
-                const speed: number = (xMovement !== 0 && yMovement !== 0) ? Config.diagonalSpeed : Config.movementSpeed;
-                p.setVelocity(xMovement * speed, yMovement * speed);
+                const movement = {
+                    x: 0,
+                    y: 0
+                };
 
-                if (p.moving || xMovement !== 0 || yMovement !== 0) {
-                    p.moving = false;
-                    this.partialDirtyObjects.add(p);
+                if (player.movement.up) movement.y++;
+                if (player.movement.down) movement.y--;
+
+                if (player.movement.left) movement.x--;
+                if (player.movement.right) movement.x++;
+
+                // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
+                const speed = movement.x * movement.y !== 0
+                    ? Config.diagonalSpeed
+                    : Config.movementSpeed;
+
+                player.setVelocity(movement.x * speed, movement.y * speed);
+
+                if (player.isMoving) {
+                    this.partialDirtyObjects.add(player);
                 }
 
-                if (p.attackStart) {
-                    p.attackStart = false;
-                    if (p.weaponCooldownOver) {
-                        if (p.activeWeapon.category === "melee") p.useMelee();
-                        else if (p.activeWeapon.category === "gun") p.shootGun();
-                    }
-                } else if (p.attackHold && p.activeWeapon.category === "gun" && (p.activeWeaponDef as GunDefinition).fireMode === "auto") {
-                    if (p.weaponCooldownOver) p.shootGun();
+                if (player.startedAttacking) {
+                    player.activeItem.useItem();
                 }
+
+                player.startedAttacking = false;
+                player.stoppedAttacking = false;
             }
 
             for (const explosion of this.explosions) {
