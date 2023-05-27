@@ -23,7 +23,8 @@ import { KillPacket } from "../packets/sending/killPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Inventory, type InventoryItem } from "./items";
+import { Inventory } from "../inventory/inventory";
+import { type InventoryItem } from "../inventory/inventoryItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -100,7 +101,7 @@ export class Player extends GameObject {
         zoom: true
     };
 
-    inventory = new Inventory(this);
+    readonly inventory = new Inventory(this);
 
     get activeItem(): InventoryItem {
         return this.inventory.activeItem;
