@@ -27,6 +27,7 @@ import { type CollisionRecord, degreesToRadians } from "../../../common/src/util
 import { randomFloat } from "../../../common/src/utils/random";
 import { v, vRotate } from "../../../common/src/utils/vector";
 import { Bullet } from "./bullet";
+import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -51,6 +52,8 @@ export class Player extends GameObject {
 
     private _adrenaline = 100;
     adrenalineDirty = true;
+
+    killedBy?: Player;
 
     kills = 0;
     damageDone = 0;
@@ -329,6 +332,9 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
+            // Set killedBy
+            if (source instanceof Player && source !== this) this.killedBy = source;
+
             if (!this.disconnected) {
                 this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
@@ -345,6 +351,7 @@ export class Player extends GameObject {
             if (source instanceof Player && source !== this) {
                 source.kills++;
                 source.sendPacket(new KillPacket(source, this));
+                this.game.kills.add(new KillFeedPacket(source, this));
             }
 
             this.game.livingPlayers.delete(this);
