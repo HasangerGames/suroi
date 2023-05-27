@@ -33,7 +33,7 @@ export const Guns: GunDefinition[] = [
         type: "gun",
         cooldown: 100,
         fireMode: "auto",
-        shotSpread: 0.25,
+        shotSpread: 2,
         fists: {
             left: v(65, 0),
             right: v(140, -10),

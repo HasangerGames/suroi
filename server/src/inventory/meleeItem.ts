@@ -51,7 +51,6 @@ export class MeleeItem extends InventoryItem {
                 !owner.dead &&
                 !owner.disconnected
             ) {
-                this._lastUse = Date.now();
                 const rotated = vRotate(definition.offset, owner.rotation);
                 const position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
                 const hitbox = new CircleHitbox(definition.radius, position);
@@ -84,6 +83,7 @@ export class MeleeItem extends InventoryItem {
 
     override useItem(): void {
         if (Date.now() - this._lastUse > this.definition.cooldown) {
+            this._lastUse = Date.now();
             this._useItemNoDelayCheck();
         }
     }
