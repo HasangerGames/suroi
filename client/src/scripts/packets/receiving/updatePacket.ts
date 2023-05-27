@@ -9,46 +9,46 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type ObjectType } from "../../../../../common/src/utils/objectType";
+import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const p: Player = this.player;
-        if (p === undefined) return;
-        const game: Game = p.game;
+        const player: Player = this.player;
+        if (player === undefined) return;
+        const game: Game = player.game;
 
         //
         // Active player data
         //
 
         // Partial data is sent for the active player every tick
-        p.deserializePartial(stream);
+        player.deserializePartial(stream);
 
         // Play footstep sounds
-        if (p.oldPosition !== undefined) {
-            p.distSinceLastFootstep += distanceSquared(p.oldPosition.x, p.oldPosition.y, p.position.x, p.position.y);
-            if (p.distSinceLastFootstep > 10) {
-                const sound: string = Math.random() < 0.5 ? "grass_step_01" : "grass_step_02";
-                p.scene.playSound(sound);
+        if (player.oldPosition !== undefined) {
+            player.distSinceLastFootstep += distanceSquared(player.oldPosition.x, player.oldPosition.y, player.position.x, player.position.y);
+            if (player.distSinceLastFootstep > 10) {
+                player.scene.playSound(Math.random() < 0.5 ? "grass_step_01" : "grass_step_02");
 
-                p.distSinceLastFootstep = 0;
+                player.distSinceLastFootstep = 0;
             }
         }
 
         // Health
         if (stream.readBoolean()) {
-            p.health = stream.readFloat(0, 100, 8);
-            const roundedHealth = Math.round(p.health);
+            player.health = stream.readFloat(0, 100, 8);
+            const roundedHealth = Math.round(player.health);
             const healthPercentage = `${roundedHealth}%`;
             $("#health-bar").width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
             $("#health-bar-percentage").text(roundedHealth);
-            if (p.health < 60 && p.health > 10) {
-                $("#health-bar").css("background-color", `rgb(255, ${(p.health - 10) * 4}, ${(p.health - 10) * 4})`);
-            } else if (p.health <= 10) {
-                $("#health-bar").css("background-color", `rgb(${p.health * 10 + 155}, 0, 0)`);
+
+            if (player.health < 60 && player.health > 10) {
+                $("#health-bar").css("background-color", `rgb(255, ${(player.health - 10) * 4}, ${(player.health - 10) * 4})`);
+            } else if (player.health <= 10) {
+                $("#health-bar").css("background-color", `rgb(${player.health * 10 + 155}, 0, 0)`);
             } else {
                 $("#health-bar").css("background-color", "#f8f9fa");
             }
@@ -56,7 +56,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Adrenaline
         if (stream.readBoolean()) {
-            p.adrenaline = stream.readFloat(0, 100, 8);
+            player.adrenaline = stream.readFloat(0, 100, 8);
         }
 
         // Active player ID
@@ -68,6 +68,11 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
+        // Active item index
+        if (stream.readBoolean()) {
+            game.activePlayer.activeItemIndex = stream.readUint8();
+        }
+
         //
         // Objects
         //
@@ -76,8 +81,8 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const fullObjectCount: number = stream.readUint8();
             for (let i = 0; i < fullObjectCount; i++) {
-                const type: ObjectType = stream.readObjectType();
-                const id: number = stream.readUint16();
+                const type = stream.readObjectType();
+                const id = stream.readUint16();
                 let object: GameObject | undefined;
 
                 if (!game.objects.has(id)) {
@@ -110,6 +115,7 @@ export class UpdatePacket extends ReceivingPacket {
                     }
                     object = objectFromSet;
                 }
+
                 object.deserializePartial(stream);
                 object.deserializeFull(stream);
             }
@@ -148,8 +154,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const bulletCount: number = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const type: ObjectType = stream.readObjectTypeNoCategory(ObjectCategory.Bullet);
-                p.scene.playSound(`${type.idString.substring(0, type.idString.length - 7)}_fire`); // Remove "_bullet" from the end of the string
+                player.scene.playSound(`${ObjectType.fromNumber(ObjectCategory.Loot, stream.readBits(1)).definition.idString}_fire`);
             }
         }
 

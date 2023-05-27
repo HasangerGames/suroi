@@ -5,27 +5,34 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const p: Player = this.player;
-        if (p.dead) return; // Ignore input packets from dead players
+        const player: Player = this.player;
+        if (player.dead) return; // Ignore input packets from dead players
 
-        p.moving = true;
-        p.movingUp = stream.readBoolean();
-        p.movingDown = stream.readBoolean();
-        p.movingLeft = stream.readBoolean();
-        p.movingRight = stream.readBoolean();
-        p.attackStart = stream.readBoolean();
-        p.attackHold = stream.readBoolean();
+        player.movement.forwards = stream.readBoolean();
+        player.movement.backwards = stream.readBoolean();
+        player.movement.left = stream.readBoolean();
+        player.movement.right = stream.readBoolean();
 
-        if (stream.readBoolean()) { // switch guns
-            if (p.activeWeapon.category === "melee") {
-                p.activeWeapon = p.weapons[1];
-            } else {
-                p.activeWeapon = p.weapons[0];
-            }
-            p.game.fullDirtyObjects.add(p);
-            p.fullDirtyObjects.add(p);
+        const oldAttackState = player.attacking;
+        const attackState = stream.readBoolean();
+
+        player.attacking = attackState;
+        player.startedAttacking = !oldAttackState && attackState;
+        player.stoppedAttacking = oldAttackState && !attackState;
+
+        const activeItemIndex = stream.readUint8();
+
+        // switch items
+        if (activeItemIndex !== player.activeItemIndex) {
+            // If the switch is successful, then the active item index isn't dirty;
+            // conversely, if the switch fails, then the change needs to be sent back
+            // to the client, and the active item index is thus dirty
+            player.dirty.activeItemIndex = !player.inventory.setActiveItemIndex(activeItemIndex);
+
+            player.game.fullDirtyObjects.add(player);
+            player.fullDirtyObjects.add(player);
         }
 
-        p.rotation = stream.readRotation(16);
+        player.rotation = stream.readRotation(16);
     }
 }

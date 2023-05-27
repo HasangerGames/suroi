@@ -5,19 +5,19 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const p = this.player;
-        const game = p.game;
+        const player = this.player;
+        const game = player.game;
 
-        game.players.add(p);
-        game.livingPlayers.add(p);
-        game.connectedPlayers.add(p);
-        game.dynamicObjects.add(p);
-        game.fullDirtyObjects.add(p);
+        game.players.add(player);
+        game.livingPlayers.add(player);
+        game.connectedPlayers.add(player);
+        game.dynamicObjects.add(player);
+        game.fullDirtyObjects.add(player);
         game.updateObjects = true;
         game.aliveCount++;
 
-        p.updateVisibleObjects();
-        p.joined = true;
-        p.sendPacket(new JoinedPacket(p));
+        player.updateVisibleObjects();
+        player.joined = true;
+        player.sendPacket(new JoinedPacket(player));
     }
 }

@@ -20,6 +20,7 @@ export class Game {
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
     activePlayer!: Player;
+
     gameStarted = false;
     error = false;
 
