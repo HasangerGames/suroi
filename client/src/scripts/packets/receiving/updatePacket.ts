@@ -9,10 +9,10 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { GunDefinition } from "../../../../../common/src/definitions/guns";
+import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -156,7 +156,30 @@ export class UpdatePacket extends ReceivingPacket {
             const bulletCount: number = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
-                player.scene.playSound(`${bulletSourceDef.idString}_fire`);
+                const initialPosition = stream.readPosition();
+                const finalPosition = stream.readPosition();
+
+                // Play firing sound
+                if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
+                    player.scene.playSound(`${bulletSourceDef.idString}_fire`);
+                }
+
+                const bulletTrail = player.scene.add.image(
+                    initialPosition.x * 20,
+                    initialPosition.y * 20,
+                    "main",
+                    `${bulletSourceDef.idString}_trail.svg`
+                ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition));
+                player.scene.tweens.add({
+                    targets: bulletTrail,
+                    x: finalPosition.x * 20,
+                    y: finalPosition.y * 20,
+                    alpha: 0,
+                    duration: 500,
+                    onComplete: (): void => {
+                        bulletTrail.destroy(true);
+                    }
+                });
             }
         }
 

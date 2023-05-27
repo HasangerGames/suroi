@@ -22,6 +22,7 @@ export class Bullet {
     };
 
     initialPosition: Vec2;
+    finalPosition: Vec2;
     rotation: number;
 
     speedVariance = 0;
@@ -69,7 +70,9 @@ export class Bullet {
             mass: 0.0
         });
 
-        this.body.setLinearVelocity(Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1)));
+        const velocity = Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1));
+        this.finalPosition = this.initialPosition.clone().add(Vec2(this.maxDistance * Math.sin(rotation), this.maxDistance * Math.cos(rotation)));
+        this.body.setLinearVelocity(velocity);
     }
 
     get position(): Vec2 {

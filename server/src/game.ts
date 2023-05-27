@@ -40,7 +40,6 @@ export class Game {
     deletedObjects = new Set<GameObject>();
 
     players: Set<Player> = new Set<Player>();
-    livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
     explosions: Set<Explosion> = new Set<Explosion>();
@@ -158,7 +157,7 @@ export class Game {
             this.world.step(30);
 
             // First loop over players: Calculate movement
-            for (const player of this.livingPlayers) {
+            for (const player of this.players) {
                 // This system allows opposite movement keys to cancel each other out.
                 const movement = {
                     x: 0,
@@ -272,7 +271,6 @@ export class Game {
         player.rotation = 0;
         this.partialDirtyObjects.add(player);
         this.players.delete(player);
-        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();

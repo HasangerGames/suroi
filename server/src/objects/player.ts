@@ -324,7 +324,7 @@ export class Player extends GameObject {
                 source.sendPacket(new KillPacket(source, this));
             }
 
-            this.game.livingPlayers.delete(this);
+            this.game.players.delete(this);
             this.game.fullDirtyObjects.add(this);
             this.fullDirtyObjects.add(this);
             const deathMarker = new DeathMarker(this);
