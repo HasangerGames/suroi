@@ -12,6 +12,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
+import { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -154,7 +155,8 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const bulletCount: number = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                player.scene.playSound(`${ObjectType.fromNumber(ObjectCategory.Loot, stream.readBits(1)).definition.idString}_fire`);
+                const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
+                player.scene.playSound(`${bulletSourceDef.idString}_fire`);
             }
         }
 
