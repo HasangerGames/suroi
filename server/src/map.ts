@@ -24,14 +24,14 @@ export class Map {
         this.game = game;
 
         if (!Debug.disableMapGeneration) {
-            this.generateObstacles("tree_oak", 200);
-            this.generateObstacles("tree_pine", 15);
+            this.generateObstacles("oak_tree", 200);
+            this.generateObstacles("pine_tree", 15);
             this.generateObstacles("rock", 200);
             this.generateObstacles("bush", 150);
-            this.generateObstacles("crate_regular", 125);
+            this.generateObstacles("regular_crate", 125);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
-            this.generateObstacles("crate_health", 20);
+            this.generateObstacles("health_crate", 20);
         } else {
             // Obstacle debug code goes here
         }

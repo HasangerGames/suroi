@@ -54,8 +54,7 @@ export class GunItem extends InventoryItem {
             this._lastUse = Date.now();
 
             const spread = degreesToRadians(definition.shotSpread);
-            const rotated = vRotate(v(3.5, 0), owner.rotation);
-            //fixme                   ^^^ mystery constant
+            const rotated = vRotate(v(2.50001, 0), owner.rotation); // player radius + a little bit extra
             const position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
 
             for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
