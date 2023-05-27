@@ -146,7 +146,12 @@ export class Game {
                 //}
                 this.world.destroyBody(bullet.body);
                 this.bullets.delete(bullet);
-                this.damageRecords.delete(damageRecord);
+            }
+            this.damageRecords.clear();
+
+            // Handle explosions
+            for (const explosion of this.explosions) {
+                explosion.explode();
             }
 
             // Update physics
@@ -183,10 +188,6 @@ export class Game {
 
                 player.startedAttacking = false;
                 player.stoppedAttacking = false;
-            }
-
-            for (const explosion of this.explosions) {
-                explosion.explode();
             }
 
             // Second loop over players: calculate visible objects & send updates
@@ -232,8 +233,8 @@ export class Game {
             this.fullDirtyObjects.clear();
             this.partialDirtyObjects.clear();
             this.deletedObjects.clear();
-            this.explosions.clear();
             this.newBullets.clear();
+            this.explosions.clear();
             this.aliveCountDirty = false;
 
             // Record performance and start the next tick

@@ -49,7 +49,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
 
-    private _activeItemIndex = 0;
+    private _activeItemIndex = 2;
     get activeItemIndex(): number { return this._activeItemIndex; }
     set activeItemIndex(v: number) {
         this._lastItemIndex = this._activeItemIndex;

@@ -20,7 +20,7 @@ export class InputPacket extends ReceivingPacket {
         player.startedAttacking = !oldAttackState && attackState;
         player.stoppedAttacking = oldAttackState && !attackState;
 
-        const activeItemIndex = stream.readUint8();
+        const activeItemIndex = stream.readBits(2);
 
         // switch items
         if (activeItemIndex !== player.activeItemIndex) {

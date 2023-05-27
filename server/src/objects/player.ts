@@ -210,7 +210,7 @@ export class Player extends GameObject {
         this.dirty.zoom = true;
     }
 
-    get activeWeaponDef(): MeleeDefinition | GunDefinition | undefined {
+    get activeItemDefinition(): MeleeDefinition | GunDefinition | undefined {
         return this.activeItem?.type.definition as MeleeDefinition | GunDefinition;
     }
 

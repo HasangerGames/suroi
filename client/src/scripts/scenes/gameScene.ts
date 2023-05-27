@@ -94,7 +94,6 @@ export class GameScene extends Phaser.Scene {
         // TODO fix this, lol
         // > undefined as unknown as number
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
-        this.activeGame.activePlayer.activeItemIndex = 0;
         this.activeGame.activePlayer.name = $("#username-input").text();
         setupInputs(this);
 
