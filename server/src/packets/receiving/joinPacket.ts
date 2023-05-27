@@ -8,7 +8,7 @@ export class JoinPacket extends ReceivingPacket {
         const player = this.player;
         const game = player.game;
 
-        game.players.add(player);
+        game.livingPlayers.add(player);
         game.connectedPlayers.add(player);
         game.dynamicObjects.add(player);
         game.fullDirtyObjects.add(player);

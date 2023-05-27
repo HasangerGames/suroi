@@ -155,6 +155,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const bulletCount: number = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
+                const id: number = stream.readUint8();
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
                 const initialPosition = stream.readPosition();
                 const finalPosition = stream.readPosition();
@@ -164,22 +165,39 @@ export class UpdatePacket extends ReceivingPacket {
                     player.scene.playSound(`${bulletSourceDef.idString}_fire`);
                 }
 
-                const bulletTrail = player.scene.add.image(
+                // Spawn bullet
+                const bullet = player.scene.add.image(
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
                     `${bulletSourceDef.idString}_trail.svg`
                 ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition));
+                game.bullets.set(id, bullet);
                 player.scene.tweens.add({
-                    targets: bulletTrail,
+                    targets: bullet,
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
                     alpha: 0,
                     duration: 500,
                     onComplete: (): void => {
-                        bulletTrail.destroy(true);
+                        bullet.destroy(true);
                     }
                 });
+            }
+        }
+
+        // Deleted bullets
+        if (stream.readBoolean()) {
+            const destroyedBulletCount: number = stream.readUint8();
+            for (let i = 0; i < destroyedBulletCount; i++) {
+                const bulletID = stream.readUint8();
+                const bullet: Phaser.GameObjects.Image | undefined = game.bullets.get(bulletID);
+                if (bullet === undefined) {
+                    console.warn(`Could not find bullet with ID ${bulletID}`);
+                    continue;
+                }
+                bullet.destroy(true);
+                game.bullets.delete(bulletID);
             }
         }
 

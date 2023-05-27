@@ -21,6 +21,8 @@ export class Bullet {
         bullet: false
     };
 
+    id: number;
+
     initialPosition: Vec2;
     finalPosition: Vec2;
     rotation: number;
@@ -37,6 +39,7 @@ export class Bullet {
     shooter: Player;
 
     constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, shooter: Player) {
+        this.id = game.nextBulletID;
         this.initialPosition = position;
         this.rotation = rotation;
         this.source = source;

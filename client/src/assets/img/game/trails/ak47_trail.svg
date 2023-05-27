@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="200"
+   width="250"
    height="10"
-   viewBox="0 0 52.916663 2.6458334"
+   viewBox="0 0 66.145829 2.6458334"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
@@ -25,9 +25,9 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="3.1037318"
-     inkscape:cx="15.465254"
-     inkscape:cy="3.8663135"
+     inkscape:zoom="6.2074636"
+     inkscape:cx="222.47412"
+     inkscape:cy="25.936519"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -40,7 +40,7 @@
        inkscape:collect="always"
        id="linearGradient1136">
       <stop
-         style="stop-color:#fffffe;stop-opacity:0.74714029"
+         style="stop-color:#fffffe;stop-opacity:0.60116547"
          offset="0"
          id="stop1132" />
       <stop
@@ -57,7 +57,7 @@
        x2="8.3181934"
        y2="33.072918"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(5.0000003,0,0,0.04,-52.916673,-2.6458332)" />
+       gradientTransform="matrix(6.2500004,0,0,0.04,-66.145841,-2.6458332)" />
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -66,9 +66,9 @@
     <rect
        style="fill:url(#linearGradient1138);fill-opacity:1;stroke-width:0;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect846"
-       width="52.916664"
+       width="66.145828"
        height="2.6458333"
-       x="-52.916664"
+       x="-66.145828"
        y="-2.6458333"
        rx="0"
        transform="scale(-1)"

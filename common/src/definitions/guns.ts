@@ -44,7 +44,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 10,
             obstacleMultiplier: 2,
-            speed: 0.37,
+            speed: 0.35,
             speedVariance: 0,
             maxDistance: 100
         }

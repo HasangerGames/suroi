@@ -39,13 +39,14 @@ export class Game {
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
 
-    players: Set<Player> = new Set<Player>();
+    livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
     explosions: Set<Explosion> = new Set<Explosion>();
 
     bullets = new Set<Bullet>(); // All bullets that currently exist
     newBullets = new Set<Bullet>(); // All bullets created this tick
+    deletedBulletIDs = new Set<number>();
     damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
 
     tickTimes: number[] = [];
@@ -129,6 +130,8 @@ export class Game {
                 if (bullet.distance >= bullet.maxDistance) {
                     this.world.destroyBody(bullet.body);
                     this.bullets.delete(bullet);
+                    // Note: Bullets that pass their maximum distance are automatically deleted by the client,
+                    // so there's no need to add them to the list of deleted bullets
                 }
             }
 
@@ -145,6 +148,7 @@ export class Game {
                 //}
                 this.world.destroyBody(bullet.body);
                 this.bullets.delete(bullet);
+                this.deletedBulletIDs.add(bullet.id);
             }
             this.damageRecords.clear();
 
@@ -157,7 +161,7 @@ export class Game {
             this.world.step(30);
 
             // First loop over players: Calculate movement
-            for (const player of this.players) {
+            for (const player of this.livingPlayers) {
                 // This system allows opposite movement keys to cancel each other out.
                 const movement = {
                     x: 0,
@@ -233,6 +237,7 @@ export class Game {
             this.partialDirtyObjects.clear();
             this.deletedObjects.clear();
             this.newBullets.clear();
+            this.deletedBulletIDs.clear();
             this.explosions.clear();
             this.aliveCountDirty = false;
 
@@ -270,7 +275,7 @@ export class Game {
         if (!player.dead) this.aliveCount--;
         player.rotation = 0;
         this.partialDirtyObjects.add(player);
-        this.players.delete(player);
+        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();
@@ -286,9 +291,15 @@ export class Game {
         this.aliveCountDirty = true;
     }
 
-    _nextObjectId = -1;
-    get nextObjectId(): number {
-        this._nextObjectId++;
-        return this._nextObjectId;
+    _nextObjectID = -1;
+    get nextObjectID(): number {
+        this._nextObjectID++;
+        return this._nextObjectID;
+    }
+
+    _nextBulletID = -1;
+    get nextBulletID(): number {
+        this._nextBulletID = (this._nextBulletID + 1) % 256; // Bullet IDs wrap back to 0 when they reach 255
+        return this._nextBulletID;
     }
 }

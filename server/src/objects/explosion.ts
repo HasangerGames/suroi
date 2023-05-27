@@ -43,7 +43,7 @@ export class Explosion {
             }
         }
 
-        for (const player of this.game.players) {
+        for (const player of this.game.livingPlayers) {
             const dist = distance(this.position, player.position);
             if (dist < definition.radius.max) {
                 let damage = definition.damage;

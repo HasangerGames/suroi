@@ -100,9 +100,20 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
+                stream.writeUint8(bullet.id);
                 stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.idString));
                 stream.writePosition(bullet.initialPosition);
                 stream.writePosition(bullet.finalPosition);
+            }
+        }
+
+        // Deleted bullets
+        const deletedBulletsDirty = game.deletedBulletIDs.size !== 0;
+        stream.writeBoolean(deletedBulletsDirty);
+        if (deletedBulletsDirty) {
+            stream.writeUint8(game.deletedBulletIDs.size);
+            for (const bulletID of game.deletedBulletIDs) {
+                stream.writeUint8(bulletID);
             }
         }
 

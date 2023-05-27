@@ -19,6 +19,7 @@ export class Game {
 
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
+    bullets: Map<number, Phaser.GameObjects.Image> = new Map<number, Phaser.GameObjects.Image>();
     activePlayer!: Player;
 
     gameStarted = false;

@@ -23,7 +23,7 @@ export abstract class GameObject {
     hitbox?: Hitbox;
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
-        this.id = game.nextObjectId;
+        this.id = game.nextObjectID;
         this.game = game;
         this.type = type;
         this._position = position;
