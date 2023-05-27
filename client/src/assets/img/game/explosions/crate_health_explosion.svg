@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    sodipodi:docname="crate_health_explosion.svg"
-   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,15 +24,16 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
      showgrid="false"
-     inkscape:zoom="0.43457604"
-     inkscape:cx="112.75357"
-     inkscape:cy="396.93859"
-     inkscape:window-width="1280"
-     inkscape:window-height="658"
-     inkscape:window-x="-6"
-     inkscape:window-y="-6"
+     inkscape:zoom="1.2291667"
+     inkscape:cx="72.40678"
+     inkscape:cy="218.0339"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5" />
+     inkscape:current-layer="svg5"
+     inkscape:pageshadow="0" />
   <defs
      id="defs2">
     <linearGradient
@@ -66,21 +67,7 @@
      cy="84.666664"
      r="84.666664" />
   <path
-     sodipodi:type="star"
-     style="fill:#b2c1e5;stroke:#333333;stroke-width:0;stroke-linejoin:round;fill-opacity:0.28316328"
-     id="path972"
-     inkscape:flatsided="false"
-     sodipodi:sides="5"
-     sodipodi:cx="60.883095"
-     sodipodi:cy="70.015556"
-     sodipodi:r1="24.062473"
-     sodipodi:r2="12.031237"
-     sodipodi:arg1="0.15240182"
-     sodipodi:arg2="0.78072035"
-     inkscape:rounded="0.1"
-     inkscape:randomized="0"
-     d="M 84.666667,73.668542 C 84.424085,75.247927 70.554759,77.347873 69.430166,78.483037 68.305574,79.6182 66.335474,93.506565 64.758427,93.763912 63.181381,94.02126 56.898355,81.479666 55.471233,80.7609 54.044111,80.042134 40.226696,82.460198 39.49461,81.039862 c -0.732087,-1.420335 9.254116,-11.271413 9.496699,-12.850798 0.242582,-1.579385 -6.32695,-13.973305 -5.202358,-15.108468 1.124593,-1.135163 13.579431,5.31813 15.156478,5.060782 1.577046,-0.257347 11.334267,-10.335275 12.761389,-9.616509 1.427123,0.718767 -0.861567,14.558199 -0.129481,15.978534 0.732087,1.420336 13.331912,7.585754 13.08933,9.165139 z"
-     inkscape:transform-center-x="-1.1800928"
-     inkscape:transform-center-y="1.1124448"
-     transform="translate(22.603478,13.538664)" />
+     id="rect870"
+     style="fill:#b2c1e5;fill-opacity:0.282353;stroke-width:0.762423;stroke-linejoin:round"
+     d="M 79.044269,62.177082 V 79.04427 H 62.177082 V 90.289061 H 79.044269 V 107.15625 H 90.289061 V 90.289061 H 107.15625 V 79.04427 H 90.289061 V 62.177082 Z" />
 </svg>
