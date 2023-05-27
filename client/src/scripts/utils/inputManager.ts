@@ -41,8 +41,8 @@ function generateKeybindActions(player: Player): ConvertToAction<KeybindActions>
 
     return {
         move: {
-            forwards: generateMovementAction("forwards"),
-            backwards: generateMovementAction("backwards"),
+            up: generateMovementAction("up"),
+            down: generateMovementAction("down"),
             right: generateMovementAction("right"),
             left: generateMovementAction("left")
         },
@@ -99,8 +99,8 @@ export function setupInputs(scene: GameScene): void {
     const keybinds = localStorageInstance.config.keybinds;
 
     // If anyone wants to find a more automated/concise way of doing this, go for it
-    bind(keybinds.move.forwards, actions.move.forwards);
-    bind(keybinds.move.backwards, actions.move.backwards);
+    bind(keybinds.move.up, actions.move.up);
+    bind(keybinds.move.down, actions.move.down);
     bind(keybinds.move.left, actions.move.left);
     bind(keybinds.move.right, actions.move.right);
 

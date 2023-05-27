@@ -12,8 +12,8 @@ export class InputPacket extends SendingPacket {
         super.serialize(stream);
 
         const player: Player = this.player;
-        stream.writeBoolean(player.movement.forwards);
-        stream.writeBoolean(player.movement.backwards);
+        stream.writeBoolean(player.movement.up);
+        stream.writeBoolean(player.movement.down);
         stream.writeBoolean(player.movement.left);
         stream.writeBoolean(player.movement.right);
         stream.writeBoolean(player.attacking);

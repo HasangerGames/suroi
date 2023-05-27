@@ -27,9 +27,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     oldPosition!: Vector;
 
     readonly movement = {
-        forwards: false,
+        up: false,
         left: false,
-        backwards: false,
+        down: false,
         right: false
     };
 

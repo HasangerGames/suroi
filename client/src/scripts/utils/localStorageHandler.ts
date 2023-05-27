@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type KeybindActions = {
     move: {
-        forwards: string
-        backwards: string
+        up: string
+        down: string
         left: string
         right: string
     }
@@ -36,8 +36,8 @@ export const defaultConfig: Config = {
     playerName: "",
     keybinds: {
         move: {
-            forwards: "W",
-            backwards: "S",
+            up: "W",
+            down: "S",
             left: "A",
             right: "D"
         },

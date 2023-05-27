@@ -160,8 +160,8 @@ export class Game {
                     y: 0
                 };
 
-                if (player.movement.forwards) movement.y++;
-                if (player.movement.backwards) movement.y--;
+                if (player.movement.up) movement.y++;
+                if (player.movement.down) movement.y--;
 
                 if (player.movement.left) movement.x--;
                 if (player.movement.right) movement.x++;

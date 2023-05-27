@@ -53,8 +53,8 @@ export class Player extends GameObject {
     joinTime: number;
 
     get isMoving(): boolean {
-        return this.movement.forwards ||
-            this.movement.backwards ||
+        return this.movement.up ||
+            this.movement.down ||
             this.movement.left ||
             this.movement.right;
     }
@@ -62,8 +62,8 @@ export class Player extends GameObject {
     movesSinceLastUpdate = 0;
 
     readonly movement = {
-        forwards: false,
-        backwards: false,
+        up: false,
+        down: false,
         left: false,
         right: false
     };
@@ -310,8 +310,8 @@ export class Player extends GameObject {
                 this.sendPacket(new GameOverPacket(this));
             }
 
-            this.movement.forwards = false;
-            this.movement.backwards = false;
+            this.movement.up = false;
+            this.movement.down = false;
             this.movement.left = false;
             this.movement.right = false;
             this.attacking = false;

@@ -8,8 +8,8 @@ export class InputPacket extends ReceivingPacket {
         const player: Player = this.player;
         if (player.dead) return; // Ignore input packets from dead players
 
-        player.movement.forwards = stream.readBoolean();
-        player.movement.backwards = stream.readBoolean();
+        player.movement.up = stream.readBoolean();
+        player.movement.down = stream.readBoolean();
         player.movement.left = stream.readBoolean();
         player.movement.right = stream.readBoolean();
 
