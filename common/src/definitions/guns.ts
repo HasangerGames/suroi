@@ -48,5 +48,27 @@ export const Guns: GunDefinition[] = [
             speedVariance: 0,
             maxDistance: 100
         }
+    },
+    {
+        idString: "m3k",
+        type: "gun",
+        cooldown: 1000,
+        fireMode: "single",
+        shotSpread: 10,
+        bulletCount: 9,
+        fists: {
+            left: v(65, 0),
+            right: v(140, -10),
+            animationDuration: 100
+        },
+        image: { position: v(120, 0) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 6.5,
+            obstacleMultiplier: 3,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 150
+        }
     }
 ];

@@ -167,6 +167,7 @@ export class Player extends GameObject {
 
         // Inventory preset
         this.inventory.addOrReplaceItem(0, "ak47");
+        this.inventory.addOrReplaceItem(1, "m3k");
         this.inventory.addOrReplaceItem(2, "fists");
     }
 
