@@ -21,32 +21,44 @@ export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
 
     private _health = 100;
-    healthDirty = true;
 
     private _adrenaline = 100;
-    adrenalineDirty = true;
 
     oldPosition!: Vector;
 
-    inputsDirty = false;
-
-    movement = {
+    readonly movement = {
         up: false,
         left: false,
         down: false,
         right: false
     };
 
-    movementKeys = {
-        up: "W",
-        down: "S",
-        left: "A",
-        right: "D"
+    readonly dirty = {
+        health: true,
+        adrenaline: true,
+        inputs: true
     };
 
-    attackStart = false;
-    attackHold = false;
-    switchGun = false;
+    #attacking = false;
+    get attacking(): boolean { return this.#attacking; }
+    set attacking(v: boolean) {
+        this.#attacking = v;
+        this.dirty.inputs = true;
+    }
+
+    _lastItemIndex = 0;
+    get lastItemIndex(): number { return this._lastItemIndex; }
+
+    private _activeItemIndex = 2;
+    get activeItemIndex(): number { return this._activeItemIndex; }
+    set activeItemIndex(v: number) {
+        this._lastItemIndex = this._activeItemIndex;
+        this._activeItemIndex = v;
+        this.dirty.inputs = true;
+        this.updateInventoryUI();
+    }
+
+    activeItem = ObjectType.fromString(ObjectCategory.Loot, "fists");
 
     isNew = true;
 
@@ -54,30 +66,35 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitEffect!: boolean;
 
-    body: Phaser.GameObjects.Image;
-    leftFist: Phaser.GameObjects.Image;
-    rightFist: Phaser.GameObjects.Image;
-    weaponImg: Phaser.GameObjects.Image;
-    container: Phaser.GameObjects.Container;
+    readonly images: {
+        readonly body: Phaser.GameObjects.Image
+        readonly leftFist: Phaser.GameObjects.Image
+        readonly rightFist: Phaser.GameObjects.Image
+        readonly weaponImg: Phaser.GameObjects.Image
+        readonly container: Phaser.GameObjects.Container
+    };
 
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
-    weapon = ObjectType.fromString(ObjectCategory.Loot, "fists");
 
     distSinceLastFootstep = 0;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number) {
         super(game, scene, type, id);
 
-        // const weaponDef = this.weapon.definition as MeleeDefinition;
+        //bug created player doesn't have correct weapon deployed; this is a semi-visual bug, because the user can still
+        // use their gun, but the client-side code believes that the player has a melee weapon
 
-        this.body = this.scene.add.image(0, 0, "main", "player_base.svg");
-        this.leftFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
-        this.rightFist = this.scene.add.image(0, 0, "main", "player_fist.svg");
-        this.weaponImg = this.scene.add.image(0, 0, "main");
+        const images = {
+            body: this.scene.add.image(0, 0, "main", "player_base.svg"),
+            leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
+            rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
+            weaponImg: this.scene.add.image(0, 0, "main"),
+            container: undefined as unknown as Phaser.GameObjects.Container
+        };
+        images.container = this.scene.add.container(360, 360, [images.body, images.leftFist, images.rightFist, images.weaponImg]).setDepth(1);
+        this.images = images;
+
         this.updateFistsPosition();
-
-        this.container = this.scene.add.container(360, 360, [this.body, this.leftFist, this.rightFist, this.weaponImg]).setDepth(1);
 
         this.emitter = this.scene.add.particles(0, 0, "main", {
             frame: "blood_particle.svg",
@@ -107,21 +124,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this._adrenaline = adrenaline;
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-
-    deserializePartial(stream: SuroiBitStream): void {
+    override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
 
         this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
 
-        if (!this.dead) {
-            const oldAngle: number = this.container.angle;
-            const newAngle: number = Phaser.Math.RadToDeg(stream.readRotation(16));
-            const angleBetween: number = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+        if (this.isNew) {
+            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
+            this.images.container.setRotation(stream.readRotation(16));
+        } else if (!this.dead) {
+            const oldAngle = this.images.container.angle;
+            const newAngle = Phaser.Math.RadToDeg(stream.readRotation(16));
+            const angleBetween = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
 
-            gsap.to(this.container, {
+            gsap.to(this.images.container, {
                 x: this.position.x * 20,
                 y: this.position.y * 20,
                 angle: oldAngle + angleBetween,
@@ -139,33 +157,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
             switch (animation) {
                 case AnimationType.Punch: {
                     this.updateFistsPosition();
-                    const weaponDef = this.weapon.definition as MeleeDefinition;
+                    const weaponDef = this.activeItem.definition as MeleeDefinition;
                     if (weaponDef.fists.useLeft === undefined) break;
 
-                    let altFist: boolean;
-                    altFist = Math.random() < 0.5;
-                    if (!weaponDef.fists.randomFist) altFist = true;
+                    const altFist = !weaponDef.fists.randomFist || Math.random() < 0.5;
 
-                    if (!weaponDef.fists.randomFist || !altFist) {
-                        this.scene.tweens.add({
-                            targets: this.leftFist,
-                            x: weaponDef.fists.useLeft.x,
-                            y: weaponDef.fists.useLeft.y,
-                            duration: weaponDef.fists.animationDuration,
-                            yoyo: true,
-                            ease: Phaser.Math.Easing.Cubic.Out
-                        });
-                    }
-                    if (altFist) {
-                        this.scene.tweens.add({
-                            targets: this.rightFist,
-                            x: weaponDef.fists.useRight.x,
-                            y: weaponDef.fists.useRight.y,
-                            duration: weaponDef.fists.animationDuration,
-                            yoyo: true,
-                            ease: Phaser.Math.Easing.Cubic.Out
-                        });
-                    }
+                    const target = altFist
+                        ? {
+                            fist: this.images.leftFist,
+                            rigging: weaponDef.fists.useLeft
+                        }
+                        : {
+                            fist: this.images.rightFist,
+                            rigging: weaponDef.fists.useRight
+                        };
+
+                    this.scene.tweens.add({
+                        targets: target.fist,
+                        x: target.rigging.x,
+                        y: target.rigging.y,
+                        duration: weaponDef.fists.animationDuration,
+                        yoyo: true,
+                        ease: Phaser.Math.Easing.Cubic.Out
+                    });
 
                     this.scene.playSound("swing");
                     break;
@@ -184,56 +198,72 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.hitEffect = hitEffect;
     }
 
-    deserializeFull(stream: SuroiBitStream): void {
-        const dead: boolean = stream.readBoolean();
+    override deserializeFull(stream: SuroiBitStream): void {
+        const dead = stream.readBoolean();
+
         if (dead && !this.dead) {
             this.dead = true;
             this.destroy();
             return;
         }
-        this.weapon = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
+
+        this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
         this.updateFistsPosition();
     }
 
+    // I don't know if this should be here, we'll probably
+    // have to move it into a more dedicated UI-managing system
+    updateInventoryUI(): void {
+        $("#weapons-container").children("*").each((index, ele) => {
+            if (index !== this._activeItemIndex) {
+                ele.classList.remove("active");
+            } else {
+                ele.classList.add("active");
+            }
+        });
+    }
+
     updateFistsPosition(): void {
-        const weaponDef = this.weapon.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         if (this.isNew) {
             this.isNew = false;
-            this.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
-            this.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+            this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
+            this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
         } else {
             this.scene.tweens.add({
-                targets: this.leftFist,
+                targets: this.images.leftFist,
                 x: weaponDef.fists.left.x,
                 y: weaponDef.fists.left.y,
                 duration: weaponDef.fists.animationDuration,
                 ease: "Linear"
             });
             this.scene.tweens.add({
-                targets: this.rightFist,
+                targets: this.images.rightFist,
                 x: weaponDef.fists.right.x,
                 y: weaponDef.fists.right.y,
                 duration: weaponDef.fists.animationDuration,
                 ease: "Linear"
             });
         }
-        this.weaponImg.setVisible(weaponDef.image !== undefined);
+
+        this.images.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
-            this.weaponImg.setFrame(weaponDef.image?.frame);
-            this.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
-            this.scene.playSound(`${this.weapon.idString}_switch`);
-            if (this.container !== undefined) this.container.bringToTop(this.body);
+            this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
+            this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weaponImg.setAngle(weaponDef.image.angle);
+            this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this.images.container !== undefined) this.images.container.bringToTop(this.images.body);
         } else {
-            if (this.container !== undefined) this.container.sendToBack(this.body);
+            if (this.images.container !== undefined) this.images.container.sendToBack(this.images.body);
         }
     }
 
     destroy(): void {
-        this.container.destroy(true);
-        this.body.destroy(true);
-        this.leftFist.destroy(true);
-        this.rightFist.destroy(true);
-        this.weaponImg?.destroy(true);
+        this.images.container.destroy(true);
+        this.images.body.destroy(true);
+        this.images.leftFist.destroy(true);
+        this.images.rightFist.destroy(true);
+        this.images.weaponImg.destroy(true);
         this.emitter.destroy(true);
     }
 }

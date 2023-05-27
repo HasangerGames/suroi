@@ -5,7 +5,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { PacketType } from "../../../../../common/src/constants";
 
 export class InputPacket extends SendingPacket {
-    override readonly allocBytes = 8;
+    override readonly allocBytes = 4;
     override readonly type = PacketType.Input;
 
     override serialize(stream: SuroiBitStream): void {
@@ -16,11 +16,8 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(player.movement.down);
         stream.writeBoolean(player.movement.left);
         stream.writeBoolean(player.movement.right);
-        stream.writeBoolean(player.attackStart);
-        player.attackStart = false;
-        stream.writeBoolean(player.attackHold);
-        stream.writeBoolean(player.switchGun);
-        player.switchGun = false;
+        stream.writeBoolean(player.attacking);
+        stream.writeBits(player.activeItemIndex, 2);
         stream.writeRotation(player.rotation, 16);
     }
 }

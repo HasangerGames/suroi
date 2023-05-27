@@ -31,7 +31,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     3,
     [
         {
-            idString: "tree_oak",
+            idString: "oak_tree",
             material: "tree",
             health: 180,
             scale: {
@@ -46,7 +46,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 3
         },
         {
-            idString: "tree_pine",
+            idString: "pine_tree",
             material: "tree",
             health: 180,
             scale: {
@@ -89,7 +89,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 2
         },
         {
-            idString: "crate_regular",
+            idString: "regular_crate",
             material: "crate",
             health: 100,
             scale: {
@@ -121,15 +121,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             explosion: "super_barrel_explosion"
         },
         {
-            idString: "crate_health",
+            idString: "health_crate",
             material: "crate",
             health: 120,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.6
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotation: "limited",
-            explosion: "crate_health_explosion"
+            rotation: "none",
+            explosion: "health_crate_explosion"
         }
     ]
 );

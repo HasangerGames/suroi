@@ -13,6 +13,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../../common/src/constants";
 import { Guns } from "../../../../common/src/definitions/guns";
+import { setupInputs } from "../utils/inputManager";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -51,40 +52,6 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        this.input.on("pointermove", (pointer: Phaser.Input.Pointer): void => {
-            if (this.player === undefined) return;
-            this.player.rotation = Math.atan2(pointer.worldY - this.player.container.y, pointer.worldX - this.player.container.x);
-            this.player.inputsDirty = true;
-        });
-
-        this.input.on("pointerdown", (pointer: Phaser.Input.Pointer): void => {
-            if (pointer.leftButtonDown()) {
-                this.player.attackStart = true;
-                this.player.attackHold = true;
-                this.player.inputsDirty = true;
-            }
-        });
-
-        this.input.on("pointerup", (pointer: Phaser.Input.Pointer): void => {
-            if (!pointer.leftButtonDown()) {
-                this.player.attackHold = false;
-                this.player.inputsDirty = true;
-            }
-        });
-
-        this.addKey("W", "up");
-        this.addKey("S", "down");
-        this.addKey("A", "left");
-        this.addKey("D", "right");
-
-        const key = this.input.keyboard?.addKey("Q");
-        if (key !== undefined) {
-            key.on("down", () => {
-                this.player.switchGun = true;
-                this.player.inputsDirty = true;
-            });
-        }
-
         this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
     }
 
@@ -95,39 +62,6 @@ export class GameScene extends Phaser.Scene {
         } catch (e) {
             console.warn(`Failed to load sound: ${name}`);
             console.error(e);
-        }
-    }
-
-    private addKey(keyString: string, valueToToggle: keyof Player["movement"]): void {
-        const key: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(keyString);
-        if (key !== undefined) {
-            key.on("down", () => {
-                this.player.movement[valueToToggle] = true;
-                this.player.inputsDirty = true;
-            });
-
-            key.on("up", () => {
-                this.player.movement[valueToToggle] = false;
-                this.player.inputsDirty = true;
-            });
-        }
-    }
-
-    changeKey(newKeyString: string, valueToToggle: keyof Player["movement"]): void {
-        this.input.keyboard?.removeKey(this.player.movementKeys[valueToToggle]);
-        this.player.movementKeys[valueToToggle] = newKeyString;
-        console.warn("test");
-        const newKey: Phaser.Input.Keyboard.Key | undefined = this.input.keyboard?.addKey(newKeyString);
-        if (newKey !== undefined) {
-            newKey.on("down", () => {
-                this.player.movement[valueToToggle] = true;
-                this.player.inputsDirty = true;
-            });
-
-            newKey.on("up", () => {
-                this.player.movement[valueToToggle] = false;
-                this.player.inputsDirty = true;
-            });
         }
     }
 
@@ -161,19 +95,17 @@ export class GameScene extends Phaser.Scene {
         // > undefined as unknown as number
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
         this.activeGame.activePlayer.name = $("#username-input").text();
+        setupInputs(this);
 
         // Follow the player w/ the camera
-        this.cameras.main.startFollow(this.player.container);
+        this.cameras.main.startFollow(this.player.images.container);
 
         // Load the player keys
-        this.addKey(this.player.movementKeys.up, "up");
-        this.addKey(this.player.movementKeys.down, "down");
-        this.addKey(this.player.movementKeys.left, "left");
-        this.addKey(this.player.movementKeys.right, "right");
-        $("#key-input-up").val(this.player.movementKeys.up);
-        $("#key-input-down").val(this.player.movementKeys.down);
-        $("#key-input-left").val(this.player.movementKeys.left);
-        $("#key-input-right").val(this.player.movementKeys.right);
+        //fixme
+        // $("#key-input-up").val(this.player.movementKeys.forwards);
+        // $("#key-input-down").val(this.player.movementKeys.backwards);
+        // $("#key-input-left").val(this.player.movementKeys.left);
+        // $("#key-input-right").val(this.player.movementKeys.right);
 
         // Start the tick loop
         this.tick();
@@ -182,10 +114,11 @@ export class GameScene extends Phaser.Scene {
         this.activeGame.sendPacket(new JoinPacket(this.player));
 
         // Initializes sounds
-        ["swing", "grass_step_01", "grass_step_02"].forEach(item => {
-            const sound = this.sound.add(item, { volume: this.volume });
-            this.sounds.set(item, sound);
-        });
+        [
+            "swing",
+            "grass_step_01",
+            "grass_step_02"
+        ].forEach(item => this.sounds.set(item, this.sound.add(item, { volume: this.volume })));
     }
 
     playSound(name: string): void {
@@ -198,11 +131,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     tick(): void {
-        if (this.player?.inputsDirty) {
-            this.player.inputsDirty = false;
+        if (this.player?.dirty.inputs) {
+            this.player.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.player));
         }
 
-        setTimeout(() => { this.tick(); }, 30);
+        setTimeout(this.tick.bind(this), 30);
     }
 }

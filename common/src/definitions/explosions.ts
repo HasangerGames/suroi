@@ -74,7 +74,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             }
         },
         {
-            idString: "crate_health_explosion",
+            idString: "health_crate_explosion",
             damage: -50,
             obstacleMultiplier: 0.25,
             radius: {
@@ -87,7 +87,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 2000,
-                frame: "crate_health_explosion.svg",
+                frame: "health_crate_explosion.svg",
                 scale: 2.5
             },
             particles: {

@@ -140,36 +140,36 @@
       <div class="modal-item">
         <button class="btn btn-lg btn-darken btn-secondary" id="btn-resume-game">Resume</button>
       </div>
-      <div class="modal-item">
+      <!--<div class="modal-item">
         <button class="btn btn-lg btn-darken btn-controls" id="btn-controls-game">Controls</button>
-      </div>
+      </div>-->
     </div>
     <div class="modal" id="controls-menu">
       <div class="modal-item">
-        <label for="btn-key-input" class="btn-label">Move Up</label>
+        <label for="key-input-up" class="btn-label">Move Up</label>
         <div class="btn-input-group">
           <input type="text" id="key-input-up" class="key-input" placeholder="Press a key combination">
         </div>
       </div>
       <div class="modal-item">
-        <label for="btn-key-input" class="btn-label">Move Down</label>
+        <label for="key-input-down" class="btn-label">Move Down</label>
         <div class="btn-input-group">
           <input type="text" id="key-input-down" class="key-input" placeholder="Press a key combination">
         </div>
       </div>
       <div class="modal-item">
-        <label for="btn-key-input" class="btn-label">Move Right</label>
+        <label for="key-input-right" class="btn-label">Move Right</label>
         <div class="btn-input-group">
           <input type="text" id="key-input-right" class="key-input" placeholder="Press a key combination">
         </div>
       </div>
       <div class="modal-item">
-        <label for="btn-key-input" class="btn-label">Move Left</label>
+        <label for="key-input-left" class="btn-label">Move Left</label>
         <div class="btn-input-group">
           <input type="text" id="key-input-left" class="key-input" placeholder="Press a key combination">
         </div>
       </div>
-      
+
       <div class="modal-item">
         <button class="btn btn-lg btn-darken btn-secondary" id="btn-save-inputs">Save</button>
       </div>
@@ -208,7 +208,7 @@
     <div id="health-bar-container">
       <div id="health-bar-animation"></div>
       <div id="health-bar"></div>
-      <span id="health-bar-percentage">100%</span>
+      <span id="health-bar-percentage">100</span>
     </div>
     <div id="kill-msg" style="display: none">
       <div id="kill-msg-kills"></div>
@@ -226,16 +226,17 @@
       </div>
     </div>
     <div class="inventory-container" id="weapons-container">
-      <div class="inventory-slot active" id="weapon-slot-1">
+      <div class="inventory-slot" id="weapon-slot-1">
         <span class="slot-number">1</span>
         <img class="item-image" src="<%=require('/src/assets/img/game/weapons/ak47-icon.svg')%>">
         <span class="item-name">AK-47</span>
       </div>
       <div class="inventory-slot" id="weapon-slot-2">
         <span class="slot-number">2</span>
-        <span class="item-name"></span>
+        <img class="item-image" src="<%=require('/src/assets/img/game/weapons/m3k-icon.svg')%>">
+        <span class="item-name">M3K</span>
       </div>
-      <div class="inventory-slot" id="weapon-slot-3">
+      <div class="inventory-slot active" id="weapon-slot-3">
         <span class="slot-number">3</span>
         <img class="item-image" src="<%=require('/src/assets/img/game/weapons/fists.svg')%>">
         <span class="item-name">Fists</span>

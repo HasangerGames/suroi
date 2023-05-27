@@ -1,7 +1,8 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
-import { PacketType } from "../../../../common/src/constants";
+import { ObjectCategory, PacketType } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class UpdatePacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -10,35 +11,42 @@ export class UpdatePacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        const p = this.player;
-        const game = p.game;
+        const player = this.player;
+        const game = player.game;
 
         //
         // Active player data
         //
 
         // Position and rotation
-        p.serializePartial(stream);
+        player.serializePartial(stream);
 
         // Health
-        stream.writeBoolean(p.healthDirty);
-        if (p.healthDirty) {
-            stream.writeFloat(p.health, 0, 100, 8);
-            p.healthDirty = false;
+        stream.writeBoolean(player.dirty.health);
+        if (player.dirty.health) {
+            stream.writeFloat(player.health, 0, 100, 8);
+            player.dirty.health = false;
         }
 
         // Adrenaline
-        stream.writeBoolean(p.adrenalineDirty);
-        if (p.adrenalineDirty) {
-            stream.writeFloat(p.adrenaline, 0, 100, 8);
-            p.adrenalineDirty = false;
+        stream.writeBoolean(player.dirty.adrenaline);
+        if (player.dirty.adrenaline) {
+            stream.writeFloat(player.adrenaline, 0, 100, 8);
+            player.dirty.adrenaline = false;
         }
 
         // Active player ID
-        stream.writeBoolean(p.activePlayerIDDirty);
-        if (p.activePlayerIDDirty) {
-            stream.writeUint16(p.id);
-            p.activePlayerIDDirty = false;
+        stream.writeBoolean(player.dirty.activePlayerId);
+        if (player.dirty.activePlayerId) {
+            stream.writeUint16(player.id);
+            player.dirty.activePlayerId = false;
+        }
+
+        // Active item index
+        stream.writeBoolean(player.dirty.activeItemIndex);
+        if (player.dirty.activeItemIndex) {
+            stream.writeUint8(player.activeItemIndex);
+            player.dirty.activeItemIndex = false;
         }
 
         //
@@ -46,44 +54,44 @@ export class UpdatePacket extends SendingPacket {
         //
 
         // Full objects
-        const fullObjectsDirty = p.fullDirtyObjects.size !== 0;
+        const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
         stream.writeBoolean(fullObjectsDirty);
 
         if (fullObjectsDirty) {
-            stream.writeUint8(p.fullDirtyObjects.size);
-            for (const fullObject of p.fullDirtyObjects) {
+            stream.writeUint8(player.fullDirtyObjects.size);
+            for (const fullObject of player.fullDirtyObjects) {
                 stream.writeObjectType(fullObject.type);
                 stream.writeUint16(fullObject.id);
                 fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
-            p.fullDirtyObjects.clear();
+            player.fullDirtyObjects.clear();
         }
 
         // Partial objects
-        const partialObjectsDirty = p.partialDirtyObjects.size !== 0;
+        const partialObjectsDirty = player.partialDirtyObjects.size !== 0;
         stream.writeBoolean(partialObjectsDirty);
 
         if (partialObjectsDirty) {
-            stream.writeUint8(p.partialDirtyObjects.size);
-            for (const partialObject of p.partialDirtyObjects) {
+            stream.writeUint8(player.partialDirtyObjects.size);
+            for (const partialObject of player.partialDirtyObjects) {
                 stream.writeUint16(partialObject.id);
                 partialObject.serializePartial(stream);
             }
-            p.partialDirtyObjects.clear();
+            player.partialDirtyObjects.clear();
         }
 
         // Deleted objects
-        const deletedObjectsDirty = p.deletedObjects.size !== 0;
+        const deletedObjectsDirty = player.deletedObjects.size !== 0;
         stream.writeBoolean(deletedObjectsDirty);
 
         if (deletedObjectsDirty) {
-            stream.writeUint8(p.deletedObjects.size);
-            for (const deletedObject of p.deletedObjects) {
+            stream.writeUint8(player.deletedObjects.size);
+            for (const deletedObject of player.deletedObjects) {
                 stream.writeUint16(deletedObject.id);
             }
 
-            p.deletedObjects.clear();
+            player.deletedObjects.clear();
         }
 
         // Bullets
@@ -92,7 +100,20 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeObjectTypeNoCategory(bullet.type);
+                stream.writeUint8(bullet.id);
+                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.idString));
+                stream.writePosition(bullet.initialPosition);
+                stream.writePosition(bullet.finalPosition);
+            }
+        }
+
+        // Deleted bullets
+        const deletedBulletsDirty = game.deletedBulletIDs.size !== 0;
+        stream.writeBoolean(deletedBulletsDirty);
+        if (deletedBulletsDirty) {
+            stream.writeUint8(game.deletedBulletIDs.size);
+            for (const bulletID of game.deletedBulletIDs) {
+                stream.writeUint8(bulletID);
             }
         }
 
@@ -106,12 +127,12 @@ export class UpdatePacket extends SendingPacket {
             }
         }
 
-        const aliveCountDirty: boolean = game.aliveCountDirty || p.fullUpdate;
+        const aliveCountDirty: boolean = game.aliveCountDirty || player.fullUpdate;
         stream.writeBoolean(aliveCountDirty);
         if (aliveCountDirty) {
             stream.writeBits(game.aliveCount, 7);
         }
 
-        p.fullUpdate = false;
+        player.fullUpdate = false;
     }
 }
