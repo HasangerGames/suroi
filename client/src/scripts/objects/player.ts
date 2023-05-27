@@ -131,7 +131,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
 
-        if (!this.dead) {
+        if (this.isNew) {
+            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
+            this.images.container.setRotation(stream.readRotation(16));
+        } else if (!this.dead) {
             const oldAngle = this.images.container.angle;
             const newAngle = Phaser.Math.RadToDeg(stream.readRotation(16));
             const angleBetween = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);

@@ -38,6 +38,7 @@ export class MeleeItem extends InventoryItem {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(): void {
+        this._lastUse = Date.now();
         const owner = this.owner;
         const definition = this.definition;
 
@@ -83,7 +84,6 @@ export class MeleeItem extends InventoryItem {
 
     override useItem(): void {
         if (Date.now() - this._lastUse > this.definition.cooldown) {
-            this._lastUse = Date.now();
             this._useItemNoDelayCheck();
         }
     }
