@@ -20,11 +20,13 @@ export class KillFeedPacket extends ReceivingPacket {
             if (stream.readBoolean()) {
                 weaponUsed = stream.readObjectType().definition.name;
             }
-            killFeedItem.text(`${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
+            killFeedItem.addClass("kill-feed-item-red");
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/game/misc/skull.svg")}" alt="Skull"> ${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
         } else if (messageType === KillFeedMessageType.Join) {
             const name = stream.readUTF8String(16);
             const joined = stream.readBoolean();
-            killFeedItem.text(`${name} ${joined ? "joined" : "left"} the game`);
+            killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
         }
 
         killFeed.prepend(killFeedItem);
@@ -33,6 +35,6 @@ export class KillFeedPacket extends ReceivingPacket {
         }
         setTimeout(() => {
             $(killFeedItem).fadeOut(1000, function() { $(this).remove(); });
-        }, 6000);
+        }, 7000);
     }
 }

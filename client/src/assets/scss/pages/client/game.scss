@@ -63,6 +63,21 @@ body > canvas {
             margin: .3rem 0 .3rem auto;
             background: $transparent_bg;
             border-radius: 4px;
+            font-weight: 600;
+
+            .fa-solid {
+                margin-right: 3px;
+            }
+
+            .kill-icon {
+                position: relative;
+                bottom: -2px;
+                margin-right: 2px;
+            }
+        }
+
+        .kill-feed-item.kill-feed-item-red {
+            color: #ff9696;
         }
     }
 }
@@ -219,8 +234,9 @@ body > canvas {
         display: block;
         text-align: center;
         position: absolute;
-        bottom: 0.15vh;
-        font-size: 1.4vw;
+        bottom: 5px;
+        //bottom: 0.15vh;
+        //font-size: 1.4vw;
     }
 }
 

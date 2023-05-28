@@ -96,7 +96,7 @@ app.ws("/play", {
         }
 
         const split: string[] = req.getQuery().split("=");
-        let name: string = decodeURIComponent(split[1]);
+        let name: string = decodeURIComponent(split[1]).trim();
 
         if (Config.randomUsernames) {
             let adjectiveString = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -107,13 +107,12 @@ app.ws("/play", {
 
             name = adjectiveString + animalString;
         } else {
-            if (split.length !== 2 || name.length > 16 || name.trim().length === 0) {
+            if (split.length !== 2 || name.length > 16 || name.length === 0) {
                 name = "Player";
             } else {
                 name = sanitizeHtml(filter.clean(name), {
                     allowedTags: [],
-                    allowedAttributes: {},
-                    disallowedTagsMode: "recursiveEscape"
+                    allowedAttributes: {}
                 });
             }
         }
