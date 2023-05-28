@@ -3,24 +3,24 @@ import $ from "jquery";
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { random } from "../../../../../common/src/utils/random";
+import { randomKillWord } from "../../utils/misc";
 
 let timeoutId: number;
 
 export class KillPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const kills = stream.readUint8();
+        const kills = stream.readBits(7);
         const killText = `Kills: ${kills}`;
 
-        const killWords: string[] = ["killed", "destroyed", "ended", "murdered", "wiped out", "annihilated", "slaughtered", "obliterated"];
         $("#kill-msg-kills").text(killText);
-        $("#kill-msg-word").text(killWords[random(0, killWords.length - 1)]);
+        $("#kill-msg-word").text(randomKillWord());
         $("#kill-msg-player-name").text(stream.readUTF8String(16)); // name
+        $("#kill-msg-weapon-used").text(stream.readBoolean() ? ` with ${stream.readObjectType().definition.name as string}` : "");
 
         const killModal = $("#kill-msg");
-        killModal.fadeIn(350, () => {
+        killModal.fadeIn(350, (): void => {
             // clear the previous fade out timeout
-            // so it wont fade away too fast if the player makes more than one kill in a short time span
+            // so it won't fade away too fast if the player makes more than one kill in a short time span
             if (timeoutId !== undefined) clearTimeout(timeoutId);
 
             timeoutId = window.setTimeout(() => {

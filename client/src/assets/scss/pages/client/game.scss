@@ -15,13 +15,17 @@ body > canvas {
     position: absolute;
     top: .5rem;
     right: .5rem;
-    display: flex;
-    background: $transparent_bg;
-    border-radius: 8px;
-    justify-content: center;
-    align-items: center;
-    padding: .6rem;
-    gap: .6rem;
+
+    .alive-counter {
+        margin-left: auto;
+        max-width: 200px;
+        display: flex;
+        background: $transparent_bg;
+        border-radius: 8px;
+        justify-content: center;
+        align-items: center;
+        padding: .6rem;
+        gap: .6rem;
 
     .divider {
         display: inline-block;
@@ -43,6 +47,20 @@ body > canvas {
         padding-right: 8px;
         font-weight: bold;
         font-size: min(4.5vw, 50px);
+    }
+}
+
+    #kill-feed {
+        max-height: 200px;
+        overflow: hidden;
+
+        .kill-feed-item {
+            max-width: fit-content;
+            padding: .5rem;
+            margin: .3rem 0 .3rem auto;
+            background: $transparent_bg;
+            border-radius: 4px;
+        }
     }
 }
 
@@ -97,7 +115,7 @@ body > canvas {
     background: $transparent_bg;
     padding: 10px;
     border-radius: 8px;
-    width: 250px;
+    width: 320px;
     position: absolute;
     bottom: 100px;
     left: 50%;
@@ -124,7 +142,6 @@ body > canvas {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-
         .slot-number {
             position: absolute;
             top: 0.2vw;

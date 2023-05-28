@@ -31,7 +31,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     3,
     [
         {
-            idString: "tree_oak",
+            idString: "oak_tree",
+            name: "Oak Tree",
             material: "tree",
             health: 180,
             scale: {
@@ -46,7 +47,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 3
         },
         {
-            idString: "tree_pine",
+            idString: "pine_tree",
+            name: "Pine Tree",
             material: "tree",
             health: 180,
             scale: {
@@ -61,12 +63,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "rock",
+            name: "Rock",
             material: "stone",
-            health: 180,
+            health: 200,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
-                destroy: 0.25
+                destroy: 0.5
             },
             hitbox: new CircleHitbox(3.85),
             spawnHitbox: new CircleHitbox(4.5),
@@ -76,6 +79,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "bush",
+            name: "Bush",
             material: "bush",
             health: 80,
             scale: {
@@ -89,7 +93,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 2
         },
         {
-            idString: "crate_regular",
+            idString: "regular_crate",
+            name: "Regular Crate",
             material: "crate",
             health: 100,
             scale: {
@@ -100,6 +105,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "barrel",
+            name: "Barrel",
             material: "metal",
             health: 160,
             scale: {
@@ -111,6 +117,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "super_barrel",
+            name: "Super Barrel",
             material: "metal",
             health: 240,
             scale: {
@@ -121,15 +128,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             explosion: "super_barrel_explosion"
         },
         {
-            idString: "crate_health",
+            idString: "health_crate",
+            name: "Health Crate",
             material: "crate",
             health: 120,
             scale: {
                 spawnMin: 1.0, spawnMax: 1.0, destroy: 0.6
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotation: "limited",
-            explosion: "crate_health_explosion"
+            rotation: "none",
+            explosion: "health_crate_explosion"
         }
     ]
 );

@@ -20,13 +20,12 @@ import {
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { type CollisionRecord, degreesToRadians } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
-import { v, vRotate } from "../../../common/src/utils/vector";
-import { Bullet } from "./bullet";
+import { Inventory } from "../inventory/inventory";
+import { type InventoryItem } from "../inventory/inventoryItem";
+import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -47,44 +46,78 @@ export class Player extends GameObject {
     disconnected = false;
 
     private _health = 100;
-    healthDirty = true;
 
     private _adrenaline = 100;
-    adrenalineDirty = true;
+
+    killedBy?: Player;
 
     kills = 0;
     damageDone = 0;
     damageTaken = 0;
     joinTime: number;
 
-    moving = false;
+    get isMoving(): boolean {
+        return this.movement.up ||
+            this.movement.down ||
+            this.movement.left ||
+            this.movement.right;
+    }
+
     movesSinceLastUpdate = 0;
 
-    movingUp = false;
-    movingDown = false;
-    movingLeft = false;
-    movingRight = false;
-    attackStart = false;
-    attackHold = false;
+    readonly movement = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    };
 
-    deadPosition?: Vec2;
+    /**
+     * Whether the player is attacking as of last update
+     */
+    attacking = false;
 
-    activePlayerIDDirty = true;
+    /**
+     * Whether the player started attacking last update
+     */
+    startedAttacking = false;
+    /**
+     * Whether the player stopped attacking last update
+     */
+    stoppedAttacking = false;
 
-    weaponCooldown = 0;
+    /**
+     * Whether the player is turning as of last update
+     */
+    turning = false;
 
-    weapons = [
-        {
-            category: "melee",
-            type: ObjectType.fromString(ObjectCategory.Loot, "fists")
-        },
-        {
-            category: "gun",
-            type: ObjectType.fromString(ObjectCategory.Loot, "ak47")
-        }
-    ];
+    /**
+     * The position this player died at, if applicable
+     */
+    deathPosition?: Vec2;
 
-    activeWeapon = this.weapons[0];
+    /**
+     * Keeps track of various fields which are "dirty"
+     * and therefore need to be sent to the client for
+     * updating
+     */
+    readonly dirty = {
+        health: true,
+        adrenaline: true,
+        activeItemIndex: true,
+        activePlayerId: true,
+        zoom: true
+    };
+
+    readonly inventory = new Inventory(this);
+
+    get activeItem(): InventoryItem {
+        return this.inventory.activeItem;
+    }
+
+    get activeItemIndex(): number {
+        return this.inventory.activeItemIndex;
+    }
 
     // This is flipped when the player takes damage.
     // When the value changes it plays the hit sound and particle on the client.
@@ -103,7 +136,6 @@ export class Player extends GameObject {
     deletedObjects = new Set<GameObject>(); // Objects that need to be deleted
 
     private _zoom!: number;
-    zoomDirty!: boolean;
     xCullDist!: number;
     yCullDist!: number;
 
@@ -140,6 +172,11 @@ export class Player extends GameObject {
         });
 
         this.hitbox = new CircleHitbox(2.5, this.position);
+
+        // Inventory preset
+        this.inventory.addOrReplaceItem(0, "ak47");
+        this.inventory.addOrReplaceItem(1, "m3k");
+        this.inventory.addOrReplaceItem(2, "fists");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -150,7 +187,7 @@ export class Player extends GameObject {
     }
 
     get position(): Vec2 {
-        return this.deadPosition ?? this.body.getPosition();
+        return this.deathPosition ?? this.body.getPosition();
     }
 
     get health(): number {
@@ -159,7 +196,7 @@ export class Player extends GameObject {
 
     set health(health: number) {
         this._health = health;
-        this.healthDirty = true;
+        this.dirty.health = true;
     }
 
     get adrenaline(): number {
@@ -168,7 +205,7 @@ export class Player extends GameObject {
 
     set adrenaline(adrenaline: number) {
         this._adrenaline = adrenaline;
-        this.adrenalineDirty = true;
+        this.dirty.adrenaline = true;
     }
 
     get zoom(): number {
@@ -179,66 +216,15 @@ export class Player extends GameObject {
         this._zoom = zoom;
         this.xCullDist = this._zoom * 1.5;
         this.yCullDist = this._zoom * 1.25;
-        this.zoomDirty = true;
+        this.dirty.zoom = true;
     }
 
-    get activeWeaponDef(): MeleeDefinition | GunDefinition {
-        return this.activeWeapon.type.definition as MeleeDefinition | GunDefinition;
+    get activeItemDefinition(): MeleeDefinition | GunDefinition | undefined {
+        return this.activeItem?.type.definition as MeleeDefinition | GunDefinition;
     }
 
-    get weaponCooldownOver(): boolean {
-        const cooldownOver: boolean = Date.now() - this.weaponCooldown > this.activeWeaponDef.cooldown;
-        if (cooldownOver) this.weaponCooldown = Date.now();
-        return cooldownOver;
-    }
-
-    useMelee(): void {
-        this.animation.type = AnimationType.Punch;
-        this.animation.seq = !this.animation.seq;
-        const weaponIDString: string = this.activeWeapon.type.idString;
-        setTimeout(() => {
-            if (this.activeWeapon.type.idString === weaponIDString) {
-                const definition = this.activeWeaponDef as MeleeDefinition;
-                const rotated = vRotate(definition.offset, this.rotation);
-                const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
-                const hitbox: Hitbox = new CircleHitbox(definition.radius, position);
-
-                // Damage the closest object
-                let minDist = Number.MAX_VALUE;
-                let closestObject: GameObject | undefined;
-                for (const object of this.visibleObjects) {
-                    if (!object.dead && object !== this) {
-                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
-                        if (record?.collided === true && record.distance < minDist) {
-                            minDist = record.distance;
-                            closestObject = object;
-                        }
-                    }
-                }
-                if (closestObject?.dead === false) {
-                    closestObject.damage(definition.damage, this);
-                }
-            }
-        }, 50);
-    }
-
-    shootGun(): void {
-        const definition = this.activeWeaponDef as GunDefinition;
-        const spread = degreesToRadians(definition.shotSpread);
-        const angle: number = this.rotation + randomFloat(-spread, spread) + Math.PI / 2;
-        const rotated = vRotate(v(3.5, 0), this.rotation);
-        const position = Vec2(this.position.x + rotated.x, this.position.y - rotated.y);
-        for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-            const bullet = new Bullet(
-                this.game,
-                ObjectType.fromString(ObjectCategory.Bullet, `${this.activeWeapon.type.idString}_bullet`),
-                position,
-                angle,
-                this
-            );
-            this.game.bullets.add(bullet);
-            this.game.newBullets.add(bullet);
-        }
+    give(idString: string): void {
+        this.inventory.appendItem(idString);
     }
 
     updateVisibleObjects(): void {
@@ -309,7 +295,8 @@ export class Player extends GameObject {
         }
     }
 
-    override damage(amount: number, source?: GameObject): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+        // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
         }
@@ -317,40 +304,53 @@ export class Player extends GameObject {
             amount = this.health;
         }
         if (this.dead) amount = 0;
+
+        // Decrease health; update damage done and damage taken
         this.health -= amount;
-        if (amount > 0) this.damageTaken += amount;
+        if (amount > 0) {
+            this.damageTaken += amount;
+            this.hitEffect = !this.hitEffect;
+        }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
-        this.hitEffect = !this.hitEffect;
-        if (amount <= 0) this.hitEffect = !this.hitEffect;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
+
+        // Death logic
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
+
+            // Send kill packets
+            if (source instanceof Player) {
+                this.killedBy = source;
+                if (source !== this) source.kills++;
+                source.sendPacket(new KillPacket(source, this, weaponUsed));
+                this.game.kills.add(new KillFeedPacket(source, this, weaponUsed));
+            }
+
+            // Decrement alive count & send game over packet
             if (!this.disconnected) {
                 this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
             }
 
-            this.movingUp = false;
-            this.movingDown = false;
-            this.movingLeft = false;
-            this.movingRight = false;
-            this.attackStart = false;
-            this.deadPosition = this.position.clone();
+            // Destroy physics body; reset movement and attacking variables
+            this.movement.up = false;
+            this.movement.down = false;
+            this.movement.left = false;
+            this.movement.right = false;
+            this.attacking = false;
+            this.deathPosition = this.position.clone();
             this.game.world.destroyBody(this.body);
-
-            if (source instanceof Player && source !== this) {
-                source.kills++;
-                source.sendPacket(new KillPacket(source, this));
-            }
 
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);
             this.fullDirtyObjects.add(this);
-            const deathMarker: DeathMarker = new DeathMarker(this);
+
+            // Create death marker
+            const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
         }
@@ -367,6 +367,6 @@ export class Player extends GameObject {
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.dead);
         if (this.dead) return;
-        stream.writeObjectType(this.activeWeapon.type);
+        stream.writeObjectType(this.activeItem.type);
     }
 }

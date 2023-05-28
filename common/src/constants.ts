@@ -14,7 +14,8 @@ export enum PacketType {
     Update,
     Input,
     GameOver,
-    Kill
+    Kill,
+    KillFeed
 }
 
 export enum AnimationType {
