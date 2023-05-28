@@ -1,15 +1,13 @@
 // Chromium
 ::-webkit-scrollbar {
     width: 5px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #626262;
-    border-radius: 10px;
+    &-track {
+        background: transparent;
+    }
+    &-thumb {
+        background: #626262;
+        border-radius: 10px;
+    }
 }
 
 // Firefox

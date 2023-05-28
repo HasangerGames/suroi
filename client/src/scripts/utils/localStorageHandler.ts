@@ -1,22 +1,16 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type KeybindActions = {
-    move: {
-        up: string
-        down: string
-        left: string
-        right: string
-    }
-    inventory: {
-        // expand as needed
-        slot1: string
-        slot2: string
-        slot3: string
-
-        lastEquippedItem: string
-        previousItem: string
-        nextItem: string
-    }
-    useItem: string
+    moveUp: string[]
+    moveDown: string[]
+    moveLeft: string[]
+    moveRight: string[]
+    slot1: string[]
+    slot2: string[]
+    slot3: string[]
+    lastEquippedItem: string[]
+    previousItem: string[]
+    nextItem: string[]
+    useItem: string[]
 };
 
 export interface Config {
@@ -25,38 +19,37 @@ export interface Config {
     playerName: string
     keybinds: KeybindActions
     masterVolume: number
+    sfxVolume: number
     musicVolume: number
     muteAudio: boolean
     language: string
     region: string
+    cameraShake: boolean
 }
 
 export const defaultConfig: Config = {
-    configVersion: "1",
+    configVersion: "2",
     playerName: "",
     keybinds: {
-        move: {
-            up: "W",
-            down: "S",
-            left: "A",
-            right: "D"
-        },
-        inventory: {
-            slot1: "1",
-            slot2: "2",
-            slot3: "3",
-
-            lastEquippedItem: "Q",
-            previousItem: "",
-            nextItem: ""
-        },
-        useItem: "Mouse0"
+        moveUp: ["W", "ArrowUp"],
+        moveDown: ["S", "ArrowDown"],
+        moveLeft: ["A", "ArrowLeft"],
+        moveRight: ["D", "ArrowRight"],
+        slot1: ["1", ""],
+        slot2: ["2", ""],
+        slot3: ["3", ""],
+        lastEquippedItem: ["Q", ""],
+        previousItem: ["MWheelDown", ""],
+        nextItem: ["MWheelUp", ""],
+        useItem: ["Mouse0", ""]
     },
     masterVolume: 1,
     musicVolume: 1,
+    sfxVolume: 1,
     muteAudio: false,
     language: "en",
-    region: "na"
+    region: "na",
+    cameraShake: true
 };
 
 const configKey = "config";
@@ -65,7 +58,7 @@ const storedConfig = localStorage.getItem(configKey);
 let config: Config = storedConfig !== null ? JSON.parse(storedConfig) : defaultConfig;
 let rewriteConfigToLS = storedConfig === null;
 
-if (config.configVersion !== defaultConfig.configVersion) {
+while (config.configVersion !== defaultConfig.configVersion) {
     rewriteConfigToLS = true;
 
     // Here, we can attempt to port the old configuration over
@@ -77,6 +70,12 @@ if (config.configVersion !== defaultConfig.configVersion) {
             config.keybinds = { ...defaultConfig.keybinds };
             break;
         }
+        case "1":
+            config.configVersion = "2";
+            config.keybinds = { ...defaultConfig.keybinds };
+            config.sfxVolume = defaultConfig.sfxVolume;
+            config.cameraShake = defaultConfig.cameraShake;
+            break;
         default: {
             // Otherwise, we just wipe it and replace it with the default
             config = defaultConfig;

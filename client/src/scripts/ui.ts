@@ -31,7 +31,7 @@ $(() => {
     const usernameField = $("#username-input");
 
     const gameMenu = $("#game-menu");
-    const controlsMenu = $("#controls-menu");
+    const settingsMenu = $("#settings-menu");
 
     usernameField.val(localStorageInstance.config.playerName);
 
@@ -44,7 +44,9 @@ $(() => {
     });
 
     $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
-    $("#slider-sound-volume").val(localStorageInstance.config.musicVolume);
+    $("#slider-sfx-volume").val(localStorageInstance.config.sfxVolume);
+    $("#slider-music-volume").val(localStorageInstance.config.musicVolume);
+    $("#toggle-camera-shake").val(localStorageInstance.config.cameraShake.toString());
 
     // todo find a better way to do these two handlers
     $("#btn-dropdown-more").on("click", ev => {
@@ -57,47 +59,65 @@ $(() => {
     $("#btn-play-again").on("click", () => { window.location.reload(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
-    $("#btn-controls-game").on("click", (): void => {
-        gameMenu.hide();
-        controlsMenu.show();
-    });
-    $("#btn-controls-quit-menu").on("click", (): void => {
-        gameMenu.show();
-        controlsMenu.hide();
-    });
-    $("#btn-controls-resume-game").on("click", () => controlsMenu.hide());
-    $("#btn-save-inputs").on("click", () => {
-        //fixme
-        // controlsMenu.hide();
-        // const upInput = $<HTMLInputElement>("#key-input-up").val() as string;
-        // const downInput = $<HTMLInputElement>("#key-input-down").val() as string;
-        // const leftInput = $<HTMLInputElement>("#key-input-left").val() as string;
-        // const rightInput = $<HTMLInputElement>("#key-input-right").val() as string;
-
-        // const scene = core.phaser?.scene.getScene("game") as GameScene;
-
-        // scene.changeKey(upInput, "up");
-        // scene.changeKey(downInput, "down");
-        // scene.changeKey(leftInput, "left");
-        // scene.changeKey(rightInput, "right");
-    });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape" && $("canvas").hasClass("active")) {
-            $("#game-menu").toggle();
-            $("#controls-menu").hide();
+            gameMenu.fadeToggle(250);
+            settingsMenu.hide();
         }
     });
 
-    $("#slider-sound-volume").on("change", function(this: HTMLInputElement) {
-        const volume = Number(this.value);
+    $("#btn-settings").click(() => {
+        settingsMenu.fadeToggle(250);
+        settingsMenu.removeClass("in-game");
+    });
+
+    $("#btn-settings-game").click(() => {
+        gameMenu.hide();
+        settingsMenu.fadeToggle(250);
+        settingsMenu.addClass("in-game");
+    });
+
+    $("#close-settings").click(() => {
+        settingsMenu.fadeOut(250);
+    });
+
+    $("#slider-music-volume").on("input", function(this: HTMLInputElement) {
+        const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
         localStorageInstance.update({ musicVolume: volume });
     });
 
-    $("#slider-master-volume").on("change", function(this: HTMLInputElement) {
-        const volume = Number(this.value);
+    $("#slider-sfx-volume").on("input", function(this: HTMLInputElement) {
+        const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
+        localStorageInstance.update({ sfxVolume: volume });
+    });
+
+    $("#slider-master-volume").on("input", function(this: HTMLInputElement) {
+        const volume = Number(this.value);
+        (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
+        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
         localStorageInstance.update({ masterVolume: volume });
+    });
+
+    $("#toggle-camera-shake").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ cameraShake: this.checked });
+    }).attr("value", localStorageInstance.config.cameraShake);
+
+    $(".tab").on("click", ev => {
+        const tab = $(ev.target);
+
+        tab.siblings().removeClass("active");
+
+        tab.addClass("active");
+
+        const tabContent = $(`#${ev.target.id}-content`);
+
+        tabContent.siblings().removeClass("active");
+        tabContent.siblings().hide();
+
+        tabContent.addClass("active");
+        tabContent.show();
     });
 });

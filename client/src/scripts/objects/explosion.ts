@@ -5,6 +5,7 @@ import { type ExplosionDefinition } from "../../../../common/src/definitions/exp
 import { distance } from "../../../../common/src/utils/math";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 // custom particle class that adds friction to the velocity
 class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
@@ -60,7 +61,9 @@ export function explosion(game: Game, scene: GameScene, type: ObjectType, positi
     });
 
     if (game?.activePlayer !== undefined && distance(game.activePlayer.position, position) <= 70) {
-        scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+        if (localStorageInstance.config.cameraShake) {
+            scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+        }
 
         if (definition.sound !== undefined) scene.playSound(definition.sound);
     }

@@ -1,0 +1,49 @@
+@import "../utils/tabs.scss";
+@import "../palette.scss";
+
+#settings-menu {
+    background-color: $bg;
+    user-select: none;
+    box-shadow: 0px 0px 10px #000000c8;
+
+    #settings-header {
+        display: flex;
+
+        h3 {
+            margin: 5px;
+            margin-top: 0px;
+            display: flex;
+        }
+        #close-settings {
+            margin-left: auto;
+            padding: 5px;
+            cursor: pointer;
+        }
+    }
+
+    .tab-content {
+        height: 300px;
+        overflow-y: auto;
+    }
+
+    .setting-title {
+        margin: 0.2em;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .modal-item {
+        input[type=checkbox] {
+            float: right;
+        }
+        &.checkbox-setting {
+            margin-top: 10px;
+        }
+    }
+
+    &.in-game {
+        background-color: $transparent_bg;
+        box-shadow: none;
+    }
+}
+
