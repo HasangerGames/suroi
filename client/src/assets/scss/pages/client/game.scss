@@ -25,14 +25,14 @@ body > canvas {
 
     .divider {
         display: inline-block;
-        height: 50px;
+        height: min(4vw, 45px);
         width: 2px;
         background-color: white;
     }
 
     #ui-alive-text {
         font-family: "Russo One", sans-serif;
-        font-size: 32px;
+        font-size: min(4vw, 40px);
         padding-right: 8px;
         position: relative;
         bottom: -1px;
@@ -42,17 +42,18 @@ body > canvas {
         padding-left: 5px;
         padding-right: 8px;
         font-weight: bold;
-        font-size: 50px;
+        font-size: min(4.5vw, 50px);
     }
 }
 
 #health-bar-container {
     pointer-events: none;
     background: $transparent_bg;
-    border: 8px solid $transparent_bg;
-    border-radius: 8px;
-    width: 320px;
-    height: 50px;
+    border: 1vh solid $transparent_bg;
+    border-radius: 0.6vw;
+    width: 36vw;
+    height: 8vh;
+    min-height: 40px;
     position: absolute;
     bottom: 10px;
     left: 50%;
@@ -66,7 +67,7 @@ body > canvas {
         position: absolute;
         top: 0;
         left: 0;
-        border-radius: 4px;
+        border-radius: 0.3vw;
         height: 100%;
         width: 100%;
     }
@@ -83,7 +84,7 @@ body > canvas {
     }
 
     #health-bar-percentage {
-        font-size: 20px;
+        font-size: 2vw;
         color: black;
         filter: invert(1);
         mix-blend-mode: difference;
@@ -124,10 +125,32 @@ body > canvas {
     justify-content: space-between;
     gap: 10px;
 
+        .slot-number {
+            position: absolute;
+            top: 0.2vw;
+            left: 0.5vw;
+            font-size: 1.2vw;
+        }
+
+        .item-image {
+            width: 90%;
+            height: 90%;
+            margin-bottom: 0.3vh;
+        }
+
+        .item-name {
+            display: block;
+            text-align: center;
+            position: absolute;
+            bottom: 0.15vh;
+            font-size: 1.4vw;
+        }
+}
+    
     .inventory-slot {
         background: $transparent_bg;
-        width: 125px;
-        height: 125px;
+        width: 8vw;
+        height: 8vw;
         border-radius: 10px;
 
         position: relative;
@@ -136,30 +159,26 @@ body > canvas {
         justify-content: center;
         align-items: center;
 
-        .slot-number {
-            position: absolute;
-            top: 5px;
-            left: 8px;
-        }
+    }
 
-        .item-image {
-            width: 110px;
-            height: 110px;
-            margin-bottom: 15px;
-        }
+    .inventory-slot-s {
+        background: $transparent_bg;
+        width: 6vw;
+        height: 6vw;
+        border-radius: 10px;
 
-        .item-name {
-            display: block;
-            text-align: center;
-            position: absolute;
-            bottom: 5px;
-        }
+        position: relative;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
     }
 
     .inventory-slot.active {
         border: 3px solid $orange;
     }
-}
+
 
 #weapons-container {
     bottom: 10px;
@@ -168,7 +187,7 @@ body > canvas {
 
 #equipment-container {
     bottom: 10px;
-    left: 10px;
+    left: 5vw;
 }
 
 #game-over-screen {
