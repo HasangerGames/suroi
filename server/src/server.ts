@@ -1,7 +1,5 @@
 // noinspection ES6PreferShortImport
-import { Config, Debug } from "./.config/config";
-import adjectives from "./.config/adjectives.json";
-import animals from "./.config/animals.json";
+import { Config } from "./config";
 
 import {
     App,
@@ -10,7 +8,6 @@ import {
     SSLApp,
     type WebSocket
 } from "uWebSockets.js";
-import BadWordsFilter from "bad-words";
 import sanitizeHtml from "sanitize-html";
 import process from "node:process";
 
@@ -23,11 +20,7 @@ import { JoinPacket } from "./packets/receiving/joinPacket";
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../common/src/constants";
-
-const filter = new BadWordsFilter({
-    splitRegex: /(?:(?=[a-zA-Z0-9]))(?<![a-zA-Z0-9])|(?<=[a-zA-Z0-9])(?![a-zA-Z0-9])/,
-    exclude: ["ass", "butt", "crap", "fart", "god", "shit"]
-});
+import { hasBadWords } from "./utils/badWordFilter";
 
 /**
  * Apply CORS headers to a response.
@@ -50,7 +43,7 @@ const app = Config.ssl.enable
 
 const game = new Game();
 
-const playerCounts: Record<string, number> = {};
+const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 const bannedIPs: string[] = [];
 
@@ -81,36 +74,30 @@ app.ws("/play", {
 
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
-            if (bannedIPs.includes(ip) || playerCounts[ip] >= 3 || connectionAttempts[ip] >= 7) {
+            if (bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 7) {
                 if (!bannedIPs.includes(ip)) bannedIPs.push(ip);
                 res.endWithoutBody(0, true);
                 log(`Connection blocked: ${ip}`);
                 return;
             } else {
-                playerCounts[ip] = (playerCounts[ip] ?? 0) + 1;
+                simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
                 connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
 
-                log(`${playerCounts[ip]} simultaneous connections: ${ip}`);
+                log(`${simultaneousConnections[ip]} simultaneous connections: ${ip}`);
                 log(`${connectionAttempts[ip]} connection attempts in the last 5 seconds: ${ip}`);
             }
         }
 
         const split: string[] = req.getQuery().split("=");
-        let name: string = decodeURIComponent(split[1]).trim();
-
-        if (Config.randomUsernames) {
-            let adjectiveString = adjectives[Math.floor(Math.random() * adjectives.length)];
-            let animalString = animals[Math.floor(Math.random() * animals.length)];
-
-            adjectiveString = adjectiveString.charAt(0).toUpperCase() + adjectiveString.slice(1);
-            animalString = animalString.charAt(0).toUpperCase() + animalString.slice(1);
-
-            name = adjectiveString + animalString;
+        let name: string;
+        if (split.length !== 2) {
+            name = "Player";
         } else {
-            if (split.length !== 2 || name.length > 16 || name.length === 0) {
+            name = decodeURIComponent(split[1]).trim();
+            if (name.length > 16 || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
                 name = "Player";
             } else {
-                name = sanitizeHtml(filter.clean(name), {
+                name = sanitizeHtml(name, {
                     allowedTags: [],
                     allowedAttributes: {}
                 });
@@ -170,7 +157,7 @@ app.ws("/play", {
      */
     close(socket: WebSocket<PlayerContainer>) {
         const p: Player = socket.getUserData().player;
-        if (Config.botProtection) playerCounts[socket.getUserData().ip as string]--;
+        if (Config.botProtection) simultaneousConnections[socket.getUserData().ip as string]--;
         log(`"${p.name}" left the game`);
         game.removePlayer(p);
     }
@@ -190,12 +177,12 @@ app.listen(Config.host, Config.port, () => {
     log("Suroi Server v0.1.0", true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
 
-    if (Debug.stopServerAfter !== -1) {
-        log(`Automatically stopping server after ${Debug.stopServerAfter} ms`, true);
+    if (Config.stopServerAfter !== -1) {
+        log(`Automatically stopping server after ${Config.stopServerAfter} ms`, true);
         setTimeout(() => {
             log("Stopping server...", true);
             process.exit(1);
-        }, Debug.stopServerAfter);
+        }, Config.stopServerAfter);
     }
 
     log("Press Ctrl+C to exit.");

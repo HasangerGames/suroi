@@ -1,5 +1,5 @@
 // noinspection ES6PreferShortImport
-import { Config, Debug } from "./.config/config";
+import { Config } from "./config";
 
 import {
     Box, Fixture, Settings, Vec2, World
@@ -267,8 +267,8 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
         let spawnLocation: Vec2;
-        if (Debug.fixedSpawnLocation) {
-            spawnLocation = Debug.spawnLocation;
+        if (Config.spawn.mode === "fixed") {
+            spawnLocation = Config.spawn.position;
         } else {
             spawnLocation = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
         }

@@ -5,13 +5,17 @@ import { ObjectType } from "../../common/src/utils/objectType";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { type Variation } from "../../common/src/typings";
 import {
-    random, randomFloat, randomRotation, randomVector
+    random,
+    randomFloat,
+    randomPointInsideCircle,
+    randomRotation,
+    randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
-import { Debug } from "./.config/config";
+import { Config } from "./config";
 
 export class Map {
     game: Game;
@@ -23,15 +27,15 @@ export class Map {
         const mapStartTime = Date.now();
         this.game = game;
 
-        if (!Debug.disableMapGeneration) {
+        if (!Config.disableMapGeneration) {
             this.generateObstacles("oak_tree", 200);
             this.generateObstacles("pine_tree", 15);
             this.generateObstacles("rock", 200);
             this.generateObstacles("bush", 150);
             this.generateObstacles("regular_crate", 125);
+            this.generateObstacles("health_crate", 75);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
-            this.generateObstacles("health_crate", 20);
         } else {
             // Obstacle debug code goes here
         }
@@ -143,6 +147,15 @@ export class Map {
             throw new Error(`Unsupported object category: ${type.category}`);
         }
 
+        let getPosition: () => Vector;
+        if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === "random")) {
+            getPosition = (): Vector => randomVector(2.5, this.width - 2.5, 2.5, this.height - 2.5);
+        } else if (type.category === ObjectCategory.Player && Config.spawn.mode === "radius") {
+            getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
+        } else {
+            getPosition = (): Vector => v(0, 0);
+        }
+
         // Find a valid position
         while (collided && attempts <= 200) {
             attempts++;
@@ -152,7 +165,7 @@ export class Map {
             }
 
             collided = false;
-            position = randomVector(10, this.width - 10, 10, this.height - 10);
+            position = getPosition?.();
 
             const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
