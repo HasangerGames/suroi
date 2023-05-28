@@ -28,7 +28,7 @@ export const Config = {
     // A basic filter that censors only the most extreme swearing.
     censorUsernames: true,
 
-    // Cloudflare only. Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 7 times in 5 seconds.
+    // Cloudflare only. Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 5 times in 5 seconds.
     botProtection: false,
 
     disableMapGeneration: false,
