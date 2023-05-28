@@ -25,10 +25,6 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
-import { type CollisionRecord, degreesToRadians } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
-import { v, vRotate } from "../../../common/src/utils/vector";
-import { Bullet } from "./bullet";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 
 export class Player extends GameObject {

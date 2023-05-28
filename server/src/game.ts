@@ -21,8 +21,6 @@ import { log } from "../../common/src/utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
-import { type BulletDefinition } from "../../common/src/definitions/bullets";
-import { type GunDefinition } from "../../common/src/definitions/guns";
 import { type KillFeedPacket } from "./packets/sending/killFeedPacket";
 
 export class Game {
