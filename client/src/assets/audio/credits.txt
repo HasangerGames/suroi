@@ -1,11 +1,15 @@
-Menu music: TTGetDunkedOn
-
 Sound effects edited by Henry Sanger
+
+M3K switch: Dablux
+All other gun sound effects: Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+
 Bush rustle and hit: bush1.wav by schademans (CC BY 3.0): https://freesound.org/people/schademans/sounds/2588/
 Bush destroyed: 123OP
 Tree hit: Tree Hit With Axe (Tree Shake) by EminYILDIRIM (CC BY 4.0): https://freesound.org/people/EminYILDIRIM/sounds/608343/
-Tree destroyed: Falling on foil (mixkit.co)
+Tree destroyed, health explosion: mixkit.co
 Crate destroyed: Crate Break 4.wav by kevinkace (CC0 1.0, public domain): https://freesound.org/people/kevinkace/sounds/66780/
 Stone hit: 123OP
 Stone destroyed: Rocks - Effects - Source Recordings - 05 by GregorQuendel (CC BY 4.0): https://freesound.org/people/newlocknew/sounds/631485/
 All other sound effects: Katloo
+
+Menu music: TTGetDunkedOn
