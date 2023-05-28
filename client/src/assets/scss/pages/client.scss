@@ -3,6 +3,8 @@
 
 @import "./client/splash.scss";
 @import "./client/game.scss";
+@import "./settings.scss";
+
 
 body {
     background: $bg;
@@ -40,11 +42,4 @@ body {
         width: 100%;
         display: inline-block;
     }
-}
-
-#game-menu {
-    display: none;
-}
-#controls-menu {
-    display: none;
 }

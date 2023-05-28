@@ -1,0 +1,93 @@
+@import "../palette.scss";
+
+input[type="range"] {
+    -webkit-appearance: none;
+    background: transparent;
+
+    @mixin input-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 100%;
+        cursor: pointer;
+        border: none;
+        background: $orange;
+        margin-top: -5px;
+    }
+
+    @mixin input-track {
+        background: $light;
+        height: 10px;
+        width: 100%;
+        border-radius: 50%;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    &::-moz-range-thumb {
+        @include input-thumb;
+    }
+
+    &::-webkit-slider-thumb {
+        @include input-thumb;
+        margin-top: -5px;
+    }
+
+    &::-moz-range-track {
+        @include input-track;
+    }
+
+    &::-webkit-slider-runnable-track {
+        @include input-track;
+    }
+
+    &:focus {
+        outline: none;
+    }
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+    }
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+
+    &:after {
+        content: '';
+        width: 40px;
+        height: 20px;
+        display: inline-block;
+        background: $light;
+        border-radius: 18px;
+        clear: both;
+        transition: background linear 200ms;
+    }
+
+    &:before {
+        content: '';
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: 2px;
+        border-radius: 50%;
+        background: $light;
+        transition: left linear 200ms;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    &:checked:before {
+        left: 20px;
+    }
+
+    &:checked:after {
+        background: $orange;
+    }
+}
+

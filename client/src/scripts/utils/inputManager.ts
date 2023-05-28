@@ -1,7 +1,9 @@
 import { mod } from "../../../../common/src/utils/math";
 import { type Player } from "../objects/player";
 import { type GameScene } from "../scenes/gameScene";
-import { localStorageInstance, type KeybindActions } from "./localStorageHandler";
+import {
+    localStorageInstance, type KeybindActions, defaultConfig
+} from "./localStorageHandler";
 
 class Action {
     readonly name: string;
@@ -40,38 +42,35 @@ function generateKeybindActions(player: Player): ConvertToAction<KeybindActions>
     }
 
     return {
-        move: {
-            up: generateMovementAction("up"),
-            down: generateMovementAction("down"),
-            right: generateMovementAction("right"),
-            left: generateMovementAction("left")
-        },
-        inventory: {
-            slot1: generateSlotAction(0),
-            slot2: generateSlotAction(1),
-            slot3: generateSlotAction(2),
+        moveUp: generateMovementAction("up"),
+        moveDown: generateMovementAction("down"),
+        moveRight: generateMovementAction("right"),
+        moveLeft: generateMovementAction("left"),
 
-            lastEquippedItem: new Action(
-                "inventory::lastEquippedItem",
-                () => {
-                    player.activeItemIndex = player.lastItemIndex;
-                }
-            ),
-            previousItem: new Action(
-                "inventory::previousItem",
-                () => {
-                    player.activeItemIndex = mod(player.activeItemIndex - 1, 3);
-                    //fixme                                                  ^ mystery constant (max inventory size)
-                }
-            ),
-            nextItem: new Action(
-                "inventory::nextItem",
-                () => {
-                    player.activeItemIndex = mod(player.activeItemIndex + 1, 3);
-                    //fixme                                                  ^ mystery constant (max inventory size)
-                }
-            )
-        },
+        slot1: generateSlotAction(0),
+        slot2: generateSlotAction(1),
+        slot3: generateSlotAction(2),
+
+        lastEquippedItem: new Action(
+            "inventory::lastEquippedItem",
+            () => {
+                player.activeItemIndex = player.lastItemIndex;
+            }
+        ),
+        previousItem: new Action(
+            "inventory::previousItem",
+            () => {
+                player.activeItemIndex = mod(player.activeItemIndex - 1, 3);
+                //fixme                                                  ^ mystery constant (max inventory size)
+            }
+        ),
+        nextItem: new Action(
+            "inventory::nextItem",
+            () => {
+                player.activeItemIndex = mod(player.activeItemIndex + 1, 3);
+                //fixme                                                  ^ mystery constant (max inventory size)
+            }
+        ),
         useItem: new Action(
             "useItem",
             () => { player.attacking = true; },
@@ -82,36 +81,29 @@ function generateKeybindActions(player: Player): ConvertToAction<KeybindActions>
 
 const bindings: Map<string, Action[]> = new Map<string, Action[]>();
 
-function bind(key: string, action: Action): void {
-    (
-        bindings.get(key) ??
-        (() => {
-            const array: Action[] = [];
-            bindings.set(key, array);
-            return array;
-        })()
-    ).push(action);
+function bind(keys: string[], action: Action): void {
+    for (const key of keys) {
+        (
+            bindings.get(key) ??
+            (() => {
+                const array: Action[] = [];
+                bindings.set(key, array);
+                return array;
+            })()
+        ).push(action);
+    }
 }
+
+let actions: ConvertToAction<KeybindActions>;
 
 export function setupInputs(scene: GameScene): void {
     const player = scene.player;
-    const actions = generateKeybindActions(player);
+    actions = generateKeybindActions(player);
     const keybinds = localStorageInstance.config.keybinds;
 
-    // If anyone wants to find a more automated/concise way of doing this, go for it
-    bind(keybinds.move.up, actions.move.up);
-    bind(keybinds.move.down, actions.move.down);
-    bind(keybinds.move.left, actions.move.left);
-    bind(keybinds.move.right, actions.move.right);
-
-    bind(keybinds.useItem, actions.useItem);
-
-    bind(keybinds.inventory.slot1, actions.inventory.slot1);
-    bind(keybinds.inventory.slot2, actions.inventory.slot2);
-    bind(keybinds.inventory.slot3, actions.inventory.slot3);
-    bind(keybinds.inventory.previousItem, actions.inventory.previousItem);
-    bind(keybinds.inventory.nextItem, actions.inventory.nextItem);
-    bind(keybinds.inventory.lastEquippedItem, actions.inventory.lastEquippedItem);
+    for (const action in keybinds) {
+        bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
+    }
 
     // Register listeners on the scene
     const keyboard = scene.input.keyboard;
@@ -134,47 +126,25 @@ export function setupInputs(scene: GameScene): void {
 
     let mWheelStopTimer: number | undefined;
     function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
-        if (event instanceof KeyboardEvent) {
-            fireAllEventsAtKey(event.key, event.type === "keydown");
-            return;
-        }
+        const key = getKeyFromInputEvent(event);
 
         if (event instanceof WheelEvent) {
-            let target = "";
+            /*
+                The browser doesn't emit mouse wheel "stop" events, so instead, we schedule the invocation
+                of the stop callback to some time in the near future, cancelling the previous callback
 
-            switch (true) {
-                case event.deltaX > 0: { target = "MWheelRight"; break; }
-                case event.deltaX < 0: { target = "MWheelLeft"; break; }
-                case event.deltaY > 0: { target = "MWheelDown"; break; }
-                case event.deltaY < 0: { target = "MWheelUp"; break; }
-                case event.deltaZ > 0: { target = "MWheelForwards"; break; }
-                case event.deltaZ < 0: { target = "MWheelBackwards"; break; }
-            }
+                This has the effect of continuously cancelling the stop callback whenever a wheel event is
+                detected, which is what we want
+            */
+            clearTimeout(mWheelStopTimer);
+            mWheelStopTimer = window.setTimeout(() => {
+                fireAllEventsAtKey(key, false);
+            }, 50);
 
-            if (target === "") {
-                console.error("An unrecognized scroll wheel event was received: ", event);
-            } else {
-                clearTimeout(mWheelStopTimer);
-                fireAllEventsAtKey(target, true);
-
-                /*
-                    The browser doesn't emit mouse wheel "stop" events, so instead, we schedule the invocation
-                    of the stop callback to some time in the near future, cancelling the previous callback
-
-                    This has the effect of continuously cancelling the stop callback whenever a wheel event is
-                    detected, which is what we want
-                */
-                mWheelStopTimer = window.setTimeout(() => {
-                    fireAllEventsAtKey(target, false);
-                }, 50);
-            }
-
+            fireAllEventsAtKey(key, true);
             return;
         }
-
-        /* if (event instanceof MouseEvent) { */
-        fireAllEventsAtKey(`Mouse${event.button}`, event.type === "mousedown");
-        /* } */
+        fireAllEventsAtKey(key, event.type === "keydown" || event.type === "mousedown");
     }
 
     window.addEventListener("keydown", handleInputEvent);
@@ -183,64 +153,148 @@ export function setupInputs(scene: GameScene): void {
     window.addEventListener("mouseup", handleInputEvent);
     window.addEventListener("wheel", handleInputEvent);
 
-    for (const [key, actions] of bindings) {
-        if (key.startsWith("mouse")) continue;
-
-        keyboard.addKey(key).on("down", () => {
-            actions.forEach(action => action.on?.());
-        });
-
-        keyboard.addKey(key).on("up", () => {
-            actions.forEach(action => action.off?.());
-        });
-    }
-
     scene.input.on("pointermove", (pointer: Phaser.Input.Pointer): void => {
         if (scene.player === undefined) return;
 
         scene.player.rotation = Math.atan2(pointer.worldY - scene.player.images.container.y, pointer.worldX - scene.player.images.container.x);
         scene.player.dirty.inputs = true;
     });
+}
 
-    function generateMouseListener(parity: "up" | "down") {
-        return (pointer: Phaser.Input.Pointer): void => {
-            function assertButtonState(button: "left" | "right" | "middle" | "back" | "forward"): boolean {
-                return pointer[`${button}Button${parity === "up" ? "Released" : "Down"}`]();
+function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
+    let key = "";
+    if (event instanceof KeyboardEvent) {
+        key = event.key.length > 1 ? event.key : event.key.toUpperCase();
+        if (key === " ") {
+            key = "Space";
+        }
+    }
+    if (event instanceof WheelEvent) {
+        switch (true) {
+            case event.deltaX > 0: { key = "MWheelRight"; break; }
+            case event.deltaX < 0: { key = "MWheelLeft"; break; }
+            case event.deltaY > 0: { key = "MWheelDown"; break; }
+            case event.deltaY < 0: { key = "MWheelUp"; break; }
+            case event.deltaZ > 0: { key = "MWheelForwards"; break; }
+            case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
+        }
+        if (key === "") {
+            console.error("An unrecognized scroll wheel event was received: ", event);
+        }
+        return key;
+    }
+    if (event instanceof MouseEvent) {
+        key = `Mouse${event.button}`;
+    }
+    return key;
+}
+
+const actionsNames = {
+    moveUp: "Move Up",
+    moveDown: "Move Down",
+    moveLeft: "Move Left",
+    moveRight: "Move Right",
+    slot1: "Slot 1",
+    slot2: "Slot 2",
+    slot3: "Slot 3",
+    lastEquippedItem: "Equip Last item",
+    previousItem: "Equip Previous Item",
+    nextItem: "Equip Next Item",
+    useItem: "Use Item"
+};
+
+// generate the input settings
+function generateBindsConfigScreen(): void {
+    const keybindsContainer = $("#tab-keybinds-content");
+    keybindsContainer.html("");
+
+    for (const a in defaultConfig.keybinds) {
+        const action = a as keyof KeybindActions;
+
+        const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
+
+        $("<div/>", {
+            class: "setting-title",
+            text: actionsNames[action]
+        }).appendTo(bindContainer);
+
+        const keybinds = localStorageInstance.config.keybinds;
+        const actionBinds = keybinds[action];
+
+        actionBinds.forEach((bind, bindIndex) => {
+            const bindButton = $("<button/>", {
+                class: "btn btn-darken btn-lg btn-secondary btn-bind",
+                text: bind === "" ? "None" : bind
+            }).appendTo(bindContainer)[0];
+
+            function setKeyBind(event: KeyboardEvent | MouseEvent | WheelEvent): void {
+                event.stopImmediatePropagation();
+
+                if (event instanceof MouseEvent &&
+                    event.type === "mousedown" &&
+                    event.button === 0 &&
+                    !bindButton.classList.contains("active")) {
+                    bindButton.classList.add("active");
+                    return;
+                }
+
+                if (bindButton.classList.contains("active")) {
+                    let key = getKeyFromInputEvent(event);
+
+                    // remove conflicting binds
+                    for (const a2 in defaultConfig.keybinds) {
+                        const action2 = a2 as keyof KeybindActions;
+                        const bindAction = keybinds[action2];
+
+                        bindAction.forEach((bind2, bindIndex2) => {
+                            if (bindAction[bindIndex2] === key) {
+                                bindAction[bindIndex2] = "";
+                            }
+                        });
+                    }
+
+                    // remove binding with Escape
+                    if (key === "Escape") {
+                        key = "";
+                    }
+
+                    actionBinds[bindIndex] = key;
+                    localStorageInstance.update({ keybinds });
+
+                    // update the bindings screen
+                    generateBindsConfigScreen();
+                }
             }
 
-            let target = "";
+            bindButton.addEventListener("keydown", setKeyBind);
+            bindButton.addEventListener("mousedown", setKeyBind);
+            bindButton.addEventListener("wheel", setKeyBind);
 
-            switch (true) {
-                case assertButtonState("left"): {
-                    target = "mouse1";
-                    break;
-                }
-                case assertButtonState("right"): {
-                    target = "mouse2";
-                    break;
-                }
-                case assertButtonState("middle"): {
-                    target = "mouse3";
-                    break;
-                }
-                case assertButtonState("back"): {
-                    target = "mouse4";
-                    break;
-                }
-                case assertButtonState("forward"): {
-                    target = "mouse5";
-                    break;
-                }
+            bindButton.addEventListener("scroll", (evt) => {
+                evt.stopPropagation();
+                evt.stopImmediatePropagation();
+            });
+
+            bindButton.addEventListener("blur", () => {
+                bindButton.classList.remove("active");
+            });
+        });
+
+        if (actions !== undefined) {
+            bindings.clear();
+            for (const action in defaultConfig.keybinds) {
+                bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
             }
-
-            if (target === "") {
-                console.error("Didn't know how to handle mouse event: ", pointer);
-            }
-
-            bindings.get(target)?.forEach(action => action.on?.());
-        };
+        }
     }
 
-    scene.input.on("pointerdown", generateMouseListener("down"));
-    scene.input.on("pointerup", generateMouseListener("up"));
+    // add the reset button
+    $("<div/>", { class: "modal-item" }).append($("<button/>", {
+        class: "btn btn-darken btn-lg btn-danger",
+        text: "Reset to defaults"
+    }).on("click", () => {
+        localStorageInstance.update({ keybinds: defaultConfig.keybinds });
+        generateBindsConfigScreen();
+    })).appendTo(keybindsContainer);
 }
+generateBindsConfigScreen();

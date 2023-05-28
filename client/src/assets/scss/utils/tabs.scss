@@ -1,0 +1,30 @@
+.tab-bar {
+    display: flex;
+    user-select: none;
+    justify-content: center;
+}
+
+.tab {
+    display: flex;
+    padding: 6px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-inline: 5px;
+    cursor: pointer;
+    border-radius: 5px 5px 0 0;
+
+    border-top: 4px solid transparent;
+}
+
+.tab.active {
+    border-color: $blue;
+}
+
+.tab-content.active, .tab.active {
+    background: $transparent_bg;
+}
+
+.tab-content {
+    border-radius: 10px;
+    padding: 10px;
+}

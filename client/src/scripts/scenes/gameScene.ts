@@ -19,7 +19,7 @@ export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
-    volume = localStorageInstance.config.masterVolume ?? 1;
+    volume = localStorageInstance.config.sfxVolume * localStorageInstance.config.masterVolume;
 
     constructor() {
         super("game");
@@ -99,13 +99,6 @@ export class GameScene extends Phaser.Scene {
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.images.container);
-
-        // Load the player keys
-        //fixme
-        // $("#key-input-up").val(this.player.movementKeys.forwards);
-        // $("#key-input-down").val(this.player.movementKeys.backwards);
-        // $("#key-input-left").val(this.player.movementKeys.left);
-        // $("#key-input-right").val(this.player.movementKeys.right);
 
         // Start the tick loop
         this.tick();
