@@ -46,6 +46,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.dirty.inputs = true;
     }
 
+    turning = false;
+
     _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
 

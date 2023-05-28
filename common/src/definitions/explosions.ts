@@ -29,6 +29,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
     [
         {
             idString: "barrel_explosion",
+            name: "Barrel",
             damage: 130,
             obstacleMultiplier: 2,
             radius: {
@@ -52,6 +53,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         },
         {
             idString: "super_barrel_explosion",
+            name: "Super Barrel",
             damage: 160,
             obstacleMultiplier: 3,
             radius: {
@@ -75,6 +77,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         },
         {
             idString: "health_crate_explosion",
+            name: "Health Crate",
             damage: -50,
             obstacleMultiplier: 0.25,
             radius: {

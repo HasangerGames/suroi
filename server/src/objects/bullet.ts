@@ -7,6 +7,7 @@ import { type Game } from "../game";
 import { randomFloat } from "../../../common/src/utils/random";
 import { distance } from "../../../common/src/utils/math";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 
 export class Bullet {
     readonly is: CollisionFilter = {
@@ -36,13 +37,15 @@ export class Bullet {
     body: Body;
 
     source: GunDefinition;
+    sourceType: ObjectType;
     shooter: Player;
 
-    constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, shooter: Player) {
+    constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, sourceType: ObjectType, shooter: Player) {
         this.id = game.nextBulletID;
         this.initialPosition = position;
         this.rotation = rotation;
         this.source = source;
+        this.sourceType = sourceType;
         this.shooter = shooter;
 
         const definition = this.source.ballistics;

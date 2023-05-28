@@ -21,8 +21,6 @@ import { log } from "../../common/src/utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
-import { type BulletDefinition } from "../../common/src/definitions/bullets";
-import { type GunDefinition } from "../../common/src/definitions/guns";
 import { type KillFeedPacket } from "./packets/sending/killFeedPacket";
 
 export class Game {
@@ -145,7 +143,7 @@ export class Game {
                 const definition = bullet.source.ballistics;
                 //if (damageRecord.damaged.damageable) {
                 if (damageRecord.damaged instanceof Player) {
-                    damageRecord.damaged.damage(definition.damage, damageRecord.damager);
+                    damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
                 } else if (damageRecord.damaged.damage !== undefined) {
                     damageRecord.damaged.damage(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
                 }
@@ -185,7 +183,7 @@ export class Game {
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
-                if (player.isMoving) {
+                if (player.isMoving || player.turning) {
                     this.partialDirtyObjects.add(player);
                 }
 
@@ -193,6 +191,7 @@ export class Game {
                     player.activeItem.useItem();
                 }
 
+                player.turning = false;
                 player.startedAttacking = false;
                 player.stoppedAttacking = false;
             }

@@ -18,6 +18,9 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(player.movement.right);
         stream.writeBoolean(player.attacking);
         stream.writeBits(player.activeItemIndex, 2);
-        stream.writeRotation(player.rotation, 16);
+        stream.writeBoolean(player.turning);
+        if (player.turning) {
+            stream.writeRotation(player.rotation, 16);
+        }
     }
 }

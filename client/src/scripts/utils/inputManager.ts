@@ -199,6 +199,7 @@ export function setupInputs(scene: GameScene): void {
         if (scene.player === undefined) return;
 
         scene.player.rotation = Math.atan2(pointer.worldY - scene.player.images.container.y, pointer.worldX - scene.player.images.container.x);
+        scene.player.turning = true;
         scene.player.dirty.inputs = true;
     });
 

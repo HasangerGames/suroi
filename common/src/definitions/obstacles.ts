@@ -32,6 +32,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     [
         {
             idString: "oak_tree",
+            name: "Oak Tree",
             material: "tree",
             health: 180,
             scale: {
@@ -47,6 +48,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "pine_tree",
+            name: "Pine Tree",
             material: "tree",
             health: 180,
             scale: {
@@ -61,12 +63,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "rock",
+            name: "Rock",
             material: "stone",
             health: 200,
             scale: {
                 spawnMin: 0.9,
                 spawnMax: 1.1,
-                destroy: 0.25
+                destroy: 0.5
             },
             hitbox: new CircleHitbox(3.85),
             spawnHitbox: new CircleHitbox(4.5),
@@ -76,6 +79,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "bush",
+            name: "Bush",
             material: "bush",
             health: 80,
             scale: {
@@ -90,6 +94,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "regular_crate",
+            name: "Regular Crate",
             material: "crate",
             health: 100,
             scale: {
@@ -100,6 +105,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "barrel",
+            name: "Barrel",
             material: "metal",
             health: 160,
             scale: {
@@ -111,6 +117,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "super_barrel",
+            name: "Super Barrel",
             material: "metal",
             health: 240,
             scale: {
@@ -122,6 +129,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "health_crate",
+            name: "Health Crate",
             material: "crate",
             health: 120,
             scale: {

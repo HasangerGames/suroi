@@ -39,10 +39,8 @@ export class SuroiBitStream extends BitStream {
     */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
         const range = (1 << bitCount) - 1;
-        const x = value < max ? (value > min ? value : min) : max;
-        const t = (x - min) / (max - min);
-
-        this.writeBits(t * range + 0.5, bitCount);
+        const clamped = value < max ? (value > min ? value : min) : max;
+        this.writeBits(((clamped - min) / (max - min)) * range + 0.5, bitCount);
     }
 
     /**

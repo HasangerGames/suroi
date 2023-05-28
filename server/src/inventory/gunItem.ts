@@ -64,6 +64,7 @@ export class GunItem extends InventoryItem {
                     position,
                     angle,
                     definition,
+                    this.type,
                     owner
                 );
 

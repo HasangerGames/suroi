@@ -25,10 +25,6 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
-import { type CollisionRecord, degreesToRadians } from "../../../common/src/utils/math";
-import { randomFloat } from "../../../common/src/utils/random";
-import { v, vRotate } from "../../../common/src/utils/vector";
-import { Bullet } from "./bullet";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 
 export class Player extends GameObject {
@@ -89,6 +85,11 @@ export class Player extends GameObject {
      * Whether the player stopped attacking last update
      */
     stoppedAttacking = false;
+
+    /**
+     * Whether the player is turning as of last update
+     */
+    turning = false;
 
     /**
      * The position this player died at, if applicable
@@ -294,7 +295,8 @@ export class Player extends GameObject {
         }
     }
 
-    override damage(amount: number, source?: GameObject): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+        // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
         }
@@ -302,26 +304,39 @@ export class Player extends GameObject {
             amount = this.health;
         }
         if (this.dead) amount = 0;
+
+        // Decrease health; update damage done and damage taken
         this.health -= amount;
-        if (amount > 0) this.damageTaken += amount;
+        if (amount > 0) {
+            this.damageTaken += amount;
+            this.hitEffect = !this.hitEffect;
+        }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
-        this.hitEffect = !this.hitEffect;
-        if (amount <= 0) this.hitEffect = !this.hitEffect;
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
+
+        // Death logic
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
             this.dead = true;
-            // Set killedBy
-            if (source instanceof Player && source !== this) this.killedBy = source;
 
+            // Send kill packets
+            if (source instanceof Player) {
+                this.killedBy = source;
+                if (source !== this) source.kills++;
+                source.sendPacket(new KillPacket(source, this, weaponUsed));
+                this.game.kills.add(new KillFeedPacket(source, this, weaponUsed));
+            }
+
+            // Decrement alive count & send game over packet
             if (!this.disconnected) {
                 this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
             }
 
+            // Destroy physics body; reset movement and attacking variables
             this.movement.up = false;
             this.movement.down = false;
             this.movement.left = false;
@@ -330,15 +345,11 @@ export class Player extends GameObject {
             this.deathPosition = this.position.clone();
             this.game.world.destroyBody(this.body);
 
-            if (source instanceof Player && source !== this) {
-                source.kills++;
-                source.sendPacket(new KillPacket(source, this));
-                this.game.kills.add(new KillFeedPacket(source, this));
-            }
-
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);
             this.fullDirtyObjects.add(this);
+
+            // Create death marker
             const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);

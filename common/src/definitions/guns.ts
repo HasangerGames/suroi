@@ -30,6 +30,7 @@ export interface GunDefinition extends ItemDefinition {
 export const Guns: GunDefinition[] = [
     {
         idString: "ak47",
+        name: "AK-47",
         type: "gun",
         cooldown: 100,
         fireMode: "auto",
@@ -46,29 +47,30 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
-            maxDistance: 100
+            maxDistance: 125
         }
     },
     {
         idString: "m3k",
+        name: "M3K",
         type: "gun",
         cooldown: 1000,
         fireMode: "single",
-        shotSpread: 10,
+        shotSpread: 7,
         bulletCount: 9,
         fists: {
             left: v(65, 0),
-            right: v(140, -10),
+            right: v(130, -10),
             animationDuration: 100
         },
-        image: { position: v(120, 0) },
+        image: { position: v(100, 0) },
         capacity: Infinity,
         ballistics: {
-            damage: 6.5,
-            obstacleMultiplier: 3,
+            damage: 7,
+            obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
-            maxDistance: 150
+            maxDistance: 80
         }
     }
 ];

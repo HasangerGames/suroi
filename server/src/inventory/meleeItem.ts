@@ -1,6 +1,6 @@
 import { InventoryItem } from "./inventoryItem";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { type Player } from "../objects/player";
+import { Player } from "../objects/player";
 import { vRotate } from "../../../common/src/utils/vector";
 import { AnimationType } from "../../../common/src/constants";
 import { Vec2 } from "planck";
@@ -72,7 +72,11 @@ export class MeleeItem extends InventoryItem {
                 }
 
                 if (closestObject?.dead === false) {
-                    closestObject.damage(definition.damage, owner);
+                    if (closestObject instanceof Player) {
+                        closestObject.damage(definition.damage, owner, this.type);
+                    } else {
+                        closestObject.damage(definition.damage, owner);
+                    }
                 }
 
                 if (definition.fireMode === "auto") {

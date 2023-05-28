@@ -28,6 +28,7 @@ export const Melees: MeleeDefinition[] =
 [
     {
         idString: "fists",
+        name: "Fists",
         type: "melee",
         damage: 20,
         obstacleMultiplier: 2,

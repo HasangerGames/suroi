@@ -33,6 +33,9 @@ export class InputPacket extends ReceivingPacket {
             player.fullDirtyObjects.add(player);
         }
 
-        player.rotation = stream.readRotation(16);
+        player.turning = stream.readBoolean();
+        if (player.turning) {
+            player.rotation = stream.readRotation(16);
+        }
     }
 }

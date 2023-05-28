@@ -14,6 +14,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
 
 export interface ObjectDefinition {
     readonly idString: string
+    readonly name: string
 }
 
 // expand this as needed
