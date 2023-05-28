@@ -26,6 +26,7 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
+import { KillKillFeedMessage } from "../types/killFeedMessage";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -108,6 +109,8 @@ export class Player extends GameObject {
         activePlayerId: true,
         zoom: true
     };
+
+    hitEffectChanged = false;
 
     readonly inventory = new Inventory(this);
 
@@ -309,7 +312,10 @@ export class Player extends GameObject {
         this.health -= amount;
         if (amount > 0) {
             this.damageTaken += amount;
-            this.hitEffect = !this.hitEffect;
+            if (!this.hitEffectChanged) {
+                this.hitEffect = !this.hitEffect;
+                this.hitEffectChanged = true;
+            }
         }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
@@ -327,12 +333,12 @@ export class Player extends GameObject {
                 this.killedBy = source;
                 if (source !== this) source.kills++;
                 source.sendPacket(new KillPacket(source, this, weaponUsed));
-                this.game.kills.add(new KillFeedPacket(source, this, weaponUsed));
+                const killMessage = new KillKillFeedMessage(this.name, source.name, weaponUsed);
+                this.game.killFeedMessages.add(new KillFeedPacket(this, killMessage));
             }
 
             // Decrement alive count & send game over packet
             if (!this.disconnected) {
-                this.game.aliveCount--;
                 this.sendPacket(new GameOverPacket(this));
             }
 
@@ -344,6 +350,7 @@ export class Player extends GameObject {
             this.attacking = false;
             this.deathPosition = this.position.clone();
             this.game.world.destroyBody(this.body);
+            this.game.aliveCountDirty = true;
 
             this.game.livingPlayers.delete(this);
             this.game.fullDirtyObjects.add(this);

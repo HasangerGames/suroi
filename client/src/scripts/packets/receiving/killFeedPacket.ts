@@ -4,28 +4,35 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { randomKillWord } from "../../utils/misc";
+import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType } from "../../../../../common/src/constants";
 
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const killedBy = stream.readUTF8String(16);
-        const killed = stream.readUTF8String(16);
-        let weaponUsed: string | undefined;
-        if (stream.readBoolean()) {
-            weaponUsed = stream.readObjectType().definition.name;
+        const killFeed = $("#kill-feed");
+        const killFeedItem = $("<div>");
+        killFeedItem.addClass("kill-feed-item");
+
+        const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
+        if (messageType === KillFeedMessageType.Kill) {
+            const killedBy = stream.readUTF8String(16);
+            const killed = stream.readUTF8String(16);
+            let weaponUsed: string | undefined;
+            if (stream.readBoolean()) {
+                weaponUsed = stream.readObjectType().definition.name;
+            }
+            killFeedItem.text(`${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
+        } else if (messageType === KillFeedMessageType.Join) {
+            const name = stream.readUTF8String(16);
+            const joined = stream.readBoolean();
+            killFeedItem.text(`${name} ${joined ? "joined" : "left"} the game`);
         }
 
-        $("#kill-msg-player-name").text(killedBy); // name
-
-        const killFeedEle = $("#kill-feed");
-
-        const killFeedItemEle = $("<div>");
-
-        killFeedItemEle.addClass("kill-feed-item");
-        killFeedItemEle.text(`${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
-
-        killFeedEle.prepend(killFeedItemEle);
+        killFeed.prepend(killFeedItem);
+        if (killFeed.children().length > 5) {
+            killFeed.children().last().remove();
+        }
         setTimeout(() => {
-            $(killFeedItemEle).fadeOut(1000, function() { $(this).remove(); });
-        }, 5000);
+            $(killFeedItem).fadeOut(1000, function() { $(this).remove(); });
+        }, 6000);
     }
 }

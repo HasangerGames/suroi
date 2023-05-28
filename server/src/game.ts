@@ -21,7 +21,8 @@ import { log } from "../../common/src/utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
-import { type KillFeedPacket } from "./packets/sending/killFeedPacket";
+import { KillFeedPacket } from "./packets/sending/killFeedPacket";
+import { JoinKillFeedMessage } from "./types/killFeedMessage";
 
 export class Game {
     map: Map;
@@ -33,14 +34,13 @@ export class Game {
     visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
     updateObjects = false;
 
-    private _aliveCount = 0;
     aliveCountDirty = false;
 
     partialDirtyObjects = new Set<GameObject>();
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
 
-    kills = new Set<KillFeedPacket>(); // All kills this tick
+    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
 
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
@@ -197,19 +197,19 @@ export class Game {
             }
 
             // Second loop over players: calculate visible objects & send updates
-            for (const p of this.connectedPlayers) {
-                if (!p.joined) continue;
+            for (const player of this.connectedPlayers) {
+                if (!player.joined) continue;
 
                 // Calculate visible objects
-                if (p.movesSinceLastUpdate > 8 || this.updateObjects) {
-                    p.updateVisibleObjects();
+                if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
+                    player.updateVisibleObjects();
                 }
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
                     for (const object of this.fullDirtyObjects) {
-                        if (p.visibleObjects.has(object)) {
-                            p.fullDirtyObjects.add(object);
+                        if (player.visibleObjects.has(object)) {
+                            player.fullDirtyObjects.add(object);
                         }
                     }
                 }
@@ -217,8 +217,8 @@ export class Game {
                 // Partial objects
                 if (this.partialDirtyObjects.size !== 0) { // && !p.fullUpdate) {
                     for (const object of this.partialDirtyObjects) {
-                        if (p.visibleObjects.has(object) && !p.fullDirtyObjects.has(object)) {
-                            p.partialDirtyObjects.add(object);
+                        if (player.visibleObjects.has(object) && !player.fullDirtyObjects.has(object)) {
+                            player.partialDirtyObjects.add(object);
                         }
                     }
                 }
@@ -226,14 +226,15 @@ export class Game {
                 // Deleted objects
                 if (this.deletedObjects.size !== 0) {
                     for (const object of this.deletedObjects) {
-                        if (p.visibleObjects.has(object) && object !== p) {
-                            p.deletedObjects.add(object);
+                        if (player.visibleObjects.has(object) && object !== player) {
+                            player.deletedObjects.add(object);
                         }
                     }
                 }
 
-                for (const kill of this.kills) p.sendPacket(kill);
-                p.sendPacket(new UpdatePacket(p));
+                for (const message of this.killFeedMessages) player.sendPacket(message);
+                player.sendPacket(new UpdatePacket(player));
+                player.hitEffectChanged = false; // TODO Hit effects only display once for disconnected players
             }
 
             // Reset everything
@@ -244,7 +245,7 @@ export class Game {
             this.deletedBulletIDs.clear();
             this.explosions.clear();
             this.aliveCountDirty = false;
-            if (this.kills.size > 0) this.kills = new Set<KillFeedPacket>();
+            if (this.killFeedMessages.size > 0) this.killFeedMessages = new Set<KillFeedPacket>();
 
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
@@ -277,7 +278,10 @@ export class Game {
 
     removePlayer(player: Player): void {
         player.disconnected = true;
-        if (!player.dead) this.aliveCount--;
+        this.aliveCountDirty = true;
+        if (!player.dead) {
+            this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, false)));
+        }
         player.rotation = 0;
         this.partialDirtyObjects.add(player);
         this.livingPlayers.delete(player);
@@ -288,12 +292,7 @@ export class Game {
     }
 
     get aliveCount(): number {
-        return this._aliveCount;
-    }
-
-    set aliveCount(aliveCount: number) {
-        this._aliveCount = aliveCount;
-        this.aliveCountDirty = true;
+        return this.livingPlayers.size;
     }
 
     _nextObjectID = -1;
