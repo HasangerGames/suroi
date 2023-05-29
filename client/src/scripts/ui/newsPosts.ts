@@ -14,7 +14,7 @@ export const news: NewsPost[] = [
         author: "hasanger",
         title: "Fun guns",
         bannerImage: require("../../assets/img/news/v0.2.0.png"),
-        content: `This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.`,
+        content: `This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.<br>If you're having issues with textures, try <a href="https://its.uiowa.edu/support/article/719">clearing your cache.</a>`,
         longContent: `<h2>Suroi v0.2.0</h2>
 <h3>New features</h3>
 <ul>
