@@ -174,7 +174,7 @@ app.listen(Config.host, Config.port, () => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log("Suroi Server v0.1.0", true);
+    log("Suroi Server v0.2.0", true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
 
     if (Config.stopServerAfter !== -1) {

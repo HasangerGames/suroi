@@ -1,6 +1,6 @@
 {
   "name": "@suroi/server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -31,7 +31,6 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "bad-words": "3.0.2",
     "bit-buffer": "^0.2.5",
     "planck": "1.0.0-alpha.4",
     "sanitize-html": "^2.10.0",

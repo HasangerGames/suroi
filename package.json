@@ -1,6 +1,6 @@
 {
   "name": "suroi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "scripts": {
     "full-install": "pnpm install && cd common && pnpm install && cd ../server && pnpm install && cd ../client && pnpm install",

@@ -1,9 +1,6 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  bad-words:
-    specifier: 3.0.2
-    version: 3.0.2
   bit-buffer:
     specifier: ^0.2.5
     version: 0.2.5
@@ -444,17 +441,6 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
     dev: true
-
-  /bad-words@3.0.2:
-    resolution: {integrity: sha512-FwZAyyBOzCbt2Zw6R6vjZgoK2BDVTg0XjsobRkkNlKc/jIHW49j3Kjwtwyb2hxQBZor2aQaQ/NGzf6s7888wlQ==}
-    engines: {node: '>=8.0.0'}
-    dependencies:
-      badwords-list: 1.0.0
-    dev: false
-
-  /badwords-list@1.0.0:
-    resolution: {integrity: sha512-oWhaSG67e+HQj3OGHQt2ucP+vAPm1wTbdp2aDHeuh4xlGXBdWwzZ//pfu6swf5gZ8iX0b7JgmSo8BhgybbqszA==}
-    dev: false
 
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
