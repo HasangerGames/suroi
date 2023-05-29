@@ -76,6 +76,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly container: Phaser.GameObjects.Container
     };
 
+    leftFistAnim!: Phaser.Tweens.Tween;
+    rightFistAnim!: Phaser.Tweens.Tween;
+
+
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     distSinceLastFootstep = 0;
@@ -162,26 +166,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     const weaponDef = this.activeItem.definition as MeleeDefinition;
                     if (weaponDef.fists.useLeft === undefined) break;
 
-                    const altFist = !weaponDef.fists.randomFist || Math.random() < 0.5;
+                    let altFist = Math.random() < 0.5;
+                    if (!weaponDef.fists.randomFist) altFist = true;
 
-                    const target = altFist
-                        ? {
-                            fist: this.images.leftFist,
-                            rigging: weaponDef.fists.useLeft
-                        }
-                        : {
-                            fist: this.images.rightFist,
-                            rigging: weaponDef.fists.useRight
-                        };
-
-                    this.scene.tweens.add({
-                        targets: target.fist,
-                        x: target.rigging.x,
-                        y: target.rigging.y,
-                        duration: weaponDef.fists.animationDuration,
-                        yoyo: true,
-                        ease: Phaser.Math.Easing.Cubic.Out
-                    });
+                    if (!weaponDef.fists.randomFist || !altFist) {
+                        this.leftFistAnim = this.scene.tweens.add({
+                            targets: this.images.leftFist,
+                            x: weaponDef.fists.useLeft.x,
+                            y: weaponDef.fists.useLeft.y,
+                            duration: weaponDef.fists.animationDuration,
+                            yoyo: true,
+                            ease: Phaser.Math.Easing.Cubic.Out
+                        });
+                    }
+                    if (altFist) {
+                        this.rightFistAnim = this.scene.tweens.add({
+                            targets: this.images.rightFist,
+                            x: weaponDef.fists.useRight.x,
+                            y: weaponDef.fists.useRight.y,
+                            duration: weaponDef.fists.animationDuration,
+                            yoyo: true,
+                            ease: Phaser.Math.Easing.Cubic.Out
+                        });
+                    }
 
                     this.scene.playSound("swing");
                     break;
@@ -226,20 +233,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(): void {
+        this.leftFistAnim?.destroy();
+        this.rightFistAnim?.destroy();
+
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         if (this.isNew) {
             this.isNew = false;
             this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
             this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
         } else {
-            this.scene.tweens.add({
+            this.leftFistAnim = this.scene.tweens.add({
                 targets: this.images.leftFist,
                 x: weaponDef.fists.left.x,
                 y: weaponDef.fists.left.y,
                 duration: weaponDef.fists.animationDuration,
                 ease: "Linear"
             });
-            this.scene.tweens.add({
+            this.rightFistAnim = this.scene.tweens.add({
                 targets: this.images.rightFist,
                 x: weaponDef.fists.right.x,
                 y: weaponDef.fists.right.y,
