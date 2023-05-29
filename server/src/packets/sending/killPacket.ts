@@ -23,7 +23,7 @@ export class KillPacket extends SendingPacket {
         super.serialize(stream);
 
         stream.writeBits(this.player.kills, 7);
-        stream.writeUTF8String(this.killed.name, 16);
+        stream.writePlayerName(this.killed.name);
         const usedWeapon = this.weaponUsed !== undefined;
         stream.writeBoolean(usedWeapon);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

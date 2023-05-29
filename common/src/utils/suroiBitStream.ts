@@ -12,7 +12,8 @@ import {
     OBJECT_CATEGORY_BITS,
     type ObjectCategory, PACKET_TYPE_BITS,
     type PacketType,
-    VARIATION_BITS
+    VARIATION_BITS,
+    PLAYER_NAME_MAX_LENGTH
 } from "../constants";
 import { type Variation } from "../typings";
 
@@ -35,7 +36,7 @@ export class SuroiBitStream extends BitStream {
     * @param value The number.
     * @param min The minimum number.
     * @param max The maximum number.
-    * @param bitCount The bit count.
+    * @param The number of bits to write
     */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
         const range = (1 << bitCount) - 1;
@@ -47,7 +48,7 @@ export class SuroiBitStream extends BitStream {
     * Read a floating point number from the stream.
     * @param min The minimum number.
     * @param max The maximum number.
-    * @param bitCount The bit count.
+    * @param The number of bits to read
     * @return The floating point number.
     */
     readFloat(min: number, max: number, bitCount: number): number {
@@ -62,7 +63,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param bitCount The bit count.
+    * @param The number of bits to write.
     */
     writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
         this.writeVector2(vector.x, vector.y, minX, minY, maxX, maxY, bitCount);
@@ -76,7 +77,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param bitCount the bit count.
+    * @param The number of bits to write.
     * @return The position Vector.
     */
     writeVector2(x: number, y: number, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
@@ -90,7 +91,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param bitCount The bit count.
+    * @param The number of bits to read
     */
     readVector(minX: number, minY: number, maxX: number, maxY: number, bitCount: number): Vector {
         return {
@@ -200,6 +201,7 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Read a rotation from the stream.
+     * @param bitCount The number of bits to read
      * @return The rotation in radians.
      */
     readRotation(bitCount: number): number {
@@ -236,5 +238,21 @@ export class SuroiBitStream extends BitStream {
     */
     readVariation(): Variation {
         return this.readBits(VARIATION_BITS) as Variation;
+    }
+
+    /**
+    * Write a player name to the stream
+    * @param namen The the player name.
+    */
+    writePlayerName(name: string): void {
+        this.writeUTF8String(name, PLAYER_NAME_MAX_LENGTH);
+    }
+
+    /**
+    * Read a player name from the stream
+    * @return The the player name.
+    */
+    readPlayerName(): string {
+        return this.readUTF8String(PLAYER_NAME_MAX_LENGTH);
     }
 }

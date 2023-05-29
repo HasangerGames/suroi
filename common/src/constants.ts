@@ -43,3 +43,4 @@ export const WEAPON_TYPE_BITS = 1;
 export const KILL_FEED_MESSAGE_TYPE_BITS = 1;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
+export const PLAYER_NAME_MAX_LENGTH = 16;

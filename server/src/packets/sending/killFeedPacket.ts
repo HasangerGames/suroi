@@ -24,12 +24,12 @@ export class KillFeedPacket extends SendingPacket {
         stream.writeBits(this.message.type, KILL_FEED_MESSAGE_TYPE_BITS);
         if (this.message.type === KillFeedMessageType.Join) {
             const joinMessage = this.message as JoinKillFeedMessage;
-            stream.writeUTF8String(joinMessage.name, 16);
+            stream.writePlayerName(joinMessage.name);
             stream.writeBoolean(joinMessage.joined);
         } else if (this.message.type === KillFeedMessageType.Kill) {
             const killMessage = this.message as KillKillFeedMessage;
-            stream.writeUTF8String(killMessage.killedName, 16);
-            stream.writeUTF8String(killMessage.killedByName, 16);
+            stream.writePlayerName(killMessage.killedName);
+            stream.writePlayerName(killMessage.killedByName);
 
             const usedWeapon: boolean = killMessage.weaponUsed !== undefined;
             stream.writeBoolean(usedWeapon);

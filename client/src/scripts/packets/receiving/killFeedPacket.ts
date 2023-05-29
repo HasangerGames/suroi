@@ -14,8 +14,8 @@ export class KillFeedPacket extends ReceivingPacket {
 
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
         if (messageType === KillFeedMessageType.Kill) {
-            const killedBy = stream.readUTF8String(16);
-            const killed = stream.readUTF8String(16);
+            const killedBy = stream.readPlayerName();
+            const killed = stream.readPlayerName();
             let weaponUsed: string | undefined;
             if (stream.readBoolean()) {
                 weaponUsed = stream.readObjectType().definition.name;
@@ -24,7 +24,7 @@ export class KillFeedPacket extends ReceivingPacket {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/game/misc/skull.svg")}" alt="Skull"> ${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
         } else if (messageType === KillFeedMessageType.Join) {
-            const name = stream.readUTF8String(16);
+            const name = stream.readPlayerName();
             const joined = stream.readBoolean();
             killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
         }

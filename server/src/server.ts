@@ -19,7 +19,7 @@ import { JoinPacket } from "./packets/receiving/joinPacket";
 
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../common/src/constants";
+import { PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
 
 /**
@@ -94,7 +94,7 @@ app.ws("/play", {
             name = "Player";
         } else {
             name = decodeURIComponent(split[1]).trim();
-            if (name.length > 16 || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
+            if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
                 name = "Player";
             } else {
                 name = sanitizeHtml(name, {

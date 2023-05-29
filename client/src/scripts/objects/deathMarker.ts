@@ -22,7 +22,7 @@ export class DeathMarker extends GameObject {
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
-        this.playerName = stream.readUTF8String(16);
+        this.playerName = stream.readPlayerName();
 
         if (this.playerNameText === undefined) {
             this.playerNameText = this.scene.add.text(

@@ -3,7 +3,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 
 export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        $("#game-over-player-name").text(stream.readUTF8String(16)); // player name
+        $("#game-over-player-name").text(stream.readPlayerName()); // player name
         $("#game-over-kills").text(stream.readUint8()); // kills
         $("#game-over-damage-done").text(stream.readUint16()); // damage done
         $("#game-over-damage-taken").text(stream.readUint16()); // damage taken
