@@ -196,7 +196,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.animationSeq = animationSeq;
 
         // Hit effect
-        if (stream.readBoolean()) {
+        if (stream.readBoolean() && !this.dead) {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
