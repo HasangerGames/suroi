@@ -9,11 +9,20 @@ class Action {
     readonly name: string;
     readonly on?: () => void;
     readonly off?: () => void;
+    down: boolean = false;
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
-        this.on = on;
-        this.off = off;
+        this.on = () => {
+            if (this.down) return;
+            this.down = true;
+            on?.();
+        };
+        this.off = () => {
+            if (!this.down) return;
+            this.down = false;
+            off?.();
+        }
     }
 }
 
