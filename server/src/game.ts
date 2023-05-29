@@ -234,7 +234,6 @@ export class Game {
 
                 for (const message of this.killFeedMessages) player.sendPacket(message);
                 player.sendPacket(new UpdatePacket(player));
-                player.hitEffectChanged = false; // TODO Hit effects only display once for disconnected players
             }
 
             // Reset everything
@@ -246,6 +245,10 @@ export class Game {
             this.explosions.clear();
             this.aliveCountDirty = false;
             if (this.killFeedMessages.size > 0) this.killFeedMessages = new Set<KillFeedPacket>();
+
+            for (const player of this.livingPlayers) {
+                player.hitEffect = false;
+            }
 
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!

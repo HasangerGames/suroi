@@ -66,8 +66,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     animationSeq!: boolean;
 
-    hitEffect!: boolean;
-
     readonly images: {
         readonly body: Phaser.GameObjects.Image
         readonly leftFist: Phaser.GameObjects.Image
@@ -198,13 +196,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.animationSeq = animationSeq;
 
         // Hit effect
-        const hitEffect = stream.readBoolean();
-        if (hitEffect !== this.hitEffect && this.hitEffect !== undefined) {
+        if (stream.readBoolean()) {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
 
-        this.hitEffect = hitEffect;
     }
 
     override deserializeFull(stream: SuroiBitStream): void {

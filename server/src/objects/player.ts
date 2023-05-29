@@ -110,8 +110,6 @@ export class Player extends GameObject {
         zoom: true
     };
 
-    hitEffectChanged = false;
-
     readonly inventory = new Inventory(this);
 
     get activeItem(): InventoryItem {
@@ -122,13 +120,13 @@ export class Player extends GameObject {
         return this.inventory.activeItemIndex;
     }
 
-    // This is flipped when the player takes damage.
-    // When the value changes it plays the hit sound and particle on the client.
-    // same logic applies for animation.seq
+
     hitEffect = false;
 
     animation = {
         type: AnimationType.None,
+        // This boolean is flipped when an animation plays
+        // when its changed the client plays the animation
         seq: false
     };
 
@@ -312,10 +310,7 @@ export class Player extends GameObject {
         this.health -= amount;
         if (amount > 0) {
             this.damageTaken += amount;
-            if (!this.hitEffectChanged) {
-                this.hitEffect = !this.hitEffect;
-                this.hitEffectChanged = true;
-            }
+            this.hitEffect = true;
         }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
