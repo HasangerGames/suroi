@@ -120,7 +120,6 @@ export class Player extends GameObject {
         return this.inventory.activeItemIndex;
     }
 
-
     hitEffect = false;
 
     animation = {
@@ -356,7 +355,6 @@ export class Player extends GameObject {
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
         }
-
     }
 
     override serializePartial(stream: SuroiBitStream): void {

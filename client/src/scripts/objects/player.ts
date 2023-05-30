@@ -150,7 +150,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
-
     }
 
     override deserializeFull(stream: SuroiBitStream): void {

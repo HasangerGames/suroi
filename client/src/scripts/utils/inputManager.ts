@@ -300,7 +300,7 @@ function generateBindsConfigScreen(): void {
 
     // change the weapons slots keybind text
     for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = localStorageInstance.config.keybinds[`slot${i}` as keyof KeybindActions]
+        const slotKeybinds = localStorageInstance.config.keybinds[`slot${i}` as keyof KeybindActions];
         $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.filter(bind => bind !== "").join(" / "));
     }
 }

@@ -25,7 +25,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.image.setScale(this.scale);
                 this.scene.playSound(`${(this.type.definition as ObstacleDefinition).material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
                 let numParticle = 1;
-                let destroyScale = (this.type.definition as ObstacleDefinition).scale.destroy;
+                const destroyScale = (this.type.definition as ObstacleDefinition).scale.destroy;
                 if ((oldScale - this.scale) * 2 > (1 - destroyScale)) {
                     numParticle = 3;
                 } else if ((oldScale - this.scale) * 4 > (1 - destroyScale)) {

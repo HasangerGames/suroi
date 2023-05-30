@@ -14,7 +14,7 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../../common/src/constants";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { setupInputs } from "../utils/inputManager";
-import { PlayerManager } from "../utils/playerManager";
+import { type PlayerManager } from "../utils/playerManager";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
