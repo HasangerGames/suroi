@@ -15,6 +15,8 @@ import { type GameObject } from "./types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../common/src/constants";
 
+import { PlayerManager } from "./utils/playerManager";
+
 export class Game {
     socket!: WebSocket;
 
@@ -25,6 +27,8 @@ export class Game {
 
     gameStarted = false;
     error = false;
+
+    playerManager = new PlayerManager(this);
 
     connect(address: string): void {
         this.error = false;
@@ -46,23 +50,23 @@ export class Game {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
-                    new JoinedPacket(this.activePlayer).deserialize(stream);
+                    new JoinedPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Update: {
-                    new UpdatePacket(this.activePlayer).deserialize(stream);
+                    new UpdatePacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.GameOver: {
-                    new GameOverPacket(this.activePlayer).deserialize(stream);
+                    new GameOverPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Kill: {
-                    new KillPacket(this.activePlayer).deserialize(stream);
+                    new KillPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.KillFeed: {
-                    new KillFeedPacket(this.activePlayer).deserialize(stream);
+                    new KillFeedPacket(this.playerManager).deserialize(stream);
                     break;
                 }
             }

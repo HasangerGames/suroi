@@ -18,9 +18,6 @@ export class UpdatePacket extends SendingPacket {
         // Active player data
         //
 
-        // Position and rotation
-        player.serializePartial(stream);
-
         // Health
         stream.writeBoolean(player.dirty.health);
         if (player.dirty.health) {
@@ -42,12 +39,8 @@ export class UpdatePacket extends SendingPacket {
             player.dirty.activePlayerId = false;
         }
 
-        // Active item index
-        stream.writeBoolean(player.dirty.activeItemIndex);
-        if (player.dirty.activeItemIndex) {
-            stream.writeUint8(player.activeItemIndex);
-            player.dirty.activeItemIndex = false;
-        }
+        // Inventory
+        player.inventory.serializeInventory(stream);
 
         //
         // Objects

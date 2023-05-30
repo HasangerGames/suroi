@@ -4,6 +4,7 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
 import { type ItemDefinition } from "../../../common/src/utils/objectDefinitions";
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 
 /**
@@ -219,5 +220,17 @@ export class Inventory {
         }
 
         return old;
+    }
+
+    /**
+     * Serializes the inventory to send to the client
+     * @param stream The bit stream to write the inventory
+    */
+    serializeInventory(stream: SuroiBitStream): void {
+        stream.writeBoolean(this.owner.dirty.activeItemIndex);
+        if (this.owner.dirty.activeItemIndex) {
+            stream.writeUint8(this.activeItemIndex);
+            this.owner.dirty.activeItemIndex = false;
+        }
     }
 }

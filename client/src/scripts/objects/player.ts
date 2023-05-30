@@ -16,49 +16,12 @@ import { type Vector, vClone } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { distanceSquared } from "../../../../common/src/utils/math";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
 
-    private _health = 100;
-
-    private _adrenaline = 100;
-
     oldPosition!: Vector;
-
-    readonly movement = {
-        up: false,
-        left: false,
-        down: false,
-        right: false
-    };
-
-    readonly dirty = {
-        health: true,
-        adrenaline: true,
-        inputs: true
-    };
-
-    #attacking = false;
-    get attacking(): boolean { return this.#attacking; }
-    set attacking(v: boolean) {
-        this.#attacking = v;
-        this.dirty.inputs = true;
-    }
-
-    turning = false;
-
-    _lastItemIndex = 0;
-    get lastItemIndex(): number { return this._lastItemIndex; }
-
-    private _activeItemIndex = 2;
-    get activeItemIndex(): number { return this._activeItemIndex; }
-    set activeItemIndex(v: number) {
-        this._lastItemIndex = this._activeItemIndex;
-        this._activeItemIndex = v;
-        this.dirty.inputs = true;
-        this.updateInventoryUI();
-    }
 
     activeItem = ObjectType.fromString(ObjectCategory.Loot, "fists");
 
@@ -77,16 +40,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
 
-
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     distSinceLastFootstep = 0;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number) {
         super(game, scene, type, id);
-
-        //bug created player doesn't have correct weapon deployed; this is a semi-visual bug, because the user can still
-        // use their gun, but the client-side code believes that the player has a melee weapon
 
         const images = {
             body: this.scene.add.image(0, 0, "main", "player_base.svg"),
@@ -112,35 +71,28 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }).setDepth(2);
     }
 
-    get health(): number {
-        return this._health;
-    }
-
-    set health(health: number) {
-        this._health = health;
-    }
-
-    get adrenaline(): number {
-        return this._adrenaline;
-    }
-
-    set adrenaline(adrenaline: number) {
-        this._adrenaline = adrenaline;
-    }
-
     override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
 
+        if (this.oldPosition !== undefined) {
+            this.distSinceLastFootstep += distanceSquared(this.oldPosition.x, this.oldPosition.y, this.position.x, this.position.y);
+            if (this.distSinceLastFootstep > 10) {
+                this.scene.playSound(Math.random() < 0.5 ? "grass_step_01" : "grass_step_02");
+                this.distSinceLastFootstep = 0;
+            }
+        }
+
         this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
+        this.rotation = stream.readRotation(16);
 
         if (this.isNew) {
             this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
-            this.images.container.setRotation(stream.readRotation(16));
-        } else if (!this.dead) {
+            this.images.container.setRotation(this.rotation);
+        } else {
             const oldAngle = this.images.container.angle;
-            const newAngle = Phaser.Math.RadToDeg(stream.readRotation(16));
+            const newAngle = Phaser.Math.RadToDeg(this.rotation);
             const angleBetween = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
 
             gsap.to(this.images.container, {
@@ -150,14 +102,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 ease: "none",
                 duration: 0.03
             });
-        } else {
-            stream.readRotation(16); // Discard rotation information
         }
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
         const animationSeq = stream.readBoolean();
-        if (!this.dead && this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
+        if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
             switch (animation) {
                 case AnimationType.Punch: {
                     this.updateFistsPosition();
@@ -196,7 +146,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.animationSeq = animationSeq;
 
         // Hit effect
-        if (stream.readBoolean() && !this.dead) {
+        if (stream.readBoolean()) {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
@@ -204,28 +154,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
-        const dead = stream.readBoolean();
-
-        if (dead && !this.dead) {
-            this.dead = true;
-            this.destroy();
-            return;
-        }
-
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
         this.updateFistsPosition();
-    }
-
-    // I don't know if this should be here, we'll probably
-    // have to move it into a more dedicated UI-managing system
-    updateInventoryUI(): void {
-        $("#weapons-container").children("*").each((index, ele) => {
-            if (index !== this._activeItemIndex) {
-                ele.classList.remove("active");
-            } else {
-                ele.classList.add("active");
-            }
-        });
     }
 
     updateFistsPosition(): void {

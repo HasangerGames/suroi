@@ -244,7 +244,6 @@ export class Player extends GameObject {
         const maxY = this.position.y + this.yCullDist;
 
         for (const object of this.game.dynamicObjects) {
-            if (this === object) continue;
             if (object.position.x > minX &&
                 object.position.x < maxX &&
                 object.position.y > minY &&
@@ -253,7 +252,8 @@ export class Player extends GameObject {
                 if (!this.visibleObjects.has(object)) {
                     this.fullDirtyObjects.add(object);
                 }
-                if (object instanceof Player && !object.visibleObjects.has(this)) {
+                // make sure this player is added to other players visible objects
+                if (!this.dead && object instanceof Player && !object.visibleObjects.has(this)) {
                     object.visibleObjects.add(this);
                     object.fullDirtyObjects.add(this);
                 }
@@ -315,9 +315,9 @@ export class Player extends GameObject {
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
         }
+
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
-
         // Death logic
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
@@ -348,14 +348,15 @@ export class Player extends GameObject {
             this.game.aliveCountDirty = true;
 
             this.game.livingPlayers.delete(this);
-            this.game.fullDirtyObjects.add(this);
-            this.fullDirtyObjects.add(this);
+            this.game.dynamicObjects.delete(this);
+            this.game.deletedObjects.add(this);
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
         }
+
     }
 
     override serializePartial(stream: SuroiBitStream): void {
@@ -367,8 +368,6 @@ export class Player extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.dead);
-        if (this.dead) return;
         stream.writeObjectType(this.activeItem.type);
     }
 }

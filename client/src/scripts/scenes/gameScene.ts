@@ -14,12 +14,14 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../../common/src/constants";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { setupInputs } from "../utils/inputManager";
+import { PlayerManager } from "../utils/playerManager";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
     volume = localStorageInstance.config.sfxVolume * localStorageInstance.config.masterVolume;
+    playerManager!: PlayerManager;
 
     constructor() {
         super("game");
@@ -29,6 +31,7 @@ export class GameScene extends Phaser.Scene {
     preload(): void {
         if (core.game === undefined) return;
         this.activeGame = core.game;
+        this.playerManager = core.game.playerManager;
 
         this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
 
@@ -94,7 +97,7 @@ export class GameScene extends Phaser.Scene {
         // TODO fix this, lol
         // > undefined as unknown as number
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
-        this.activeGame.activePlayer.name = $("#username-input").text();
+        this.playerManager.name = $("#username-input").text();
         setupInputs(this);
 
         // Follow the player w/ the camera
@@ -104,7 +107,7 @@ export class GameScene extends Phaser.Scene {
         this.tick();
 
         // Send a packet indicating that the game is now active
-        this.activeGame.sendPacket(new JoinPacket(this.player));
+        this.activeGame.sendPacket(new JoinPacket(this.playerManager));
 
         // Initializes sounds
         [
@@ -124,9 +127,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     tick(): void {
-        if (this.player?.dirty.inputs) {
-            this.player.dirty.inputs = false;
-            this.activeGame.sendPacket(new InputPacket(this.player));
+        if (this.playerManager.dirty.inputs) {
+            this.playerManager.dirty.inputs = false;
+            this.activeGame.sendPacket(new InputPacket(this.playerManager));
         }
 
         setTimeout(this.tick.bind(this), 30);

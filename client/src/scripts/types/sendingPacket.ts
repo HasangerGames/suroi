@@ -1,4 +1,4 @@
-import { type Player } from "../objects/player";
+import { PlayerManager } from "../utils/playerManager";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type PacketType } from "../../../../common/src/constants";
@@ -6,10 +6,10 @@ import { type PacketType } from "../../../../common/src/constants";
 export abstract class SendingPacket {
     abstract allocBytes: number;
     abstract type: PacketType;
-    player: Player;
+    playerManager: PlayerManager;
 
-    constructor(player: Player) {
-        this.player = player;
+    constructor(player: PlayerManager) {
+        this.playerManager = player;
     }
 
     serialize(stream: SuroiBitStream): void {

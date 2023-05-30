@@ -1,5 +1,5 @@
 import { mod } from "../../../../common/src/utils/math";
-import { type Player } from "../objects/player";
+import { type PlayerManager } from "../utils/playerManager";
 import { type GameScene } from "../scenes/gameScene";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
@@ -19,17 +19,17 @@ class Action {
 
 type ConvertToAction<T extends Record<string, object | string>> = { [K in keyof T]: T[K] extends Record<string, object | string> ? ConvertToAction<T[K]> : Action };
 
-function generateKeybindActions(player: Player): ConvertToAction<KeybindActions> {
-    function generateMovementAction(direction: keyof Player["movement"]): Action {
+function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<KeybindActions> {
+    function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
         return new Action(
-            `move::${direction}`,
+            `move::${direction.toString()}`,
             () => {
-                player.movement[direction] = true;
-                player.dirty.inputs = true;
+                playerManager.movement[direction] = true;
+                playerManager.dirty.inputs = true;
             },
             () => {
-                player.movement[direction] = false;
-                player.dirty.inputs = true;
+                playerManager.movement[direction] = false;
+                playerManager.dirty.inputs = true;
             }
         );
     }
@@ -37,7 +37,7 @@ function generateKeybindActions(player: Player): ConvertToAction<KeybindActions>
     function generateSlotAction(slot: number): Action {
         return new Action(
             `inventory::slot${slot}`,
-            () => { player.activeItemIndex = slot; }
+            () => { playerManager.activeItemIndex = slot; }
         );
     }
 
@@ -54,27 +54,27 @@ function generateKeybindActions(player: Player): ConvertToAction<KeybindActions>
         lastEquippedItem: new Action(
             "inventory::lastEquippedItem",
             () => {
-                player.activeItemIndex = player.lastItemIndex;
+                playerManager.activeItemIndex = playerManager.lastItemIndex;
             }
         ),
         previousItem: new Action(
             "inventory::previousItem",
             () => {
-                player.activeItemIndex = mod(player.activeItemIndex - 1, 3);
+                playerManager.activeItemIndex = mod(playerManager.activeItemIndex - 1, 3);
                 //fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
             () => {
-                player.activeItemIndex = mod(player.activeItemIndex + 1, 3);
+                playerManager.activeItemIndex = mod(playerManager.activeItemIndex + 1, 3);
                 //fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         useItem: new Action(
             "useItem",
-            () => { player.attacking = true; },
-            () => { player.attacking = false; }
+            () => { playerManager.attacking = true; },
+            () => { playerManager.attacking = false; }
         )
     };
 }
@@ -97,8 +97,8 @@ function bind(keys: string[], action: Action): void {
 let actions: ConvertToAction<KeybindActions>;
 
 export function setupInputs(scene: GameScene): void {
-    const player = scene.player;
-    actions = generateKeybindActions(player);
+    const playerManager = scene.playerManager;
+    actions = generateKeybindActions(playerManager);
     const keybinds = localStorageInstance.config.keybinds;
 
     for (const action in keybinds) {
@@ -156,9 +156,9 @@ export function setupInputs(scene: GameScene): void {
     scene.input.on("pointermove", (pointer: Phaser.Input.Pointer): void => {
         if (scene.player === undefined) return;
 
-        scene.player.rotation = Math.atan2(pointer.worldY - scene.player.images.container.y, pointer.worldX - scene.player.images.container.x);
-        scene.player.turning = true;
-        scene.player.dirty.inputs = true;
+        scene.playerManager.rotation = Math.atan2(pointer.worldY - scene.player.images.container.y, pointer.worldX - scene.player.images.container.x);
+        scene.activeGame.playerManager.turning = true;
+        scene.activeGame.playerManager.dirty.inputs = true;
     });
 }
 

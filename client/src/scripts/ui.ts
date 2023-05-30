@@ -43,11 +43,6 @@ $(() => {
         }
     });
 
-    $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
-    $("#slider-sfx-volume").val(localStorageInstance.config.sfxVolume);
-    $("#slider-music-volume").val(localStorageInstance.config.musicVolume);
-    $("#toggle-camera-shake").val(localStorageInstance.config.cameraShake.toString());
-
     // todo find a better way to do these two handlers
     $("#btn-dropdown-more").on("click", ev => {
         dropdown.toggle();
@@ -82,6 +77,13 @@ $(() => {
         settingsMenu.fadeOut(250);
     });
 
+    // load settings values and event listeners
+
+    $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
+    $("#slider-sfx-volume").val(localStorageInstance.config.sfxVolume);
+    $("#slider-music-volume").val(localStorageInstance.config.musicVolume);
+    $("#toggle-camera-shake").val(localStorageInstance.config.cameraShake.toString());
+
     $("#slider-music-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
@@ -103,7 +105,7 @@ $(() => {
 
     $("#toggle-camera-shake").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ cameraShake: this.checked });
-    }).attr("value", localStorageInstance.config.cameraShake);
+    });
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);

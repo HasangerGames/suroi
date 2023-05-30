@@ -10,46 +10,37 @@ import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { distanceSquared } from "../../../../../common/src/utils/math";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const player: Player = this.player;
+        const player: Player = this.playerManager.game.activePlayer;
         if (player === undefined) return;
+
         const game: Game = player.game;
+
+        const playerManager = game.playerManager;
+
+        const scene = player.scene;
 
         //
         // Active player data
         //
 
-        // Partial data is sent for the active player every tick
-        player.deserializePartial(stream);
-
-        // Play footstep sounds
-        if (player.oldPosition !== undefined) {
-            player.distSinceLastFootstep += distanceSquared(player.oldPosition.x, player.oldPosition.y, player.position.x, player.position.y);
-            if (player.distSinceLastFootstep > 10) {
-                player.scene.playSound(Math.random() < 0.5 ? "grass_step_01" : "grass_step_02");
-
-                player.distSinceLastFootstep = 0;
-            }
-        }
-
         // Health
         if (stream.readBoolean()) {
-            player.health = stream.readFloat(0, 100, 8);
-            const roundedHealth = Math.round(player.health);
+            playerManager.health = stream.readFloat(0, 100, 8);
+            const roundedHealth = Math.round(playerManager.health);
             const healthPercentage = `${roundedHealth}%`;
             $("#health-bar").width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
             $("#health-bar-percentage").text(roundedHealth);
 
-            if (player.health < 60 && player.health > 10) {
-                $("#health-bar").css("background-color", `rgb(255, ${(player.health - 10) * 4}, ${(player.health - 10) * 4})`);
-            } else if (player.health <= 10) {
-                $("#health-bar").css("background-color", `rgb(${player.health * 10 + 155}, 0, 0)`);
+            if (playerManager.health < 60 && playerManager.health > 10) {
+                $("#health-bar").css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
+            } else if (playerManager.health <= 10) {
+                $("#health-bar").css("background-color", `rgb(${playerManager.health * 10 + 155}, 0, 0)`);
             } else {
                 $("#health-bar").css("background-color", "#f8f9fa");
             }
@@ -57,7 +48,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Adrenaline
         if (stream.readBoolean()) {
-            player.adrenaline = stream.readFloat(0, 100, 8);
+            playerManager.adrenaline = stream.readFloat(0, 100, 8);
         }
 
         // Active player ID
@@ -69,10 +60,8 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
-        // Active item index
-        if (stream.readBoolean()) {
-            game.activePlayer.activeItemIndex = stream.readUint8();
-        }
+        // Inventory
+        playerManager.deserializeInventory(stream);
 
         //
         // Objects
@@ -89,15 +78,15 @@ export class UpdatePacket extends ReceivingPacket {
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            object = new Player(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Player>, id);
+                            object = new Player(game, scene, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }
                         case ObjectCategory.Obstacle: {
-                            object = new Obstacle(this.player.game, this.player.scene, type as ObjectType<ObjectCategory.Obstacle>, id);
+                            object = new Obstacle(game, scene, type as ObjectType<ObjectCategory.Obstacle>, id);
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(this.player.game, this.player.scene, type, id);
+                            object = new DeathMarker(game, scene, type, id);
                             break;
                         }
                     }
@@ -206,7 +195,7 @@ export class UpdatePacket extends ReceivingPacket {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
                 explosion(game,
-                    this.player.scene,
+                    game.activePlayer.scene,
                     stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
                     stream.readPosition());
             }

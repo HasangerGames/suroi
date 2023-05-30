@@ -1,4 +1,3 @@
-import { type Player } from "../../objects/player";
 import { SendingPacket } from "../../types/sendingPacket";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -11,7 +10,7 @@ export class InputPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        const player: Player = this.player;
+        const player = this.playerManager;
         stream.writeBoolean(player.movement.up);
         stream.writeBoolean(player.movement.down);
         stream.writeBoolean(player.movement.left);
