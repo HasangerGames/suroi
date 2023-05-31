@@ -63,3 +63,11 @@ export function bodyFromHitbox(world: World,
     }
     return body;
 }
+
+export function lerp(start: number, end: number, percentage: number): number {
+    return start * (1.0 - percentage) + end * percentage;
+}
+
+export function vecLerp(start: Vec2, end: Vec2, percentage: number): Vec2 {
+    return Vec2.add(Vec2.mul(start, 1.0 - percentage), Vec2.mul(end, percentage));
+}
