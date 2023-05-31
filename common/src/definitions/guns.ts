@@ -37,10 +37,10 @@ export const Guns: GunDefinition[] = [
         shotSpread: 5,
         fists: {
             left: v(65, 0),
-            right: v(140, -10),
+            right: v(140, -5),
             animationDuration: 100
         },
-        image: { position: v(120, 0) },
+        image: { position: v(120, 2) },
         capacity: Infinity,
         ballistics: {
             damage: 10,
@@ -60,10 +60,10 @@ export const Guns: GunDefinition[] = [
         bulletCount: 9,
         fists: {
             left: v(65, 0),
-            right: v(130, -10),
+            right: v(130, -6),
             animationDuration: 100
         },
-        image: { position: v(100, 0) },
+        image: { position: v(100, 3) },
         capacity: Infinity,
         ballistics: {
             damage: 7,
