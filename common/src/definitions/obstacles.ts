@@ -90,6 +90,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(4),
             noCollisions: true,
             rotation: "full",
+            variations: 2,
+            particleVariations: 2,
             depth: 2
         },
         {
