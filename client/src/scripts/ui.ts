@@ -122,13 +122,13 @@ $(() => {
 
     // rotation smothing toggle
     $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ rotationSmothing: this.checked });
-    }).prop("checked", localStorageInstance.config.rotationSmothing);
+        localStorageInstance.update({ rotationSmoothing: this.checked });
+    }).prop("checked", localStorageInstance.config.rotationSmoothing);
 
     // movement smothing toggle
     $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ movementSmothing: this.checked });
-    }).prop("checked", localStorageInstance.config.movementSmothing);
+        localStorageInstance.update({ movementSmoothing: this.checked });
+    }).prop("checked", localStorageInstance.config.movementSmoothing);
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);
