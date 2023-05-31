@@ -104,13 +104,13 @@ $(() => {
     // camera shake
     $("#toggle-camera-shake").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ cameraShake: this.checked });
-    }).val(localStorageInstance.config.cameraShake.toString());
+    }).prop("checked", localStorageInstance.config.cameraShake);
 
     // fps toggle
     $("#toggle-fps").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ showFPS: this.checked });
         $("#fps-counter").toggle(this.checked);
-    }).val(localStorageInstance.config.showFPS.toString());
+    }).prop("checked", localStorageInstance.config.showFPS);
     $("#fps-counter").toggle(localStorageInstance.config.showFPS);
 
     // ping toggle
@@ -123,13 +123,12 @@ $(() => {
     // rotation smothing toggle
     $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ rotationSmothing: this.checked });
-    }).val(localStorageInstance.config.rotationSmothing.toString());
+    }).prop("checked", localStorageInstance.config.rotationSmothing);
 
     // movement smothing toggle
     $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ movementSmothing: this.checked });
-    }).val(localStorageInstance.config.movementSmothing.toString());
-
+    }).prop("checked", localStorageInstance.config.movementSmothing);
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);
