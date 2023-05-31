@@ -134,6 +134,7 @@ export class GameScene extends Phaser.Scene {
 
         setTimeout(this.tick.bind(this), 30);
     }
+
     update(): void {
         if (localStorageInstance.config.showFPS) {
             $("#fps-counter").text(`${Math.round(this.game.loop.actualFps)} fps`);

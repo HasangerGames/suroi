@@ -57,7 +57,7 @@ export const defaultConfig: Config = {
     showFPS: false,
     showPing: false,
     rotationSmothing: true,
-    movementSmothing: true,
+    movementSmothing: true
 };
 
 const configKey = "config";
@@ -85,11 +85,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.cameraShake = defaultConfig.cameraShake;
             break;
         case "2":
-            config.configVersion = "3"
+            config.configVersion = "3";
             config.showFPS = defaultConfig.showFPS;
             config.showPing = defaultConfig.showPing;
             config.rotationSmothing = defaultConfig.rotationSmothing;
             config.movementSmothing = defaultConfig.movementSmothing;
+            break;
         default: {
             // Otherwise, we just wipe it and replace it with the default
             config = defaultConfig;

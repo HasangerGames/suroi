@@ -13,7 +13,9 @@ import {
     ObjectCategory
 } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type Vector, vClone, vMul } from "../../../../common/src/utils/vector";
+import {
+    type Vector, vClone, vMul
+} from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
