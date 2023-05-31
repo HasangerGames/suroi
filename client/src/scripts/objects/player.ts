@@ -92,7 +92,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emitter.setPosition(phaserPos.x, phaserPos.y);
         this.rotation = stream.readRotation(16);
 
-        if (this.isNew || !localStorageInstance.config.movementSmothing) {
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
         } else {
             gsap.to(this.images.container, {
@@ -103,7 +104,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        if (this.isNew || !localStorageInstance.config.rotationSmothing) {
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
             this.images.container.setRotation(this.rotation);
         } else {
             const oldAngle = this.images.container.angle;

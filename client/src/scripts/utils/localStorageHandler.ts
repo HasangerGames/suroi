@@ -27,8 +27,8 @@ export interface Config {
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
-    rotationSmothing: boolean
-    movementSmothing: boolean
+    rotationSmoothing: boolean
+    movementSmoothing: boolean
 }
 
 export const defaultConfig: Config = {
@@ -56,8 +56,8 @@ export const defaultConfig: Config = {
     cameraShake: true,
     showFPS: false,
     showPing: false,
-    rotationSmothing: true,
-    movementSmothing: true
+    rotationSmoothing: true,
+    movementSmoothing: true
 };
 
 const configKey = "config";
@@ -88,8 +88,8 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.configVersion = "3";
             config.showFPS = defaultConfig.showFPS;
             config.showPing = defaultConfig.showPing;
-            config.rotationSmothing = defaultConfig.rotationSmothing;
-            config.movementSmothing = defaultConfig.movementSmothing;
+            config.rotationSmoothing = defaultConfig.rotationSmoothing;
+            config.movementSmoothing = defaultConfig.movementSmoothing;
             break;
         default: {
             // Otherwise, we just wipe it and replace it with the default
