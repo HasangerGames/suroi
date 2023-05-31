@@ -25,10 +25,14 @@ export interface Config {
     language: string
     region: string
     cameraShake: boolean
+    showFPS: boolean
+    showPing: boolean
+    rotationSmothing: boolean
+    movementSmothing: boolean
 }
 
 export const defaultConfig: Config = {
-    configVersion: "2",
+    configVersion: "3",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -49,7 +53,11 @@ export const defaultConfig: Config = {
     muteAudio: false,
     language: "en",
     region: "na",
-    cameraShake: true
+    cameraShake: true,
+    showFPS: false,
+    showPing: false,
+    rotationSmothing: true,
+    movementSmothing: true,
 };
 
 const configKey = "config";
@@ -76,6 +84,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.sfxVolume = defaultConfig.sfxVolume;
             config.cameraShake = defaultConfig.cameraShake;
             break;
+        case "2":
+            config.configVersion = "3"
+            config.showFPS = defaultConfig.showFPS;
+            config.showPing = defaultConfig.showPing;
+            config.rotationSmothing = defaultConfig.rotationSmothing;
+            config.movementSmothing = defaultConfig.movementSmothing;
         default: {
             // Otherwise, we just wipe it and replace it with the default
             config = defaultConfig;

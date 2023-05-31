@@ -79,33 +79,57 @@ $(() => {
 
     // load settings values and event listeners
 
-    $("#slider-master-volume").val(localStorageInstance.config.masterVolume);
-    $("#slider-sfx-volume").val(localStorageInstance.config.sfxVolume);
-    $("#slider-music-volume").val(localStorageInstance.config.musicVolume);
-    $("#toggle-camera-shake").val(localStorageInstance.config.cameraShake.toString());
-
+    // music volule
     $("#slider-music-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
         localStorageInstance.update({ musicVolume: volume });
-    });
+    }).val(localStorageInstance.config.musicVolume);
 
+    // sfx volume
     $("#slider-sfx-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
         localStorageInstance.update({ sfxVolume: volume });
-    });
+    }).val(localStorageInstance.config.sfxVolume);
 
+    // master volume
     $("#slider-master-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value);
         (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
         localStorageInstance.update({ masterVolume: volume });
-    });
+    }).val(localStorageInstance.config.masterVolume);
 
+    // camera shake
     $("#toggle-camera-shake").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ cameraShake: this.checked });
-    });
+    }).val(localStorageInstance.config.cameraShake.toString());
+
+    // fps toggle
+    $("#toggle-fps").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ showFPS: this.checked });
+        $("#fps-counter").toggle(this.checked);
+    }).val(localStorageInstance.config.showFPS.toString());
+    $("#fps-counter").toggle(localStorageInstance.config.showFPS);
+
+    // ping toggle
+    $("#toggle-ping").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ showPing: this.checked });
+        $("#ping-counter").toggle(this.checked);
+    }).val(localStorageInstance.config.showPing.toString());
+    $("#ping-counter").toggle(localStorageInstance.config.showPing);
+
+    // rotation smothing toggle
+    $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ rotationSmothing: this.checked });
+    }).val(localStorageInstance.config.rotationSmothing.toString());
+
+    // movement smothing toggle
+    $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ movementSmothing: this.checked });
+    }).val(localStorageInstance.config.movementSmothing.toString());
+
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);

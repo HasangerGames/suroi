@@ -16,6 +16,7 @@ import type { Player } from "./objects/player";
 
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
 
 import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
@@ -143,6 +144,10 @@ app.ws("/play", {
                 }
                 case PacketType.Input: {
                     new InputPacket(player).deserialize(stream);
+                    break;
+                }
+                case PacketType.Ping: {
+                    new PingedPacket(player).deserialize(stream);
                     break;
                 }
             }

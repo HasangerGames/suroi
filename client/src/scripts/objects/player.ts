@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { type Game } from "../game";
 import { type GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
@@ -12,7 +13,7 @@ import {
     ObjectCategory
 } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type Vector, vClone } from "../../../../common/src/utils/vector";
+import { type Vector, vClone, vMul } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
@@ -84,20 +85,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
+        const phaserPos = vMul(this.position, 20);
+
+        this.emitter.setPosition(phaserPos.x, phaserPos.y);
         this.rotation = stream.readRotation(16);
 
-        if (this.isNew) {
-            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
+        if (this.isNew || !localStorageInstance.config.movementSmothing) {
+            this.images.container.setPosition(phaserPos.x, phaserPos.y);
+        } else {
+            gsap.to(this.images.container, {
+                x: phaserPos.x,
+                y: phaserPos.y,
+                ease: "none",
+                duration: 0.03
+            });
+        }
+
+        if (this.isNew || !localStorageInstance.config.rotationSmothing) {
             this.images.container.setRotation(this.rotation);
         } else {
             const oldAngle = this.images.container.angle;
             const newAngle = Phaser.Math.RadToDeg(this.rotation);
             const angleBetween = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
-
             gsap.to(this.images.container, {
-                x: this.position.x * 20,
-                y: this.position.y * 20,
                 angle: oldAngle + angleBetween,
                 ease: "none",
                 duration: 0.03
@@ -146,7 +156,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.animationSeq = animationSeq;
 
         // Hit effect
-        if (stream.readBoolean()) {
+        if (stream.readBoolean() && !this.isNew) {
             this.emitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
@@ -155,6 +165,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override deserializeFull(stream: SuroiBitStream): void {
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
         this.updateFistsPosition();
+        this.isNew = false;
     }
 
     updateFistsPosition(): void {
@@ -163,7 +174,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         if (this.isNew) {
-            this.isNew = false;
             this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
             this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
         } else {
@@ -188,7 +198,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
-            this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (!this.isNew) this.scene.playSound(`${this.activeItem.idString}_switch`);
             if (this.images.container !== undefined) this.images.container.bringToTop(this.images.body);
         } else {
             if (this.images.container !== undefined) this.images.container.sendToBack(this.images.body);

@@ -7,6 +7,8 @@ import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { GameOverPacket } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PingPacket } from "./packets/sending/pingPacket";
 
 import { type Player } from "./objects/player";
 import { type SendingPacket } from "./types/sendingPacket";
@@ -30,6 +32,8 @@ export class Game {
 
     playerManager = new PlayerManager(this);
 
+    lastPingDate = Date.now();
+
     connect(address: string): void {
         this.error = false;
 
@@ -43,6 +47,7 @@ export class Game {
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
             core.phaser?.scene.start("game");
+            this.sendPacket(new PingPacket(this.playerManager));
         };
 
         // Handle incoming messages
@@ -67,6 +72,11 @@ export class Game {
                 }
                 case PacketType.KillFeed: {
                     new KillFeedPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                // TODO: maybe disconnect players that didn't send a ping in a while?
+                case PacketType.Ping: {
+                    new PingedPacket(this.playerManager).deserialize(stream);
                     break;
                 }
             }

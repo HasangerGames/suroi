@@ -126,6 +126,8 @@ export function setupInputs(scene: GameScene): void {
 
     let mWheelStopTimer: number | undefined;
     function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
+        if (event instanceof KeyboardEvent && event.repeat) return;
+
         const key = getKeyFromInputEvent(event);
 
         if (event instanceof WheelEvent) {
@@ -147,18 +149,21 @@ export function setupInputs(scene: GameScene): void {
         fireAllEventsAtKey(key, event.type === "keydown" || event.type === "mousedown");
     }
 
+    const gameUi = $("#game-ui")[0];
+
     window.addEventListener("keydown", handleInputEvent);
     window.addEventListener("keyup", handleInputEvent);
-    window.addEventListener("mousedown", handleInputEvent);
-    window.addEventListener("mouseup", handleInputEvent);
-    window.addEventListener("wheel", handleInputEvent);
+    gameUi.addEventListener("mousedown", handleInputEvent);
+    gameUi.addEventListener("mouseup", handleInputEvent);
+    gameUi.addEventListener("wheel", handleInputEvent);
 
-    scene.input.on("pointermove", (pointer: Phaser.Input.Pointer): void => {
-        if (scene.player === undefined) return;
+    gameUi.addEventListener("pointermove", (e: PointerEvent) => {
+        if (scene.playerManager === undefined) return;
 
-        scene.playerManager.rotation = Math.atan2(pointer.worldY - scene.player.images.container.y, pointer.worldX - scene.player.images.container.x);
-        scene.activeGame.playerManager.turning = true;
-        scene.activeGame.playerManager.dirty.inputs = true;
+        scene.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        scene.playerManager.turning = true;
+        scene.playerManager.dirty.inputs = true;
+        //scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 }
 

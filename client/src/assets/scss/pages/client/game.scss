@@ -1,17 +1,16 @@
 @import "../../palette.scss";
 
-body > canvas {
+#game-ui {
+    user-select: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     cursor: crosshair;
 }
 
-
-#game-ui {
-    user-select: none;
-    z-index: 1;
-}
-
 .ui-leaderboard {
-    pointer-events: none;
     position: absolute;
     top: .5rem;
     right: .5rem;
@@ -83,7 +82,6 @@ body > canvas {
 }
 
 #health-bar-container {
-    pointer-events: none;
     background: $transparent_bg;
     /*border: 1vh solid $transparent_bg;
     border-radius: 0.6vw;
@@ -135,7 +133,6 @@ body > canvas {
 }
 
 #kill-msg {
-    pointer-events: none;
     background: $transparent_bg;
     padding: 10px;
     border-radius: 8px;
@@ -159,7 +156,6 @@ body > canvas {
 }
 
 .inventory-container {
-    pointer-events: none;
 
     position: absolute;
 
@@ -283,4 +279,10 @@ body > canvas {
             margin-left: auto;
         }
     }
+}
+
+#debug-hud {
+    margin: 0.4em;
+    text-shadow: 1px 1px 2px black;
+    font-family: monospace;
 }

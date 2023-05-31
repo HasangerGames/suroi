@@ -110,51 +110,11 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="settings-menu" style="display: none">
-    <div id="settings-header">
-      <h3>Settings</h3>
-      <span class="fa-solid fa-xmark" id="close-settings"></span>
-    </div>
-    <div class="tab-bar" id="settings-tab-bar">
-      <span class="tab active" id="tab-volume">Volume</span>
-      <span class="tab" id="tab-keybinds">Keybinds</span>
-      <span class="tab" id="tab-graphics">Graphics</span>
-    </div>
-    <div id="settings-tabs">
-      <div class="tab-content active" id="tab-volume-content">
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">Master Volume</span>
-            <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
-          </label>
-        </div>
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">SFX Volume</span>
-            <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
-          </label>
-        </div>
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">Music Volume</span>
-            <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
-          </label>
-        </div>
-      </div>
-      <div class="tab-content" id="tab-keybinds-content" style="display: none;">
-      </div>
-      <div class="tab-content" id="tab-graphics-content" style="display: none;">
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Camera shake</span>
-            <input type="checkbox" id="toggle-camera-shake">
-          </label>
-        </div>
-      </div>
-    </div>
-    <br>
-  </div>
   <div id="game-ui" style="display: none">
+    <div id="debug-hud">
+      <div id="fps-counter"></div>
+      <div id="ping-counter"></div>
+    </div>
     <div class="ui-leaderboard">
       <div class="alive-counter">
         <span id="ui-alive-text">ALIVE</span>
@@ -243,6 +203,74 @@
         <span class="item-name">Fists</span>
       </div>
     </div>
+  </div>
+  <div class="modal" id="settings-menu" style="display: none">
+    <div id="settings-header">
+      <h3>Settings</h3>
+      <span class="fa-solid fa-xmark" id="close-settings"></span>
+    </div>
+    <div class="tab-bar" id="settings-tab-bar">
+      <span class="tab active" id="tab-volume">Volume</span>
+      <span class="tab" id="tab-keybinds">Keybinds</span>
+      <span class="tab" id="tab-graphics">Graphics</span>
+    </div>
+    <div id="settings-tabs">
+      <div class="tab-content active" id="tab-volume-content">
+        <div class="modal-item">
+          <label>
+            <span class="setting-title">Master Volume</span>
+            <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
+          </label>
+        </div>
+        <div class="modal-item">
+          <label>
+            <span class="setting-title">SFX Volume</span>
+            <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
+          </label>
+        </div>
+        <div class="modal-item">
+          <label>
+            <span class="setting-title">Music Volume</span>
+            <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
+          </label>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-keybinds-content" style="display: none;">
+      </div>
+      <div class="tab-content" id="tab-graphics-content" style="display: none;">
+        <div class="modal-item checkbox-setting">
+          <label>
+            <span class="setting-title">Camera shake</span>
+            <input type="checkbox" id="toggle-camera-shake">
+          </label>
+        </div>
+        <div class="modal-item checkbox-setting">
+          <label>
+            <span class="setting-title">Show FPS</span>
+            <input type="checkbox" id="toggle-fps">
+          </label>
+        </div>
+        <div class="modal-item checkbox-setting">
+          <label>
+            <span class="setting-title">Show ping</span>
+            <input type="checkbox" id="toggle-ping">
+          </label>
+        </div>
+        <div class="modal-item checkbox-setting">
+          <label>
+            <span class="setting-title">Rotation smoothing</span>
+            <input type="checkbox" id="toggle-rotation-smoothing">
+          </label>
+        </div>
+        <div class="modal-item checkbox-setting">
+          <label>
+            <span class="setting-title">Movement smoothing</span>
+            <input type="checkbox" id="toggle-movement-smoothing">
+          </label>
+        </div>
+      </div>
+    </div>
+    <br>
   </div>
 </body>
 
