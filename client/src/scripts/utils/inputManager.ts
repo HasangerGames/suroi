@@ -9,7 +9,7 @@ class Action {
     readonly name: string;
     readonly on?: () => void;
     readonly off?: () => void;
-    down: boolean = false;
+    down = false;
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
@@ -22,7 +22,7 @@ class Action {
             if (!this.down) return;
             this.down = false;
             off?.();
-        }
+        };
     }
 }
 

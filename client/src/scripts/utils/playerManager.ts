@@ -1,5 +1,8 @@
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { ObjectCategory } from "../../../../common/src/constants";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
 
 // This class manages the active player data and inventory
 export class PlayerManager {
@@ -44,7 +47,6 @@ export class PlayerManager {
         this._lastItemIndex = this._activeItemIndex;
         this._activeItemIndex = v;
         this.dirty.inputs = true;
-        this.updateInventoryUI();
     }
 
     get health(): number {
@@ -67,18 +69,32 @@ export class PlayerManager {
         this.game = game;
     }
 
-    updateInventoryUI(): void {
-        $("#weapons-container").children("*").each((index, ele) => {
-            if (index !== this._activeItemIndex) {
-                ele.classList.remove("active");
-            } else {
-                ele.classList.add("active");
-            }
-        });
-    }
-
     deserializeInventory(stream: SuroiBitStream): void {
         // Active item index
-        if (stream.readBoolean()) this.activeItemIndex = stream.readUint8();
+        if (stream.readBoolean()) {
+            this.activeItemIndex = stream.readUint8();
+            $(".inventory-slot").removeClass("active");
+            $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
+        }
+
+        // Items dirty
+        if (stream.readBoolean()) {
+            const inventorySize = stream.readUint8();
+            for (let i = 0; i < inventorySize; i++) {
+                const container = $(`#weapon-slot-${i + 1}`);
+                if (stream.readBoolean()) {
+                    // if the slot is not empty
+                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
+                    container.children(".item-name").text(item.definition.name);
+                    const itemDef = item.definition as MeleeDefinition | GunDefinition;
+                    const weaponImg = itemDef.idString + (itemDef.type === "melee" ? "" : "-icon");
+                    container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${weaponImg}.svg`)).show();
+                } else {
+                    // empty slot
+                    container.children(".item-name").text("");
+                    container.children(".item-image").removeAttr("src").hide();
+                }
+            }
+        }
     }
 }

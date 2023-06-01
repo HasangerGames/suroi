@@ -63,7 +63,6 @@ export class Inventory {
 
         if (slot !== old) {
             this._lastItemIndex = old;
-            this.owner.dirty.activeItemIndex = true;
         }
 
         //todo switch penalties, other stuff that should happen when switching items
@@ -218,6 +217,7 @@ export class Inventory {
             this._itemCount = 1;
             throw new Error("This operation would leave the inventory empty; inventories cannot be emptied");
         }
+        this.owner.dirty.inventory = true;
 
         return old;
     }
@@ -229,8 +229,19 @@ export class Inventory {
     serializeInventory(stream: SuroiBitStream): void {
         stream.writeBoolean(this.owner.dirty.activeItemIndex);
         if (this.owner.dirty.activeItemIndex) {
-            stream.writeUint8(this.activeItemIndex);
             this.owner.dirty.activeItemIndex = false;
+            stream.writeUint8(this.activeItemIndex);
+        }
+        stream.writeBoolean(this.owner.dirty.inventory);
+        if (this.owner.dirty.inventory) {
+            this.owner.dirty.inventory = false;
+            stream.writeUint8(this._items.length);
+            for (const item of this._items) {
+                stream.writeBoolean(item !== undefined);
+                if (item !== undefined) {
+                    stream.writeObjectTypeNoCategory(item.type);
+                }
+            }
         }
     }
 }

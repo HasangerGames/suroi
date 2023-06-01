@@ -106,6 +106,7 @@ export class Player extends GameObject {
         health: true,
         adrenaline: true,
         activeItemIndex: true,
+        inventory: true,
         activePlayerId: true,
         zoom: true
     };

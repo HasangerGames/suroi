@@ -27,7 +27,7 @@ export class InputPacket extends ReceivingPacket {
             // If the switch is successful, then the active item index isn't dirty;
             // conversely, if the switch fails, then the change needs to be sent back
             // to the client, and the active item index is thus dirty
-            player.dirty.activeItemIndex = !player.inventory.setActiveItemIndex(activeItemIndex);
+            player.dirty.activeItemIndex = player.inventory.setActiveItemIndex(activeItemIndex);
 
             player.game.fullDirtyObjects.add(player);
             player.fullDirtyObjects.add(player);
