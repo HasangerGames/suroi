@@ -72,7 +72,7 @@ export class GunItem extends InventoryItem {
                 owner.game.newBullets.add(bullet);
             }
 
-            if (definition.fireMode === "auto") {
+            if (definition.fireMode === "auto" && this.owner.activeItem === this) {
                 setTimeout(this._useItemNoDelayCheck.bind(this), definition.cooldown);
             }
         }
