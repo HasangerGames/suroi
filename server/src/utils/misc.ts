@@ -14,7 +14,9 @@ import {
     RectangleHitbox
 } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
-import { type Vector } from "../../../common/src/utils/vector";
+import {
+    vAdd, type Vector, vMul
+} from "../../../common/src/utils/vector";
 
 export function v2v(v: Vector): Vec2 {
     return Vec2(v.x, v.y);
@@ -68,6 +70,6 @@ export function lerp(start: number, end: number, percentage: number): number {
     return start * (1.0 - percentage) + end * percentage;
 }
 
-export function vecLerp(start: Vec2, end: Vec2, percentage: number): Vec2 {
-    return Vec2.add(Vec2.mul(start, 1.0 - percentage), Vec2.mul(end, percentage));
+export function vecLerp(start: Vector, end: Vector, percentage: number): Vector {
+    return vAdd(vMul(start, 1.0 - percentage), vMul(end, percentage));
 }

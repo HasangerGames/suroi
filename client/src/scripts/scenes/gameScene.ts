@@ -93,12 +93,10 @@ export class GameScene extends Phaser.Scene {
             this.add.line(0, y, 0, y, GRID_WIDTH * 2, y, 0x000000, 0.25).setOrigin(0, 0);
         }
         const mask = this.make.graphics().createGeometryMask(this.add.circle(7200, 7200, 600, 0x000000, 0)).setInvertAlpha(true);
-        this.add.rectangle(7200, 7200, 14400, 14400, 0xe67300, 0.5).setDepth(10).setMask(mask);
+        this.add.rectangle(7200, 7200, 14400, 14400, 0xea4a00, 0.55).setDepth(10).setMask(mask);
 
         // Create the player
-        // TODO fix this, lol
-        // > undefined as unknown as number
-        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
+        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1);
         this.playerManager.name = $("#username-input").text();
         setupInputs(this);
 

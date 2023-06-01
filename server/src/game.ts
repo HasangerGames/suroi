@@ -12,7 +12,9 @@ import { Map } from "./map";
 import { Player } from "./objects/player";
 import { type Obstacle } from "./objects/obstacle";
 import { type Explosion } from "./objects/explosion";
-import { v2v } from "./utils/misc";
+import {
+    lerp, v2v, vecLerp
+} from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
@@ -23,6 +25,13 @@ import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
+import { randomPointInsideCircle } from "../../common/src/utils/random";
+import { GasMode, GasStages } from "./data/gasStages";
+import { JoinedPacket } from "./packets/sending/joinedPacket";
+import {
+    v, vClone, type Vector
+} from "../../common/src/utils/vector";
+import { distance } from "../../common/src/utils/math";
 
 export class Game {
     map: Map;
@@ -50,6 +59,27 @@ export class Game {
     newBullets = new Set<Bullet>(); // All bullets created this tick
     deletedBulletIDs = new Set<number>();
     damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
+
+    started = false;
+
+    readonly gas = {
+        stage: 0,
+        mode: GasMode.Inactive,
+        initialDuration: 0,
+        countdownStart: 0,
+        percentage: 0,
+        oldPosition: v(360, 360),
+        newPosition: v(360, 360),
+        oldRadius: 534.6,
+        newRadius: 534.6,
+        currentPosition: v(360, 360),
+        currentRadius: 534.6,
+        damage: 0,
+        ticksSinceLastDamage: 0
+    };
+
+    gasDirty = false;
+    gasDurationDirty = false;
 
     tickTimes: number[] = [];
 
@@ -159,27 +189,38 @@ export class Game {
                 explosion.explode();
             }
 
+            // Update gas
+            if (this.gas.mode !== 0) {
+                this.gas.percentage = (Date.now() - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
+                this.gasDurationDirty = true;
+            }
+
+            // Red zone damage
+            this.gas.ticksSinceLastDamage++;
+            let gasDamage = false;
+            if (this.gas.ticksSinceLastDamage >= 67) {
+                this.gas.ticksSinceLastDamage = 0;
+                gasDamage = true;
+                if (this.gas.mode === 2) {
+                    this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
+                    this.gas.currentRadius = lerp(this.gas.percentage, this.gas.oldRadius, this.gas.newRadius);
+                }
+            }
+
             // Update physics
             this.world.step(30);
 
-            // First loop over players: Calculate movement
+            // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
                 // This system allows opposite movement keys to cancel each other out.
-                const movement = {
-                    x: 0,
-                    y: 0
-                };
-
+                const movement: Vector = v(0, 0);
                 if (player.movement.up) movement.y++;
                 if (player.movement.down) movement.y--;
-
                 if (player.movement.left) movement.x--;
                 if (player.movement.right) movement.x++;
 
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                const speed = movement.x * movement.y !== 0
-                    ? Config.diagonalSpeed
-                    : Config.movementSpeed;
+                const speed = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
@@ -187,8 +228,14 @@ export class Game {
                     this.partialDirtyObjects.add(player);
                 }
 
+                // Shoot gun/use melee
                 if (player.startedAttacking) {
                     player.activeItem.useItem();
+                }
+
+                // Gas damage
+                if (gasDamage && this.isInGas(player.position)) {
+                    player.damage(this.gas.damage);
                 }
 
                 player.turning = false;
@@ -279,6 +326,28 @@ export class Game {
         return new Player(this, name, socket, spawnLocation);
     }
 
+    // Called when a JoinPacket is sent by the client
+    activatePlayer(player: Player): void {
+        const game = player.game;
+
+        game.livingPlayers.add(player);
+        game.connectedPlayers.add(player);
+        game.dynamicObjects.add(player);
+        game.fullDirtyObjects.add(player);
+        game.updateObjects = true;
+        game.aliveCountDirty = true;
+        game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, true)));
+
+        player.updateVisibleObjects();
+        player.joined = true;
+        player.sendPacket(new JoinedPacket(player));
+
+        if (this.aliveCount > 1 && !this.started) {
+            this.started = true;
+            this.advanceGas();
+        }
+    }
+
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
@@ -296,6 +365,41 @@ export class Game {
 
     get aliveCount(): number {
         return this.livingPlayers.size;
+    }
+
+    advanceGas(): void {
+        if (Config.disableGas) return;
+        const currentStage = GasStages[this.gas.stage + 1];
+        if (currentStage === undefined) return;
+        this.gas.stage++;
+        this.gas.mode = currentStage.mode;
+        this.gas.initialDuration = currentStage.duration;
+        this.gas.percentage = 1;
+        this.gas.countdownStart = Date.now();
+        if (currentStage.mode === 1) {
+            this.gas.oldPosition = vClone(this.gas.newPosition);
+            if (currentStage.newRadius !== 0) {
+                this.gas.newPosition = randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius);
+            } else {
+                this.gas.newPosition = vClone(this.gas.oldPosition);
+            }
+            this.gas.currentPosition = vClone(this.gas.oldPosition);
+            this.gas.currentRadius = currentStage.oldRadius;
+        }
+        this.gas.oldRadius = currentStage.oldRadius;
+        this.gas.newRadius = currentStage.newRadius;
+        this.gas.damage = currentStage.damage;
+        this.gasDirty = true;
+        this.gasDurationDirty = true;
+
+        // Start the next stage
+        if (currentStage.duration !== 0) {
+            setTimeout(() => this.advanceGas(), currentStage.duration * 1000);
+        }
+    }
+
+    isInGas(position: Vector): boolean {
+        return distance(position, this.gas.currentPosition) >= this.gas.currentRadius;
     }
 
     _nextObjectID = -1;

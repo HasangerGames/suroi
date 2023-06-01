@@ -53,7 +53,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Active player ID
         if (stream.readBoolean()) {
-            const noID: boolean = game.activePlayer.id === undefined;
+            const noID: boolean = game.activePlayer.id === -1;
             game.activePlayer.id = stream.readUint16();
             if (noID) {
                 game.objects.set(game.activePlayer.id, game.activePlayer);
