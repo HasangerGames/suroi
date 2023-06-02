@@ -10,8 +10,9 @@ import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../../common/src/constants";
+import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
+import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -151,18 +152,18 @@ export class UpdatePacket extends ReceivingPacket {
 
                 // Play firing sound
                 if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
-                    player.scene.playSound(`${bulletSourceDef.idString}_fire`);
+                    scene.playSound(`${bulletSourceDef.idString}_fire`);
                 }
 
                 // Spawn bullet
-                const bullet = player.scene.add.image(
+                const bullet = scene.add.image(
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
                     `${bulletSourceDef.idString}_trail.svg`
                 ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition));
                 game.bullets.set(id, bullet);
-                player.scene.tweens.add({
+                scene.tweens.add({
                     targets: bullet,
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
@@ -198,6 +199,35 @@ export class UpdatePacket extends ReceivingPacket {
                     game.activePlayer.scene,
                     stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
                     stream.readPosition());
+            }
+        }
+
+        // Gas
+        if (stream.readBoolean()) {
+            game.gas.mode = stream.readBits(2);
+            game.gas.initialDuration = stream.readBits(7);
+            game.gas.oldPosition = stream.readPosition();
+            game.gas.newPosition = stream.readPosition();
+            game.gas.oldRadius = stream.readFloat(0, 2048, 16);
+            game.gas.newRadius = stream.readFloat(0, 2048, 16);
+            if (game.gas.mode === GasMode.Waiting) {
+                scene.gasCircle.setPosition(game.gas.oldPosition.x, game.gas.oldPosition.y).setRadius(game.gas.oldRadius);
+            }
+        }
+
+        // Gas percentage
+        if (stream.readBoolean()) {
+            const percentage = stream.readFloat(0, 1, 16);
+            if (game.gas.mode === GasMode.Advancing) {
+                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
+                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
+                scene.tweens.add({
+                    targets: scene.gasCircle,
+                    x: currentPosition.x * 20,
+                    y: currentPosition.y * 20,
+                    radius: currentRadius * 20,
+                    duration: 30
+                });
             }
         }
 

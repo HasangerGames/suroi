@@ -120,6 +120,26 @@ export class UpdatePacket extends SendingPacket {
             }
         }
 
+        // Gas
+        const gasDirty: boolean = game.gasDirty || player.fullUpdate;
+        stream.writeBoolean(gasDirty);
+        if (gasDirty) {
+            stream.writeBits(game.gas.mode, 2);
+            stream.writeBits(game.gas.initialDuration, 7);
+            stream.writePosition(game.gas.oldPosition);
+            stream.writePosition(game.gas.newPosition);
+            stream.writeFloat(game.gas.oldRadius, 0, 2048, 16);
+            stream.writeFloat(game.gas.newRadius, 0, 2048, 16);
+        }
+
+        // Gas percentage
+        const gasPercentageDirty = game.gasPercentageDirty || player.fullUpdate;
+        stream.writeBoolean(gasPercentageDirty);
+        if (gasPercentageDirty) {
+            stream.writeFloat(game.gas.percentage, 0, 1, 16);
+        }
+
+        // Alive count
         const aliveCountDirty: boolean = game.aliveCountDirty || player.fullUpdate;
         stream.writeBoolean(aliveCountDirty);
         if (aliveCountDirty) {

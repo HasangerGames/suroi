@@ -23,6 +23,10 @@ export class GameScene extends Phaser.Scene {
     volume = localStorageInstance.config.sfxVolume * localStorageInstance.config.masterVolume;
     playerManager!: PlayerManager;
 
+    gasRect!: Phaser.GameObjects.Rectangle;
+    gasCircle!: Phaser.GameObjects.Arc;
+    gasMask!: Phaser.Display.Masks.GeometryMask;
+
     constructor() {
         super("game");
     }
@@ -92,8 +96,11 @@ export class GameScene extends Phaser.Scene {
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
             this.add.line(0, y, 0, y, GRID_WIDTH * 2, y, 0x000000, 0.25).setOrigin(0, 0);
         }
-        const mask = this.make.graphics().createGeometryMask(this.add.circle(7200, 7200, 600, 0x000000, 0)).setInvertAlpha(true);
-        this.add.rectangle(7200, 7200, 14400, 14400, 0xea4a00, 0.55).setDepth(10).setMask(mask);
+
+        // Create gas rectangle and mask
+        this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
+        this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
+        this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, 0xea4a00, 0.55).setDepth(10).setMask(this.gasMask);
 
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1);

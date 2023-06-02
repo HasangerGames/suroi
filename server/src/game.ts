@@ -12,26 +12,26 @@ import { Map } from "./map";
 import { Player } from "./objects/player";
 import { type Obstacle } from "./objects/obstacle";
 import { type Explosion } from "./objects/explosion";
-import {
-    lerp, v2v, vecLerp
-} from "./utils/misc";
+import { v2v } from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { ObjectCategory } from "../../common/src/constants";
+import { GasMode, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
-import { GasMode, GasStages } from "./data/gasStages";
+import { GasStages } from "./data/gasStages";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import {
     v, vClone, type Vector
 } from "../../common/src/utils/vector";
-import { distance } from "../../common/src/utils/math";
+import {
+    distance, lerp, vecLerp
+} from "../../common/src/utils/math";
 
 export class Game {
     map: Map;
@@ -79,7 +79,7 @@ export class Game {
     };
 
     gasDirty = false;
-    gasDurationDirty = false;
+    gasPercentageDirty = false;
 
     tickTimes: number[] = [];
 
@@ -192,16 +192,16 @@ export class Game {
             // Update gas
             if (this.gas.mode !== 0) {
                 this.gas.percentage = (Date.now() - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
-                this.gasDurationDirty = true;
+                this.gasPercentageDirty = true;
             }
 
             // Red zone damage
             this.gas.ticksSinceLastDamage++;
             let gasDamage = false;
-            if (this.gas.ticksSinceLastDamage >= 67) {
+            if (this.gas.ticksSinceLastDamage >= 30) {
                 this.gas.ticksSinceLastDamage = 0;
                 gasDamage = true;
-                if (this.gas.mode === 2) {
+                if (this.gas.mode === GasMode.Advancing) {
                     this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
                     this.gas.currentRadius = lerp(this.gas.percentage, this.gas.oldRadius, this.gas.newRadius);
                 }
@@ -290,8 +290,8 @@ export class Game {
             this.newBullets.clear();
             this.deletedBulletIDs.clear();
             this.explosions.clear();
+            this.killFeedMessages.clear();
             this.aliveCountDirty = false;
-            if (this.killFeedMessages.size > 0) this.killFeedMessages = new Set<KillFeedPacket>();
 
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
@@ -316,14 +316,16 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        let spawnLocation: Vec2;
-        if (Config.spawn.mode === "fixed") {
-            spawnLocation = Config.spawn.position;
-        } else {
-            spawnLocation = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+        let spawnPosition: Vec2 = Config.spawn.position;
+        if (Config.spawn.mode !== "fixed") {
+            let foundPosition = false;
+            while (!foundPosition) {
+                spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+                if (!this.isInGas(spawnPosition)) foundPosition = true;
+            }
         }
-        // Player is added to the players array in server/src/packets/receiving/joinPacket.ts
-        return new Player(this, name, socket, spawnLocation);
+        // Player is added to the players array when a JoinPacket is received from the client
+        return new Player(this, name, socket, spawnPosition);
     }
 
     // Called when a JoinPacket is sent by the client
@@ -390,7 +392,7 @@ export class Game {
         this.gas.newRadius = currentStage.newRadius;
         this.gas.damage = currentStage.damage;
         this.gasDirty = true;
-        this.gasDurationDirty = true;
+        this.gasPercentageDirty = true;
 
         // Start the next stage
         if (currentStage.duration !== 0) {

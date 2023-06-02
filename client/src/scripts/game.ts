@@ -15,9 +15,10 @@ import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../common/src/constants";
+import { GasMode, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
+import { v } from "../../../common/src/utils/vector";
 
 export class Game {
     socket!: WebSocket;
@@ -33,6 +34,15 @@ export class Game {
     playerManager = new PlayerManager(this);
 
     lastPingDate = Date.now();
+
+    readonly gas = {
+        mode: GasMode.Inactive,
+        initialDuration: 0,
+        oldPosition: v(360, 360),
+        newPosition: v(360, 360),
+        oldRadius: 534.6,
+        newRadius: 534.6
+    };
 
     connect(address: string): void {
         this.error = false;

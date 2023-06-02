@@ -1,6 +1,4 @@
-export enum GasMode {
-    Inactive, Waiting, Advancing
-}
+import { GasMode } from "../../../common/src/constants";
 
 export interface GasStage {
     mode: GasMode
@@ -14,120 +12,64 @@ export const GasStages: GasStage[] = [
     {
         mode: GasMode.Inactive,
         duration: 0,
-        oldRadius: 534.6,
-        newRadius: 534.6,
+        oldRadius: 512,
+        newRadius: 512,
         damage: 0
     },
     {
         mode: GasMode.Waiting,
-        duration: 80,
-        oldRadius: 534.6,
-        newRadius: 324,
+        duration: 60,
+        oldRadius: 512,
+        newRadius: 256,
         damage: 0
-    },
-    {
-        mode: GasMode.Advancing,
-        duration: 30,
-        oldRadius: 534.6,
-        newRadius: 324,
-        damage: 1.57
-    },
-    {
-        mode: GasMode.Waiting,
-        duration: 65,
-        oldRadius: 324,
-        newRadius: 225,
-        damage: 2.35
-    },
-    {
-        mode: GasMode.Advancing,
-        duration: 25,
-        oldRadius: 324,
-        newRadius: 225,
-        damage: 2.35
-    },
-    {
-        mode: GasMode.Waiting,
-        duration: 50,
-        oldRadius: 225,
-        newRadius: 153,
-        damage: 3.53
     },
     {
         mode: GasMode.Advancing,
         duration: 20,
-        oldRadius: 225,
-        newRadius: 153,
-        damage: 3.53
-    },
-    {
-        mode: GasMode.Waiting,
-        duration: 40,
-        oldRadius: 153,
-        newRadius: 99,
-        damage: 7.45
-    },
-    {
-        mode: GasMode.Advancing,
-        duration: 15,
-        oldRadius: 153,
-        newRadius: 99,
-        damage: 7.45
+        oldRadius: 512,
+        newRadius: 256,
+        damage: 1
     },
     {
         mode: GasMode.Waiting,
         duration: 30,
-        oldRadius: 99,
-        newRadius: 54,
-        damage: 9.8
+        oldRadius: 256,
+        newRadius: 128,
+        damage: 1.5
+    },
+    {
+        mode: GasMode.Advancing,
+        duration: 15,
+        oldRadius: 256,
+        newRadius: 128,
+        damage: 2
+    },
+    {
+        mode: GasMode.Waiting,
+        duration: 20,
+        oldRadius: 128,
+        newRadius: 64,
+        damage: 2.5
     },
     {
         mode: GasMode.Advancing,
         duration: 10,
-        oldRadius: 99,
-        newRadius: 54,
-        damage: 9.8
+        oldRadius: 128,
+        newRadius: 64,
+        damage: 3
     },
     {
         mode: GasMode.Waiting,
-        duration: 25,
-        oldRadius: 54,
-        newRadius: 32.4,
-        damage: 14.12
+        duration: 10,
+        oldRadius: 128,
+        newRadius: 64,
+        damage: 2.5
     },
     {
         mode: GasMode.Advancing,
-        duration: 5,
-        oldRadius: 54,
-        newRadius: 32.4,
-        damage: 14.12
-    },
-    {
-        mode: GasMode.Waiting,
-        duration: 20,
-        oldRadius: 32.4,
-        newRadius: 16.2,
-        damage: 22
-    },
-    {
-        mode: GasMode.Advancing,
-        duration: 6,
-        oldRadius: 32.4,
-        newRadius: 16.2,
-        damage: 22
-    },
-    {
-        mode: GasMode.Waiting,
-        duration: 15,
-        oldRadius: 16.2,
-        newRadius: 0,
-        damage: 22
-    },
-    {
-        mode: GasMode.Advancing,
-        duration: 15,
-        oldRadius: 16.2,
-        newRadius: 0,
-        damage: 22
+        duration: 10,
+        oldRadius: 128,
+        newRadius: 64,
+        damage: 3
     }
 ];
