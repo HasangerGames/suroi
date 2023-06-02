@@ -44,7 +44,9 @@ export class PlayerManager {
     private _activeItemIndex = 2;
     get activeItemIndex(): number { return this._activeItemIndex; }
     set activeItemIndex(v: number) {
-        this._lastItemIndex = this._activeItemIndex;
+        if (this.activeItemIndex === v) return;
+        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
+
         this._activeItemIndex = v;
         this.dirty.inputs = true;
     }

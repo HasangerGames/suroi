@@ -32,7 +32,7 @@ export class Inventory {
     /**
      * Private variable storing the index pointing to the last active item
      */
-    private _lastItemIndex = -1;
+    private _lastItemIndex = 0;
 
     /**
      * Returns the index pointing to the last active item
@@ -42,7 +42,7 @@ export class Inventory {
     /**
      * Private variable storing the index pointing to the active item
      */
-    private _activeItemIndex = -1;
+    private _activeItemIndex = 2;
 
     /**
      * Returns the index pointing to the active item
