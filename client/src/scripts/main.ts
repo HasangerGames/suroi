@@ -11,12 +11,6 @@ declare const API_URL: string;
 
 $(() => {
     // Show "Connection lost." message if the socket disconnects
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.has("connectionLost")) {
-        $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
-        $("#splash-server-message").show();
-        window.history.replaceState({}, "", "/");
-    }
 
     // Join server when play button is clicked
     const playSoloBtn: JQuery = $("#btn-play-solo");
@@ -34,6 +28,7 @@ $(() => {
         void $.get(`${API_URL}/getGame`, (data: { addr: string }) => {
             core.game?.connect(`${data.addr}?name=${$("#username-input").val() as string}`);
             enablePlayButton();
+            $("#splash-server-message").hide();
         }).fail((): void => {
             $("#splash-server-message-text").text("Error finding game.");
             $("#splash-server-message").show();

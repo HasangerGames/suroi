@@ -91,18 +91,32 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
+            if (this.gameStarted) {
+                $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
+                $("#splash-server-message").show();
+            }
             if (!this.error) this.endGame();
         };
     }
 
     endGame(): void {
-        window.history.pushState(null, "", "?connectionLost");
-        window.location.reload();
-        /* $("#game-ui").hide();
+        $("#game-ui").hide();
+        $("#game-menu").hide();
+        $("#game-over-screen").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").fadeIn();
+
         core.phaser?.scene.stop("game");
-        this.gameStarted = false; */
+        core.phaser?.scene.start("menu");
+        this.gameStarted = false;
+        this.socket.close();
+
+        // reset stuff
+        this.objects.clear();
+        this.players.clear();
+        this.bullets.clear();
+
+        this.playerManager = new PlayerManager(this);
     }
 
     sendPacket(packet: SendingPacket): void {

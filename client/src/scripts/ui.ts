@@ -50,8 +50,8 @@ $(() => {
     });
     body.on("click", () => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", () => { window.location.reload(); });
-    $("#btn-play-again").on("click", () => { window.location.reload(); });
+    $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
+    $("#btn-play-again").on("click", () => { core.game?.endGame(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
 

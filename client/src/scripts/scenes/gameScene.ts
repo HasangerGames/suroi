@@ -127,6 +127,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     tick(): void {
+        if (!this.activeGame.gameStarted) return;
+
         if (this.playerManager.dirty.inputs) {
             this.playerManager.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.playerManager));
