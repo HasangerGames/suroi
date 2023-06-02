@@ -117,7 +117,7 @@ $(() => {
     $("#toggle-ping").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ showPing: this.checked });
         $("#ping-counter").toggle(this.checked);
-    }).val(localStorageInstance.config.showPing.toString());
+    }).prop("checked", localStorageInstance.config.showPing);
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
     // rotation smothing toggle
