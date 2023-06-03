@@ -70,11 +70,11 @@ export class Game {
         percentage: 0,
         oldPosition: v(360, 360),
         newPosition: v(360, 360),
-        oldRadius: 534.6,
-        newRadius: 534.6,
+        oldRadius: 512,
+        newRadius: 512,
         currentPosition: v(360, 360),
-        currentRadius: 534.6,
-        damage: 0,
+        currentRadius: 512,
+        dps: 0,
         ticksSinceLastDamage: 0
     };
 
@@ -190,7 +190,7 @@ export class Game {
             }
 
             // Update gas
-            if (this.gas.mode !== 0) {
+            if (this.gas.mode !== GasMode.Inactive) {
                 this.gas.percentage = (Date.now() - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
                 this.gasPercentageDirty = true;
             }
@@ -203,7 +203,7 @@ export class Game {
                 gasDamage = true;
                 if (this.gas.mode === GasMode.Advancing) {
                     this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
-                    this.gas.currentRadius = lerp(this.gas.percentage, this.gas.oldRadius, this.gas.newRadius);
+                    this.gas.currentRadius = lerp(this.gas.oldRadius, this.gas.newRadius, this.gas.percentage);
                 }
             }
 
@@ -235,7 +235,7 @@ export class Game {
 
                 // Gas damage
                 if (gasDamage && this.isInGas(player.position)) {
-                    player.damage(this.gas.damage);
+                    player.damage(this.gas.dps);
                 }
 
                 player.turning = false;
@@ -292,6 +292,8 @@ export class Game {
             this.explosions.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
+            this.gasDirty = false;
+            this.gasPercentageDirty = false;
 
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
@@ -378,7 +380,7 @@ export class Game {
         this.gas.initialDuration = currentStage.duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = Date.now();
-        if (currentStage.mode === 1) {
+        if (currentStage.mode === GasMode.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
                 this.gas.newPosition = randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius);
@@ -390,7 +392,7 @@ export class Game {
         }
         this.gas.oldRadius = currentStage.oldRadius;
         this.gas.newRadius = currentStage.newRadius;
-        this.gas.damage = currentStage.dps;
+        this.gas.dps = currentStage.dps;
         this.gasDirty = true;
         this.gasPercentageDirty = true;
 
