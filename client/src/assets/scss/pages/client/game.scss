@@ -174,10 +174,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        cursor: pointer !important;
+
+        &:hover {
+            outline: 1px solid $orange;
+        }
     }
 
     .inventory-slot.active {
-        border: 3px solid $orange;
+        outline: 3px solid $orange;
+        cursor: crosshair !important;
     }
 
     /*.inventory-slot {

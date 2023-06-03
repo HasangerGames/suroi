@@ -130,6 +130,16 @@ $(() => {
         localStorageInstance.update({ movementSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.movementSmoothing);
 
+    // switch weapon slots by clicking
+    for (let i = 0; i < 3; i++) {
+        $(`#weapon-slot-${i + 1}`).on("pointerdown", () => {
+            if (core.game !== undefined) {
+                core.game.playerManager.activeItemIndex = i;
+                core.game.playerManager.dirty.inputs = true;
+            }
+        })
+    }
+
     $(".tab").on("click", ev => {
         const tab = $(ev.target);
 
