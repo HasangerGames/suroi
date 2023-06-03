@@ -57,8 +57,8 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
-            core.phaser?.scene.start("game");
             core.phaser?.scene.start("minimap");
+            core.phaser?.scene.start("game");
             this.sendPacket(new PingPacket(this.playerManager));
         };
 

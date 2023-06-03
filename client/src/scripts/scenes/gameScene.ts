@@ -60,7 +60,9 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
+        $(window).on("resize", () => {
+            this.cameras.main.setZoom(this.game.canvas.width / 2560);
+        });
     }
 
     private loadSound(name: string, path: string): void {
