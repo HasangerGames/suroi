@@ -149,7 +149,7 @@ export class Map {
 
         let getPosition: () => Vector;
         if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === "random")) {
-            getPosition = (): Vector => randomVector(2.5, this.width - 2.5, 2.5, this.height - 2.5);
+            getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
         } else if (type.category === ObjectCategory.Player && Config.spawn.mode === "radius") {
             getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
         } else {

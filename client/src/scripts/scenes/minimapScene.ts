@@ -1,12 +1,19 @@
 import Phaser from "phaser";
+import {
+    GAS_ALPHA, GAS_COLOR, GRASS_COLOR
+} from "../utils/constants";
 
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
+    playerIndicatorDead = false;
     isExpanded!: boolean;
 
     gasRect!: Phaser.GameObjects.Rectangle;
     gasCircle!: Phaser.GameObjects.Arc;
     gasMask!: Phaser.Display.Masks.GeometryMask;
+    //gasToCenterLine!: Phaser.GameObjects.Line;
+
+    renderTexture!: Phaser.GameObjects.RenderTexture;
 
     constructor() {
         super("minimap");
@@ -15,7 +22,7 @@ export class MinimapScene extends Phaser.Scene {
     // noinspection JSUnusedGlobalSymbols
     preload(): void {
         this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
-        this.cameras.main.setBackgroundColor(0x49993e);
+        this.cameras.main.setBackgroundColor(GRASS_COLOR);
     }
 
     create(): void {
@@ -33,10 +40,13 @@ export class MinimapScene extends Phaser.Scene {
             this.add.rectangle(0, y, GRID_WIDTH, 5, 0x000000, 0.35).setOrigin(0, 0);
         }
 
+        this.renderTexture = this.add.renderTexture(0, 0, 7200, 7200).setOrigin(0, 0);
+
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(3600, 3600, 5120, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
-        this.gasRect = this.add.rectangle(3600, 3600, 10000, 10000, 0xea4a00, 0.5).setDepth(10).setMask(this.gasMask);
+        this.gasRect = this.add.rectangle(3600, 3600, 10000, 10000, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
+        //this.gasToCenterLine = this.add.line(3600, 3600).setStrokeStyle(4, 0xffff00);
 
         this.playerIndicator = this.add.image(3600, 3600, "main", "player_indicator.svg").setDepth(10);
         this.switchToSmallMap();

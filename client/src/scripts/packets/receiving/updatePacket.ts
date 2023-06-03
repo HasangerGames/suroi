@@ -216,6 +216,7 @@ export class UpdatePacket extends ReceivingPacket {
             if (game.gas.mode === GasMode.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10).setRadius(game.gas.oldRadius * 10);
+                //minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
             }
         }
 

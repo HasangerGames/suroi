@@ -3,6 +3,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type Vector } from "matter";
+import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -25,10 +26,16 @@ export class MapPacket extends ReceivingPacket {
             }
 
             // Create the obstacle image
-            this.playerManager.game.activePlayer.scene.scene.get("minimap").add.image(position.x * 10, position.y * 10, "main", `${texture}.svg`)
-                .setRotation(rotation)
+            const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
+            minimap.renderTexture.draw(minimap.make.image({
+                x: position.x * 10,
+                y: position.y * 10,
+                key: "main",
+                frame: `${texture}.svg`,
+                add: false
+            }).setRotation(rotation)
                 .setScale(scale / 2)
-                .setDepth(definition.depth ?? 0);
+                .setDepth(definition.depth ?? 0));
         }
     }
 }
