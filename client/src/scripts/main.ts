@@ -6,6 +6,7 @@ import { Game } from "./game";
 
 import { GameScene } from "./scenes/gameScene";
 import { MenuScene } from "./scenes/menuScene";
+import { MinimapScene } from "./scenes/minimapScene";
 
 declare const API_URL: string;
 
@@ -48,7 +49,7 @@ $(() => {
     const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
     core.phaser = new Phaser.Game({
         type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
-        scene: [MenuScene, GameScene],
+        scene: [MenuScene, GameScene, MinimapScene],
         backgroundColor: "#49993e",
         scale: {
             mode: Phaser.Scale.RESIZE,
