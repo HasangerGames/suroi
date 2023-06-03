@@ -23,6 +23,7 @@ import {
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
+import { Player } from "./player";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -70,6 +71,10 @@ export class Obstacle extends GameObject {
         if (this.health <= 0) {
             this.health = 0;
             this.dead = true;
+
+            if (source instanceof Player) {
+                source.obstaclesDestroyed[definition.material] ++;
+            }
 
             this.scale = definition.scale.spawnMin;
 

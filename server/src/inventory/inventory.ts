@@ -188,6 +188,13 @@ export class Inventory {
         return this._setItem(slot, undefined);
     }
 
+    checkIfItemExists (item: string) {
+        for (var i = 0; i < Inventory.MAX_SIZE; i++) {
+            if (item === this._items[i]?.type.idString) { return true; }
+        }
+        return false;
+    }
+
     /**
      * Forcefully sets an item in a given slot. Note that this operation will never leave the inventory empty:
      * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and an error will be thrown.

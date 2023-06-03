@@ -21,6 +21,8 @@ import { type MeleeDefinition } from "../../../../common/src/definitions/melees"
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { distanceSquared } from "../../../../common/src/utils/math";
 
+const showMeleeDebugCircle = false;
+
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
 
@@ -42,6 +44,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
+    weaponAnim?: Phaser.Tweens.Tween;
 
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
@@ -149,6 +152,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             ease: Phaser.Math.Easing.Cubic.Out
                         });
                     }
+                    if (weaponDef.image !== undefined) {
+                        this.weaponAnim = this.scene.tweens.add({
+                            targets: this.images.weaponImg,
+                            x: weaponDef.image.usePosition.x,
+                            y: weaponDef.image.usePosition.y,
+                            duration: weaponDef.fists.animationDuration,
+                            angle: weaponDef.image.useAngle,
+                            yoyo: true,
+                            ease: Phaser.Math.Easing.Cubic.Out
+                        });
+                    }
+                    
+                    if (showMeleeDebugCircle) {
+                        const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
+                        this.images.container.add(meleeDebugCircle);
+                        setTimeout(() => this.images.container.remove(meleeDebugCircle, true), 500);
+                    }
 
                     this.scene.playSound("swing");
                     break;
@@ -197,7 +217,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
-            this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
+            if (weaponDef.type === "melee") {
+                this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
+            } else {
+                this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
+            }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
             if (!this.isNew) this.scene.playSound(`${this.activeItem.idString}_switch`);

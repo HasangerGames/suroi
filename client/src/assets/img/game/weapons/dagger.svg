@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="57.836563"
+   height="57.841461"
+   viewBox="0 0 15.30259 15.303886"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="dagger.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="4.3992129"
+     inkscape:cx="-2.7277607"
+     inkscape:cy="41.939321"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="10.376773,7.8251076"
+       end_point="10.376773,16.926048"
+       center_point="10.376773,12.375578"
+       id="path-effect439"
+       is_visible="true"
+       lpeversion="1.2"
+       lpesatellites=""
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false"
+       link_styles="false" />
+  </defs>
+  <path
+     id="rect17599"
+     style="fill:#909090;fill-opacity:1;stroke:#171717;stroke-width:0.26458332;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+     d="M 9.9470311,3.7161754 C 11.65326,2.4392372 15.200801,0.10158128 15.200801,0.10158128 c 0,0 -2.329468,3.55907822 -3.617554,5.26145602 C 11.17489,5.9027362 10.774546,6.4500076 10.30323,6.9392197 9.3201231,7.9596612 7.1520242,9.7895324 7.1520242,9.7895324 L 5.5128494,8.1503574 c 0,0 1.8238757,-2.1747085 2.8522235,-3.1492956 C 8.8591446,4.5328193 9.4042004,4.1224287 9.9470311,3.7161754 Z"
+     sodipodi:nodetypes="scssccss" />
+  <path
+     id="rect5380"
+     style="fill:#5d5d5d;fill-opacity:1;stroke:#171717;stroke-width:0.26458332;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+     d="m 5.3187144,8.4174128 1.5677585,1.5677586 c 0,0 -1.3177357,1.8769386 -2.1389666,2.6981696 -0.8212312,0.821231 -2.7824779,2.054658 -2.7824779,2.054658 L 0.56588678,13.338856 c 0,0 1.23342702,-1.961246 2.05465782,-2.782477 C 3.4417758,9.7351484 5.3187144,8.4174128 5.3187144,8.4174128 Z"
+     sodipodi:nodetypes="cczcczc" />
+  <path
+     id="rect5380-8"
+     style="fill:#b28b0b;fill-opacity:1;stroke:#2b2203;stroke-width:0.26458332;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+     d="m 9.5214857,11.553359 -1.0877692,1.087769 c 0,0 -1.7255292,-2.085886 -2.7053002,-3.0656581 C 4.7486435,8.5956971 2.7212538,6.8116737 2.7212538,6.8116737 l 0.970777,-0.970777 c 0,0 1.8276886,1.9837262 2.8074616,2.9634992 0.9797728,0.9797715 3.0219927,2.7489621 3.0219933,2.7489631 z"
+     sodipodi:nodetypes="cczcczc" />
+  <path
+     id="path7635"
+     style="fill:#b28b0b;fill-opacity:1;stroke:#2b2203;stroke-width:0.26458332;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+     d="M 2.2344503,15.029172 C 1.9921978,15.271425 1.3181234,15.245285 0.6883622,14.615524 0.05860032,13.985763 0.03246098,13.311688 0.27471329,13.069435 c 0.12112648,-0.121127 0.19800122,-0.26357 0.48372956,-0.136597 0.28572835,0.126973 0.58799865,0.394844 0.90287965,0.709725 0.3148807,0.314881 0.5827552,0.617149 0.7097243,0.90288 0.1269735,0.285728 -0.01547,0.362603 -0.1365965,0.483729 z"
+     sodipodi:nodetypes="sssssss" />
+  <metadata
+     id="metadata15722">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
