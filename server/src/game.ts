@@ -390,7 +390,7 @@ export class Game {
         }
         this.gas.oldRadius = currentStage.oldRadius;
         this.gas.newRadius = currentStage.newRadius;
-        this.gas.damage = currentStage.damage;
+        this.gas.damage = currentStage.dps;
         this.gasDirty = true;
         this.gasPercentageDirty = true;
 

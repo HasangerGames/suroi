@@ -100,7 +100,7 @@ export class GameScene extends Phaser.Scene {
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
-        this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, 0xea4a00, 0.55).setDepth(10).setMask(this.gasMask);
+        this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, 0xea4a00, 0.5).setDepth(10).setMask(this.gasMask);
 
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1);

@@ -211,7 +211,7 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             if (game.gas.mode === GasMode.Waiting) {
-                scene.gasCircle.setPosition(game.gas.oldPosition.x, game.gas.oldPosition.y).setRadius(game.gas.oldRadius);
+                scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
             }
         }
 
