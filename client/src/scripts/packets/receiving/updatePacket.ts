@@ -33,7 +33,7 @@ export class UpdatePacket extends ReceivingPacket {
             playerManager.health = stream.readFloat(0, 100, 8);
             let roundedHealth = Math.round(playerManager.health);
             //This doesn't get set to the exact number because the stream has trouble reading it correctly.
-            if (playerManager.health < 1 && playerManager.health > 0) {roundedHealth = 1;}
+            if (playerManager.health < 1 && playerManager.health > 0) { roundedHealth = 1; }
             const healthPercentage = `${roundedHealth}%`;
             $("#health-bar").width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);

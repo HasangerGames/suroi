@@ -188,8 +188,13 @@ export class Inventory {
         return this._setItem(slot, undefined);
     }
 
-    checkIfItemExists (item: string) {
-        for (var i = 0; i < Inventory.MAX_SIZE; i++) {
+    /**
+     * Checks if a given item exists on the inventory
+     * @param item The item id string
+     * @returns Whether the item exists on the inventory
+     */
+    checkIfItemExists(item: string): boolean {
+        for (let i = 0; i < Inventory.MAX_SIZE; i++) {
             if (item === this._items[i]?.type.idString) { return true; }
         }
         return false;

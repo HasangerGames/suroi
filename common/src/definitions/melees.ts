@@ -63,7 +63,7 @@ export const Melees: MeleeDefinition[] =
             useLeft: v(70, 20),
             useRight: v(38, -35)
         },
-        image : {
+        image: {
             position: v(62, 45),
             usePosition: v(92, 10),
             angle: 60,
@@ -87,7 +87,7 @@ export const Melees: MeleeDefinition[] =
             useLeft: v(75, 20),
             useRight: v(38, -35)
         },
-        image : {
+        image: {
             position: v(72, 45),
             usePosition: v(95, 0),
             angle: 60,
@@ -111,7 +111,7 @@ export const Melees: MeleeDefinition[] =
             useLeft: v(75, 20),
             useRight: v(38, -35)
         },
-        image : {
+        image: {
             position: v(72, 45),
             usePosition: v(95, 0),
             angle: 60,
@@ -135,11 +135,11 @@ export const Melees: MeleeDefinition[] =
             useLeft: v(75, 20),
             useRight: v(38, -35)
         },
-        image : {
+        image: {
             position: v(72, 45),
             usePosition: v(95, 0),
             angle: 60,
             useAngle: 0
         }
-    },
+    }
 ];

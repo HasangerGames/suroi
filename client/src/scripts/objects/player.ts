@@ -44,7 +44,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
-    weaponAnim?: Phaser.Tweens.Tween;
+    weaponAnim!: Phaser.Tweens.Tween;
 
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
@@ -163,7 +163,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             ease: Phaser.Math.Easing.Cubic.Out
                         });
                     }
-                    
+
                     if (showMeleeDebugCircle) {
                         const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
                         this.images.container.add(meleeDebugCircle);
@@ -193,6 +193,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     updateFistsPosition(): void {
         this.leftFistAnim?.destroy();
         this.rightFistAnim?.destroy();
+        this.weaponAnim?.destroy();
 
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         if (this.isNew) {

@@ -28,9 +28,6 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 
-//this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
-const switchMeleeWeapons = true;
-
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
         player: true,
@@ -66,7 +63,10 @@ export class Player extends GameObject {
         bush: 0,
         crate: 0,
         metal: 0
-    }
+    };
+
+    //this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
+    switchMeleeWeapons = true;
 
     get isMoving(): boolean {
         return this.movement.up ||
@@ -242,20 +242,6 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
 
-        if (switchMeleeWeapons) {
-            if (this.obstaclesDestroyed.tree >= 6) {
-                if (this.inventory.checkIfItemExists("branch") || this.inventory.checkIfItemExists("club") || this.inventory.checkIfItemExists("club_op") || this.inventory.checkIfItemExists("dagger")) {
-                } else {
-                    this.inventory.addOrReplaceItem(2, Math.random() < 0.2 ? "club" : "branch");
-                }
-            }
-            if (this.obstaclesDestroyed.metal >= 5 && this.kills >= 2) {
-                if (this.inventory.checkIfItemExists("club")) {
-                    this.inventory.addOrReplaceItem(2, "club_op");
-                }
-            }
-        }
-
         const approximateX = Math.round(this.position.x / 10) * 10;
         const approximateY = Math.round(this.position.y / 10) * 10;
         this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
@@ -341,7 +327,7 @@ export class Player extends GameObject {
             source.damageDone += amount;
         }
 
-        if (switchMeleeWeapons) {
+        if (this.switchMeleeWeapons) {
             if (this.health > 0 && this.health < 20) {
                 this.inventory.addOrReplaceItem(2, "dagger");
             }
