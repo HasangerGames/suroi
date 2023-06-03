@@ -225,10 +225,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
+
             if (!this.isNew) this.scene.playSound(`${this.activeItem.idString}_switch`);
-            if (this.images.container !== undefined) this.images.container.bringToTop(this.images.body);
+
+        }
+        if (weaponDef.type === "gun") {
+            this.images.container.bringToTop(this.images.weaponImg);
+            this.images.container.bringToTop(this.images.body);
         } else {
-            if (this.images.container !== undefined) this.images.container.sendToBack(this.images.body);
+            this.images.container.sendToBack(this.images.body);
+            this.images.container.sendToBack(this.images.weaponImg);
         }
     }
 
