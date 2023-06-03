@@ -67,6 +67,9 @@ export class Inventory {
 
         //todo switch penalties, other stuff that should happen when switching items
         // (started)
+        const item = this._items[slot];
+        if (item !== undefined) item._switchDate = Date.now();
+
         this.owner.attacking = false;
 
         return true;

@@ -88,7 +88,8 @@ export class GunItem extends InventoryItem {
     }
 
     override useItem(): void {
-        if (Date.now() - this._lastUse > this.definition.cooldown) {
+        if (Date.now() - this._lastUse > this.definition.cooldown &&
+            Date.now() - this._switchDate > this.definition.switchCooldown) {
             this._useItemNoDelayCheck();
         }
     }

@@ -5,6 +5,7 @@ export interface GunDefinition extends ItemDefinition {
     readonly type: "gun"
 
     readonly cooldown: number
+    readonly switchCooldown: number
     readonly fireMode: "single" | "auto"
     readonly shotSpread: number
     readonly bulletCount?: number
@@ -34,6 +35,7 @@ export const Guns: GunDefinition[] = [
         name: "AK-47",
         type: "gun",
         cooldown: 100,
+        switchCooldown: 150,
         fireMode: "auto",
         shotSpread: 5,
         length: 10,
@@ -57,6 +59,7 @@ export const Guns: GunDefinition[] = [
         name: "M3K",
         type: "gun",
         cooldown: 1000,
+        switchCooldown: 450,
         fireMode: "single",
         shotSpread: 7,
         bulletCount: 9,

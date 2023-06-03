@@ -137,7 +137,7 @@ $(() => {
                 core.game.playerManager.activeItemIndex = i;
                 core.game.playerManager.dirty.inputs = true;
             }
-        })
+        });
     }
 
     $(".tab").on("click", ev => {
