@@ -1,15 +1,16 @@
 import { mod } from "../../../../common/src/utils/math";
-import { type PlayerManager } from "../utils/playerManager";
+import { type PlayerManager } from "./playerManager";
 import { type GameScene } from "../scenes/gameScene";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
 } from "./localStorageHandler";
+import { type MinimapScene } from "../scenes/minimapScene";
 
 class Action {
     readonly name: string;
     readonly on?: () => void;
     readonly off?: () => void;
-    down: boolean = false;
+    down = false;
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
@@ -22,7 +23,7 @@ class Action {
             if (!this.down) return;
             this.down = false;
             off?.();
-        }
+        };
     }
 }
 
@@ -84,6 +85,12 @@ function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<K
             "useItem",
             () => { playerManager.attacking = true; },
             () => { playerManager.attacking = false; }
+        ),
+        toggleMap: new Action(
+            "toggleMap",
+            () => {
+                (playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
+            }
         )
     };
 }
@@ -215,7 +222,8 @@ const actionsNames = {
     lastEquippedItem: "Equip Last item",
     previousItem: "Equip Previous Item",
     nextItem: "Equip Next Item",
-    useItem: "Use Item"
+    useItem: "Use Item",
+    toggleMap: "Toggle Map"
 };
 
 // generate the input settings

@@ -19,6 +19,7 @@ import { GasMode, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
+import { MapPacket } from "./packets/receiving/mapPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -67,6 +68,10 @@ export class Game {
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
                     new JoinedPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                case PacketType.Map: {
+                    new MapPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Update: {

@@ -103,7 +103,7 @@ export class GameScene extends Phaser.Scene {
         this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, 0xea4a00, 0.5).setDepth(10).setMask(this.gasMask);
 
         // Create the player
-        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1);
+        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1, true);
         this.playerManager.name = $("#username-input").text();
         setupInputs(this);
 

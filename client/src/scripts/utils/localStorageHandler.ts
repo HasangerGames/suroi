@@ -11,6 +11,7 @@ export type KeybindActions = {
     previousItem: string[]
     nextItem: string[]
     useItem: string[]
+    toggleMap: string[]
 };
 
 export interface Config {
@@ -32,7 +33,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "3",
+    configVersion: "4",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -45,7 +46,8 @@ export const defaultConfig: Config = {
         lastEquippedItem: ["Q", ""],
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
-        useItem: ["Mouse0", ""]
+        useItem: ["Mouse0", ""],
+        toggleMap: ["G", ""]
     },
     masterVolume: 1,
     musicVolume: 1,
@@ -85,7 +87,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.cameraShake = defaultConfig.cameraShake;
             break;
         case "2":
-            config.configVersion = "3";
+            config.configVersion = "4";
             config.showFPS = defaultConfig.showFPS;
             config.showPing = defaultConfig.showPing;
             config.rotationSmoothing = defaultConfig.rotationSmoothing;

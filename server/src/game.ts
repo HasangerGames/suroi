@@ -32,6 +32,7 @@ import {
 import {
     distance, lerp, vecLerp
 } from "../../common/src/utils/math";
+import { MapPacket } from "./packets/sending/mapPacket";
 
 export class Game {
     map: Map;
@@ -345,6 +346,7 @@ export class Game {
         player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
+        player.sendPacket(new MapPacket(player));
 
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;

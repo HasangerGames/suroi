@@ -13,6 +13,7 @@ import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
+import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -202,6 +203,8 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
+        const minimap = scene.scene.get("minimap") as MinimapScene;
+
         // Gas
         if (stream.readBoolean()) {
             game.gas.mode = stream.readBits(2);
@@ -212,6 +215,7 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             if (game.gas.mode === GasMode.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
+                minimap.gasCircle.setPosition(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10).setRadius(game.gas.oldRadius * 10);
             }
         }
 
@@ -226,6 +230,13 @@ export class UpdatePacket extends ReceivingPacket {
                     x: currentPosition.x * 20,
                     y: currentPosition.y * 20,
                     radius: currentRadius * 20,
+                    duration: 30
+                });
+                scene.tweens.add({
+                    targets: minimap.gasCircle,
+                    x: currentPosition.x * 10,
+                    y: currentPosition.y * 10,
+                    radius: currentRadius * 10,
                     duration: 30
                 });
             }
