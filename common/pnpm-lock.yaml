@@ -14,11 +14,17 @@ dependencies:
   buffer:
     specifier: ^6.0.3
     version: 6.0.3
+  intersects:
+    specifier: ^2.7.2
+    version: 2.7.2
   uWebSockets.js:
     specifier: github:uNetworking/uWebSockets.js#v20.24.0
     version: github.com/uNetworking/uWebSockets.js/6545da07696855e77de1480d5b55bb661746ddd3
 
 devDependencies:
+  '@types/intersects':
+    specifier: ^2.5.0
+    version: 2.5.0
   '@typescript-eslint/eslint-plugin':
     specifier: ^5.59.8
     version: 5.59.8(@typescript-eslint/parser@5.59.8)(eslint@8.41.0)(typescript@5.0.4)
@@ -119,6 +125,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
+    dev: true
+
+  /@types/intersects@2.5.0:
+    resolution: {integrity: sha512-0zpt+T2HILWWQwJD9BbYF0pNfcLzNUZBUxFeW3u8VwMEZ4lkjQIi5Fu2MnITwauuaY5tEGalKFzXtJiXE7WeCw==}
     dev: true
 
   /@types/json-schema@7.0.12:
@@ -1067,6 +1077,10 @@ packages:
       has: 1.0.3
       side-channel: 1.0.4
     dev: true
+
+  /intersects@2.7.2:
+    resolution: {integrity: sha512-/LtLDq40iFtvnjhouev9p2R+jP+raVONPiD1t8Mcj879pkrLiav99BTRPBkfMPwSYr5vTNws3USGoW+8usS45A==}
+    dev: false
 
   /is-array-buffer@3.0.2:
     resolution: {integrity: sha512-y+FyyR/w8vfIRq4eQcM1EYgSTnmHXPqaF+IgzgraytCFq5Xh8lllDVmAZolPJiZttZLeFSINPYMaEJ7/vWUa1w==}

@@ -54,8 +54,17 @@ export class GunItem extends InventoryItem {
             this._lastUse = Date.now();
 
             const spread = degreesToRadians(definition.shotSpread);
-            const rotated = vRotate(v(2.50001, 0), owner.rotation); // player radius + a little bit extra
-            const position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+
+            let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+            let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+
+            for (const object of this.owner.nearObjects) {
+                if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
+                    rotated = vRotate(v(2.50001, 0), owner.rotation);
+                    position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+                    break;
+                }
+            }
 
             for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
                 const angle = owner.rotation + randomFloat(-spread, spread) + Math.PI / 2;

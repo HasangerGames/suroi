@@ -8,6 +8,7 @@ export interface GunDefinition extends ItemDefinition {
     readonly fireMode: "single" | "auto"
     readonly shotSpread: number
     readonly bulletCount?: number
+    readonly length: number
     readonly fists: {
         readonly left: Vector
         readonly right: Vector
@@ -35,6 +36,7 @@ export const Guns: GunDefinition[] = [
         cooldown: 100,
         fireMode: "auto",
         shotSpread: 5,
+        length: 10,
         fists: {
             left: v(65, 0),
             right: v(140, -5),
@@ -58,6 +60,7 @@ export const Guns: GunDefinition[] = [
         fireMode: "single",
         shotSpread: 7,
         bulletCount: 9,
+        length: 10,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
