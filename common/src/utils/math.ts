@@ -15,15 +15,11 @@ import { type Orientation } from "../typings";
 export const mod = (a: number, n: number): number => a - Math.floor(a / n) * n;
 
 /**
- * Normalize an angle to a value between 0 and 2π.
+ * Normalize an angle to a value between -π and π.
  * @param radians The angle, in radians.
  */
 export const normalizeAngle = (radians: number): number => {
-    if (radians === 0) return radians;
-    radians %= Math.PI * 2;
-
-    if (radians < 0) return (Math.PI * 2) - Math.abs(radians);
-    else return radians;
+    return Math.atan2(Math.sin(radians), Math.cos(radians));
 };
 
 /**
