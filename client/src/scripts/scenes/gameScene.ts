@@ -38,8 +38,6 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
         this.playerManager = core.game.playerManager;
 
-        this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
-
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
             this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
@@ -63,6 +61,7 @@ export class GameScene extends Phaser.Scene {
         $(window).on("resize", () => {
             this.cameras.main.setZoom(this.game.canvas.width / 2560);
         });
+        this.cameras.main.setZoom(this.game.canvas.width / 2560);
     }
 
     private loadSound(name: string, path: string): void {
@@ -99,8 +98,6 @@ export class GameScene extends Phaser.Scene {
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
             this.add.line(0, y, 0, y, GRID_WIDTH * 2, y, 0x000000, 0.25).setOrigin(0, 0);
         }
-        const mask = this.make.graphics().createGeometryMask(this.add.circle(7200, 7200, 600, 0x000000, 0)).setInvertAlpha(true);
-        this.add.rectangle(7200, 7200, 14400, 14400, 0xe67300, 0.5).setDepth(10).setMask(mask);
 
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);

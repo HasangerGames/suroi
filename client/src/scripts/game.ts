@@ -123,6 +123,7 @@ export class Game {
         $("#splash-ui").fadeIn();
 
         core.phaser?.scene.stop("game");
+        core.phaser?.scene.stop("minimap");
         core.phaser?.scene.start("menu");
         this.gameStarted = false;
         this.socket.close();

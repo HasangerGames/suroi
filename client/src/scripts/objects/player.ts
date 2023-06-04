@@ -116,8 +116,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
         if (this.isActivePlayer && !minimap.playerIndicatorDead) {
             gsap.to(minimap.playerIndicator, {
-                x: phaserPos.x / 2,
-                y: phaserPos.y / 2,
+                x: this.position.x * minimap.mapScale,
+                y: this.position.y * minimap.mapScale,
                 angle: finalAngle,
                 ease: "none",
                 duration: 0.03
