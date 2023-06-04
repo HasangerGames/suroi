@@ -33,17 +33,18 @@ export class UpdatePacket extends ReceivingPacket {
         // Health
         if (stream.readBoolean()) {
             playerManager.health = stream.readFloat(0, 100, 8);
-            const roundedHealth = Math.round(playerManager.health);
+            let roundedHealth = Math.round(playerManager.health);
+            //This doesn't get set to the exact number because the stream has trouble reading it correctly.
+            if (playerManager.health < 1 && playerManager.health > 0) { roundedHealth = 1; }
             const healthPercentage = `${roundedHealth}%`;
             const healthBar: JQuery = $("#health-bar");
             healthBar.width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
-            $("#health-bar-percentage").text(roundedHealth);
-
+            $("#health-bar-percentage").text(playerManager.health < 1 && playerManager.health > 0 ? "< 1" : roundedHealth);
             if (playerManager.health < 60 && playerManager.health > 10) {
                 healthBar.css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
             } else if (playerManager.health <= 10) {
-                healthBar.css("background-color", `rgb(${playerManager.health * 10 + 155}, 0, 0)`);
+                healthBar.css("background-color", `rgb(${playerManager.health * 15 + 105}, 0, 0)`);
             } else {
                 healthBar.css("background-color", "#f8f9fa");
             }

@@ -5,7 +5,7 @@ import {
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    readonly material: string
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
     readonly health: number
     readonly invulnerable?: boolean
     readonly scale: {

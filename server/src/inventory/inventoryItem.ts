@@ -22,6 +22,7 @@ export abstract class InventoryItem {
     readonly owner: Player;
 
     _lastUse = 0;
+    _switchDate = 0;
     get lastUse(): number { return this._lastUse; }
 
     /**

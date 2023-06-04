@@ -1,3 +1,5 @@
+import { boxLine, circleLine } from "intersects";
+
 import {
     vClone,
     v,
@@ -20,6 +22,7 @@ export abstract class Hitbox {
     abstract distanceTo(that: Hitbox): CollisionRecord;
     abstract clone(): Hitbox;
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
+    abstract intersectsLine(a: Vector, b: Vector): boolean;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -60,6 +63,10 @@ export class CircleHitbox extends Hitbox {
     transform(position: Vector, scale = 1, orientation?: Orientation): Hitbox {
         return new CircleHitbox(this.radius * scale, vAdd(this.position, position));
     }
+
+    intersectsLine(a: Vector, b: Vector): boolean {
+        return circleLine(this.position.x, this.position.y, this.radius, a.x, a.y, b.x, b.y);
+    }
 }
 
 export class RectangleHitbox extends Hitbox {
@@ -99,5 +106,12 @@ export class RectangleHitbox extends Hitbox {
 
     transform(position: Vector): Hitbox {
         return new RectangleHitbox(vAdd(this.min, position), vAdd(this.max, position));
+    }
+
+    intersectsLine(a: Vector, b: Vector): boolean {
+        const width = this.max.x - this.min.x;
+        const height = this.max.y - this.min.y;
+
+        return boxLine(this.min.x, this.min.y, width, height, a.x, a.y, b.x, b.y);
     }
 }

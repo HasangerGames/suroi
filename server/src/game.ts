@@ -362,7 +362,6 @@ export class Game {
         }
         player.rotation = 0;
         this.partialDirtyObjects.add(player);
-        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();

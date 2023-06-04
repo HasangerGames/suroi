@@ -57,6 +57,17 @@ export class Player extends GameObject {
     damageTaken = 0;
     joinTime: number;
 
+    obstaclesDestroyed = {
+        tree: 0,
+        stone: 0,
+        bush: 0,
+        crate: 0,
+        metal: 0
+    };
+
+    //this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
+    switchMeleeWeapons = true;
+
     get isMoving(): boolean {
         return this.movement.up ||
             this.movement.down ||
@@ -106,6 +117,7 @@ export class Player extends GameObject {
         health: true,
         adrenaline: true,
         activeItemIndex: true,
+        inventory: true,
         activePlayerId: true,
         zoom: true
     };
@@ -313,6 +325,12 @@ export class Player extends GameObject {
         }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
+        }
+
+        if (this.switchMeleeWeapons) {
+            if (this.health > 0 && this.health < 20) {
+                this.inventory.addOrReplaceItem(2, "dagger");
+            }
         }
 
         this.partialDirtyObjects.add(this);

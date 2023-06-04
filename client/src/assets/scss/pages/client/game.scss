@@ -196,10 +196,17 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
+        cursor: pointer !important;
+
+        &:hover {
+            outline: 1px solid $orange;
+        }
     }
 
     .inventory-slot.active {
-        border: 3px solid $orange;
+        outline: 3px solid $orange;
+        cursor: crosshair !important;
     }
 
     /*.inventory-slot {
@@ -240,8 +247,8 @@
     }
 
     .item-image {
-        width: 110px;
-        height: 110px;
+        width: 100px;
+        height: 100px;
         margin-bottom: 15px;
         //width: 90%;
         //height: 90%;
