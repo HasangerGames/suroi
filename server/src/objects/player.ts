@@ -386,10 +386,10 @@ export class Player extends GameObject {
                     const gameOverPacket = new GameOverPacket(lastManStanding, true);
                     lastManStanding.sendPacket(gameOverPacket);
 
-                    // End the game
-                    this.game.end();
+                    // End the game in 1 second
+                    setTimeout(this.game.end.bind(this), 1000);
                 } else if (this.game.aliveCount === 0) {
-                    this.game.end();
+                    setTimeout(this.game.end.bind(this), 1000);
                 }
             }
         }
@@ -403,9 +403,6 @@ export class Player extends GameObject {
         stream.writeBoolean(this.hitEffect);
     }
 
-    /**
-     * @todo Make this completely type-safe.
-     */
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeObjectType(this.activeItem.type);
     }
