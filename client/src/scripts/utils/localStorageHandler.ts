@@ -47,7 +47,7 @@ export const defaultConfig: Config = {
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
-        toggleMap: ["G", ""]
+        toggleMap: ["G", "M"]
     },
     masterVolume: 1,
     musicVolume: 1,
@@ -87,6 +87,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.cameraShake = defaultConfig.cameraShake;
             break;
         case "2":
+        case "3":
             config.configVersion = "4";
             config.showFPS = defaultConfig.showFPS;
             config.showPing = defaultConfig.showPing;
