@@ -29,6 +29,8 @@ export class MinimapScene extends Phaser.Scene {
     create(): void {
         this.scene.bringToTop();
 
+        this.playerIndicatorDead = false;
+
         // Draw the grid
         const GRID_WIDTH = 720 * this.mapScale;
         const GRID_HEIGHT = 720 * this.mapScale;
