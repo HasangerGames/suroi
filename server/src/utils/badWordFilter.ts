@@ -1,4 +1,22 @@
-const badWords: string[] = ["nigger", "nigga", "n1gger", "n1gg3r", "n1gga", "faggot", "fagg0t"];
+const badWords: string[] = [
+    "nigger",
+    "n1gger",
+    "n1gg3r",
+
+    "niggers",
+    "n1ggers",
+    "n1gg3rs",
+
+    "nigga",
+    "n1gga",
+    "n1ggas",
+
+    "faggot",
+    "fagg0t",
+
+    "faggots",
+    "fagg0ts"
+];
 
 export function hasBadWords(text: string): boolean {
     for (const badWord of badWords) {
