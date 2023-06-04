@@ -24,6 +24,7 @@ import { type ObstacleDefinition } from "../../../common/src/definitions/obstacl
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
 import { Player } from "./player";
+import { Config } from "../config";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -72,7 +73,7 @@ export class Obstacle extends GameObject {
             this.health = 0;
             this.dead = true;
 
-            if (source instanceof Player && source.switchMeleeWeapons) {
+            if (source instanceof Player && Config.switchMeleeWeapons) {
                 source.obstaclesDestroyed[definition.material]++;
                 if (source.obstaclesDestroyed.tree >= 6 &&
                     !(source.inventory.checkIfItemExists("branch") ||

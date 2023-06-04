@@ -30,6 +30,7 @@ export class Game {
     activePlayer!: Player;
 
     gameStarted = false;
+    gameWon = false;
     error = false;
 
     playerManager = new PlayerManager(this);
@@ -52,6 +53,7 @@ export class Game {
         if (this.gameStarted) return;
 
         this.gameStarted = true;
+        this.gameWon = false;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
@@ -107,11 +109,13 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            if (this.gameStarted) {
-                $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
-                $("#splash-server-message").show();
+            if (!this.gameWon) {
+                if (this.gameStarted) {
+                    $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
+                    $("#splash-server-message").show();
+                }
+                if (!this.error) this.endGame();
             }
-            if (!this.error) this.endGame();
         };
     }
 

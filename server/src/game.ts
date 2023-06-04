@@ -366,8 +366,7 @@ export class Game {
         if (!player.dead) {
             this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, false)));
         }
-        player.rotation = 0;
-        this.partialDirtyObjects.add(player);
+        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
         try {
             player.socket.close();
@@ -424,5 +423,9 @@ export class Game {
     get nextBulletID(): number {
         this._nextBulletID = (this._nextBulletID + 1) % 256; // Bullet IDs wrap back to 0 when they reach 255
         return this._nextBulletID;
+    }
+
+    end(): void {
+        process.exit(1); // TODO Option to keep the server running
     }
 }

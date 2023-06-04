@@ -36,6 +36,9 @@ export const Config = {
         overrideDuration: 10
     },
 
+    // Experimental: Set to true to give players melee weapons when certain obstacles are destroyed.
+    switchMeleeWeapons: false,
+
     // A basic filter that censors only the most extreme swearing.
     censorUsernames: true,
 

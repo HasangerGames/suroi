@@ -2,14 +2,22 @@ import { SendingPacket } from "../../types/sendingPacket";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../../common/src/constants";
+import { type Player } from "../../objects/player";
 
 export class GameOverPacket extends SendingPacket {
     override readonly allocBytes = 1 << 5;
     override readonly type = PacketType.GameOver;
+    readonly won: boolean;
+
+    constructor(player: Player, won: boolean) {
+        super(player);
+        this.won = won;
+    }
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
+        stream.writeBoolean(this.won);
         stream.writePlayerName(this.player.name);
         stream.writeUint8(this.player.kills);
         stream.writeUint16(this.player.damageDone);

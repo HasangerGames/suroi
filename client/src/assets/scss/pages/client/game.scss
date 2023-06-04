@@ -327,6 +327,12 @@
 #game-over-screen {
     text-align: center;
 
+    &.chicken-dinner {
+        background-image: url("../../img/game/misc/chicken-dinner.png");
+        color: white;
+        text-shadow: 1px 1px 2px black;
+    }
+
     .modal-item {
         margin-bottom: 0;
     }

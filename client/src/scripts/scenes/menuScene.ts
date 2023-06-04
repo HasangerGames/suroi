@@ -23,12 +23,10 @@ export class MenuScene extends Phaser.Scene {
 
     startMusic(): void {
         const volume = localStorageInstance.config.musicVolume ?? 1;
-
         if (this.menuMusic === undefined) {
             this.menuMusic = this.sound.add("menu", { volume });
-            this.menuMusic.setLoop(true);
         }
-
+        this.menuMusic?.setSeek(0);
         this.menuMusic.play();
     }
 
@@ -44,7 +42,6 @@ export class MenuScene extends Phaser.Scene {
             duration: 2000,
             onComplete: (): void => {
                 this.menuMusic?.stop();
-                this.menuMusic?.setSeek(0);
             }
         });
     }

@@ -79,7 +79,7 @@ $((): void => {
 
     // load settings values and event listeners
 
-    // music volule
+    // music volume
     $("#slider-music-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value) * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);

@@ -27,6 +27,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { Config } from "../config";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -64,9 +65,6 @@ export class Player extends GameObject {
         crate: 0,
         metal: 0
     };
-
-    // this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
-    switchMeleeWeapons = true;
 
     get isMoving(): boolean {
         return this.movement.up ||
@@ -333,7 +331,7 @@ export class Player extends GameObject {
             source.damageDone += amount;
         }
 
-        if (this.switchMeleeWeapons) {
+        if (Config.switchMeleeWeapons) {
             if (this.health > 0 && this.health < 20) {
                 this.inventory.addOrReplaceItem(2, "dagger");
             }
@@ -341,6 +339,7 @@ export class Player extends GameObject {
 
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
+
         // Death logic
         if (this.health <= 0 && !this.dead) {
             this.health = 0;
@@ -357,7 +356,7 @@ export class Player extends GameObject {
 
             // Decrement alive count & send game over packet
             if (!this.disconnected) {
-                this.sendPacket(new GameOverPacket(this));
+                this.sendPacket(new GameOverPacket(this, false));
             }
 
             // Destroy physics body; reset movement and attacking variables
@@ -378,6 +377,21 @@ export class Player extends GameObject {
             const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
+
+            // Winning logic
+            if (this.game.started) {
+                if (this.game.aliveCount === 1) {
+                    // Send game over
+                    const lastManStanding: Player = [...this.game.livingPlayers][0];
+                    const gameOverPacket = new GameOverPacket(lastManStanding, true);
+                    lastManStanding.sendPacket(gameOverPacket);
+
+                    // End the game
+                    this.game.end();
+                } else if (this.game.aliveCount === 0) {
+                    this.game.end();
+                }
+            }
         }
     }
 
