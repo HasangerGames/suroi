@@ -11,7 +11,7 @@ export class MinimapScene extends Phaser.Scene {
     gasRect!: Phaser.GameObjects.Rectangle;
     gasCircle!: Phaser.GameObjects.Arc;
     gasMask!: Phaser.Display.Masks.GeometryMask;
-    //gasToCenterLine!: Phaser.GameObjects.Line;
+    // gasToCenterLine!: Phaser.GameObjects.Line;
 
     renderTexture!: Phaser.GameObjects.RenderTexture;
 
@@ -49,7 +49,7 @@ export class MinimapScene extends Phaser.Scene {
         this.gasCircle = this.add.circle(360 * this.mapScale, 360 * this.mapScale, 512 * this.mapScale, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(360 * this.mapScale, 360 * this.mapScale, 1000 * this.mapScale, 1000 * this.mapScale, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
-        //this.gasToCenterLine = this.add.line(3600, 3600).setStrokeStyle(4, 0xffff00);
+        // this.gasToCenterLine = this.add.line(3600, 3600).setStrokeStyle(4, 0xffff00);
 
         $(window).on("resize", () => {
             if (this.isExpanded) this.resizeBigMap();
