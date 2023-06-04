@@ -6,7 +6,7 @@ import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
 import { localStorageInstance } from "./utils/localStorageHandler";
 
-$(() => {
+$((): void => {
     const dropdown = {
         main: $("#splash-more .dropdown-content"),
         caret: $("#btn-dropdown-more i"),
@@ -48,10 +48,10 @@ $(() => {
         dropdown.toggle();
         ev.stopPropagation();
     });
-    body.on("click", () => { dropdown.hide(); });
+    body.on("click", (): void => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
-    $("#btn-play-again").on("click", () => { core.game?.endGame(); });
+    $("#btn-quit-game").on("click", (): void => { core.game?.endGame(); });
+    $("#btn-play-again").on("click", (): void => { core.game?.endGame(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
 
@@ -62,18 +62,18 @@ $(() => {
         }
     });
 
-    $("#btn-settings").click(() => {
+    $("#btn-settings").click((): void => {
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
 
-    $("#btn-settings-game").click(() => {
+    $("#btn-settings-game").click((): void => {
         gameMenu.hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.addClass("in-game");
     });
 
-    $("#close-settings").click(() => {
+    $("#close-settings").click((): void => {
         settingsMenu.fadeOut(250);
     });
 
@@ -132,7 +132,7 @@ $(() => {
 
     // Switch weapon slots by clicking
     for (let i = 0; i < 3; i++) {
-        $(`#weapon-slot-${i + 1}`).on("pointerdown", () => {
+        $(`#weapon-slot-${i + 1}`).on("pointerdown", (): void => {
             if (core.game !== undefined) {
                 core.game.playerManager.activeItemIndex = i;
                 core.game.playerManager.dirty.inputs = true;

@@ -9,9 +9,11 @@ import { MenuScene } from "./scenes/menuScene";
 import { MinimapScene } from "./scenes/minimapScene";
 import { GRASS_COLOR } from "./utils/constants";
 
+import { setupInputs } from "./utils/inputManager";
+
 declare const API_URL: string;
 
-$(() => {
+$((): void => {
     // Show "Connection lost." message if the socket disconnects
 
     // Join server when play button is clicked
@@ -53,4 +55,5 @@ $(() => {
             autoCenter: Phaser.Scale.CENTER_BOTH
         }
     });
+    setupInputs(core.game);
 });

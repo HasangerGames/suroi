@@ -56,7 +56,7 @@ export function explosion(game: Game, scene: GameScene, type: ObjectType, positi
         alpha: 0,
         duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
         ease: "Expo.Out"
-    }).on("complete", () => {
+    }).on("complete", (): void => {
         image.destroy();
     });
 

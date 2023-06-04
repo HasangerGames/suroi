@@ -170,7 +170,8 @@ const config: Configuration = {
                 rootDir: path.resolve(__dirname, "../src/assets/img/game"),
                 outDir: "img/atlases",
                 filename: `main-${version}.png`
-            }]
+            }],
+            compilerOptions: { margin: 2 }
         }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })

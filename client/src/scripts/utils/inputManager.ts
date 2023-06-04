@@ -1,9 +1,11 @@
+import nipplejs, { type EventData, type JoystickOutputData } from "nipplejs";
+
 import { mod } from "../../../../common/src/utils/math";
 import { type PlayerManager } from "./playerManager";
-import { type GameScene } from "../scenes/gameScene";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
 } from "./localStorageHandler";
+import { type Game } from "../game";
 import { type MinimapScene } from "../scenes/minimapScene";
 
 class Action {
@@ -14,12 +16,12 @@ class Action {
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
-        this.on = () => {
+        this.on = (): void => {
             if (this.down) return;
             this.down = true;
             on?.();
         };
-        this.off = () => {
+        this.off = (): void => {
             if (!this.down) return;
             this.down = false;
             off?.();
@@ -29,17 +31,17 @@ class Action {
 
 type ConvertToAction<T extends Record<string, object | string>> = { [K in keyof T]: T[K] extends Record<string, object | string> ? ConvertToAction<T[K]> : Action };
 
-function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<KeybindActions> {
+function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
         return new Action(
             `move::${direction.toString()}`,
-            () => {
-                playerManager.movement[direction] = true;
-                playerManager.dirty.inputs = true;
+            (): void => {
+                game.playerManager.movement[direction] = true;
+                game.playerManager.dirty.inputs = true;
             },
-            () => {
-                playerManager.movement[direction] = false;
-                playerManager.dirty.inputs = true;
+            (): void => {
+                game.playerManager.movement[direction] = false;
+                game.playerManager.dirty.inputs = true;
             }
         );
     }
@@ -47,7 +49,7 @@ function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<K
     function generateSlotAction(slot: number): Action {
         return new Action(
             `inventory::slot${slot}`,
-            () => { playerManager.activeItemIndex = slot; }
+            (): void => { game.playerManager.activeItemIndex = slot; }
         );
     }
 
@@ -63,33 +65,33 @@ function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<K
 
         lastEquippedItem: new Action(
             "inventory::lastEquippedItem",
-            () => {
-                playerManager.activeItemIndex = playerManager.lastItemIndex;
+            (): void => {
+                game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
             }
         ),
         previousItem: new Action(
             "inventory::previousItem",
-            () => {
-                playerManager.activeItemIndex = mod(playerManager.activeItemIndex - 1, 3);
+            (): void => {
+                game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex - 1, 3);
                 // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
-            () => {
-                playerManager.activeItemIndex = mod(playerManager.activeItemIndex + 1, 3);
+            (): void => {
+                game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex + 1, 3);
                 // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         useItem: new Action(
             "useItem",
-            () => { playerManager.attacking = true; },
-            () => { playerManager.attacking = false; }
+            (): void => { game.playerManager.attacking = true; },
+            (): void => { game.playerManager.attacking = false; }
         ),
         toggleMap: new Action(
             "toggleMap",
-            () => {
-                (playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
+            (): void => {
+                (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
             }
         )
     };
@@ -112,24 +114,12 @@ function bind(keys: string[], action: Action): void {
 
 let actions: ConvertToAction<KeybindActions>;
 
-export function setupInputs(scene: GameScene): void {
-    const playerManager = scene.playerManager;
-    actions = generateKeybindActions(playerManager);
+export function setupInputs(game: Game): void {
+    actions = generateKeybindActions(game);
     const keybinds = localStorageInstance.config.keybinds;
 
     for (const action in keybinds) {
         bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
-    }
-
-    // Register listeners on the scene
-    const keyboard = scene.input.keyboard;
-
-    if (keyboard === null) {
-        throw new Error("Cannot add keyboard inputs because no keyboard was found.");
-    }
-
-    if (scene.input.mouse?.disableContextMenu() === null) {
-        throw new Error("Cannot add mouse inputs because no mouse was found.");
     }
 
     function fireAllEventsAtKey(key: string, down: boolean): void {
@@ -155,7 +145,7 @@ export function setupInputs(scene: GameScene): void {
                 detected, which is what we want
             */
             clearTimeout(mWheelStopTimer);
-            mWheelStopTimer = window.setTimeout(() => {
+            mWheelStopTimer = window.setTimeout((): void => {
                 fireAllEventsAtKey(key, false);
             }, 50);
 
@@ -173,14 +163,50 @@ export function setupInputs(scene: GameScene): void {
     gameUi.addEventListener("mouseup", handleInputEvent);
     gameUi.addEventListener("wheel", handleInputEvent);
 
-    gameUi.addEventListener("pointermove", (e: PointerEvent) => {
-        if (scene.playerManager === undefined) return;
+    gameUi.addEventListener("mousemove", (e: MouseEvent) => {
+        if (game.playerManager === undefined) return;
 
-        scene.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        scene.playerManager.turning = true;
-        scene.playerManager.dirty.inputs = true;
+        game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        game.playerManager.turning = true;
+        game.playerManager.dirty.inputs = true;
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
+
+    // Mobile joysticks
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (game.playerManager.isMobile) {
+        const leftJoyStick = nipplejs.create({
+            zone: $("#left-joystick-container")[0],
+            size: 150
+        });
+
+        leftJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
+            game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+            game.playerManager.movement.moving = true;
+            game.playerManager.dirty.inputs = true;
+        });
+        leftJoyStick.on("end", (): void => {
+            game.playerManager.movement.moving = false;
+            game.playerManager.dirty.inputs = true;
+        });
+
+        const rightJoyStick = nipplejs.create({
+            zone: $("#right-joystick-container")[0],
+            size: 150
+        });
+
+        rightJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
+            game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+            game.playerManager.turning = true;
+
+            game.playerManager.attacking = data.distance > 70;
+            game.playerManager.dirty.inputs = true;
+        });
+        rightJoyStick.on("end", (): void => {
+            game.playerManager.attacking = false;
+            game.playerManager.dirty.inputs = true;
+        });
+    }
 }
 
 function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
@@ -298,7 +324,7 @@ function generateBindsConfigScreen(): void {
                 evt.stopImmediatePropagation();
             });
 
-            bindButton.addEventListener("blur", () => {
+            bindButton.addEventListener("blur", (): void => {
                 bindButton.classList.remove("active");
             });
         });
@@ -315,7 +341,7 @@ function generateBindsConfigScreen(): void {
     $("<div/>", { class: "modal-item" }).append($("<button/>", {
         class: "btn btn-darken btn-lg btn-danger",
         text: "Reset to defaults"
-    }).on("click", () => {
+    }).on("click", (): void => {
         localStorageInstance.update({ keybinds: defaultConfig.keybinds });
         generateBindsConfigScreen();
     })).appendTo(keybindsContainer);

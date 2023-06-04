@@ -44,8 +44,10 @@ export class MeleeItem extends InventoryItem {
 
         owner.animation.type = AnimationType.Punch;
         owner.animation.seq = !this.owner.animation.seq;
+        owner.partialDirtyObjects.add(owner);
+        owner.game.partialDirtyObjects.add(owner);
 
-        setTimeout(() => {
+        setTimeout((): void => {
             if (
                 this.owner.activeItem === this &&
                 owner.attacking &&
@@ -79,7 +81,7 @@ export class MeleeItem extends InventoryItem {
                     }
                 }
 
-                if (definition.fireMode === "auto") {
+                if (definition.fireMode === "auto" || owner.isMobile) {
                     setTimeout(this._useItemNoDelayCheck.bind(this), definition.cooldown);
                 }
             }

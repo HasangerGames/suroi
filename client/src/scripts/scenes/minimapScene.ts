@@ -51,9 +51,13 @@ export class MinimapScene extends Phaser.Scene {
         this.gasRect = this.add.rectangle(360 * this.mapScale, 360 * this.mapScale, 1000 * this.mapScale, 1000 * this.mapScale, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
         // this.gasToCenterLine = this.add.line(3600, 3600).setStrokeStyle(4, 0xffff00);
 
-        $(window).on("resize", () => {
+        $(window).on("resize", (): void => {
             if (this.isExpanded) this.resizeBigMap();
+            else this.resizeSmallMap();
         });
+
+        // HACK: Use the gas rect to handle click events
+        this.gasRect.setInteractive().on("pointerdown", this.toggle.bind(this));
 
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
@@ -65,14 +69,26 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     resizeBigMap(): void {
-        if (this.sys === undefined) return;
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
+        const screenWidth: number = window.innerWidth;
+        const screenHeight: number = window.innerHeight;
         this.cameras.main.setZoom(0.0012 / this.mapScale * screenHeight);
         // noinspection JSSuspiciousNameCombination
         this.cameras.main.setSize(screenHeight, screenHeight);
         this.cameras.main.setPosition(screenWidth / 2 - screenHeight / 2, 0);
         this.cameras.main.centerOn(360 * this.mapScale, 380 * this.mapScale);
+    }
+
+    resizeSmallMap(): void {
+        if (window.innerWidth > 1200) {
+            this.cameras.main.setSize(250, 250);
+            this.cameras.main.setPosition(20, 20);
+            this.cameras.main.setZoom(1 / this.mapScale);
+        } else {
+            this.cameras.main.setSize(125, 125);
+            this.cameras.main.setPosition(10, 10);
+            this.cameras.main.setZoom(1 / this.mapScale / 2);
+        }
+        this.cameras.main.startFollow(this.playerIndicator);
     }
 
     switchToBigMap(): void {
@@ -84,10 +100,7 @@ export class MinimapScene extends Phaser.Scene {
 
     switchToSmallMap(): void {
         this.isExpanded = false;
-        this.cameras.main.setSize(250, 250);
-        this.cameras.main.setPosition(20, 20);
-        this.cameras.main.setZoom(1 / this.mapScale);
-        this.cameras.main.startFollow(this.playerIndicator);
+        this.resizeSmallMap();
         $("#minimap-border").show();
     }
 }

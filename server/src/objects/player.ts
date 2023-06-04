@@ -72,7 +72,8 @@ export class Player extends GameObject {
         return this.movement.up ||
             this.movement.down ||
             this.movement.left ||
-            this.movement.right;
+            this.movement.right ||
+            this.movement.moving;
     }
 
     movesSinceLastUpdate = 0;
@@ -81,8 +82,13 @@ export class Player extends GameObject {
         up: false,
         down: false,
         left: false,
-        right: false
+        right: false,
+        // mobile
+        moving: false,
+        angle: 0
     };
+
+    isMobile!: boolean;
 
     /**
      * Whether the player is attacking as of last update

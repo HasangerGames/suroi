@@ -155,7 +155,7 @@ export class Game {
     }
 
     tick(delay: number): void {
-        setTimeout(() => {
+        setTimeout((): void => {
             const tickStart = Date.now();
 
             // Update bullets
@@ -215,6 +215,12 @@ export class Game {
             for (const player of this.livingPlayers) {
                 // This system allows opposite movement keys to cancel each other out.
                 const movement: Vector = v(0, 0);
+
+                if (player.isMobile && player.movement.moving) {
+                    movement.x = Math.cos(player.movement.angle) * 1.45;
+                    movement.y = -Math.sin(player.movement.angle) * 1.45;
+                }
+
                 if (player.movement.up) movement.y++;
                 if (player.movement.down) movement.y--;
                 if (player.movement.left) movement.x--;
