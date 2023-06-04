@@ -61,6 +61,7 @@ export class Game {
         this.socket.onopen = (): void => {
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
+            $("#game-over-screen").hide();
             this.sendPacket(new PingPacket(this.playerManager));
         };
 

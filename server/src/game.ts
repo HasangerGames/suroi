@@ -33,6 +33,7 @@ import {
     distance, lerp, vecLerp
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
+import process from "node:process";
 
 export class Game {
     map: Map;
@@ -368,6 +369,8 @@ export class Game {
         }
         this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
+        this.dynamicObjects.delete(player);
+        this.deletedObjects.add(player);
         try {
             player.socket.close();
         } catch (e) {}
