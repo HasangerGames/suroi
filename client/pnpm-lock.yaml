@@ -14,6 +14,9 @@ dependencies:
   intersects:
     specifier: ^2.7.2
     version: 2.7.2
+  nipplejs:
+    specifier: ^0.10.1
+    version: 0.10.1
   phaser:
     specifier: ^3.60.0
     version: 3.60.0
@@ -5082,6 +5085,10 @@ packages:
   /neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
+
+  /nipplejs@0.10.1:
+    resolution: {integrity: sha512-BuKBDfdd7BVK6E7sivHwrRPh9TETsHuHEwuT95nAjRz2uJu5roYngNs+BdRe8nYf8mP6OZ9aRqdgMlqVsDMRcw==}
+    dev: false
 
   /no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}

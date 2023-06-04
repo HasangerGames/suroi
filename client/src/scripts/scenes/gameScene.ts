@@ -13,7 +13,6 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../../common/src/constants";
 import { Guns } from "../../../../common/src/definitions/guns";
-import { setupInputs } from "../utils/inputManager";
 import { type PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
@@ -37,6 +36,10 @@ export class GameScene extends Phaser.Scene {
         if (core.game === undefined) return;
         this.activeGame = core.game;
         this.playerManager = core.game.playerManager;
+
+        if (this.playerManager.isMobile) {
+            document.body.requestFullscreen().catch((e: Error) => { console.error(e); });
+        }
 
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
@@ -107,7 +110,6 @@ export class GameScene extends Phaser.Scene {
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1, true);
         this.playerManager.name = $("#username-input").text();
-        setupInputs(this);
 
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.images.container);

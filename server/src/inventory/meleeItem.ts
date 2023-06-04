@@ -79,7 +79,7 @@ export class MeleeItem extends InventoryItem {
                     }
                 }
 
-                if (definition.fireMode === "auto") {
+                if (definition.fireMode === "auto" || owner.isMobile) {
                     setTimeout(this._useItemNoDelayCheck.bind(this), definition.cooldown);
                 }
             }

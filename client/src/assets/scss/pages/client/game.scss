@@ -265,6 +265,12 @@
     }
 }
 
+@media screen and (max-width: 1100px) {
+    .inventory-container {
+        flex-direction: column;
+    }
+}
+
 #weapons-container {
     bottom: 10px;
     right: 10px;
@@ -307,5 +313,20 @@
             text-align: right;
             margin-left: auto;
         }
+    }
+}
+
+#joysticks-containers {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+
+    div {
+        height: 100%;
+        width: 50%;
+        display: flex;
     }
 }

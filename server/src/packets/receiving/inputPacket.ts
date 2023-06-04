@@ -13,6 +13,11 @@ export class InputPacket extends ReceivingPacket {
         player.movement.left = stream.readBoolean();
         player.movement.right = stream.readBoolean();
 
+        if (player.isMobile) {
+            player.movement.moving = stream.readBoolean();
+            player.movement.angle = stream.readRotation(16);
+        }
+
         const oldAttackState = player.attacking;
         const attackState = stream.readBoolean();
 

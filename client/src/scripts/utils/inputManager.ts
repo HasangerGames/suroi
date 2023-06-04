@@ -1,9 +1,11 @@
+import nipplejs from "nipplejs";
+
 import { mod } from "../../../../common/src/utils/math";
 import { type PlayerManager } from "./playerManager";
-import { type GameScene } from "../scenes/gameScene";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
 } from "./localStorageHandler";
+import { type Game } from "../game";
 import { type MinimapScene } from "../scenes/minimapScene";
 
 class Action {
@@ -112,24 +114,13 @@ function bind(keys: string[], action: Action): void {
 
 let actions: ConvertToAction<KeybindActions>;
 
-export function setupInputs(scene: GameScene): void {
-    const playerManager = scene.playerManager;
+export function setupInputs(game: Game): void {
+    const playerManager = game.playerManager;
     actions = generateKeybindActions(playerManager);
     const keybinds = localStorageInstance.config.keybinds;
 
     for (const action in keybinds) {
         bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
-    }
-
-    // Register listeners on the scene
-    const keyboard = scene.input.keyboard;
-
-    if (keyboard === null) {
-        throw new Error("Cannot add keyboard inputs because no keyboard was found.");
-    }
-
-    if (scene.input.mouse?.disableContextMenu() === null) {
-        throw new Error("Cannot add mouse inputs because no mouse was found.");
     }
 
     function fireAllEventsAtKey(key: string, down: boolean): void {
@@ -173,14 +164,52 @@ export function setupInputs(scene: GameScene): void {
     gameUi.addEventListener("mouseup", handleInputEvent);
     gameUi.addEventListener("wheel", handleInputEvent);
 
-    gameUi.addEventListener("pointermove", (e: PointerEvent) => {
-        if (scene.playerManager === undefined) return;
+    gameUi.addEventListener("mousemove", (e: MouseEvent) => {
+        if (game.playerManager === undefined) return;
 
-        scene.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        scene.playerManager.turning = true;
-        scene.playerManager.dirty.inputs = true;
+        game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        game.playerManager.turning = true;
+        game.playerManager.dirty.inputs = true;
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
+
+    // mobile joy sticks
+    if (game.playerManager.isMobile) {
+        const leftJoyStick = nipplejs.create({
+            zone: $("#left-joystick-container")[0],
+            size: 150
+        });
+
+        leftJoyStick.on("move", (evt, data) => {
+            game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+            game.playerManager.movement.moving = true;
+            game.playerManager.dirty.inputs = true;
+        });
+        leftJoyStick.on("end", () => {
+            game.playerManager.movement.moving = false;
+            game.playerManager.dirty.inputs = true;
+        });
+
+        const rightJoyStick = nipplejs.create({
+            zone: $("#right-joystick-container")[0],
+            size: 150
+        });
+
+        rightJoyStick.on("move", (evt, data) => {
+            game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+            game.playerManager.turning = true;
+
+            game.playerManager.attacking = false;
+            if (data.distance > 70) {
+                game.playerManager.attacking = true;
+            }
+            game.playerManager.dirty.inputs = true;
+        });
+        rightJoyStick.on("end", () => {
+            game.playerManager.attacking = false;
+            game.playerManager.dirty.inputs = true;
+        });
+    }
 }
 
 function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {

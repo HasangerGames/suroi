@@ -1,3 +1,4 @@
+import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../../common/src/constants";
@@ -14,12 +15,23 @@ export class PlayerManager {
 
     private _adrenaline = 100;
 
+    get isMobile(): boolean {
+        if (core.phaser === undefined) return false;
+        return !core.phaser.device.os.desktop;
+    }
+
     readonly movement = {
         up: false,
         left: false,
         down: false,
-        right: false
+        right: false,
+        // mobile
+        moving: false
     };
+
+    // had to put it here because its not a boolean
+    // and inputManager assumes all keys of `movement` are booleans
+    movementAngle = 0;
 
     readonly dirty = {
         health: true,

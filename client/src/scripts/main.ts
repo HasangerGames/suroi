@@ -9,6 +9,8 @@ import { MenuScene } from "./scenes/menuScene";
 import { MinimapScene } from "./scenes/minimapScene";
 import { GRASS_COLOR } from "./utils/constants";
 
+import { setupInputs } from "./utils/inputManager";
+
 declare const API_URL: string;
 
 $(() => {
@@ -53,4 +55,5 @@ $(() => {
             autoCenter: Phaser.Scale.CENTER_BOTH
         }
     });
+    setupInputs(core.game);
 });
