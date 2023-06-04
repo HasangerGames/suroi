@@ -92,6 +92,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.showPing = defaultConfig.showPing;
             config.rotationSmoothing = defaultConfig.rotationSmoothing;
             config.movementSmoothing = defaultConfig.movementSmoothing;
+            config.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
             break;
         default: {
             // Otherwise, we just wipe it and replace it with the default
