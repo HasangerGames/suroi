@@ -403,6 +403,9 @@ export class Player extends GameObject {
         stream.writeBoolean(this.hitEffect);
     }
 
+    /**
+     * @todo Make this completely type-safe.
+     */
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeObjectType(this.activeItem.type);
     }

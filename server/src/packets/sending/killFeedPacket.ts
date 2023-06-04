@@ -33,8 +33,8 @@ export class KillFeedPacket extends SendingPacket {
 
             const usedWeapon: boolean = killMessage.weaponUsed !== undefined;
             stream.writeBoolean(usedWeapon);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            if (usedWeapon) stream.writeObjectType(killMessage.weaponUsed!);
+
+            if (killMessage.weaponUsed !== undefined) stream.writeObjectType(killMessage.weaponUsed);
         }
     }
 }
