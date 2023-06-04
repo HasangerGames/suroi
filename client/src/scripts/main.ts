@@ -42,9 +42,10 @@ $(() => {
     core.game = new Game();
 
     // Create the Phaser Game
-    const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
+    //const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
     core.phaser = new Phaser.Game({
-        type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
+        //type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
+        type: Phaser.WEBGL,
         scene: [MenuScene, GameScene, MinimapScene],
         backgroundColor: GRASS_COLOR,
         scale: {
