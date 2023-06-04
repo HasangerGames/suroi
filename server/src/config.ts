@@ -20,8 +20,8 @@ export const Config = {
      * "fixed" always spawns the player at the exact position given, ignoring the radius.
      */
     spawn: {
-        mode: "fixed",
-        position: Vec2(10, 10),
+        mode: "random",
+        position: Vec2(360, 360),
         radius: 72
     },
 

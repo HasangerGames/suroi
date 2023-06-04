@@ -153,7 +153,6 @@ export class UpdatePacket extends ReceivingPacket {
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
                 const initialPosition = stream.readPosition();
                 const rotation = stream.readRotation(16);
-                console.log(rotation);
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
                 const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
                 // Play firing sound
