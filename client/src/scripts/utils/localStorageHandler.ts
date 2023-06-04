@@ -87,12 +87,14 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.cameraShake = defaultConfig.cameraShake;
             break;
         case "2":
-        case "3":
-            config.configVersion = "4";
+            config.configVersion = "3";
             config.showFPS = defaultConfig.showFPS;
             config.showPing = defaultConfig.showPing;
             config.rotationSmoothing = defaultConfig.rotationSmoothing;
             config.movementSmoothing = defaultConfig.movementSmoothing;
+            break;
+        case "3":
+            config.configVersion = "4";
             config.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
             break;
         default: {
