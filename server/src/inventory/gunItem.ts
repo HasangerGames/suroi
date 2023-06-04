@@ -1,7 +1,7 @@
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
-import { degreesToRadians } from "../../../common/src/utils/math";
+import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
 import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
@@ -67,7 +67,7 @@ export class GunItem extends InventoryItem {
             }
 
             for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-                const angle = owner.rotation + randomFloat(-spread, spread) + Math.PI / 2;
+                const angle = normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2);
                 const bullet = new Bullet(
                     owner.game,
                     position,

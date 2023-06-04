@@ -13,6 +13,7 @@ import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
+import { v, vAdd } from "../../../../../common/src/utils/vector";
 import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class UpdatePacket extends ReceivingPacket {
@@ -151,8 +152,10 @@ export class UpdatePacket extends ReceivingPacket {
                 const id: number = stream.readUint8();
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
                 const initialPosition = stream.readPosition();
-                const finalPosition = stream.readPosition();
-
+                const rotation = stream.readRotation(16);
+                console.log(rotation);
+                const maxDist = bulletSourceDef.ballistics.maxDistance;
+                const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
                 // Play firing sound
                 if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
                     scene.playSound(`${bulletSourceDef.idString}_fire`);
