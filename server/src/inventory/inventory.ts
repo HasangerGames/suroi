@@ -78,9 +78,8 @@ export class Inventory {
     /**
      * Returns this inventory's active item, if it exists
      */
-    get activeItem(): InventoryItem {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this._items[this._activeItemIndex]!;
+    get activeItem(): InventoryItem | undefined {
+        return this._items[this._activeItemIndex];
     }
 
     /**
