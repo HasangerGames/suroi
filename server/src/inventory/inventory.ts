@@ -80,6 +80,7 @@ export class Inventory {
      * It will never be undefined since the only place that sets the active item has an undefined check
      */
     get activeItem(): InventoryItem {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._items[this._activeItemIndex]!;
     }
 
