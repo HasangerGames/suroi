@@ -76,10 +76,11 @@ export class Inventory {
     }
 
     /**
-     * Returns this inventory's active item, if it exists
+     * Returns this inventory's active item
+     * It will never be undefined since the only place that sets the active item has an undefined check
      */
-    get activeItem(): InventoryItem | undefined {
-        return this._items[this._activeItemIndex];
+    get activeItem(): InventoryItem {
+        return this._items[this._activeItemIndex]!;
     }
 
     /**

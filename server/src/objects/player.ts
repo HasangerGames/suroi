@@ -130,7 +130,7 @@ export class Player extends GameObject {
 
     readonly inventory = new Inventory(this);
 
-    get activeItem(): InventoryItem | undefined {
+    get activeItem(): InventoryItem {
         return this.inventory.activeItem;
     }
 
@@ -393,6 +393,6 @@ export class Player extends GameObject {
      * @todo Make this completely type-safe.
      */
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeObjectType((this.activeItem as InventoryItem).type);
+        stream.writeObjectType(this.activeItem.type);
     }
 }
