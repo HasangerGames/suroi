@@ -1,186 +1,174 @@
 <!--suppress HtmlUnknownTarget -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="Suroi - 2D battle royale game">
+    <meta name="description"
+      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+    <meta name="keywords" content="battle royale, io game, browser game, open source">
 
-  <meta name="title" content="Suroi - 2D battle royale game">
-  <meta name="description"
-    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
-  <meta name="keywords" content="battle royale, io game, browser game, open source">
+    <meta property="og:title" content="Suroi - 2D battle royale game">
+    <meta property="og:description"
+      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
 
-  <meta property="og:title" content="Suroi - 2D battle royale game">
-  <meta property="og:description"
-    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+    <title>Suroi - 2D battle royale game</title>
 
-  <title>Suroi - 2D battle royale game</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="<%=require('/src/assets/img/logos/suroi_small.svg')%>">
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/svg+xml" sizes="any" href="<%=require('/src/assets/img/logos/suroi_small.svg')%>">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="<%=require('/src/assets/img/logos/suroi_16x16.png')%>">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="<%=require('/src/assets/img/logos/suroi_32x32.png')%>">
+    <link rel="icon" type="image/x-icon" sizes="96x96" href="<%=require('/src/assets/img/logos/suroi_96x96.png')%>">
 
-  <link rel="icon" type="image/x-icon" sizes="16x16" href="<%=require('/src/assets/img/logos/suroi_16x16.png')%>">
-  <link rel="icon" type="image/x-icon" sizes="32x32" href="<%=require('/src/assets/img/logos/suroi_32x32.png')%>">
-  <link rel="icon" type="image/x-icon" sizes="96x96" href="<%=require('/src/assets/img/logos/suroi_96x96.png')%>">
-
-  <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
-</head>
-
-<body>
-  <div id="splash-ui">
-    <div id="splash-logo">
-      <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo" draggable="false">
-    </div>
-    <div id="splash-modals">
-      <div id="splash-news">
-        <h2>
-          <a href="/news">
-            <i class="fa-solid fa-newspaper"></i>
-            News
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </h2>
-        <div id="news-posts"></div>
+    <script src="https://kit.fontawesome.com/eb28bcc062.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="splash-ui">
+      <div id="splash-logo">
+        <img src="<%=require('../assets/img/logos/suroi.svg')%>" alt="Suroi logo" draggable="false">
       </div>
-      <div id="splash-center">
-        <div id="splash-server-message" style="display: none">
-          <span id="splash-server-message-text"></span>
+      <div id="splash-modals">
+        <div id="splash-news">
+          <h2>
+            <a href="/news">
+              <i class="fa-solid fa-newspaper"></i>
+              News
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </h2>
+          <div id="news-posts"></div>
         </div>
-        <div id="splash-options">
-          <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
-          <select name="server-select" id="server-select">
-            <option value="na" selected>North America</option>
-          </select>
+        <div id="splash-center">
+          <div id="splash-server-message" style="display: none">
+            <span id="splash-server-message-text"></span>
+          </div>
+          <div id="splash-options">
+            <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
+            <select name="server-select" id="server-select">
+              <option value="na" selected>North America</option>
+            </select>
 
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
-          <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
-          <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
-          <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+          </div>
+          <div id="splash-socials">
+            <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-discord"></a>
+            <a href="https://reddit.com/r/suroigame" target="_blank" rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-reddit"></a>
+            <a href="https://twitter.com/suroigame" target="_blank" rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-twitter"></a>
+            <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-youtube"></a>
+            <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer"
+              class="btn btn-darken btn-social btn-github"></a>
+          </div>
         </div>
-        <div id="splash-socials">
-          <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
-            class="btn btn-darken btn-social btn-discord"></a>
-          <a href="https://reddit.com/r/suroigame" target="_blank" rel="noopener noreferrer"
-            class="btn btn-darken btn-social btn-reddit"></a>
-          <a href="https://twitter.com/suroigame" target="_blank" rel="noopener noreferrer"
-            class="btn btn-darken btn-social btn-twitter"></a>
-          <a href="https://www.youtube.com/@suroigame" target="_blank" rel="noopener noreferrer"
-            class="btn btn-darken btn-social btn-youtube"></a>
-          <a href="https://github.com/HasangerGames/suroi" target="_blank" rel="noopener noreferrer"
-            class="btn btn-darken btn-social btn-github"></a>
+        <div id="splash-inventory">
+          <span>Coming Soon!</span>
         </div>
-      </div>
-      <div id="splash-inventory">
-        <span>Coming Soon!</span>
-      </div>
-      <div id="splash-more" class="dropdown">
-        <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
-          More
-          <i class="fa-solid fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content">
-          <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
-            Wiki
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-          <a href="/proxy.txt" target="_blank" rel="noopener noreferrer">
-            Proxies
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-          <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
-            Leaderboard
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-          <a href="/news" target="_blank" rel="noopener noreferrer">
-            News
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div id="splash-backlinks">
-        <a href="/changelog" target="_blank" rel="noopener noreferrer">v0.2.0</a>
-      </div>
-      <div id="splash-settings">
-        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i class="fa-solid fa-earth-americas"></i></button>
-        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i class="fa-solid fa-volume-high"></i></button>
-        <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
-      </div>
-    </div>
-  </div>
-  <div id="game-ui" style="display: none">
-    <div id="debug-hud">
-      <div id="fps-counter"></div>
-      <div id="ping-counter"></div>
-    </div>
-    <div class="ui-leaderboard">
-      <div class="alive-counter">
-        <span id="ui-alive-text">ALIVE</span>
-        <span class="divider">
-          <span style="visibility: hidden">.</span>
-        </span>
-        <div id="ui-players-alive">1</div>
-      </div>
-      <div id="kill-feed"></div>
-    </div>
-    <div class="modal" id="game-menu" style="display: none">
-      <div class="modal-item">
-        <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i> Settings</button>
-      </div>
-      <div class="modal-item">
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i> Resume</button>
-      </div>
-      <div class="modal-item">
-        <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i class="fa-solid fa-arrow-right-from-bracket"></i> Quit</button>
-      </div>
-    </div>
-    <div class="modal" id="game-over-screen" style="display: none">
-      <h1 class="modal-item">You died.</h1>
-      <h2 id="game-over-player-name">Player</h2>
-      <div class="modal-item" id="game-over-stats">
-        <div class="stat">
-          <span class="stat-name">Kills:</span>
-          <span class="stat-value" id="game-over-kills"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Damage done:</span>
-          <span class="stat-value" id="game-over-damage-done"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Damage taken:</span>
-          <span class="stat-value" id="game-over-damage-taken"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Time alive:</span>
-          <span class="stat-value" id="game-over-time"></span>
+        <div id="splash-more" class="dropdown">
+          <button class="btn btn-darken btn-primary btn-dropdown" id="btn-dropdown-more">
+            More
+            <i class="fa-solid fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="https://wiki.suroi.io" target="_blank" rel="noopener noreferrer">
+              Wiki
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/proxy.txt" target="_blank" rel="noopener noreferrer">
+              Proxies
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
+              Leaderboard
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <a href="/news" target="_blank" rel="noopener noreferrer">
+              News
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
         </div>
       </div>
-      <div class="modal-item">
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+      <div>
+        <div id="splash-backlinks">
+          <a href="/changelog" target="_blank" rel="noopener noreferrer">v0.2.0</a>
+        </div>
+        <div id="splash-settings">
+          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i class="fa-solid fa-earth-americas"></i></button>
+          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i class="fa-solid fa-volume-high"></i></button>
+          <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
+        </div>
       </div>
     </div>
-    <div id="health-bar-container">
-      <div id="health-bar-animation"></div>
-      <div id="health-bar"></div>
-      <span id="health-bar-percentage">100</span>
-    </div>
-    <div id="kill-msg" style="display: none">
-      <div id="kill-msg-kills"></div>
-      You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
-    </div>
-    <!--<div class="inventory-container" id="equipment-container">
-      <div class="inventory-slot" id="equipment-slot-1">
-        <span class="item-name">Helmet</span>
+    <div id="game-ui" style="display: none">
+      <div id="minimap-border"></div>
+      <div id="debug-hud">
+        <div id="fps-counter"></div>
+        <div id="ping-counter"></div>
       </div>
-      <div class="inventory-slot-s" id="equipment-slot-2">
-        <span class="item-name">Vest</span>
+      <div class="ui-leaderboard">
+        <div class="alive-counter">
+          <span id="ui-alive-text">ALIVE</span>
+          <span class="divider">
+            <span style="visibility: hidden">.</span>
+          </span>
+          <div id="ui-players-alive">1</div>
+        </div>
+        <div id="kill-feed"></div>
       </div>
-      <div class="inventory-slot-s" id="equipment-slot-3">
-        <span class="item-name">Pack</span>
+      <div class="modal" id="game-menu" style="display: none">
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i> Settings</button>
+        </div>
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-resume-game"><i class="fa-solid fa-play"></i> Resume</button>
+        </div>
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-danger" id="btn-quit-game"><i class="fa-solid fa-arrow-right-from-bracket"></i> Quit</button>
+        </div>
       </div>
-    </div>-->
+      <div class="modal" id="game-over-screen" style="display: none">
+        <h1 class="modal-item">You died.</h1>
+        <h2 id="game-over-player-name">Player</h2>
+        <div class="modal-item" id="game-over-stats">
+          <div class="stat">
+            <span class="stat-name">Kills:</span>
+            <span class="stat-value" id="game-over-kills"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage done:</span>
+            <span class="stat-value" id="game-over-damage-done"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage taken:</span>
+            <span class="stat-value" id="game-over-damage-taken"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Time alive:</span>
+            <span class="stat-value" id="game-over-time"></span>
+          </div>
+        </div>
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+        </div>
+      </div>
+      <div id="health-bar-container">
+        <div id="health-bar-animation"></div>
+        <div id="health-bar"></div>
+        <span id="health-bar-percentage">100</span>
+      </div>
+      <div id="kill-msg" style="display: none">
+        <div id="kill-msg-kills"></div>
+        You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
+      </div>
     <div class="inventory-container" id="weapons-container">
       <div class="inventory-slot" id="weapon-slot-1">
         <span class="slot-number">1</span>
@@ -199,74 +187,73 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="settings-menu" style="display: none">
-    <div id="settings-header">
-      <h3>Settings</h3>
-      <span class="fa-solid fa-xmark" id="close-settings"></span>
-    </div>
-    <div class="tab-bar" id="settings-tab-bar">
-      <span class="tab active" id="tab-volume">Volume</span>
-      <span class="tab" id="tab-keybinds">Keybinds</span>
-      <span class="tab" id="tab-graphics">Graphics</span>
-    </div>
-    <div id="settings-tabs">
-      <div class="tab-content active" id="tab-volume-content">
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">Master Volume</span>
-            <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
-          </label>
+    <div class="modal" id="settings-menu" style="display: none">
+      <div id="settings-header">
+        <h3>Settings</h3>
+        <span class="fa-solid fa-xmark" id="close-settings"></span>
+      </div>
+      <div class="tab-bar" id="settings-tab-bar">
+        <span class="tab active" id="tab-volume">Volume</span>
+        <span class="tab" id="tab-keybinds">Keybinds</span>
+        <span class="tab" id="tab-graphics">Graphics</span>
+      </div>
+      <div id="settings-tabs">
+        <div class="tab-content active" id="tab-volume-content">
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">Master Volume</span>
+              <input type="range" max="1" min="0" id="slider-master-volume" step="0.1" value="1">
+            </label>
+          </div>
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">SFX Volume</span>
+              <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
+            </label>
+          </div>
+          <div class="modal-item">
+            <label>
+              <span class="setting-title">Music Volume</span>
+              <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
+            </label>
+          </div>
         </div>
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">SFX Volume</span>
-            <input type="range" max="1" min="0" id="slider-sfx-volume" step="0.1" value="1">
-          </label>
+        <div class="tab-content" id="tab-keybinds-content" style="display: none;">
         </div>
-        <div class="modal-item">
-          <label>
-            <span class="setting-title">Music Volume</span>
-            <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
-          </label>
+        <div class="tab-content" id="tab-graphics-content" style="display: none;">
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Camera shake</span>
+              <input type="checkbox" id="toggle-camera-shake">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Show FPS</span>
+              <input type="checkbox" id="toggle-fps">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Show ping</span>
+              <input type="checkbox" id="toggle-ping">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Rotation smoothing</span>
+              <input type="checkbox" id="toggle-rotation-smoothing">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Movement smoothing</span>
+              <input type="checkbox" id="toggle-movement-smoothing">
+            </label>
+          </div>
         </div>
       </div>
-      <div class="tab-content" id="tab-keybinds-content" style="display: none;">
-      </div>
-      <div class="tab-content" id="tab-graphics-content" style="display: none;">
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Camera shake</span>
-            <input type="checkbox" id="toggle-camera-shake">
-          </label>
-        </div>
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Show FPS</span>
-            <input type="checkbox" id="toggle-fps">
-          </label>
-        </div>
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Show ping</span>
-            <input type="checkbox" id="toggle-ping">
-          </label>
-        </div>
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Rotation smoothing</span>
-            <input type="checkbox" id="toggle-rotation-smoothing">
-          </label>
-        </div>
-        <div class="modal-item checkbox-setting">
-          <label>
-            <span class="setting-title">Movement smoothing</span>
-            <input type="checkbox" id="toggle-movement-smoothing">
-          </label>
-        </div>
-      </div>
+      <br>
     </div>
-    <br>
-  </div>
-</body>
-
+  </body>
 </html>

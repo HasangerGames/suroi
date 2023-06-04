@@ -15,9 +15,11 @@ import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../common/src/constants";
+import { GasMode, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
+import { v } from "../../../common/src/utils/vector";
+import { MapPacket } from "./packets/receiving/mapPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -34,6 +36,15 @@ export class Game {
 
     lastPingDate = Date.now();
 
+    readonly gas = {
+        mode: GasMode.Inactive,
+        initialDuration: 0,
+        oldPosition: v(360, 360),
+        newPosition: v(360, 360),
+        oldRadius: 534.6,
+        newRadius: 534.6
+    };
+
     connect(address: string): void {
         this.error = false;
 
@@ -46,6 +57,7 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             this.sendPacket(new PingPacket(this.playerManager));
         };
@@ -56,6 +68,10 @@ export class Game {
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
                     new JoinedPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                case PacketType.Map: {
+                    new MapPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Update: {

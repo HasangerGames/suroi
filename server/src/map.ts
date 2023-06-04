@@ -28,12 +28,12 @@ export class Map {
         this.game = game;
 
         if (!Config.disableMapGeneration) {
-            this.generateObstacles("oak_tree", 200);
-            this.generateObstacles("pine_tree", 15);
-            this.generateObstacles("rock", 200);
-            this.generateObstacles("bush", 150);
-            this.generateObstacles("regular_crate", 125);
-            this.generateObstacles("health_crate", 75);
+            this.generateObstacles("oak_tree", 150);
+            this.generateObstacles("pine_tree", 10);
+            this.generateObstacles("rock", 150);
+            this.generateObstacles("bush", 85);
+            this.generateObstacles("regular_crate", 100);
+            this.generateObstacles("health_crate", 100);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
         } else {
@@ -149,7 +149,7 @@ export class Map {
 
         let getPosition: () => Vector;
         if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === "random")) {
-            getPosition = (): Vector => randomVector(2.5, this.width - 2.5, 2.5, this.height - 2.5);
+            getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
         } else if (type.category === ObjectCategory.Player && Config.spawn.mode === "radius") {
             getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
         } else {

@@ -21,7 +21,7 @@ export const Config = {
      */
     spawn: {
         mode: "fixed",
-        position: Vec2(360, 360),
+        position: Vec2(10, 10),
         radius: 72
     },
 
@@ -32,5 +32,6 @@ export const Config = {
     botProtection: false,
 
     disableMapGeneration: false,
+    disableGas: false,
     stopServerAfter: -1
 };

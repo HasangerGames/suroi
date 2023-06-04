@@ -34,6 +34,10 @@ export enum KillFeedMessageType {
     Join
 }
 
+export enum GasMode {
+    Inactive, Waiting, Advancing
+}
+
 // NOTE: remember to increase these values when adding stuff to enums
 
 export const PACKET_TYPE_BITS = 4;

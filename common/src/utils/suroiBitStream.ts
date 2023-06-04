@@ -36,7 +36,7 @@ export class SuroiBitStream extends BitStream {
     * @param value The number.
     * @param min The minimum number.
     * @param max The maximum number.
-    * @param The number of bits to write
+    * @param bitCount The number of bits to write
     */
     writeFloat(value: number, min: number, max: number, bitCount: number): void {
         const range = (1 << bitCount) - 1;
@@ -48,7 +48,7 @@ export class SuroiBitStream extends BitStream {
     * Read a floating point number from the stream.
     * @param min The minimum number.
     * @param max The maximum number.
-    * @param The number of bits to read
+    * @param bitCount The number of bits to read
     * @return The floating point number.
     */
     readFloat(min: number, max: number, bitCount: number): number {
@@ -63,7 +63,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param The number of bits to write.
+    * @param bitCount The number of bits to write.
     */
     writeVector(vector: Vector, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
         this.writeVector2(vector.x, vector.y, minX, minY, maxX, maxY, bitCount);
@@ -77,7 +77,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param The number of bits to write.
+    * @param bitCount The number of bits to write.
     * @return The position Vector.
     */
     writeVector2(x: number, y: number, minX: number, minY: number, maxX: number, maxY: number, bitCount: number): void {
@@ -91,7 +91,7 @@ export class SuroiBitStream extends BitStream {
     * @param minY The minimum Y position.
     * @param maxX The maximum X position.
     * @param maxY The maximum Y position.
-    * @param The number of bits to read
+    * @param bitCount The number of bits to read
     */
     readVector(minX: number, minY: number, maxX: number, maxY: number, bitCount: number): Vector {
         return {

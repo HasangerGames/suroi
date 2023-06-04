@@ -20,6 +20,7 @@ import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { distanceSquared } from "../../../../common/src/utils/math";
+import { type MinimapScene } from "../scenes/minimapScene";
 
 const showMeleeDebugCircle = false;
 
@@ -31,6 +32,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     activeItem = ObjectType.fromString(ObjectCategory.Loot, "fists");
 
     isNew = true;
+
+    isActivePlayer: boolean;
 
     animationSeq!: boolean;
 
@@ -50,8 +53,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     distSinceLastFootstep = 0;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);
+        this.isActivePlayer = isActivePlayer;
 
         const images = {
             body: this.scene.add.image(0, 0, "main", "player_base.svg"),
@@ -91,14 +95,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         const phaserPos = vMul(this.position, 20);
-
-        this.emitter.setPosition(phaserPos.x, phaserPos.y);
         this.rotation = stream.readRotation(16);
 
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
+            this.emitter.setPosition(phaserPos.x, phaserPos.y);
         } else {
-            gsap.to(this.images.container, {
+            gsap.to([this.images.container, this.emitter], {
                 x: phaserPos.x,
                 y: phaserPos.y,
                 ease: "none",
@@ -106,14 +110,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
+        const oldAngle: number = this.images.container.angle;
+        const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
+        const finalAngle: number = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+        const minimap = this.scene.scene.get("minimap") as MinimapScene;
+        if (this.isActivePlayer && !minimap.playerIndicatorDead) {
+            gsap.to(minimap.playerIndicator, {
+                x: phaserPos.x / 2,
+                y: phaserPos.y / 2,
+                angle: finalAngle,
+                ease: "none",
+                duration: 0.03
+            });
+        }
+
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
             this.images.container.setRotation(this.rotation);
         } else {
-            const oldAngle = this.images.container.angle;
-            const newAngle = Phaser.Math.RadToDeg(this.rotation);
-            const angleBetween = Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
             gsap.to(this.images.container, {
-                angle: oldAngle + angleBetween,
+                angle: finalAngle,
                 ease: "none",
                 duration: 0.03
             });

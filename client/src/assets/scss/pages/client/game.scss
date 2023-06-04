@@ -10,10 +10,32 @@
     cursor: crosshair;
 }
 
+#minimap-border {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+
+    width: 270px;
+    height: 270px;
+
+    border: 10px solid $transparent_bg;
+    border-radius: 10px;
+}
+
+#debug-hud {
+    position: fixed;
+    top: 285px;
+    left: 5px;
+
+    margin: 0.4em;
+    text-shadow: 1px 1px 2px black;
+    font-family: monospace;
+}
+
 .ui-leaderboard {
     position: absolute;
-    top: .5rem;
-    right: .5rem;
+    top: 10px;
+    right: 10px;
 
     .alive-counter {
         margin-left: auto;
@@ -164,7 +186,7 @@
     gap: 10px;
 
     .inventory-slot {
-        background: $transparent_bg;
+        background: $light_transparent_bg;
         width: 125px;
         height: 125px;
         border-radius: 10px;
@@ -286,10 +308,4 @@
             margin-left: auto;
         }
     }
-}
-
-#debug-hud {
-    margin: 0.4em;
-    text-shadow: 1px 1px 2px black;
-    font-family: monospace;
 }

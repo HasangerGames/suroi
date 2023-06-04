@@ -10,8 +10,10 @@ import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../../common/src/constants";
+import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
+import { lerp, vecLerp } from "../../../../../common/src/utils/math";
+import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -35,15 +37,16 @@ export class UpdatePacket extends ReceivingPacket {
             //This doesn't get set to the exact number because the stream has trouble reading it correctly.
             if (playerManager.health < 1 && playerManager.health > 0) { roundedHealth = 1; }
             const healthPercentage = `${roundedHealth}%`;
-            $("#health-bar").width(healthPercentage);
+            const healthBar: JQuery = $("#health-bar");
+            healthBar.width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
             $("#health-bar-percentage").text(playerManager.health < 1 && playerManager.health > 0 ? "< 1" : roundedHealth);
             if (playerManager.health < 60 && playerManager.health > 10) {
-                $("#health-bar").css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
+                healthBar.css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
             } else if (playerManager.health <= 10) {
-                $("#health-bar").css("background-color", `rgb(${playerManager.health * 15 + 105}, 0, 0)`);
+                healthBar.css("background-color", `rgb(${playerManager.health * 15 + 105}, 0, 0)`);
             } else {
-                $("#health-bar").css("background-color", "#f8f9fa");
+                healthBar.css("background-color", "#f8f9fa");
             }
         }
 
@@ -54,7 +57,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Active player ID
         if (stream.readBoolean()) {
-            const noID: boolean = game.activePlayer.id === undefined;
+            const noID: boolean = game.activePlayer.id === -1;
             game.activePlayer.id = stream.readUint16();
             if (noID) {
                 game.objects.set(game.activePlayer.id, game.activePlayer);
@@ -152,18 +155,18 @@ export class UpdatePacket extends ReceivingPacket {
 
                 // Play firing sound
                 if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
-                    player.scene.playSound(`${bulletSourceDef.idString}_fire`);
+                    scene.playSound(`${bulletSourceDef.idString}_fire`);
                 }
 
                 // Spawn bullet
-                const bullet = player.scene.add.image(
+                const bullet = scene.add.image(
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
                     `${bulletSourceDef.idString}_trail.svg`
                 ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition));
                 game.bullets.set(id, bullet);
-                player.scene.tweens.add({
+                scene.tweens.add({
                     targets: bullet,
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
@@ -199,6 +202,46 @@ export class UpdatePacket extends ReceivingPacket {
                     game.activePlayer.scene,
                     stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
                     stream.readPosition());
+            }
+        }
+
+        const minimap = scene.scene.get("minimap") as MinimapScene;
+
+        // Gas
+        if (stream.readBoolean()) {
+            game.gas.mode = stream.readBits(2);
+            game.gas.initialDuration = stream.readBits(7);
+            game.gas.oldPosition = stream.readPosition();
+            game.gas.newPosition = stream.readPosition();
+            game.gas.oldRadius = stream.readFloat(0, 2048, 16);
+            game.gas.newRadius = stream.readFloat(0, 2048, 16);
+            if (game.gas.mode === GasMode.Waiting) {
+                scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
+                minimap.gasCircle.setPosition(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10).setRadius(game.gas.oldRadius * 10);
+                //minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
+            }
+        }
+
+        // Gas percentage
+        if (stream.readBoolean()) {
+            const percentage = stream.readFloat(0, 1, 16);
+            if (game.gas.mode === GasMode.Advancing) {
+                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
+                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
+                scene.tweens.add({
+                    targets: scene.gasCircle,
+                    x: currentPosition.x * 20,
+                    y: currentPosition.y * 20,
+                    radius: currentRadius * 20,
+                    duration: 30
+                });
+                scene.tweens.add({
+                    targets: minimap.gasCircle,
+                    x: currentPosition.x * 10,
+                    y: currentPosition.y * 10,
+                    radius: currentRadius * 10,
+                    duration: 30
+                });
             }
         }
 
