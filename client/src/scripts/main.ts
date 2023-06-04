@@ -13,26 +13,31 @@ import { setupInputs } from "./utils/inputManager";
 
 declare const API_URL: string;
 
+const playSoloBtn: JQuery = $("#btn-play-solo");
+
+export const enablePlayButton = (): void => {
+    playSoloBtn.removeClass("btn-disabled");
+    playSoloBtn.prop("disabled", false);
+    playSoloBtn.text("Play Solo");
+};
+
 $((): void => {
     // Join server when play button is clicked
-    const playSoloBtn: JQuery = $("#btn-play-solo");
-
-    const enablePlayButton = (): void => {
-        playSoloBtn.removeClass("btn-disabled");
-        playSoloBtn.prop("disabled", false);
-        playSoloBtn.text("Play Solo");
-    };
-
     playSoloBtn.on("click", (): void => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
         playSoloBtn.text("Connecting...");
-        void $.get(`${API_URL}/getGame`, (data: { addr: string }) => {
-            core.game?.connect(`${data.addr}?name=${$("#username-input").val() as string}`);
-            enablePlayButton();
-            $("#splash-server-message").hide();
+        void $.get(`${API_URL}/getGame`, (data: { success: boolean, addr: string }): void => {
+            if (data.success) {
+                core.game?.connect(`${data.addr}?name=${$("#username-input").val() as string}`);
+                $("#splash-server-message").hide();
+            } else {
+                $("#splash-server-message-text").html("Game in progress.<br>Please try again in 30 seconds.");
+                $("#splash-server-message").show();
+                enablePlayButton();
+            }
         }).fail((): void => {
-            $("#splash-server-message-text").html("Error finding game.<br>Please try again in 30 seconds.");
+            $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
             $("#splash-server-message").show();
             enablePlayButton();
         });

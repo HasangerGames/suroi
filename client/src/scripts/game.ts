@@ -20,6 +20,7 @@ import { GasMode, PacketType } from "../../../common/src/constants";
 import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
 import { MapPacket } from "./packets/receiving/mapPacket";
+import { enablePlayButton } from "./main";
 
 export class Game {
     socket!: WebSocket;
@@ -63,6 +64,7 @@ export class Game {
             core.phaser?.scene.start("game");
             $("#game-over-screen").hide();
             this.sendPacket(new PingPacket(this.playerManager));
+            enablePlayButton();
         };
 
         // Handle incoming messages
@@ -104,7 +106,7 @@ export class Game {
         this.socket.onerror = (): void => {
             this.error = true;
 
-            $("#splash-server-message-text").html("Error joining game.<br>Try restarting your device.");
+            $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
         };
 
@@ -112,7 +114,7 @@ export class Game {
         this.socket.onclose = (): void => {
             if (!this.gameOver) {
                 if (this.gameStarted) {
-                    $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
+                    $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
                 }
                 if (!this.error) this.endGame();

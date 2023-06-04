@@ -54,7 +54,10 @@ app.get("/api/getGame", (res) => {
     res.onAborted((): void => {});
 
     cors(res);
-    res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.address}/play" }`);
+    res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
+        success: game.allowJoin,
+        addr: game.allowJoin ? `${Config.address}/play` : ""
+    }));
 });
 
 export interface PlayerContainer {
@@ -74,7 +77,10 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => {});
 
-        if (!game.allowJoin) res.endWithoutBody(0, true);
+        if (!game.allowJoin) {
+            res.endWithoutBody(0, true);
+            return;
+        }
 
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {

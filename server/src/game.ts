@@ -136,11 +136,6 @@ export class Game {
 
         // Start the tick loop
         this.tick(30);
-
-        // Stop new players from joining in the final 30 seconds
-        setTimeout(() => {
-            this.allowJoin = false;
-        }, 145000);
     }
 
     private createWorldBoundary(x: number, y: number, width: number, height: number): void {
@@ -365,6 +360,11 @@ export class Game {
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;
             this.advanceGas();
+
+            // Stop new players from joining in the final 30 seconds
+            setTimeout(() => {
+                this.allowJoin = false;
+            }, 145000);
         }
     }
 
