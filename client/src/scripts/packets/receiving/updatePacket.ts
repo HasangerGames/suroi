@@ -46,7 +46,7 @@ export class UpdatePacket extends ReceivingPacket {
             healthBar.width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
 
-            healthBarPercentage.text(playerManager.health < 1 && playerManager.health > 0 ? "< 1" : roundedHealth);
+            healthBarPercentage.text(playerManager.health < 1 && playerManager.health > 0 ? "1" : roundedHealth);
 
             if (playerManager.health < 60 && playerManager.health > 10) {
                 healthBar.css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
