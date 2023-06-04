@@ -34,7 +34,7 @@ export class MapPacket extends ReceivingPacket {
                 frame: `${texture}.svg`,
                 add: false
             }).setRotation(rotation)
-                .setScale(scale / (5 * minimap.mapScale))
+                .setScale(scale / (20 / minimap.mapScale))
                 .setDepth(definition.depth ?? 0));
         }
     }
