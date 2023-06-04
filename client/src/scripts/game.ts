@@ -15,9 +15,11 @@ import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../common/src/constants";
+import { GasMode, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
+import { v } from "../../../common/src/utils/vector";
+import { MapPacket } from "./packets/receiving/mapPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -34,6 +36,15 @@ export class Game {
 
     lastPingDate = Date.now();
 
+    readonly gas = {
+        mode: GasMode.Inactive,
+        initialDuration: 0,
+        oldPosition: v(360, 360),
+        newPosition: v(360, 360),
+        oldRadius: 534.6,
+        newRadius: 534.6
+    };
+
     connect(address: string): void {
         this.error = false;
 
@@ -46,6 +57,7 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             this.sendPacket(new PingPacket(this.playerManager));
         };
@@ -56,6 +68,10 @@ export class Game {
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
                     new JoinedPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                case PacketType.Map: {
+                    new MapPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Update: {
@@ -91,18 +107,32 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
+            if (this.gameStarted) {
+                $("#splash-server-message-text").html("Connection lost.<br>The server may have restarted.");
+                $("#splash-server-message").show();
+            }
             if (!this.error) this.endGame();
         };
     }
 
     endGame(): void {
-        window.history.pushState(null, "", "?connectionLost");
-        window.location.reload();
-        /* $("#game-ui").hide();
+        $("#game-ui").hide();
+        $("#game-menu").hide();
+        $("#game-over-screen").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").fadeIn();
+
         core.phaser?.scene.stop("game");
-        this.gameStarted = false; */
+        core.phaser?.scene.start("menu");
+        this.gameStarted = false;
+        this.socket.close();
+
+        // reset stuff
+        this.objects.clear();
+        this.players.clear();
+        this.bullets.clear();
+
+        this.playerManager = new PlayerManager(this);
     }
 
     sendPacket(packet: SendingPacket): void {

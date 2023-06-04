@@ -15,6 +15,7 @@ import { ObjectCategory } from "../../../../common/src/constants";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { setupInputs } from "../utils/inputManager";
 import { type PlayerManager } from "../utils/playerManager";
+import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -22,6 +23,10 @@ export class GameScene extends Phaser.Scene {
     soundsToLoad: Set<string> = new Set<string>();
     volume = localStorageInstance.config.sfxVolume * localStorageInstance.config.masterVolume;
     playerManager!: PlayerManager;
+
+    gasRect!: Phaser.GameObjects.Rectangle;
+    gasCircle!: Phaser.GameObjects.Arc;
+    gasMask!: Phaser.Display.Masks.GeometryMask;
 
     constructor() {
         super("game");
@@ -55,7 +60,9 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        this.cameras.main.setZoom(this.sys.game.canvas.width / 2560);
+        $(window).on("resize", () => {
+            this.cameras.main.setZoom(this.game.canvas.width / 2560);
+        });
     }
 
     private loadSound(name: string, path: string): void {
@@ -95,10 +102,13 @@ export class GameScene extends Phaser.Scene {
         const mask = this.make.graphics().createGeometryMask(this.add.circle(7200, 7200, 600, 0x000000, 0)).setInvertAlpha(true);
         this.add.rectangle(7200, 7200, 14400, 14400, 0xe67300, 0.5).setDepth(10).setMask(mask);
 
+        // Create gas rectangle and mask
+        this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
+        this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
+        this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
+
         // Create the player
-        // TODO fix this, lol
-        // > undefined as unknown as number
-        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), undefined as unknown as number);
+        this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1, true);
         this.playerManager.name = $("#username-input").text();
         setupInputs(this);
 
@@ -129,6 +139,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     tick(): void {
+        if (!this.activeGame.gameStarted) return;
+
         if (this.playerManager.dirty.inputs) {
             this.playerManager.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.playerManager));

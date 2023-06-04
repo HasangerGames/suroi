@@ -23,6 +23,7 @@ import {
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
+import { Player } from "./player";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -70,6 +71,23 @@ export class Obstacle extends GameObject {
         if (this.health <= 0) {
             this.health = 0;
             this.dead = true;
+
+            if (source instanceof Player && source.switchMeleeWeapons) {
+                source.obstaclesDestroyed[definition.material]++;
+                if (source.obstaclesDestroyed.tree >= 6 &&
+                    !(source.inventory.checkIfItemExists("branch") ||
+                        source.inventory.checkIfItemExists("club") ||
+                        source.inventory.checkIfItemExists("club_op") ||
+                        source.inventory.checkIfItemExists("dagger"))
+                ) {
+                    source.inventory.addOrReplaceItem(2, Math.random() < 0.2 ? "club" : "branch");
+                }
+                if (source.obstaclesDestroyed.metal >= 5 &&
+                    source.kills >= 2 &&
+                    source.inventory.checkIfItemExists("club")) {
+                    source.inventory.addOrReplaceItem(2, "club_op");
+                }
+            }
 
             this.scale = definition.scale.spawnMin;
 

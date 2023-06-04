@@ -32,7 +32,7 @@ export class Inventory {
     /**
      * Private variable storing the index pointing to the last active item
      */
-    private _lastItemIndex = -1;
+    private _lastItemIndex = 0;
 
     /**
      * Returns the index pointing to the last active item
@@ -42,7 +42,7 @@ export class Inventory {
     /**
      * Private variable storing the index pointing to the active item
      */
-    private _activeItemIndex = -1;
+    private _activeItemIndex = 2;
 
     /**
      * Returns the index pointing to the active item
@@ -63,11 +63,13 @@ export class Inventory {
 
         if (slot !== old) {
             this._lastItemIndex = old;
-            this.owner.dirty.activeItemIndex = true;
         }
 
         //todo switch penalties, other stuff that should happen when switching items
         // (started)
+        const item = this._items[slot];
+        if (item !== undefined) item._switchDate = Date.now();
+
         this.owner.attacking = false;
 
         return true;
@@ -190,6 +192,18 @@ export class Inventory {
     }
 
     /**
+     * Checks if a given item exists on the inventory
+     * @param item The item id string
+     * @returns Whether the item exists on the inventory
+     */
+    checkIfItemExists(item: string): boolean {
+        for (let i = 0; i < Inventory.MAX_SIZE; i++) {
+            if (item === this._items[i]?.type.idString) { return true; }
+        }
+        return false;
+    }
+
+    /**
      * Forcefully sets an item in a given slot. Note that this operation will never leave the inventory empty:
      * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and an error will be thrown.
      * @param slot The slot to place the item in
@@ -218,6 +232,7 @@ export class Inventory {
             this._itemCount = 1;
             throw new Error("This operation would leave the inventory empty; inventories cannot be emptied");
         }
+        this.owner.dirty.inventory = true;
 
         return old;
     }
@@ -229,8 +244,19 @@ export class Inventory {
     serializeInventory(stream: SuroiBitStream): void {
         stream.writeBoolean(this.owner.dirty.activeItemIndex);
         if (this.owner.dirty.activeItemIndex) {
-            stream.writeUint8(this.activeItemIndex);
             this.owner.dirty.activeItemIndex = false;
+            stream.writeUint8(this.activeItemIndex);
+        }
+        stream.writeBoolean(this.owner.dirty.inventory);
+        if (this.owner.dirty.inventory) {
+            this.owner.dirty.inventory = false;
+            stream.writeUint8(this._items.length);
+            for (const item of this._items) {
+                stream.writeBoolean(item !== undefined);
+                if (item !== undefined) {
+                    stream.writeObjectTypeNoCategory(item.type);
+                }
+            }
         }
     }
 }

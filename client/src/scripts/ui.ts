@@ -50,8 +50,8 @@ $(() => {
     });
     body.on("click", () => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", () => { window.location.reload(); });
-    $("#btn-play-again").on("click", () => { window.location.reload(); });
+    $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
+    $("#btn-play-again").on("click", () => { core.game?.endGame(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
 
@@ -117,7 +117,7 @@ $(() => {
     $("#toggle-ping").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ showPing: this.checked });
         $("#ping-counter").toggle(this.checked);
-    }).val(localStorageInstance.config.showPing.toString());
+    }).prop("checked", localStorageInstance.config.showPing);
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
     // rotation smothing toggle
@@ -129,6 +129,16 @@ $(() => {
     $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ movementSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.movementSmoothing);
+
+    // Switch weapon slots by clicking
+    for (let i = 0; i < 3; i++) {
+        $(`#weapon-slot-${i + 1}`).on("pointerdown", () => {
+            if (core.game !== undefined) {
+                core.game.playerManager.activeItemIndex = i;
+                core.game.playerManager.dirty.inputs = true;
+            }
+        });
+    }
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);

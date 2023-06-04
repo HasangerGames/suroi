@@ -71,13 +71,13 @@ export const distance = (a: Vector, b: Vector): number => Math.sqrt(((b.x - a.x)
  */
 export const distanceSquared = (x1: number, y1: number, x2: number, y2: number): number => ((x2 - x1) ** 2) + ((y2 - y1) ** 2);
 
-/**
- * Linearly interpolate between two values.
- * @param start The initial value.
- * @param end The final value.
- * @param amount The size of an interpolation step.
- */
-export const lerp = (start: number, end: number, amount: number): number => (1 - amount) * start + amount * end;
+export function lerp(start: number, end: number, percentage: number): number {
+    return start * (1.0 - percentage) + end * percentage;
+}
+
+export function vecLerp(start: Vector, end: Vector, percentage: number): Vector {
+    return vAdd(vMul(start, 1.0 - percentage), vMul(end, percentage));
+}
 
 /**
  * Check whether two circles collide.
