@@ -32,7 +32,7 @@ $((): void => {
             enablePlayButton();
             $("#splash-server-message").hide();
         }).fail((): void => {
-            $("#splash-server-message-text").text("Error finding game.");
+            $("#splash-server-message-text").html("Error finding game.<br>Please try again in 30 seconds.");
             $("#splash-server-message").show();
             enablePlayButton();
         });

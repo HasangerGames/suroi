@@ -354,11 +354,6 @@ export class Player extends GameObject {
                 this.game.killFeedMessages.add(new KillFeedPacket(this, killMessage));
             }
 
-            // Decrement alive count & send game over packet
-            if (!this.disconnected) {
-                this.sendPacket(new GameOverPacket(this, false));
-            }
-
             // Destroy physics body; reset movement and attacking variables
             this.movement.up = false;
             this.movement.down = false;
@@ -381,16 +376,23 @@ export class Player extends GameObject {
             // Winning logic
             if (this.game.started) {
                 if (this.game.aliveCount === 1) {
+                    // End the game in 1 second
+                    this.game.over = true;
+                    setTimeout(this.game.end.bind(this), 1000);
+
                     // Send game over
                     const lastManStanding: Player = [...this.game.livingPlayers][0];
                     const gameOverPacket = new GameOverPacket(lastManStanding, true);
                     lastManStanding.sendPacket(gameOverPacket);
-
-                    // End the game in 1 second
-                    setTimeout(this.game.end.bind(this), 1000);
                 } else if (this.game.aliveCount === 0) {
+                    this.game.over = true;
                     setTimeout(this.game.end.bind(this), 1000);
                 }
+            }
+
+            // Send game over to dead player
+            if (!this.disconnected) {
+                this.sendPacket(new GameOverPacket(this, false));
             }
         }
     }

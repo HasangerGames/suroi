@@ -17,6 +17,7 @@ export class GameOverPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
+        stream.writeBoolean(this.player.game.over);
         stream.writeBoolean(this.won);
         stream.writePlayerName(this.player.name);
         stream.writeUint8(this.player.kills);

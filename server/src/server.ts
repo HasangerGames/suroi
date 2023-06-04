@@ -74,6 +74,8 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => {});
 
+        if (!game.allowJoin) res.endWithoutBody(0, true);
+
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
             if (bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {

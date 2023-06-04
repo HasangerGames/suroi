@@ -63,6 +63,8 @@ export class Game {
     damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
 
     started = false;
+    allowJoin = true;
+    over = false;
 
     readonly gas = {
         stage: 0,
@@ -134,6 +136,11 @@ export class Game {
 
         // Start the tick loop
         this.tick(30);
+
+        // Stop new players from joining in the final 30 seconds
+        setTimeout(() => {
+            this.allowJoin = false;
+        }, 145000);
     }
 
     private createWorldBoundary(x: number, y: number, width: number, height: number): void {
