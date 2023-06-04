@@ -37,10 +37,10 @@ export class MinimapScene extends Phaser.Scene {
         const CELL_SIZE = 16 * this.mapScale;
 
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
-            this.add.rectangle(x, 0, 1 * this.mapScale, GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0);
+            this.add.rectangle(x, 0, this.mapScale, GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0);
         }
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
-            this.add.rectangle(0, y, GRID_WIDTH, 1 * this.mapScale, 0x000000, 0.35).setOrigin(0, 0);
+            this.add.rectangle(0, y, GRID_WIDTH, this.mapScale, 0x000000, 0.35).setOrigin(0, 0);
         }
 
         this.renderTexture = this.add.renderTexture(0, 0, 720 * this.mapScale, 720 * this.mapScale).setOrigin(0, 0);
@@ -72,13 +72,13 @@ export class MinimapScene extends Phaser.Scene {
         // noinspection JSSuspiciousNameCombination
         this.cameras.main.setSize(screenHeight, screenHeight);
         this.cameras.main.setPosition(screenWidth / 2 - screenHeight / 2, 0);
+        this.cameras.main.centerOn(360 * this.mapScale, 380 * this.mapScale);
     }
 
     switchToBigMap(): void {
         this.isExpanded = true;
-        this.resizeBigMap();
         this.cameras.main.stopFollow();
-        this.cameras.main.centerOn(360 * this.mapScale, 380 * this.mapScale);
+        this.resizeBigMap();
         $("#minimap-border").hide();
     }
 
