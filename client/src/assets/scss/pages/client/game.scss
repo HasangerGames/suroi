@@ -187,15 +187,14 @@
     }
 
     #health-bar-percentage {
+        color: #000000;
         font-size: 20px;
 
         @media screen and (max-width: $screen_large) {
             font-size: 16px;
         }
 
-        color: black;
-        filter: invert(1);
-        mix-blend-mode: difference;
+        z-index: 1;
         margin-left: 8px;
     }
 }
