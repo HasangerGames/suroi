@@ -24,9 +24,10 @@ export class KillPacket extends SendingPacket {
 
         stream.writeBits(this.player.kills, 7);
         stream.writePlayerName(this.killed.name);
+
         const usedWeapon = this.weaponUsed !== undefined;
         stream.writeBoolean(usedWeapon);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        if (usedWeapon) stream.writeObjectType(this.weaponUsed!);
+
+        if (this.weaponUsed !== undefined) stream.writeObjectType(this.weaponUsed);
     }
 }
