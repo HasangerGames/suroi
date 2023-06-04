@@ -7,6 +7,7 @@ export class GameOverPacket extends ReceivingPacket {
         const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
         minimap.playerIndicatorDead = true;
         minimap.playerIndicator.setTexture("main", "player_indicator_dead.svg").setAngle(0);
+
         $("#game-over-player-name").text(stream.readPlayerName()); // player name
         $("#game-over-kills").text(stream.readUint8()); // kills
         $("#game-over-damage-done").text(stream.readUint16()); // damage done

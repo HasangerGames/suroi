@@ -28,13 +28,13 @@ export class MapPacket extends ReceivingPacket {
             // Create the obstacle image
             const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
             minimap.renderTexture.draw(minimap.make.image({
-                x: position.x * 10,
-                y: position.y * 10,
+                x: position.x * minimap.mapScale,
+                y: position.y * minimap.mapScale,
                 key: "main",
                 frame: `${texture}.svg`,
                 add: false
             }).setRotation(rotation)
-                .setScale(scale / 2)
+                .setScale(scale / (20 / minimap.mapScale))
                 .setDepth(definition.depth ?? 0));
         }
     }

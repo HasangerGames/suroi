@@ -71,14 +71,14 @@ function generateKeybindActions(playerManager: PlayerManager): ConvertToAction<K
             "inventory::previousItem",
             () => {
                 playerManager.activeItemIndex = mod(playerManager.activeItemIndex - 1, 3);
-                //fixme                                                  ^ mystery constant (max inventory size)
+                // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
             () => {
                 playerManager.activeItemIndex = mod(playerManager.activeItemIndex + 1, 3);
-                //fixme                                                  ^ mystery constant (max inventory size)
+                // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         useItem: new Action(
@@ -179,7 +179,7 @@ export function setupInputs(scene: GameScene): void {
         scene.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
         scene.playerManager.turning = true;
         scene.playerManager.dirty.inputs = true;
-        //scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
+        // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 }
 

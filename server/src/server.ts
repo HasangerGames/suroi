@@ -1,5 +1,6 @@
 // noinspection ES6PreferShortImport
 import { Config } from "./config";
+import { version } from "../package.json";
 
 import {
     App,
@@ -179,7 +180,7 @@ app.listen(Config.host, Config.port, () => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log("Suroi Server v0.2.0", true);
+    log(`Suroi Server v${version}`, true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
 
     if (Config.stopServerAfter !== -1) {

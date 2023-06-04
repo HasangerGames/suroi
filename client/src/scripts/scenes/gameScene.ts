@@ -38,8 +38,6 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
         this.playerManager = core.game.playerManager;
 
-        this.load.atlas("main", "/img/atlases/main.png", "/img/atlases/main.json");
-
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
             this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
@@ -63,6 +61,7 @@ export class GameScene extends Phaser.Scene {
         $(window).on("resize", () => {
             this.cameras.main.setZoom(this.game.canvas.width / 2560);
         });
+        this.cameras.main.setZoom(this.game.canvas.width / 2560);
     }
 
     private loadSound(name: string, path: string): void {

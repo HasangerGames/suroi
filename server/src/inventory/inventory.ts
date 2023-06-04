@@ -65,7 +65,7 @@ export class Inventory {
             this._lastItemIndex = old;
         }
 
-        //todo switch penalties, other stuff that should happen when switching items
+        // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const item = this._items[slot];
         if (item !== undefined) item._switchDate = Date.now();
@@ -161,7 +161,7 @@ export class Inventory {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const old = this._setItem(slot, this._reifyItem(item));
 
-        //todo Drop old item into the game world
+        // todo Drop old item into the game world
     }
 
     /**

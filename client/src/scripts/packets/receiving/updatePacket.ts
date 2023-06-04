@@ -34,7 +34,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             playerManager.health = stream.readFloat(0, 100, 8);
             let roundedHealth = Math.round(playerManager.health);
-            //This doesn't get set to the exact number because the stream has trouble reading it correctly.
+            // This doesn't get set to the exact number because the stream has trouble reading it correctly.
             if (playerManager.health < 1 && playerManager.health > 0) { roundedHealth = 1; }
             const healthPercentage = `${roundedHealth}%`;
             const healthBar: JQuery = $("#health-bar");
@@ -217,8 +217,8 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             if (game.gas.mode === GasMode.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                minimap.gasCircle.setPosition(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10).setRadius(game.gas.oldRadius * 10);
-                //minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
+                minimap.gasCircle.setPosition(game.gas.oldPosition.x * minimap.mapScale, game.gas.oldPosition.y * minimap.mapScale).setRadius(game.gas.oldRadius * minimap.mapScale);
+                // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
             }
         }
 
@@ -237,9 +237,9 @@ export class UpdatePacket extends ReceivingPacket {
                 });
                 scene.tweens.add({
                     targets: minimap.gasCircle,
-                    x: currentPosition.x * 10,
-                    y: currentPosition.y * 10,
-                    radius: currentRadius * 10,
+                    x: currentPosition.x * minimap.mapScale,
+                    y: currentPosition.y * minimap.mapScale,
+                    radius: currentRadius * minimap.mapScale,
                     duration: 30
                 });
             }

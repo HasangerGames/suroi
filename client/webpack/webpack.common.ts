@@ -169,7 +169,7 @@ const config: Configuration = {
             patterns: [{
                 rootDir: path.resolve(__dirname, "../src/assets/img/game"),
                 outDir: "img/atlases",
-                filename: "main.png"
+                filename: `main-${version}.png`
             }]
         }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),

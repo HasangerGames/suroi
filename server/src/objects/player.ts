@@ -65,7 +65,7 @@ export class Player extends GameObject {
         metal: 0
     };
 
-    //this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
+    // this determines whether you want there to be conditional statements allowing melee weapons to switch depending on user actions regarding destruction of objects.
     switchMeleeWeapons = true;
 
     get isMoving(): boolean {

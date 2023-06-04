@@ -172,13 +172,13 @@ export class Game {
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
                 const definition = bullet.source.ballistics;
-                //if (damageRecord.damaged.damageable) {
+                // if (damageRecord.damaged.damageable) {
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
                 } else if (damageRecord.damaged.damage !== undefined) {
                     damageRecord.damaged.damage(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
                 }
-                //}
+                // }
                 this.world.destroyBody(bullet.body);
                 this.bullets.delete(bullet);
                 this.deletedBulletIDs.add(bullet.id);

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { version } from "../../../package.json";
 import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class MenuScene extends Phaser.Scene {
@@ -9,6 +10,8 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload(): void {
+        this.load.atlas("main", `/img/atlases/main-${version}.png`, `/img/atlases/main-${version}.json`);
+
         this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
