@@ -33,7 +33,7 @@ export const Config = {
      */
     gas: {
         mode: "normal",
-        overrideDuration: 5
+        overrideDuration: 10
     },
 
     // A basic filter that censors only the most extreme swearing.

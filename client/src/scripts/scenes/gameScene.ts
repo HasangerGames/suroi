@@ -64,10 +64,9 @@ export class GameScene extends Phaser.Scene {
         $(window).on("resize", this.resize.bind(this));
     }
 
-    private resize() {
+    private resize(): void {
         this.cameras.main.setZoom(window.innerWidth / 2560);
-        this.gasRect.width = window.innerWidth * 2;
-        this.gasRect.height = window.innerWidth * 2;
+        this.gasRect.setSize(this.game.canvas.width * 2, this.game.canvas.height * 2).setScale(1 / this.cameras.main.zoom, 1 / this.cameras.main.zoom);
     }
 
     private loadSound(name: string, path: string): void {
@@ -109,7 +108,7 @@ export class GameScene extends Phaser.Scene {
         this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(0, 0, this.game.canvas.width * 2, this.game.canvas.height * 2, GAS_COLOR, GAS_ALPHA)
-        .setDepth(10).setMask(this.gasMask).setScrollFactor(0, 0).setOrigin(0.25, 0.25);
+            .setDepth(10).setMask(this.gasMask).setScrollFactor(0, 0).setOrigin(0.25, 0.25);
 
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1, true);
