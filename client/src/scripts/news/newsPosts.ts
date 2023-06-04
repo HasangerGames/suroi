@@ -10,6 +10,29 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1685914769000,
+        author: "hasanger",
+        title: "Feeling gassy",
+        bannerImage: require("../../assets/img/news/v0.3.0.png"),
+        content: `This week, gas has been added! Toxic gas now slowly fills up the map as the game progresses. Also, Suroi is now playable on mobile!`,
+        longContent: `<h2>Suroi v0.3.0</h2>
+<h3>New features</h3>
+<ul>
+  <li>Gas! Toxic gas now slowly fills up the map as the game progresses.</li>
+  <li>Chicken dinners! If you're the last man standing, you now get to enjoy a delicious chicken dinner.</li>
+  <li>Minimap! There is now a minimap in the top left. To expand it, press G or M. On mobile, simply tap the map.</li>
+  <li>Mobile controls! Suroi is now playable on mobile. To use the controls, simply press and drag. The left joystick (left half of the screen) controls movement, and the right joystick (right half of the screen) controls aim and shooting.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Bullets now spawn at the barrel of the gun instead of at the player body.</li>
+  <li>Fixed a visual bug causing bullets to go in the wrong direction near the edges of the map.</li>
+  <li>Fixed a bug causing the wrong gun to continue firing when quickswitching.</li>
+  <li>Fixed a bug allowing players to see more of the map by zooming out.</li>
+</ul>`
+    },
+    {
         date: 1685317752000,
         author: "hasanger",
         title: "Fun guns",

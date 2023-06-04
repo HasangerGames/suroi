@@ -32,7 +32,7 @@ export const Config = {
      * "disabled": Gas is disabled.
      */
     gas: {
-        mode: "normal",
+        mode: "debug",
         overrideDuration: 10
     },
 
