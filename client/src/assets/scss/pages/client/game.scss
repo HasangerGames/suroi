@@ -36,6 +36,10 @@
     top: 285px;
     left: 5px;
 
+    @media screen and (max-width: $screen_large) {
+        top: 145px;
+    }
+
     margin: 0.4em;
     text-shadow: 1px 1px 2px black;
     font-family: monospace;
