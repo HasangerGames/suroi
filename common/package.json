@@ -10,8 +10,8 @@
   "keywords": [],
   "license": "GPL-3.0",
   "dependencies": {
+    "@damienvesper/bit-buffer": "^0.0.1",
     "@types/node": "^20.2.5",
-    "bit-buffer": "^0.2.5",
     "buffer": "^6.0.3",
     "intersects": "^2.7.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.30.0"

@@ -5,12 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@damienvesper/bit-buffer':
+    specifier: ^0.0.1
+    version: 0.0.1
   '@types/node':
     specifier: ^20.2.5
     version: 20.2.5
-  bit-buffer:
-    specifier: ^0.2.5
-    version: 0.2.5
   buffer:
     specifier: ^6.0.3
     version: 6.0.3
@@ -48,6 +48,10 @@ devDependencies:
     version: 6.1.1(eslint@8.42.0)
 
 packages:
+
+  /@damienvesper/bit-buffer@0.0.1:
+    resolution: {integrity: sha512-Icns3C0QTGLuyv5yMh0xHoFZtZFPnOLywlexbKRQVZqA/OrmztxXoXOi0WiG4/eOfyfAo+RqLKoYBqd/k/6LUA==}
+    dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.42.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -370,10 +374,6 @@ packages:
 
   /base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
-    dev: false
-
-  /bit-buffer@0.2.5:
-    resolution: {integrity: sha512-x1yGnmXvFg6e3DiyRztElbcn1bsCTFSoM/ncAzY62uE0JdTl5xlKJd0ooqLYoPbhdsnpehSIQrdIvclcZJYwiA==}
     dev: false
 
   /brace-expansion@1.1.11:
