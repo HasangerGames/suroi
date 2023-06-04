@@ -26,7 +26,7 @@ export class DeathMarker extends GameObject {
 
         this.playerName = player.name;
 
-        setTimeout(() => { this.isNew = false; }, 100);
+        setTimeout((): void => { this.isNew = false; }, 100);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */

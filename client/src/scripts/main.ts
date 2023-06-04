@@ -13,7 +13,7 @@ import { setupInputs } from "./utils/inputManager";
 
 declare const API_URL: string;
 
-$(() => {
+$((): void => {
     // Show "Connection lost." message if the socket disconnects
 
     // Join server when play button is clicked

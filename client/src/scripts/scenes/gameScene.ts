@@ -37,9 +37,9 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
         this.playerManager = core.game.playerManager;
 
-        if (this.playerManager.isMobile) {
+        /*if (this.playerManager.isMobile) {
             document.body.requestFullscreen().catch((e: Error) => { console.error(e); });
-        }
+        }*/
 
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
@@ -61,7 +61,7 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        $(window).on("resize", () => {
+        $(window).on("resize", (): void => {
             this.cameras.main.setZoom(this.game.canvas.width / 2560);
         });
         this.cameras.main.setZoom(this.game.canvas.width / 2560);

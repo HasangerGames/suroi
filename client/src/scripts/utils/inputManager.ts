@@ -1,4 +1,4 @@
-import nipplejs from "nipplejs";
+import nipplejs, { type EventData, type JoystickOutputData } from "nipplejs";
 
 import { mod } from "../../../../common/src/utils/math";
 import { type PlayerManager } from "./playerManager";
@@ -16,12 +16,12 @@ class Action {
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
-        this.on = () => {
+        this.on = (): void => {
             if (this.down) return;
             this.down = true;
             on?.();
         };
-        this.off = () => {
+        this.off = (): void => {
             if (!this.down) return;
             this.down = false;
             off?.();
@@ -35,11 +35,11 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
         return new Action(
             `move::${direction.toString()}`,
-            () => {
+            (): void => {
                 game.playerManager.movement[direction] = true;
                 game.playerManager.dirty.inputs = true;
             },
-            () => {
+            (): void => {
                 game.playerManager.movement[direction] = false;
                 game.playerManager.dirty.inputs = true;
             }
@@ -49,7 +49,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateSlotAction(slot: number): Action {
         return new Action(
             `inventory::slot${slot}`,
-            () => { game.playerManager.activeItemIndex = slot; }
+            (): void => { game.playerManager.activeItemIndex = slot; }
         );
     }
 
@@ -65,32 +65,32 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
 
         lastEquippedItem: new Action(
             "inventory::lastEquippedItem",
-            () => {
+            (): void => {
                 game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
             }
         ),
         previousItem: new Action(
             "inventory::previousItem",
-            () => {
+            (): void => {
                 game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex - 1, 3);
                 // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
-            () => {
+            (): void => {
                 game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex + 1, 3);
                 // fixme                                                  ^ mystery constant (max inventory size)
             }
         ),
         useItem: new Action(
             "useItem",
-            () => { game.playerManager.attacking = true; },
-            () => { game.playerManager.attacking = false; }
+            (): void => { game.playerManager.attacking = true; },
+            (): void => { game.playerManager.attacking = false; }
         ),
         toggleMap: new Action(
             "toggleMap",
-            () => {
+            (): void => {
                 (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
             }
         )
@@ -145,7 +145,7 @@ export function setupInputs(game: Game): void {
                 detected, which is what we want
             */
             clearTimeout(mWheelStopTimer);
-            mWheelStopTimer = window.setTimeout(() => {
+            mWheelStopTimer = window.setTimeout((): void => {
                 fireAllEventsAtKey(key, false);
             }, 50);
 
@@ -172,19 +172,20 @@ export function setupInputs(game: Game): void {
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 
-    // mobile joy sticks
+    // Mobile joysticks
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (game.playerManager.isMobile) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
             size: 150
         });
 
-        leftJoyStick.on("move", (evt, data) => {
+        leftJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
             game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.movement.moving = true;
             game.playerManager.dirty.inputs = true;
         });
-        leftJoyStick.on("end", () => {
+        leftJoyStick.on("end", (): void => {
             game.playerManager.movement.moving = false;
             game.playerManager.dirty.inputs = true;
         });
@@ -194,17 +195,14 @@ export function setupInputs(game: Game): void {
             size: 150
         });
 
-        rightJoyStick.on("move", (evt, data) => {
+        rightJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.turning = true;
 
-            game.playerManager.attacking = false;
-            if (data.distance > 70) {
-                game.playerManager.attacking = true;
-            }
+            game.playerManager.attacking = data.distance > 70;
             game.playerManager.dirty.inputs = true;
         });
-        rightJoyStick.on("end", () => {
+        rightJoyStick.on("end", (): void => {
             game.playerManager.attacking = false;
             game.playerManager.dirty.inputs = true;
         });
@@ -326,7 +324,7 @@ function generateBindsConfigScreen(): void {
                 evt.stopImmediatePropagation();
             });
 
-            bindButton.addEventListener("blur", () => {
+            bindButton.addEventListener("blur", (): void => {
                 bindButton.classList.remove("active");
             });
         });
@@ -343,7 +341,7 @@ function generateBindsConfigScreen(): void {
     $("<div/>", { class: "modal-item" }).append($("<button/>", {
         class: "btn btn-darken btn-lg btn-danger",
         text: "Reset to defaults"
-    }).on("click", () => {
+    }).on("click", (): void => {
         localStorageInstance.update({ keybinds: defaultConfig.keybinds });
         generateBindsConfigScreen();
     })).appendTo(keybindsContainer);

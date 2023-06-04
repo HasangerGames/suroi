@@ -42,7 +42,7 @@ export class MenuScene extends Phaser.Scene {
             targets: this.menuMusic,
             volume: 0,
             duration: 2000,
-            onComplete: () => {
+            onComplete: (): void => {
                 this.menuMusic?.stop();
                 this.menuMusic?.setSeek(0);
             }

@@ -33,7 +33,7 @@ export class KillFeedPacket extends ReceivingPacket {
         if (killFeed.children().length > 5) {
             killFeed.children().last().remove();
         }
-        setTimeout(() => {
+        setTimeout((): void => {
             $(killFeedItem).fadeOut(1000, function() { $(this).remove(); });
         }, 7000);
     }

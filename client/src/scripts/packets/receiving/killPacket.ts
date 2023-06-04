@@ -23,7 +23,7 @@ export class KillPacket extends ReceivingPacket {
             // so it won't fade away too fast if the player makes more than one kill in a short time span
             if (timeoutId !== undefined) clearTimeout(timeoutId);
 
-            timeoutId = window.setTimeout(() => {
+            timeoutId = window.setTimeout((): void => {
                 killModal.fadeOut(350);
             }, 3000);
         });

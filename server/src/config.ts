@@ -32,6 +32,6 @@ export const Config = {
     botProtection: false,
 
     disableMapGeneration: false,
-    disableGas: false,
+    disableGas: true,
     stopServerAfter: -1
 };

@@ -51,7 +51,7 @@ const bannedIPs: string[] = [];
 
 app.get("/api/getGame", (res) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted(() => {});
+    res.onAborted((): void => {});
 
     cors(res);
     res.writeHeader("Content-Type", "application/json").end(`{ "addr": "${Config.address}/play" }`);
@@ -72,7 +72,7 @@ app.ws("/play", {
      */
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted(() => {});
+        res.onAborted((): void => {});
 
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
@@ -170,7 +170,7 @@ app.ws("/play", {
 });
 
 // Start the server
-app.listen(Config.host, Config.port, () => {
+app.listen(Config.host, Config.port, (): void => {
     log(`
  _____ _   _______ _____ _____
 /  ___| | | | ___ \\  _  |_   _|
@@ -185,7 +185,7 @@ app.listen(Config.host, Config.port, () => {
 
     if (Config.stopServerAfter !== -1) {
         log(`Automatically stopping server after ${Config.stopServerAfter} ms`, true);
-        setTimeout(() => {
+        setTimeout((): void => {
             log("Stopping server...", true);
             process.exit(1);
         }, Config.stopServerAfter);
@@ -194,7 +194,7 @@ app.listen(Config.host, Config.port, () => {
     log("Press Ctrl+C to exit.");
 
     if (Config.botProtection) {
-        setInterval(() => {
+        setInterval((): void => {
             connectionAttempts = {};
         }, 5000);
     }
