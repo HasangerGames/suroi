@@ -8,7 +8,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "skipLibCheck": true,
     "strictNullChecks": true,
     "strict": true
   },

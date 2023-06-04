@@ -1,4 +1,4 @@
-import { BitStream } from "bit-buffer";
+import { BitStream } from "@damienvesper/bit-buffer";
 
 import { type Vector } from "./vector";
 import { ObjectType } from "./objectType";
