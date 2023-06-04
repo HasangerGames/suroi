@@ -56,6 +56,9 @@ export class MinimapScene extends Phaser.Scene {
             else this.resizeSmallMap();
         });
 
+        // HACK: Use the gas rect to handle click events
+        this.gasRect.setInteractive().on("pointerdown", this.toggle.bind(this));
+
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
     }
@@ -79,11 +82,12 @@ export class MinimapScene extends Phaser.Scene {
         if (window.innerWidth > 1200) {
             this.cameras.main.setSize(250, 250);
             this.cameras.main.setPosition(20, 20);
+            this.cameras.main.setZoom(1 / this.mapScale);
         } else {
             this.cameras.main.setSize(125, 125);
             this.cameras.main.setPosition(10, 10);
+            this.cameras.main.setZoom(1 / this.mapScale / 2);
         }
-        this.cameras.main.setZoom(1 / this.mapScale);
         this.cameras.main.startFollow(this.playerIndicator);
     }
 
