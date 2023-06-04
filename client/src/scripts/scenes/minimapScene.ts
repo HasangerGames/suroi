@@ -66,8 +66,8 @@ export class MinimapScene extends Phaser.Scene {
 
     resizeBigMap(): void {
         if (this.sys === undefined) return;
-        const screenWidth: number = this.sys.game.canvas.width;
-        const screenHeight: number = this.sys.game.canvas.height;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
         this.cameras.main.setZoom(0.0012 / this.mapScale * screenHeight);
         // noinspection JSSuspiciousNameCombination
         this.cameras.main.setSize(screenHeight, screenHeight);
