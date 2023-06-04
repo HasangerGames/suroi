@@ -25,6 +25,17 @@ export const Config = {
         radius: 72
     },
 
+    /*
+     * There are 3 gas modes: "normal", "debug", and "disabled".
+     * "normal": Default gas behavior. overrideDuration is ignored.
+     * "debug": The duration of each stage is always the duration specified by overrideDuration.
+     * "disabled": Gas is disabled.
+     */
+    gas: {
+        mode: "normal",
+        overrideDuration: 5
+    },
+
     // A basic filter that censors only the most extreme swearing.
     censorUsernames: true,
 
@@ -32,6 +43,5 @@ export const Config = {
     botProtection: false,
 
     disableMapGeneration: false,
-    disableGas: false,
     stopServerAfter: -1
 };

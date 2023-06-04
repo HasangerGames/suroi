@@ -69,20 +69,20 @@ export const GasStages: GasStage[] = [
         mode: GasMode.Advancing,
         duration: 5,
         oldRadius: 64,
-        newRadius: 16,
+        newRadius: 32,
         dps: 4
     },
     {
         mode: GasMode.Waiting,
         duration: 10,
-        oldRadius: 16,
+        oldRadius: 32,
         newRadius: 0,
         dps: 4.5
     },
     {
         mode: GasMode.Advancing,
         duration: 5,
-        oldRadius: 16,
+        oldRadius: 32,
         newRadius: 0,
         dps: 5
     },

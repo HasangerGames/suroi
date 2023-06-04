@@ -373,12 +373,13 @@ export class Game {
     }
 
     advanceGas(): void {
-        if (Config.disableGas) return;
+        if (Config.gas.mode === "off") return;
         const currentStage = GasStages[this.gas.stage + 1];
         if (currentStage === undefined) return;
+        const duration = Config.gas.mode === "debug" && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
         this.gas.stage++;
         this.gas.mode = currentStage.mode;
-        this.gas.initialDuration = currentStage.duration;
+        this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = Date.now();
         if (currentStage.mode === GasMode.Waiting) {
@@ -398,8 +399,8 @@ export class Game {
         this.gasPercentageDirty = true;
 
         // Start the next stage
-        if (currentStage.duration !== 0) {
-            setTimeout(() => this.advanceGas(), currentStage.duration * 1000);
+        if (duration !== 0) {
+            setTimeout(() => this.advanceGas(), duration * 1000);
         }
     }
 

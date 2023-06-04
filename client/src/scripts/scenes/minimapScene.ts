@@ -15,7 +15,7 @@ export class MinimapScene extends Phaser.Scene {
 
     renderTexture!: Phaser.GameObjects.RenderTexture;
 
-    mapScale = 2;
+    readonly mapScale = 2;
 
     constructor() {
         super("minimap");
