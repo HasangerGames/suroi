@@ -61,10 +61,13 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        $(window).on("resize", (): void => {
-            this.cameras.main.setZoom(this.game.canvas.width / 2560);
-        });
-        this.cameras.main.setZoom(this.game.canvas.width / 2560);
+        $(window).on("resize", this.resize.bind(this));
+    }
+
+    private resize() {
+        this.cameras.main.setZoom(window.innerWidth / 2560);
+        this.gasRect.width = window.innerWidth * 2;
+        this.gasRect.height = window.innerWidth * 2;
     }
 
     private loadSound(name: string, path: string): void {
@@ -105,7 +108,8 @@ export class GameScene extends Phaser.Scene {
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
-        this.gasRect = this.add.rectangle(7200, 7200, 20000, 20000, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
+        this.gasRect = this.add.rectangle(0, 0, this.game.canvas.width * 2, this.game.canvas.height * 2, GAS_COLOR, GAS_ALPHA)
+        .setDepth(10).setMask(this.gasMask).setScrollFactor(0, 0).setOrigin(0.25, 0.25);
 
         // Create the player
         this.activeGame.activePlayer = new Player(this.activeGame, this, ObjectType.categoryOnly(ObjectCategory.Player), -1, true);
@@ -126,6 +130,8 @@ export class GameScene extends Phaser.Scene {
             "grass_step_01",
             "grass_step_02"
         ].forEach(item => this.sounds.set(item, this.sound.add(item, { volume: this.volume })));
+
+        this.resize();
     }
 
     playSound(name: string): void {
