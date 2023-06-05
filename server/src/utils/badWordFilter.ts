@@ -3,32 +3,20 @@ const badWords: string[] = [
     "n1gger",
     "n1gg3r",
 
-    "niggers",
-    "n1ggers",
-    "n1gg3rs",
-
     "nigga",
     "n1gga",
     "nigg@",
     "n1gg@",
-    "niggas",
-    "n1ggas",
-    "n1gg@s",
 
     "faggot",
     "fagg0t",
     "f@ggot",
-    "f@gg0t",
-
-    "faggots",
-    "fagg0ts",
-    "f@ggots",
-    "f@gg0ts"
+    "f@gg0t"
 ];
 
 export function hasBadWords(text: string): boolean {
     for (const badWord of badWords) {
-        if (text.toLowerCase().includes(badWord)) return true;
+        if (text.toLowerCase().includes(badWord) || text.toLowerCase().includes(`${badWord}s`)) return true;
     }
     return false;
 }
