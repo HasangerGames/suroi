@@ -309,6 +309,12 @@ export class Game {
                 player.hitEffect = false;
             }
 
+            // Stop the game in 1 second if there are no more players alive
+            if (this.aliveCount === 0 && !this.over) {
+                this.over = true;
+                setTimeout(this.end.bind(this), 1000);
+            }
+
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
             // It measures the time it takes to calculate a tick, not the time between ticks.
