@@ -371,6 +371,9 @@ export class Game {
             setTimeout(() => {
                 this.allowJoin = false;
             }, 145000);
+
+            // Stop the game after 3 minutes no matter what
+            setTimeout(() => this.end.bind(this), 180000);
         }
     }
 
