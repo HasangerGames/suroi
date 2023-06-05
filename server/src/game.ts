@@ -310,7 +310,7 @@ export class Game {
             }
 
             // Stop the game in 1 second if there are no more players alive
-            if (this.aliveCount === 0 && !this.over) {
+            if (this.started && this.aliveCount === 0 && !this.over) {
                 this.over = true;
                 setTimeout(this.end.bind(this), 1000);
             }
