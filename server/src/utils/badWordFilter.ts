@@ -9,13 +9,21 @@ const badWords: string[] = [
 
     "nigga",
     "n1gga",
+    "nigg@",
+    "n1gg@",
+    "niggas",
     "n1ggas",
+    "n1gg@s",
 
     "faggot",
     "fagg0t",
+    "f@ggot",
+    "f@gg0t",
 
     "faggots",
-    "fagg0ts"
+    "fagg0ts",
+    "f@ggots",
+    "f@gg0ts"
 ];
 
 export function hasBadWords(text: string): boolean {
