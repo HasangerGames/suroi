@@ -15,7 +15,7 @@ export class MapPacket extends ReceivingPacket {
             const scale: number = stream.readScale();
 
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const rotation: number = definition.rotation !== "none" ? stream.readRotation(4) : 0;
+            const rotation: number = stream.readObstacleRotation(definition.rotationMode);
 
             const hasVariations: boolean = definition.variations !== undefined;
             let texture: string = type.idString;

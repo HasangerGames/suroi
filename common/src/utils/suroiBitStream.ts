@@ -209,6 +209,49 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
+     * Write an obstacle rotation to the stream.
+     * @param value The rotation to write, in radians
+     * @param mode The rotation mode (full, limited, binary, or none)
+     */
+    writeObstacleRotation(value: number, mode: string): void {
+        switch (mode) {
+            case "full":
+                this.writeRotation(value, 4);
+                break;
+            case "limited": // 4 possible orientations
+                this.writeBits(value, 2);
+                break;
+            case "binary": // 2 possible orientations
+                this.writeBits(value, 1);
+                break;
+        }
+    }
+
+    /**
+     * Read an obstacle rotation from the stream.
+     * @param mode The rotation mode (full, limited, binary, or none)
+     * @return The rotation in radians.
+     */
+    readObstacleRotation(mode: string): number {
+        switch (mode) {
+            case "full":
+                return this.readRotation(4);
+            case "limited": // 4 possible orientations
+                switch (this.readBits(2)) {
+                    case 0: return -Math.PI;
+                    case 1: return -Math.PI / 2;
+                    case 2: return Math.PI / 2;
+                    case 3: return Math.PI;
+                }
+                break;
+            case "binary": // 2 possible orientations
+                if (this.readBoolean()) return Math.PI / 2;
+                else return 0;
+        }
+        return 0;
+    }
+
+    /**
     * Write a game object scale to the stream.
     * @param value The scale to write.
     */

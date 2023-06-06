@@ -60,7 +60,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.position = stream.readPosition();
 
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
-        this.rotation = definition.rotation !== "none" ? stream.readRotation(4) : 0;
+        this.rotation = stream.readObstacleRotation(definition.rotationMode);
 
         const hasVariations: boolean = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();

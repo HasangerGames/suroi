@@ -89,25 +89,15 @@ export class Map {
              * @todo Add extra limited rotation (2 possible states = 1 bit).
              */
             let rotation: number | undefined;
-            switch (definition.rotation) {
+            switch (definition.rotationMode) {
                 case "full":
                     rotation = randomRotation();
                     break;
                 case "limited":
-                    switch (random(1, 4)) {
-                        case 1:
-                            rotation = -Math.PI;
-                            break;
-                        case 2:
-                            rotation = -Math.PI / 2;
-                            break;
-                        case 3:
-                            rotation = Math.PI / 2;
-                            break;
-                        case 4:
-                            rotation = Math.PI;
-                            break;
-                    }
+                    rotation = random(0, 3);
+                    break;
+                case "binary":
+                    rotation = random(0, 1);
                     break;
                 case "none":
                 default:

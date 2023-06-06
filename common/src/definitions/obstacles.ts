@@ -16,9 +16,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
     readonly noCollisions?: boolean
-    // Maybe rename to "rotationMode" to more accurately reflect
-    // that this is describing the way in which this obstacle may rotate
-    readonly rotation: "full" | "limited" | "none"
+    readonly rotationMode: "full" | "limited" | "binary" | "none"
     readonly variations?: number
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
@@ -42,7 +40,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3),
             spawnHitbox: new CircleHitbox(15),
-            rotation: "full",
+            rotationMode: "full",
             variations: 3,
             depth: 3
         },
@@ -58,7 +56,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
-            rotation: "full",
+            rotationMode: "full",
             depth: 3
         },
         {
@@ -73,7 +71,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3.85),
             spawnHitbox: new CircleHitbox(4.5),
-            rotation: "full",
+            rotationMode: "full",
             variations: 5,
             particleVariations: 2
         },
@@ -89,7 +87,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(4),
             noCollisions: true,
-            rotation: "full",
+            rotationMode: "full",
             variations: 2,
             particleVariations: 2,
             depth: 2
@@ -105,7 +103,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotation: "limited"
+            rotationMode: "binary"
         },
         {
             idString: "barrel",
@@ -118,7 +116,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(3.45),
-            rotation: "full",
+            rotationMode: "full",
             explosion: "barrel_explosion"
         },
         {
@@ -132,7 +130,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(3.45),
-            rotation: "full",
+            rotationMode: "full",
             explosion: "super_barrel_explosion"
         },
         {
@@ -146,7 +144,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.6
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotation: "none",
+            rotationMode: "none",
             explosion: "health_crate_explosion"
         }
     ]
