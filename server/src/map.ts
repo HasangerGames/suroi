@@ -16,6 +16,7 @@ import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
 import { Config } from "./config";
+import { Vec2 } from "planck";
 
 export class Map {
     game: Game;
@@ -38,6 +39,7 @@ export class Map {
             this.generateObstacles("super_barrel", 25);
         } else {
             // Obstacle debug code goes here
+            this.obstacleTest("regular_crate", Vec2(363, 363), -Math.PI, 1, 0);
         }
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
 
@@ -128,6 +130,19 @@ export class Map {
 
             this.game.staticObjects.add(obstacle);
         }
+    }
+
+    private obstacleTest(idString: string, position: Vec2, rotation: number, scale: number, variation: Variation): void {
+        const type = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+        const obstacle: Obstacle = new Obstacle(
+            this.game,
+            type,
+            position,
+            rotation,
+            scale,
+            variation
+        );
+        this.game.staticObjects.add(obstacle);
     }
 
     getRandomPositionFor(type: ObjectType, scale = 1): Vector {

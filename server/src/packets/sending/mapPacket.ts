@@ -19,7 +19,7 @@ export class MapPacket extends SendingPacket {
             const definition: ObstacleDefinition = object.type.definition as ObstacleDefinition;
             stream.writePosition(object.position);
             stream.writeScale(object.maxScale);
-            if (definition.rotation !== "none") stream.writeRotation(object.rotation, 8);
+            if (definition.rotation !== "none") stream.writeRotation(object.rotation, 4);
             if (definition.variations !== undefined) stream.writeVariation(object.variation);
         }
     }

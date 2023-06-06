@@ -131,6 +131,8 @@ export class GameScene extends Phaser.Scene {
         ].forEach(item => this.sounds.set(item, this.sound.add(item, { volume: this.volume })));
 
         this.resize();
+
+        setInterval(this.tick.bind(this), 30);
     }
 
     playSound(name: string): void {
@@ -149,8 +151,6 @@ export class GameScene extends Phaser.Scene {
             this.playerManager.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.playerManager));
         }
-
-        setTimeout(this.tick.bind(this), 30);
     }
 
     update(): void {
