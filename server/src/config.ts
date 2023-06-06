@@ -1,5 +1,8 @@
 import { Vec2 } from "planck";
 
+export enum SpawnMode { Random, Radius, Fixed}
+export enum GasMode { Normal, Debug, Disabled }
+
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
@@ -14,25 +17,25 @@ export const Config = {
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
     /*
-     * There are 3 spawn modes: "random", "radius", and "fixed".
-     * "random" spawns the player at a random location, ignoring the position and radius.
-     * "radius" spawns the player at a random location within the circle with the given position and radius.
-     * "fixed" always spawns the player at the exact position given, ignoring the radius.
+     * There are 3 spawn modes: SpawnMode.Random, SpawnMode.Radius, and SpawnMode.Fixed.
+     * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
+     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
+     * SpawnMode.Fixed always spawns the player at the exact position given, ignoring the radius.
      */
     spawn: {
-        mode: "random",
+        mode: SpawnMode.Random,
         position: Vec2(360, 360),
         radius: 72
     },
 
     /*
-     * There are 3 gas modes: "normal", "debug", and "disabled".
-     * "normal": Default gas behavior. overrideDuration is ignored.
-     * "debug": The duration of each stage is always the duration specified by overrideDuration.
-     * "disabled": Gas is disabled.
+     * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
+     * GasMode.Normal: Default gas behavior. overrideDuration is ignored.
+     * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
+     * GasMode.Disabled: Gas is disabled.
      */
     gas: {
-        mode: "debug",
+        mode: GasMode.Debug,
         overrideDuration: 10
     },
 

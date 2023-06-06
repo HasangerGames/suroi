@@ -1,4 +1,4 @@
-import { type ItemDefinition, type ItemTypes } from "../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -11,7 +11,7 @@ export abstract class InventoryItem {
     /**
      * The category of item this is, either melee or gun
      */
-    readonly category: ItemTypes;
+    readonly category: ItemType;
     /**
      * The `ObjectType` instance associated with this item
      */

@@ -8,19 +8,18 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    ANIMATION_TYPE_BITS,
-    AnimationType,
-    ObjectCategory
+    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
 } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import {
-    type Vector, vClone, vMul
+    vClone, type Vector, vMul
 } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { type MinimapScene } from "../scenes/minimapScene";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 const showMeleeDebugCircle = false;
 
@@ -234,9 +233,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
-            if (weaponDef.type === "melee") {
+            if (weaponDef.type === ItemType.Melee) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
-            } else {
+            } else if (weaponDef.type === ItemType.Gun) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
             }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
@@ -244,10 +243,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (!this.isNew) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
-        if (weaponDef.type === "gun") {
+        if (weaponDef.type === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);
             this.images.container.bringToTop(this.images.body);
-        } else {
+        } else if (weaponDef.type === ItemType.Melee) {
             this.images.container.sendToBack(this.images.body);
             this.images.container.sendToBack(this.images.weaponImg);
         }

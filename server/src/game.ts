@@ -1,5 +1,7 @@
 // noinspection ES6PreferShortImport
-import { Config } from "./config";
+import {
+    Config, GasMode, SpawnMode
+} from "./config";
 
 import {
     Box, Fixture, Settings, Vec2, World
@@ -18,7 +20,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { GasMode, ObjectCategory } from "../../common/src/constants";
+import { GasState, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -68,7 +70,7 @@ export class Game {
 
     readonly gas = {
         stage: 0,
-        mode: GasMode.Inactive,
+        state: GasState.Inactive,
         initialDuration: 0,
         countdownStart: 0,
         percentage: 0,
@@ -194,7 +196,7 @@ export class Game {
             }
 
             // Update gas
-            if (this.gas.mode !== GasMode.Inactive) {
+            if (this.gas.state !== GasState.Inactive) {
                 this.gas.percentage = (Date.now() - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
                 this.gasPercentageDirty = true;
             }
@@ -205,7 +207,7 @@ export class Game {
             if (this.gas.ticksSinceLastDamage >= 30) {
                 this.gas.ticksSinceLastDamage = 0;
                 gasDamage = true;
-                if (this.gas.mode === GasMode.Advancing) {
+                if (this.gas.state === GasState.Advancing) {
                     this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
                     this.gas.currentRadius = lerp(this.gas.oldRadius, this.gas.newRadius, this.gas.percentage);
                 }
@@ -335,7 +337,7 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
         let spawnPosition: Vec2 = Config.spawn.position;
-        if (Config.spawn.mode !== "fixed") {
+        if (Config.spawn.mode !== SpawnMode.Fixed) {
             let foundPosition = false;
             while (!foundPosition) {
                 spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
@@ -397,16 +399,16 @@ export class Game {
     }
 
     advanceGas(): void {
-        if (Config.gas.mode === "off") return;
+        if (Config.gas.mode === GasMode.Disabled) return;
         const currentStage = GasStages[this.gas.stage + 1];
         if (currentStage === undefined) return;
-        const duration = Config.gas.mode === "debug" && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
+        const duration = Config.gas.mode === GasMode.Debug && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
         this.gas.stage++;
-        this.gas.mode = currentStage.mode;
+        this.gas.state = currentStage.state;
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = Date.now();
-        if (currentStage.mode === GasMode.Waiting) {
+        if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
                 this.gas.newPosition = randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius);

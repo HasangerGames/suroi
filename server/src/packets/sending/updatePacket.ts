@@ -125,7 +125,7 @@ export class UpdatePacket extends SendingPacket {
         const gasDirty: boolean = game.gasDirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);
         if (gasDirty) {
-            stream.writeBits(game.gas.mode, 2);
+            stream.writeBits(game.gas.state, 2);
             stream.writeBits(game.gas.initialDuration, 7);
             stream.writePosition(game.gas.oldPosition);
             stream.writePosition(game.gas.newPosition);

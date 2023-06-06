@@ -6,7 +6,6 @@ import { Loots } from "../definitions/loots";
 export const ObjectDefinitionsList: Array<ObjectDefinitions | undefined> = [
     undefined, // players
     Obstacles,
-    undefined,
     Explosions,
     undefined, // death markers
     Loots

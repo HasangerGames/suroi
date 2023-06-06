@@ -3,7 +3,7 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
-import { type ItemDefinition } from "../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 
@@ -118,12 +118,12 @@ export class Inventory {
      * @param item The item to convert
      * @returns The corresponding `InventoryItem` subclass
      */
-    private _reifyItem(item: InventoryItem | string): InventoryItem {
+    private _reifyItem(item: InventoryItem | string): InventoryItem | undefined {
         if (item instanceof InventoryItem) return item;
 
         switch ((ObjectType.fromString(ObjectCategory.Loot, item).definition as ItemDefinition).type) {
-            case "gun": return new GunItem(item, this.owner);
-            case "melee": return new MeleeItem(item, this.owner);
+            case ItemType.Gun: return new GunItem(item, this.owner);
+            case ItemType.Melee: return new MeleeItem(item, this.owner);
         }
     }
 
@@ -161,7 +161,6 @@ export class Inventory {
     addOrReplaceItem(slot: number, item: InventoryItem | string): void {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const old = this._setItem(slot, this._reifyItem(item));
-
         // todo Drop old item into the game world
     }
 
@@ -171,7 +170,7 @@ export class Inventory {
      * @returns The slot in which the item was added, or `-1` if it could not be added
      */
     appendItem(item: InventoryItem | string): number {
-        for (let slot = 0, l = Inventory.MAX_SIZE; slot < l; slot++) {
+        for (let slot = 0; slot < Inventory.MAX_SIZE; slot++) {
             if (this._items[slot] === undefined) {
                 this._items[slot] = this._reifyItem(item);
                 return slot;

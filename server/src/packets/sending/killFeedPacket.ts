@@ -33,7 +33,6 @@ export class KillFeedPacket extends SendingPacket {
 
             const usedWeapon: boolean = killMessage.weaponUsed !== undefined;
             stream.writeBoolean(usedWeapon);
-
             if (killMessage.weaponUsed !== undefined) stream.writeObjectType(killMessage.weaponUsed);
         }
     }

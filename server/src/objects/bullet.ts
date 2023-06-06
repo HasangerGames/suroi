@@ -13,13 +13,15 @@ export class Bullet {
     readonly is: CollisionFilter = {
         player: false,
         obstacle: false,
-        bullet: true
+        bullet: true,
+        loot: false
     };
 
     readonly collidesWith: CollisionFilter = {
         player: true,
         obstacle: true,
-        bullet: false
+        bullet: false,
+        loot: false
     };
 
     id: number;

@@ -30,13 +30,15 @@ export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
         player: false,
         obstacle: true,
-        bullet: false
+        bullet: false,
+        loot: false
     };
 
     override readonly collidesWith: CollisionFilter = {
         player: true,
         obstacle: false,
-        bullet: true
+        bullet: true,
+        loot: true
     };
 
     health: number;

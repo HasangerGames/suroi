@@ -4,6 +4,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { ObjectCategory } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 // This class manages the active player data and inventory
 export class PlayerManager {
@@ -101,7 +102,7 @@ export class PlayerManager {
                     const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;
-                    const weaponImg = itemDef.idString + (itemDef.type === "melee" ? "" : "-icon");
+                    const weaponImg = itemDef.idString + (itemDef.type === ItemType.Melee ? "" : "-icon");
                     container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${weaponImg}.svg`)).show();
                 } else {
                     // empty slot

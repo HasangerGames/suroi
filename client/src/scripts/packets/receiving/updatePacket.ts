@@ -10,7 +10,7 @@ import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
@@ -219,13 +219,13 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Gas
         if (stream.readBoolean()) {
-            game.gas.mode = stream.readBits(2);
+            game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
             game.gas.oldPosition = stream.readPosition();
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
-            if (game.gas.mode === GasMode.Waiting) {
+            if (game.gas.state === GasState.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * minimap.mapScale, game.gas.oldPosition.y * minimap.mapScale).setRadius(game.gas.oldRadius * minimap.mapScale);
                 // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
@@ -235,7 +235,7 @@ export class UpdatePacket extends ReceivingPacket {
         // Gas percentage
         if (stream.readBoolean()) {
             const percentage = stream.readFloat(0, 1, 16);
-            if (game.gas.mode === GasMode.Advancing) {
+            if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
                 scene.tweens.add({

@@ -15,7 +15,7 @@ import { type ObstacleDefinition } from "../../common/src/definitions/obstacles"
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
-import { Config } from "./config";
+import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
 
 export class Map {
@@ -153,9 +153,9 @@ export class Map {
         }
 
         let getPosition: () => Vector;
-        if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === "random")) {
+        if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
             getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
-        } else if (type.category === ObjectCategory.Player && Config.spawn.mode === "radius") {
+        } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
             getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
         } else {
             getPosition = (): Vector => v(0, 0);
