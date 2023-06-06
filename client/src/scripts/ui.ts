@@ -77,6 +77,14 @@ $((): void => {
         settingsMenu.fadeOut(250);
     });
 
+
+    // Disable context menu
+
+    $("#game-ui").on("contextmenu", (e) => {
+        e.preventDefault();
+    })
+
+
     // load settings values and event listeners
 
     // music volume
