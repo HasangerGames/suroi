@@ -3,6 +3,9 @@ import {
     GAS_ALPHA, GAS_COLOR, GRASS_COLOR
 } from "../utils/constants";
 
+const MINIMAP_OPACITY_PERCENTAGE = 0.4
+const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8
+
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
     playerIndicatorDead = false;
@@ -23,7 +26,6 @@ export class MinimapScene extends Phaser.Scene {
 
     // noinspection JSUnusedGlobalSymbols
     preload(): void {
-        this.cameras.main.setBackgroundColor(GRASS_COLOR);
     }
 
     create(): void {
@@ -49,7 +51,6 @@ export class MinimapScene extends Phaser.Scene {
         this.gasCircle = this.add.circle(360 * this.mapScale, 360 * this.mapScale, 512 * this.mapScale, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(360 * this.mapScale, 360 * this.mapScale, 1000 * this.mapScale, 1000 * this.mapScale, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
-        // this.gasToCenterLine = this.add.line(3600, 3600).setStrokeStyle(4, 0xffff00);
 
         $(window).on("resize", (): void => {
             if (this.isExpanded) this.resizeBigMap();
@@ -93,6 +94,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToBigMap(): void {
+        this.cameras.main.setBackgroundColor(((MAP_FOCUSED_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = true;
         this.cameras.main.stopFollow();
         this.resizeBigMap();
@@ -100,6 +102,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToSmallMap(): void {
+        this.cameras.main.setBackgroundColor(((MINIMAP_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = false;
         this.resizeSmallMap();
         $("#minimap-border").show();
