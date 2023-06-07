@@ -30,13 +30,15 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
+        this.rotation = stream.readRotation(8);
         if (!this.created) {
-            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
+            this.images.container.setPosition(this.position.x * 20, this.position.y * 20).setRotation(this.rotation);
         } else {
             this.scene.tweens.add({
                 targets: this.images.container,
                 x: this.position.x * 20,
                 y: this.position.y * 20,
+                rotation: this.rotation,
                 duration: 30
             });
         }

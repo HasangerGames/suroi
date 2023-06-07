@@ -184,10 +184,11 @@ export class Game {
 
             // Update loot positions
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
+                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y || loot.oldRotation !== loot.rotation) {
                     this.partialDirtyObjects.add(loot);
                 }
                 loot.oldPosition = vClone(loot.position);
+                loot.oldRotation = loot.rotation;
             }
 
             // Update bullets
