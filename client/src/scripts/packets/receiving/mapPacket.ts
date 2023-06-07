@@ -7,7 +7,7 @@ import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const numObstacles: number = stream.readUint16();
+        const numObstacles: number = stream.readBits(10);
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
 

@@ -13,7 +13,7 @@ import {
     type ObjectCategory, PACKET_TYPE_BITS,
     type PacketType,
     VARIATION_BITS,
-    PLAYER_NAME_MAX_LENGTH
+    PLAYER_NAME_MAX_LENGTH, OBJECT_ID_BITS
 } from "../constants";
 import { type Variation } from "../typings";
 
@@ -159,6 +159,22 @@ export class SuroiBitStream extends BitStream {
         } else {
             return ObjectType.categoryOnly(category);
         }
+    }
+
+    /**
+     * Write an object ID to the stream.
+     * @param id The object ID to write
+     */
+    writeObjectID(id: number): void {
+        this.writeBits(id, OBJECT_ID_BITS);
+    }
+
+    /**
+     * Read an object ID from the stream.
+     * @return The object ID
+     */
+    readObjectID(): number {
+        return this.readBits(OBJECT_ID_BITS);
     }
 
     /**
