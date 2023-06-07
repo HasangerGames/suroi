@@ -15,6 +15,7 @@ import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
 import { type MinimapScene } from "../../scenes/minimapScene";
+import { Loot } from "../../objects/loot";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -100,6 +101,10 @@ export class UpdatePacket extends ReceivingPacket {
                         }
                         case ObjectCategory.DeathMarker: {
                             object = new DeathMarker(game, scene, type, id);
+                            break;
+                        }
+                        case ObjectCategory.Loot: {
+                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot>, id);
                             break;
                         }
                     }

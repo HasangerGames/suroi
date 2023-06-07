@@ -1,7 +1,5 @@
 import {
-    type Body,
-    type Shape,
-    type Vec2
+    type Body, type Shape, type Vec2
 } from "planck";
 
 import { type Game } from "../game";
@@ -13,18 +11,19 @@ import { bodyFromHitbox } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector, vSub } from "../../../common/src/utils/vector";
+import {
+    vClone, type Vector, vSub
+} from "../../../common/src/utils/vector";
 import { transformRectangle } from "../../../common/src/utils/math";
 import {
-    CircleHitbox,
-    type Hitbox,
-    RectangleHitbox
+    CircleHitbox, type Hitbox, RectangleHitbox
 } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
 import { Player } from "./player";
 import { Config } from "../config";
+import { Loot } from "./loot";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -105,6 +104,11 @@ export class Obstacle extends GameObject {
                     source);
                 this.game.explosions.add(explosion);
             }
+
+            // eslint-disable-next-line no-new
+            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "cola"), vClone(this.position));
+            // eslint-disable-next-line no-new
+            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
 
             /* for (const item of this.loot) {
                 let lootPosition = this.position.clone();

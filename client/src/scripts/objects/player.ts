@@ -63,7 +63,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weaponImg: this.scene.add.image(0, 0, "main"),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
-        images.container = this.scene.add.container(360, 360, [images.body, images.leftFist, images.rightFist, images.weaponImg]).setDepth(1);
+        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg]).setDepth(1);
         this.images = images;
 
         this.updateFistsPosition();

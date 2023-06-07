@@ -36,6 +36,7 @@ import {
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import process from "node:process";
+import { type Loot } from "./objects/loot";
 
 export class Game {
     map: Map;
@@ -53,16 +54,17 @@ export class Game {
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
 
-    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
-
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
+    loot: Set<Loot> = new Set<Loot>();
     explosions: Set<Explosion> = new Set<Explosion>();
     bullets = new Set<Bullet>(); // All bullets that currently exist
     newBullets = new Set<Bullet>(); // All bullets created this tick
     deletedBulletIDs = new Set<number>();
     damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
+
+    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
 
     started = false;
     allowJoin = true;
@@ -107,8 +109,19 @@ export class Game {
             if (thisObject.is.player) return (thatObject as Player).collidesWith.player;
             else if (thisObject.is.obstacle) return (thatObject as Obstacle).collidesWith.obstacle;
             else if (thisObject.is.bullet) return (thatObject as Obstacle).collidesWith.bullet;
+            else if (thisObject.is.loot) return (thatObject as Loot).collidesWith.loot;
             else return false;
         };
+
+        // If maxLinearCorrection is set to 0, player collisions work perfectly, but loot doesn't spread out.
+        // If maxLinearCorrection is greater than 0, loot spreads out, but player collisions are jittery.
+        // This code solves the dilemma by setting maxLinearCorrection to the appropriate value for the object.
+        this.world.on("pre-solve", contact => {
+            const objectA = contact.getFixtureA().getUserData() as GameObject;
+            const objectB = contact.getFixtureB().getUserData() as GameObject;
+            if (objectA.is.loot || objectB.is.loot) Settings.maxLinearCorrection = 0.06;
+            else Settings.maxLinearCorrection = 0;
+        });
 
         // this return type is technically not true, but it gets typescript to shut up
         const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distance <= object.maxDistance && !object.dead;
@@ -149,11 +162,17 @@ export class Game {
         boundary.createFixture({
             shape: Box(width, height),
             userData: {
-                isPlayer: false,
-                isObstacle: true,
+                is: {
+                    player: false,
+                    obstacle: true,
+                    bullet: false,
+                    loot: false
+                },
                 collidesWith: {
                     player: true,
-                    obstacle: false
+                    obstacle: false,
+                    bullet: true,
+                    loot: true
                 }
             }
         });
@@ -162,6 +181,14 @@ export class Game {
     tick(delay: number): void {
         setTimeout((): void => {
             const tickStart = Date.now();
+
+            // Update loot positions
+            for (const loot of this.loot) {
+                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
+                    this.partialDirtyObjects.add(loot);
+                }
+                loot.oldPosition = vClone(loot.position);
+            }
 
             // Update bullets
             for (const bullet of this.bullets) {

@@ -38,7 +38,8 @@ export class DeathMarker extends GameObject {
                 .setShadow(2, 2, "#000", 2, true, true);
         }
 
-        if (stream.readBoolean()) { // play an animation if its a new death marker
+        // Play an animation if this is a new death marker
+        if (stream.readBoolean()) {
             this.image.setScale(0.5).setAlpha(0);
             gsap.to(this.image, {
                 scale: 1,

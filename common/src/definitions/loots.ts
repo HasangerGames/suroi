@@ -6,6 +6,6 @@ import { type HealingItemDefinition, HealingItems } from "./healingItems";
 export type LootDefinition = MeleeDefinition | GunDefinition | HealingItemDefinition;
 
 export const Loots = new ObjectDefinitions<LootDefinition>(
-    3,
+    4,
     Array.prototype.concat(Melees, Guns, HealingItems)
 );

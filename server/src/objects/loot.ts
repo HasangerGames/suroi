@@ -28,21 +28,27 @@ export class Loot extends GameObject {
     };
 
     body: Body;
+
+    oldPosition: Vector;
+
     isNew = true;
 
     constructor(game: Game, type: ObjectType, position: Vector) {
         super(game, type, position);
 
+        this.oldPosition = position;
+
         // Create the body
         this.body = game.world.createBody({
             type: "dynamic",
             position: v2v(position),
-            linearDamping: 0.003
+            linearDamping: 0.003,
+            fixedRotation: true
         });
         this.body.createFixture({
-            shape: Circle(2),
-            restitution: 0.5,
-            density: 0.0,
+            shape: Circle(2.5),
+            restitution: 0,
+            density: 1.0,
             friction: 0.0,
             userData: this
         });
@@ -51,10 +57,14 @@ export class Loot extends GameObject {
         const angle: number = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
 
-        //game.loot.add(this);
+        game.loot.add(this);
         game.dynamicObjects.add(this);
         game.fullDirtyObjects.add(this);
         game.updateObjects = true;
+    }
+
+    get position(): Vector {
+        return this.body.getPosition();
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
