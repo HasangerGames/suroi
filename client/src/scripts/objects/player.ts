@@ -41,14 +41,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly leftFist: Phaser.GameObjects.Image
         readonly rightFist: Phaser.GameObjects.Image
         readonly weaponImg: Phaser.GameObjects.Image
+        readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
         readonly container: Phaser.GameObjects.Container
     };
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
     weaponAnim!: Phaser.Tweens.Tween;
-
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     distSinceLastFootstep = 0;
 
@@ -61,23 +60,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             weaponImg: this.scene.add.image(0, 0, "main"),
+            bloodEmitter: this.scene.add.particles(0, 0, "main", {
+                frame: "blood_particle.svg",
+                quantity: 1,
+                rotate: { min: 0, max: 360 },
+                lifespan: 1000,
+                speed: { min: 20, max: 30 },
+                scale: { start: 0.75, end: 1 },
+                alpha: { start: 1, end: 0 },
+                emitting: false
+            }),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
-        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg]).setDepth(1);
+        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(1);
         this.images = images;
 
         this.updateFistsPosition();
-
-        this.emitter = this.scene.add.particles(0, 0, "main", {
-            frame: "blood_particle.svg",
-            quantity: 1,
-            rotate: { min: 0, max: 360 },
-            lifespan: 1000,
-            speed: { min: 20, max: 30 },
-            scale: { start: 0.75, end: 1 },
-            alpha: { start: 1, end: 0 },
-            emitting: false
-        }).setDepth(2);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -99,9 +97,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
-            this.emitter.setPosition(phaserPos.x, phaserPos.y);
+            //this.emitter.setPosition(phaserPos.x, phaserPos.y);
         } else {
-            gsap.to([this.images.container, this.emitter], {
+            gsap.to(this.images.container, {
                 x: phaserPos.x,
                 y: phaserPos.y,
                 ease: "none",
@@ -194,7 +192,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
-            this.emitter.emitParticle(1);
+            this.images.bloodEmitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
     }
@@ -258,6 +256,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.leftFist.destroy(true);
         this.images.rightFist.destroy(true);
         this.images.weaponImg.destroy(true);
-        this.emitter.destroy(true);
+        this.images.bloodEmitter.destroy(true);
     }
 }

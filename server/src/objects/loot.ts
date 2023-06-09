@@ -43,7 +43,8 @@ export class Loot extends GameObject {
         this.body = game.world.createBody({
             type: "dynamic",
             position: v2v(position),
-            linearDamping: 0.003
+            linearDamping: 0.003,
+            angularDamping: 0
         });
         this.body.createFixture({
             shape: Circle(2.5),
@@ -56,7 +57,7 @@ export class Loot extends GameObject {
         // Push the loot in a random direction
         const angle: number = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
-        this.body.applyTorque(randomBoolean() ? 0.015 : -0.015);
+        this.body.applyTorque(randomBoolean() ? 0.003 : -0.003);
 
         game.loot.add(this);
         game.dynamicObjects.add(this);

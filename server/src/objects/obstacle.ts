@@ -109,6 +109,8 @@ export class Obstacle extends GameObject {
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "cola"), vClone(this.position));
             // eslint-disable-next-line no-new
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
+            // eslint-disable-next-line no-new
+            //new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));
 
             /* for (const item of this.loot) {
                 let lootPosition = this.position.clone();

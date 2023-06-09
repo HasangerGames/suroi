@@ -3,7 +3,7 @@ import { GameObject } from "../types/gameObject";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import gsap from "gsap";
-import type Phaser from "phaser";
+import Phaser from "phaser";
 import { type Game } from "../game";
 import { type GameScene } from "../scenes/gameScene";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
@@ -20,7 +20,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot>, id: number) {
         super(game, scene, type, id);
         const images = {
-            background: this.scene.add.image(0, 0, "main", "loot_background.svg"),
+            background: this.scene.add.image(0, 0, "main", "loot_background_heal.svg"),
             item: this.scene.add.image(0, 0, "main"),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
@@ -34,12 +34,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (!this.created) {
             this.images.container.setPosition(this.position.x * 20, this.position.y * 20).setRotation(this.rotation);
         } else {
-            this.scene.tweens.add({
-                targets: this.images.container,
+            const oldAngle: number = this.images.container.angle;
+            const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
+            const finalAngle: number = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+            gsap.to(this.images.container, {
                 x: this.position.x * 20,
                 y: this.position.y * 20,
-                rotation: this.rotation,
-                duration: 30
+                angle: finalAngle,
+                duration: 0.03
             });
         }
     }
