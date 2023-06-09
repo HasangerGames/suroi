@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="750"
-   height="290.07001"
-   viewBox="0 0 198.43749 76.747691"
+   width="1060.9919"
+   height="353.07001"
+   viewBox="0 0 280.72077 93.416442"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
@@ -28,17 +28,17 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     width="300px"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="422.14274"
-     inkscape:cy="89.802559"
+     width="1060.992px"
+     inkscape:zoom="1"
+     inkscape:cx="273.99999"
+     inkscape:cy="-80.999998"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
-     height="290.07px" />
+     height="353.07px" />
   <defs
      id="defs2">
     <linearGradient
@@ -134,6 +134,42 @@
          result="composite2"
          id="feComposite32969" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter12025"
+       x="-0.032561472"
+       y="-0.11884913"
+       width="1.0741914"
+       height="1.2707981">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood12015" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite12017" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="0.5"
+         result="blur"
+         id="feGaussianBlur12019" />
+      <feOffset
+         dx="0.5"
+         dy="0.5"
+         result="offset"
+         id="feOffset12021" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite12023" />
+    </filter>
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -146,7 +182,7 @@
        transform="translate(-3.9072956)" />
     <g
        id="g879"
-       transform="matrix(2.2273929,0,0,2.2273929,-11.280827,-5.7063772)">
+       transform="matrix(2.2273929,0,0,2.2273929,29.860822,11.491539)">
       <path
          d="m 14.16491,17.866448 q 6.611456,0.361941 8.952008,0.361941 0.554976,0 0.868658,-0.313682 0.337812,-0.337811 0.337812,-0.892788 v -2.171646 h -5.549762 q -2.533587,0 -3.691799,-1.134081 -1.134081,-1.158212 -1.134081,-3.691799 V 9.3005114 q 0,-2.5335871 1.134081,-3.6676689 1.158212,-1.1582112 3.691799,-1.1582112 h 8.469419 v 3.378116 h -7.504243 q -1.447764,0 -1.447764,1.4477641 v 0.482588 q 0,1.4477636 1.447764,1.4477636 h 4.343292 q 2.364681,0 3.474633,1.109953 1.109953,1.109952 1.109953,3.474633 v 1.20647 q 0,2.364682 -1.109953,3.474634 -1.109952,1.109952 -3.474633,1.109952 -1.2306,0 -2.605976,-0.04826 l -2.219904,-0.09652 Q 16.795015,21.341082 14.16491,21.123917 Z"
          style="font-size:24.1294px;line-height:1.25;font-family:'Russo One';-inkscape-font-specification:'Russo One';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter32941)"
@@ -226,5 +262,17 @@
            id="path1159" />
       </g>
     </g>
+    <text
+       xml:space="preserve"
+       style="font-size:21.5797px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.19062;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter12025)"
+       x="154.93529"
+       y="-92.184608"
+       id="text2861"
+       transform="rotate(30,-11.624905,85.398028)"><tspan
+         sodipodi:role="line"
+         id="tspan2859"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.19062;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         x="154.93529"
+         y="-92.184608">BETA</tspan></text>
   </g>
 </svg>
