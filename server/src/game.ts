@@ -30,7 +30,7 @@ import {
     v, vClone, type Vector
 } from "../../common/src/utils/vector";
 import {
-    distance, lerp, vecLerp
+    distanceSquared, lerp, vecLerp
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import process from "node:process";
@@ -334,14 +334,26 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
-        let spawnPosition: Vec2 = Config.spawn.position;
-        if (Config.spawn.mode !== "fixed") {
-            let foundPosition = false;
-            while (!foundPosition) {
-                spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
-                if (!this.isInGas(spawnPosition)) foundPosition = true;
+        let spawnPosition = v2v(v(0, 0));
+        switch (Config.spawn.mode) {
+            case "random": {
+                let foundPosition = false;
+                while (!foundPosition) {
+                    spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+                    if (!this.isInGas(spawnPosition)) foundPosition = true;
+                }
+                break;
+            }
+            case "fixed": {
+                spawnPosition = Config.spawn.position;
+                break;
+            }
+            case "radius": {
+                spawnPosition = v2v(randomPointInsideCircle(Config.spawn.position, Config.spawn.radius));
+                break;
             }
         }
+
         // Player is added to the players array when a JoinPacket is received from the client
         return new Player(this, name, socket, spawnPosition);
     }
@@ -389,7 +401,7 @@ export class Game {
         this.deletedObjects.add(player);
         try {
             player.socket.close();
-        } catch (e) {}
+        } catch (e) { }
     }
 
     get aliveCount(): number {
@@ -397,15 +409,18 @@ export class Game {
     }
 
     advanceGas(): void {
-        if (Config.gas.mode === "off") return;
+        if (Config.gas.mode === "disabled") return;
+
         const currentStage = GasStages[this.gas.stage + 1];
         if (currentStage === undefined) return;
+
         const duration = Config.gas.mode === "debug" && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
         this.gas.stage++;
         this.gas.mode = currentStage.mode;
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = Date.now();
+
         if (currentStage.mode === GasMode.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
@@ -429,7 +444,7 @@ export class Game {
     }
 
     isInGas(position: Vector): boolean {
-        return distance(position, this.gas.currentPosition) >= this.gas.currentRadius;
+        return distanceSquared(position.x, position.y, this.gas.currentPosition.x, this.gas.currentPosition.y) >= this.gas.currentRadius ** 2;
     }
 
     _nextObjectID = -1;

@@ -35,7 +35,9 @@ export enum KillFeedMessageType {
 }
 
 export enum GasMode {
-    Inactive, Waiting, Advancing
+    Inactive,
+    Waiting,
+    Advancing
 }
 
 // NOTE: remember to increase these values when adding stuff to enums

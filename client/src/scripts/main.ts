@@ -21,13 +21,13 @@ export const enablePlayButton = (): void => {
     playSoloBtn.text("Play Solo");
 };
 
-$((): void => {
+$(() => {
     // Join server when play button is clicked
-    playSoloBtn.on("click", (): void => {
+    playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
         playSoloBtn.text("Connecting...");
-        void $.get(`${API_URL}/getGame`, (data: { success: boolean, addr: string }): void => {
+        void $.get(`${API_URL}/getGame`, (data: { success: boolean, addr: string }) => {
             if (data.success) {
                 core.game?.connect(`${data.addr}?name=${$("#username-input").val() as string}`);
                 $("#splash-server-message").hide();
@@ -36,7 +36,7 @@ $((): void => {
                 $("#splash-server-message").show();
                 enablePlayButton();
             }
-        }).fail((): void => {
+        }).fail(() => {
             $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
             $("#splash-server-message").show();
             enablePlayButton();
@@ -47,9 +47,9 @@ $((): void => {
     core.game = new Game();
 
     // Create the Phaser Game
-    //const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
+    // const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
     core.phaser = new Phaser.Game({
-        //type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
+        // type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
         type: Phaser.WEBGL,
         scene: [MenuScene, GameScene, MinimapScene],
         backgroundColor: GRASS_COLOR,
