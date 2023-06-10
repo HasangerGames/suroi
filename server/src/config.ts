@@ -75,7 +75,7 @@ export const Config = {
     spawn: {
         mode: "radius",
         position: Vec2(360, 360),
-        radius: 0
+        radius: 72
     },
 
     gas: {
