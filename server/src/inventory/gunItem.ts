@@ -44,14 +44,9 @@ export class GunItem extends InventoryItem {
         const owner = this.owner;
         const definition = this.definition;
 
-        if (
-            this.ammo > 0 &&
-            owner.attacking &&
-            !owner.dead &&
-            !owner.disconnected
-        ) {
+        if (this.ammo > 0 && owner.attacking && !owner.dead && !owner.disconnected) {
             this.ammo--;
-            this._lastUse = Date.now();
+            this._lastUse = owner.game.now;
 
             const spread = degreesToRadians(definition.shotSpread);
 
@@ -88,8 +83,8 @@ export class GunItem extends InventoryItem {
     }
 
     override useItem(): void {
-        if (Date.now() - this._lastUse > this.definition.cooldown &&
-            Date.now() - this._switchDate > this.definition.switchCooldown) {
+        if (this.owner.game.now - this._lastUse > this.definition.cooldown &&
+            this.owner.game.now - this._switchDate > this.definition.switchCooldown) {
             this._useItemNoDelayCheck();
         }
     }

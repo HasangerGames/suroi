@@ -40,6 +40,8 @@ export class Game {
 
     world: World;
 
+    now = Date.now(); // The value of Date.now(), as of the start of the tick.
+
     staticObjects = new Set<GameObject>(); // A Set of all the static objects in the world
     dynamicObjects = new Set<GameObject>(); // A Set of all the dynamic (moving) objects in the world
     visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
@@ -159,7 +161,7 @@ export class Game {
 
     tick(delay: number): void {
         setTimeout((): void => {
-            const tickStart = Date.now();
+            this.now = Date.now();
 
             // Update bullets
             for (const bullet of this.bullets) {
@@ -195,7 +197,7 @@ export class Game {
 
             // Update gas
             if (this.gas.mode !== GasMode.Inactive) {
-                this.gas.percentage = (Date.now() - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
+                this.gas.percentage = (this.now - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
                 this.gasPercentageDirty = true;
             }
 
@@ -318,7 +320,7 @@ export class Game {
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
             // It measures the time it takes to calculate a tick, not the time between ticks.
-            const tickTime = Date.now() - tickStart;
+            const tickTime = Date.now() - this.now;
             this.tickTimes.push(tickTime);
 
             if (this.tickTimes.length >= 200) {
@@ -405,7 +407,7 @@ export class Game {
         this.gas.mode = currentStage.mode;
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
-        this.gas.countdownStart = Date.now();
+        this.gas.countdownStart = this.now;
         if (currentStage.mode === GasMode.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
