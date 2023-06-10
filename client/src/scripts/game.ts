@@ -50,7 +50,6 @@ export class Game {
     connect(address: string): void {
         this.error = false;
 
-        if (address === undefined) return;
         if (this.gameStarted) return;
 
         this.gameStarted = true;
@@ -95,7 +94,7 @@ export class Game {
                     new KillFeedPacket(this.playerManager).deserialize(stream);
                     break;
                 }
-                // TODO: maybe disconnect players that didn't send a ping in a while?
+                // TODO: maybe disconnect players that haven't sent a ping in a while?
                 case PacketType.Ping: {
                     new PingedPacket(this.playerManager).deserialize(stream);
                     break;

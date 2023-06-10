@@ -3,8 +3,8 @@ import {
     GAS_ALPHA, GAS_COLOR, GRASS_COLOR
 } from "../utils/constants";
 
-const MINIMAP_OPACITY_PERCENTAGE = 0.4
-const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8
+const MINIMAP_OPACITY_PERCENTAGE = 0.4;
+const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8;
 
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
@@ -25,8 +25,8 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     // noinspection JSUnusedGlobalSymbols
-    preload(): void {
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    preload(): void { }
 
     create(): void {
         this.scene.bringToTop();

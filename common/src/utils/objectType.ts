@@ -8,7 +8,6 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory> {
     idNumber: number;
     idString: string;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     private constructor(category: T, idNumber: number, idString: string) {
         this.category = category;
         this.idNumber = idNumber;
