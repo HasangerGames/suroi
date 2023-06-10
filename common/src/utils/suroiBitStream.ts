@@ -238,10 +238,10 @@ export class SuroiBitStream extends BitStream {
                 return this.readRotation(4);
             case "limited": // 4 possible orientations
                 switch (this.readBits(2)) {
-                    case 0: return -Math.PI;
-                    case 1: return -Math.PI / 2;
-                    case 2: return Math.PI / 2;
-                    case 3: return Math.PI;
+                    case 0: return 0;
+                    case 1: return Math.PI / 2;
+                    case 2: return Math.PI;
+                    case 3: return -Math.PI / 2;
                 }
                 break;
             case "binary": // 2 possible orientations

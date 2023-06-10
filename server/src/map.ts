@@ -39,7 +39,10 @@ export class Map {
             this.generateObstacles("super_barrel", 25);
         } else {
             // Obstacle debug code goes here
-            this.obstacleTest("regular_crate", Vec2(363, 363), -Math.PI, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(363, 363), 0, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(373, 363), Math.PI / 2, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(383, 363), Math.PI, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(393, 363), -Math.PI / 2, 1, 0);
         }
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
 
