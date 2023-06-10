@@ -110,16 +110,7 @@ export class Obstacle extends GameObject {
             // eslint-disable-next-line no-new
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
             // eslint-disable-next-line no-new
-            //new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));
-
-            /* for (const item of this.loot) {
-                let lootPosition = this.position.clone();
-                // TODO: add a "lootSpawnOffset" property for lockers and deposit boxes.
-                if (this.typeString.includes("locker") || this.typeString.includes("deposit_box")) lootPosition = addAdjust(lootPosition, Vec2(0, -2), this.orientation);
-
-                // eslint-disable-next-line no-new
-                new Loot(this.game, item.type, lootPosition, this.layer, item.count);
-            } */
+            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));
         } else {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale: number = this.scale;

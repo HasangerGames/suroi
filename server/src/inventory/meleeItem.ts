@@ -39,10 +39,10 @@ export class MeleeItem extends InventoryItem {
      * namely setTimeout
      */
     private _useItemNoDelayCheck(): void {
-        this._lastUse = Date.now();
         const owner = this.owner;
         const definition = this.definition;
 
+        this._lastUse = owner.game.now;
         owner.animation.type = AnimationType.Punch;
         owner.animation.seq = !this.owner.animation.seq;
         owner.partialDirtyObjects.add(owner);
@@ -51,6 +51,7 @@ export class MeleeItem extends InventoryItem {
         setTimeout((): void => {
             if (
                 this.owner.activeItem === this &&
+                owner.attacking &&
                 !owner.dead &&
                 !owner.disconnected
             ) {
@@ -89,7 +90,7 @@ export class MeleeItem extends InventoryItem {
     }
 
     override useItem(): void {
-        if (Date.now() - this._lastUse > this.definition.cooldown) {
+        if (this.owner.game.now - this._lastUse > this.definition.cooldown) {
             this._useItemNoDelayCheck();
         }
     }

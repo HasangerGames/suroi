@@ -1,6 +1,4 @@
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 
 import { type Game } from "../game";
 
@@ -11,6 +9,8 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { randomBoolean, randomRotation } from "../../../common/src/utils/random";
+import { LootDefinition } from "../../../common/src/definitions/loots";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -47,7 +47,7 @@ export class Loot extends GameObject {
             angularDamping: 0
         });
         this.body.createFixture({
-            shape: Circle(2.5),
+            shape: Circle((this.type.definition as LootDefinition).type === ItemType.Gun ? 3.125 : 2.5),
             restitution: 0,
             density: 1.0,
             friction: 0.0,

@@ -172,7 +172,7 @@ export class Player extends GameObject {
         this.zoom = 48;
         // fixme    ^^ magic number
 
-        this.joinTime = Date.now();
+        this.joinTime = game.now;
 
         // Init body
         this.body = game.world.createBody({

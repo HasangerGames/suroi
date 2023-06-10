@@ -80,7 +80,7 @@ export function vecLerp(start: Vector, end: Vector, percentage: number): Vector 
  * @param pos1 The center of the first circle.
  * @param r1 The radius of the first circle.
  * @param pos2 The center of the second circle.
- * @param r2 Thge radius of the second circle.
+ * @param r2 The radius of the second circle.
  */
 export function circleCollision(pos1: Vector, r1: number, pos2: Vector, r2: number): boolean {
     const a = r1 + r2;

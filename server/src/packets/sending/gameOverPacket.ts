@@ -23,6 +23,6 @@ export class GameOverPacket extends SendingPacket {
         stream.writeUint8(this.player.kills);
         stream.writeUint16(this.player.damageDone);
         stream.writeUint16(this.player.damageTaken);
-        stream.writeUint16((Date.now() - this.player.joinTime) / 1000);
+        stream.writeUint16((this.player.game.now - this.player.joinTime) / 1000);
     }
 }

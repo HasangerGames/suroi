@@ -94,7 +94,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const phaserPos = vMul(this.position, 20);
         this.rotation = stream.readRotation(16);
 
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
             //this.emitter.setPosition(phaserPos.x, phaserPos.y);

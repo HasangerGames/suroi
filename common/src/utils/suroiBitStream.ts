@@ -16,6 +16,7 @@ import {
     PLAYER_NAME_MAX_LENGTH, OBJECT_ID_BITS
 } from "../constants";
 import { type Variation } from "../typings";
+import { normalizeAngle } from "./math";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -253,13 +254,7 @@ export class SuroiBitStream extends BitStream {
             case "full":
                 return this.readRotation(4);
             case "limited": // 4 possible orientations
-                switch (this.readBits(2)) {
-                    case 0: return -Math.PI;
-                    case 1: return -Math.PI / 2;
-                    case 2: return Math.PI / 2;
-                    case 3: return Math.PI;
-                }
-                break;
+                return normalizeAngle(this.readBits(2) * (Math.PI / 2));
             case "binary": // 2 possible orientations
                 if (this.readBoolean()) return Math.PI / 2;
                 else return 0;

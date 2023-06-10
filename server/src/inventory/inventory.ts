@@ -10,7 +10,7 @@ import { type Player } from "../objects/player";
 /**
  * A class representing a player's inventory
  *
- * *Note that for now, this  implementation only considers items that can be equipped;
+ * *Note that for now, this implementation only considers items that can be equipped;
  * in other words, stackable items like ammo and consumable have **not** been taken into account.*
  */
 export class Inventory {
@@ -68,7 +68,7 @@ export class Inventory {
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const item = this._items[slot];
-        if (item !== undefined) item._switchDate = Date.now();
+        if (item !== undefined) item._switchDate = this.owner.game.now;
 
         this.owner.attacking = false;
 

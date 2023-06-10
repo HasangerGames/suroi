@@ -6,8 +6,7 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { type Variation } from "../../common/src/typings";
 import {
     random,
-    randomFloat,
-    randomPointInsideCircle,
+    randomFloat, randomPointInsideCircle,
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
@@ -39,7 +38,10 @@ export class Map {
             this.generateObstacles("super_barrel", 25);
         } else {
             // Obstacle debug code goes here
-            this.obstacleTest("regular_crate", Vec2(363, 363), -Math.PI, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(363, 363), 0, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(373, 363), Math.PI / 2, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(383, 363), Math.PI, 1, 0);
+            this.obstacleTest("regular_crate", Vec2(393, 363), -Math.PI / 2, 1, 0);
         }
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
 
@@ -156,7 +158,8 @@ export class Map {
         if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
             getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
         } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
-            getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
+            const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
+            getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
         } else {
             getPosition = (): Vector => v(0, 0);
         }
@@ -170,7 +173,7 @@ export class Map {
             }
 
             collided = false;
-            position = getPosition?.();
+            position = getPosition();
 
             const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
