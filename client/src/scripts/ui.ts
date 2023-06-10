@@ -35,7 +35,7 @@ $((): void => {
 
     usernameField.val(localStorageInstance.config.playerName);
 
-    usernameField.on("input", (): void => {
+    usernameField.on("input", () => {
         const value = usernameField.val() as string | undefined;
 
         if (value !== undefined && value.trim().length > 0) {
@@ -48,10 +48,10 @@ $((): void => {
         dropdown.toggle();
         ev.stopPropagation();
     });
-    body.on("click", (): void => { dropdown.hide(); });
+    body.on("click", () => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", (): void => { core.game?.endGame(); });
-    $("#btn-play-again").on("click", (): void => { core.game?.endGame(); });
+    $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
+    $("#btn-play-again").on("click", () => { core.game?.endGame(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
 
@@ -62,28 +62,23 @@ $((): void => {
         }
     });
 
-    $("#btn-settings").click((): void => {
+    $("#btn-settings").on("click", () => {
         settingsMenu.fadeToggle(250);
         settingsMenu.removeClass("in-game");
     });
 
-    $("#btn-settings-game").click((): void => {
+    $("#btn-settings-game").on("click", () => {
         gameMenu.hide();
         settingsMenu.fadeToggle(250);
         settingsMenu.addClass("in-game");
     });
 
-    $("#close-settings").click((): void => {
+    $("#close-settings").on("click", () => {
         settingsMenu.fadeOut(250);
     });
 
-
     // Disable context menu
-
-    $("#game-ui").on("contextmenu", (e) => {
-        e.preventDefault();
-    })
-
+    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
 
     // load settings values and event listeners
 
@@ -128,7 +123,7 @@ $((): void => {
     }).prop("checked", localStorageInstance.config.showPing);
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
-    // rotation smothing toggle
+    // rotation smoothing toggle
     $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ rotationSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.rotationSmoothing);

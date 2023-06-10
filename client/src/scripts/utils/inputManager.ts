@@ -1,4 +1,4 @@
-import nipplejs, { type EventData, type JoystickOutputData } from "nipplejs";
+import nipplejs, { type JoystickOutputData } from "nipplejs";
 
 import { mod } from "../../../../common/src/utils/math";
 import { type PlayerManager } from "./playerManager";
@@ -12,16 +12,16 @@ class Action {
     readonly name: string;
     readonly on?: () => void;
     readonly off?: () => void;
-    down = false;
+    private down = false;
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
-        this.on = (): void => {
+        this.on = () => {
             if (this.down) return;
             this.down = true;
             on?.();
         };
-        this.off = (): void => {
+        this.off = () => {
             if (!this.down) return;
             this.down = false;
             off?.();
@@ -35,11 +35,11 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
         return new Action(
             `move::${direction.toString()}`,
-            (): void => {
+            () => {
                 game.playerManager.movement[direction] = true;
                 game.playerManager.dirty.inputs = true;
             },
-            (): void => {
+            () => {
                 game.playerManager.movement[direction] = false;
                 game.playerManager.dirty.inputs = true;
             }
@@ -49,7 +49,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateSlotAction(slot: number): Action {
         return new Action(
             `inventory::slot${slot}`,
-            (): void => { game.playerManager.activeItemIndex = slot; }
+            () => { game.playerManager.activeItemIndex = slot; }
         );
     }
 
@@ -65,32 +65,32 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
 
         lastEquippedItem: new Action(
             "inventory::lastEquippedItem",
-            (): void => {
+            () => {
                 game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
             }
         ),
         previousItem: new Action(
             "inventory::previousItem",
-            (): void => {
+            () => {
                 game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex - 1, 3);
-                // fixme                                                  ^ mystery constant (max inventory size)
+                // fixme                                   mystery constant (max inventory size) ^
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
-            (): void => {
+            () => {
                 game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex + 1, 3);
-                // fixme                                                  ^ mystery constant (max inventory size)
+                // fixme                                   mystery constant (max inventory size) ^
             }
         ),
         useItem: new Action(
             "useItem",
-            (): void => { game.playerManager.attacking = true; },
-            (): void => { game.playerManager.attacking = false; }
+            () => { game.playerManager.attacking = true; },
+            () => { game.playerManager.attacking = false; }
         ),
         toggleMap: new Action(
             "toggleMap",
-            (): void => {
+            () => {
                 (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
             }
         )
@@ -145,7 +145,7 @@ export function setupInputs(game: Game): void {
                 detected, which is what we want
             */
             clearTimeout(mWheelStopTimer);
-            mWheelStopTimer = window.setTimeout((): void => {
+            mWheelStopTimer = window.setTimeout(() => {
                 fireAllEventsAtKey(key, false);
             }, 50);
 
@@ -157,6 +157,7 @@ export function setupInputs(game: Game): void {
 
     const gameUi = $("#game-ui")[0];
 
+    // different event targets… why?
     window.addEventListener("keydown", handleInputEvent);
     window.addEventListener("keyup", handleInputEvent);
     gameUi.addEventListener("mousedown", handleInputEvent);
@@ -173,19 +174,18 @@ export function setupInputs(game: Game): void {
     });
 
     // Mobile joysticks
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (game.playerManager.isMobile) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
             size: 150
         });
 
-        leftJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
+        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.movement.moving = true;
             game.playerManager.dirty.inputs = true;
         });
-        leftJoyStick.on("end", (): void => {
+        leftJoyStick.on("end", () => {
             game.playerManager.movement.moving = false;
             game.playerManager.dirty.inputs = true;
         });
@@ -195,14 +195,14 @@ export function setupInputs(game: Game): void {
             size: 150
         });
 
-        rightJoyStick.on("move", (evt: EventData, data: JoystickOutputData): void => {
+        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.turning = true;
 
             game.playerManager.attacking = data.distance > 70;
             game.playerManager.dirty.inputs = true;
         });
-        rightJoyStick.on("end", (): void => {
+        rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
             game.playerManager.dirty.inputs = true;
         });
@@ -279,10 +279,12 @@ function generateBindsConfigScreen(): void {
             function setKeyBind(event: KeyboardEvent | MouseEvent | WheelEvent): void {
                 event.stopImmediatePropagation();
 
-                if (event instanceof MouseEvent &&
+                if (
+                    event instanceof MouseEvent &&
                     event.type === "mousedown" &&
                     event.button === 0 &&
-                    !bindButton.classList.contains("active")) {
+                    !bindButton.classList.contains("active")
+                ) {
                     bindButton.classList.add("active");
                     return;
                 }
@@ -296,7 +298,7 @@ function generateBindsConfigScreen(): void {
                         const bindAction = keybinds[action2];
 
                         bindAction.forEach((bind2, bindIndex2) => {
-                            if (bindAction[bindIndex2] === key) {
+                            if (bind2 === key) {
                                 bindAction[bindIndex2] = "";
                             }
                         });
@@ -319,12 +321,13 @@ function generateBindsConfigScreen(): void {
             bindButton.addEventListener("mousedown", setKeyBind);
             bindButton.addEventListener("wheel", setKeyBind);
 
-            bindButton.addEventListener("scroll", (evt) => {
+            bindButton.addEventListener("scroll", evt => {
+                evt.preventDefault();
                 evt.stopPropagation();
                 evt.stopImmediatePropagation();
             });
 
-            bindButton.addEventListener("blur", (): void => {
+            bindButton.addEventListener("blur", () => {
                 bindButton.classList.remove("active");
             });
         });
@@ -341,7 +344,7 @@ function generateBindsConfigScreen(): void {
     $("<div/>", { class: "modal-item" }).append($("<button/>", {
         class: "btn btn-darken btn-lg btn-danger",
         text: "Reset to defaults"
-    }).on("click", (): void => {
+    }).on("click", () => {
         localStorageInstance.update({ keybinds: defaultConfig.keybinds });
         generateBindsConfigScreen();
     })).appendTo(keybindsContainer);
