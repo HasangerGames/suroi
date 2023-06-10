@@ -91,7 +91,31 @@ while (config.configVersion !== defaultConfig.configVersion) {
         }
         case "1": {
             // Add cameraShake and sfxVolume options which were added in this update
+            // As well, translate the single bind system to the double bind system
             config.configVersion = "2";
+
+            type KeybindStruct<T> = Record<string, T | Record<string, T | Record<string, T>>>;
+            type Version1Keybinds = KeybindStruct<string>;
+            type Version2Keybinds = KeybindStruct<[string, string]>;
+
+            // shut up, eslint
+            // i don't know if swearing is allowed in this codebase, so i won't swear after eslint
+            // eslint-disable-next-line no-inner-declarations
+            function convertAllBinds(object: Version1Keybinds, target: Version2Keybinds): Version2Keybinds {
+                for (const key in object) {
+                    const value = object[key];
+                    if (typeof value === "string") {
+                        target[key] = [value, ""];
+                    } else {
+                        convertAllBinds(value, target[key] = {});
+                    }
+                }
+
+                return target;
+            }
+
+            config.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as Config["keybinds"];
+
             config.sfxVolume = defaultConfig.sfxVolume;
             config.cameraShake = defaultConfig.cameraShake;
         }

@@ -7,7 +7,6 @@ import { type Variation } from "../../common/src/typings";
 import {
     random,
     randomFloat,
-    randomPointInsideCircle,
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
@@ -152,14 +151,7 @@ export class Map {
             throw new Error(`Unsupported object category: ${type.category}`);
         }
 
-        let getPosition: () => Vector;
-        if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === "random")) {
-            getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
-        } else if (type.category === ObjectCategory.Player && Config.spawn.mode === "radius") {
-            getPosition = (): Vector => randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
-        } else {
-            getPosition = (): Vector => v(0, 0);
-        }
+        const getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
 
         // Find a valid position
         while (collided && attempts <= 200) {
@@ -170,7 +162,7 @@ export class Map {
             }
 
             collided = false;
-            position = getPosition?.();
+            position = getPosition();
 
             const hitbox: Hitbox = initialHitbox.transform(position, scale);
             for (const object of this.game.staticObjects) {
