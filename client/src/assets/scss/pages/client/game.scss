@@ -295,7 +295,7 @@
     }
 
     .inventory-slot {
-        background: $light_transparent_bg;
+        background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         width: 125px;
         height: 125px;
         border-radius: 10px;

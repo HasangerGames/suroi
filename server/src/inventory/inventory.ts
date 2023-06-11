@@ -6,6 +6,8 @@ import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectD
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
+import { Loot } from "../objects/loot";
+import { v, vAdd } from "../../../common/src/utils/vector";
 
 /**
  * A class representing a player's inventory
@@ -164,9 +166,12 @@ export class Inventory {
         this.owner.dirty.inventory = true;
         this.owner.game.fullDirtyObjects.add(this.owner);
         this.owner.fullDirtyObjects.add(this.owner);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const old = this._setWeapon(slot, this._reifyItem(item));
-        // todo Drop old item into the game world
+        // Drop old item into the game world
+        const oldItem: GunItem | MeleeItem | undefined = this._setWeapon(slot, this._reifyItem(item));
+        if (oldItem === undefined) return;
+        const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
+        /* eslint-disable-next-line no-new */
+        new Loot(this.owner.game, oldItem.type, vAdd(this.owner.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
     }
 
     /**
