@@ -69,6 +69,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
             }
         ),
+        equipOtherGun: new Action(
+            "inventory::equipOtherGun",
+            () => {
+                game.playerManager.activeItemIndex++;
+                if (game.playerManager.activeItemIndex > 1) game.playerManager.activeItemIndex = 0;
+            }
+        ),
         previousItem: new Action(
             "inventory::previousItem",
             () => {
@@ -93,7 +100,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             () => {
                 (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
             }
-        )
+        ),
+        toggleMiniMap: new Action(
+            "toggleMap",
+            () => {
+                (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggleMiniMap();
+            }
+        ),
     };
 }
 
@@ -246,10 +259,12 @@ const actionsNames = {
     slot2: "Slot 2",
     slot3: "Slot 3",
     lastEquippedItem: "Equip Last item",
+    equipOtherGun: "Equip Other Gun",
     previousItem: "Equip Previous Item",
     nextItem: "Equip Next Item",
     useItem: "Use Item",
-    toggleMap: "Toggle Map"
+    toggleMap: "Toggle Fullscreen Map",
+    toggleMiniMap: "Toggle Mini Map"
 };
 
 // generate the input settings

@@ -10,6 +10,7 @@ export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
     playerIndicatorDead = false;
     isExpanded!: boolean;
+    visible = true;
 
     gasRect!: Phaser.GameObjects.Rectangle;
     gasCircle!: Phaser.GameObjects.Arc;
@@ -69,6 +70,12 @@ export class MinimapScene extends Phaser.Scene {
         else this.switchToBigMap();
     }
 
+    toggleMiniMap(): void {
+        this.visible = !this.visible;
+        this.cameras.main.setVisible(this.visible);
+        $("#minimap-border").toggle(this.visible);
+    }
+
     resizeBigMap(): void {
         const screenWidth: number = window.innerWidth;
         const screenHeight: number = window.innerHeight;
@@ -94,6 +101,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToBigMap(): void {
+        this.cameras.main.setVisible(true);
         this.cameras.main.setBackgroundColor(((MAP_FOCUSED_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = true;
         this.cameras.main.stopFollow();
@@ -102,9 +110,10 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToSmallMap(): void {
+        this.resizeSmallMap();
         this.cameras.main.setBackgroundColor(((MINIMAP_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = false;
-        this.resizeSmallMap();
-        $("#minimap-border").show();
+        this.cameras.main.setVisible(this.visible);
+        $("#minimap-border").toggle(this.visible);
     }
 }

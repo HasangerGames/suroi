@@ -8,10 +8,12 @@ export type KeybindActions = {
     slot2: [string, string]
     slot3: [string, string]
     lastEquippedItem: [string, string]
+    equipOtherGun: [string, string]
     previousItem: [string, string]
     nextItem: [string, string]
     useItem: [string, string]
     toggleMap: [string, string]
+    toggleMiniMap: [string, string]
 };
 
 export interface Config {
@@ -33,7 +35,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "4",
+    configVersion: "5",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -44,10 +46,12 @@ export const defaultConfig: Config = {
         slot2: ["2", ""],
         slot3: ["3", ""],
         lastEquippedItem: ["Q", ""],
+        equipOtherGun: ["Space", ""],
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
-        toggleMap: ["G", "M"]
+        toggleMap: ["G", "M"],
+        toggleMiniMap: ["N", ""],
     },
     masterVolume: 1,
     musicVolume: 1,
@@ -131,6 +135,14 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version four just adds the toggleMap keybind, so just that needs porting
             config.configVersion = "4";
             config.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
+            break;
+        }
+        case "4": {
+            // Added equip other gun and toggle mini map keybinds
+            // And mobile controls toggle
+            config.configVersion = "5";
+            config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
+            config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
             break;
         }
         default: {

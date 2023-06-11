@@ -11,9 +11,7 @@
 }
 
 #minimap-border {
-    position: fixed;
-    top: 10px;
-    left: 10px;
+    margin: 10px;
 
     width: 270px;
     height: 270px;
@@ -22,8 +20,7 @@
     border-radius: 10px;
 
     @media screen and (max-width: $screen_large) {
-        top: 5px;
-        left: 5px;
+        margin: 5px;
         width: 135px;
         height: 135px;
         border-width: 5px;
@@ -32,17 +29,14 @@
 }
 
 #debug-hud {
-    position: fixed;
-    top: 285px;
-    left: 5px;
-
-    @media screen and (max-width: $screen_large) {
-        top: 145px;
-    }
-
-    margin: 0.4em;
+    margin: 10px;
     text-shadow: 1px 1px 2px black;
     font-family: monospace;
+
+    @media screen and (max-width: $screen_large) {
+        font-size: 10px;
+        margin: 5px;
+    }
 }
 
 .ui-leaderboard {
