@@ -154,6 +154,7 @@
         width: 220px;
         height: 40px;
         bottom: 8px;
+        border-width: 6px;
     }
 
     display: flex;
@@ -353,6 +354,17 @@
         .stat-value {
             text-align: right;
             margin-left: auto;
+        }
+    }
+    @media screen and (max-width: $screen_large) {
+        font-size: 12px;
+
+        #game-over-stats {
+            width: 200px;
+        }
+
+        button {
+            font-size: 14px;
         }
     }
 }
