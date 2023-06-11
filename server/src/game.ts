@@ -221,15 +221,15 @@ export class Game {
                 // This system allows opposite movement keys to cancel each other out.
                 const movement: Vector = v(0, 0);
 
-                if (player.isMobile && player.movement.moving) {
-                    movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = -Math.sin(player.movement.angle) * 1.45;
-                }
-
                 if (player.movement.up) movement.y++;
                 if (player.movement.down) movement.y--;
                 if (player.movement.left) movement.x--;
                 if (player.movement.right) movement.x++;
+
+                if (player.isMobile && player.movement.moving) {
+                    movement.x = Math.cos(player.movement.angle) * 1.45;
+                    movement.y = -Math.sin(player.movement.angle) * 1.45;
+                }
 
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
                 const speed = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;

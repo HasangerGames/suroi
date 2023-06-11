@@ -32,6 +32,7 @@ export interface Config {
     showPing: boolean
     rotationSmoothing: boolean
     movementSmoothing: boolean
+    mobileControls: boolean
 }
 
 export const defaultConfig: Config = {
@@ -51,7 +52,7 @@ export const defaultConfig: Config = {
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
         toggleMap: ["G", "M"],
-        toggleMiniMap: ["N", ""],
+        toggleMiniMap: ["N", ""]
     },
     masterVolume: 1,
     musicVolume: 1,
@@ -63,7 +64,8 @@ export const defaultConfig: Config = {
     showFPS: false,
     showPing: false,
     rotationSmoothing: true,
-    movementSmoothing: true
+    movementSmoothing: true,
+    mobileControls: true
 };
 
 const configKey = "config";
@@ -143,6 +145,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.configVersion = "5";
             config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
             config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
+            config.mobileControls = defaultConfig.mobileControls;
             break;
         }
         default: {
