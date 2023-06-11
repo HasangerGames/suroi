@@ -1,7 +1,7 @@
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
-    readonly type: ItemType.Healing
+    readonly itemType: ItemType.Healing
     readonly healType: HealType
     readonly restoreAmount: number
     readonly useText: string
@@ -13,15 +13,15 @@ export const HealingItems: HealingItemDefinition[] = [
     {
         idString: "gauze",
         name: "Gauze",
-        type: ItemType.Healing,
+        itemType: ItemType.Healing,
         healType: HealType.Health,
-        restoreAmount: 10,
+        restoreAmount: 15,
         useText: "Applying"
     },
     {
         idString: "medikit",
         name: "Medikit",
-        type: ItemType.Healing,
+        itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 75,
         useText: "Using"
@@ -29,15 +29,15 @@ export const HealingItems: HealingItemDefinition[] = [
     {
         idString: "cola",
         name: "Cola",
-        type: ItemType.Healing,
+        itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
-        restoreAmount: 25,
+        restoreAmount: 20,
         useText: "Drinking"
     },
     {
         idString: "tablets",
         name: "Tablets",
-        type: ItemType.Healing,
+        itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
         restoreAmount: 20,
         useText: "Taking"

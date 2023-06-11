@@ -230,9 +230,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
-            if (weaponDef.type === ItemType.Melee) {
+            if (weaponDef.itemType === ItemType.Melee) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
-            } else if (weaponDef.type === ItemType.Gun) {
+            } else if (weaponDef.itemType === ItemType.Gun) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
             }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
@@ -240,10 +240,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (!this.isNew) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
-        if (weaponDef.type === ItemType.Gun) {
+        if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);
             this.images.container.bringToTop(this.images.body);
-        } else if (weaponDef.type === ItemType.Melee) {
+        } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.container.sendToBack(this.images.body);
             this.images.container.sendToBack(this.images.weaponImg);
         }

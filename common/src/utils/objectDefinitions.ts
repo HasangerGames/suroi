@@ -21,5 +21,5 @@ export interface ObjectDefinition {
 export enum ItemType { Gun, Melee, Healing }
 
 export interface ItemDefinition extends ObjectDefinition {
-    readonly type: ItemType
+    readonly itemType: ItemType
 }

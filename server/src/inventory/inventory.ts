@@ -123,7 +123,7 @@ export class Inventory {
     private _reifyItem(item: GunItem | MeleeItem | string): GunItem | MeleeItem | undefined {
         if (item instanceof GunItem || item instanceof MeleeItem) return item;
 
-        switch ((ObjectType.fromString(ObjectCategory.Loot, item).definition as ItemDefinition).type) {
+        switch ((ObjectType.fromString(ObjectCategory.Loot, item).definition as ItemDefinition).itemType) {
             case ItemType.Gun: return new GunItem(item, this.owner);
             case ItemType.Melee: return new MeleeItem(item, this.owner);
         }

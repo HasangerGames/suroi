@@ -2,7 +2,7 @@ import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
 export interface MeleeDefinition extends ItemDefinition {
-    readonly type: ItemType.Melee
+    readonly itemType: ItemType.Melee
 
     readonly damage: number
     readonly obstacleMultiplier: number
@@ -30,7 +30,7 @@ export const Melees: MeleeDefinition[] = [
     {
         idString: "fists",
         name: "Fists",
-        type: ItemType.Melee,
+        itemType: ItemType.Melee,
         damage: 20,
         obstacleMultiplier: 2,
         radius: 1.5,
@@ -48,7 +48,7 @@ export const Melees: MeleeDefinition[] = [
     {
         idString: "dagger",
         name: "Dagger",
-        type: ItemType.Melee,
+        itemType: ItemType.Melee,
         damage: 30,
         obstacleMultiplier: 0.75,
         radius: 2.2,
@@ -72,7 +72,7 @@ export const Melees: MeleeDefinition[] = [
     {
         idString: "branch",
         name: "Branch",
-        type: ItemType.Melee,
+        itemType: ItemType.Melee,
         damage: 10,
         obstacleMultiplier: 0.5,
         radius: 3,
@@ -96,7 +96,7 @@ export const Melees: MeleeDefinition[] = [
     {
         idString: "club",
         name: "Club",
-        type: ItemType.Melee,
+        itemType: ItemType.Melee,
         damage: 25,
         obstacleMultiplier: 1,
         radius: 3,
@@ -120,7 +120,7 @@ export const Melees: MeleeDefinition[] = [
     {
         idString: "club_op",
         name: "Club OP",
-        type: ItemType.Melee,
+        itemType: ItemType.Melee,
         damage: 30,
         obstacleMultiplier: 1,
         radius: 3,

@@ -7,7 +7,7 @@ import Phaser from "phaser";
 import { type Game } from "../game";
 import { type GameScene } from "../scenes/gameScene";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { LootDefinition } from "../../../../common/src/definitions/loots";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
@@ -60,7 +60,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         // Set the loot texture based on the type
         this.images.item.setTexture("main", `${this.type.idString}.svg`);
         let backgroundTexture: string | undefined;
-        switch ((this.type.definition as LootDefinition).type) {
+        switch ((this.type.definition as LootDefinition).itemType) {
             case ItemType.Gun:
                 backgroundTexture = "loot_background_gun.svg";
                 this.images.item.setScale(0.75);

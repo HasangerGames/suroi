@@ -32,8 +32,7 @@ export class Map {
             this.generateObstacles("pine_tree", 10);
             this.generateObstacles("rock", 150);
             this.generateObstacles("bush", 85);
-            this.generateObstacles("regular_crate", 100);
-            this.generateObstacles("health_crate", 100);
+            this.generateObstacles("regular_crate", 115);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
         } else {
