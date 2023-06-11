@@ -2,6 +2,9 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { type Player } from "../../objects/player";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { Loot } from "../../objects/loot";
+import { type CollisionRecord } from "../../../../common/src/utils/math";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -32,7 +35,7 @@ export class InputPacket extends ReceivingPacket {
             // If the switch is successful, then the active item index isn't dirty;
             // conversely, if the switch fails, then the change needs to be sent back
             // to the client, and the active item index is thus dirty
-            player.dirty.activeItemIndex = player.inventory.setActiveItemIndex(activeItemIndex);
+            player.dirty.activeWeaponIndex = player.inventory.setActiveWeaponIndex(activeItemIndex);
 
             player.game.fullDirtyObjects.add(player);
             player.fullDirtyObjects.add(player);
@@ -41,6 +44,22 @@ export class InputPacket extends ReceivingPacket {
         player.turning = stream.readBoolean();
         if (player.turning) {
             player.rotation = stream.readRotation(16);
+        }
+
+        if (stream.readBoolean()) { // interacting
+            let minDist = Number.MAX_VALUE;
+            let closestObject: Loot | undefined;
+            for (const object of player.visibleObjects) {
+                if (object instanceof Loot && object.canInteract(player)) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(new CircleHitbox(3, player.position));
+                    if (record?.collided === true && record.distance < minDist) {
+                        minDist = record.distance;
+                        closestObject = object;
+                    }
+                }
+            }
+            if (closestObject !== undefined) closestObject.interact(player);
         }
     }
 }

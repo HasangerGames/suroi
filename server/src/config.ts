@@ -70,7 +70,7 @@ export const Config = {
         enable: false
     },
 
-    movementSpeed: 0.032,
+    movementSpeed: 0.031,
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
     spawn: {

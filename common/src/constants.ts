@@ -40,6 +40,7 @@ export const OBJECT_ID_BITS = 10;
 export const VARIATION_BITS = 3;
 export const ANIMATION_TYPE_BITS = 1;
 export const KILL_FEED_MESSAGE_TYPE_BITS = 1;
+export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;

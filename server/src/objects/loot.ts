@@ -1,4 +1,6 @@
-import { type Body, Circle, Vec2 } from "planck";
+import {
+    type Body, Circle, Vec2
+} from "planck";
 
 import { type Game } from "../game";
 
@@ -9,8 +11,10 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { randomBoolean, randomRotation } from "../../../common/src/utils/random";
-import { LootDefinition } from "../../../common/src/definitions/loots";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type Player } from "./player";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -46,13 +50,16 @@ export class Loot extends GameObject {
             linearDamping: 0.003,
             angularDamping: 0
         });
+        const radius: number = (this.type.definition as LootDefinition).type === ItemType.Gun ? 3.125 : 2.5;
         this.body.createFixture({
-            shape: Circle((this.type.definition as LootDefinition).type === ItemType.Gun ? 3.125 : 2.5),
+            shape: Circle(radius),
             restitution: 0,
             density: 1.0,
             friction: 0.0,
             userData: this
         });
+
+        this.hitbox = new CircleHitbox(radius, this.position);
 
         // Push the loot in a random direction
         const angle: number = randomRotation();
@@ -72,6 +79,58 @@ export class Loot extends GameObject {
     get rotation(): number {
         const angle: number = this.body.getAngle();
         return Math.atan2(Math.cos(angle), Math.sin(angle));
+    }
+
+    canInteract(player: Player): boolean {
+        const inventory = player.inventory;
+        switch ((this.type.definition as LootDefinition).type) {
+            case ItemType.Healing:
+                switch (this.type.idString) {
+                    case "medikit": return player.health < 100;
+                    case "cola": return player.adrenaline < 100;
+                }
+                break;
+            case ItemType.Gun:
+                return !inventory.hasWeapon(0) ||
+                       !inventory.hasWeapon(1) ||
+                       (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
+        }
+        return false;
+    }
+
+    interact(player: Player): void {
+        const inventory = player.inventory;
+        let success = false;
+        switch ((this.type.definition as LootDefinition).type) {
+            case ItemType.Healing:
+                success = true;
+                switch (this.type.idString) {
+                    case "medikit":
+                        player.health += 100;
+                        break;
+                    case "cola":
+                        player.adrenaline += 20;
+                        break;
+                }
+                break;
+            case ItemType.Melee:
+                break;
+            case ItemType.Gun:
+                if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
+                    inventory.appendWeapon(this.type.idString);
+                    success = true;
+                } else if (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString) {
+                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.type.idString);
+                    success = true;
+                }
+                break;
+        }
+        if (success) {
+            this.game.dynamicObjects.delete(this);
+            this.game.loot.delete(this);
+            this.game.deletedObjects.add(this);
+            this.game.world.destroyBody(this.body);
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

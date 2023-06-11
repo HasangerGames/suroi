@@ -63,6 +63,10 @@ export class UpdatePacket extends ReceivingPacket {
         // Adrenaline
         if (stream.readBoolean()) {
             playerManager.adrenaline = stream.readFloat(0, 100, 8);
+            $("#adrenaline-bar").width(`${playerManager.adrenaline}%`);
+            const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
+            adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
+            adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
         // Active player ID

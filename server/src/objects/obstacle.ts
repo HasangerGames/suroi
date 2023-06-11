@@ -77,17 +77,17 @@ export class Obstacle extends GameObject {
             if (source instanceof Player && Config.switchMeleeWeapons) {
                 source.obstaclesDestroyed[definition.material]++;
                 if (source.obstaclesDestroyed.tree >= 6 &&
-                    !(source.inventory.checkIfItemExists("branch") ||
-                        source.inventory.checkIfItemExists("club") ||
-                        source.inventory.checkIfItemExists("club_op") ||
-                        source.inventory.checkIfItemExists("dagger"))
+                    !(source.inventory.checkIfWeaponExists("branch") ||
+                        source.inventory.checkIfWeaponExists("club") ||
+                        source.inventory.checkIfWeaponExists("club_op") ||
+                        source.inventory.checkIfWeaponExists("dagger"))
                 ) {
-                    source.inventory.addOrReplaceItem(2, Math.random() < 0.2 ? "club" : "branch");
+                    source.inventory.addOrReplaceWeapon(2, Math.random() < 0.2 ? "club" : "branch");
                 }
                 if (source.obstaclesDestroyed.metal >= 5 &&
                     source.kills >= 2 &&
-                    source.inventory.checkIfItemExists("club")) {
-                    source.inventory.addOrReplaceItem(2, "club_op");
+                    source.inventory.checkIfWeaponExists("club")) {
+                    source.inventory.addOrReplaceWeapon(2, "club_op");
                 }
             }
 
@@ -105,12 +105,11 @@ export class Obstacle extends GameObject {
                 this.game.explosions.add(explosion);
             }
 
-            // eslint-disable-next-line no-new
+            /* eslint-disable no-new */
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "cola"), vClone(this.position));
-            // eslint-disable-next-line no-new
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
-            // eslint-disable-next-line no-new
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));
+            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "m3k"), vClone(this.position));
         } else {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale: number = this.scale;
@@ -136,11 +135,13 @@ export class Obstacle extends GameObject {
             if (this.hitbox instanceof CircleHitbox) {
                 this.hitbox.radius *= scaleFactor;
             } else if (this.hitbox instanceof RectangleHitbox) {
-                const rotatedRect = transformRectangle(this.position,
+                const rotatedRect = transformRectangle(
+                    this.position,
                     vSub(this.hitbox.min, this.position),
                     vSub(this.hitbox.max, this.position),
-                    scaleFactor, 0);
-
+                    scaleFactor,
+                    0
+                );
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
             }

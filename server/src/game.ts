@@ -1,7 +1,11 @@
 // noinspection ES6PreferShortImport
-import { Config, GasMode, SpawnMode } from "./config";
+import {
+    Config, GasMode, SpawnMode
+} from "./config";
 
-import { Box, Fixture, Settings, Vec2, World } from "planck";
+import {
+    Box, Fixture, Settings, Vec2, World
+} from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { type PlayerContainer } from "./server";
@@ -24,8 +28,12 @@ import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { GasStages } from "./data/gasStages";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
+import {
+    v, vClone, type Vector
+} from "../../common/src/utils/vector";
+import {
+    distanceSquared, lerp, vecLerp
+} from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { type Loot } from "./objects/loot";
 
@@ -253,13 +261,22 @@ export class Game {
                 if (player.movement.right) movement.x++;
 
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                const speed = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
+                let speed: number = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
+                speed *= 1 + (0.1 * (player.adrenaline / 100));
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
                     this.partialDirtyObjects.add(player);
                 }
+
+                // Drain adrenaline
+                if (player.adrenaline > 0) {
+                    player.adrenaline -= 0.015;
+                }
+
+                // Regenerate health
+                player.health += player.adrenaline * 0.00039;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {

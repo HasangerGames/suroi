@@ -4,6 +4,7 @@ export type KeybindActions = {
     moveDown: [string, string]
     moveLeft: [string, string]
     moveRight: [string, string]
+    interact: [string, string]
     slot1: [string, string]
     slot2: [string, string]
     slot3: [string, string]
@@ -33,13 +34,14 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "4",
+    configVersion: "5",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
         moveDown: ["S", "ArrowDown"],
         moveLeft: ["A", "ArrowLeft"],
         moveRight: ["D", "ArrowRight"],
+        interact: ["F", ""],
         slot1: ["1", ""],
         slot2: ["2", ""],
         slot3: ["3", ""],
@@ -83,6 +85,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
     //! that only the last branch before the default case has a break, and that none of the others do
 
     /* eslint-disable no-fallthrough */
+    // noinspection FallThroughInSwitchStatementJS
     switch (config.configVersion) {
         case undefined: {
             // Configs lacking a version field also lack keybind fields, so take those from the default
@@ -131,6 +134,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version four just adds the toggleMap keybind, so just that needs porting
             config.configVersion = "4";
             config.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
+            break;
+        }
+        case "4": {
+            // Version 5 adds the Interact keybind
+            config.configVersion = "5";
+            config.keybinds.interact = defaultConfig.keybinds.interact;
             break;
         }
         default: {

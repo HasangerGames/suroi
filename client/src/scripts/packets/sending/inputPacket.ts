@@ -27,5 +27,7 @@ export class InputPacket extends SendingPacket {
         if (player.turning) {
             stream.writeRotation(player.rotation, 16);
         }
+        stream.writeBoolean(player.interacting);
+        player.interacting = false;
     }
 }
