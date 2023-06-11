@@ -58,7 +58,7 @@ export const Guns: GunDefinition[] = [
         idString: "m3k",
         name: "M3K",
         itemType: ItemType.Gun,
-        cooldown: 1000,
+        cooldown: 750,
         switchCooldown: 30,
         fireMode: "single",
         shotSpread: 7,
@@ -72,7 +72,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(100, 3) },
         capacity: Infinity,
         ballistics: {
-            damage: 7,
+            damage: 6.5,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
