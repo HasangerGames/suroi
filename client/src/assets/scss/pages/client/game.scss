@@ -370,6 +370,7 @@
     text-align: center;
 
     &.chicken-dinner {
+        //noinspection CssUnknownTarget
         background-image: url("../../img/misc/chicken-dinner.png");
         color: white;
         text-shadow: 1px 1px 2px black;
