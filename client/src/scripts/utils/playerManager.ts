@@ -99,12 +99,14 @@ export class PlayerManager {
                 const container = $(`#weapon-slot-${i + 1}`);
                 if (stream.readBoolean()) {
                     // if the slot is not empty
+                    container.addClass("has-item");
                     const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;
                     container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${itemDef.idString}.svg`)).show();
                 } else {
                     // empty slot
+                    container.removeClass("has-item");
                     container.children(".item-name").text("");
                     container.children(".item-image").removeAttr("src").hide();
                 }
