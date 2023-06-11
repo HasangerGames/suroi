@@ -26,7 +26,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             item: this.scene.add.image(0, 0, "main"),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
-        images.container = this.scene.add.container(0, 0, [images.background, images.item]).setDepth(0);
+        images.container = this.scene.add.container(0, 0, [images.background, images.item]).setDepth(1);
         this.images = images;
     }
 

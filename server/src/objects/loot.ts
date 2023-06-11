@@ -84,17 +84,19 @@ export class Loot extends GameObject {
 
     canInteract(player: Player): boolean {
         const inventory = player.inventory;
-        switch ((this.type.definition as LootDefinition).itemType) {
-            case ItemType.Healing:
-                switch (this.type.idString) {
-                    case "medikit": return player.health < 100;
-                    case "cola": return player.adrenaline < 100;
-                }
+        const definition = this.type.definition as LootDefinition;
+        switch (definition.itemType) {
+            case ItemType.Healing: {
+                const healDefinition = definition as HealingItemDefinition;
+                if (healDefinition.healType === HealType.Health) return player.health < 100;
+                else if (healDefinition.healType === HealType.Adrenaline) return player.adrenaline < 100;
                 break;
-            case ItemType.Gun:
+            }
+            case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
-                       !inventory.hasWeapon(1) ||
-                       (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
+                    !inventory.hasWeapon(1) ||
+                    (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
+            }
         }
         return false;
     }

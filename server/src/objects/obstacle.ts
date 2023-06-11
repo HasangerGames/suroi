@@ -106,6 +106,7 @@ export class Obstacle extends GameObject {
             }
 
             /* eslint-disable no-new */
+            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "gauze"), vClone(this.position));
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "cola"), vClone(this.position));
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
             new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));

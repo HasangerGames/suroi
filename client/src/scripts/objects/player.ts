@@ -72,7 +72,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
-        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(1);
+        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(2);
         this.images = images;
 
         this.updateFistsPosition();
@@ -96,7 +96,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
-            //this.emitter.setPosition(phaserPos.x, phaserPos.y);
         } else {
             gsap.to(this.images.container, {
                 x: phaserPos.x,
