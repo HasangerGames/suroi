@@ -13,7 +13,7 @@ export class MapPacket extends SendingPacket {
         super.serialize(stream);
         const game = this.player.game;
         const objects: Obstacle[] = [...game.staticObjects].filter(object => object instanceof Obstacle) as Obstacle[];
-        stream.writeUint16(objects.length);
+        stream.writeBits(objects.length, 10);
         for (const object of objects) {
             stream.writeObjectType(object.type);
             const definition: ObstacleDefinition = object.type.definition as ObstacleDefinition;

@@ -58,6 +58,10 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         moveDown: generateMovementAction("down"),
         moveRight: generateMovementAction("right"),
         moveLeft: generateMovementAction("left"),
+        interact: new Action(
+            "interact",
+            () => { game.playerManager.interacting = true; game.playerManager.dirty.inputs = true; }
+        ),
 
         slot1: generateSlotAction(0),
         slot2: generateSlotAction(1),
@@ -262,6 +266,7 @@ const actionsNames = {
     moveDown: "Move Down",
     moveLeft: "Move Left",
     moveRight: "Move Right",
+    interact: "Interact",
     slot1: "Slot 1",
     slot2: "Slot 2",
     slot3: "Slot 3",

@@ -7,12 +7,13 @@ import { Vec2 } from "planck";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { type CollisionRecord } from "../../../common/src/utils/math";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 /**
  * A class representing a melee weapon
  */
 export class MeleeItem extends InventoryItem {
-    declare readonly category: "melee";
+    declare readonly category: ItemType.Melee;
 
     readonly definition: MeleeDefinition;
 
@@ -25,7 +26,7 @@ export class MeleeItem extends InventoryItem {
     constructor(idString: string, owner: Player) {
         super(idString, owner);
 
-        if (this.category !== "melee") {
+        if (this.category !== ItemType.Melee) {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
         }
 

@@ -15,7 +15,7 @@ import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { GasMode, PacketType } from "../../../common/src/constants";
+import { GasState, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
@@ -39,7 +39,7 @@ export class Game {
     lastPingDate = Date.now();
 
     readonly gas = {
-        mode: GasMode.Inactive,
+        state: GasState.Inactive,
         initialDuration: 0,
         oldPosition: v(360, 360),
         newPosition: v(360, 360),

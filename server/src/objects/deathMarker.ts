@@ -9,13 +9,15 @@ export class DeathMarker extends GameObject {
     readonly is: CollisionFilter = {
         player: false,
         obstacle: false,
-        bullet: false
+        bullet: false,
+        loot: false
     };
 
     readonly collidesWith: CollisionFilter = {
         player: false,
         obstacle: false,
-        bullet: false
+        bullet: false,
+        loot: false
     };
 
     playerName: string;

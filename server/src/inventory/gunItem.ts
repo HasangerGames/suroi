@@ -6,12 +6,13 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { Bullet } from "../objects/bullet";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 
 /**
  * A class representing a firearm
  */
 export class GunItem extends InventoryItem {
-    declare readonly category: "gun";
+    declare readonly category: ItemType.Gun;
 
     readonly definition: GunDefinition;
 
@@ -26,7 +27,7 @@ export class GunItem extends InventoryItem {
     constructor(idString: string, owner: Player) {
         super(idString, owner);
 
-        if (this.category !== "gun") {
+        if (this.category !== ItemType.Gun) {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 
@@ -44,7 +45,12 @@ export class GunItem extends InventoryItem {
         const owner = this.owner;
         const definition = this.definition;
 
-        if (this.ammo > 0 && owner.attacking && !owner.dead && !owner.disconnected) {
+        if (
+            this.ammo > 0 &&
+            owner.attacking &&
+            !owner.dead &&
+            !owner.disconnected
+        ) {
             this.ammo--;
             this._lastUse = owner.game.now;
 

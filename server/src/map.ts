@@ -6,7 +6,7 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { type Variation } from "../../common/src/typings";
 import {
     random,
-    randomFloat,
+    randomFloat, randomPointInsideCircle,
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
@@ -14,7 +14,7 @@ import { type ObstacleDefinition } from "../../common/src/definitions/obstacles"
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
-import { Config } from "./config";
+import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
 
 export class Map {
@@ -32,8 +32,7 @@ export class Map {
             this.generateObstacles("pine_tree", 10);
             this.generateObstacles("rock", 150);
             this.generateObstacles("bush", 85);
-            this.generateObstacles("regular_crate", 100);
-            this.generateObstacles("health_crate", 100);
+            this.generateObstacles("regular_crate", 115);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
         } else {
@@ -154,7 +153,15 @@ export class Map {
             throw new Error(`Unsupported object category: ${type.category}`);
         }
 
-        const getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
+        let getPosition: () => Vector;
+        if (type.category === ObjectCategory.Obstacle || (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
+            getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
+        } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
+            const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
+            getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
+        } else {
+            getPosition = (): Vector => v(0, 0);
+        }
 
         // Find a valid position
         while (collided && attempts <= 200) {

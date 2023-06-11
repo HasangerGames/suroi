@@ -33,13 +33,15 @@ export class Player extends GameObject {
     override readonly is: CollisionFilter = {
         player: true,
         obstacle: false,
-        bullet: false
+        bullet: false,
+        loot: false
     };
 
     override readonly collidesWith: CollisionFilter = {
         player: false,
         obstacle: true,
-        bullet: true
+        bullet: true,
+        loot: false
     };
 
     name: string;
@@ -49,7 +51,7 @@ export class Player extends GameObject {
 
     private _health = 100;
 
-    private _adrenaline = 100;
+    private _adrenaline = 0;
 
     killedBy?: Player;
 
@@ -120,7 +122,7 @@ export class Player extends GameObject {
     readonly dirty = {
         health: true,
         adrenaline: true,
-        activeItemIndex: true,
+        activeWeaponIndex: true,
         inventory: true,
         activePlayerId: true,
         zoom: true
@@ -129,11 +131,11 @@ export class Player extends GameObject {
     readonly inventory = new Inventory(this);
 
     get activeItem(): InventoryItem {
-        return this.inventory.activeItem;
+        return this.inventory.activeWeapon;
     }
 
     get activeItemIndex(): number {
-        return this.inventory.activeItemIndex;
+        return this.inventory.activeWeaponIndex;
     }
 
     hitEffect = false;
@@ -190,9 +192,7 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(2.5, this.position);
 
         // Inventory preset
-        this.inventory.addOrReplaceItem(0, "ak47");
-        this.inventory.addOrReplaceItem(1, "m3k");
-        this.inventory.addOrReplaceItem(2, "fists");
+        this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -212,6 +212,7 @@ export class Player extends GameObject {
 
     set health(health: number) {
         this._health = health;
+        if (this._health > 100) this._health = 100;
         this.dirty.health = true;
     }
 
@@ -221,6 +222,8 @@ export class Player extends GameObject {
 
     set adrenaline(adrenaline: number) {
         this._adrenaline = adrenaline;
+        if (this._adrenaline < 0) this._adrenaline = 0;
+        if (this.adrenaline > 100) this._adrenaline = 100;
         this.dirty.adrenaline = true;
     }
 
@@ -240,7 +243,7 @@ export class Player extends GameObject {
     }
 
     give(idString: string): void {
-        this.inventory.appendItem(idString);
+        this.inventory.appendWeapon(idString);
     }
 
     updateVisibleObjects(): void {
@@ -333,7 +336,7 @@ export class Player extends GameObject {
 
         if (Config.switchMeleeWeapons) {
             if (this.health > 0 && this.health < 20) {
-                this.inventory.addOrReplaceItem(2, "dagger");
+                this.inventory.addOrReplaceWeapon(2, "dagger");
             }
         }
 

@@ -147,14 +147,15 @@
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 320px;
+    width: 330px;
     height: 50px;
 
     @media screen and (max-width: $screen_large) {
-        width: 220px;
-        height: 40px;
-        bottom: 8px;
-        border-width: 6px;
+        width: 230px;
+        height: 35px;
+        bottom: 5px;
+
+        border-width: 5px;
     }
 
     display: flex;
@@ -191,6 +192,53 @@
 
         z-index: 1;
         margin-left: 8px;
+    }
+}
+
+#adrenaline-bar-container {
+    background: $transparent_bg;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 330px;
+    height: 20px;
+
+    @media screen and (max-width: $screen_large) {
+        width: 230px;
+        height: 16px;
+        bottom: 52px;
+    }
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    #adrenaline-bar {
+        background-color: $orange;
+        transition: width ease-in-out 50ms;
+        border-radius: 4px;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+    }
+
+    #adrenaline-bar-percentage {
+        color: #ffffff;
+        font-size: 14px;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 12px;
+        }
+
+        z-index: 1;
+        margin-left: 16px;
+        position: relative;
+        top: -1px;
     }
 }
 
@@ -241,7 +289,7 @@
     }
 
     .inventory-slot {
-        background: $light_transparent_bg;
+        background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         width: 125px;
         height: 125px;
         border-radius: 10px;
@@ -322,7 +370,7 @@
     text-align: center;
 
     &.chicken-dinner {
-        background-image: url("../../img/game/misc/chicken-dinner.png");
+        background-image: url("../../img/misc/chicken-dinner.png");
         color: white;
         text-shadow: 1px 1px 2px black;
     }

@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="11.740365mm"
-   height="7.6394615mm"
-   viewBox="0 0 11.740365 7.6394615"
+   width="70"
+   height="45.549"
+   viewBox="0 0 18.520834 12.051506"
    version="1.1"
    id="svg1104"
    xml:space="preserve"
-   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
-   sodipodi:docname="medkit_01.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="medikit.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -21,20 +21,22 @@
      borderopacity="1"
      inkscape:showpageshadow="0"
      inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="0"
+     inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#505050"
-     inkscape:document-units="mm"
+     inkscape:document-units="px"
      showgrid="false"
      showguides="true"
-     inkscape:zoom="5.656854"
-     inkscape:cx="-11.313709"
-     inkscape:cy="3.1819807"
-     inkscape:window-width="1366"
-     inkscape:window-height="705"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:zoom="7.9999996"
+     inkscape:cx="38.000002"
+     inkscape:cy="36.875002"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g1742" /><defs
+     inkscape:current-layer="g1742"
+     inkscape:pageshadow="0"
+     units="px" /><defs
      id="defs1101"><linearGradient
        inkscape:collect="always"
        id="linearGradient3067"><stop
@@ -77,7 +79,8 @@
                  id="g3076"
                  inkscape:export-filename="..\PNG\medkit_v2.png"
                  inkscape:export-xdpi="1994.9049"
-                 inkscape:export-ydpi="1994.9049"><rect
+                 inkscape:export-ydpi="1994.9049"
+                 transform="matrix(1.5775348,0,0,1.5775348,-45.488253,15.234338)"><rect
                    style="fill:#f3f3f3;fill-opacity:1;stroke:#242424;stroke-width:0.231512;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none"
                    id="rect2855-6-1-9-1"
                    width="0.82682133"

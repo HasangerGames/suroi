@@ -1,5 +1,8 @@
 import { Vec2 } from "planck";
 
+export enum SpawnMode { Random, Radius, Fixed}
+export enum GasMode { Normal, Debug, Disabled }
+
 export interface ConfigType {
     readonly host: string
     readonly port: number
@@ -12,35 +15,33 @@ export interface ConfigType {
     readonly movementSpeed: number
     get diagonalSpeed(): number
     /**
-     * There are 3 spawn modes: "random", "radius", and "fixed".
-     *
-     * - "random" spawns the player at a random location, ignoring the position and radius.
-     * - "radius" spawns the player at a random location within the circle with the given position and radius.
-     * - "fixed" always spawns the player at the exact position given, ignoring the radius.
+     * There are 3 spawn modes: SpawnMode.Random, SpawnMode.Radius, and SpawnMode.Fixed.
+     * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
+     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
+     * SpawnMode.Fixed always spawns the player at the exact position given, ignoring the radius.
      */
     readonly spawn: {
-        readonly mode: "random"
+        readonly mode: SpawnMode.Random
     } | {
-        readonly mode: "fixed"
+        readonly mode: SpawnMode.Fixed
         readonly position: Vec2
     } | {
-        readonly mode: "radius"
+        readonly mode: SpawnMode.Radius
         readonly position: Vec2
         readonly radius: number
     }
     /**
-     * There are 3 gas modes: "normal", "debug", and "disabled".
-     *
-     * - "normal": Default gas behavior. overrideDuration is ignored.
-     * - "debug": The duration of each stage is always the duration specified by overrideDuration.
-     * - "disabled": Gas is disabled.
+     * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
+     * GasMode.Normal: Default gas behavior. overrideDuration is ignored.
+     * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
+     * GasMode.Disabled: Gas is disabled.
      */
     readonly gas: {
-        readonly mode: "disabled"
+        readonly mode: GasMode.Disabled
     } | {
-        readonly mode: "normal"
+        readonly mode: GasMode.Normal
     } | {
-        readonly mode: "debug"
+        readonly mode: GasMode.Debug
         readonly overrideDuration: number
     }
     /**
@@ -69,17 +70,17 @@ export const Config = {
         enable: false
     },
 
-    movementSpeed: 0.032,
+    movementSpeed: 0.031,
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
     spawn: {
-        mode: "radius",
+        mode: SpawnMode.Radius,
         position: Vec2(360, 360),
         radius: 72
     },
 
     gas: {
-        mode: "debug",
+        mode: GasMode.Debug,
         overrideDuration: 10
     },
 

@@ -1,8 +1,8 @@
-import { type ItemDefinition } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
 export interface GunDefinition extends ItemDefinition {
-    readonly type: "gun"
+    readonly itemType: ItemType.Gun
 
     readonly cooldown: number
     readonly switchCooldown: number
@@ -33,7 +33,7 @@ export const Guns: GunDefinition[] = [
     {
         idString: "ak47",
         name: "AK-47",
-        type: "gun",
+        itemType: ItemType.Gun,
         cooldown: 100,
         switchCooldown: 30,
         fireMode: "auto",
@@ -57,7 +57,7 @@ export const Guns: GunDefinition[] = [
     {
         idString: "m3k",
         name: "M3K",
-        type: "gun",
+        itemType: ItemType.Gun,
         cooldown: 1000,
         switchCooldown: 30,
         fireMode: "single",

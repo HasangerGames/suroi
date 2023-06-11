@@ -5,7 +5,7 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 
-export interface CollisionFilter { player: boolean, obstacle: boolean, bullet: boolean }
+export interface CollisionFilter { player: boolean, obstacle: boolean, bullet: boolean, loot: boolean }
 
 export abstract class GameObject {
     abstract is: CollisionFilter;

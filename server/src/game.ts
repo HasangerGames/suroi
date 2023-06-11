@@ -1,5 +1,7 @@
 // noinspection ES6PreferShortImport
-import { Config } from "./config";
+import {
+    Config, GasMode, SpawnMode
+} from "./config";
 
 import {
     Box, Fixture, Settings, Vec2, World
@@ -18,7 +20,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { GasMode, ObjectCategory } from "../../common/src/constants";
+import { GasState, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -33,7 +35,7 @@ import {
     distanceSquared, lerp, vecLerp
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
-import process from "node:process";
+import { type Loot } from "./objects/loot";
 
 export class Game {
     map: Map;
@@ -53,16 +55,17 @@ export class Game {
     fullDirtyObjects = new Set<GameObject>();
     deletedObjects = new Set<GameObject>();
 
-    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
-
     livingPlayers: Set<Player> = new Set<Player>();
     connectedPlayers: Set<Player> = new Set<Player>();
 
+    loot: Set<Loot> = new Set<Loot>();
     explosions: Set<Explosion> = new Set<Explosion>();
     bullets = new Set<Bullet>(); // All bullets that currently exist
     newBullets = new Set<Bullet>(); // All bullets created this tick
     deletedBulletIDs = new Set<number>();
     damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
+
+    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
 
     started = false;
     allowJoin = true;
@@ -70,7 +73,7 @@ export class Game {
 
     readonly gas = {
         stage: 0,
-        mode: GasMode.Inactive,
+        state: GasState.Inactive,
         initialDuration: 0,
         countdownStart: 0,
         percentage: 0,
@@ -107,8 +110,19 @@ export class Game {
             if (thisObject.is.player) return (thatObject as Player).collidesWith.player;
             else if (thisObject.is.obstacle) return (thatObject as Obstacle).collidesWith.obstacle;
             else if (thisObject.is.bullet) return (thatObject as Obstacle).collidesWith.bullet;
+            else if (thisObject.is.loot) return (thatObject as Loot).collidesWith.loot;
             else return false;
         };
+
+        // If maxLinearCorrection is set to 0, player collisions work perfectly, but loot doesn't spread out.
+        // If maxLinearCorrection is greater than 0, loot spreads out, but player collisions are jittery.
+        // This code solves the dilemma by setting maxLinearCorrection to the appropriate value for the object.
+        this.world.on("pre-solve", contact => {
+            const objectA = contact.getFixtureA().getUserData() as GameObject;
+            const objectB = contact.getFixtureB().getUserData() as GameObject;
+            if (objectA.is.loot || objectB.is.loot) Settings.maxLinearCorrection = 0.06;
+            else Settings.maxLinearCorrection = 0;
+        });
 
         // this return type is technically not true, but it gets typescript to shut up
         const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distance <= object.maxDistance && !object.dead;
@@ -149,11 +163,17 @@ export class Game {
         boundary.createFixture({
             shape: Box(width, height),
             userData: {
-                isPlayer: false,
-                isObstacle: true,
+                is: {
+                    player: false,
+                    obstacle: true,
+                    bullet: false,
+                    loot: false
+                },
                 collidesWith: {
                     player: true,
-                    obstacle: false
+                    obstacle: false,
+                    bullet: true,
+                    loot: true
                 }
             }
         });
@@ -162,6 +182,15 @@ export class Game {
     tick(delay: number): void {
         setTimeout((): void => {
             this.now = Date.now();
+
+            // Update loot positions
+            for (const loot of this.loot) {
+                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y || loot.oldRotation !== loot.rotation) {
+                    this.partialDirtyObjects.add(loot);
+                }
+                loot.oldPosition = vClone(loot.position);
+                loot.oldRotation = loot.rotation;
+            }
 
             // Update bullets
             for (const bullet of this.bullets) {
@@ -196,7 +225,7 @@ export class Game {
             }
 
             // Update gas
-            if (this.gas.mode !== GasMode.Inactive) {
+            if (this.gas.state !== GasState.Inactive) {
                 this.gas.percentage = (this.now - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
                 this.gasPercentageDirty = true;
             }
@@ -207,7 +236,7 @@ export class Game {
             if (this.gas.ticksSinceLastDamage >= 30) {
                 this.gas.ticksSinceLastDamage = 0;
                 gasDamage = true;
-                if (this.gas.mode === GasMode.Advancing) {
+                if (this.gas.state === GasState.Advancing) {
                     this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
                     this.gas.currentRadius = lerp(this.gas.oldRadius, this.gas.newRadius, this.gas.percentage);
                 }
@@ -232,13 +261,22 @@ export class Game {
                 }
 
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                const speed = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
+                let speed: number = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
+                speed *= 1 + (0.1 * (player.adrenaline / 100));
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
                     this.partialDirtyObjects.add(player);
                 }
+
+                // Drain adrenaline
+                if (player.adrenaline > 0) {
+                    player.adrenaline -= 0.015;
+                }
+
+                // Regenerate health
+                player.health += player.adrenaline * 0.00039;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
@@ -338,7 +376,7 @@ export class Game {
     addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
-            case "random": {
+            case SpawnMode.Random: {
                 let foundPosition = false;
                 while (!foundPosition) {
                     spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
@@ -346,11 +384,11 @@ export class Game {
                 }
                 break;
             }
-            case "fixed": {
+            case SpawnMode.Fixed: {
                 spawnPosition = Config.spawn.position;
                 break;
             }
-            case "radius": {
+            case SpawnMode.Radius: {
                 spawnPosition = v2v(randomPointInsideCircle(Config.spawn.position, Config.spawn.radius));
                 break;
             }
@@ -411,18 +449,16 @@ export class Game {
     }
 
     advanceGas(): void {
-        if (Config.gas.mode === "disabled") return;
-
+        if (Config.gas.mode === GasMode.Disabled) return;
         const currentStage = GasStages[this.gas.stage + 1];
         if (currentStage === undefined) return;
-
-        const duration = Config.gas.mode === "debug" && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
+        const duration = Config.gas.mode === GasMode.Debug && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
         this.gas.stage++;
-        this.gas.mode = currentStage.mode;
+        this.gas.state = currentStage.state;
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = this.now;
-        if (currentStage.mode === GasMode.Waiting) {
+        if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
                 this.gas.newPosition = randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius);

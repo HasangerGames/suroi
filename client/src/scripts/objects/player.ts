@@ -8,19 +8,18 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    ANIMATION_TYPE_BITS,
-    AnimationType,
-    ObjectCategory
+    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
 } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import {
-    type Vector, vClone, vMul
+    vClone, type Vector, vMul
 } from "../../../../common/src/utils/vector";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { type MinimapScene } from "../scenes/minimapScene";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 const showMeleeDebugCircle = false;
 
@@ -42,14 +41,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly leftFist: Phaser.GameObjects.Image
         readonly rightFist: Phaser.GameObjects.Image
         readonly weaponImg: Phaser.GameObjects.Image
+        readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
         readonly container: Phaser.GameObjects.Container
     };
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
     weaponAnim!: Phaser.Tweens.Tween;
-
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     distSinceLastFootstep = 0;
 
@@ -62,23 +60,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             weaponImg: this.scene.add.image(0, 0, "main"),
+            bloodEmitter: this.scene.add.particles(0, 0, "main", {
+                frame: "blood_particle.svg",
+                quantity: 1,
+                rotate: { min: 0, max: 360 },
+                lifespan: 1000,
+                speed: { min: 20, max: 30 },
+                scale: { start: 0.75, end: 1 },
+                alpha: { start: 1, end: 0 },
+                emitting: false
+            }),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
-        images.container = this.scene.add.container(360, 360, [images.body, images.leftFist, images.rightFist, images.weaponImg]).setDepth(1);
+        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(1);
         this.images = images;
 
         this.updateFistsPosition();
-
-        this.emitter = this.scene.add.particles(0, 0, "main", {
-            frame: "blood_particle.svg",
-            quantity: 1,
-            rotate: { min: 0, max: 360 },
-            lifespan: 1000,
-            speed: { min: 20, max: 30 },
-            scale: { start: 0.75, end: 1 },
-            alpha: { start: 1, end: 0 },
-            emitting: false
-        }).setDepth(2);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -99,9 +96,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             this.images.container.setPosition(phaserPos.x, phaserPos.y);
-            this.emitter.setPosition(phaserPos.x, phaserPos.y);
+            //this.emitter.setPosition(phaserPos.x, phaserPos.y);
         } else {
-            gsap.to([this.images.container, this.emitter], {
+            gsap.to(this.images.container, {
                 x: phaserPos.x,
                 y: phaserPos.y,
                 ease: "none",
@@ -194,7 +191,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
-            this.emitter.emitParticle(1);
+            this.images.bloodEmitter.emitParticle(1);
             this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
     }
@@ -233,9 +230,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images.weaponImg.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image !== undefined) {
-            if (weaponDef.type === "melee") {
+            if (weaponDef.itemType === ItemType.Melee) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
-            } else {
+            } else if (weaponDef.itemType === ItemType.Gun) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
             }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
@@ -243,10 +240,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (this === this.game.activePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
-        if (weaponDef.type === "gun") {
+        if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);
             this.images.container.bringToTop(this.images.body);
-        } else {
+        } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.container.sendToBack(this.images.body);
             this.images.container.sendToBack(this.images.weaponImg);
         }
@@ -258,6 +255,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.leftFist.destroy(true);
         this.images.rightFist.destroy(true);
         this.images.weaponImg.destroy(true);
-        this.emitter.destroy(true);
+        this.images.bloodEmitter.destroy(true);
     }
 }

@@ -18,8 +18,8 @@ export interface ObjectDefinition {
 }
 
 // expand this as needed
-export type ItemTypes = "gun" | "melee";
+export enum ItemType { Gun, Melee, Healing }
 
 export interface ItemDefinition extends ObjectDefinition {
-    readonly type: ItemTypes
+    readonly itemType: ItemType
 }

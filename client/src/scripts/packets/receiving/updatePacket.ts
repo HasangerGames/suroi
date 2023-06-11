@@ -10,11 +10,12 @@ import { type GameObject } from "../../types/gameObject";
 
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { GasMode, ObjectCategory } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
 import { type MinimapScene } from "../../scenes/minimapScene";
+import { Loot } from "../../objects/loot";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -62,12 +63,16 @@ export class UpdatePacket extends ReceivingPacket {
         // Adrenaline
         if (stream.readBoolean()) {
             playerManager.adrenaline = stream.readFloat(0, 100, 8);
+            $("#adrenaline-bar").width(`${playerManager.adrenaline}%`);
+            const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
+            adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
+            adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
         // Active player ID
         if (stream.readBoolean()) {
             const noID: boolean = game.activePlayer.id === -1;
-            game.activePlayer.id = stream.readUint16();
+            game.activePlayer.id = stream.readObjectID();
             if (noID) {
                 game.objects.set(game.activePlayer.id, game.activePlayer);
             }
@@ -85,7 +90,7 @@ export class UpdatePacket extends ReceivingPacket {
             const fullObjectCount: number = stream.readUint8();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
-                const id = stream.readUint16();
+                const id = stream.readObjectID();
                 let object: GameObject | undefined;
 
                 if (!game.objects.has(id)) {
@@ -100,6 +105,10 @@ export class UpdatePacket extends ReceivingPacket {
                         }
                         case ObjectCategory.DeathMarker: {
                             object = new DeathMarker(game, scene, type, id);
+                            break;
+                        }
+                        case ObjectCategory.Loot: {
+                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot>, id);
                             break;
                         }
                     }
@@ -128,7 +137,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const partialObjectCount: number = stream.readUint8();
             for (let i = 0; i < partialObjectCount; i++) {
-                const id: number = stream.readUint16();
+                const id: number = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
                 if (object === undefined) {
                     console.warn(`Unknown partial object with ID ${id}`);
@@ -142,7 +151,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const deletedObjectCount: number = stream.readUint8();
             for (let i = 0; i < deletedObjectCount; i++) {
-                const id: number = stream.readUint16();
+                const id: number = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
                 if (object === undefined) {
                     console.warn(`Trying to delete unknown object with ID ${id}`);
@@ -219,13 +228,13 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Gas
         if (stream.readBoolean()) {
-            game.gas.mode = stream.readBits(2);
+            game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
             game.gas.oldPosition = stream.readPosition();
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
-            if (game.gas.mode === GasMode.Waiting) {
+            if (game.gas.state === GasState.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * minimap.mapScale, game.gas.oldPosition.y * minimap.mapScale).setRadius(game.gas.oldRadius * minimap.mapScale);
                 // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
@@ -235,7 +244,7 @@ export class UpdatePacket extends ReceivingPacket {
         // Gas percentage
         if (stream.readBoolean()) {
             const percentage = stream.readFloat(0, 1, 16);
-            if (game.gas.mode === GasMode.Advancing) {
+            if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
                 scene.tweens.add({

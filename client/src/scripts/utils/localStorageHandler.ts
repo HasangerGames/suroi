@@ -4,6 +4,7 @@ export type KeybindActions = {
     moveDown: [string, string]
     moveLeft: [string, string]
     moveRight: [string, string]
+    interact: [string, string]
     slot1: [string, string]
     slot2: [string, string]
     slot3: [string, string]
@@ -43,6 +44,7 @@ export const defaultConfig: Config = {
         moveDown: ["S", "ArrowDown"],
         moveLeft: ["A", "ArrowLeft"],
         moveRight: ["D", "ArrowRight"],
+        interact: ["F", ""],
         slot1: ["1", ""],
         slot2: ["2", ""],
         slot3: ["3", ""],
@@ -89,6 +91,7 @@ while (config.configVersion !== defaultConfig.configVersion) {
     //! that only the last branch before the default case has a break, and that none of the others do
 
     /* eslint-disable no-fallthrough */
+    // noinspection FallThroughInSwitchStatementJS
     switch (config.configVersion) {
         case undefined: {
             // Configs lacking a version field also lack keybind fields, so take those from the default
@@ -140,9 +143,9 @@ while (config.configVersion !== defaultConfig.configVersion) {
             break;
         }
         case "4": {
-            // Added equip other gun and toggle mini map keybinds
-            // And mobile controls toggle
+            // Version 5: Added "Interact", "Equip Other Gun", and "Toggle Minimap" keybinds, and mobile controls toggle
             config.configVersion = "5";
+            config.keybinds.interact = defaultConfig.keybinds.interact;
             config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
             config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
             config.mobileControls = defaultConfig.mobileControls;

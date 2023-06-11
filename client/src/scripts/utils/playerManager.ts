@@ -1,7 +1,7 @@
 import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { ObjectCategory } from "../../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 
@@ -43,10 +43,12 @@ export class PlayerManager {
 
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }
-    set attacking(v: boolean) {
-        this._attacking = v;
+    set attacking(attacking: boolean) {
+        this._attacking = attacking;
         this.dirty.inputs = true;
     }
+
+    interacting = false;
 
     turning = false;
 
@@ -93,16 +95,14 @@ export class PlayerManager {
 
         // Items dirty
         if (stream.readBoolean()) {
-            const inventorySize = stream.readUint8();
-            for (let i = 0; i < inventorySize; i++) {
+            for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
                 const container = $(`#weapon-slot-${i + 1}`);
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;
-                    const weaponImg = itemDef.idString + (itemDef.type === "melee" ? "" : "-icon");
-                    container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${weaponImg}.svg`)).show();
+                    container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${itemDef.idString}.svg`)).show();
                 } else {
                     // empty slot
                     container.children(".item-name").text("");

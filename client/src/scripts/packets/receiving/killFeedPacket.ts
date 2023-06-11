@@ -22,7 +22,7 @@ export class KillFeedPacket extends ReceivingPacket {
             }
             killFeedItem.addClass("kill-feed-item-red");
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/game/misc/skull.svg")}" alt="Skull"> ${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
+            killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
         } else if (messageType === KillFeedMessageType.Join) {
             const name = stream.readPlayerName();
             const joined = stream.readBoolean();

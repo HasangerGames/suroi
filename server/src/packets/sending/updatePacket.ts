@@ -35,7 +35,7 @@ export class UpdatePacket extends SendingPacket {
         // Active player ID
         stream.writeBoolean(player.dirty.activePlayerId);
         if (player.dirty.activePlayerId) {
-            stream.writeUint16(player.id);
+            stream.writeObjectID(player.id);
             player.dirty.activePlayerId = false;
         }
 
@@ -54,7 +54,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint8(player.fullDirtyObjects.size);
             for (const fullObject of player.fullDirtyObjects) {
                 stream.writeObjectType(fullObject.type);
-                stream.writeUint16(fullObject.id);
+                stream.writeObjectID(fullObject.id);
                 fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
@@ -68,7 +68,7 @@ export class UpdatePacket extends SendingPacket {
         if (partialObjectsDirty) {
             stream.writeUint8(player.partialDirtyObjects.size);
             for (const partialObject of player.partialDirtyObjects) {
-                stream.writeUint16(partialObject.id);
+                stream.writeObjectID(partialObject.id);
                 partialObject.serializePartial(stream);
             }
             player.partialDirtyObjects.clear();
@@ -81,7 +81,7 @@ export class UpdatePacket extends SendingPacket {
         if (deletedObjectsDirty) {
             stream.writeUint8(player.deletedObjects.size);
             for (const deletedObject of player.deletedObjects) {
-                stream.writeUint16(deletedObject.id);
+                stream.writeObjectID(deletedObject.id);
             }
 
             player.deletedObjects.clear();
@@ -125,7 +125,7 @@ export class UpdatePacket extends SendingPacket {
         const gasDirty: boolean = game.gasDirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);
         if (gasDirty) {
-            stream.writeBits(game.gas.mode, 2);
+            stream.writeBits(game.gas.state, 2);
             stream.writeBits(game.gas.initialDuration, 7);
             stream.writePosition(game.gas.oldPosition);
             stream.writePosition(game.gas.newPosition);

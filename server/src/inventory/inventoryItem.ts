@@ -1,4 +1,4 @@
-import { type ItemDefinition, type ItemTypes } from "../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -11,7 +11,7 @@ export abstract class InventoryItem {
     /**
      * The category of item this is, either melee or gun
      */
-    readonly category: ItemTypes;
+    readonly category: ItemType;
     /**
      * The `ObjectType` instance associated with this item
      */
@@ -33,7 +33,7 @@ export abstract class InventoryItem {
     constructor(idString: string, owner: Player) {
         this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
         // todo maybe change the ObjectType class to better infer definition's type so that this cast doesn't need to be done
-        this.category = (this.type.definition as ItemDefinition).type;
+        this.category = (this.type.definition as ItemDefinition).itemType;
         this.owner = owner;
     }
 
