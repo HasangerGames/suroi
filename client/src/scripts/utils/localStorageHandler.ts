@@ -9,10 +9,12 @@ export type KeybindActions = {
     slot2: [string, string]
     slot3: [string, string]
     lastEquippedItem: [string, string]
+    equipOtherGun: [string, string]
     previousItem: [string, string]
     nextItem: [string, string]
     useItem: [string, string]
     toggleMap: [string, string]
+    toggleMiniMap: [string, string]
 };
 
 export interface Config {
@@ -31,6 +33,7 @@ export interface Config {
     showPing: boolean
     rotationSmoothing: boolean
     movementSmoothing: boolean
+    mobileControls: boolean
 }
 
 export const defaultConfig: Config = {
@@ -46,10 +49,12 @@ export const defaultConfig: Config = {
         slot2: ["2", ""],
         slot3: ["3", ""],
         lastEquippedItem: ["Q", ""],
+        equipOtherGun: ["Space", ""],
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
-        toggleMap: ["G", "M"]
+        toggleMap: ["G", "M"],
+        toggleMiniMap: ["N", ""]
     },
     masterVolume: 1,
     musicVolume: 1,
@@ -61,7 +66,8 @@ export const defaultConfig: Config = {
     showFPS: false,
     showPing: false,
     rotationSmoothing: true,
-    movementSmoothing: true
+    movementSmoothing: true,
+    mobileControls: true
 };
 
 const configKey = "config";
@@ -137,9 +143,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             break;
         }
         case "4": {
-            // Version 5 adds the Interact keybind
+            // Version 5: Added "Interact", "Equip Other Gun", and "Toggle Minimap" keybinds, and mobile controls toggle
             config.configVersion = "5";
             config.keybinds.interact = defaultConfig.keybinds.interact;
+            config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
+            config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
+            config.mobileControls = defaultConfig.mobileControls;
             break;
         }
         default: {

@@ -6,6 +6,10 @@
     user-select: none;
     box-shadow: 0px 0px 10px #000000c8;
 
+    max-width: 450px;
+    min-width: 350px;
+    width: fit-content;
+
     #settings-header {
         display: flex;
 

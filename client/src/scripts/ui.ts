@@ -133,6 +133,11 @@ $((): void => {
         localStorageInstance.update({ movementSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.movementSmoothing);
 
+    // mobile controls toggle
+    $("#toggle-mobile-controls").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ mobileControls: this.checked });
+    }).prop("checked", localStorageInstance.config.mobileControls);
+
     // Switch weapon slots by clicking
     for (let i = 0; i < 3; i++) {
         $(`#weapon-slot-${i + 1}`).on("pointerdown", (): void => {
@@ -142,6 +147,9 @@ $((): void => {
             }
         });
     }
+
+    // Hide mobile settings on desktop
+    $("#tab-mobile").toggle(core.game?.playerManager.isMobile);
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);

@@ -73,6 +73,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
             }
         ),
+        equipOtherGun: new Action(
+            "inventory::equipOtherGun",
+            () => {
+                game.playerManager.activeItemIndex++;
+                if (game.playerManager.activeItemIndex > 1) game.playerManager.activeItemIndex = 0;
+            }
+        ),
         previousItem: new Action(
             "inventory::previousItem",
             () => {
@@ -96,6 +103,12 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             "toggleMap",
             () => {
                 (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
+            }
+        ),
+        toggleMiniMap: new Action(
+            "toggleMap",
+            () => {
+                (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggleMiniMap();
             }
         )
     };
@@ -138,6 +151,11 @@ export function setupInputs(game: Game): void {
     function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
         if (event instanceof KeyboardEvent && event.repeat) return;
 
+        // disable pointer events on mobile if mobile controls are enabled
+        if (event instanceof PointerEvent &&
+            game.playerManager.isMobile &&
+            localStorageInstance.config.mobileControls) return;
+
         const key = getKeyFromInputEvent(event);
 
         if (event instanceof WheelEvent) {
@@ -156,7 +174,7 @@ export function setupInputs(game: Game): void {
             fireAllEventsAtKey(key, true);
             return;
         }
-        fireAllEventsAtKey(key, event.type === "keydown" || event.type === "mousedown");
+        fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
     }
 
     const gameUi = $("#game-ui")[0];
@@ -164,12 +182,14 @@ export function setupInputs(game: Game): void {
     // different event targets… why?
     window.addEventListener("keydown", handleInputEvent);
     window.addEventListener("keyup", handleInputEvent);
-    gameUi.addEventListener("mousedown", handleInputEvent);
-    gameUi.addEventListener("mouseup", handleInputEvent);
+    gameUi.addEventListener("pointerdown", handleInputEvent);
+    gameUi.addEventListener("pointerup", handleInputEvent);
     gameUi.addEventListener("wheel", handleInputEvent);
 
-    gameUi.addEventListener("mousemove", (e: MouseEvent) => {
-        if (game.playerManager === undefined) return;
+    gameUi.addEventListener("pointermove", (e: MouseEvent) => {
+        if (game.playerManager === undefined ||
+            (game.playerManager.isMobile && localStorageInstance.config.mobileControls)
+        ) return;
 
         game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
         game.playerManager.turning = true;
@@ -178,7 +198,7 @@ export function setupInputs(game: Game): void {
     });
 
     // Mobile joysticks
-    if (game.playerManager.isMobile) {
+    if (game.playerManager.isMobile && localStorageInstance.config.mobileControls) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
             size: 150
@@ -251,10 +271,12 @@ const actionsNames = {
     slot2: "Slot 2",
     slot3: "Slot 3",
     lastEquippedItem: "Equip Last item",
+    equipOtherGun: "Equip Other Gun",
     previousItem: "Equip Previous Item",
     nextItem: "Equip Next Item",
     useItem: "Use Item",
-    toggleMap: "Toggle Map"
+    toggleMap: "Toggle Fullscreen Map",
+    toggleMiniMap: "Toggle Mini Map"
 };
 
 // generate the input settings
