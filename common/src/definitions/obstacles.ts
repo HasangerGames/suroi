@@ -20,6 +20,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly variations?: number
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
+    readonly hasLoot?: boolean
     readonly explosion?: string
 }
 
@@ -103,7 +104,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotationMode: "binary"
+            rotationMode: "binary",
+            hasLoot: true
         },
         {
             idString: "barrel",

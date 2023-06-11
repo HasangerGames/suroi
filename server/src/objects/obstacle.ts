@@ -24,6 +24,10 @@ import { type Variation } from "../../../common/src/typings";
 import { Player } from "./player";
 import { Config } from "../config";
 import { Loot } from "./loot";
+import {
+    type LootTable, LootTables, LootTiers, type WeightedItem
+} from "../data/lootTables";
+import { random, weightedRandom } from "../../../common/src/utils/random";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -50,6 +54,8 @@ export class Obstacle extends GameObject {
     body?: Body;
     spawnHitbox: Hitbox;
 
+    loot: string[] = [];
+
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
         super(game, type, position);
 
@@ -63,6 +69,41 @@ export class Obstacle extends GameObject {
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale);
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
+        if (definition.hasLoot === true) {
+            console.log(this.type.idString, LootTables[this.type.idString]);
+            const lootTable: LootTable = LootTables[this.type.idString];
+            const count: number = random(lootTable.min, lootTable.max);
+            for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
+        }
+    }
+
+    private getLoot(loot: WeightedItem[]): void {
+        interface TempLootItem { item: string, isTier: boolean }
+        const items: TempLootItem[] = [];
+        const weights: number[] = [];
+        for (const item of loot) {
+            items.push({ item: "tier" in item ? item.tier : item.item, isTier: "tier" in item });
+            weights.push(item.weight);
+        }
+        const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
+        else this.addLoot(selectedItem.item);
+    }
+
+    private addLoot(type: string): void {
+        if (type === "nothing") return;
+        this.loot.push(type);
+        /*const weapon = Weapons[type];
+        if (weapon?.ammo) {
+            if (weapon.ammoSpawnCount === 1) {
+                this.loot.push(new Item(weapon.ammo, 1));
+            } else {
+                const count: number = weapon.ammoSpawnCount / 2;
+                this.loot.push(new Item(weapon.ammo, count));
+                this.loot.push(new Item(weapon.ammo, count));
+            }
+        }*/
     }
 
     override damage(amount: number, source: GameObject): void {
@@ -105,12 +146,10 @@ export class Obstacle extends GameObject {
                 this.game.explosions.add(explosion);
             }
 
-            /* eslint-disable no-new */
-            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "gauze"), vClone(this.position));
-            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "cola"), vClone(this.position));
-            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "medikit"), vClone(this.position));
-            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "ak47"), vClone(this.position));
-            new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, "m3k"), vClone(this.position));
+            for (const item of this.loot) {
+                // eslint-disable-next-line no-new
+                new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, item), vClone(this.position));
+            }
         } else {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale: number = this.scale;

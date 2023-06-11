@@ -65,3 +65,17 @@ export function randomPointInsideCircle(position: Vector, radius: number): Vecto
     // scale and translate the points
     return v(x * radius + position.x, y * radius + position.y);
 }
+
+/**
+ * Pick a random element from a weighted series of elements.
+ * @param items The elements to choose from.
+ * @param weights A legend of the elements' relative weight.
+ */
+export function weightedRandom<T>(items: T[], weights: number[]): T {
+    let i: number;
+    for (i = 1; i < weights.length; i++) weights[i] += weights[i - 1];
+
+    const random = Math.random() * weights[weights.length - 1];
+    for (i = 0; i < weights.length; i++) { if (weights[i] > random) break; }
+    return items[i];
+}
