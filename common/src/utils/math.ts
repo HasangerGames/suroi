@@ -8,6 +8,18 @@ import {
 import { type Orientation } from "../typings";
 
 /**
+ * Calculate the angle between two vectors.
+ * @param a The first vector.
+ * @param b The second vector.
+ * @returns The angle, in radians, between the two vectors.
+ */
+export function angleBetween (a: Vector, b: Vector): number {
+    const dy = a.y - b.y;
+    const dx = a.x - b.x;
+    return Math.atan2(dy, dx);
+}
+
+/**
  * Signed modulo operator.
  * @param a The dividend.
  * @param n The divisor.

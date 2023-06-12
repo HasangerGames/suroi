@@ -1,3 +1,5 @@
+import { Vec2 } from "planck";
+
 import { type Game } from "../game";
 
 import { type GameObject } from "../types/gameObject";
@@ -6,7 +8,7 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { type Vector } from "../../../common/src/utils/vector";
-import { distance } from "../../../common/src/utils/math";
+import { distance, angleBetween } from "../../../common/src/utils/math";
 
 export class Explosion {
     game: Game;
@@ -53,6 +55,18 @@ export class Explosion {
                 }
 
                 player.damage(damage, this.source, this.type);
+            }
+        }
+
+        for (const loot of this.game.loot) {
+            const dist = distance(loot.position, this.position);
+            if (dist < definition.radius.max) {
+                const angle = angleBetween(loot.position, this.position);
+                // it works, please don't ask questions
+                const velocity = loot.body.getLinearVelocity()
+                    .add(Vec2(Math.cos(angle), Math.sin(angle))
+                        .mul(definition.radius.max - dist).mul(0.006));
+                loot.body.setLinearVelocity(velocity);
             }
         }
     }
