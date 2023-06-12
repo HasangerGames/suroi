@@ -38,7 +38,7 @@ export class MeleeItem extends InventoryItem {
      * has been respected. Used in conjunction with other time-keeping mechanisms,
      * namely setTimeout
      */
-    private _useItemNoDelayCheck(): void {
+    private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
         const owner = this.owner;
         const definition = this.definition;
 
@@ -51,7 +51,7 @@ export class MeleeItem extends InventoryItem {
         setTimeout((): void => {
             if (
                 this.owner.activeItem === this &&
-                owner.attacking &&
+                (owner.attacking || skipAttackCheck) &&
                 !owner.dead &&
                 !owner.disconnected
             ) {
@@ -83,7 +83,7 @@ export class MeleeItem extends InventoryItem {
                 }
 
                 if (definition.fireMode === "auto" || owner.isMobile) {
-                    setTimeout(this._useItemNoDelayCheck.bind(this), definition.cooldown);
+                    setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
                 }
             }
         }, 50);
@@ -91,7 +91,7 @@ export class MeleeItem extends InventoryItem {
 
     override useItem(): void {
         if (this.owner.game.now - this._lastUse > this.definition.cooldown) {
-            this._useItemNoDelayCheck();
+            this._useItemNoDelayCheck(true);
         }
     }
 }

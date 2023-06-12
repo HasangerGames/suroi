@@ -99,10 +99,6 @@ export class Player extends GameObject {
      * Whether the player started attacking last update
      */
     startedAttacking = false;
-    /**
-     * Whether the player stopped attacking last update
-     */
-    stoppedAttacking = false;
 
     /**
      * Whether the player is turning as of last update

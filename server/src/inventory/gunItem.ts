@@ -41,13 +41,13 @@ export class GunItem extends InventoryItem {
      * has been respected. Used in conjunction with other time-keeping mechanisms,
      * namely setTimeout
      */
-    private _useItemNoDelayCheck(): void {
+    private _useItemNoDelayCheck(skipAttackCheck: boolean): void {
         const owner = this.owner;
         const definition = this.definition;
 
         if (
             this.ammo > 0 &&
-            owner.attacking &&
+            (owner.attacking || skipAttackCheck) &&
             !owner.dead &&
             !owner.disconnected
         ) {
@@ -83,7 +83,7 @@ export class GunItem extends InventoryItem {
             }
 
             if ((definition.fireMode === "auto" || this.owner.isMobile) && this.owner.activeItem === this) {
-                setTimeout(this._useItemNoDelayCheck.bind(this), definition.cooldown);
+                setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
             }
         }
     }
@@ -91,7 +91,7 @@ export class GunItem extends InventoryItem {
     override useItem(): void {
         if (this.owner.game.now - this._lastUse > this.definition.cooldown &&
             this.owner.game.now - this._switchDate > this.definition.switchCooldown) {
-            this._useItemNoDelayCheck();
+            this._useItemNoDelayCheck(true);
         }
     }
 }

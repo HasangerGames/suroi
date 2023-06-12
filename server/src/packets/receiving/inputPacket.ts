@@ -26,7 +26,6 @@ export class InputPacket extends ReceivingPacket {
 
         player.attacking = attackState;
         player.startedAttacking = !oldAttackState && attackState;
-        player.stoppedAttacking = oldAttackState && !attackState;
 
         const activeItemIndex = stream.readBits(2);
 

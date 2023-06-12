@@ -290,7 +290,6 @@ export class Game {
 
                 player.turning = false;
                 player.startedAttacking = false;
-                player.stoppedAttacking = false;
             }
 
             // Second loop over players: calculate visible objects & send updates
