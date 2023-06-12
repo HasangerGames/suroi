@@ -151,6 +151,16 @@ $((): void => {
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(core.game?.playerManager.isMobile);
 
+    // Event listener for Interact button
+    if (core.game?.playerManager.isMobile === true) {
+        $("#btn-interact").show().on("click", () => {
+            if (core.game !== undefined) {
+                core.game.playerManager.interacting = true;
+                core.game.playerManager.dirty.inputs = true;
+            }
+        });
+    }
+
     $(".tab").on("click", ev => {
         const tab = $(ev.target);
 

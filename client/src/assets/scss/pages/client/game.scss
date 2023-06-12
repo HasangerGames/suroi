@@ -10,6 +10,17 @@
     cursor: crosshair;
 }
 
+#btn-interact {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    z-index: 1000;
+    width: 75px;
+    height: 75px;
+    font-size: 16px;
+    padding: 0;
+}
+
 #minimap-border {
     margin: 10px;
 
