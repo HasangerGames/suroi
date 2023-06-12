@@ -280,6 +280,7 @@ export class Game {
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
+                    player.startedAttacking = false;
                     player.activeItem?.useItem();
                 }
 
@@ -289,7 +290,6 @@ export class Game {
                 }
 
                 player.turning = false;
-                player.startedAttacking = false;
             }
 
             // Second loop over players: calculate visible objects & send updates

@@ -222,13 +222,10 @@ export function setupInputs(game: Game): void {
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.turning = true;
-
             game.playerManager.attacking = data.distance > 70;
-            game.playerManager.dirty.inputs = true;
         });
         rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
-            game.playerManager.dirty.inputs = true;
         });
     }
 }
