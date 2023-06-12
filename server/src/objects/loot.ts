@@ -15,7 +15,7 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { type HealingItemDefinition, HealType } from "../../../common/src/definitions/healingItems";
+import { HealType } from "../../../common/src/definitions/healingItems";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -87,9 +87,8 @@ export class Loot extends GameObject {
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
             case ItemType.Healing: {
-                const healDefinition = definition as HealingItemDefinition;
-                if (healDefinition.healType === HealType.Health) return player.health < 100;
-                else if (healDefinition.healType === HealType.Adrenaline) return player.adrenaline < 100;
+                if (definition.healType === HealType.Health) return player.health < 100;
+                else if (definition.healType === HealType.Adrenaline) return player.adrenaline < 100;
                 break;
             }
             case ItemType.Gun: {
@@ -104,13 +103,16 @@ export class Loot extends GameObject {
     interact(player: Player): void {
         const inventory = player.inventory;
         let success = false;
+
         const definition = this.type.definition as LootDefinition;
+
         switch (definition.itemType) {
             case ItemType.Healing: {
                 success = true;
-                const healDefinition = definition as HealingItemDefinition;
-                if (healDefinition.healType === HealType.Health) player.health += healDefinition.restoreAmount;
-                else if (healDefinition.healType === HealType.Adrenaline) player.adrenaline += healDefinition.restoreAmount;
+
+                if (definition.healType === HealType.Health) player.health += definition.restoreAmount;
+                else if (definition.healType === HealType.Adrenaline) player.adrenaline += definition.restoreAmount;
+
                 break;
             }
             case ItemType.Melee: {
@@ -136,7 +138,7 @@ export class Loot extends GameObject {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
             /* eslint-disable-next-line no-new
             new Loot(this.game, this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
-        }*/
+        } */
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

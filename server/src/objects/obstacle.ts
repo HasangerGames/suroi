@@ -93,7 +93,7 @@ export class Obstacle extends GameObject {
     private addLoot(type: string): void {
         if (type === "nothing") return;
         this.loot.push(type);
-        /*const weapon = Weapons[type];
+        /* const weapon = Weapons[type];
         if (weapon?.ammo) {
             if (weapon.ammoSpawnCount === 1) {
                 this.loot.push(new Item(weapon.ammo, 1));
@@ -102,7 +102,7 @@ export class Obstacle extends GameObject {
                 this.loot.push(new Item(weapon.ammo, count));
                 this.loot.push(new Item(weapon.ammo, count));
             }
-        }*/
+        } */
     }
 
     override damage(amount: number, source: GameObject): void {

@@ -13,7 +13,7 @@ import { type Orientation } from "../typings";
  * @param b The second vector.
  * @returns The angle, in radians, between the two vectors.
  */
-export function angleBetween (a: Vector, b: Vector): number {
+export function angleBetween(a: Vector, b: Vector): number {
     const dy = a.y - b.y;
     const dx = a.x - b.x;
     return Math.atan2(dy, dx);
