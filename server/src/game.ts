@@ -263,6 +263,13 @@ export class Game {
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
                 let speed: number = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
                 speed *= 1 + (0.1 * (player.adrenaline / 100));
+                if (player.recoil.active) {
+                    if (player.recoil.time < this.now) {
+                        player.recoil.active = false;
+                    } else {
+                        speed *= player.recoil.multiplier;
+                    }
+                }
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 

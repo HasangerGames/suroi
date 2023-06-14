@@ -1,4 +1,4 @@
-import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { FireMode, type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
 import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
@@ -82,7 +82,11 @@ export class GunItem extends InventoryItem {
                 owner.game.newBullets.add(bullet);
             }
 
-            if ((definition.fireMode === "auto" || this.owner.isMobile) && this.owner.activeItem === this) {
+            owner.recoil.active = true;
+            owner.recoil.time = owner.game.now + definition.recoilDuration;
+            owner.recoil.multiplier = definition.recoilMultiplier;
+
+            if ((definition.fireMode === FireMode.Auto || this.owner.isMobile) && this.owner.activeItem === this) {
                 setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
             }
         }

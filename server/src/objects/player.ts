@@ -60,6 +60,12 @@ export class Player extends GameObject {
     damageTaken = 0;
     joinTime: number;
 
+    readonly recoil = {
+        active: false,
+        time: 0,
+        multiplier: 1
+    };
+
     obstaclesDestroyed = {
         tree: 0,
         stone: 0,

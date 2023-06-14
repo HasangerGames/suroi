@@ -59,7 +59,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: this.scene.add.image(0, 0, "main", "player_base.svg"),
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
-            weaponImg: this.scene.add.image(0, 0, "main"),
+            weaponImg: this.scene.add.image(0, 0, "main"), //.setAlpha(0.5),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -237,7 +237,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
 
-            if (this === this.game.activePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this === this.game.activePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);

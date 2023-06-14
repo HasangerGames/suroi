@@ -6,7 +6,9 @@ export interface GunDefinition extends ItemDefinition {
 
     readonly cooldown: number
     readonly switchCooldown: number
-    readonly fireMode: "single" | "auto"
+    readonly recoilMultiplier: number
+    readonly recoilDuration: number
+    readonly fireMode: FireMode
     readonly shotSpread: number
     readonly bulletCount?: number
     readonly length: number
@@ -29,6 +31,8 @@ export interface GunDefinition extends ItemDefinition {
     }
 }
 
+export enum FireMode { Single, Auto }
+
 export const Guns: GunDefinition[] = [
     {
         idString: "ak47",
@@ -36,7 +40,9 @@ export const Guns: GunDefinition[] = [
         itemType: ItemType.Gun,
         cooldown: 100,
         switchCooldown: 30,
-        fireMode: "auto",
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
         shotSpread: 5,
         length: 10,
         fists: {
@@ -60,7 +66,9 @@ export const Guns: GunDefinition[] = [
         itemType: ItemType.Gun,
         cooldown: 750,
         switchCooldown: 30,
-        fireMode: "single",
+        recoilMultiplier: 0.6,
+        recoilDuration: 450,
+        fireMode: FireMode.Single,
         shotSpread: 7,
         bulletCount: 9,
         length: 10,
@@ -74,6 +82,60 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 6.5,
             obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 80
+        }
+    },
+    {
+        idString: "m37",
+        name: "Model 37",
+        itemType: ItemType.Gun,
+        cooldown: 1000,
+        switchCooldown: 30,
+        recoilMultiplier: 0.5,
+        recoilDuration: 550,
+        fireMode: FireMode.Single,
+        shotSpread: 14,
+        bulletCount: 10,
+        length: 12,
+        fists: {
+            left: v(70, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(90, 3) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 7,
+            obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 80
+        }
+    },
+    {
+        idString: "deathray",
+        name: "Death Ray",
+        itemType: ItemType.Gun,
+        cooldown: 20,
+        switchCooldown: 30,
+        recoilMultiplier: 1,
+        recoilDuration: 0,
+        fireMode: FireMode.Auto,
+        shotSpread: 0,
+        bulletCount: 1,
+        length: 12,
+        fists: {
+            left: v(65, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(100, 3) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 5,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 80

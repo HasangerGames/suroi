@@ -73,6 +73,7 @@ export class Inventory {
 
         this.owner.attacking = false;
         this.owner.dirty.activeWeaponIndex = true;
+        this.owner.recoil.active = false; // allows for quickswitching
         this.owner.game.fullDirtyObjects.add(this.owner);
         this.owner.fullDirtyObjects.add(this.owner);
 
