@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@damienvesper/bit-buffer':
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^1.0.0
+    version: 1.0.0
   intersects:
     specifier: ^2.7.2
     version: 2.7.2
@@ -46,8 +46,9 @@ devDependencies:
 
 packages:
 
-  /@damienvesper/bit-buffer@0.0.1:
-    resolution: {integrity: sha512-Icns3C0QTGLuyv5yMh0xHoFZtZFPnOLywlexbKRQVZqA/OrmztxXoXOi0WiG4/eOfyfAo+RqLKoYBqd/k/6LUA==}
+  /@damienvesper/bit-buffer@1.0.0:
+    resolution: {integrity: sha512-lOlCSK4wFkT2vMH4gIgoXX/n6oywqljuG5znY7VHv2hvMwA+jE8r9T5txFdqxHK7P8LVdxkXhefXLM2MCDqlbw==}
+    engines: {node: '>=18.8.0', pnpm: '>=8.6.0'}
     dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.42.0):

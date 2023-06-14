@@ -30,7 +30,7 @@
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "@damienvesper/bit-buffer": "^0.0.1",
+    "@damienvesper/bit-buffer": "^1.0.0",
     "intersects": "^2.7.2",
     "planck": "1.0.0-alpha.4",
     "sanitize-html": "^2.10.0",
