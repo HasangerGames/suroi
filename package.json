@@ -3,14 +3,14 @@
   "version": "0.3.2",
   "description": "",
   "scripts": {
-    "full-install": "pnpm install && cd common && pnpm install && cd ../server && pnpm install && cd ../client && pnpm install",
+    "full-install": "pnpm -r install",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml && cd common && rm -r node_modules pnpm-lock.yaml && cd ../server && rm -r node_modules pnpm-lock.yaml && cd ../client && rm -r node_modules pnpm-lock.yaml && cd .. && pnpm full-install",
-    "full-upgrade": "pnpm up * && cd common && pnpm up * && cd ../server && pnpm up * && cd ../client && pnpm up *",
-    "build": "cd server && pnpm build && cd ../client && pnpm build",
+    "full-upgrade": "pnpm -r up",
+    "build": "pnpm -r build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "lint": "cd common && pnpm lint && cd ../server && pnpm lint && cd ../client && pnpm lint",
-    "lint:ci": "cd common && pnpm lint:ci && cd ../server && pnpm lint:ci && cd ../client && pnpm lint:ci",
-    "dev": "npm-run-all --parallel dev:*",
+    "lint": "pnpm -r lint",
+    "lint:ci": "pnpm -r lint:ci",
+    "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev"
   },
@@ -20,7 +20,6 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
     "typescript": "^5.1.3"
   }
 }
