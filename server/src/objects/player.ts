@@ -195,6 +195,7 @@ export class Player extends GameObject {
 
         // Inventory preset
         //this.inventory.addOrReplaceWeapon(0, "mosin");
+        //this.inventory.addOrReplaceWeapon(1, "mosin");
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 

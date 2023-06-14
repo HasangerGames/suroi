@@ -123,15 +123,15 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.45,
         recoilDuration: 750,
         fireMode: FireMode.Single,
-        shotSpread: 2,
+        shotSpread: 0,
         bulletCount: 1,
         length: 9,
         fists: {
             left: v(75, 0),
-            right: v(145, -6),
+            right: v(145, -1),
             animationDuration: 100
         },
-        image: { position: v(105, 0) },
+        image: { position: v(105, 4) },
         capacity: Infinity,
         ballistics: {
             damage: 80,

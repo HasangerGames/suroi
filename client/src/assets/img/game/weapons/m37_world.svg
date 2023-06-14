@@ -2,10 +2,10 @@
 <svg
    version="1.1"
    width="214.911"
-   height="24"
+   height="20"
    style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
    id="svg170"
-   sodipodi:docname="Ithaca_M37 (1).svg"
+   sodipodi:docname="m37_world.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,8 +23,8 @@
      inkscape:pagecheckerboard="1"
      showgrid="false"
      inkscape:zoom="5.6181528"
-     inkscape:cx="106.26268"
-     inkscape:cy="40.582734"
+     inkscape:cx="83.301401"
+     inkscape:cy="-21.003345"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -33,7 +33,7 @@
      inkscape:current-layer="svg170" />
   <g
      id="g1165"
-     transform="matrix(0,0.13714247,-0.13714247,0,228.13681,-99.771079)">
+     transform="matrix(0,0.11428539,-0.13714247,0,228.13681,-83.142557)">
     <g
        id="g1077">
       <g
