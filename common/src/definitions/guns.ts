@@ -98,20 +98,74 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 14,
         bulletCount: 10,
-        length: 12,
+        length: 10,
         fists: {
             left: v(70, 0),
             right: v(130, -6),
             animationDuration: 100
         },
-        image: { position: v(90, 3) },
+        image: { position: v(90, 0) },
         capacity: Infinity,
         ballistics: {
-            damage: 7,
+            damage: 10,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 80
+        }
+    },
+    {
+        idString: "mosin",
+        name: "Mosin-Nagant",
+        itemType: ItemType.Gun,
+        cooldown: 1750,
+        switchCooldown: 30,
+        recoilMultiplier: 0.45,
+        recoilDuration: 750,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        bulletCount: 1,
+        length: 9,
+        fists: {
+            left: v(75, 0),
+            right: v(145, -6),
+            animationDuration: 100
+        },
+        image: { position: v(105, 0) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 80,
+            obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 128
+        }
+    },
+    {
+        idString: "g19",
+        name: "G19",
+        itemType: ItemType.Gun,
+        cooldown: 60,
+        switchCooldown: 30,
+        recoilMultiplier: 0.8,
+        recoilDuration: 90,
+        fireMode: FireMode.Auto,
+        shotSpread: 20,
+        bulletCount: 1,
+        length: 6,
+        fists: {
+            left: v(65, 0),
+            right: v(70, 4),
+            animationDuration: 100
+        },
+        image: { position: v(78, 0) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 5.5,
+            obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 60
         }
     },
     {

@@ -56,7 +56,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.isActivePlayer = isActivePlayer;
 
         const images = {
-            body: this.scene.add.image(0, 0, "main", "player_base.svg"),
+            body: this.scene.add.image(0, 0, "main", "player_base.svg"), //.setAlpha(0.5),
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             weaponImg: this.scene.add.image(0, 0, "main"), //.setAlpha(0.5),
@@ -232,7 +232,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (weaponDef.itemType === ItemType.Melee) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
             } else if (weaponDef.itemType === ItemType.Gun) {
-                this.images.weaponImg.setFrame(`${weaponDef.idString}-world.svg`);
+                this.images.weaponImg.setFrame(`${weaponDef.idString}_world.svg`);
             }
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);

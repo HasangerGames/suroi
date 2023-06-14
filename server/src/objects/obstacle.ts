@@ -110,7 +110,7 @@ export class Obstacle extends GameObject {
         this.health -= amount;
 
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
-        if (this.health <= 0) {
+        if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
 

@@ -74,15 +74,11 @@ export const Config = {
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
     spawn: {
-        mode: SpawnMode.Radius,
-        position: Vec2(360, 360),
-        radius: 72
+        mode: SpawnMode.Fixed,
+        position: Vec2(360, 360)
     },
 
-    gas: {
-        mode: GasMode.Debug,
-        overrideDuration: 10
-    },
+    gas: { mode: GasMode.Normal },
 
     switchMeleeWeapons: false,
 

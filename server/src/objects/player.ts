@@ -194,6 +194,7 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(2.5, this.position);
 
         // Inventory preset
+        //this.inventory.addOrReplaceWeapon(0, "mosin");
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
