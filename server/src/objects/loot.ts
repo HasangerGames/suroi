@@ -63,7 +63,7 @@ export class Loot extends GameObject {
         this.hitbox = new CircleHitbox(radius, this.position);
 
         // Push the loot in a random direction
-        const angle: number = randomRotation();
+        const angle = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
         this.body.applyTorque(randomBoolean() ? 0.003 : -0.003);
 
@@ -78,7 +78,7 @@ export class Loot extends GameObject {
     }
 
     get rotation(): number {
-        const angle: number = this.body.getAngle();
+        const angle = this.body.getAngle();
         return Math.atan2(Math.cos(angle), Math.sin(angle));
     }
 
@@ -87,14 +87,20 @@ export class Loot extends GameObject {
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
             case ItemType.Healing: {
-                if (definition.healType === HealType.Health) return player.health < 100;
-                else if (definition.healType === HealType.Adrenaline) return player.adrenaline < 100;
-                break;
+                switch (definition.healType) {
+                    case HealType.Health: return player.health < 100;
+                    case HealType.Adrenaline: return player.adrenaline < 100;
+                }
             }
+            // average ESLint L
+            // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
                     (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
+            }
+            case ItemType.Melee: {
+                return true;
             }
         }
         return false;
@@ -116,6 +122,8 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Melee: {
+                inventory.addOrReplaceWeapon(2, this.type.idString);
+                success = true;
                 break;
             }
             case ItemType.Gun: {

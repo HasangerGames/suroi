@@ -1,10 +1,16 @@
 // noinspection ES6PreferShortImport
 import {
-    Config, GasMode, SpawnMode
+    Config,
+    GasMode,
+    SpawnMode
 } from "./config";
 
 import {
-    Box, Fixture, Settings, Vec2, World
+    Box,
+    Fixture,
+    Settings,
+    Vec2,
+    World
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
@@ -12,7 +18,6 @@ import { type PlayerContainer } from "./server";
 import { Map } from "./map";
 
 import { Player } from "./objects/player";
-import { type Obstacle } from "./objects/obstacle";
 import { type Explosion } from "./objects/explosion";
 import { v2v } from "./utils/misc";
 
@@ -29,10 +34,14 @@ import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { GasStages } from "./data/gasStages";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import {
-    v, vClone, type Vector
+    v,
+    vClone,
+    type Vector
 } from "../../common/src/utils/vector";
 import {
-    distanceSquared, lerp, vecLerp
+    distanceSquared,
+    lerp,
+    vecLerp
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { type Loot } from "./objects/loot";
@@ -42,10 +51,20 @@ export class Game {
 
     world: World;
 
-    now = Date.now(); // The value of Date.now(), as of the start of the tick.
+    /**
+     * The value of `Date.now()`, as of the start of the tick.
+     */
+    _now = Date.now();
+    get now(): number { return this._now; }
 
-    staticObjects = new Set<GameObject>(); // A Set of all the static objects in the world
-    dynamicObjects = new Set<GameObject>(); // A Set of all the dynamic (moving) objects in the world
+    /**
+     * A Set of all the static objects in the world
+     */
+    staticObjects = new Set<GameObject>();
+    /**
+     * A Set of all the dynamic (moving) objects in the world
+     */
+    dynamicObjects = new Set<GameObject>();
     visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
     updateObjects = false;
 
@@ -60,12 +79,24 @@ export class Game {
 
     loot: Set<Loot> = new Set<Loot>();
     explosions: Set<Explosion> = new Set<Explosion>();
-    bullets = new Set<Bullet>(); // All bullets that currently exist
-    newBullets = new Set<Bullet>(); // All bullets created this tick
+    /**
+     * All bullets that currently exist
+     */
+    bullets = new Set<Bullet>();
+    /**
+     * All bullets created this tick
+     */
+    newBullets = new Set<Bullet>();
     deletedBulletIDs = new Set<number>();
-    damageRecords = new Set<DamageRecord>(); // All records of damage by bullets this tick
+    /**
+     * All records of damage by bullets this tick
+     */
+    damageRecords = new Set<DamageRecord>();
 
-    killFeedMessages = new Set<KillFeedPacket>(); // All kill feed messages this tick
+    /**
+     * All kill feed messages this tick
+     */
+    killFeedMessages = new Set<KillFeedPacket>();
 
     started = false;
     allowJoin = true;
@@ -107,10 +138,10 @@ export class Game {
             const thatObject = that.getUserData() as GameObject;
 
             // Check if they should collide
-            if (thisObject.is.player) return (thatObject as Player).collidesWith.player;
-            else if (thisObject.is.obstacle) return (thatObject as Obstacle).collidesWith.obstacle;
-            else if (thisObject.is.bullet) return (thatObject as Obstacle).collidesWith.bullet;
-            else if (thisObject.is.loot) return (thatObject as Loot).collidesWith.loot;
+            if (thisObject.is.player) return thatObject.collidesWith.player;
+            else if (thisObject.is.obstacle) return thatObject.collidesWith.obstacle;
+            else if (thisObject.is.bullet) return thatObject.collidesWith.bullet;
+            else if (thisObject.is.loot) return thatObject.collidesWith.loot;
             else return false;
         };
 
@@ -181,7 +212,7 @@ export class Game {
 
     tick(delay: number): void {
         setTimeout((): void => {
-            this.now = Date.now();
+            this._now = Date.now();
 
             // Update loot positions
             for (const loot of this.loot) {
@@ -206,13 +237,13 @@ export class Game {
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
                 const definition = bullet.source.ballistics;
-                // if (damageRecord.damaged.damageable) {
+
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
-                } else if (damageRecord.damaged.damage !== undefined) {
-                    damageRecord.damaged.damage(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
+                } else {
+                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
                 }
-                // }
+
                 this.world.destroyBody(bullet.body);
                 this.bullets.delete(bullet);
                 this.deletedBulletIDs.add(bullet.id);
@@ -226,7 +257,7 @@ export class Game {
 
             // Update gas
             if (this.gas.state !== GasState.Inactive) {
-                this.gas.percentage = (this.now - this.gas.countdownStart) / 1000 / this.gas.initialDuration;
+                this.gas.percentage = (this.now - this.gas.countdownStart) / (1000 * this.gas.initialDuration);
                 this.gasPercentageDirty = true;
             }
 
@@ -250,19 +281,19 @@ export class Game {
                 // This system allows opposite movement keys to cancel each other out.
                 const movement: Vector = v(0, 0);
 
-                if (player.movement.up) movement.y++;
-                if (player.movement.down) movement.y--;
-                if (player.movement.left) movement.x--;
-                if (player.movement.right) movement.x++;
-
                 if (player.isMobile && player.movement.moving) {
                     movement.x = Math.cos(player.movement.angle) * 1.45;
                     movement.y = -Math.sin(player.movement.angle) * 1.45;
+                } else {
+                    if (player.movement.up) movement.y++;
+                    if (player.movement.down) movement.y--;
+                    if (player.movement.left) movement.x--;
+                    if (player.movement.right) movement.x++;
                 }
 
                 // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                let speed: number = movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed;
-                speed *= 1 + (0.1 * (player.adrenaline / 100));
+                let speed = (movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed) * (1 + (player.adrenaline / 1000));
+
                 if (player.recoil.active) {
                     if (player.recoil.time < this.now) {
                         player.recoil.active = false;
@@ -318,7 +349,7 @@ export class Game {
                 }
 
                 // Partial objects
-                if (this.partialDirtyObjects.size !== 0) { // && !p.fullUpdate) {
+                if (this.partialDirtyObjects.size !== 0) {
                     for (const object of this.partialDirtyObjects) {
                         if (player.visibleObjects.has(object) && !player.fullDirtyObjects.has(object)) {
                             player.partialDirtyObjects.add(object);

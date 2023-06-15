@@ -13,6 +13,7 @@ export type KeybindActions = {
     previousItem: [string, string]
     nextItem: [string, string]
     useItem: [string, string]
+    dropActiveItem: [string, string]
     toggleMap: [string, string]
     toggleMiniMap: [string, string]
 };
@@ -37,7 +38,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "5",
+    configVersion: "6",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -53,6 +54,7 @@ export const defaultConfig: Config = {
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
+        dropActiveItem: ["", ""],
         toggleMap: ["G", "M"],
         toggleMiniMap: ["N", ""]
     },
@@ -149,6 +151,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
             config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
             config.mobileControls = defaultConfig.mobileControls;
+            break;
+        }
+        case "5": {
+            // Version 6: Added "Drop Active Item" keybind
+            config.configVersion = "6";
+            config.keybinds.dropActiveItem = defaultConfig.keybinds.dropActiveItem;
             break;
         }
         default: {

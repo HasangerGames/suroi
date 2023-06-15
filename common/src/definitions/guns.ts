@@ -2,14 +2,14 @@ import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
 
-export interface GunDefinition extends ItemDefinition {
+export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly cooldown: number
     readonly switchCooldown: number
     readonly recoilMultiplier: number
     readonly recoilDuration: number
-    readonly fireMode: FireMode
+    readonly canQuickswitch?: boolean
     readonly shotSpread: number
     readonly bulletCount?: number
     readonly length: number
@@ -30,7 +30,16 @@ export interface GunDefinition extends ItemDefinition {
         readonly speedVariance: number
         readonly maxDistance: number
     }
-}
+} & ({
+    readonly fireMode: FireMode.Auto | FireMode.Single
+} | {
+    readonly fireMode: FireMode.Burst
+    readonly burstProperties: {
+        readonly shotsPerBurst: number
+        readonly burstCooldown: number
+        // note: the time between bursts is burstCooldown, and the time between shots within a burst is cooldown
+    }
+});
 
 export const Guns: GunDefinition[] = [
     {
@@ -38,7 +47,7 @@ export const Guns: GunDefinition[] = [
         name: "AK-47",
         itemType: ItemType.Gun,
         cooldown: 100,
-        switchCooldown: 30,
+        switchCooldown: 500,
         recoilMultiplier: 0.75,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
@@ -64,7 +73,7 @@ export const Guns: GunDefinition[] = [
         name: "M3K",
         itemType: ItemType.Gun,
         cooldown: 750,
-        switchCooldown: 30,
+        switchCooldown: 500,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
         fireMode: FireMode.Single,
@@ -91,7 +100,7 @@ export const Guns: GunDefinition[] = [
         name: "Model 37",
         itemType: ItemType.Gun,
         cooldown: 1000,
-        switchCooldown: 30,
+        switchCooldown: 500,
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         fireMode: FireMode.Single,
@@ -118,12 +127,12 @@ export const Guns: GunDefinition[] = [
         name: "Mosin-Nagant",
         itemType: ItemType.Gun,
         cooldown: 1750,
-        switchCooldown: 30,
+        switchCooldown: 750,
         recoilMultiplier: 0.45,
         recoilDuration: 750,
+        canQuickswitch: true,
         fireMode: FireMode.Single,
         shotSpread: 0,
-        bulletCount: 1,
         length: 9,
         fists: {
             left: v(75, 0),
@@ -145,12 +154,11 @@ export const Guns: GunDefinition[] = [
         name: "G19",
         itemType: ItemType.Gun,
         cooldown: 60,
-        switchCooldown: 30,
+        switchCooldown: 250,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
         fireMode: FireMode.Auto,
         shotSpread: 20,
-        bulletCount: 1,
         length: 6,
         fists: {
             left: v(65, 0),
@@ -168,16 +176,45 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "saf200",
+        name: "SAF-200",
+        itemType: ItemType.Gun,
+        cooldown: 80,
+        switchCooldown: 300,
+        recoilMultiplier: 0.75,
+        recoilDuration: 750,
+        fireMode: FireMode.Burst,
+        shotSpread: 8,
+        length: 9,
+        fists: {
+            left: v(65, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(100, 0) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 15,
+            obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 80
+        },
+        burstProperties: {
+            shotsPerBurst: 3,
+            burstCooldown: 500
+        }
+    },
+    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
         cooldown: 20,
-        switchCooldown: 30,
+        switchCooldown: 500,
         recoilMultiplier: 1,
         recoilDuration: 0,
         fireMode: FireMode.Auto,
         shotSpread: 0,
-        bulletCount: 1,
         length: 12,
         fists: {
             left: v(65, 0),

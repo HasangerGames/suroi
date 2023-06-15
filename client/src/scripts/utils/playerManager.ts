@@ -1,7 +1,9 @@
 import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
+import {
+    INVENTORY_MAX_WEAPONS, ObjectCategory, Actions
+} from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 
@@ -41,6 +43,10 @@ export class PlayerManager {
 
     rotation = 0;
 
+    action = Actions.None;
+    itemToSwitch = 0;
+    itemToDrop = 0;
+
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }
     set attacking(attacking: boolean) {
@@ -48,20 +54,36 @@ export class PlayerManager {
         this.dirty.inputs = true;
     }
 
-    interacting = false;
-
     turning = false;
 
     _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
 
     private _activeItemIndex = 2;
-    get activeItemIndex(): number { return this._activeItemIndex; }
-    set activeItemIndex(v: number) {
-        if (this.activeItemIndex === v) return;
-        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
 
-        this._activeItemIndex = v;
+    set activeItemIndex(i: number) {
+        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
+        this._activeItemIndex = i;
+    }
+
+    get activeItemIndex(): number {
+        return this._activeItemIndex;
+    }
+
+    equipItem(i: number): void {
+        this.action = Actions.EquipItem;
+        this.itemToSwitch = i;
+        this.dirty.inputs = true;
+    }
+
+    dropItem(i: number): void {
+        this.action = Actions.DropItem;
+        this.itemToDrop = i;
+        this.dirty.inputs = true;
+    }
+
+    interact(): void {
+        this.action = Actions.Interact;
         this.dirty.inputs = true;
     }
 
@@ -88,7 +110,7 @@ export class PlayerManager {
     deserializeInventory(stream: SuroiBitStream): void {
         // Active item index
         if (stream.readBoolean()) {
-            this.activeItemIndex = stream.readUint8();
+            this.activeItemIndex = stream.readBits(2);
             $(".inventory-slot").removeClass("active");
             $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
         }

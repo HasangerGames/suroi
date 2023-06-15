@@ -22,7 +22,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot>, id: number) {
         super(game, scene, type, id);
         const images = {
-            background: this.scene.add.image(0, 0, "main", "loot_background_heal.svg"),
+            background: this.scene.add.image(0, 0, "main"),
             item: this.scene.add.image(0, 0, "main"),
             container: undefined as unknown as Phaser.GameObjects.Container
         };
