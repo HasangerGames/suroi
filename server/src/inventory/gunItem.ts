@@ -66,7 +66,6 @@ export class GunItem extends InventoryItem {
 
         this.ammo--;
         this._shots++;
-        console.log(this._shots);
 
         this._lastUse = owner.game.now;
 
