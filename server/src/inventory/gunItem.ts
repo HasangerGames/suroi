@@ -21,6 +21,8 @@ export class GunItem extends InventoryItem {
 
     private _shots = 0;
 
+    ignoreSwitchCooldown = false;
+
     /**
      * Constructs a new gun
      * @param idString The `idString` of a `GunDefinition` in the item schema that this object is to base itself off of
@@ -112,11 +114,11 @@ export class GunItem extends InventoryItem {
     override useItem(): void {
         let attackCooldown = this.definition.cooldown;
         if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
-
         if (
             this.owner.game.now - this._lastUse > attackCooldown &&
-            this.owner.game.now - this._switchDate > this.definition.switchCooldown
+            (this.owner.game.now - this._switchDate > this.definition.switchCooldown || this.definition.canQuickswitch || this.ignoreSwitchCooldown)
         ) {
+            this.ignoreSwitchCooldown = false;
             this._useItemNoDelayCheck(true);
         }
     }

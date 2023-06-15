@@ -84,11 +84,6 @@ export class Map {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
             const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-
-            /**
-             * @todo For objects with limited rotation, send orientation instead of rotation (2 bits vs. 8), saving 6 bits.
-             * @todo Add extra limited rotation (2 possible states = 1 bit).
-             */
             let rotation: number | undefined;
             switch (definition.rotationMode) {
                 case "full":
@@ -123,7 +118,7 @@ export class Map {
         }
     }
 
-    private obstacleTest(idString: string, position: Vec2, rotation: number, scale: number, variation: Variation): void {
+    private obstacleTest(idString: string, position: Vec2, rotation: number, scale: number, variation: Variation): Obstacle {
         const type = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         const obstacle: Obstacle = new Obstacle(
             this.game,
@@ -134,6 +129,7 @@ export class Map {
             variation
         );
         this.game.staticObjects.add(obstacle);
+        return obstacle;
     }
 
     getRandomPositionFor(type: ObjectType, scale = 1): Vector {

@@ -68,8 +68,18 @@ export class Inventory {
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
+        const oldItem = this._weapons[old];
         const item = this._weapons[slot];
-        if (item !== undefined) item._switchDate = this.owner.game.now;
+        if (item !== undefined) {
+            item._switchDate = this.owner.game.now;
+            if (
+                item instanceof GunItem &&
+                oldItem instanceof GunItem &&
+                oldItem.definition.canQuickswitch === true
+            ) {
+                item.ignoreSwitchCooldown = true;
+            }
+        }
 
         this.owner.attacking = false;
         this.owner.dirty.activeWeaponIndex = true;

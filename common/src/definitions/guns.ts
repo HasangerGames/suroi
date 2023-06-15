@@ -9,6 +9,7 @@ export type GunDefinition = ItemDefinition & {
     readonly switchCooldown: number
     readonly recoilMultiplier: number
     readonly recoilDuration: number
+    readonly canQuickswitch?: boolean
     readonly shotSpread: number
     readonly bulletCount?: number
     readonly length: number
@@ -129,6 +130,7 @@ export const Guns: GunDefinition[] = [
         switchCooldown: 750,
         recoilMultiplier: 0.45,
         recoilDuration: 750,
+        canQuickswitch: true,
         fireMode: FireMode.Single,
         shotSpread: 0,
         length: 9,
@@ -174,6 +176,36 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "saf200",
+        name: "SAF-200",
+        itemType: ItemType.Gun,
+        cooldown: 80,
+        switchCooldown: 300,
+        recoilMultiplier: 0.75,
+        recoilDuration: 750,
+        fireMode: FireMode.Burst,
+        shotSpread: 8,
+        length: 9,
+        fists: {
+            left: v(65, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(100, 0) },
+        capacity: Infinity,
+        ballistics: {
+            damage: 15,
+            obstacleMultiplier: 2,
+            speed: 0.35,
+            speedVariance: 0,
+            maxDistance: 80
+        },
+        burstProperties: {
+            shotsPerBurst: 3,
+            burstCooldown: 500
+        }
+    },
+    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
@@ -197,36 +229,6 @@ export const Guns: GunDefinition[] = [
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 80
-        }
-    },
-    {
-        idString: "saf200",
-        name: "SAF-200",
-        itemType: ItemType.Gun,
-        cooldown: 0,
-        switchCooldown: 300,
-        recoilMultiplier: 0.75,
-        recoilDuration: 750,
-        fireMode: FireMode.Burst,
-        shotSpread: 8,
-        length: 9,
-        fists: {
-            left: v(65, 0),
-            right: v(130, -6),
-            animationDuration: 100
-        },
-        image: { position: v(100, 0) },
-        capacity: Infinity,
-        ballistics: {
-            damage: 6.5,
-            obstacleMultiplier: 2,
-            speed: 0.4,
-            speedVariance: 0,
-            maxDistance: 80
-        },
-        burstProperties: {
-            shotsPerBurst: 3,
-            burstCooldown: 700
         }
     }
 ];
