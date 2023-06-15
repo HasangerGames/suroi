@@ -8,6 +8,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { type CollisionRecord } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { FireMode } from "../../../common/src/constants";
 
 /**
  * A class representing a melee weapon
@@ -82,7 +83,7 @@ export class MeleeItem extends InventoryItem {
                     }
                 }
 
-                if (definition.fireMode === "auto" || owner.isMobile) {
+                if (definition.fireMode === FireMode.Auto || owner.isMobile) {
                     setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
                 }
             }

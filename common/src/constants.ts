@@ -32,6 +32,11 @@ export enum GasState {
     Inactive, Waiting, Advancing
 }
 
+export enum FireMode {
+    Single,
+    Auto
+}
+
 // NOTE: remember to increase these values when adding stuff to enums
 
 export const PACKET_TYPE_BITS = 4;

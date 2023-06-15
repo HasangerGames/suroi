@@ -1,4 +1,4 @@
-import { FireMode, type GunDefinition } from "../../../common/src/definitions/guns";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
 import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
@@ -7,6 +7,7 @@ import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { Bullet } from "../objects/bullet";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { FireMode } from "../../../common/src/constants";
 
 /**
  * A class representing a firearm

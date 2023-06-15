@@ -1,5 +1,6 @@
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
+import { FireMode } from "../constants";
 
 export interface GunDefinition extends ItemDefinition {
     readonly itemType: ItemType.Gun
@@ -30,8 +31,6 @@ export interface GunDefinition extends ItemDefinition {
         readonly maxDistance: number
     }
 }
-
-export enum FireMode { Single, Auto }
 
 export const Guns: GunDefinition[] = [
     {
@@ -66,8 +65,8 @@ export const Guns: GunDefinition[] = [
         itemType: ItemType.Gun,
         cooldown: 750,
         switchCooldown: 30,
-        recoilMultiplier: 0.6,
-        recoilDuration: 450,
+        recoilMultiplier: 0.5,
+        recoilDuration: 500,
         fireMode: FireMode.Single,
         shotSpread: 7,
         bulletCount: 9,
@@ -111,7 +110,7 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
-            maxDistance: 80
+            maxDistance: 64
         }
     },
     {

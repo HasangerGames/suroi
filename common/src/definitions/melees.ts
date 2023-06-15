@@ -1,5 +1,6 @@
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
+import { type FireMode } from "../constants";
 
 export interface MeleeDefinition extends ItemDefinition {
     readonly itemType: ItemType.Melee
@@ -23,7 +24,7 @@ export interface MeleeDefinition extends ItemDefinition {
         readonly angle?: number
         readonly useAngle?: number
     }
-    readonly fireMode?: "single" | "auto"
+    readonly fireMode?: FireMode
 }
 
 export const Melees: MeleeDefinition[] = [
