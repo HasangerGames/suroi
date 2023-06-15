@@ -22,8 +22,9 @@ export abstract class InventoryItem {
     readonly owner: Player;
 
     _lastUse = 0;
-    _switchDate = 0;
     get lastUse(): number { return this._lastUse; }
+
+    _switchDate = 0;
 
     /**
      * Creates a new `InventoryItem` given a string and a player

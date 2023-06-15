@@ -63,9 +63,13 @@ export class Explosion {
             if (dist < definition.radius.max) {
                 const angle = angleBetween(loot.position, this.position);
                 // it works, please don't ask questions
-                const velocity = loot.body.getLinearVelocity()
-                    .add(Vec2(Math.cos(angle), Math.sin(angle))
-                        .mul(definition.radius.max - dist).mul(0.006));
+                const velocity = loot.body
+                    .getLinearVelocity()
+                    .add(
+                        Vec2(Math.cos(angle), Math.sin(angle))
+                            .mul(definition.radius.max - dist).mul(0.006)
+                    );
+
                 loot.body.setLinearVelocity(velocity);
             }
         }

@@ -154,7 +154,7 @@ export class Inventory {
         if (!Inventory.isValidWeaponSlot(slotA) || !Inventory.isValidWeaponSlot(slotB)) throw new RangeError(`Attempted to swap items where one or both of the slots were invalid (slotA: ${slotA}, slotB: ${slotB})`);
 
         [this._weapons[slotA], this._weapons[slotB]] =
-            [this._weapons[slotB], this._weapons[slotA]];
+        [this._weapons[slotB], this._weapons[slotA]];
     }
 
     /**
@@ -167,11 +167,14 @@ export class Inventory {
         this.owner.dirty.inventory = true;
         this.owner.game.fullDirtyObjects.add(this.owner);
         this.owner.fullDirtyObjects.add(this.owner);
+
         // Drop old item into the game world
         const oldItem: GunItem | MeleeItem | undefined = this._setWeapon(slot, this._reifyItem(item));
         if (oldItem === undefined) return;
+
         const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
-        /* eslint-disable-next-line no-new */
+
+        // eslint-disable-next-line no-new
         new Loot(this.owner.game, oldItem.type, vAdd(this.owner.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
     }
 
@@ -209,10 +212,7 @@ export class Inventory {
      * @returns Whether the item exists on the inventory
      */
     checkIfWeaponExists(item: string): boolean {
-        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
-            if (item === this._weapons[i]?.type.idString) { return true; }
-        }
-        return false;
+        return this._weapons.some(weapon => weapon?.type.idString === item);
     }
 
     /**
@@ -259,6 +259,7 @@ export class Inventory {
             this.owner.dirty.activeWeaponIndex = false;
             stream.writeUint8(this.activeWeaponIndex);
         }
+
         stream.writeBoolean(this.owner.dirty.inventory);
         if (this.owner.dirty.inventory) {
             this.owner.dirty.inventory = false;

@@ -19,6 +19,8 @@ export class GunItem extends InventoryItem {
 
     ammo: number;
 
+    private _shots = 0;
+
     /**
      * Constructs a new gun
      * @param idString The `idString` of a `GunDefinition` in the item schema that this object is to base itself off of
@@ -47,55 +49,75 @@ export class GunItem extends InventoryItem {
         const definition = this.definition;
 
         if (
-            this.ammo > 0 &&
-            (owner.attacking || skipAttackCheck) &&
-            !owner.dead &&
-            !owner.disconnected
+            this.ammo <= 0 ||
+            (!skipAttackCheck && !owner.attacking) ||
+            owner.dead ||
+            owner.disconnected
         ) {
-            this.ammo--;
-            this._lastUse = owner.game.now;
+            this._shots = 0;
+            return;
+        }
 
-            const spread = degreesToRadians(definition.shotSpread);
+        if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
+            this._shots = 0;
+            setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.burstProperties.burstCooldown);
+            return;
+        }
 
-            let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
-            let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+        this.ammo--;
+        this._shots++;
+        console.log(this._shots);
 
-            for (const object of this.owner.nearObjects) {
-                if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
-                    rotated = vRotate(v(2.50001, 0), owner.rotation);
-                    position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
-                    break;
-                }
+        this._lastUse = owner.game.now;
+
+        const spread = degreesToRadians(definition.shotSpread);
+
+        let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+        let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+
+        for (const object of this.owner.nearObjects) {
+            if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
+                rotated = vRotate(v(2.50001, 0), owner.rotation);
+                position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+                break;
             }
+        }
 
-            for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-                const angle = normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2);
-                const bullet = new Bullet(
-                    owner.game,
-                    position,
-                    angle,
-                    definition,
-                    this.type,
-                    owner
-                );
+        for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
+            const angle = normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2);
+            const bullet = new Bullet(
+                owner.game,
+                position,
+                angle,
+                definition,
+                this.type,
+                owner
+            );
 
-                owner.game.bullets.add(bullet);
-                owner.game.newBullets.add(bullet);
-            }
+            owner.game.bullets.add(bullet);
+            owner.game.newBullets.add(bullet);
+        }
 
-            owner.recoil.active = true;
-            owner.recoil.time = owner.game.now + definition.recoilDuration;
-            owner.recoil.multiplier = definition.recoilMultiplier;
+        owner.recoil.active = true;
+        owner.recoil.time = owner.game.now + definition.recoilDuration;
+        owner.recoil.multiplier = definition.recoilMultiplier;
 
-            if ((definition.fireMode === FireMode.Auto || this.owner.isMobile) && this.owner.activeItem === this) {
-                setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
-            }
+        if (
+            (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
+            this.owner.activeItem === this
+        ) {
+            setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
         }
     }
 
     override useItem(): void {
-        if (this.owner.game.now - this._lastUse > this.definition.cooldown &&
-            this.owner.game.now - this._switchDate > this.definition.switchCooldown) {
+        let attackCooldown = this.definition.cooldown;
+        if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
+
+        if (
+            this.owner.game.now - this._lastUse > attackCooldown &&
+            this.owner.game.now - this._switchDate > this.definition.switchCooldown
+        ) {
             this._useItemNoDelayCheck(true);
         }
     }

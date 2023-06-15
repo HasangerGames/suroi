@@ -29,21 +29,24 @@ export enum KillFeedMessageType {
 }
 
 export enum GasState {
-    Inactive, Waiting, Advancing
+    Inactive,
+    Waiting,
+    Advancing
 }
 
 export enum FireMode {
     Single,
+    Burst,
     Auto
 }
 
-// NOTE: remember to increase these values when adding stuff to enums
+const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length));
 
-export const PACKET_TYPE_BITS = 4;
-export const OBJECT_CATEGORY_BITS = 3;
+export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
+export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 10;
 export const VARIATION_BITS = 3;
-export const ANIMATION_TYPE_BITS = 1;
+export const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 export const KILL_FEED_MESSAGE_TYPE_BITS = 1;
 export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;

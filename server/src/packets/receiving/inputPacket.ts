@@ -48,17 +48,21 @@ export class InputPacket extends ReceivingPacket {
         if (stream.readBoolean()) { // interacting
             let minDist = Number.MAX_VALUE;
             let closestObject: Loot | undefined;
+
+            const detectionHitbox = new CircleHitbox(3, player.position);
+
             for (const object of player.visibleObjects) {
                 if (object instanceof Loot && object.canInteract(player)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(new CircleHitbox(3, player.position));
+                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
+
                     if (record?.collided === true && record.distance < minDist) {
                         minDist = record.distance;
                         closestObject = object;
                     }
                 }
             }
-            if (closestObject !== undefined) closestObject.interact(player);
+
+            closestObject?.interact(player);
         }
     }
 }
