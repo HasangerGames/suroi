@@ -37,6 +37,7 @@ export const Melees: MeleeDefinition[] = [
         radius: 1.5,
         offset: v(2.5, 0),
         cooldown: 250,
+        noDrop: true,
         fists: {
             animationDuration: 125,
             randomFist: true,

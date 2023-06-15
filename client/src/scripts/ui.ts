@@ -140,10 +140,10 @@ $((): void => {
 
     // Switch weapon slots by clicking
     for (let i = 0; i < 3; i++) {
-        $(`#weapon-slot-${i + 1}`).on("pointerdown", (): void => {
+        $(`#weapon-slot-${i + 1}`)[0].addEventListener("pointerdown", (e: PointerEvent): void => {
             if (core.game !== undefined) {
-                core.game.playerManager.activeItemIndex = i;
-                core.game.playerManager.dirty.inputs = true;
+                if (e.button === 0) core.game.playerManager.equipItem(i);
+                else if (e.button === 2) core.game.playerManager.dropItem(i);
             }
         });
     }
@@ -155,8 +155,7 @@ $((): void => {
     if (core.game?.playerManager.isMobile === true) {
         $("#btn-interact").show().on("click", () => {
             if (core.game !== undefined) {
-                core.game.playerManager.interacting = true;
-                core.game.playerManager.dirty.inputs = true;
+                core.game.playerManager.interact();
             }
         });
     }

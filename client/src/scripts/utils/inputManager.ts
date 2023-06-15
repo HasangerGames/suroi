@@ -1,6 +1,7 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
 import { mod } from "../../../../common/src/utils/math";
+import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
@@ -49,7 +50,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
     function generateSlotAction(slot: number): Action {
         return new Action(
             `inventory::slot${slot}`,
-            () => { game.playerManager.activeItemIndex = slot; }
+            () => { game.playerManager.equipItem(slot); }
         );
     }
 
@@ -60,7 +61,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         moveLeft: generateMovementAction("left"),
         interact: new Action(
             "interact",
-            () => { game.playerManager.interacting = true; game.playerManager.dirty.inputs = true; }
+            () => { game.playerManager.interact(); }
         ),
 
         slot1: generateSlotAction(0),
@@ -70,34 +71,39 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         lastEquippedItem: new Action(
             "inventory::lastEquippedItem",
             () => {
-                game.playerManager.activeItemIndex = game.playerManager.lastItemIndex;
+                game.playerManager.equipItem(game.playerManager.lastItemIndex);
             }
         ),
         equipOtherGun: new Action(
             "inventory::equipOtherGun",
             () => {
-                game.playerManager.activeItemIndex++;
-                if (game.playerManager.activeItemIndex > 1) game.playerManager.activeItemIndex = 0;
+                let index = game.playerManager.activeItemIndex + 1;
+                if (index > 1) index = 0;
+                game.playerManager.equipItem(index);
             }
         ),
         previousItem: new Action(
             "inventory::previousItem",
             () => {
-                game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex - 1, 3);
-                // fixme                                   mystery constant (max inventory size) ^
+                game.playerManager.equipItem(mod(game.playerManager.activeItemIndex - 1, INVENTORY_MAX_WEAPONS));
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
             () => {
-                game.playerManager.activeItemIndex = mod(game.playerManager.activeItemIndex + 1, 3);
-                // fixme                                   mystery constant (max inventory size) ^
+                game.playerManager.equipItem(mod(game.playerManager.activeItemIndex + 1, INVENTORY_MAX_WEAPONS));
             }
         ),
         useItem: new Action(
             "useItem",
             () => { game.playerManager.attacking = true; },
             () => { game.playerManager.attacking = false; }
+        ),
+        dropActiveItem: new Action(
+            "inventory::dropActiveItem",
+            () => {
+                game.playerManager.dropItem(game.playerManager.activeItemIndex);
+            }
         ),
         toggleMap: new Action(
             "toggleMap",
@@ -106,7 +112,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             }
         ),
         toggleMiniMap: new Action(
-            "toggleMap",
+            "toggleMiniMap",
             () => {
                 (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggleMiniMap();
             }
@@ -272,6 +278,7 @@ const actionsNames = {
     previousItem: "Equip Previous Item",
     nextItem: "Equip Next Item",
     useItem: "Use Item",
+    dropActiveItem: "Drop Active Item",
     toggleMap: "Toggle Fullscreen Map",
     toggleMiniMap: "Toggle Mini Map"
 };

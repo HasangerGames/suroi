@@ -99,6 +99,9 @@ export class Loot extends GameObject {
                     !inventory.hasWeapon(1) ||
                     (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
             }
+            case ItemType.Melee: {
+                return true;
+            }
         }
         return false;
     }
@@ -119,6 +122,8 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Melee: {
+                inventory.addOrReplaceWeapon(2, this.type.idString);
+                success = true;
                 break;
             }
             case ItemType.Gun: {

@@ -5,6 +5,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { Loot } from "../../objects/loot";
 import { type CollisionRecord } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { ACTIONS_BITS, Actions } from "../../../../common/src/constants";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -27,42 +28,36 @@ export class InputPacket extends ReceivingPacket {
         player.attacking = attackState;
         if (!oldAttackState && attackState) player.startedAttacking = true;
 
-        const activeItemIndex = stream.readBits(2);
-
-        // switch items
-        if (activeItemIndex !== player.activeItemIndex) {
-            // If the switch is successful, then the active item index isn't dirty;
-            // conversely, if the switch fails, then the change needs to be sent back
-            // to the client, and the active item index is thus dirty
-            player.dirty.activeWeaponIndex = player.inventory.setActiveWeaponIndex(activeItemIndex);
-
-            player.game.fullDirtyObjects.add(player);
-            player.fullDirtyObjects.add(player);
-        }
-
         player.turning = stream.readBoolean();
         if (player.turning) {
             player.rotation = stream.readRotation(16);
         }
 
-        if (stream.readBoolean()) { // interacting
-            let minDist = Number.MAX_VALUE;
-            let closestObject: Loot | undefined;
-
-            const detectionHitbox = new CircleHitbox(3, player.position);
-
-            for (const object of player.visibleObjects) {
-                if (object instanceof Loot && object.canInteract(player)) {
-                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
-
-                    if (record?.collided === true && record.distance < minDist) {
-                        minDist = record.distance;
-                        closestObject = object;
+        switch (stream.readBits(ACTIONS_BITS)) {
+            case Actions.EquipItem:
+                player.inventory.setActiveWeaponIndex(stream.readBits(2));
+                break;
+            case Actions.DropItem:
+                player.inventory.dropWeapon(stream.readBits(2));
+                break;
+            case Actions.Interact: {
+                let minDist = Number.MAX_VALUE;
+                let closestObject: Loot | undefined;
+                const detectionHitbox = new CircleHitbox(3, player.position);
+                for (const object of player.visibleObjects) {
+                    if (object instanceof Loot && object.canInteract(player)) {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
+                        if (record?.collided === true && record.distance < minDist) {
+                            minDist = record.distance;
+                            closestObject = object;
+                        }
                     }
                 }
+                closestObject?.interact(player);
+                break;
             }
 
-            closestObject?.interact(player);
         }
     }
 }

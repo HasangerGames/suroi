@@ -8,7 +8,7 @@ import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
 import { Loot } from "../objects/loot";
 import { v, vAdd } from "../../../common/src/utils/vector";
-
+import { Vec2 } from "planck";
 /**
  * A class representing a player's inventory
  */
@@ -57,8 +57,7 @@ export class Inventory {
      */
     setActiveWeaponIndex(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
-        if (!this.hasWeapon(slot)) return false;
-
+        if (!this.hasWeapon(slot) || this._activeWeaponIndex === slot) return false;
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
@@ -180,8 +179,8 @@ export class Inventory {
 
         // Drop old item into the game world
         const oldItem: GunItem | MeleeItem | undefined = this._setWeapon(slot, this._reifyItem(item));
-        if (oldItem === undefined) return;
-
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (oldItem === undefined || oldItem.definition.noDrop) return;
         const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
 
         // eslint-disable-next-line no-new
@@ -203,6 +202,32 @@ export class Inventory {
             }
         }
         return -1;
+    }
+
+    /**
+     * Drops a weapon from this inventory
+     * @param slot The slot to drop
+     * @returns The item that was dropped, if any
+     */
+    dropWeapon(slot: number): GunItem | MeleeItem | undefined {
+        const item = this._weapons[slot];
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        if (item === undefined || item.definition.noDrop) return undefined;
+
+        const loot = new Loot(this.owner.game, item.type, this.owner.position);
+        loot.body.setLinearVelocity(Vec2(Math.cos(this.owner.rotation), -Math.sin(this.owner.rotation)).mul(-0.02));
+
+        this.removeWeapon(slot);
+
+        if (this.activeWeaponIndex === slot) {
+            // Switch to last weapon if it exists, fallback to melee slot if it doesn't
+            if (this.hasWeapon(this._lastWeaponIndex)) this.setActiveWeaponIndex(this._lastWeaponIndex);
+            else this.setActiveWeaponIndex(2);
+        }
+
+        this.owner.game.fullDirtyObjects.add(this.owner);
+
+        return item;
     }
 
     /**
@@ -248,13 +273,13 @@ export class Inventory {
             isEmpty ? --this._weaponCount : ++this._weaponCount;
         }
 
-        if (this._weaponCount === 0) {
-            // revert changes in case of error-handling
-            this._weapons[slot] = old;
-            this._weaponCount = 1;
-            throw new Error("This operation would leave the inventory empty; inventories cannot be emptied");
-        }
+        this._weapons[slot] = item;
+
         this.owner.dirty.inventory = true;
+
+        if (slot === 2 && item === undefined) {
+            this._weapons[slot] = new MeleeItem("fists", this.owner);
+        }
 
         return old;
     }
@@ -267,7 +292,7 @@ export class Inventory {
         stream.writeBoolean(this.owner.dirty.activeWeaponIndex);
         if (this.owner.dirty.activeWeaponIndex) {
             this.owner.dirty.activeWeaponIndex = false;
-            stream.writeUint8(this.activeWeaponIndex);
+            stream.writeBits(this.activeWeaponIndex, 2);
         }
 
         stream.writeBoolean(this.owner.dirty.inventory);
