@@ -209,26 +209,27 @@ export const Guns: GunDefinition[] = [
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
-        cooldown: 20,
-        switchCooldown: 500,
+        cooldown: 60,
+        switchCooldown: 0,
         recoilMultiplier: 1,
         recoilDuration: 0,
         fireMode: FireMode.Auto,
-        shotSpread: 0,
-        length: 12,
+        shotSpread: 20,
+        bulletCount: 10,
+        length: 11,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
             animationDuration: 100
         },
-        image: { position: v(100, 3) },
+        image: { position: v(100, 0) },
         capacity: Infinity,
         ballistics: {
-            damage: 20,
-            obstacleMultiplier: 5,
+            damage: 10,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
-            maxDistance: 80
+            maxDistance: 128
         }
     }
 ];
