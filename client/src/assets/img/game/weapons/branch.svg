@@ -25,15 +25,15 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="2.0789585"
-     inkscape:cx="-33.670705"
-     inkscape:cy="81.050197"
+     inkscape:zoom="4.157917"
+     inkscape:cx="5.2911109"
+     inkscape:cy="39.322574"
      inkscape:window-width="1280"
      inkscape:window-height="658"
      inkscape:window-x="-6"
      inkscape:window-y="-6"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5"
+     inkscape:current-layer="g7393"
      inkscape:showpageshadow="2"
      inkscape:deskcolor="#505050" />
   <defs
@@ -73,4 +73,21 @@
      style="opacity:1;fill:#85490c;fill-opacity:1;stroke:#2a1704;stroke-width:0.26458332;stroke-dasharray:none;stroke-opacity:1"
      d="M 20.428661,0.28200886 17.058695,4.9471471 17.236371,3.4742978 18.241721,0.66356046 16.466687,0.63597916 15.175844,5.9595562 0.26131326,20.449355 1.7688026,21.956846 6.1717089,17.350682 22.121969,1.9753179 Z"
      sodipodi:nodetypes="ccccccccccc" />
+  <g
+     id="g7393"
+     transform="matrix(0.21413381,0,0,0.21413381,1007.434,484.90602)"
+     inkscape:export-filename="bush_particle_01.svg"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96">
+    <path
+       id="path542-6"
+       style="fill:#40781f;fill-opacity:1;stroke:#132509;stroke-width:0.61779903;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m -4637.6705,-2219.6586 c -0.9617,-2.7685 1.96,-7.1965 4.8885,-7.3077 5.0419,-0.1915 10.833,10.1344 9.3463,11.906 -1.4866,1.7718 -12.5985,0.1118 -14.2348,-4.5983 z"
+       sodipodi:nodetypes="aaza" />
+    <path
+       id="path542-0-2"
+       style="fill:#539b29;fill-opacity:1;stroke:#13240a;stroke-width:0.61779903;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       d="m -4632.521,-2222.6748 c -1.8023,-0.098 -2.9783,-2.5664 -1.9151,-4.1079 1.8305,-2.6534 9.3966,-3.4282 9.7455,-2.2762 0.349,1.1521 -4.7635,6.5515 -7.8304,6.3841 z"
+       sodipodi:nodetypes="aaza" />
+  </g>
 </svg>

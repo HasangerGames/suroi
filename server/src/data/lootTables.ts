@@ -6,9 +6,17 @@ export interface LootTable { min: number, max: number, loot: WeightedItem[] }
 export const LootTables: Record<string, LootTable> = {
     regular_crate: {
         min: 1,
-        max: 3,
+        max: 2,
         loot: [
             { tier: "guns", weight: 1 },
+            { tier: "healingItems", weight: 0.25 },
+            { tier: "melee", weight: 0.04}
+        ]
+    },
+    health_crate: {
+        min: 1,
+        max: 2,
+        loot: [
             { tier: "healingItems", weight: 1 }
         ]
     }
@@ -28,5 +36,11 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "gauze", weight: 3 },
         { item: "cola", weight: 2 },
         { item: "medikit", weight: 1 }
-    ]
+    ],
+    melee: [
+        {item: "branch", weight: 0.5},
+        {item: "club", weight: 1},
+        {item: "dagger", weight: 0.5},
+        {item: "club_op", weight: 0.1}
+    ],
 };

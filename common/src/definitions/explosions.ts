@@ -74,7 +74,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 frame: "super_barrel_fire_particle.svg",
                 count: 20
             }
-        },
+        },       
         {
             idString: "health_crate_explosion",
             name: "Health Crate",

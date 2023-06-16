@@ -54,8 +54,8 @@ export const Melees: MeleeDefinition[] = [
         damage: 30,
         obstacleMultiplier: 0.75,
         radius: 2.2,
-        offset: v(3, 0.75),
-        cooldown: 250,
+        offset: v(3.1, 0.75),
+        cooldown: 200,
         fists: {
             animationDuration: 125,
             randomFist: false,
@@ -78,7 +78,7 @@ export const Melees: MeleeDefinition[] = [
         damage: 10,
         obstacleMultiplier: 0.5,
         radius: 3,
-        offset: v(3, 0.75),
+        offset: v(3.2, 0.75),
         cooldown: 250,
         fists: {
             animationDuration: 125,
@@ -101,8 +101,8 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 25,
         obstacleMultiplier: 1,
-        radius: 3,
-        offset: v(3, 0.75),
+        radius: 3.5,
+        offset: v(4, 1),
         cooldown: 300,
         fists: {
             animationDuration: 125,
@@ -113,8 +113,8 @@ export const Melees: MeleeDefinition[] = [
             useRight: v(38, -35)
         },
         image: {
-            position: v(72, 45),
-            usePosition: v(95, 0),
+            position: v(75, 45),
+            usePosition: v(99, 0),
             angle: 60,
             useAngle: 0
         }
@@ -123,11 +123,11 @@ export const Melees: MeleeDefinition[] = [
         idString: "club_op",
         name: "Club OP",
         itemType: ItemType.Melee,
-        damage: 30,
-        obstacleMultiplier: 1,
-        radius: 3,
-        offset: v(3, 0.75),
-        cooldown: 300,
+        damage: 35,
+        obstacleMultiplier: 1.2,
+        radius: 3.5,
+        offset: v(4, 1),
+        cooldown: 400,
         fists: {
             animationDuration: 125,
             randomFist: false,
@@ -137,8 +137,8 @@ export const Melees: MeleeDefinition[] = [
             useRight: v(38, -35)
         },
         image: {
-            position: v(72, 45),
-            usePosition: v(95, 0),
+            position: v(75, 45),
+            usePosition: v(99, 0),
             angle: 60,
             useAngle: 0
         }
