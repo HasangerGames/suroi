@@ -71,7 +71,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Active player ID
         if (stream.readBoolean()) {
-            const noID: boolean = game.activePlayer.id === -1;
+            const noID = game.activePlayer.id === -1;
             game.activePlayer.id = stream.readObjectID();
             if (noID) {
                 game.objects.set(game.activePlayer.id, game.activePlayer);
@@ -87,7 +87,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Full objects
         if (stream.readBoolean()) {
-            const fullObjectCount: number = stream.readUint8();
+            const fullObjectCount = stream.readUint8();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
@@ -135,9 +135,9 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Partial objects
         if (stream.readBoolean()) {
-            const partialObjectCount: number = stream.readUint8();
+            const partialObjectCount = stream.readUint8();
             for (let i = 0; i < partialObjectCount; i++) {
-                const id: number = stream.readObjectID();
+                const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
                 if (object === undefined) {
                     console.warn(`Unknown partial object with ID ${id}`);
@@ -149,9 +149,9 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Deleted objects
         if (stream.readBoolean()) {
-            const deletedObjectCount: number = stream.readUint8();
+            const deletedObjectCount = stream.readUint8();
             for (let i = 0; i < deletedObjectCount; i++) {
-                const id: number = stream.readObjectID();
+                const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
                 if (object === undefined) {
                     console.warn(`Trying to delete unknown object with ID ${id}`);
@@ -164,9 +164,9 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Bullets
         if (stream.readBoolean()) {
-            const bulletCount: number = stream.readUint8();
+            const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const id: number = stream.readUint8();
+                const id = stream.readUint8();
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
                 const initialPosition = stream.readPosition();
                 const rotation = stream.readRotation(16);
@@ -200,7 +200,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Deleted bullets
         if (stream.readBoolean()) {
-            const destroyedBulletCount: number = stream.readUint8();
+            const destroyedBulletCount = stream.readUint8();
             for (let i = 0; i < destroyedBulletCount; i++) {
                 const bulletID = stream.readUint8();
                 const bullet: Phaser.GameObjects.Image | undefined = game.bullets.get(bulletID);

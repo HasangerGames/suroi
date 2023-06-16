@@ -399,13 +399,13 @@ export class Game {
             this.tickTimes.push(tickTime);
 
             if (this.tickTimes.length >= 200) {
-                const mspt: number = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+                const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
                 log(`Average ms/tick: ${mspt}`, true);
                 log(`Server load: ${((mspt / 30) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            const newDelay: number = Math.max(0, 30 - tickTime);
+            const newDelay = Math.max(0, 30 - tickTime);
             this.tick(newDelay);
         }, delay);
     }

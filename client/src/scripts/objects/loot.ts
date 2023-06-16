@@ -36,9 +36,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (!this.created) {
             this.images.container.setPosition(this.position.x * 20, this.position.y * 20).setRotation(this.rotation);
         } else {
-            const oldAngle: number = this.images.container.angle;
-            const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
-            const finalAngle: number = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+            const oldAngle = this.images.container.angle;
+            const newAngle = Phaser.Math.RadToDeg(this.rotation);
+            const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
             gsap.to(this.images.container, {
                 x: this.position.x * 20,
                 y: this.position.y * 20,

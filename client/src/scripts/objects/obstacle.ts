@@ -14,7 +14,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     emitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
     override deserializePartial(stream: SuroiBitStream): void {
-        const oldScale: number = this.scale;
+        const oldScale = this.scale;
         this.scale = stream.readScale();
 
         // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
@@ -36,7 +36,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        const destroyed: boolean = stream.readBoolean();
+        const destroyed = stream.readBoolean();
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (this.image !== undefined) {
@@ -62,10 +62,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         this.rotation = stream.readObstacleRotation(definition.rotationMode);
 
-        const hasVariations: boolean = definition.variations !== undefined;
+        const hasVariations = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
 
-        let texture: string = this.type.idString;
+        let texture = this.type.idString;
         if (this.destroyed) texture += "_residue";
         else if (hasVariations) texture += `_${this.variation + 1}`;
 

@@ -7,18 +7,18 @@ import { type MinimapScene } from "../../scenes/minimapScene";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const numObstacles: number = stream.readBits(10);
+        const numObstacles = stream.readBits(10);
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
 
             const position: Vector = stream.readPosition();
-            const scale: number = stream.readScale();
+            const scale = stream.readScale();
 
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const rotation: number = stream.readObstacleRotation(definition.rotationMode);
+            const rotation = stream.readObstacleRotation(definition.rotationMode);
 
-            const hasVariations: boolean = definition.variations !== undefined;
-            let texture: string = type.idString;
+            const hasVariations = definition.variations !== undefined;
+            let texture = type.idString;
             let variation = 0;
             if (hasVariations) {
                 variation = stream.readVariation();

@@ -51,7 +51,7 @@ export class Loot extends GameObject {
             linearDamping: 0.003,
             angularDamping: 0
         });
-        const radius: number = (this.type.definition as LootDefinition).itemType === ItemType.Gun ? 3.125 : 2.5;
+        const radius = (this.type.definition as LootDefinition).itemType === ItemType.Gun ? 3.125 : 2.5;
         this.body.createFixture({
             shape: Circle(radius),
             restitution: 0,

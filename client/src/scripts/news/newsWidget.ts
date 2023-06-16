@@ -2,7 +2,7 @@ import { news } from "./newsPosts";
 
 let newsText = "";
 for (const newsPost of news.slice(0, 5)) {
-    const date: string = new Date(newsPost.date).toLocaleDateString("default", {
+    const date = new Date(newsPost.date).toLocaleDateString("default", {
         month: "long",
         day: "numeric",
         year: "numeric"

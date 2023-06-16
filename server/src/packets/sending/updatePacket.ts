@@ -122,7 +122,7 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Gas
-        const gasDirty: boolean = game.gasDirty || player.fullUpdate;
+        const gasDirty = game.gasDirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);
         if (gasDirty) {
             stream.writeBits(game.gas.state, 2);
@@ -141,7 +141,7 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Alive count
-        const aliveCountDirty: boolean = game.aliveCountDirty || player.fullUpdate;
+        const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
         stream.writeBoolean(aliveCountDirty);
         if (aliveCountDirty) {
             stream.writeBits(game.aliveCount, 7);

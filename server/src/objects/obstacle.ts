@@ -71,7 +71,7 @@ export class Obstacle extends GameObject {
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
         if (definition.hasLoot === true) {
             const lootTable: LootTable = LootTables[this.type.idString];
-            const count: number = random(lootTable.min, lootTable.max);
+            const count = random(lootTable.min, lootTable.max);
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }
     }
@@ -98,7 +98,7 @@ export class Obstacle extends GameObject {
             if (weapon.ammoSpawnCount === 1) {
                 this.loot.push(new Item(weapon.ammo, 1));
             } else {
-                const count: number = weapon.ammoSpawnCount / 2;
+                const count = weapon.ammoSpawnCount / 2;
                 this.loot.push(new Item(weapon.ammo, count));
                 this.loot.push(new Item(weapon.ammo, count));
             }
@@ -151,11 +151,11 @@ export class Obstacle extends GameObject {
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
-            const oldScale: number = this.scale;
+            const oldScale = this.scale;
 
             // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
-            const scaleFactor: number = this.scale / oldScale;
+            const scaleFactor = this.scale / oldScale;
 
             // Transform the Planck.js Body
             if (this.body != null) {
