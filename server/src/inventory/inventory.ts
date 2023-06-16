@@ -74,7 +74,7 @@ export class Inventory {
             if (
                 item instanceof GunItem &&
                 oldItem instanceof GunItem &&
-                oldItem.definition.canQuickswitch === true
+                oldItem.definition.canQuickswitch
             ) {
                 item.ignoreSwitchCooldown = true;
             }
@@ -179,7 +179,7 @@ export class Inventory {
 
         // Drop old item into the game world
         const oldItem: GunItem | MeleeItem | undefined = this._setWeapon(slot, this._reifyItem(item));
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+
         if (oldItem === undefined || oldItem.definition.noDrop) return;
         const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
 
@@ -211,7 +211,7 @@ export class Inventory {
      */
     dropWeapon(slot: number): GunItem | MeleeItem | undefined {
         const item = this._weapons[slot];
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+
         if (item === undefined || item.definition.noDrop) return undefined;
 
         const loot = new Loot(this.owner.game, item.type, this.owner.position);
@@ -248,6 +248,15 @@ export class Inventory {
      */
     checkIfWeaponExists(item: string): boolean {
         return this._weapons.some(weapon => weapon?.type.idString === item);
+    }
+
+    /**
+     * Gets the weapon at a given index
+     * @param index The weapon index
+     * @returns The weapon at the given index, undefined if empty
+     */
+    getWeapon(index: number): GunItem | MeleeItem | undefined {
+        return this._weapons[index];
     }
 
     /**

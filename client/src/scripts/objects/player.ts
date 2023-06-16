@@ -105,9 +105,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        const oldAngle: number = this.images.container.angle;
-        const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
-        const finalAngle: number = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+        const oldAngle = this.images.container.angle;
+        const newAngle = Phaser.Math.RadToDeg(this.rotation);
+        const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
         if (this.isActivePlayer && !minimap.playerIndicatorDead) {
             gsap.to(minimap.playerIndicator, {
@@ -119,7 +119,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
             this.images.container.setRotation(this.rotation);
         } else {
@@ -237,7 +236,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
 
-            if (this === this.game.activePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this.isActivePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);

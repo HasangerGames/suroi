@@ -46,6 +46,7 @@
         "@typescript-eslint/no-unused-vars": 2,
         "prefer-arrow-callback": 1,
         "prefer-template": 1,
+        "@typescript-eslint/strict-boolean-expressions": 0,
         "object-curly-newline": [1, {
             "ObjectExpression": { "multiline": true, "minProperties": 3 },
             "ObjectPattern": { "multiline": true },

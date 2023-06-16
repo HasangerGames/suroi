@@ -7,7 +7,7 @@ export class GameOverPacket extends ReceivingPacket {
         const gameOverScreen: JQuery = $("#game-over-screen");
 
         this.playerManager.game.gameOver = stream.readBoolean();
-        const won: boolean = stream.readBoolean();
+        const won = stream.readBoolean();
 
         if (!won) {
             gameOverScreen.removeClass("chicken-dinner");

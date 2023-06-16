@@ -31,7 +31,7 @@ export class KillFeedPacket extends SendingPacket {
             stream.writePlayerName(killMessage.killedName);
             stream.writePlayerName(killMessage.killedByName);
 
-            const usedWeapon: boolean = killMessage.weaponUsed !== undefined;
+            const usedWeapon = killMessage.weaponUsed !== undefined;
             stream.writeBoolean(usedWeapon);
             if (killMessage.weaponUsed !== undefined) stream.writeObjectType(killMessage.weaponUsed);
         }

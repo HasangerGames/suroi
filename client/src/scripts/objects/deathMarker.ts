@@ -1,6 +1,8 @@
 import gsap from "gsap";
 
 import { GameObject } from "../types/gameObject";
+import { type Game } from "../game";
+import { type GameScene } from "../scenes/gameScene";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
@@ -14,29 +16,31 @@ export class DeathMarker extends GameObject {
     image!: Phaser.GameObjects.Image;
     playerNameText!: Phaser.GameObjects.Text;
 
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
+        super(game, scene, type, id);
+
+        this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
+
+        this.playerNameText = this.scene.add.text(0, 0, "",
+            {
+                fontSize: 36,
+                fontFamily: "Inter",
+                color: "#dcdcdc"
+            })
+            .setOrigin(0.5, 0.5)
+            .setShadow(2, 2, "#000", 2, true, true);
+    }
+
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
-        if (this.image === undefined) {
-            this.image = this.scene.add.image(this.position.x * 20, this.position.y * 20, "main", "death_marker.svg");
-        }
+        this.image.setPosition(this.position.x * 20, this.position.y * 20);
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.playerName = stream.readPlayerName();
 
-        if (this.playerNameText === undefined) {
-            this.playerNameText = this.scene.add.text(
-                this.position.x * 20,
-                (this.position.y * 20) + 105,
-                this.playerName,
-                {
-                    fontSize: 36,
-                    fontFamily: "Inter",
-                    color: "#dcdcdc"
-                })
-                .setOrigin(0.5, 0.5)
-                .setShadow(2, 2, "#000", 2, true, true);
-        }
+        this.playerNameText.setPosition(this.position.x * 20, (this.position.y * 20) + 105)
+            .setText(this.playerName);
 
         // Play an animation if this is a new death marker
         if (stream.readBoolean()) {

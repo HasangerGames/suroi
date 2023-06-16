@@ -48,7 +48,7 @@ export class InputPacket extends ReceivingPacket {
                     if (object instanceof Loot && object.canInteract(player)) {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
-                        if (record?.collided === true && record.distance < minDist) {
+                        if (record?.collided && record.distance < minDist) {
                             minDist = record.distance;
                             closestObject = object;
                         }
@@ -57,7 +57,6 @@ export class InputPacket extends ReceivingPacket {
                 closestObject?.interact(player);
                 break;
             }
-
         }
     }
 }

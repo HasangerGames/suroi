@@ -1,7 +1,7 @@
 import { GameObject } from "../types/gameObject";
 
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import gsap from "gsap";
 import Phaser from "phaser";
 import { type Game } from "../game";
@@ -36,9 +36,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (!this.created) {
             this.images.container.setPosition(this.position.x * 20, this.position.y * 20).setRotation(this.rotation);
         } else {
-            const oldAngle: number = this.images.container.angle;
-            const newAngle: number = Phaser.Math.RadToDeg(this.rotation);
-            const finalAngle: number = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
+            const oldAngle = this.images.container.angle;
+            const newAngle = Phaser.Math.RadToDeg(this.rotation);
+            const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
             gsap.to(this.images.container, {
                 x: this.position.x * 20,
                 y: this.position.y * 20,
@@ -55,7 +55,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             return;
         }
 
-        this.type = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
+        this.type = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot>;
 
         // Set the loot texture based on the type
         this.images.item.setTexture("main", `${this.type.idString}.svg`);

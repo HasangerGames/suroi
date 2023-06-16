@@ -155,7 +155,7 @@ export class SuroiBitStream extends BitStream {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
 
         if (definitions !== undefined) {
-            const idNumber: number = this.readBits(definitions.bitCount);
+            const idNumber = this.readBits(definitions.bitCount);
             return ObjectType.fromNumber(category, idNumber);
         } else {
             return ObjectType.categoryOnly(category);
