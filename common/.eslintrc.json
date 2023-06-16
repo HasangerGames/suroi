@@ -32,6 +32,7 @@
         "curly": [1, "multi-line"],
         "space-before-function-paren": [2, "never"],
         "@typescript-eslint/space-before-function-paren": [2, "never"],
+        "@typescript-eslint/strict-boolean-expressions": 0,
         "object-curly-newline": [1, {
             "ObjectExpression": { "multiline": true, "minProperties": 3 },
             "ObjectPattern": { "multiline": true },

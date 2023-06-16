@@ -152,7 +152,7 @@ $((): void => {
     $("#tab-mobile").toggle(core.game?.playerManager.isMobile);
 
     // Event listener for Interact button
-    if (core.game?.playerManager.isMobile === true) {
+    if (core.game?.playerManager.isMobile) {
         $("#btn-interact").show().on("click", () => {
             if (core.game !== undefined) {
                 core.game.playerManager.interact();

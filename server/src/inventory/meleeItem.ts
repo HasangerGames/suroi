@@ -67,7 +67,7 @@ export class MeleeItem extends InventoryItem {
                     if (!object.dead && object !== owner) {
                         const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
 
-                        if (record?.collided === true && record.distance < minDist) {
+                        if (record?.collided && record.distance < minDist) {
                             minDist = record.distance;
                             closestObject = object;
                         }

@@ -69,7 +69,8 @@ export class Obstacle extends GameObject {
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale);
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
-        if (definition.hasLoot === true) {
+
+        if (definition.hasLoot) {
             const lootTable: LootTable = LootTables[this.type.idString];
             const count = random(lootTable.min, lootTable.max);
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
@@ -85,7 +86,7 @@ export class Obstacle extends GameObject {
             weights.push(item.weight);
         }
         const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+
         if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
         else this.addLoot(selectedItem.item);
     }

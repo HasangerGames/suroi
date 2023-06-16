@@ -119,7 +119,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
             this.images.container.setRotation(this.rotation);
         } else {
