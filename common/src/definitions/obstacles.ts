@@ -27,7 +27,6 @@ export interface ObstacleDefinition extends ObjectDefinition {
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
-    3,
     [
         {
             idString: "oak_tree",

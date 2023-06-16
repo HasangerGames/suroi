@@ -6,8 +6,8 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readonly bitCount: number;
     readonly definitions: T[];
 
-    constructor(bitCount: number, definitions: T[]) {
-        this.bitCount = bitCount;
+    constructor(definitions: T[]) {
+        this.bitCount = Math.ceil(Math.log2(definitions.length));
         this.definitions = definitions;
     }
 }

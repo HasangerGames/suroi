@@ -25,7 +25,6 @@ export interface ExplosionDefinition extends ObjectDefinition {
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
-    2,
     [
         {
             idString: "barrel_explosion",
