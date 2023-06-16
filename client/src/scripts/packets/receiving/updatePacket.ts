@@ -104,7 +104,7 @@ export class UpdatePacket extends ReceivingPacket {
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(game, scene, type, id);
+                            object = new DeathMarker(game, scene, type as ObjectType<ObjectCategory.DeathMarker>, id);
                             break;
                         }
                         case ObjectCategory.Loot: {

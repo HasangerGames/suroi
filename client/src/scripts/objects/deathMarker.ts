@@ -16,7 +16,7 @@ export class DeathMarker extends GameObject {
     image!: Phaser.GameObjects.Image;
     playerNameText!: Phaser.GameObjects.Text;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, scene, type, id);
 
         this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");

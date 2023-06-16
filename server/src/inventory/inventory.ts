@@ -251,6 +251,15 @@ export class Inventory {
     }
 
     /**
+     * Gets the weapon at a given index
+     * @param index The weapon index
+     * @returns The weapon at the given index, undefined if empty
+     */
+    getWeapon(index: number): GunItem | MeleeItem | undefined {
+        return this._weapons[index];
+    }
+
+    /**
      * Forcefully sets a weapon in a given slot. Note that this operation will never leave the inventory empty:
      * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and an error will be thrown.
      * @param slot The slot to place the item in

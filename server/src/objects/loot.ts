@@ -97,13 +97,12 @@ export class Loot extends GameObject {
             case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
-                    (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString);
+                    (inventory.activeWeaponIndex < 2 && this.type.idNumber !== inventory.activeWeapon.type.idNumber);
             }
             case ItemType.Melee: {
-                return true;
+                return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
             }
         }
-        return false;
     }
 
     interact(player: Player): void {
