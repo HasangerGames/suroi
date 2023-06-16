@@ -1,7 +1,7 @@
 import { GameObject } from "../types/gameObject";
 
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory } from "../../../../common/src/constants";
 import gsap from "gsap";
 import Phaser from "phaser";
 import { type Game } from "../game";
@@ -55,7 +55,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             return;
         }
 
-        this.type = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
+        this.type = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot>;
 
         // Set the loot texture based on the type
         this.images.item.setTexture("main", `${this.type.idString}.svg`);
