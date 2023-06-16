@@ -237,7 +237,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
 
-            if (this === this.game.activePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this.isActivePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);
