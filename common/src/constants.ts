@@ -53,7 +53,7 @@ const calculateEnumPacketBits = (enumeration: Record<string | number, string | n
 
 export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
-export const OBJECT_ID_BITS = 10;
+export const OBJECT_ID_BITS = 11;
 export const VARIATION_BITS = 3;
 export const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 export const ACTIONS_BITS = calculateEnumPacketBits(Actions);
