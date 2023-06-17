@@ -56,13 +56,15 @@ app.get("/api/getGame", (res, req) => {
 
     let response: { success: boolean, address?: string };
     if (game.allowJoin) {
-        const split: string[] = req.getQuery().split("=");
-        const region: string | undefined = split.length === 2 ? split[1] : undefined;
-        const regionAddress: string | undefined = Config.regions[region ?? ""];
-        response = {
-            success: regionAddress !== undefined,
-            address: regionAddress ?? undefined
-        };
+        let region: string;
+        if (req.getQuery() !== undefined) {
+            const split: string[] = req.getQuery().split("=");
+            region = split.length === 2 ? split[1] : Config.defaultRegion;
+        } else {
+            region = Config.defaultRegion;
+        }
+        const regionAddress: string = Config.regions[region] ?? Config.regions[Config.defaultRegion];
+        response = { success: true, address: regionAddress };
     } else {
         response = { success: false };
     }

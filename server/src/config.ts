@@ -7,6 +7,7 @@ export interface ConfigType {
     readonly host: string
     readonly port: number
     readonly regions: Record<string, string>
+    readonly defaultRegion: string
     readonly ssl: {
         readonly keyFile: string
         readonly certFile: string
@@ -66,6 +67,7 @@ export const Config = {
         eu: "wss://eu.suroi.io",
         as: "wss://as.suroi.io"
     },
+    defaultRegion: "na",
 
     ssl: {
         keyFile: "",
