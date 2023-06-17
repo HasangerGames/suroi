@@ -10,7 +10,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "guns", weight: 1 },
             { tier: "healingItems", weight: 0.25 },
-            { tier: "melee", weight: 0.04}
+            { tier: "melee", weight: 0.04 }
         ]
     },
     health_crate: {
@@ -38,9 +38,9 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "medikit", weight: 1 }
     ],
     melee: [
-        {item: "branch", weight: 0.5},
-        {item: "club", weight: 1},
-        {item: "dagger", weight: 0.5},
-        {item: "club_op", weight: 0.1}
-    ],
+        { item: "branch", weight: 0.5 },
+        { item: "club", weight: 1 },
+        { item: "dagger", weight: 0.5 },
+        { item: "club_op", weight: 0.1 }
+    ]
 };
