@@ -1,21 +1,22 @@
-import { type Game } from "../../game";
+import type { Game } from "../../game";
+import type { MinimapScene } from "../../scenes/minimapScene";
 
 import { DeathMarker } from "../../objects/deathMarker";
 import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { Obstacle } from "../../objects/obstacle";
+import { Loot } from "../../objects/loot";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { type GameObject } from "../../types/gameObject";
+import type { GameObject } from "../../types/gameObject";
 
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import { type GunDefinition } from "../../../../../common/src/definitions/guns";
+import type { GunDefinition } from "../../../../../common/src/definitions/guns";
+
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
-import { type MinimapScene } from "../../scenes/minimapScene";
-import { Loot } from "../../objects/loot";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

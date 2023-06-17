@@ -1,6 +1,7 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type MinimapScene } from "../../scenes/minimapScene";
+import type { MinimapScene } from "../../scenes/minimapScene";
+
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

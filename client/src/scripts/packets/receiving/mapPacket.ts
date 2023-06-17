@@ -1,9 +1,10 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
+import type { Vector } from "matter";
 
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { type Vector } from "matter";
-import { type MinimapScene } from "../../scenes/minimapScene";
+import { ReceivingPacket } from "../../types/receivingPacket";
+import type { MinimapScene } from "../../scenes/minimapScene";
+
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

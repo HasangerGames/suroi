@@ -1,13 +1,14 @@
+import type { Game } from "../game";
+import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
-import { type Game } from "../game";
-import { type GameScene } from "../scenes/gameScene";
 
+import type { ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import type { Variation } from "../../../../common/src/typings";
-import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { type ObjectCategory } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { randomBoolean } from "../../../../common/src/utils/random";
+
+import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import type { Variation } from "../../../../common/src/typings";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     scale!: number;

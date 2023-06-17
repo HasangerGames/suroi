@@ -1,9 +1,9 @@
 import $ from "jquery";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
-
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { randomKillWord } from "../../utils/misc";
+
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 let timeoutId: number;
 

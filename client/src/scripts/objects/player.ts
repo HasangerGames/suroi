@@ -1,25 +1,32 @@
 import Phaser from "phaser";
 import gsap from "gsap";
 
-import { type Game } from "../game";
-import { type GameScene } from "../scenes/gameScene";
-import { GameObject } from "../types/gameObject";
-import { localStorageInstance } from "../utils/localStorageHandler";
+import type { Game } from "../game";
+import type { GameScene } from "../scenes/gameScene";
+import type { MinimapScene } from "../scenes/minimapScene";
 
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { localStorageInstance } from "../utils/localStorageHandler";
+import { GameObject } from "../types/gameObject";
+
 import {
-    ANIMATION_TYPE_BITS, AnimationType, ObjectCategory
+    ANIMATION_TYPE_BITS,
+    AnimationType,
+    ObjectCategory
 } from "../../../../common/src/constants";
-import { ObjectType } from "../../../../common/src/utils/objectType";
+
 import {
-    vClone, type Vector, vMul
+    vClone,
+    type Vector,
+    vMul
 } from "../../../../common/src/utils/vector";
+import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { randomBoolean } from "../../../../common/src/utils/random";
-import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { distanceSquared } from "../../../../common/src/utils/math";
-import { type MinimapScene } from "../scenes/minimapScene";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+
+import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
+import type { GunDefinition } from "../../../../common/src/definitions/guns";
 
 const showMeleeDebugCircle = false;
 

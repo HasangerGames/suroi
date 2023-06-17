@@ -1,20 +1,22 @@
 import Phaser from "phaser";
 
 import core from "../core";
-import { type Game } from "../game";
-import { type MenuScene } from "./menuScene";
+import type { Game } from "../game";
+import type { MenuScene } from "./menuScene";
+import { Player } from "../objects/player";
 
 import { InputPacket } from "../packets/sending/inputPacket";
 import { JoinPacket } from "../packets/sending/joinPacket";
-import { Player } from "../objects/player";
 
-import { Materials } from "../../../../common/src/definitions/obstacles";
 import { localStorageInstance } from "../utils/localStorageHandler";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ObjectCategory } from "../../../../common/src/constants";
-import { Guns } from "../../../../common/src/definitions/guns";
-import { type PlayerManager } from "../utils/playerManager";
+import type { PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
+
+import { ObjectCategory } from "../../../../common/src/constants";
+import { Materials } from "../../../../common/src/definitions/obstacles";
+import { Guns } from "../../../../common/src/definitions/guns";
+
+import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;

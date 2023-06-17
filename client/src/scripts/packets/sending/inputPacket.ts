@@ -1,9 +1,11 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import {
-    PacketType, Actions, ACTIONS_BITS
+    PacketType,
+    Actions,
+    ACTIONS_BITS
 } from "../../../../../common/src/constants";
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class InputPacket extends SendingPacket {
     override readonly allocBytes = 16;

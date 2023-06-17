@@ -1,10 +1,10 @@
 import $ from "jquery";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
-
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { randomKillWord } from "../../utils/misc";
+
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType } from "../../../../../common/src/constants";
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

@@ -1,5 +1,7 @@
-import Phaser from "phaser";
 import { version } from "../../../package.json";
+
+import Phaser from "phaser";
+
 import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class MenuScene extends Phaser.Scene {

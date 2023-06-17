@@ -1,14 +1,15 @@
+import Phaser from "phaser";
+import gsap from "gsap";
+
+import type { Game } from "../game";
+import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../../common/src/constants";
-import gsap from "gsap";
-import Phaser from "phaser";
-import { type Game } from "../game";
-import { type GameScene } from "../scenes/gameScene";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import type { LootDefinition } from "../../../../common/src/definitions/loots";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     readonly images: {
