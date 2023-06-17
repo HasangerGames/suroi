@@ -188,21 +188,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     const weaponDef = this.activeItem.definition as GunDefinition;
                     if (weaponDef.itemType === ItemType.Gun) {
                         this.updateFistsPosition(false);
+                        const recoilAmount = (20 * (1 - weaponDef.recoilMultiplier));
                         this.weaponAnim = this.scene.tweens.add({
                             targets: this.images.weaponImg,
-                            x: weaponDef.image.position.x - 6,
+                            x: weaponDef.image.position.x - recoilAmount,
                             duration: 50,
                             yoyo: true
                         });
                         this.leftFistAnim = this.scene.tweens.add({
                             targets: this.images.leftFist,
-                            x: weaponDef.fists.left.x - 6,
+                            x: weaponDef.fists.left.x - recoilAmount,
                             duration: 50,
                             yoyo: true
                         });
                         this.rightFistAnim = this.scene.tweens.add({
                             targets: this.images.rightFist,
-                            x: weaponDef.fists.right.x - 6,
+                            x: weaponDef.fists.right.x - recoilAmount,
                             duration: 50,
                             yoyo: true
                         });
@@ -248,7 +249,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 duration: weaponDef.fists.animationDuration,
                 ease: "Linear"
             });
-
         } else {
             this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
             this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
