@@ -82,6 +82,10 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.equipItem(index);
             }
         ),
+        swapGunSlots: new Action(
+            "inventory::swapGunSlots",
+            () => { game.playerManager.swapGunSlots(); }
+        ),
         previousItem: new Action(
             "inventory::previousItem",
             () => {
@@ -273,8 +277,9 @@ const actionsNames = {
     slot1: "Slot 1",
     slot2: "Slot 2",
     slot3: "Slot 3",
-    lastEquippedItem: "Equip Last item",
+    lastEquippedItem: "Equip Last Item",
     equipOtherGun: "Equip Other Gun",
+    swapGunSlots: "Swap Gun Slots",
     previousItem: "Equip Previous Item",
     nextItem: "Equip Next Item",
     useItem: "Use Item",

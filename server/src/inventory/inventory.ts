@@ -154,16 +154,14 @@ export class Inventory {
     }
 
     /**
-     * Swaps the items in two weapon slots, without checking if there are actually items in those slots
-     * @param slotA The first slot
-     * @param slotB The second slot
-     * @throws {RangeError} If either slot is invalid
+     * Swaps the items in the gun slots
      */
-    swapItems(slotA: number, slotB: number): void {
-        if (!Inventory.isValidWeaponSlot(slotA) || !Inventory.isValidWeaponSlot(slotB)) throw new RangeError(`Attempted to swap items where one or both of the slots were invalid (slotA: ${slotA}, slotB: ${slotB})`);
-
-        [this._weapons[slotA], this._weapons[slotB]] =
-        [this._weapons[slotB], this._weapons[slotA]];
+    swapGunSlots(): void {
+        [this._weapons[0], this._weapons[1]] =
+        [this._weapons[1], this._weapons[0]];
+        if (this.activeWeaponIndex === 0) this.setActiveWeaponIndex(1);
+        else if (this.activeWeaponIndex === 1) this.setActiveWeaponIndex(0);
+        this.owner.dirty.inventory = true;
     }
 
     /**

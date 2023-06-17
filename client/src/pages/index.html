@@ -47,9 +47,14 @@
           </div>
           <div id="splash-options">
             <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
-            <select name="server-select" id="server-select">
-              <option value="na" selected>North America</option>
-            </select>
+            <div id="server-select-container">
+              <select name="server-select" id="server-select">
+                <option value="dev" style="display: none">Local Server</option>
+                <option value="na" selected>North America (Detroit)</option>
+                <option value="eu">Europe (London)</option>
+                <option value="as">Asia (Osaka)</option>
+              </select>
+            </div>
 
             <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->

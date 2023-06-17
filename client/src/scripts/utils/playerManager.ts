@@ -82,6 +82,11 @@ export class PlayerManager {
         this.dirty.inputs = true;
     }
 
+    swapGunSlots(): void {
+        this.action = Actions.SwapGunSlots;
+        this.dirty.inputs = true;
+    }
+
     interact(): void {
         this.action = Actions.Interact;
         this.dirty.inputs = true;

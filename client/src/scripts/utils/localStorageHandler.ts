@@ -10,6 +10,7 @@ export type KeybindActions = {
     slot3: [string, string]
     lastEquippedItem: [string, string]
     equipOtherGun: [string, string]
+    swapGunSlots: [string, string]
     previousItem: [string, string]
     nextItem: [string, string]
     useItem: [string, string]
@@ -38,7 +39,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "6",
+    configVersion: "7",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -51,6 +52,7 @@ export const defaultConfig: Config = {
         slot3: ["3", ""],
         lastEquippedItem: ["Q", ""],
         equipOtherGun: ["Space", ""],
+        swapGunSlots: ["T", ""],
         previousItem: ["MWheelDown", ""],
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
@@ -157,6 +159,12 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version 6: Added "Drop Active Item" keybind
             config.configVersion = "6";
             config.keybinds.dropActiveItem = defaultConfig.keybinds.dropActiveItem;
+            break;
+        }
+        case "6": {
+            // Version 7: Added "Swap Gun Slots" keybind
+            config.configVersion = "7";
+            config.keybinds.swapGunSlots = defaultConfig.keybinds.swapGunSlots;
             break;
         }
         default: {

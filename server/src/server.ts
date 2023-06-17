@@ -49,15 +49,24 @@ const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 const bannedIPs: string[] = [];
 
-app.get("/api/getGame", (res) => {
+app.get("/api/getGame", (res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted((): void => {});
-
+    res.onAborted(() => {});
     cors(res);
-    res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
-        success: game.allowJoin,
-        addr: game.allowJoin ? `${Config.address}/play` : ""
-    }));
+
+    let response: { success: boolean, address?: string };
+    if (game.allowJoin) {
+        const split: string[] = req.getQuery().split("=");
+        const region: string | undefined = split.length === 2 ? split[1] : undefined;
+        const regionAddress: string | undefined = Config.regions[region ?? ""];
+        response = {
+            success: regionAddress !== undefined,
+            address: regionAddress ?? undefined
+        };
+    } else {
+        response = { success: false };
+    }
+    res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
 });
 
 export interface PlayerContainer {

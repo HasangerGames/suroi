@@ -40,6 +40,9 @@ export class InputPacket extends ReceivingPacket {
             case Actions.DropItem:
                 player.inventory.dropWeapon(stream.readBits(2));
                 break;
+            case Actions.SwapGunSlots:
+                player.inventory.swapGunSlots();
+                break;
             case Actions.Interact: {
                 let minDist = Number.MAX_VALUE;
                 let closestObject: Loot | undefined;

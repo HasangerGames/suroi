@@ -6,7 +6,7 @@ export enum GasMode { Normal, Debug, Disabled }
 export interface ConfigType {
     readonly host: string
     readonly port: number
-    readonly address: string
+    readonly regions: Record<string, string>
     readonly ssl: {
         readonly keyFile: string
         readonly certFile: string
@@ -63,7 +63,14 @@ export interface ConfigType {
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
-    address: "ws://127.0.0.1:8000",
+
+    regions: {
+        dev: "ws://127.0.0.1:8000",
+        na: "wss://suroi.io",
+        eu: "wss://eu.suroi.io",
+        as: "wss://as.suroi.io"
+    },
+
     ssl: {
         keyFile: "",
         certFile: "",

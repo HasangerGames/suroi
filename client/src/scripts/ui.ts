@@ -5,6 +5,7 @@ import core from "./core";
 import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
 import { localStorageInstance } from "./utils/localStorageHandler";
+import { HIDE_DEV_REGION } from "./utils/constants";
 
 $((): void => {
     const dropdown = {
@@ -34,7 +35,6 @@ $((): void => {
     const settingsMenu = $("#settings-menu");
 
     usernameField.val(localStorageInstance.config.playerName);
-
     usernameField.on("input", () => {
         const value = usernameField.val() as string | undefined;
 
@@ -42,6 +42,24 @@ $((): void => {
             localStorageInstance.update({ playerName: value });
         }
     });
+
+    const serverSelect: JQuery<HTMLSelectElement> = $("#server-select");
+
+    // Select region
+    serverSelect.val(localStorageInstance.config.region);
+    serverSelect.on("change", () => {
+        const value = serverSelect.val() as string | undefined;
+
+        if (value !== undefined) {
+            localStorageInstance.update({ region: value });
+        }
+    });
+
+    // Show dev region if enabled
+    if (!HIDE_DEV_REGION) {
+        $('option[value="dev"]').show();
+        serverSelect.val("dev");
+    }
 
     // todo find a better way to do these two handlers
     $("#btn-dropdown-more").on("click", ev => {

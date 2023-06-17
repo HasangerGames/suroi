@@ -27,9 +27,9 @@ $(() => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
         playSoloBtn.text("Connecting...");
-        void $.get(`${API_URL}/getGame`, (data: { success: boolean, addr: string }) => {
+        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string }) => {
             if (data.success) {
-                core.game?.connect(`${data.addr}?name=${$("#username-input").val() as string}`);
+                core.game?.connect(`${data.address}/play?name=${$("#username-input").val() as string}`);
                 $("#splash-server-message").hide();
             } else {
                 $("#splash-server-message-text").html("Game in progress.<br>Please try again in 30 seconds.");

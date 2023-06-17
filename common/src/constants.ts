@@ -45,6 +45,7 @@ export enum Actions {
     None,
     EquipItem,
     DropItem,
+    SwapGunSlots,
     Interact
 }
 
