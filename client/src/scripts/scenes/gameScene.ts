@@ -27,6 +27,8 @@ export class GameScene extends Phaser.Scene {
     gasCircle!: Phaser.GameObjects.Arc;
     gasMask!: Phaser.Display.Masks.GeometryMask;
 
+    tickInterval!: number;
+
     constructor() {
         super("game");
     }
@@ -117,9 +119,6 @@ export class GameScene extends Phaser.Scene {
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.images.container);
 
-        // Start the tick loop
-        this.tick();
-
         // Send a packet indicating that the game is now active
         this.activeGame.sendPacket(new JoinPacket(this.playerManager));
 
@@ -132,7 +131,12 @@ export class GameScene extends Phaser.Scene {
 
         this.resize();
 
-        setInterval(this.tick.bind(this), 30);
+        // Start the tick loop
+        this.tickInterval = window.setInterval(this.tick.bind(this), 30);
+
+        this.events.on("shutdown", () => {
+            window.clearInterval(this.tickInterval);
+        })
     }
 
     playSound(name: string): void {
