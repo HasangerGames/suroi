@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config ./webpack/webpack.prod.ts",
+    "build:dev": "webpack --config ./webpack/webpack.dev.ts",
     "test": "webpack --config ./webpack/webpack.test.ts",
     "dev": "webpack serve --config ./webpack/webpack.dev.ts",
     "lint": "eslint . --fix --ext .js,.ts",
