@@ -73,31 +73,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 frame: "super_barrel_fire_particle.svg",
                 count: 20
             }
-        },
-        {
-            idString: "health_crate_explosion",
-            name: "Health Crate",
-            damage: -50,
-            obstacleMultiplier: 0.25,
-            radius: {
-                min: 12,
-                max: 36
-            },
-            cameraShake: {
-                duration: 0,
-                intensity: 0.00
-            },
-            animation: {
-                duration: 2000,
-                frame: "health_crate_explosion.svg",
-                scale: 2.5
-            },
-            particles: {
-                duration: 2000,
-                frame: "heal_mass_particle.svg",
-                count: 15
-            },
-            sound: "health_explosion"
         }
     ]
 );

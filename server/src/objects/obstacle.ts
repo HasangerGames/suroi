@@ -21,8 +21,6 @@ import {
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
-import { Player } from "./player";
-import { Config } from "../config";
 import { Loot } from "./loot";
 import {
     type LootTable, LootTables, LootTiers, type WeightedItem
@@ -114,23 +112,6 @@ export class Obstacle extends GameObject {
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
-
-            if (source instanceof Player && Config.switchMeleeWeapons) {
-                source.obstaclesDestroyed[definition.material]++;
-                if (source.obstaclesDestroyed.tree >= 6 &&
-                    !(source.inventory.checkIfWeaponExists("branch") ||
-                        source.inventory.checkIfWeaponExists("club") ||
-                        source.inventory.checkIfWeaponExists("club_op") ||
-                        source.inventory.checkIfWeaponExists("dagger"))
-                ) {
-                    source.inventory.addOrReplaceWeapon(2, Math.random() < 0.2 ? "club" : "branch");
-                }
-                if (source.obstaclesDestroyed.metal >= 5 &&
-                    source.kills >= 2 &&
-                    source.inventory.checkIfWeaponExists("club")) {
-                    source.inventory.addOrReplaceWeapon(2, "club_op");
-                }
-            }
 
             this.scale = definition.scale.spawnMin;
 

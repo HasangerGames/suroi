@@ -146,7 +146,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
             rotationMode: "none",
-            // explosion: "health_crate_explosion"
             hasLoot: true
         }
     ]

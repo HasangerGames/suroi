@@ -39,10 +39,6 @@ export class GameScene extends Phaser.Scene {
         this.activeGame = core.game;
         this.playerManager = core.game.playerManager;
 
-        /* if (this.playerManager.isMobile) {
-            document.body.requestFullscreen().catch((e: Error) => { console.error(e); });
-        } */
-
         for (const material of Materials) {
             this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
             this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
@@ -136,7 +132,7 @@ export class GameScene extends Phaser.Scene {
 
         this.events.on("shutdown", () => {
             window.clearInterval(this.tickInterval);
-        })
+        });
     }
 
     playSound(name: string): void {

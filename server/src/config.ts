@@ -45,10 +45,6 @@ export interface ConfigType {
         readonly overrideDuration: number
     }
     /**
-     * Experimental: Set to true to give players melee weapons when certain obstacles are destroyed.
-     */
-    readonly switchMeleeWeapons: boolean
-    /**
      * A basic filter that censors only the most extreme swearing.
      */
     readonly censorUsernames: boolean
@@ -86,8 +82,6 @@ export const Config = {
     },
 
     gas: { mode: GasMode.Normal },
-
-    switchMeleeWeapons: false,
 
     censorUsernames: true,
 

@@ -27,7 +27,6 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
-import { Config } from "../config";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -64,14 +63,6 @@ export class Player extends GameObject {
         active: false,
         time: 0,
         multiplier: 1
-    };
-
-    obstaclesDestroyed = {
-        tree: 0,
-        stone: 0,
-        bush: 0,
-        crate: 0,
-        metal: 0
     };
 
     get isMoving(): boolean {
@@ -336,12 +327,6 @@ export class Player extends GameObject {
         }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;
-        }
-
-        if (Config.switchMeleeWeapons) {
-            if (this.health > 0 && this.health < 20) {
-                this.inventory.addOrReplaceWeapon(2, "dagger");
-            }
         }
 
         this.partialDirtyObjects.add(this);
