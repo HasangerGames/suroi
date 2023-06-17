@@ -27,6 +27,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { Loot } from "./loot";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -359,6 +360,15 @@ export class Player extends GameObject {
             this.game.livingPlayers.delete(this);
             this.game.dynamicObjects.delete(this);
             this.game.deletedObjects.add(this);
+
+            // Drop loot
+            for (let i = 0; i < 2; i++) {
+                const item = this.inventory.getWeapon(i);
+                if (item?.type !== undefined) {
+                    // eslint-disable-next-line no-new
+                    new Loot(this.game, item.type, this.position);
+                }
+            }
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
