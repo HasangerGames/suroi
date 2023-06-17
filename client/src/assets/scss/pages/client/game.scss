@@ -219,7 +219,7 @@
     @media screen and (max-width: $screen_large) {
         width: 230px;
         height: 16px;
-        bottom: 52px;
+        bottom: 42px;
     }
 
     display: flex;
@@ -406,6 +406,10 @@
         padding: 20px;
         padding-top: 0;
 
+        @media screen and (max-width: $screen_large) {
+            padding-bottom: 0;
+        }
+
         .stat {
             font-weight: bold;
             width: 100%;
@@ -422,6 +426,7 @@
     }
     @media screen and (max-width: $screen_large) {
         font-size: 12px;
+        max-width: fit-content;
 
         #game-over-stats {
             width: 200px;
@@ -429,6 +434,7 @@
 
         button {
             font-size: 14px;
+            height: 35px;
         }
     }
 }
