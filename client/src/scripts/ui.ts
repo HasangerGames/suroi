@@ -154,6 +154,7 @@ $((): void => {
     // mobile controls toggle
     $("#toggle-mobile-controls").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ mobileControls: this.checked });
+        location.reload();
     }).prop("checked", localStorageInstance.config.mobileControls);
 
     // Switch weapon slots by clicking
