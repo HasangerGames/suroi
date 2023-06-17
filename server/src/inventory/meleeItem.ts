@@ -43,9 +43,8 @@ export class MeleeItem extends InventoryItem {
         const definition = this.definition;
 
         this._lastUse = owner.game.now;
-        owner.animation.type = AnimationType.Punch;
+        owner.animation.type = AnimationType.Melee;
         owner.animation.seq = !this.owner.animation.seq;
-        owner.partialDirtyObjects.add(owner);
         owner.game.partialDirtyObjects.add(owner);
 
         setTimeout((): void => {

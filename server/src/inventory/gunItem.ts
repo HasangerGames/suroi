@@ -7,7 +7,7 @@ import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { Bullet } from "../objects/bullet";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode } from "../../../common/src/constants";
+import { FireMode, AnimationType } from "../../../common/src/constants";
 
 /**
  * A class representing a firearm
@@ -65,6 +65,10 @@ export class GunItem extends InventoryItem {
             setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.burstProperties.burstCooldown);
             return;
         }
+
+        owner.animation.type = AnimationType.Gun;
+        owner.animation.seq = !this.owner.animation.seq;
+        owner.game.partialDirtyObjects.add(owner);
 
         this.ammo--;
         this._shots++;

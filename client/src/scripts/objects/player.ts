@@ -75,7 +75,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(2);
         this.images = images;
 
-        this.updateFistsPosition();
+        this.updateFistsPosition(false);
+        this.updateWeapon();
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -134,8 +135,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const animationSeq = stream.readBoolean();
         if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
             switch (animation) {
-                case AnimationType.Punch: {
-                    this.updateFistsPosition();
+                case AnimationType.Melee: {
+                    this.updateFistsPosition(false);
                     const weaponDef = this.activeItem.definition as MeleeDefinition;
                     if (weaponDef.fists.useLeft === undefined) break;
 
@@ -183,6 +184,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.scene.playSound("swing");
                     break;
                 }
+                case AnimationType.Gun: {
+                    const weaponDef = this.activeItem.definition as GunDefinition;
+                    if (weaponDef.itemType === ItemType.Gun) {
+                        this.updateFistsPosition(false);
+                        this.weaponAnim = this.scene.tweens.add({
+                            targets: this.images.weaponImg,
+                            x: weaponDef.image.position.x - 6,
+                            duration: 50,
+                            yoyo: true
+                        });
+                        this.leftFistAnim = this.scene.tweens.add({
+                            targets: this.images.leftFist,
+                            x: weaponDef.fists.left.x - 6,
+                            duration: 50,
+                            yoyo: true
+                        });
+                        this.rightFistAnim = this.scene.tweens.add({
+                            targets: this.images.rightFist,
+                            x: weaponDef.fists.right.x - 6,
+                            duration: 50,
+                            yoyo: true
+                        });
+                    }
+                    break;
+                }
             }
         }
         this.animationSeq = animationSeq;
@@ -196,20 +222,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
-        this.updateFistsPosition();
+        this.updateFistsPosition(true);
+        this.updateWeapon();
         this.isNew = false;
     }
 
-    updateFistsPosition(): void {
+    updateFistsPosition(anim: boolean): void {
         this.leftFistAnim?.destroy();
         this.rightFistAnim?.destroy();
         this.weaponAnim?.destroy();
 
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
-        if (this.isNew) {
-            this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
-            this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
-        } else {
+        if (anim) {
             this.leftFistAnim = this.scene.tweens.add({
                 targets: this.images.leftFist,
                 x: weaponDef.fists.left.x,
@@ -224,10 +248,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 duration: weaponDef.fists.animationDuration,
                 ease: "Linear"
             });
-        }
 
+        } else {
+            this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
+            this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+        }
+        if (weaponDef.image) {
+            this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+        }
+    }
+
+    updateWeapon(): void {
+        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weaponImg.setVisible(weaponDef.image !== undefined);
-        if (weaponDef.image !== undefined) {
+        if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
                 this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
             } else if (weaponDef.itemType === ItemType.Gun) {

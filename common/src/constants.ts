@@ -20,7 +20,8 @@ export enum PacketType {
 
 export enum AnimationType {
     None,
-    Punch
+    Melee,
+    Gun
 }
 
 export enum KillFeedMessageType {
