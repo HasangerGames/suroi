@@ -7,6 +7,7 @@ import type { Variation } from "../../../../common/src/typings";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { randomBoolean } from "../../../../common/src/utils/random";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     scale!: number;
@@ -30,6 +31,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override deserializePartial(stream: SuroiBitStream): void {
         const oldScale = this.scale;
         this.scale = stream.readScale();
+        const destroyed = stream.readBoolean();
 
         const definition = this.type.definition as ObstacleDefinition;
 
@@ -38,9 +40,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (oldScale < this.scale) {
                 this.image.setScale(oldScale);
             }
-            if (!this.isNew) {
+            if (!this.isNew && !destroyed) {
                 this.image.setScale(this.scale);
-                this.scene.playSound(`${definition.material}_hit_${Math.random() < 0.5 ? "1" : "2"}`);
+                this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
                 let numParticle = 1;
                 const destroyScale = definition.scale.destroy;
                 if ((oldScale - this.scale) * 2 > (1 - destroyScale)) {
@@ -53,7 +55,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        const destroyed = stream.readBoolean();
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (!this.isNew) {
