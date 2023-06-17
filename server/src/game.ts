@@ -476,6 +476,7 @@ export class Game {
         this.connectedPlayers.delete(player);
         this.dynamicObjects.delete(player);
         this.deletedObjects.add(player);
+        this.world.destroyBody(player.body);
         try {
             player.socket.close();
         } catch (e) { }
