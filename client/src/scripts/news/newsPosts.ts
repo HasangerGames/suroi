@@ -10,6 +10,33 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1687026036000,
+        author: "Dr. Felix Sterling",
+        title: "Supplies received",
+        bannerImage: require("../../assets/img/news/v0.4.0.png"),
+        content: `We have received the new arms and supply shipment from Mr. Flint. In the crates were all four weapons promised: the Mosin-Nagant, Ithaca Model 37, SAF-200, and Glock 19. These should help us dramatically, as we were in great need of additional and varied firepower. Additionally, the new medical items, gauze, colas, and medikits, will allow better treatment of injuries. However, they were not of the portable variety we requested, and we hope to resolve this soon.`,
+        longContent: `<h2>Suroi v0.4.0</h2>
+
+<h3>New features & changes</h3>
+<ul>
+  <li>Loot! Crates now drop guns and healing items. Players no longer spawn with guns.</li>
+  <li>More guns! Added 4 guns: the Mosin-Nagant (a sniper), Model 37 (a pump shotgun), SAF-200 (a burst fire SMG), and G19 (a full auto pistol). Recoil has also been added, meaning guns slow you down when firing.</li>
+  <li>Server selector! You can now choose between 3 servers: one in North America (Detroit, Michigan), one in Europe (London, England), and one in Asia (Osaka, Japan).</li>
+  <li>Added an "Equip Other Gun" keybind (defaults to space bar).</li>
+  <li>Added a "Swap Gun Slots" keybind (defaults to T).</li>
+  <li>Added a keybind to toggle the minimap (defaults to N).</li>
+  <li>Added an option to disable mobile controls, for those playing on a mobile device with a mouse and keyboard.</li>
+  <li>Increased M3K fire rate; decreased damage.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed a bug allowing players to move twice as fast when using the mobile controls and movement keys at the same time.</li>
+  <li>Fixed a bug causing players' fists to get stuck in incorrect positions.</li>
+  <li>Fixed weapon switch sounds playing for all players, not just the active player.</li>
+</ul>`
+    },
+    {
         date: 1685914769000,
         author: "Dr. Petrovich",
         title: "2, 8, 18, 7",
