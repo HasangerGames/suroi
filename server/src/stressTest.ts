@@ -15,7 +15,7 @@ const config = {
     joinDelay: 50
 };
 
-for (let i = 0; i < config.botCount; i++) {
+for (let i = 1; i <= config.botCount; i++) {
     setTimeout(() => {
         let movingUp = false;
         let movingDown = false;
