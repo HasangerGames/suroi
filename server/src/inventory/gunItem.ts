@@ -115,7 +115,7 @@ export class GunItem extends InventoryItem {
         if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
         if (
             this.owner.game.now - this._lastUse > attackCooldown &&
-            (this.owner.game.now - this._switchDate > this.definition.switchCooldown || this.definition.canQuickswitch || this.ignoreSwitchCooldown)
+            (this.owner.game.now - this._switchDate > this.definition.switchCooldown || (this.definition.canQuickswitch ?? this.ignoreSwitchCooldown))
         ) {
             this.ignoreSwitchCooldown = false;
             this._useItemNoDelayCheck(true);
