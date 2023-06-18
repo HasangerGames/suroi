@@ -44,7 +44,6 @@ export class InputPacket extends ReceivingPacket {
                 player.inventory.swapGunSlots();
                 break;
             case Actions.Interact: {
-
                 if (player.game.now - player.lastInteractionTime < 200) return;
                 player.lastInteractionTime = player.game.now;
 

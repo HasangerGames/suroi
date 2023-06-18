@@ -24,7 +24,6 @@ for (let i = 0; i < config.botCount; i++) {
 
         ws.addEventListener("error", console.error);
         ws.addEventListener("open", () => {
-
             const stream = SuroiBitStream.alloc(4);
             stream.writePacketType(PacketType.Join);
             stream.writeBoolean(false);

@@ -538,7 +538,6 @@ export class Game {
         this.deletedObjects.add(object);
     }
 
-
     get aliveCount(): number {
         return this.livingPlayers.size;
     }
