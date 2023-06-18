@@ -59,6 +59,8 @@ export class Player extends GameObject {
     damageTaken = 0;
     joinTime: number;
 
+    lastInteractionTime = Date.now();
+
     readonly recoil = {
         active: false,
         time: 0,
