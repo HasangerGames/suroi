@@ -1,7 +1,11 @@
 import { WebSocket } from "ws";
+
 import {
-    PacketType, Actions, ACTIONS_BITS
+    PacketType,
+    Actions,
+    ACTIONS_BITS
 } from "../../common/src/constants";
+
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 
@@ -40,21 +44,20 @@ for (let i = 0; i < config.botCount; i++) {
                 stream.writeBoolean(shootStart);
                 stream.writeBoolean(false);
 
-                if (interact) {
-                    stream.writeBits(Actions.Interact, ACTIONS_BITS);
-                } else {
-                    stream.writeBits(Actions.None, ACTIONS_BITS);
-                }
+                stream.writeBits(interact ? Actions.Interact : Actions.None, ACTIONS_BITS);
                 ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
             }, 30);
         });
+
         setInterval(() => {
             movingUp = false;
             movingDown = false;
             movingLeft = false;
             movingRight = false;
+
             shootStart = randomBoolean();
             interact = randomBoolean();
+
             const direction: number = random(1, 8);
             switch (direction) {
                 case 1:
