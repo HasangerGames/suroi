@@ -66,11 +66,6 @@ export class Loot extends GameObject {
         const angle = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
         this.body.applyTorque(randomBoolean() ? 0.003 : -0.003);
-
-        game.loot.add(this);
-        game.dynamicObjects.add(this);
-        game.fullDirtyObjects.add(this);
-        game.updateObjects = true;
     }
 
     get position(): Vector {
@@ -139,7 +134,7 @@ export class Loot extends GameObject {
         if (success) {
             this.game.dynamicObjects.delete(this);
             this.game.loot.delete(this);
-            this.game.deletedObjects.add(this);
+            this.game.removeObject(this);
             this.game.world.destroyBody(this.body);
         }/* else if (!ignoreItem) {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);

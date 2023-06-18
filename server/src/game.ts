@@ -18,15 +18,18 @@ import { type PlayerContainer } from "./server";
 import { Map } from "./map";
 
 import { Player } from "./objects/player";
-import { type Explosion } from "./objects/explosion";
+import { Explosion } from "./objects/explosion";
 import { v2v } from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { GasState, ObjectCategory } from "../../common/src/constants";
+import {
+    GasState, ObjectCategory, OBJECT_ID_BITS
+} from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
+import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
@@ -44,7 +47,8 @@ import {
     vecLerp
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
-import { type Loot } from "./objects/loot";
+import { Loot } from "./objects/loot";
+import { IDAllocator } from "./utils/IDAllocator";
 
 export class Game {
     map: Map;
@@ -226,8 +230,7 @@ export class Game {
             // Update bullets
             for (const bullet of this.bullets) {
                 if (bullet.distance >= bullet.maxDistance) {
-                    this.world.destroyBody(bullet.body);
-                    this.bullets.delete(bullet);
+                    if (!bullet.dead) this.removeBullet(bullet);
                     // Note: Bullets that pass their maximum distance are automatically deleted by the client,
                     // so there's no need to add them to the list of deleted bullets
                 }
@@ -244,8 +247,7 @@ export class Game {
                     damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
                 }
 
-                this.world.destroyBody(bullet.body);
-                this.bullets.delete(bullet);
+                this.removeBullet(bullet);
                 this.deletedBulletIDs.add(bullet.id);
             }
             this.damageRecords.clear();
@@ -475,12 +477,67 @@ export class Game {
         this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
         this.dynamicObjects.delete(player);
-        this.deletedObjects.add(player);
+        this.removeObject(player);
         this.world.destroyBody(player.body);
         try {
             player.socket.close();
         } catch (e) { }
     }
+
+    addLoot(type: ObjectType, position: Vector): Loot {
+        const loot = new Loot(this, type, position);
+        this.loot.add(loot);
+        this.dynamicObjects.add(loot);
+        this.fullDirtyObjects.add(loot);
+        this.updateObjects = true;
+        return loot;
+    }
+
+    removeLoot(loot: Loot): void {
+        this.loot.delete(loot);
+        this.dynamicObjects.delete(loot);
+        this.world.destroyBody(loot.body);
+        this.removeObject(loot);
+    }
+
+    addBullet(position: Vec2, rotation: number, source: GunDefinition, sourceType: ObjectType, shooter: Player): Bullet {
+        const bullet = new Bullet(this,
+            position,
+            rotation,
+            source,
+            sourceType,
+            shooter);
+        this.bullets.add(bullet);
+        this.newBullets.add(bullet);
+
+        return bullet;
+    }
+
+    /**
+     * Delete a bullet and give the id back to the allocator
+     * @param object The object to delete
+     */
+    removeBullet(bullet: Bullet): void {
+        this.bulletIDAllocator.give(bullet.id);
+        this.world.destroyBody(bullet.body);
+        this.bullets.delete(bullet);
+    }
+
+    addExplosion(type: ObjectType, position: Vector, source: GameObject): Explosion {
+        const explosion = new Explosion(this, type, position, source);
+        this.explosions.add(explosion);
+        return explosion;
+    }
+
+    /**
+     * Delete an object and give the id back to the allocator
+     * @param object The object to delete
+     */
+    removeObject(object: GameObject): void {
+        this.IDAllocator.give(object.id);
+        this.deletedObjects.add(object);
+    }
+
 
     get aliveCount(): number {
         return this.livingPlayers.size;
@@ -522,16 +579,16 @@ export class Game {
         return distanceSquared(position.x, position.y, this.gas.currentPosition.x, this.gas.currentPosition.y) >= this.gas.currentRadius ** 2;
     }
 
-    _nextObjectID = -1;
+    IDAllocator = new IDAllocator(OBJECT_ID_BITS);
+
     get nextObjectID(): number {
-        this._nextObjectID++;
-        return this._nextObjectID;
+        return this.IDAllocator.takeNext();
     }
 
-    _nextBulletID = -1;
+    bulletIDAllocator = new IDAllocator(8);
+
     get nextBulletID(): number {
-        this._nextBulletID = (this._nextBulletID + 1) % 256; // Bullet IDs wrap back to 0 when they reach 255
-        return this._nextBulletID;
+        return this.bulletIDAllocator.takeNext();
     }
 
     end(): void {

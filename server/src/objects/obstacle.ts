@@ -4,8 +4,6 @@ import {
 
 import { type Game } from "../game";
 
-import { Explosion } from "./explosion";
-
 import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { bodyFromHitbox } from "../utils/misc";
 
@@ -21,7 +19,6 @@ import {
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
-import { Loot } from "./loot";
 import {
     type LootTable, LootTables, LootTiers, type WeightedItem
 } from "../data/lootTables";
@@ -119,17 +116,14 @@ export class Obstacle extends GameObject {
             this.game.partialDirtyObjects.add(this);
 
             if (definition.explosion !== undefined) {
-                const explosion = new Explosion(
-                    this.game,
+                this.game.addExplosion(
                     ObjectType.fromString(ObjectCategory.Explosion, definition.explosion),
                     this.position,
                     source);
-                this.game.explosions.add(explosion);
             }
 
             for (const item of this.loot) {
-                // eslint-disable-next-line no-new
-                new Loot(this.game, ObjectType.fromString(ObjectCategory.Loot, item), vClone(this.position));
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), vClone(this.position));
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;

@@ -6,7 +6,6 @@ import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectD
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
-import { Loot } from "../objects/loot";
 import { v, vAdd } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 /**
@@ -57,7 +56,7 @@ export class Inventory {
      */
     setActiveWeaponIndex(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
-        if (!this.hasWeapon(slot) || this._activeWeaponIndex === slot) return false;
+        if (!this.hasWeapon(slot)) return false;
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
@@ -181,8 +180,8 @@ export class Inventory {
         if (oldItem === undefined || oldItem.definition.noDrop) return;
         const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
 
-        // eslint-disable-next-line no-new
-        new Loot(this.owner.game, oldItem.type, vAdd(this.owner.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
+        this.owner.game.addLoot(oldItem.type, vAdd(this.owner.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
+        this.setActiveWeaponIndex(this._activeWeaponIndex);
     }
 
     /**
@@ -212,7 +211,7 @@ export class Inventory {
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
-        const loot = new Loot(this.owner.game, item.type, this.owner.position);
+        const loot = this.owner.game.addLoot(item.type, this.owner.position);
         loot.body.setLinearVelocity(Vec2(Math.cos(this.owner.rotation), -Math.sin(this.owner.rotation)).mul(-0.02));
 
         this.removeWeapon(slot);
