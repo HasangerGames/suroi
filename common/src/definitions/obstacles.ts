@@ -21,6 +21,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
+    specialID?: string
     readonly explosion?: string
 }
 
@@ -147,6 +148,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
             rotationMode: "none",
             hasLoot: true
-        }
+        },
+        {
+            idString: "special_crate",
+            name: "Special Crate",
+            material: "crate",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.6
+            },
+            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+            rotationMode: "none",
+            hasLoot: true,
+            variations: 8
+        },
+        {
+            idString: "gold_rock",
+            name: "Gold Rock",
+            material: "stone",
+            health: 250,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.3
+            },
+            hitbox: new CircleHitbox(3.85),
+            spawnHitbox: new CircleHitbox(4.5),
+            rotationMode: "full",
+            hasLoot: true
+        },
     ]
 );

@@ -66,7 +66,9 @@ export class Obstacle extends GameObject {
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
 
         if (definition.hasLoot) {
-            const lootTable: LootTable = LootTables[this.type.idString];
+            let lootString = this.type.idString;
+            if (definition.specialID !== undefined) lootString = definition.specialID;
+            const lootTable: LootTable = LootTables[lootString];
             const count = random(lootTable.min, lootTable.max);
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }

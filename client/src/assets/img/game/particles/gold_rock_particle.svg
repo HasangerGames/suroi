@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="36.580208"
+   height="39.850536"
+   viewBox="0 0 9.6785135 10.543788"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="gold_rock_particle.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview12"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="1.5397249"
+     inkscape:cx="-62.348799"
+     inkscape:cy="-0.97419998"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g2742"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs2" />
+  <g
+     id="layer1"
+     transform="matrix(1.75,0,0,1.75,-228.13056,-356.43022)">
+    <g
+       id="g3335"
+       transform="translate(-0.26415541,-0.25629137)">
+      <g
+         id="g2742"
+         transform="matrix(0.41868316,0,0,0.42086694,59.894554,113.3345)"
+         style="stroke-width:0.788632">
+        <path
+           id="rect790"
+           style="fill:#d3a440;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
+           d="m 170.60328,216.1883 8.14052,2.56245 2.41197,9.99905 -10.43561,-2.42267 c 0,0 -1.95932,-10.71879 -0.11687,-10.13883 z"
+           sodipodi:nodetypes="scccs" />
+        <path
+           id="rect790-3"
+           style="fill:#aa8534;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
+           d="m 178.7438,218.75075 2.41197,9.99905 -10.43561,-2.42267 1.99486,-6.04686 z"
+           sodipodi:nodetypes="ccccc" />
+        <path
+           id="rect790-3-7"
+           style="fill:#826628;fill-opacity:1;stroke:#333333;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none"
+           d="m 179.94978,223.75027 1.20599,4.99953 -5.2178,-1.21134 0.73845,-2.87165 z"
+           sodipodi:nodetypes="ccccc" />
+        <path
+           id="rect790-2"
+           style="opacity:1;fill:#999999;fill-opacity:0;stroke:#5e4a1d;stroke-width:1.41763;stroke-linecap:butt;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+           d="m 170.60328,216.1883 8.14052,2.56245 c 0,0 3.71934,9.25388 2.41197,9.99905 -1.30737,0.74517 -10.43561,-2.42267 -10.43561,-2.42267 0,0 -2.34132,-9.60266 -0.11687,-10.13883 2.22445,-0.53617 -10e-6,0 -10e-6,0 z"
+           sodipodi:nodetypes="sczczs" />
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata9389">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>

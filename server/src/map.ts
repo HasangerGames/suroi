@@ -16,6 +16,14 @@ import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
+//idnum = variation number -> must be unique otherwise you run into problems
+let specialCrateData = [
+    {id: "cola_crate", idnum: 1, count: 2, prob: 0.6},
+    {id: "gauze_crate", idnum: 2, count: 2, prob: 0.9},
+    {id: "deathray_crate", idnum: 3, count: 1, prob: 0.001},
+    {id: "dagger_crate", idnum: 4, count: 1, prob: 0.1},
+    {id: "clubs_crate", idnum: 5, count: 1, prob: 0.05},
+]
 
 export class Map {
     game: Game;
@@ -36,6 +44,9 @@ export class Map {
             this.generateObstacles("health_crate", 50);
             this.generateObstacles("barrel", 75);
             this.generateObstacles("super_barrel", 25);
+            //Note: the # of crates created should be equal to the maximum possible number of crates generated as listed in specialCrateData
+            this.generateObstacles("special_crate", 10);
+            this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here
             this.obstacleTest("regular_crate", Vec2(363, 363), 0, 1, 0);
@@ -79,12 +90,12 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    private generateObstacles(idString: string, count: number): void {
-        const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+    private generateObstacles(idString: string, count: number, prob?: number, radius?: number): void {
+        let type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-            const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+            let variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             let rotation: number | undefined;
             switch (definition.rotationMode) {
                 case "full":
@@ -106,6 +117,19 @@ export class Map {
                 throw new Error("Unknown rotation type");
             }
 
+            let addObject = true;
+            if (idString === "special_crate") {
+                addObject = false;
+                if (specialCrateData[specialCrateData.length - 1].count > 0) {
+                    let j = 0;
+                    while (specialCrateData[j].count === 0) j++;
+                    definition.specialID = specialCrateData[j].id;
+                    variation = specialCrateData[j].idnum - 1 as Variation;
+                    specialCrateData[j].count --;
+                    if (Math.random() < specialCrateData[j].prob) addObject = true;
+                }
+            } 
+
             const obstacle: Obstacle = new Obstacle(
                 this.game,
                 type,
@@ -115,7 +139,7 @@ export class Map {
                 variation
             );
 
-            this.game.staticObjects.add(obstacle);
+           if (addObject) this.game.staticObjects.add(obstacle);
         }
     }
 
