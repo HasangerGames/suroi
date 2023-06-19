@@ -17,13 +17,23 @@ import { ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
 //idnum = variation number -> must be unique otherwise you run into problems
-let specialCrateData = [
-    {id: "cola_crate", idnum: 1, count: 2, prob: 0.6},
-    {id: "gauze_crate", idnum: 2, count: 2, prob: 0.9},
-    {id: "deathray_crate", idnum: 3, count: 1, prob: 0.001},
-    {id: "dagger_crate", idnum: 4, count: 1, prob: 0.1},
-    {id: "clubs_crate", idnum: 5, count: 1, prob: 0.05},
-]
+const specialCrateData = [
+    {
+        id: "cola_crate", idnum: 1, count: 2, prob: 0.6
+    },
+    {
+        id: "gauze_crate", idnum: 2, count: 2, prob: 0.9
+    },
+    {
+        id: "deathray_crate", idnum: 3, count: 1, prob: 0.001
+    },
+    {
+        id: "dagger_crate", idnum: 4, count: 1, prob: 0.1
+    },
+    {
+        id: "clubs_crate", idnum: 5, count: 1, prob: 0.05
+    }
+];
 
 export class Map {
     game: Game;
@@ -91,7 +101,7 @@ export class Map {
     }
 
     private generateObstacles(idString: string, count: number, prob?: number, radius?: number): void {
-        let type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+        const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
@@ -125,10 +135,10 @@ export class Map {
                     while (specialCrateData[j].count === 0) j++;
                     definition.specialID = specialCrateData[j].id;
                     variation = specialCrateData[j].idnum - 1 as Variation;
-                    specialCrateData[j].count --;
+                    specialCrateData[j].count--;
                     if (Math.random() < specialCrateData[j].prob) addObject = true;
                 }
-            } 
+            }
 
             const obstacle: Obstacle = new Obstacle(
                 this.game,
@@ -139,7 +149,7 @@ export class Map {
                 variation
             );
 
-           if (addObject) this.game.staticObjects.add(obstacle);
+            if (addObject) this.game.staticObjects.add(obstacle);
         }
     }
 

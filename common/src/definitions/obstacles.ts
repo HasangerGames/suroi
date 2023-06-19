@@ -178,6 +178,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
             hasLoot: true
-        },
+        }
     ]
 );
