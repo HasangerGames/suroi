@@ -64,9 +64,9 @@ export const LootTables: Record<string, LootTable> = {
     },
     gold_rock: {
         min: 1,
-        max: 2,
+        max: 1,
         loot: [
-            { tier: "mosin", weight: 1 }
+            { item: "mosin", weight: 1 }
         ]
     }
 };
@@ -78,8 +78,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "saf200", weight: 1.25 },
         { item: "m37", weight: 1 },
         { item: "m3k", weight: 0.75 },
-        { item: "mosin", weight: 0.1 }
-        //{ item: "deathray", weight: 10 }
+        { item: "mosin", weight: 0.02 }
     ],
     healingItems: [
         { item: "gauze", weight: 3 },
@@ -107,8 +106,5 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     clubs: [
         { item: "club", weight: 2 },
         { item: "club_op", weight: 1 }
-    ],
-    mosin: [
-        { item: "mosin", weight: 1 }
     ]
 };
