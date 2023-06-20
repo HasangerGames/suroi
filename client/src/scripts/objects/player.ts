@@ -28,7 +28,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
 
-const showMeleeDebugCircle = false;
+const showMeleeDebugCircle = true;
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
