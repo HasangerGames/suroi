@@ -127,7 +127,7 @@ export class Map {
                 variation
             );
 
-           this.game.staticObjects.add(obstacle);
+            this.game.staticObjects.add(obstacle);
         }
     }
 

@@ -24,7 +24,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 2,
         loot: [
-            {tier: "guns", weight: 1}
+            { tier: "guns", weight: 1 }
         ]
     },
     cola_crate: {
@@ -59,14 +59,14 @@ export const LootTables: Record<string, LootTable> = {
         min: 2,
         max: 2,
         loot: [
-            {tier: "clubs", weight: 1 }
+            { tier: "clubs", weight: 1 }
         ]
     },
     gold_rock: {
         min: 1,
-        max: 2,
+        max: 1,
         loot: [
-            {tier: "mosin", weight: 1}
+            { item: "mosin", weight: 1 }
         ]
     }
 };
@@ -78,8 +78,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "saf200", weight: 1.25 },
         { item: "m37", weight: 1 },
         { item: "m3k", weight: 0.75 },
-        { item: "mosin", weight: 0.1 }
-        //{ item: "deathray", weight: 10 }
+        { item: "mosin", weight: 0.02 }
     ],
     healingItems: [
         { item: "gauze", weight: 3 },
@@ -93,23 +92,19 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "club_op", weight: 0.1 }
     ],
     cola: [
-        {item: "cola", weight: 1}
+        { item: "cola", weight: 1 }
     ],
     gauze: [
-        {item: "gauze", weight: 1}
+        { item: "gauze", weight: 1 }
     ],
     deathray: [
-        {item: "deathray", weight: 1}
+        { item: "deathray", weight: 1 }
     ],
-    knife: [
-        {item: "dagger", weight: 0.1},
-        {item: "kbar", weight: 2}
+    dagger: [
+        {item: "dagger", weight: 1}
     ],
     clubs: [
-        {item: "club", weight: 2},
-        {item: "club_op", weight: 1}
-    ],
-    mosin: [
-        {item: "mosin", weight: 1}
+        { item: "club", weight: 2 },
+        { item: "club_op", weight: 1 }
     ]
 };

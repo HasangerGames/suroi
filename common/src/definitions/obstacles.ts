@@ -165,7 +165,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.6
             },
-            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+            hitbox: new RectangleHitbox(v(-2.9, -2.9), v(2.9, 2.9)),
             rotationMode: "none",
             hasLoot: true,
             children: [
@@ -211,6 +211,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
             hasLoot: true
-        },
+        }
     ]
 );
