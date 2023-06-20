@@ -18,14 +18,23 @@ import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
 //idnum = variation number -> must be unique otherwise you run into problems
 //To Do: Parse this into a better format (potentially its own file?) with the thing that ensures each object has all the correct data
-let obstacleChildren =  [
-        {id: "cola_crate", parent: "special_crate", count: 2, prob: 0.6},
-        {id: "gauze_crate", parent: "special_crate", count: 2, prob: 0.9},
-        {id: "deathray_crate", parent: "special_crate", count: 1, prob: 0.001},
-        {id: "knife_crate", parent: "special_crate", count: 2, prob: 0.8},
-        {id: "clubs_crate", parent: "special_crate", count: 1, prob: 0.05},
-    ]
-
+const obstacleChildren = [
+    {
+        id: "cola_crate", parent: "special_crate", count: 2, prob: 0.6
+    },
+    {
+        id: "gauze_crate", parent: "special_crate", count: 2, prob: 0.9
+    },
+    {
+        id: "deathray_crate", parent: "special_crate", count: 1, prob: 0.00001
+    },
+    {
+        id: "knife_crate", parent: "special_crate", count: 2, prob: 0.8
+    },
+    {
+        id: "clubs_crate", parent: "special_crate", count: 1, prob: 0.05
+    }
+];
 
 export class Map {
     game: Game;
@@ -91,12 +100,12 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    private generateObstacles(idString: string, count: number, prob?: number, radius?: number, baseId?: string): void {
-        let type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+    private generateObstacles(idString: string, count: number, prob?: number, radius?: number): void {
+        const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-            let variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+            const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             let rotation: number | undefined;
             switch (definition.rotationMode) {
                 case "full":
@@ -131,15 +140,14 @@ export class Map {
         }
     }
 
-    
-    private generateObstacleChildren (): void {
+    private generateObstacleChildren(): void {
         let j = 0;
         while (j < obstacleChildren.length) {
-            let type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, obstacleChildren[j].parent);
+            const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, obstacleChildren[j].parent);
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
             if (definition.variations !== undefined && definition.children !== undefined) {
-                let k = definition.children.findIndex(c => c.idString === obstacleChildren[j].id)
+                const k = definition.children.findIndex(c => c.idString === obstacleChildren[j].id);
                 if (k > -1) {
                     for (let p = 0; p < obstacleChildren[j].count; p++) {
                         let rotation: number | undefined;
@@ -158,12 +166,12 @@ export class Map {
                                 rotation = 0;
                                 break;
                         }
-    
+
                         if (rotation === undefined) {
                             throw new Error("Unknown rotation type");
                         }
 
-                        let variation: Variation = definition.children[k].idvariant -1 as Variation;
+                        const variation: Variation = definition.children[k].idvariant - 1 as Variation;
 
                         if (Math.random() < obstacleChildren[j].prob) {
                             definition.specialID = definition.children[k].idString;

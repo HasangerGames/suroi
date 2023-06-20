@@ -52,7 +52,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 2,
         max: 2,
         loot: [
-            {tier: "knife", weight: 1 }
+            { tier: "knife", weight: 1 }
         ]
     },
     clubs_crate: {
@@ -88,8 +88,9 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     melee: [
         { item: "branch", weight: 0.5 },
         { item: "club", weight: 1 },
-        { item: "dagger", weight: 0.5 },
-        { item: "club_op", weight: 0.1 }
+        { item: "dagger", weight: 0.1 },
+        { item: "club_op", weight: 0.1 },
+        { item: "kbar", weight: 2 }
     ],
     cola: [
         { item: "cola", weight: 1 }
@@ -100,8 +101,9 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     deathray: [
         { item: "deathray", weight: 1 }
     ],
-    dagger: [
-        {item: "dagger", weight: 1}
+    knife: [
+        { item: "dagger", weight: 0.2 },
+        { item: "kbar", weight: 2 }
     ],
     clubs: [
         { item: "club", weight: 2 },

@@ -26,7 +26,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
-    readonly children?: Array<ObstacleChildren>
+    readonly children?: ObstacleChildren[]
     specialID?: string
     readonly explosion?: string
 }
@@ -185,8 +185,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                     idvariant: 3
                 },
                 {
-                    idString: "dagger_crate",
-                    name: "Dagger Crate",
+                    idString: "knife_crate",
+                    name: "Knife Crate",
                     idvariant: 4
                 },
                 {

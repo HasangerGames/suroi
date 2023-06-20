@@ -7,7 +7,7 @@ export interface MeleeDefinition extends ItemDefinition {
 
     readonly damage: number
     readonly obstacleMultiplier: number
-    readonly piercingMultiplier?: number //If it does less dmg vs pierceable objects than it would vs a normal one
+    readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -167,5 +167,5 @@ export const Melees: MeleeDefinition[] = [
             angle: 60,
             useAngle: 5
         }
-    },
+    }
 ];
