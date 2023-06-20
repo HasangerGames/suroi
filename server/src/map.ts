@@ -25,7 +25,7 @@ const specialCrateData = [
         id: "gauze_crate", idnum: 2, count: 2, prob: 0.9
     },
     {
-        id: "deathray_crate", idnum: 3, count: 1, prob: 0.001
+        id: "deathray_crate", idnum: 3, count: 1, prob: 0.00001
     },
     {
         id: "dagger_crate", idnum: 4, count: 1, prob: 0.1
