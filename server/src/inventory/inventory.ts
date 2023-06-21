@@ -56,7 +56,7 @@ export class Inventory {
      */
     setActiveWeaponIndex(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
-        if (!this.hasWeapon(slot)) slot = 2; // fallback to fists
+        if (!this.hasWeapon(slot)) return false;
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
@@ -310,6 +310,9 @@ export class Inventory {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
                     stream.writeObjectTypeNoCategory(item.type);
+                    if (item instanceof GunItem) {
+                        stream.writeUint8(item.ammo);
+                    }
                 }
             }
         }

@@ -10,7 +10,9 @@ import { Loot } from "../../objects/loot";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
+import {
+    GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions
+} from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -68,6 +70,26 @@ export class UpdatePacket extends ReceivingPacket {
             const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
             adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
             adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        // Action
+        if (stream.readBoolean()) {
+            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
+            switch (action) {
+                case PlayerActions.None:
+                    $("#action-container").hide().stop();
+                    scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
+                    break;
+                case PlayerActions.Reload: {
+                    scene.playSound(`${player.activeItem.idString}_reload`);
+                    const time = (player.activeItem.definition as GunDefinition).reloadtime * 1000;
+                    $("#action-container").show();
+                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, time, "linear", () => {
+                        $("#action-container").hide();
+                    });
+                    break;
+                }
+            }
         }
 
         // Active player ID

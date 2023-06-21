@@ -159,8 +159,10 @@ $((): void => {
 
     // Switch weapon slots by clicking
     for (let i = 0; i < 3; i++) {
-        $(`#weapon-slot-${i + 1}`)[0].addEventListener("pointerdown", (e: PointerEvent): void => {
-            if (core.game !== undefined) {
+        const slotElement = $(`#weapon-slot-${i + 1}`);
+        slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+            if (core.game !== undefined && slotElement.hasClass("has-item")) {
+                e.stopImmediatePropagation();
                 if (e.button === 0) core.game.playerManager.equipItem(i);
                 else if (e.button === 2) core.game.playerManager.dropItem(i);
             }

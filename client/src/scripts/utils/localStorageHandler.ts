@@ -15,6 +15,8 @@ export type KeybindActions = {
     nextItem: [string, string]
     useItem: [string, string]
     dropActiveItem: [string, string]
+    reload: [string, string]
+    cancelAction: [string, string]
     toggleMap: [string, string]
     toggleMiniMap: [string, string]
 };
@@ -36,10 +38,11 @@ export interface Config {
     rotationSmoothing: boolean
     movementSmoothing: boolean
     mobileControls: boolean
+    minimapMinimized: boolean
 }
 
 export const defaultConfig: Config = {
-    configVersion: "7",
+    configVersion: "8",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -57,6 +60,8 @@ export const defaultConfig: Config = {
         nextItem: ["MWheelUp", ""],
         useItem: ["Mouse0", ""],
         dropActiveItem: ["", ""],
+        reload: ["R", ""],
+        cancelAction: ["X", ""],
         toggleMap: ["G", "M"],
         toggleMiniMap: ["N", ""]
     },
@@ -71,7 +76,8 @@ export const defaultConfig: Config = {
     showPing: false,
     rotationSmoothing: true,
     movementSmoothing: true,
-    mobileControls: true
+    mobileControls: true,
+    minimapMinimized: false
 };
 
 const configKey = "config";
@@ -165,6 +171,14 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version 7: Added "Swap Gun Slots" keybind
             config.configVersion = "7";
             config.keybinds.swapGunSlots = defaultConfig.keybinds.swapGunSlots;
+            break;
+        }
+        case "7": {
+            // Version 7: Added "Reload", "Cancel Action" keybind, and save the minimap minimized state
+            config.configVersion = "8";
+            config.keybinds.reload = defaultConfig.keybinds.reload;
+            config.keybinds.cancelAction = defaultConfig.keybinds.cancelAction;
+            config.minimapMinimized = false;
             break;
         }
         default: {

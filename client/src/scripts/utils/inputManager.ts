@@ -109,6 +109,18 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.dropItem(game.playerManager.activeItemIndex);
             }
         ),
+        reload: new Action(
+            "inventory::reload",
+            () => {
+                game.playerManager.reload();
+            }
+        ),
+        cancelAction: new Action(
+            "inventory::cancelAction",
+            () => {
+                game.playerManager.cancelAction();
+            }
+        ),
         toggleMap: new Action(
             "toggleMap",
             () => {
@@ -284,6 +296,8 @@ const actionsNames = {
     nextItem: "Equip Next Item",
     useItem: "Use Item",
     dropActiveItem: "Drop Active Item",
+    reload: "Reload",
+    cancelAction: "Cancel Action",
     toggleMap: "Toggle Fullscreen Map",
     toggleMiniMap: "Toggle Mini Map"
 };

@@ -11,7 +11,8 @@ import { GameObject } from "../types/gameObject";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
-    ObjectCategory
+    ObjectCategory,
+    type PlayerActions
 } from "../../../../common/src/constants";
 
 import {
@@ -23,7 +24,7 @@ import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
@@ -57,6 +58,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     weaponAnim!: Phaser.Tweens.Tween;
 
     distSinceLastFootstep = 0;
+
+    action!: PlayerActions;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);
@@ -230,6 +233,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
+
+        if (this.isActivePlayer) {
+            $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
+        }
+
         this.updateFistsPosition(true);
         this.updateWeapon();
         this.isNew = false;

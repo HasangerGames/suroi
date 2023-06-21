@@ -50,6 +50,7 @@ export class GameScene extends Phaser.Scene {
         for (const gun of Guns) {
             this.loadSound(`${gun.idString}_fire`, `sfx/weapons/${gun.idString}_fire`);
             this.loadSound(`${gun.idString}_switch`, `sfx/weapons/${gun.idString}_switch`);
+            this.loadSound(`${gun.idString}_reload`, `sfx/weapons/${gun.idString}_reload`);
         }
 
         this.loadSound("player_hit_1", "sfx/hits/player_hit_1");

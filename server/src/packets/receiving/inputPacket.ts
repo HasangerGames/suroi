@@ -1,11 +1,12 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { type Player } from "../../objects/player";
+import { GunItem } from "../../inventory/gunItem";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { Loot } from "../../objects/loot";
 import { type CollisionRecord } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { ACTIONS_BITS, Actions } from "../../../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -33,17 +34,20 @@ export class InputPacket extends ReceivingPacket {
             player.rotation = stream.readRotation(16);
         }
 
-        switch (stream.readBits(ACTIONS_BITS)) {
-            case Actions.EquipItem:
+        switch (stream.readBits(INPUT_ACTIONS_BITS)) {
+            case InputActions.EquipItem:
+                player.action?.cancel();
                 player.inventory.setActiveWeaponIndex(stream.readBits(2));
                 break;
-            case Actions.DropItem:
+            case InputActions.DropItem:
+                player.action?.cancel();
                 player.inventory.dropWeapon(stream.readBits(2));
                 break;
-            case Actions.SwapGunSlots:
+            case InputActions.SwapGunSlots:
+                player.action?.cancel();
                 player.inventory.swapGunSlots();
                 break;
-            case Actions.Interact: {
+            case InputActions.Interact: {
                 if (player.game.now - player.lastInteractionTime < 200) return;
                 player.lastInteractionTime = player.game.now;
 
@@ -60,9 +64,16 @@ export class InputPacket extends ReceivingPacket {
                         }
                     }
                 }
+                if (closestObject) player.action?.cancel();
                 closestObject?.interact(player);
                 break;
             }
+            case InputActions.Reload:
+                if (player.activeItem instanceof GunItem) player.activeItem.reload();
+                break;
+            case InputActions.Cancel:
+                player.action?.cancel();
+                break;
         }
     }
 }

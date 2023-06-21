@@ -23,6 +23,8 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
     readonly capacity: number
+    readonly reloadtime: number
+    readonly singleReload?: boolean
     readonly ballistics: {
         readonly damage: number
         readonly obstacleMultiplier: number
@@ -59,7 +61,8 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(120, 2) },
-        capacity: Infinity,
+        capacity: 30,
+        reloadtime: 2.5,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 2,
@@ -86,7 +89,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 3) },
-        capacity: Infinity,
+        capacity: 9,
+        reloadtime: 0.8,
+        singleReload: true,
         ballistics: {
             damage: 6.5,
             obstacleMultiplier: 2,
@@ -113,7 +118,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(90, 0) },
-        capacity: Infinity,
+        capacity: 5,
+        reloadtime: 1,
+        singleReload: true,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 2,
@@ -140,7 +147,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(105, 4) },
-        capacity: Infinity,
+        capacity: 5,
+        reloadtime: 1,
+        singleReload: true,
         ballistics: {
             damage: 80,
             obstacleMultiplier: 2,
@@ -166,7 +175,8 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(78, 0) },
-        capacity: Infinity,
+        capacity: 17,
+        reloadtime: 2,
         ballistics: {
             damage: 5.5,
             obstacleMultiplier: 2,
@@ -186,13 +196,14 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Burst,
         shotSpread: 8,
         length: 9,
+        reloadtime: 2,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
             animationDuration: 100
         },
         image: { position: v(100, 0) },
-        capacity: Infinity,
+        capacity: 30,
         ballistics: {
             damage: 15,
             obstacleMultiplier: 2,
@@ -223,7 +234,8 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
-        capacity: Infinity,
+        capacity: 100,
+        reloadtime: 0.5,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 1,

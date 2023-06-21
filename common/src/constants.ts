@@ -41,12 +41,19 @@ export enum FireMode {
     Auto
 }
 
-export enum Actions {
+export enum InputActions {
     None,
     EquipItem,
     DropItem,
     SwapGunSlots,
-    Interact
+    Interact,
+    Reload,
+    Cancel
+}
+
+export enum PlayerActions {
+    None,
+    Reload
 }
 
 const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
@@ -56,7 +63,8 @@ export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 11;
 export const VARIATION_BITS = 3;
 export const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
-export const ACTIONS_BITS = calculateEnumPacketBits(Actions);
+export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
+export const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;

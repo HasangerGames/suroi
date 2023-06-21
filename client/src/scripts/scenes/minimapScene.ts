@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import {
     GAS_ALPHA, GAS_COLOR, GRASS_COLOR
 } from "../utils/constants";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 const MINIMAP_OPACITY_PERCENTAGE = 0.4;
 const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8;
@@ -63,6 +64,8 @@ export class MinimapScene extends Phaser.Scene {
 
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
+
+        if (localStorageInstance.config.minimapMinimized) this.toggleMiniMap();
     }
 
     toggle(): void {
@@ -74,6 +77,7 @@ export class MinimapScene extends Phaser.Scene {
         this.visible = !this.visible;
         this.cameras.main.setVisible(this.visible);
         $("#minimap-border").toggle(this.visible);
+        localStorageInstance.update({ minimapMinimized: !this.visible });
     }
 
     resizeBigMap(): void {

@@ -27,6 +27,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { type Action } from "../inventory/action";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -120,7 +121,8 @@ export class Player extends GameObject {
         activeWeaponIndex: true,
         inventory: true,
         activePlayerId: true,
-        zoom: true
+        zoom: true,
+        action: false
     };
 
     readonly inventory = new Inventory(this);
@@ -157,6 +159,8 @@ export class Player extends GameObject {
     fullUpdate = true;
 
     body: Body;
+
+    action: Action | undefined;
 
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
@@ -397,6 +401,11 @@ export class Player extends GameObject {
                 this.sendPacket(new GameOverPacket(this, false));
             }
         }
+    }
+
+    executeAction(action: Action): void {
+        this.action?.cancel();
+        this.action = action;
     }
 
     override serializePartial(stream: SuroiBitStream): void {
