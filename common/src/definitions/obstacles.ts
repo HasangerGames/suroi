@@ -4,6 +4,11 @@ import {
 } from "../utils/hitbox";
 import { v } from "../utils/vector";
 
+export interface ObstacleChildren extends ObjectDefinition {
+    readonly idvariant: number
+    readonly prob?: number
+    readonly num?: number
+}
 export interface ObstacleDefinition extends ObjectDefinition {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
     readonly health: number
@@ -21,6 +26,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
+    readonly children?: ObstacleChildren[]
     specialID?: string
     readonly explosion?: string
 }
@@ -167,6 +173,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-2.9, -2.9), v(2.9, 2.9)),
             rotationMode: "none",
             hasLoot: true,
+            children: [
+                {
+                    idString: "cola_crate",
+                    name: "Cola Crate",
+                    idvariant: 1
+                },
+                {
+                    idString: "gauze_crate",
+                    name: "Gauze Crate",
+                    idvariant: 2
+                },
+                {
+                    idString: "deathray_crate",
+                    name: "Deathray Crate",
+                    idvariant: 3
+                },
+                {
+                    idString: "knife_crate",
+                    name: "Knife Crate",
+                    idvariant: 4
+                },
+                {
+                    idString: "clubs_crate",
+                    name: "Clubs Crate",
+                    idvariant: 5
+                }
+            ],
             variations: 8
         },
         {

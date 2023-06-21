@@ -7,6 +7,7 @@ export interface MeleeDefinition extends ItemDefinition {
 
     readonly damage: number
     readonly obstacleMultiplier: number
+    readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
@@ -141,6 +142,30 @@ export const Melees: MeleeDefinition[] = [
             usePosition: v(99, 0),
             angle: 60,
             useAngle: 0
+        }
+    },
+    {
+        idString: "kbar",
+        name: "K-bar",
+        itemType: ItemType.Melee,
+        damage: 35,
+        obstacleMultiplier: 0.75,
+        radius: 2.7,
+        offset: v(3.1, 0.9),
+        cooldown: 200,
+        fists: {
+            animationDuration: 125,
+            randomFist: false,
+            left: v(38, 35),
+            right: v(38, -35),
+            useLeft: v(70, 20),
+            useRight: v(38, -35)
+        },
+        image: {
+            position: v(62, 42),
+            usePosition: v(90, 8),
+            angle: 60,
+            useAngle: 5
         }
     }
 ];
