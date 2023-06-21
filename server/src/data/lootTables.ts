@@ -9,15 +9,24 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "guns", weight: 1 },
-            { tier: "healingItems", weight: 0.25 }
+            { tier: "healing_items", weight: 0.5 }
             //{ tier: "melee", weight: 0.04 }
         ]
     },
-    health_crate: {
-        min: 1,
-        max: 2,
+    aegis_crate: {
+        min: 2,
+        max: 4,
         loot: [
-            { tier: "healingItems", weight: 1 }
+            { tier: "aegis_guns", weight: 1 },
+            { tier: "aegis_healing_items", weight: 0.75 }
+        ]
+    },
+    flint_crate: {
+        min: 2,
+        max: 4,
+        loot: [
+            { tier: "flint_guns", weight: 1 },
+            { tier: "flint_healing_items", weight: 0.1 }
         ]
     },
     special_crate: {
@@ -28,24 +37,24 @@ export const LootTables: Record<string, LootTable> = {
         ]
     },
     cola_crate: {
-        min: 3,
+        min: 2,
         max: 4,
         loot: [
-            { tier: "cola", weight: 1 }
+            { item: "cola", weight: 1 }
         ]
     },
     gauze_crate: {
         min: 3,
         max: 5,
         loot: [
-            { tier: "gauze", weight: 1 }
+            { item: "gauze", weight: 1 }
         ]
     },
     deathray_crate: {
         min: 1,
         max: 1,
         loot: [
-            { tier: "deathray", weight: 1 }
+            { item: "deathray", weight: 1 }
         ]
     },
     knife_crate: {
@@ -80,10 +89,34 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m3k", weight: 0.75 },
         { item: "mosin", weight: 0.02 }
     ],
-    healingItems: [
+    healing_items: [
         { item: "gauze", weight: 3 },
         { item: "cola", weight: 2 },
         { item: "medikit", weight: 1 }
+    ],
+    aegis_guns: [
+        { item: "m3k", weight: 1.1 },
+        { item: "ak47", weight: 1 },
+        { item: "m37", weight: 1 },
+        { item: "g19", weight: 0.5 },
+        { item: "mosin", weight: 0.25 }
+    ],
+    aegis_healing_items: [
+        { item: "cola", weight: 2 },
+        { item: "medikit", weight: 1.5 },
+        { item: "gauze", weight: 1 }
+    ],
+    flint_guns: [
+        { item: "ak47", weight: 1.25 },
+        { item: "m3k", weight: 1.1 },
+        { item: "m37", weight: 1 },
+        { item: "saf200", weight: 0.75 },
+        { item: "mosin", weight: 0.3 }
+    ],
+    flint_healing_items: [
+        { item: "medikit", weight: 1.5 },
+        { item: "cola", weight: 1.25 },
+        { item: "gauze", weight: 1 }
     ],
     melee: [
         { item: "branch", weight: 0.5 },
@@ -91,15 +124,6 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "dagger", weight: 0.1 },
         { item: "club_op", weight: 0.1 },
         { item: "kbar", weight: 2 }
-    ],
-    cola: [
-        { item: "cola", weight: 1 }
-    ],
-    gauze: [
-        { item: "gauze", weight: 1 }
-    ],
-    deathray: [
-        { item: "deathray", weight: 1 }
     ],
     knife: [
         { item: "dagger", weight: 0.2 },

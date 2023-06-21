@@ -33,6 +33,23 @@ export interface ObstacleDefinition extends ObjectDefinition {
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
+function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none"): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "crate",
+        health: 100,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 0.5
+        },
+        hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+        rotationMode,
+        hasLoot: true
+    };
+}
+
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     [
         {
@@ -99,20 +116,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             particleVariations: 2,
             depth: 3
         },
-        {
-            idString: "regular_crate",
-            name: "Regular Crate",
-            material: "crate",
-            health: 100,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.5
-            },
-            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotationMode: "binary",
-            hasLoot: true
-        },
+        makeCrate("regular_crate", "Regular Crate", "binary"),
+        makeCrate("flint_crate", "Flint Crate", "none"),
+        makeCrate("aegis_crate", "AEGIS Crate", "none"),
         {
             idString: "barrel",
             name: "Barrel",
@@ -142,18 +148,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             explosion: "super_barrel_explosion"
         },
         {
-            idString: "health_crate",
-            name: "Health Crate",
-            material: "crate",
-            health: 120,
+            idString: "oil_tank",
+            name: "Oil Tank",
+            material: "metal",
+            health: 1000,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.6
+                destroy: 0.5
             },
-            hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
-            rotationMode: "none",
-            hasLoot: true
+            hitbox: new RectangleHitbox(v(-25, -9), v(25, 9)),
+            rotationMode: "none"
         },
         {
             idString: "special_crate",
