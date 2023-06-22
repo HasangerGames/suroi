@@ -82,7 +82,7 @@ export class UpdatePacket extends ReceivingPacket {
                     break;
                 case PlayerActions.Reload: {
                     scene.playSound(`${player.activeItem.idString}_reload`);
-                    const time = (player.activeItem.definition as GunDefinition).reloadtime * 1000;
+                    const time = (player.activeItem.definition as GunDefinition).reloadTime * 1000;
                     $("#action-container").show();
                     $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, time, "linear", () => {
                         $("#action-container").hide();

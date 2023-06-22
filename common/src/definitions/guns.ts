@@ -23,7 +23,7 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
     readonly capacity: number
-    readonly reloadtime: number
+    readonly reloadTime: number
     readonly singleReload?: boolean
     readonly ballistics: {
         readonly damage: number
@@ -62,7 +62,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(120, 2) },
         capacity: 30,
-        reloadtime: 2.5,
+        reloadTime: 2.5,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 2,
@@ -90,7 +90,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 3) },
         capacity: 9,
-        reloadtime: 0.8,
+        reloadTime: 0.8,
         singleReload: true,
         ballistics: {
             damage: 6.5,
@@ -119,7 +119,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 0) },
         capacity: 5,
-        reloadtime: 1,
+        reloadTime: 1,
         singleReload: true,
         ballistics: {
             damage: 10,
@@ -148,7 +148,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(105, 4) },
         capacity: 5,
-        reloadtime: 1,
+        reloadTime: 1,
         singleReload: true,
         ballistics: {
             damage: 80,
@@ -176,7 +176,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(78, 0) },
         capacity: 17,
-        reloadtime: 2,
+        reloadTime: 2,
         ballistics: {
             damage: 5.5,
             obstacleMultiplier: 2,
@@ -196,7 +196,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Burst,
         shotSpread: 8,
         length: 9,
-        reloadtime: 2,
+        reloadTime: 2,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
@@ -235,7 +235,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         capacity: 100,
-        reloadtime: 0.5,
+        reloadTime: 0.5,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 1,

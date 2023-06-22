@@ -30,7 +30,7 @@ export class ReloadAction extends Action {
     type = PlayerActions.Reload;
 
     constructor(player: Player, item: GunItem) {
-        super(player, item.definition.reloadtime);
+        super(player, item.definition.reloadTime);
         this.item = item;
     }
 
