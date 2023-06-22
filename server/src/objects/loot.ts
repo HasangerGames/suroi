@@ -152,7 +152,6 @@ export class Loot extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeObjectTypeNoCategory(this.type);
         stream.writeBoolean(this.isNew);
     }
 }
