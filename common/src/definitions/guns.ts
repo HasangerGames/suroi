@@ -5,6 +5,8 @@ import { FireMode } from "../constants";
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
+    readonly ammoType: string
+    readonly ammoSpawnAmount: number
     readonly cooldown: number
     readonly switchCooldown: number
     readonly recoilMultiplier: number
@@ -48,6 +50,8 @@ export const Guns: GunDefinition[] = [
         idString: "ak47",
         name: "AK-47",
         itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
         cooldown: 100,
         switchCooldown: 500,
         recoilMultiplier: 0.75,
@@ -75,6 +79,8 @@ export const Guns: GunDefinition[] = [
         idString: "m3k",
         name: "M3K",
         itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 10,
         cooldown: 750,
         switchCooldown: 500,
         recoilMultiplier: 0.5,
@@ -104,6 +110,8 @@ export const Guns: GunDefinition[] = [
         idString: "m37",
         name: "Model 37",
         itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 10,
         cooldown: 1000,
         switchCooldown: 500,
         recoilMultiplier: 0.5,
@@ -133,6 +141,8 @@ export const Guns: GunDefinition[] = [
         idString: "mosin",
         name: "Mosin-Nagant",
         itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 20,
         cooldown: 1750,
         switchCooldown: 750,
         recoilMultiplier: 0.45,
@@ -162,6 +172,8 @@ export const Guns: GunDefinition[] = [
         idString: "g19",
         name: "G19",
         itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 68,
         cooldown: 60,
         switchCooldown: 250,
         recoilMultiplier: 0.8,
@@ -189,6 +201,8 @@ export const Guns: GunDefinition[] = [
         idString: "saf200",
         name: "SAF-200",
         itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
         cooldown: 80,
         switchCooldown: 300,
         recoilMultiplier: 0.75,
@@ -220,6 +234,8 @@ export const Guns: GunDefinition[] = [
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 0,
         cooldown: 60,
         switchCooldown: 0,
         recoilMultiplier: 1,
@@ -234,8 +250,8 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
-        capacity: 100,
-        reloadTime: 0.5,
+        capacity: -1,
+        reloadTime: -1,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 1,

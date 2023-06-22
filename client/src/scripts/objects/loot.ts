@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import type Phaser from "phaser";
 import gsap from "gsap";
 
 import type { Game } from "../game";
@@ -10,10 +10,12 @@ import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     readonly images: {
-        readonly background: Phaser.GameObjects.Image
+        background: Phaser.GameObjects.Image
         readonly item: Phaser.GameObjects.Image
         readonly container: Phaser.GameObjects.Container
     };
@@ -33,18 +35,14 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
-        this.rotation = stream.readRotation(8);
         if (!this.created) {
-            this.images.container.setPosition(this.position.x * 20, this.position.y * 20).setRotation(this.rotation);
+            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
         } else {
-            const oldAngle = this.images.container.angle;
-            const newAngle = Phaser.Math.RadToDeg(this.rotation);
-            const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
-            gsap.to(this.images.container, {
+            this.scene.tweens.add({
+                targets: this.images.container,
                 x: this.position.x * 20,
                 y: this.position.y * 20,
-                angle: finalAngle,
-                duration: 0.03
+                duration: 30
             });
         }
     }
@@ -58,20 +56,30 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         // Set the loot texture based on the type
         this.images.item.setTexture("main", `${this.type.idString}.svg`);
+        const definition = this.type.definition;
         let backgroundTexture: string | undefined;
-        switch ((this.type.definition as LootDefinition).itemType) {
-            case ItemType.Gun:
-                backgroundTexture = "loot_background_gun.svg";
-                this.images.item.setScale(0.75);
+        switch ((definition as LootDefinition).itemType) {
+            case ItemType.Gun: {
+                backgroundTexture = `loot_background_gun_${(definition as GunDefinition).ammoType as string}.svg`;
+                this.images.item.setScale(0.85);
                 break;
-            case ItemType.Melee:
+            }
+            case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
+                const imageScale = (definition as MeleeDefinition).image?.lootScale;
+                if (imageScale !== undefined) this.images.item.setScale(imageScale);
                 break;
-            case ItemType.Healing:
+            }
+            case ItemType.Healing: {
                 backgroundTexture = "loot_background_healing.svg";
                 break;
+            }
         }
-        this.images.background.setTexture("main", backgroundTexture);
+        if (backgroundTexture !== undefined) {
+            this.images.background.setTexture("main", backgroundTexture);
+        } else {
+            this.images.background.setVisible(false); // TODO Figure out why destroy doesn't work
+        }
 
         // Play an animation if this is new loot
         if (stream.readBoolean()) {

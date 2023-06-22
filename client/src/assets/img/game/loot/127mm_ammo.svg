@@ -2,16 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="52"
-   height="36"
-   viewBox="0 0 13.758333 9.5250006"
+   width="64"
+   height="44.307999"
+   viewBox="0 0 16.933333 11.723159"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    sodipodi:docname="127mm_ammo.svg"
-   inkscape:export-filename="/home/desktopgeek/ammo.png"
-   inkscape:export-xdpi="2666.6667"
-   inkscape:export-ydpi="2666.6667"
+   inkscape:export-filename="/home/desktopgeek/Downloads/Ammo emojis/127mm_ammo.png"
+   inkscape:export-xdpi="945.23077"
+   inkscape:export-ydpi="945.23077"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,8 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     showguides="false" />
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -58,49 +59,53 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="fill:#122100;fill-opacity:1;stroke:#0e1a00;stroke-width:0.514088;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
-       id="rect846"
-       width="13.244248"
-       height="9.0109119"
-       x="0.2570442"
-       y="0.2570442"
-       ry="0.79374999"
-       rx="0.79374999" />
-    <text
-       xml:space="preserve"
-       style="font-size:5.33614px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#2c5100;fill-opacity:1;stroke-width:0.133404"
-       x="2.1166701"
-       y="6.6301494"
-       id="text6858"><tspan
-         sodipodi:role="line"
-         id="tspan6856"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#2c5100;fill-opacity:1;stroke-width:0.133404"
+    <g
+       id="g838"
+       transform="scale(1.230769)">
+      <rect
+         style="fill:#122100;fill-opacity:1;stroke:#0e1a00;stroke-width:0.514088;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
+         id="rect846"
+         width="13.244248"
+         height="9.0109119"
+         x="0.2570442"
+         y="0.2570442"
+         ry="0.79374999"
+         rx="0.79374999" />
+      <text
+         xml:space="preserve"
+         style="font-size:5.33614px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#2c5100;fill-opacity:1;stroke-width:0.133404"
          x="2.1166701"
-         y="6.6301494">12.7</tspan></text>
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697"
-       cx="12.170834"
-       cy="1.5874999"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-6"
-       cx="12.170834"
-       cy="7.9375"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-7"
-       cx="1.5874999"
-       cy="7.9375"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-5"
-       cx="1.5874999"
-       cy="1.5874999"
-       r="0.5291667" />
+         y="6.6301494"
+         id="text6858"><tspan
+           sodipodi:role="line"
+           id="tspan6856"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#2c5100;fill-opacity:1;stroke-width:0.133404"
+           x="2.1166701"
+           y="6.6301494">12.7</tspan></text>
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697"
+         cx="12.170834"
+         cy="1.5874999"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-6"
+         cx="12.170834"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-7"
+         cx="1.5874999"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#1f3900;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-5"
+         cx="1.5874999"
+         cy="1.5874999"
+         r="0.5291667" />
+    </g>
   </g>
 </svg>

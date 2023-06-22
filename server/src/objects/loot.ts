@@ -10,7 +10,7 @@ import { v2v } from "../utils/misc";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
-import { randomBoolean, randomRotation } from "../../../common/src/utils/random";
+import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
@@ -44,14 +44,33 @@ export class Loot extends GameObject {
 
         this.oldPosition = position;
 
-        // Create the body
+        // Create the body and hitbox
         this.body = game.world.createBody({
             type: "dynamic",
             position: v2v(position),
             linearDamping: 0.003,
-            angularDamping: 0
+            angularDamping: 0,
+            fixedRotation: true
         });
-        const radius = (this.type.definition as LootDefinition).itemType === ItemType.Gun ? 3.125 : 2.5;
+        const itemType = (this.type.definition as LootDefinition).itemType;
+        let radius: number;
+        switch (itemType) {
+            case ItemType.Gun:
+                radius = 3.4;
+                break;
+            case ItemType.Ammo:
+                radius = 2;
+                break;
+            case ItemType.Melee:
+                radius = 3;
+                break;
+            case ItemType.Healing:
+                radius = 2.5;
+                break;
+            default:
+                radius = 2.5;
+                break;
+        }
         this.body.createFixture({
             shape: Circle(radius),
             restitution: 0,
@@ -59,13 +78,11 @@ export class Loot extends GameObject {
             friction: 0.0,
             userData: this
         });
-
         this.hitbox = new CircleHitbox(radius, this.position);
 
         // Push the loot in a random direction
         const angle = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
-        this.body.applyTorque(randomBoolean() ? 0.003 : -0.003);
 
         setTimeout((): void => { this.isNew = false; }, 100);
     }
@@ -100,6 +117,7 @@ export class Loot extends GameObject {
                 return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
             }
         }
+        return false;
     }
 
     interact(player: Player): void {
@@ -150,7 +168,6 @@ export class Loot extends GameObject {
 
     override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
-        stream.writeRotation(this.rotation, 8);
     }
 
     override serializeFull(stream: SuroiBitStream): void {

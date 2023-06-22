@@ -9,8 +9,9 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "guns", weight: 1 },
-            { tier: "healing_items", weight: 0.5 }
-            //{ tier: "melee", weight: 0.04 }
+            { tier: "healing_items", weight: 0.5 },
+            { tier: "ammo", weight: 0.25 },
+            { tier: "melee", weight: 0.04 }
         ]
     },
     aegis_crate: {
@@ -93,6 +94,12 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "gauze", weight: 3 },
         { item: "cola", weight: 2 },
         { item: "medikit", weight: 1 }
+    ],
+    ammo: [
+        { item: "12g_ammo", weight: 0.75 },
+        { item: "556mm_ammo", weight: 1 },
+        { item: "762mm_ammo", weight: 1 },
+        { item: "9mm_ammo", weight: 1 }
     ],
     aegis_guns: [
         { item: "m3k", weight: 1.1 },

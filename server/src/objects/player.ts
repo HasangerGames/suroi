@@ -181,7 +181,7 @@ export class Player extends GameObject {
         });
 
         this.body.createFixture({
-            shape: Circle(2.5),
+            shape: Circle(2.25),
             friction: 0.0,
             density: 1000.0,
             restitution: 0.0,

@@ -48,7 +48,7 @@ import {
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
-import { IDAllocator } from "./utils/IDAllocator";
+import { IDAllocator } from "./utils/idAllocator";
 
 export class Game {
     map: Map;
@@ -177,10 +177,10 @@ export class Game {
         });
 
         // Create world boundaries
-        this.createWorldBoundary(360, -0.25, 360, 0);
-        this.createWorldBoundary(-0.25, 360, 0, 360);
-        this.createWorldBoundary(360, 720.25, 360, 0);
-        this.createWorldBoundary(720.25, 360, 0, 360);
+        this.createWorldBoundary(360, 0, 360, 0);
+        this.createWorldBoundary(0, 360, 0, 360);
+        this.createWorldBoundary(360, 720, 360, 0);
+        this.createWorldBoundary(720, 360, 0, 360);
 
         // Generate map
         this.map = new Map(this);
@@ -385,7 +385,7 @@ export class Game {
             this.gasDirty = false;
             this.gasPercentageDirty = false;
             this.updateObjects = false;
-            
+
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
             }
@@ -517,7 +517,7 @@ export class Game {
 
     /**
      * Delete a bullet and give the id back to the allocator
-     * @param object The object to delete
+     * @param bullet The bullet to delete
      */
     removeBullet(bullet: Bullet): void {
         this.bulletIDAllocator.give(bullet.id);

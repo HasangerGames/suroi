@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="52"
-   height="36"
-   viewBox="0 0 13.758333 9.5250006"
+   width="64"
+   height="44.307999"
+   viewBox="0 0 16.933333 11.723159"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
@@ -58,49 +58,56 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="fill:#1e8d1e;fill-opacity:1;stroke:#125512;stroke-width:0.514086;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
-       id="rect846"
-       width="13.244248"
-       height="9.0109148"
-       x="0.25704324"
-       y="0.25704324"
-       ry="0.79374999"
-       rx="0.79374999" />
-    <text
-       xml:space="preserve"
-       style="font-size:4.69213px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#0f460f;fill-opacity:1;stroke-width:0.117303"
-       x="2.02282"
-       y="6.4047456"
-       id="text6858"><tspan
-         sodipodi:role="line"
-         id="tspan6856"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#0f460f;fill-opacity:1;stroke-width:0.117303"
+    <g
+       id="g838"
+       transform="scale(1.2307692)">
+      <rect
+         style="fill:#1e8d1e;fill-opacity:1;stroke:#125512;stroke-width:0.514086;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
+         id="rect846"
+         width="13.244248"
+         height="9.0109148"
+         x="0.25704324"
+         y="0.25704324"
+         ry="0.79374999"
+         rx="0.79374999"
+         inkscape:export-filename="/home/desktopgeek/Downloads/Ammo emojis/556mm_ammo.png"
+         inkscape:export-xdpi="945.23077"
+         inkscape:export-ydpi="945.23077" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.69213px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#0f460f;fill-opacity:1;stroke-width:0.117303"
          x="2.02282"
-         y="6.4047456">5.56</tspan></text>
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697"
-       cx="12.170834"
-       cy="1.5874999"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-6"
-       cx="12.170834"
-       cy="7.9375"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-7"
-       cx="1.5874999"
-       cy="7.9375"
-       r="0.5291667" />
-    <circle
-       style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path9697-5"
-       cx="1.5874999"
-       cy="1.5874999"
-       r="0.5291667" />
+         y="6.4047456"
+         id="text6858"><tspan
+           sodipodi:role="line"
+           id="tspan6856"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#0f460f;fill-opacity:1;stroke-width:0.117303"
+           x="2.02282"
+           y="6.4047456">5.56</tspan></text>
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697"
+         cx="12.170834"
+         cy="1.5874999"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-6"
+         cx="12.170834"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-7"
+         cx="1.5874999"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-5"
+         cx="1.5874999"
+         cy="1.5874999"
+         r="0.5291667" />
+    </g>
   </g>
 </svg>

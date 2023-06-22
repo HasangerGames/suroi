@@ -24,6 +24,7 @@ export interface MeleeDefinition extends ItemDefinition {
         readonly usePosition: Vector
         readonly angle?: number
         readonly useAngle?: number
+        readonly lootScale?: number
     }
     readonly fireMode?: FireMode
 }
@@ -117,7 +118,8 @@ export const Melees: MeleeDefinition[] = [
             position: v(75, 45),
             usePosition: v(99, 0),
             angle: 60,
-            useAngle: 0
+            useAngle: 0,
+            lootScale: 0.65
         }
     },
     {
