@@ -54,7 +54,7 @@ export class MinimapScene extends Phaser.Scene {
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(360 * this.mapScale, 360 * this.mapScale, 1000 * this.mapScale, 1000 * this.mapScale, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
 
-        $(window).on("resize", (): void => {
+        this.scale.on("resize", (): void => {
             if (this.isExpanded) this.resizeBigMap();
             else this.resizeSmallMap();
         });

@@ -66,6 +66,8 @@ export class Loot extends GameObject {
         const angle = randomRotation();
         this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
         this.body.applyTorque(randomBoolean() ? 0.003 : -0.003);
+
+        setTimeout((): void => { this.isNew = false; }, 100);
     }
 
     get position(): Vector {
@@ -152,7 +154,6 @@ export class Loot extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeObjectTypeNoCategory(this.type);
         stream.writeBoolean(this.isNew);
     }
 }

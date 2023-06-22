@@ -77,7 +77,7 @@ export class MeleeItem extends InventoryItem {
                     if (closestObject instanceof Player) {
                         closestObject.damage(definition.damage, owner, this.type);
                     } else {
-                        closestObject.damage(definition.damage, owner);
+                        closestObject.damage(definition.damage * definition.obstacleMultiplier, owner);
                     }
                 }
 

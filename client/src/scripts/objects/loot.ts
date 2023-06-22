@@ -5,7 +5,7 @@ import type { Game } from "../game";
 import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import { ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -55,8 +55,6 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             console.warn("Full update of existing loot");
             return;
         }
-
-        this.type = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot>;
 
         // Set the loot texture based on the type
         this.images.item.setTexture("main", `${this.type.idString}.svg`);

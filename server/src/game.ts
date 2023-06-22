@@ -384,7 +384,8 @@ export class Game {
             this.aliveCountDirty = false;
             this.gasDirty = false;
             this.gasPercentageDirty = false;
-
+            this.updateObjects = false;
+            
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
             }

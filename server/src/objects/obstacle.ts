@@ -102,10 +102,10 @@ export class Obstacle extends GameObject {
     }
 
     override damage(amount: number, source: GameObject): void {
-        if (this.health === 0) return;
+        const definition = this.type.definition as ObstacleDefinition;
+        if (this.health === 0 || definition.invulnerable) return;
         this.health -= amount;
 
-        const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;

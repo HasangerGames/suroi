@@ -106,7 +106,6 @@ export class Map {
         const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            console.log(definition);
             const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
             const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
             let rotation: number | undefined;

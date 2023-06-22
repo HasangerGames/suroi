@@ -62,7 +62,7 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
         this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
 
-        $(window).on("resize", this.resize.bind(this));
+        this.scale.on("resize", this.resize.bind(this));
     }
 
     private resize(): void {

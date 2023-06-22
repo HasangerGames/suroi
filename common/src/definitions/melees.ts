@@ -34,7 +34,7 @@ export const Melees: MeleeDefinition[] = [
         name: "Fists",
         itemType: ItemType.Melee,
         damage: 20,
-        obstacleMultiplier: 2,
+        obstacleMultiplier: 1,
         radius: 1.5,
         offset: v(2.5, 0),
         cooldown: 250,
