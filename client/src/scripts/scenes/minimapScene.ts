@@ -65,7 +65,7 @@ export class MinimapScene extends Phaser.Scene {
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
 
-        if (localStorageInstance.config.minimapMinimized) this.toggleMiniMap();
+        if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
     }
 
     toggle(): void {
