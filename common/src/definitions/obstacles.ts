@@ -14,7 +14,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly health: number
     readonly invulnerable?: boolean
     readonly impierceable?: boolean
-    readonly mapDisplay?: boolean
+    readonly hideOnMap?: boolean
     readonly scale: {
         readonly spawnMin: number
         readonly spawnMax: number
@@ -35,12 +35,13 @@ export interface ObstacleDefinition extends ObjectDefinition {
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
-function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none"): ObstacleDefinition {
+function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none", hideOnMap?: boolean): ObstacleDefinition {
     return {
         idString,
         name,
         material: "crate",
         health: 100,
+        hideOnMap,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -119,8 +120,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 3
         },
         makeCrate("regular_crate", "Regular Crate", "binary"),
-        makeCrate("flint_crate", "Flint Crate", "none"),
-        makeCrate("aegis_crate", "AEGIS Crate", "none"),
+        makeCrate("flint_crate", "Flint Crate", "none", true),
+        makeCrate("aegis_crate", "AEGIS Crate", "none", true),
         {
             idString: "barrel",
             name: "Barrel",
