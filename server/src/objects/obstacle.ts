@@ -23,8 +23,8 @@ import {
     type LootTable, LootTables, LootTiers, type WeightedItem
 } from "../data/lootTables";
 import { random, weightedRandom } from "../../../common/src/utils/random";
-import { MeleeDefinition } from "../../../common/src/definitions/melees";
-import { MeleeItem } from "../inventory/meleeItem";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -53,6 +53,8 @@ export class Obstacle extends GameObject {
 
     loot: string[] = [];
 
+    definition: ObstacleDefinition;
+
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
         super(game, type, position);
 
@@ -61,6 +63,7 @@ export class Obstacle extends GameObject {
         this.variation = variation;
 
         const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+        this.definition = definition;
 
         this.health = this.maxHealth = definition.health;
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
@@ -97,10 +100,18 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, multi: number, pierce: boolean, source: GameObject): void {
-        const definition = this.type.definition as ObstacleDefinition;
-        if (this.health === 0 || definition.invulnerable || (!pierce && definition.impierceable)) return;
-        this.health -= amount * multi;
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {
+        const definition = this.definition;
+        if (this.health === 0 || definition.invulnerable) return;
+
+        const weaponDef = (weaponUsed?.definition as ItemDefinition);
+        if (definition.impierceable &&
+            !(weaponDef.itemType === ItemType.Melee &&
+                (weaponDef as MeleeDefinition).piercingMultiplier)) {
+            return;
+        }
+
+        this.health -= amount;
 
         if (this.health <= 0 || this.dead) {
             this.health = 0;
@@ -167,10 +178,9 @@ export class Obstacle extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, definition.rotationMode);
-        if (definition.variations !== undefined) {
+        stream.writeObstacleRotation(this.rotation, this.definition.rotationMode);
+        if (this.definition.variations !== undefined) {
             stream.writeVariation(this.variation);
         }
     }

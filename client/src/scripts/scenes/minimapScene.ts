@@ -94,7 +94,7 @@ export class MinimapScene extends Phaser.Scene {
         if (this.cameras.main === undefined) return;
         if (window.innerWidth > 1200) {
             this.cameras.main.setSize(200, 200);
-            this.cameras.main.setPosition(16, 16);
+            this.cameras.main.setPosition(20, 20);
             this.cameras.main.setZoom(1 / this.mapScale / 1.25);
         } else {
             this.cameras.main.setSize(125, 125);

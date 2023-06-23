@@ -193,7 +193,7 @@ export class Player extends GameObject {
         // Inventory preset
         //this.inventory.addOrReplaceWeapon(0, "m37");
         //this.inventory.addOrReplaceWeapon(1, "mosin");
-        this.inventory.addOrReplaceWeapon(2, "baseball_bat");
+        this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -315,7 +315,7 @@ export class Player extends GameObject {
         }
     }
 
-    override damage(amount: number, multi?: number, pierce?: boolean, source?: GameObject, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
         // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);

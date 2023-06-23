@@ -32,7 +32,7 @@ export class DeathMarker extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    override damage(amount: number, multi: number, pierce: boolean, source: GameObject): void {}
+    override damage(amount: number, source: GameObject): void {}
 
     override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);

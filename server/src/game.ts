@@ -49,6 +49,7 @@ import {
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
+import { Obstacle } from "./objects/obstacle";
 
 export class Game {
     map: Map;
@@ -242,9 +243,9 @@ export class Game {
                 const definition = bullet.source.ballistics;
 
                 if (damageRecord.damaged instanceof Player) {
-                    damageRecord.damaged.damage(definition.damage, undefined, undefined, damageRecord.damager, bullet.sourceType);
-                } else {
-                    damageRecord.damaged.damage?.(definition.damage, definition.obstacleMultiplier, false, damageRecord.damager);
+                    damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
+                } else if (damageRecord.damaged instanceof Obstacle) {
+                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
                 }
 
                 this.removeBullet(bullet);

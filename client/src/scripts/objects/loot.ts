@@ -60,7 +60,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         let backgroundTexture: string | undefined;
         switch ((definition as LootDefinition).itemType) {
             case ItemType.Gun: {
-                backgroundTexture = `loot_background_gun_${(definition as GunDefinition).ammoType as string}.svg`;
+                backgroundTexture = `loot_background_gun_${(definition as GunDefinition).ammoType}.svg`;
                 this.images.item.setScale(0.85);
                 break;
             }
