@@ -23,6 +23,8 @@ import {
     type LootTable, LootTables, LootTiers, type WeightedItem
 } from "../data/lootTables";
 import { random, weightedRandom } from "../../../common/src/utils/random";
+import { MeleeDefinition } from "../../../common/src/definitions/melees";
+import { MeleeItem } from "../inventory/meleeItem";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -95,10 +97,10 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, source: GameObject): void {
+    override damage(amount: number, multi: number, pierce: boolean, source: GameObject): void {
         const definition = this.type.definition as ObstacleDefinition;
-        if (this.health === 0 || definition.invulnerable) return;
-        this.health -= amount;
+        if (this.health === 0 || definition.invulnerable || (!pierce && definition.impierceable)) return;
+        this.health -= amount * multi;
 
         if (this.health <= 0 || this.dead) {
             this.health = 0;

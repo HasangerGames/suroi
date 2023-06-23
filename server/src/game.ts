@@ -242,9 +242,9 @@ export class Game {
                 const definition = bullet.source.ballistics;
 
                 if (damageRecord.damaged instanceof Player) {
-                    damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
+                    damageRecord.damaged.damage(definition.damage, undefined, undefined, damageRecord.damager, bullet.sourceType);
                 } else {
-                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
+                    damageRecord.damaged.damage?.(definition.damage, definition.obstacleMultiplier, false, damageRecord.damager);
                 }
 
                 this.removeBullet(bullet);
