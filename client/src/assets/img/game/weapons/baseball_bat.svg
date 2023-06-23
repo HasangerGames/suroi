@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="132.37277"
+   height="132.233"
+   viewBox="0 0 35.023627 34.986649"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="baseball_bat.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="1.0394793"
+     inkscape:cx="-100.05009"
+     inkscape:cy="60.126258"
+     inkscape:window-width="1280"
+     inkscape:window-height="658"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="10.376773,7.8251076"
+       end_point="10.376773,16.926048"
+       center_point="10.376773,12.375578"
+       id="path-effect439"
+       is_visible="true"
+       lpeversion="1.2"
+       lpesatellites=""
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false"
+       link_styles="false" />
+  </defs>
+  <metadata
+     id="metadata15722">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Radians</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     id="rect287"
+     style="fill:#85490c;stroke:#2a1704;stroke-width:0.264583;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 34.456928,0.54830962 C 33.379095,-0.52917298 31.24902,0.60201872 29.237446,2.6135929 L 18.686303,13.964248 c 0,0 -3.800106,4.786994 -5.878677,7.023133 C 9.2093729,24.858402 2.6403763,31.506453 1.5282275,32.631457 1.1036905,32.422374 0.5101818,32.103903 0.2755779,32.274787 c -0.234606,0.170881 -0.1855688,0.672273 0.1779102,1.214307 0.1317651,0.196493 0.295985,0.396747 0.4878959,0.588644 0.7212051,0.721064 1.5935733,0.945975 1.78668,0.649531 0.1931073,-0.296444 -0.1314936,-0.81419 -0.3422242,-1.240396 1.1736728,-1.06294 7.8482672,-7.590391 11.7014462,-11.193528 2.23207,-2.087225 6.954071,-5.974048 6.954071,-5.974048 L 32.392009,5.7681561 c 2.135204,-1.8533479 3.142938,-4.1422573 2.064919,-5.21984648 z"
+     sodipodi:nodetypes="cccsczsczcsccc" />
+  <path
+     id="path3665"
+     style="fill:#98530d;fill-opacity:1;stroke:#464b50;stroke-width:0;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none"
+     d="M 33.103092,2.5359539 C 34.488329,2.4651204 32.334051,4.8297386 30.3151,6.6919128 28.151352,8.6876451 18.141938,17.966957 17.774875,17.623159 17.425049,17.295508 25.287692,9.9868951 25.960386,9.2691291 26.716862,8.4619681 28.483316,6.7020614 29.524347,5.6610297 31.60641,3.5789656 32.207586,2.5817462 33.103092,2.5359539 Z"
+     sodipodi:nodetypes="ssssss" />
+</svg>

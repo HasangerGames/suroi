@@ -65,7 +65,7 @@ export class MinimapScene extends Phaser.Scene {
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
 
-        if (localStorageInstance.config.minimapMinimized) this.toggleMiniMap();
+        if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
     }
 
     toggle(): void {
@@ -93,9 +93,9 @@ export class MinimapScene extends Phaser.Scene {
     resizeSmallMap(): void {
         if (this.cameras.main === undefined) return;
         if (window.innerWidth > 1200) {
-            this.cameras.main.setSize(250, 250);
+            this.cameras.main.setSize(200, 200);
             this.cameras.main.setPosition(20, 20);
-            this.cameras.main.setZoom(1 / this.mapScale);
+            this.cameras.main.setZoom(1 / this.mapScale / 1.25);
         } else {
             this.cameras.main.setSize(125, 125);
             this.cameras.main.setPosition(10, 10);

@@ -8,6 +8,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { type CollisionRecord } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { Obstacle } from "../objects/obstacle";
 
 /**
  * A class representing a melee weapon
@@ -76,8 +77,12 @@ export class MeleeItem extends InventoryItem {
                 if (closestObject?.dead === false) {
                     if (closestObject instanceof Player) {
                         closestObject.damage(definition.damage, owner, this.type);
-                    } else {
-                        closestObject.damage(definition.damage * definition.obstacleMultiplier, owner);
+                    } else if (closestObject instanceof Obstacle) {
+                        const multi = definition.piercingMultiplier &&
+                        closestObject.definition.impierceable
+                            ? definition.piercingMultiplier
+                            : definition.obstacleMultiplier;
+                        closestObject.damage(definition.damage * multi, owner, this.type);
                     }
                 }
 

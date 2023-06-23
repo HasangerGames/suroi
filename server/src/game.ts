@@ -49,6 +49,7 @@ import {
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
+import { Obstacle } from "./objects/obstacle";
 
 export class Game {
     map: Map;
@@ -243,8 +244,8 @@ export class Game {
 
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
-                } else {
-                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
+                } else if (damageRecord.damaged instanceof Obstacle) {
+                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
                 }
 
                 this.removeBullet(bullet);

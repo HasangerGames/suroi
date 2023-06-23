@@ -130,6 +130,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "club", weight: 1 },
         { item: "dagger", weight: 0.1 },
         { item: "club_op", weight: 0.1 },
+        { item: "baseball_bat", weight: 4 },
         { item: "kbar", weight: 2 }
     ],
     knife: [
@@ -137,7 +138,8 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "kbar", weight: 2 }
     ],
     clubs: [
-        { item: "club", weight: 2 },
-        { item: "club_op", weight: 1 }
+        { item: "baseball_bat", weight: 2 },
+        { item: "club", weight: 0.4 },
+        { item: "club_op", weight: 0.1 }
     ]
 };

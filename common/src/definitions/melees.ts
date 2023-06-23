@@ -147,6 +147,31 @@ export const Melees: MeleeDefinition[] = [
         }
     },
     {
+        idString: "baseball_bat",
+        name: "Baseball Bat",
+        itemType: ItemType.Melee,
+        damage: 25,
+        obstacleMultiplier: 1,
+        radius: 4,
+        offset: v(5.4, 1.2),
+        cooldown: 350,
+        fists: {
+            animationDuration: 125,
+            randomFist: false,
+            left: v(38, 35),
+            right: v(38, -35),
+            useLeft: v(75, 20),
+            useRight: v(38, -35)
+        },
+        image: {
+            position: v(100, 50),
+            usePosition: v(115, -15),
+            angle: 60,
+            useAngle: 0,
+            lootScale: 0.65
+        }
+    },
+    {
         idString: "kbar",
         name: "K-bar",
         itemType: ItemType.Melee,
