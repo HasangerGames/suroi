@@ -47,7 +47,7 @@ export class Map {
         this.game = game;
 
         if (!Config.disableMapGeneration) {
-            this.generateObstacles("oil_tank", 1);
+            this.generateObstacles("oil_tank", 6);
             this.generateObstacles("oak_tree", 150);
             this.generateObstacles("pine_tree", 10);
             this.generateObstacles("rock", 150);

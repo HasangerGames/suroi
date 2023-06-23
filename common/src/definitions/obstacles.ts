@@ -151,13 +151,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "oil_tank",
             name: "Oil Tank",
             material: "metal",
-            health: 1000,
+            health: 10000,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.5
             },
-            hitbox: new RectangleHitbox(v(-25, -9), v(25, 9)),
+            hitbox: new RectangleHitbox(v(-10, -5), v(10, 5)),
             rotationMode: "none"
         },
         {

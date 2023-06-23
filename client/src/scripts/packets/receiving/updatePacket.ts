@@ -205,7 +205,7 @@ export class UpdatePacket extends ReceivingPacket {
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
-                    `${bulletSourceDef.idString}_trail.svg`
+                    `${bulletSourceDef.ammoType}_trail.svg`
                 ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition)).setDepth(1);
                 game.bullets.set(id, bullet);
                 scene.tweens.add({

@@ -85,7 +85,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     guns: [
         { item: "g19", weight: 2 },
         { item: "ak47", weight: 1.5 },
-        { item: "saf200", weight: 1.25 },
+        { item: "saf_200", weight: 1.25 },
         { item: "m37", weight: 1 },
         { item: "m3k", weight: 0.75 },
         { item: "mosin", weight: 0.02 }
@@ -117,7 +117,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "ak47", weight: 1.25 },
         { item: "m3k", weight: 1.1 },
         { item: "m37", weight: 1 },
-        { item: "saf200", weight: 0.75 },
+        { item: "saf_200", weight: 0.75 },
         { item: "mosin", weight: 0.3 }
     ],
     flint_healing_items: [

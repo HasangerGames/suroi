@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="ak47_trail.svg"
+   sodipodi:docname="9mm_trail.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -25,9 +25,9 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="6.2074636"
-     inkscape:cx="222.47412"
-     inkscape:cy="25.936519"
+     inkscape:zoom="2.1946698"
+     inkscape:cx="155.37645"
+     inkscape:cy="-77.4604"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -40,11 +40,11 @@
        inkscape:collect="always"
        id="linearGradient1136">
       <stop
-         style="stop-color:#fffffe;stop-opacity:0.60116547"
+         style="stop-color:#ffff80;stop-opacity:0.75294119"
          offset="0"
          id="stop1132" />
       <stop
-         style="stop-color:#ffffff;stop-opacity:0"
+         style="stop-color:#ffff80;stop-opacity:0"
          offset="1"
          id="stop1134" />
     </linearGradient>
@@ -57,7 +57,7 @@
        x2="8.3181934"
        y2="33.072918"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(6.2500004,0,0,0.04,-66.145841,-2.6458332)" />
+       gradientTransform="matrix(6.2500008,0,0,0.04,-66.145846,-2.6458332)" />
   </defs>
   <g
      inkscape:label="Layer 1"
@@ -66,9 +66,9 @@
     <rect
        style="fill:url(#linearGradient1138);fill-opacity:1;stroke-width:0;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect846"
-       width="66.145828"
+       width="66.145836"
        height="2.6458333"
-       x="-66.145828"
+       x="-66.145836"
        y="-2.6458333"
        rx="0"
        transform="scale(-1)"
