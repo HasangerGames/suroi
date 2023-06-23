@@ -25,12 +25,12 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="2.0000001"
-     inkscape:cx="-79.499996"
-     inkscape:cy="70.499997"
+     inkscape:zoom="4.0000002"
+     inkscape:cx="-17.749999"
+     inkscape:cy="55.499997"
      inkscape:window-width="2560"
-     inkscape:window-height="1412"
-     inkscape:window-x="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
@@ -44,7 +44,7 @@
          offset="0"
          id="stop2552" />
       <stop
-         style="stop-color:#141314;stop-opacity:0.74509805"
+         style="stop-color:#373737;stop-opacity:0.74509805"
          offset="1"
          id="stop2554" />
     </linearGradient>
