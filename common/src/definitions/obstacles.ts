@@ -12,8 +12,8 @@ export interface ObstacleChildren extends ObjectDefinition {
 export interface ObstacleDefinition extends ObjectDefinition {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
     readonly health: number
-    readonly invulnerable?: boolean
-    readonly impierceable?: boolean
+    readonly indestructible?: boolean
+    readonly impenetrable?: boolean
     readonly hideOnMap?: boolean
     readonly scale: {
         readonly spawnMin: number
@@ -160,7 +160,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            impierceable: true,
+            indestructible: true,
             hitbox: new RectangleHitbox(v(-10, -5), v(10, 5)),
             rotationMode: "none"
         },

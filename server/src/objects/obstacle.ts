@@ -102,10 +102,10 @@ export class Obstacle extends GameObject {
 
     override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {
         const definition = this.definition;
-        if (this.health === 0 || definition.invulnerable) return;
+        if (this.health === 0 || definition.indestructible) return;
 
         const weaponDef = (weaponUsed?.definition as ItemDefinition);
-        if (definition.impierceable &&
+        if (definition.impenetrable &&
             !(weaponDef.itemType === ItemType.Melee &&
                 (weaponDef as MeleeDefinition).piercingMultiplier)) {
             return;

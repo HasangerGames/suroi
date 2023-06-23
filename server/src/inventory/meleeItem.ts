@@ -79,7 +79,7 @@ export class MeleeItem extends InventoryItem {
                         closestObject.damage(definition.damage, owner, this.type);
                     } else if (closestObject instanceof Obstacle) {
                         const multi = definition.piercingMultiplier &&
-                        closestObject.definition.impierceable
+                        closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                         closestObject.damage(definition.damage * multi, owner, this.type);
