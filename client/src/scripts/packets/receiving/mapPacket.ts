@@ -1,5 +1,3 @@
-import type { Vector } from "matter";
-
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { MinimapScene } from "../../scenes/minimapScene";
 
@@ -12,7 +10,7 @@ export class MapPacket extends ReceivingPacket {
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
 
-            const position: Vector = stream.readPosition();
+            const position = stream.readPosition();
             const scale = stream.readScale();
 
             const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
