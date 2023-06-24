@@ -179,6 +179,11 @@ $((): void => {
                 core.game.playerManager.interact();
             }
         });
+        $("#btn-reload").show().on("click", () => {
+            if (core.game !== undefined) {
+                core.game.playerManager.reload();
+            }
+        });
     }
 
     $(".tab").on("click", ev => {

@@ -80,7 +80,7 @@ export const Guns: GunDefinition[] = [
         name: "M3K",
         itemType: ItemType.Gun,
         ammoType: "12g",
-        ammoSpawnAmount: 10,
+        ammoSpawnAmount: 18,
         capacity: 9,
         reloadTime: 0.8,
         cooldown: 750,

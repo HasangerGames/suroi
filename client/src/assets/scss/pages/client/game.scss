@@ -13,11 +13,44 @@
 #btn-interact {
     position: absolute;
     bottom: 5px;
-    left: 5px;
+    @media screen and (min-width: $screen_large) {
+        width: 80px;
+        height: 70px;
+        bottom: 75px;
+        left: 10px;
+    }
+    @media screen and (max-width: $screen_large) {
+        left: 100px;
+    }
+    @media screen and (max-width: $screen_small) {
+        left: 5px;
+    }
     z-index: 1000;
-    width: 75px;
-    height: 75px;
-    font-size: 16px;
+    width: 70px;
+    height: 60px;
+    font-size: 15px;
+    padding: 0;
+}
+
+#btn-reload {
+    position: absolute;
+    bottom: 5px;
+    @media screen and (min-width: $screen_large) {
+        width: 80px;
+        height: 70px;
+        bottom: 75px;
+        left: 100px;
+    }
+    @media screen and (max-width: $screen_large) {
+        right: 100px;
+    }
+    @media screen and (max-width: $screen_small) {
+        right: 5px;
+    }
+    z-index: 1000;
+    width: 70px;
+    height: 60px;
+    font-size: 15px;
     padding: 0;
 }
 
@@ -84,7 +117,7 @@
     font-family: monospace;
 
     @media screen and (max-width: $screen_large) {
-        font-size: 10px;
+        font-size: 14px;
     }
 }
 
@@ -233,8 +266,17 @@
     justify-content: center;
     padding: 10px;
 
+    @media screen and (max-width: $screen_large) {
+        bottom: 65px;
+        width: 120px;
+    }
+
     #active-weapon-ammo {
         font-size: x-large;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 16px;
+        }
     }
 }
 
@@ -395,19 +437,18 @@
         border-radius: 10px;
 
         &.ammo-slot {
-            width: auto;
-            height: auto;
+            width: auto !important;
+            height: auto !important;
             padding: 0 8px 0 8px;
+
+            @media screen and (max-width: $screen_large) {
+                padding: 0 5px 0 5px;
+            }
         }
 
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
-
-            &.ammo-slot {
-                width: 50px;
-                height: 50px;
-            }
         }
 
         position: relative;
@@ -486,6 +527,10 @@
         font-size: 20px;
         margin-left: 8px;
         margin-right: 3px;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 14px;
+        }
     }
 
     .item-name {
@@ -505,8 +550,11 @@
     right: 10px;
 
     @media screen and (max-width: $screen_large) {
-        bottom: 8px;
-        right: 8px;
+        bottom: 5px;
+        right: 5px;
+    }
+    @media screen and (max-width: $screen_small) {
+        bottom: 75px;
     }
 }
 
@@ -515,8 +563,12 @@
     left: 10px;
 
     @media screen and (max-width: $screen_large) {
-        bottom: 8px;
-        left: 8px;
+        bottom: 5px;
+        left: 5px;
+    }
+
+    @media screen and (max-width: $screen_small) {
+        bottom: 75px;
     }
 }
 
