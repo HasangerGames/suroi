@@ -403,6 +403,13 @@ export class Player extends GameObject {
                 }
             }
 
+            for (const item in this.inventory.items) {
+                const count = this.inventory.items[item];
+                if (count > 0) {
+                    this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, count);
+                }
+            }
+
             // Create death marker
             const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
