@@ -413,7 +413,7 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean, nameColor: string): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
@@ -435,7 +435,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, name, socket, spawnPosition, isDev);
+        return new Player(this, name, socket, spawnPosition, isDev, nameColor);
     }
 
     // Called when a JoinPacket is sent by the client
@@ -448,7 +448,7 @@ export class Game {
         game.fullDirtyObjects.add(player);
         game.updateObjects = true;
         game.aliveCountDirty = true;
-        game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, true)));
+        game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
         player.updateVisibleObjects();
         player.joined = true;
@@ -477,7 +477,7 @@ export class Game {
         player.disconnected = true;
         this.aliveCountDirty = true;
         if (!player.dead) {
-            this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, false)));
+            this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, false)));
         }
         this.connectedPlayers.delete(player);
 

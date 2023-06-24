@@ -23,7 +23,7 @@ export class KillPacket extends SendingPacket {
         super.serialize(stream);
 
         stream.writeBits(this.player.kills, 7);
-        stream.writePlayerName(this.killed.name);
+        stream.writePlayerNameWithColor(this.killed.name, this.killed.isDev, this.killed.nameColor);
 
         const usedWeapon = this.weaponUsed !== undefined;
         stream.writeBoolean(usedWeapon);
