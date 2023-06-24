@@ -39,6 +39,9 @@ export interface Config {
     movementSmoothing: boolean
     mobileControls: boolean
     minimapMinimized: boolean
+
+    devPassword: string | undefined | null
+    nameColor: string | undefined | null
 }
 
 export const defaultConfig: Config = {
@@ -77,7 +80,10 @@ export const defaultConfig: Config = {
     rotationSmoothing: true,
     movementSmoothing: true,
     mobileControls: true,
-    minimapMinimized: false
+    minimapMinimized: false,
+
+    devPassword: "",
+    nameColor: ""
 };
 
 const configKey = "config";

@@ -166,6 +166,8 @@ export class Player extends GameObject {
 
     isDev: boolean;
 
+    nameColor: string;
+
     /**
      * Used to make players invunerable for 5 seconds after spawning or until they move
      */
@@ -177,10 +179,11 @@ export class Player extends GameObject {
      */
     canDespawn = true;
 
-    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean) {
+    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean, nameColor: string) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
         this.isDev = isDev;
+        this.nameColor = nameColor;
 
         this.socket = socket;
         this.name = name;
@@ -374,7 +377,7 @@ export class Player extends GameObject {
                 this.killedBy = source;
                 if (source !== this) source.kills++;
                 source.sendPacket(new KillPacket(source, this, weaponUsed));
-                const killMessage = new KillKillFeedMessage(this.name, source.name, weaponUsed);
+                const killMessage = new KillKillFeedMessage(this, source, weaponUsed);
                 this.game.killFeedMessages.add(new KillFeedPacket(this, killMessage));
             }
 

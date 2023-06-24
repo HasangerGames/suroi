@@ -14,17 +14,19 @@ export class KillFeedPacket extends ReceivingPacket {
 
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
         if (messageType === KillFeedMessageType.Kill) {
-            const killedBy = stream.readPlayerName();
-            const killed = stream.readPlayerName();
+            const killedBy = stream.readPlayerNameWithColor();
+            const killed = stream.readPlayerNameWithColor();
+
             let weaponUsed: string | undefined;
             if (stream.readBoolean()) {
                 weaponUsed = stream.readObjectType().definition.name;
             }
             killFeedItem.addClass("kill-feed-item-red");
+
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killed} ${randomKillWord()} ${killedBy}${weaponUsed === undefined ? "" : ` with ${weaponUsed}`}`);
         } else if (messageType === KillFeedMessageType.Join) {
-            const name = stream.readPlayerName();
+            const name = stream.readPlayerNameWithColor();
             const joined = stream.readBoolean();
             killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
         }
@@ -34,7 +36,7 @@ export class KillFeedPacket extends ReceivingPacket {
             killFeed.children().last().remove();
         }
         setTimeout((): void => {
-            $(killFeedItem).fadeOut(1000, function() { $(this).remove(); });
+            killFeedItem.fadeOut(1000, () => { killFeedItem.remove(); });
         }, 7000);
     }
 }

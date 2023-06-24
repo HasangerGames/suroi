@@ -77,6 +77,7 @@ export interface PlayerContainer {
     playerName: string
     ip: string | undefined
     isDev: boolean
+    nameColor: string
 }
 
 app.ws("/play", {
@@ -138,7 +139,8 @@ app.ws("/play", {
                 player: undefined,
                 playerName: name,
                 ip,
-                isDev
+                isDev,
+                nameColor: isDev ? (searchParams.get("nameColor") ?? "") : ""
             },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
@@ -153,7 +155,7 @@ app.ws("/play", {
      */
     open(socket: WebSocket<PlayerContainer>) {
         const userData = socket.getUserData();
-        userData.player = game.addPlayer(socket, userData.playerName, userData.isDev);
+        userData.player = game.addPlayer(socket, userData.playerName, userData.isDev, userData.nameColor);
         log(`"${userData.playerName}" joined the game`);
     },
 

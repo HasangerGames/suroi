@@ -10,6 +10,7 @@ import { MinimapScene } from "./scenes/minimapScene";
 import { GRASS_COLOR } from "./utils/constants";
 
 import { setupInputs } from "./utils/inputManager";
+import { localStorageInstance } from "./utils/localStorageHandler";
 
 declare const API_URL: string;
 
@@ -29,11 +30,12 @@ $(() => {
         playSoloBtn.text("Connecting...");
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string }) => {
             if (data.success) {
-                const devPass = new URLSearchParams(window.location.search).get("devPassword");
+                const devPass = localStorageInstance.config.devPassword;
+                const nameColor = localStorageInstance.config.nameColor;
                 let address = `${data.address}/play?name=${encodeURIComponent($("#username-input").val() as string)}`;
 
                 if (devPass && devPass.length > 0) address += `&devPassword=${devPass}`;
-
+                if (nameColor && nameColor.length > 0) address += `&nameColor=${nameColor}`;
                 core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
@@ -47,6 +49,16 @@ $(() => {
             enablePlayButton();
         });
     });
+
+    const params = new URLSearchParams(window.location.search);
+    const nameColor = params.get("nameColor");
+    if (nameColor && nameColor.length > 0) localStorageInstance.update({ nameColor });
+
+    const devPassword = params.get("devPassword");
+    if (devPassword && devPassword.length > 0) {
+        localStorageInstance.update({ devPassword });
+        location.search = "";
+    }
 
     // Initialize the game object
     core.game = new Game();
