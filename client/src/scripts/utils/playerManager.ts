@@ -2,7 +2,7 @@ import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
+    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions, MaxInventoryCapacity
 } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
@@ -166,10 +166,12 @@ export class PlayerManager {
         if (stream.readBoolean()) {
             stream.readBits(4); // First 4 bits are "has item" values for healing items, which are always false for now
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
-            $("#12g-count").text(readInventoryCount());
-            $("#556mm-count").text(readInventoryCount());
-            $("#762mm-count").text(readInventoryCount());
-            $("#9mm-count").text(readInventoryCount());
+            const ammoarr = ["12g", "556mm", "762mm", "9mm"];
+            for (let i = 0; i < ammoarr.length; i++) {
+                const num = readInventoryCount();
+                const ammoText = (num === MaxInventoryCapacity[ammoarr[i]] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                $(`#${ammoarr[i]}-count`).html(ammoText);
+            }
         }
     }
 }

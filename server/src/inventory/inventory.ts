@@ -1,4 +1,6 @@
-import { INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory } from "../../../common/src/constants";
+import {
+    INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory
+} from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
@@ -8,7 +10,7 @@ import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
 import { v, vAdd } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
-import { Loot } from "../objects/loot";
+import { type Loot } from "../objects/loot";
 
 /**
  * A class representing a player's inventory

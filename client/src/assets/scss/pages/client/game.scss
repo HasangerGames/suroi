@@ -446,6 +446,7 @@
             }
         }
 
+
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
@@ -456,6 +457,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
 
         cursor: pointer !important;
 
@@ -518,7 +520,7 @@
         height: 50px;
 
         @media screen and (max-width: $screen_large) {
-            width: 30px;
+            width: 40px;
             height: 30px;
         }
     }
