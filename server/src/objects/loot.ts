@@ -103,6 +103,7 @@ export class Loot extends GameObject {
     }
 
     canInteract(player: Player): boolean {
+        if (this.dead) return false;
         const inventory = player.inventory;
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
@@ -181,6 +182,7 @@ export class Loot extends GameObject {
         this.game.removeObject(this);
         this.game.world.destroyBody(this.body);
         player.dirty.inventory = true;
+        this.dead = true;
 
         // Send pickup packet
         if (definition.itemType !== ItemType.Gun) {
