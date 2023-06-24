@@ -20,6 +20,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { HealType } from "../../../common/src/definitions/healingItems";
 import { PickupPacket } from "../packets/sending/pickupPacket";
 import { MaxInventoryCapacity } from "../../../common/src/constants";
+import { GunItem } from "../inventory/gunItem";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -193,6 +194,16 @@ export class Loot extends GameObject {
         if (!deleteItem) {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
             this.game.addLoot(this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))), this.count);
+        }
+
+        // Reload active gun if the player picks up the correct ammo
+        const activeWeapon = player.inventory.activeWeapon;
+        if (
+            activeWeapon instanceof GunItem &&
+            activeWeapon.ammo === 0 &&
+            this.type.idString === activeWeapon.definition.ammoType
+        ) {
+            activeWeapon.reload();
         }
     }
 
