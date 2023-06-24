@@ -456,6 +456,10 @@ export class Game {
         player.sendPacket(new JoinedPacket(player));
         player.sendPacket(new MapPacket(player));
 
+        setTimeout(() => {
+            player.invunerable = false;
+        }, 5000)
+
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;
             this.advanceGas();
@@ -476,11 +480,14 @@ export class Game {
         if (!player.dead) {
             this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, false)));
         }
-        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
-        this.dynamicObjects.delete(player);
-        this.removeObject(player);
-        this.world.destroyBody(player.body);
+
+        if (player.canDespawn) {
+            this.livingPlayers.delete(player);
+            this.dynamicObjects.delete(player);
+            this.removeObject(player);
+            this.world.destroyBody(player.body);
+        }
         try {
             player.socket.close();
         } catch (e) { }

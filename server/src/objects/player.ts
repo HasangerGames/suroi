@@ -165,6 +165,17 @@ export class Player extends GameObject {
 
     isDev: boolean;
 
+    /**
+     * Used to make players invunerable for 5 seconds after spawning or until they move
+     */
+    invunerable = true;
+
+    /**
+     * Determines if the player can despawn
+     * Set to false once the player picks up loot
+     */
+    canDespawn = true;
+
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
@@ -211,6 +222,7 @@ export class Player extends GameObject {
     setVelocity(xVelocity: number, yVelocity: number): void {
         this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
         if (xVelocity !== 0 || yVelocity !== 0) {
+            if (this.invunerable) this.invunerable = false;
             this.movesSinceLastUpdate++;
         }
     }
@@ -328,6 +340,7 @@ export class Player extends GameObject {
     }
 
     override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+        if (this.invunerable) return;
         // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);

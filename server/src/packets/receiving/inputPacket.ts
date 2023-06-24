@@ -64,8 +64,12 @@ export class InputPacket extends ReceivingPacket {
                         }
                     }
                 }
-                if (closestObject) player.action?.cancel();
-                closestObject?.interact(player);
+                if (closestObject) {
+                    player.action?.cancel();
+                    closestObject.interact(player);
+                    player.canDespawn = false;
+                    player.invunerable = false;
+                }
                 break;
             }
             case InputActions.Reload:
