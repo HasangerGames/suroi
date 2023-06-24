@@ -87,6 +87,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 4
         },
         {
+            idString: "birch_tree",
+            name: "Birch Tree",
+            material: "tree",
+            health: 240,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(3),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: "full",
+            depth: 4
+        },
+        {
             idString: "rock",
             name: "Rock",
             material: "stone",
@@ -99,7 +114,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(3.85),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
-            variations: 5,
+            variations: 7,
             particleVariations: 2
         },
         {

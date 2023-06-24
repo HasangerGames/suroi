@@ -69,7 +69,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 2,
         max: 2,
         loot: [
-            { tier: "clubs", weight: 1 }
+            { tier: "bat", weight: 1 }
         ]
     },
     gold_rock: {
@@ -132,7 +132,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     knife: [
         { item: "kbar", weight: 2 }
     ],
-    clubs: [
+    bat: [
         { item: "baseball_bat", weight: 2 }
     ]
 };
