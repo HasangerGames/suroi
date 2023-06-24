@@ -400,13 +400,19 @@
             padding: 0 8px 0 8px;
         }
 
+
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
 
             &.ammo-slot {
-                width: 50px;
-                height: 50px;
+                width: 80px;
+                height: 40px;
+                padding: 0 8px 0 5px;
+
+                
+            justify-content: left;
+            align-items: left;
             }
         }
 
@@ -415,6 +421,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+
 
         cursor: pointer !important;
 
@@ -477,7 +484,7 @@
         height: 50px;
 
         @media screen and (max-width: $screen_large) {
-            width: 30px;
+            width: 40px;
             height: 30px;
         }
     }
@@ -486,6 +493,11 @@
         font-size: 20px;
         margin-left: 8px;
         margin-right: 3px;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 16px;
+            margin-left: 5px;
+        }
     }
 
     .item-name {
