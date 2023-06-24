@@ -311,6 +311,7 @@ export class Inventory {
                 if (item !== undefined) {
                     stream.writeObjectTypeNoCategory(item.type);
                     if (item instanceof GunItem) {
+                        // TODO: find a better place to send the ammo instead of sending it with the inventory guns
                         stream.writeUint8(item.ammo);
                     }
                 }

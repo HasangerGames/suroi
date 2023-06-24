@@ -127,7 +127,10 @@ export class PlayerManager {
         if (stream.readBoolean()) {
             this.activeItemIndex = stream.readBits(2);
             $(".inventory-slot").removeClass("active");
-            $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
+            const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
+            slotContainer.addClass("active");
+
+            $("#active-weapon-ammo").text(slotContainer.children(".item-ammo").text());
         }
 
         // Items dirty
@@ -143,8 +146,9 @@ export class PlayerManager {
                     container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${itemDef.idString}.svg`)).show();
 
                     if (itemDef.itemType === ItemType.Gun) {
-                        const ammo = stream.readUint8();
-                        const ammoText = `${ammo} / ${(item.definition as GunDefinition).capacity}`;
+                        const ammo = stream.readUint8().toString();
+                        const gunDef = item.definition as GunDefinition;
+                        const ammoText = (`${ammo} / ${gunDef.capacity}`);
                         container.children(".item-ammo").text(ammoText);
                         if (i === this.activeItemIndex) $("#active-weapon-ammo").text(ammoText);
                     }
@@ -153,6 +157,7 @@ export class PlayerManager {
                     container.removeClass("has-item");
                     container.children(".item-name").text("");
                     container.children(".item-image").removeAttr("src").hide();
+                    container.children(".item-ammo").text("");
                 }
             }
         }

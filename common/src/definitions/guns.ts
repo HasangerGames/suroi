@@ -431,8 +431,8 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
-        capacity: -1,
-        reloadTime: -1,
+        capacity: 255,
+        reloadTime: 0.1,
         ballistics: {
             damage: 10,
             obstacleMultiplier: 1,
