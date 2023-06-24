@@ -58,7 +58,7 @@ export class GunItem extends InventoryItem {
             this._shots = 0;
             return;
         }
-        if (this.ammo <= 0) {
+        if (this.ammo <= 0 && this.type.idString !== "deathray") {
             if (owner.inventory.items[definition.ammoType] <= 0) {
                 owner.animation.type = AnimationType.GunClick;
                 owner.animation.seq = !owner.animation.seq;
@@ -114,7 +114,7 @@ export class GunItem extends InventoryItem {
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
 
-        if (this.ammo <= 0) {
+        if (this.ammo <= 0 && this.type.idString !== "deathray") {
             this.reload();
             this._shots = 0;
             return;
