@@ -24,7 +24,7 @@ export const Ammos: AmmoDefinition[] = [
         idString: "9mm_ammo",
         name: "9mm",
         itemType: ItemType.Ammo
-    },
+    }/*,
     {
         idString: "50ae_ammo",
         name: ".50 AE",
@@ -34,5 +34,5 @@ export const Ammos: AmmoDefinition[] = [
         idString: "127mm_ammo",
         name: "12.7mm",
         itemType: ItemType.Ammo
-    }
+    }*/
 ];

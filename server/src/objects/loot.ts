@@ -1,4 +1,6 @@
-import { type Body, Circle, Vec2 } from "planck";
+import {
+    type Body, Circle, Vec2
+} from "planck";
 
 import { type Game } from "../game";
 
@@ -7,7 +9,9 @@ import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector } from "../../../common/src/utils/vector";
+import {
+    v, vAdd, type Vector
+} from "../../../common/src/utils/vector";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -15,6 +19,7 @@ import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { HealType } from "../../../common/src/definitions/healingItems";
 import { PickupPacket } from "../packets/sending/pickupPacket";
+import { MaxInventoryCapacity } from "../../../common/src/constants";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -34,7 +39,8 @@ export class Loot extends GameObject {
     body: Body;
 
     oldPosition: Vector;
-    oldRotation = 0;
+
+    count = 1;
 
     isNew = true;
 
@@ -112,6 +118,12 @@ export class Loot extends GameObject {
                     !inventory.hasWeapon(1) ||
                     (inventory.activeWeaponIndex < 2 && this.type.idNumber !== inventory.activeWeapon.type.idNumber);
             }
+            case ItemType.Ammo: {
+                const idString = this.type.idString;
+                const currentCount: number = inventory.items[idString];
+                const maxCapacity: number = MaxInventoryCapacity[idString];
+                return currentCount + 1 <= maxCapacity;
+            }
             case ItemType.Melee: {
                 return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
             }
@@ -122,6 +134,7 @@ export class Loot extends GameObject {
     interact(player: Player): void {
         const inventory = player.inventory;
         let success = false;
+        let deleteItem = true;
 
         const definition = this.type.definition as LootDefinition;
 
@@ -149,20 +162,41 @@ export class Loot extends GameObject {
                 }
                 break;
             }
+            case ItemType.Ammo: {
+                const idString = this.type.idString;
+                const currentCount: number = inventory.items[idString];
+                const maxCapacity: number = MaxInventoryCapacity[idString];
+                if (currentCount + this.count <= maxCapacity) {
+                    inventory.items[idString] += this.count;
+                } else if (currentCount + 1 > maxCapacity) {
+                    // inventory full
+                } else if (currentCount + this.count > maxCapacity) {
+                    inventory.items[idString] = maxCapacity;
+                    this.count = (currentCount + this.count) - maxCapacity;
+                    this.game.fullDirtyObjects.add(this);
+                    deleteItem = false;
+                }
+                console.log(inventory.items);
+                success = true;
+                break;
+            }
         }
         if (success) {
-            this.game.dynamicObjects.delete(this);
-            this.game.loot.delete(this);
-            this.game.removeObject(this);
-            this.game.world.destroyBody(this.body);
+            if (deleteItem) {
+                this.game.dynamicObjects.delete(this);
+                this.game.loot.delete(this);
+                this.game.removeObject(this);
+                this.game.world.destroyBody(this.body);
+            }
             if (definition.itemType !== ItemType.Gun) {
                 player.sendPacket(new PickupPacket(player));
             }
-        }/* else if (!ignoreItem) {
+        }
+        if (!deleteItem) {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
-            /* eslint-disable-next-line no-new
+            /* eslint-disable-next-line no-new */
             new Loot(this.game, this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
-        } */
+        }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

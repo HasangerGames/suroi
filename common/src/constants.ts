@@ -71,3 +71,14 @@ export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
+
+export const MaxInventoryCapacity: Record<string, number> = {
+    gauze: 10,
+    medikit: 3,
+    cola: 4,
+    tablets: 3,
+    "12g_ammo": 50,
+    "556mm_ammo": 150,
+    "762mm_ammo": 150,
+    "9mm_ammo": 150
+};

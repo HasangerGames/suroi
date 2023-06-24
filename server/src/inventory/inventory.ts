@@ -21,7 +21,11 @@ export class Inventory {
         gauze: 0,
         medikit: 0,
         cola: 0,
-        tablets: 0
+        tablets: 0,
+        "12g_ammo": 0,
+        "556mm_ammo": 0,
+        "762mm_ammo": 0,
+        "9mm_ammo": 0
     };
 
     /**
