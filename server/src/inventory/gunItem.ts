@@ -110,6 +110,12 @@ export class GunItem extends InventoryItem {
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
 
+        if (this.ammo <= 0) {
+            this.reload();
+            this._shots = 0;
+            return;
+        }
+
         if (
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
             this.owner.activeItem === this

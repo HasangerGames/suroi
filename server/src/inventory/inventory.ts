@@ -44,6 +44,8 @@ export class Inventory {
      */
     private _activeWeaponIndex = 2;
 
+    private _reloadTimeoutID: NodeJS.Timeout | undefined;
+
     /**
      * Returns the index pointing to the active weapon
      */
@@ -64,6 +66,11 @@ export class Inventory {
             this._lastWeaponIndex = old;
         }
 
+        if (this._reloadTimeoutID !== undefined) {
+            clearTimeout(this._reloadTimeoutID);
+            this._reloadTimeoutID = undefined;
+        }
+
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const oldItem = this._weapons[old];
@@ -76,6 +83,9 @@ export class Inventory {
                 oldItem.definition.canQuickswitch
             ) {
                 item.ignoreSwitchCooldown = true;
+            }
+            if (item instanceof GunItem && item.ammo <= 0) {
+                this._reloadTimeoutID = setTimeout(() => { item.reload(); }, 450);
             }
         }
 
