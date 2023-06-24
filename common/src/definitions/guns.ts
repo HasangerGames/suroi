@@ -332,7 +332,7 @@ export const Guns: GunDefinition[] = [
         ammoSpawnAmount: 96,
         capacity: 32,
         reloadTime: 2,
-        cooldown: 45,
+        cooldown: 50,
         switchCooldown: 300,
         recoilMultiplier: 0.75,
         recoilDuration: 60,

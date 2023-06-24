@@ -56,7 +56,7 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("player_hit_1", "sfx/hits/player_hit_1");
         this.loadSound("player_hit_2", "sfx/hits/player_hit_2");
 
-        this.loadSound("health_explosion", "sfx/health_explosion");
+        this.loadSound("pickup", "sfx/pickup");
 
         this.loadSound("swing", "sfx/swing");
         this.loadSound("grass_step_01", "sfx/footsteps/grass_01");

@@ -15,6 +15,7 @@ export enum PacketType {
     GameOver,
     Kill,
     KillFeed,
+    Pickup,
     Ping
 }
 

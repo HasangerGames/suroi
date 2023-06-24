@@ -1,6 +1,4 @@
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 
 import { type Game } from "../game";
 
@@ -16,6 +14,7 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { HealType } from "../../../common/src/definitions/healingItems";
+import { PickupPacket } from "../packets/sending/pickupPacket";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -156,6 +155,9 @@ export class Loot extends GameObject {
             this.game.loot.delete(this);
             this.game.removeObject(this);
             this.game.world.destroyBody(this.body);
+            if (definition.itemType !== ItemType.Gun) {
+                player.sendPacket(new PickupPacket(player));
+            }
         }/* else if (!ignoreItem) {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
             /* eslint-disable-next-line no-new
