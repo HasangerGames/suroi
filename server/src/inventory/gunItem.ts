@@ -53,8 +53,7 @@ export class GunItem extends InventoryItem {
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
-            owner.disconnected ||
-            owner.action
+            owner.disconnected
         ) {
             this._shots = 0;
             return;
@@ -64,6 +63,7 @@ export class GunItem extends InventoryItem {
             this._shots = 0;
             return;
         }
+        this.owner.action?.cancel();
 
         if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
             this._shots = 0;

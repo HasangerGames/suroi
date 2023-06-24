@@ -48,6 +48,8 @@ export class MeleeItem extends InventoryItem {
         owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
 
+        owner.action?.cancel();
+
         setTimeout((): void => {
             if (
                 this.owner.activeItem === this &&

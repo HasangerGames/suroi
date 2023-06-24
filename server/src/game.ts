@@ -322,7 +322,6 @@ export class Game {
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
                     player.startedAttacking = false;
-                    player.action?.cancel();
                     player.activeItem?.useItem();
                 }
 
