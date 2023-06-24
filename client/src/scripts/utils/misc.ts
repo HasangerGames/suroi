@@ -1,4 +1,4 @@
-import { Vector } from "../../../../common/src/utils/vector";
+import { type Vector } from "../../../../common/src/utils/vector";
 import Vector2 = Phaser.Math.Vector2;
 import { random } from "../../../../common/src/utils/random";
 

@@ -3,6 +3,7 @@ import {
     GAS_ALPHA, GAS_COLOR, GRASS_COLOR
 } from "../utils/constants";
 import { localStorageInstance } from "../utils/localStorageHandler";
+import core from "../core";
 
 const MINIMAP_OPACITY_PERCENTAGE = 0.4;
 const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8;
@@ -60,7 +61,9 @@ export class MinimapScene extends Phaser.Scene {
         });
 
         // HACK: Use the gas rect to handle click events
-        this.gasRect.setInteractive().on("pointerdown", this.toggle.bind(this));
+        this.gasRect.setInteractive().on("pointerdown", () => {
+            if (core.game?.playerManager.isMobile) this.toggle();
+        });
 
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
