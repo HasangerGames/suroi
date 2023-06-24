@@ -10,6 +10,24 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1687625334000,
+        author: "HAZEL",
+        title: "Locked & Loaded",
+        bannerImage: require("../../assets/img/news/v0.5.0.png"),
+        content: `The newest supply shipment to the island has arrived, along with a slew of new weapons! Blast enemies all day long with the 47 round pan on the Lewis gun, or test your marksmanship with the Tango 51. Prefer hand-to-hand combat? The K-bar or the baseball bat may be for you. A glint of gold may yield a fruitful surprise...`,
+        longContent: `<h2>Suroi v0.5.0</h2>
+
+<h3>New features</h3>
+<ul>
+    <li>Ammo and reloading! Guns now require ammo and need to be reloaded.</li>
+    <li>Melee weapons! Added 2 melee weapons: the K-bar (a knife), and the baseball bat.</li>
+    <li>More guns! Added 5 guns: the Lewis Gun (an LMG), MCX Spear (an assault rifle), Micro Uzi (an SMG), Tango 51 (a sniper), 940 Pro (a shotgun), and M16A4 (a burst fire assault rifle).</li>
+    <li>New crates! Added the AEGIS and Flint crates, which drop better loot than regular crates. Also added gauze, cola, and melee crates.</li>
+    <li>New obstacles! Added the oil tank, gold rock, and birch tree. The oil tank is an indestructible obstacle that makes for good cover. The gold rock drops a Mosin-Nagant; only one spawns per map.</li>
+    <li>More obstacle variations! Added mossy and cracked variants of the rock.</li>
+</ul>`
+    },
+    {
         date: 1687026036000,
         author: "Dr. Felix Sterling",
         title: "Supplies received",

@@ -84,6 +84,20 @@ export class Obstacle extends GameObject {
             const count = random(lootTable.min, lootTable.max);
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }
+        /*this.loot = [
+            new LootItem("kbar", 1),
+            new LootItem("baseball_bat", 1),
+            new LootItem("lewis_gun", 1),
+            new LootItem("mcx_spear", 1),
+            new LootItem("micro_uzi", 1),
+            new LootItem("tango", 1),
+            new LootItem("940_pro", 1),
+            new LootItem("m16a4", 1),
+            new LootItem("12g", 1),
+            new LootItem("556mm", 1),
+            new LootItem("762mm", 1),
+            new LootItem("9mm", 1)
+        ];*/
     }
 
     private getLoot(loot: WeightedItem[]): void {

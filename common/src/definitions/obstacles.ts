@@ -53,6 +53,23 @@ function makeCrate(idString: string, name: string, rotationMode: "full" | "limit
     };
 }
 
+function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "crate",
+        health: 120,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 0.6
+        },
+        hitbox: new RectangleHitbox(v(-2.9, -2.9), v(2.9, 2.9)),
+        rotationMode: "none",
+        hasLoot: true
+    };
+}
+
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     [
         {
@@ -137,6 +154,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeCrate("regular_crate", "Regular Crate", "binary"),
         makeCrate("flint_crate", "Flint Crate", "none", true),
         makeCrate("aegis_crate", "AEGIS Crate", "none", true),
+        makeSpecialCrate("gauze_crate", "Gauze Crate"),
+        makeSpecialCrate("cola_crate", "Cola Crate"),
+        makeSpecialCrate("deathray_crate", "Death Ray Crate"),
+        makeSpecialCrate("melee_crate", "Melee Crate"),
         {
             idString: "barrel",
             name: "Barrel",
@@ -178,48 +199,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hitbox: new RectangleHitbox(v(-10, -5), v(10, 5)),
             rotationMode: "none"
-        },
-        {
-            idString: "special_crate",
-            name: "Special Crate",
-            material: "crate",
-            health: 120,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.6
-            },
-            hitbox: new RectangleHitbox(v(-2.9, -2.9), v(2.9, 2.9)),
-            rotationMode: "none",
-            hasLoot: true,
-            children: [
-                {
-                    idString: "cola_crate",
-                    name: "Cola Crate",
-                    idvariant: 1
-                },
-                {
-                    idString: "gauze_crate",
-                    name: "Gauze Crate",
-                    idvariant: 2
-                },
-                {
-                    idString: "deathray_crate",
-                    name: "Deathray Crate",
-                    idvariant: 3
-                },
-                {
-                    idString: "knife_crate",
-                    name: "Knife Crate",
-                    idvariant: 4
-                },
-                {
-                    idString: "clubs_crate",
-                    name: "Clubs Crate",
-                    idvariant: 5
-                }
-            ],
-            variations: 8
         },
         {
             idString: "gold_rock",

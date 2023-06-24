@@ -16,25 +16,6 @@ import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Vec2 } from "planck";
-//idnum = variation number -> must be unique otherwise you run into problems
-//To Do: Parse this into a better format (potentially its own file?) with the thing that ensures each object has all the correct data
-const obstacleChildren = [
-    {
-        id: "cola_crate", parent: "special_crate", count: 2, prob: 0.6
-    },
-    {
-        id: "gauze_crate", parent: "special_crate", count: 2, prob: 0.9
-    },
-    {
-        id: "deathray_crate", parent: "special_crate", count: 1, prob: 0.00001
-    },
-    {
-        id: "knife_crate", parent: "special_crate", count: 2, prob: 0.8
-    },
-    {
-        id: "clubs_crate", parent: "special_crate", count: 1, prob: 0.05
-    }
-];
 
 export class Map {
     game: Game;
@@ -58,7 +39,10 @@ export class Map {
             this.generateObstacles("flint_crate", 3);
             this.generateObstacles("barrel", 70);
             this.generateObstacles("super_barrel", 20);
-            this.generateObstacleChildren();
+            this.generateObstacles("gauze_crate", 1);
+            this.generateObstacles("cola_crate", 1);
+            this.generateObstacles("melee_crate", 1);
+            if (random(0, 1_000_000) === 500_000) this.generateObstacles("deathray_crate", 1);
             this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here
@@ -140,61 +124,6 @@ export class Map {
             );
 
             this.game.staticObjects.add(obstacle);
-        }
-    }
-
-    private generateObstacleChildren(): void {
-        let j = 0;
-        while (j < obstacleChildren.length) {
-            const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, obstacleChildren[j].parent);
-            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-            if (definition.variations !== undefined && definition.children !== undefined) {
-                const k = definition.children.findIndex(c => c.idString === obstacleChildren[j].id);
-                if (k > -1) {
-                    for (let p = 0; p < obstacleChildren[j].count; p++) {
-                        let rotation: number | undefined;
-                        switch (definition.rotationMode) {
-                            case "full":
-                                rotation = randomRotation();
-                                break;
-                            case "limited":
-                                rotation = random(0, 3);
-                                break;
-                            case "binary":
-                                rotation = random(0, 1);
-                                break;
-                            case "none":
-                            default:
-                                rotation = 0;
-                                break;
-                        }
-
-                        if (rotation === undefined) {
-                            throw new Error("Unknown rotation type");
-                        }
-
-                        const variation: Variation = definition.children[k].idvariant - 1 as Variation;
-
-                        if (Math.random() < obstacleChildren[j].prob) {
-                            definition.specialID = definition.children[k].idString;
-
-                            const obstacle: Obstacle = new Obstacle(
-                                this.game,
-                                type,
-                                this.getRandomPositionFor(type, scale),
-                                rotation,
-                                scale,
-                                variation
-                            );
-                            this.game.staticObjects.add(obstacle);
-                        }
-                    }
-                    j++;
-                } else {
-                    j++;
-                }
-            }
         }
     }
 
