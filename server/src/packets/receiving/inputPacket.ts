@@ -4,7 +4,7 @@ import { GunItem } from "../../inventory/gunItem";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { Loot } from "../../objects/loot";
-import { type CollisionRecord } from "../../../../common/src/utils/math";
+import { distance, type CollisionRecord } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
 
@@ -58,8 +58,9 @@ export class InputPacket extends ReceivingPacket {
                     if (object instanceof Loot && object.canInteract(player)) {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
-                        if (record?.collided && record.distance < minDist) {
-                            minDist = record.distance;
+                        const dist = distance(object.position, player.position);
+                        if (record?.collided && dist < minDist) {
+                            minDist = dist;
                             closestObject = object;
                         }
                     }
