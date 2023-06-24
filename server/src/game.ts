@@ -221,11 +221,10 @@ export class Game {
 
             // Update loot positions
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y || loot.oldRotation !== loot.rotation) {
+                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
                     this.partialDirtyObjects.add(loot);
                 }
                 loot.oldPosition = vClone(loot.position);
-                loot.oldRotation = loot.rotation;
             }
 
             // Update bullets
@@ -457,8 +456,8 @@ export class Game {
         player.sendPacket(new MapPacket(player));
 
         setTimeout(() => {
-            player.invunerable = false;
-        }, 5000)
+            player.invulnerable = false;
+        }, 5000);
 
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;

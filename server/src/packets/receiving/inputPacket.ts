@@ -68,7 +68,7 @@ export class InputPacket extends ReceivingPacket {
                 if (closestObject) {
                     closestObject.interact(player);
                     player.canDespawn = false;
-                    player.invunerable = false;
+                    player.invulnerable = false;
                 }
                 break;
             }

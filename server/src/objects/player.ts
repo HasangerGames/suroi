@@ -168,7 +168,7 @@ export class Player extends GameObject {
     /**
      * Used to make players invunerable for 5 seconds after spawning or until they move
      */
-    invunerable = true;
+    invulnerable = true;
 
     /**
      * Determines if the player can despawn
@@ -222,7 +222,7 @@ export class Player extends GameObject {
     setVelocity(xVelocity: number, yVelocity: number): void {
         this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
         if (xVelocity !== 0 || yVelocity !== 0) {
-            if (this.invunerable) this.invunerable = false;
+            if (this.invulnerable) this.invulnerable = false;
             this.movesSinceLastUpdate++;
         }
     }
@@ -340,7 +340,7 @@ export class Player extends GameObject {
     }
 
     override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
-        if (this.invunerable) return;
+        if (this.invulnerable) return;
         // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
