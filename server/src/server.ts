@@ -23,6 +23,7 @@ import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
+import { URLSearchParams } from "node:url";
 
 /**
  * Apply CORS headers to a response.
@@ -75,6 +76,7 @@ export interface PlayerContainer {
     player: Player
     playerName: string
     ip: string | undefined
+    isDev: boolean
 }
 
 app.ws("/play", {
@@ -109,12 +111,14 @@ app.ws("/play", {
             }
         }
 
-        const split: string[] = req.getQuery().split("=");
-        let name: string;
-        if (split.length !== 2) {
+        const searchParams = new URLSearchParams(req.getQuery());
+
+        let name = searchParams.get("name");
+
+        if (name === null) {
             name = "Player";
         } else {
-            name = decodeURIComponent(split[1]).trim();
+            name = decodeURIComponent(name).trim();
             if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
                 name = "Player";
             } else {
@@ -125,11 +129,16 @@ app.ws("/play", {
             }
         }
 
+        let isDev = false;
+        const devPassword = searchParams.get("devPassword");
+        if (devPassword !== null && devPassword === Config.devPassword) isDev = true;
+
         res.upgrade(
             {
                 player: undefined,
                 playerName: name,
-                ip
+                ip,
+                isDev
             },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
@@ -143,8 +152,9 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
-        socket.getUserData().player = game.addPlayer(socket, socket.getUserData().playerName);
-        log(`"${socket.getUserData().playerName}" joined the game`);
+        const userData = socket.getUserData();
+        userData.player = game.addPlayer(socket, userData.playerName, userData.isDev);
+        log(`"${userData.playerName}" joined the game`);
     },
 
     /**

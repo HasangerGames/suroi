@@ -29,7 +29,12 @@ $(() => {
         playSoloBtn.text("Connecting...");
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string }) => {
             if (data.success) {
-                core.game?.connect(`${data.address}/play?name=${$("#username-input").val() as string}`);
+                const devPass = new URLSearchParams(window.location.search).get("devPassword");
+                let address = `${data.address}/play?name=${encodeURIComponent($("#username-input").val() as string)}`;
+
+                if (devPass && devPass.length > 0) address += `&devPassword=${devPass}`;
+
+                core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
                 $("#splash-server-message-text").html("Game in progress.<br>Please try again in 30 seconds.");

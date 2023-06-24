@@ -414,7 +414,7 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
@@ -436,7 +436,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, name, socket, spawnPosition);
+        return new Player(this, name, socket, spawnPosition, isDev);
     }
 
     // Called when a JoinPacket is sent by the client

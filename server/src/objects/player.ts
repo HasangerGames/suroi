@@ -28,6 +28,7 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
+import { type GunItem } from "../inventory/gunItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -162,8 +163,12 @@ export class Player extends GameObject {
 
     action: Action | undefined;
 
-    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
+    isDev: boolean;
+
+    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+
+        this.isDev = isDev;
 
         this.socket = socket;
         this.name = name;
@@ -191,8 +196,15 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(2.5, this.position);
 
         // Inventory preset
-        //this.inventory.addOrReplaceWeapon(0, "lewis_gun");
-        //this.inventory.addOrReplaceWeapon(1, "micro_uzi");
+        if (this.isDev) {
+            this.inventory.addOrReplaceWeapon(0, "deathray");
+            (this.inventory.getWeapon(0) as GunItem).ammo = 255;
+            this.inventory.addOrReplaceWeapon(1, "tango");
+            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
+            this.adrenaline = 100;
+        }
+        // this.inventory.addOrReplaceWeapon(0, "lewis_gun");
+        // this.inventory.addOrReplaceWeapon(1, "micro_uzi");
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
