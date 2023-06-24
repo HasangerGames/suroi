@@ -99,5 +99,5 @@ export const Config = {
     disableMapGeneration: false,
     stopServerAfter: -1,
 
-    devPassword: undefined
+    devPassword: "dev"
 } satisfies ConfigType as ConfigType;

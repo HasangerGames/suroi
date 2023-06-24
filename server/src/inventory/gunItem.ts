@@ -81,7 +81,7 @@ export class GunItem extends InventoryItem {
 
         owner.dirty.weapons = true;
 
-        this.ammo--;
+        if (this.type.idString !== "deathray") this.ammo--;
         this._shots++;
 
         this._lastUse = owner.game.now;
