@@ -172,7 +172,6 @@ export class Loot extends GameObject {
                     this.game.fullDirtyObjects.add(this);
                     deleteItem = false;
                 }
-                console.log(inventory.items);
                 break;
             }
         }
