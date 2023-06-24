@@ -7,7 +7,7 @@ export abstract class Action {
     private readonly _timeoutId: ReturnType<typeof setTimeout>;
     abstract readonly type: PlayerActions;
 
-    constructor(player: Player, time: number) {
+    protected constructor(player: Player, time: number) {
         this.player = player;
         this._timeoutId = setTimeout(this.execute.bind(this), time * 1000);
         this.player.dirty.action = true;
