@@ -2,8 +2,8 @@ import { SendingPacket } from "../../types/sendingPacket";
 
 import {
     PacketType,
-    Actions,
-    ACTIONS_BITS
+    InputActions,
+    INPUT_ACTIONS_BITS
 } from "../../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
@@ -31,16 +31,16 @@ export class InputPacket extends SendingPacket {
             stream.writeRotation(player.rotation, 16);
         }
 
-        stream.writeBits(player.action, ACTIONS_BITS);
+        stream.writeBits(player.action, INPUT_ACTIONS_BITS);
 
         switch (player.action) {
-            case Actions.EquipItem:
+            case InputActions.EquipItem:
                 stream.writeBits(player.itemToSwitch, 2);
                 break;
-            case Actions.DropItem:
+            case InputActions.DropItem:
                 stream.writeBits(player.itemToDrop, 2);
                 break;
         }
-        player.action = Actions.None;
+        player.action = InputActions.None;
     }
 }

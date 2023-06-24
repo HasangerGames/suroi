@@ -115,14 +115,21 @@
     </div>
     <div id="game-ui" style="display: none">
       <button class="btn btn-lg btn-primary" id="btn-interact" style="display: none">Interact</button>
+      <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none">Reload</button>
       <div id="joysticks-containers">
         <div id="left-joystick-container"></div>
         <div id="right-joystick-container"></div>
       </div>
-      <div id="minimap-border"></div>
-      <div id="debug-hud">
-        <div id="fps-counter"></div>
-        <div id="ping-counter"></div>
+      <div id="top-left-container">
+        <div id="minimap-border"></div>
+        <!-- <div id="zone-timer-container">
+          <img src="<%=require('../assets/img/misc/zone-icon.svg')%>">
+          <span id="zone-timer">0:00</span>
+        </div> -->
+        <div id="debug-hud">
+          <div id="fps-counter"></div>
+          <div id="ping-counter"></div>
+        </div>
       </div>
       <div class="ui-leaderboard">
         <div class="alive-counter">
@@ -170,6 +177,15 @@
           <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
         </div>
       </div>
+      <div id="action-container" style="display: none;">
+        <div id="action-name">Reloading...</div>
+        <div id="action-timer">
+          <div id="action-timer-anim"></div>
+        </div>
+      </div>
+      <div id="weapon-ammo-container" style="display: none;">
+        <div id="active-weapon-ammo"></div>
+      </div>
       <div id="adrenaline-bar-container">
         <div id="adrenaline-bar"></div>
         <span id="adrenaline-bar-percentage"></span>
@@ -183,19 +199,40 @@
         <div id="kill-msg-kills"></div>
         You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
       </div>
+    <div class="inventory-container" id="ammo-container">
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/12g.svg')%>" draggable="false">
+        <span class="ammo-count" id="12g-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/556mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="556mm-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/762mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="762mm-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot" id="12g-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/9mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="9mm-count">0</span>
+      </div>
+    </div>
     <div class="inventory-container" id="weapons-container">
       <div class="inventory-slot" id="weapon-slot-1">
         <span class="slot-number">1</span>
+        <span class="item-ammo"></span>
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>
       <div class="inventory-slot" id="weapon-slot-2">
         <span class="slot-number">2</span>
+        <span class="item-ammo"></span>
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>
       <div class="inventory-slot" id="weapon-slot-3">
         <span class="slot-number">3</span>
+        <span class="item-ammo"></span>
         <img class="item-image" draggable="false">
         <span class="item-name"></span>
       </div>

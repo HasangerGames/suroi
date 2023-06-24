@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="72"
+   height="49.846001"
+   viewBox="0 0 19.05 13.188422"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="9mm_ammo.svg"
+   inkscape:export-filename="/home/desktopgeek/Downloads/Ammo emojis/9mm_ammo.png"
+   inkscape:export-xdpi="945.23077"
+   inkscape:export-ydpi="945.23077"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="4.6072423"
+     inkscape:cx="21.487908"
+     inkscape:cy="20.61971"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2050"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2046"
+       is_visible="true"
+       lpeversion="1" />
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect2050-3"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g838"
+       transform="matrix(1.3846168,0,0,1.3846168,-3.7138419e-6,-3.7138419e-6)">
+      <rect
+         style="fill:#e2b709;fill-opacity:1;stroke:#886e05;stroke-width:0.514071;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+         id="rect846"
+         width="13.244248"
+         height="9.01091"
+         x="0.25704515"
+         y="0.25704515"
+         ry="0.79374999"
+         rx="0.79374999" />
+      <text
+         xml:space="preserve"
+         style="font-size:6.96272px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#715b04;fill-opacity:1;stroke-width:0.174069"
+         x="4.755537"
+         y="7.1994519"
+         id="text6858"><tspan
+           sodipodi:role="line"
+           id="tspan6856"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Russo One';-inkscape-font-specification:'Russo One';fill:#715b04;fill-opacity:1;stroke-width:0.174069"
+           x="4.755537"
+           y="7.1994519">9</tspan></text>
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697"
+         cx="12.170834"
+         cy="1.5874999"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-6"
+         cx="12.170834"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-7"
+         cx="1.5874999"
+         cy="7.9375"
+         r="0.5291667" />
+      <circle
+         style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.264583;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path9697-5"
+         cx="1.5874999"
+         cy="1.5874999"
+         r="0.5291667" />
+    </g>
+  </g>
+</svg>

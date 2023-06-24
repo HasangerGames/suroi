@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import {
     GAS_ALPHA, GAS_COLOR, GRASS_COLOR
 } from "../utils/constants";
+import { localStorageInstance } from "../utils/localStorageHandler";
+import core from "../core";
 
 const MINIMAP_OPACITY_PERCENTAGE = 0.4;
 const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8;
@@ -59,10 +61,14 @@ export class MinimapScene extends Phaser.Scene {
         });
 
         // HACK: Use the gas rect to handle click events
-        this.gasRect.setInteractive().on("pointerdown", this.toggle.bind(this));
+        this.gasRect.setInteractive().on("pointerdown", () => {
+            if (core.game?.playerManager.isMobile) this.toggle();
+        });
 
         this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * this.mapScale);
         this.switchToSmallMap();
+
+        if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
     }
 
     toggle(): void {
@@ -74,6 +80,7 @@ export class MinimapScene extends Phaser.Scene {
         this.visible = !this.visible;
         this.cameras.main.setVisible(this.visible);
         $("#minimap-border").toggle(this.visible);
+        localStorageInstance.update({ minimapMinimized: !this.visible });
     }
 
     resizeBigMap(): void {
@@ -89,9 +96,9 @@ export class MinimapScene extends Phaser.Scene {
     resizeSmallMap(): void {
         if (this.cameras.main === undefined) return;
         if (window.innerWidth > 1200) {
-            this.cameras.main.setSize(250, 250);
+            this.cameras.main.setSize(200, 200);
             this.cameras.main.setPosition(20, 20);
-            this.cameras.main.setZoom(1 / this.mapScale);
+            this.cameras.main.setZoom(1 / this.mapScale / 1.25);
         } else {
             this.cameras.main.setSize(125, 125);
             this.cameras.main.setPosition(10, 10);

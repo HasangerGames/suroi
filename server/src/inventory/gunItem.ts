@@ -6,7 +6,10 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode, AnimationType } from "../../../common/src/constants";
+import {
+    FireMode, AnimationType, PlayerActions
+} from "../../../common/src/constants";
+import { ReloadAction } from "./action";
 
 /**
  * A class representing a firearm
@@ -16,7 +19,7 @@ export class GunItem extends InventoryItem {
 
     readonly definition: GunDefinition;
 
-    ammo: number;
+    ammo = 0;
 
     private _shots = 0;
 
@@ -36,8 +39,6 @@ export class GunItem extends InventoryItem {
         }
 
         this.definition = this.type.definition as GunDefinition;
-
-        this.ammo = this.definition.capacity;
     }
 
     /**
@@ -50,7 +51,6 @@ export class GunItem extends InventoryItem {
         const definition = this.definition;
 
         if (
-            this.ammo <= 0 ||
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
             owner.disconnected
@@ -58,6 +58,16 @@ export class GunItem extends InventoryItem {
             this._shots = 0;
             return;
         }
+        if (this.ammo <= 0) {
+            if (owner.inventory.items[definition.ammoType] <= 0) {
+                owner.animation.type = AnimationType.GunClick;
+                owner.animation.seq = !owner.animation.seq;
+            }
+            this.reload();
+            this._shots = 0;
+            return;
+        }
+        this.owner.action?.cancel();
 
         if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
             this._shots = 0;
@@ -68,6 +78,8 @@ export class GunItem extends InventoryItem {
         owner.animation.type = AnimationType.Gun;
         owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
+
+        owner.dirty.weapons = true;
 
         this.ammo--;
         this._shots++;
@@ -102,6 +114,12 @@ export class GunItem extends InventoryItem {
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
 
+        if (this.ammo <= 0) {
+            this.reload();
+            this._shots = 0;
+            return;
+        }
+
         if (
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
             this.owner.activeItem === this
@@ -120,5 +138,12 @@ export class GunItem extends InventoryItem {
             this.ignoreSwitchCooldown = false;
             this._useItemNoDelayCheck(true);
         }
+    }
+
+    reload(): void {
+        if (this.ammo >= this.definition.capacity ||
+            this.owner.inventory.items[this.definition.ammoType] <= 0 ||
+            this.owner.action?.type === PlayerActions.Reload) return;
+        this.owner.executeAction(new ReloadAction(this.owner, this));
     }
 }

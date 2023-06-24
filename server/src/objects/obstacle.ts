@@ -23,6 +23,17 @@ import {
     type LootTable, LootTables, LootTiers, type WeightedItem
 } from "../data/lootTables";
 import { random, weightedRandom } from "../../../common/src/utils/random";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
+
+export class LootItem {
+    idString: string;
+    count: number;
+    constructor(idString: string, count: number) {
+        this.idString = idString;
+        this.count = count;
+    }
+}
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -49,7 +60,9 @@ export class Obstacle extends GameObject {
     body?: Body;
     spawnHitbox: Hitbox;
 
-    loot: string[] = [];
+    loot: LootItem[] = [];
+
+    definition: ObstacleDefinition;
 
     constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
         super(game, type, position);
@@ -59,6 +72,7 @@ export class Obstacle extends GameObject {
         this.variation = variation;
 
         const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+        this.definition = definition;
 
         this.health = this.maxHealth = definition.health;
         this.hitbox = definition.hitbox.transform(this.position, this.scale);
@@ -73,37 +87,44 @@ export class Obstacle extends GameObject {
     }
 
     private getLoot(loot: WeightedItem[]): void {
-        interface TempLootItem { item: string, isTier: boolean }
+        interface TempLootItem { item: string, count?: number, isTier: boolean }
         const items: TempLootItem[] = [];
         const weights: number[] = [];
         for (const item of loot) {
-            items.push({ item: "tier" in item ? item.tier : item.item, isTier: "tier" in item });
+            items.push({
+                item: "tier" in item ? item.tier : item.item,
+                count: "count" in item ? item.count : undefined,
+                isTier: "tier" in item
+            });
             weights.push(item.weight);
         }
         const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
 
         if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
-        else this.addLoot(selectedItem.item);
+        else this.addLoot(selectedItem.item, selectedItem.count ?? 1);
     }
 
-    private addLoot(type: string): void {
+    private addLoot(type: string, count: number): void {
         if (type === "nothing") return;
-        this.loot.push(type);
-        /* const weapon = Weapons[type];
-        if (weapon?.ammo) {
-            if (weapon.ammoSpawnCount === 1) {
-                this.loot.push(new Item(weapon.ammo, 1));
-            } else {
-                const count = weapon.ammoSpawnCount / 2;
-                this.loot.push(new Item(weapon.ammo, count));
-                this.loot.push(new Item(weapon.ammo, count));
-            }
-        } */
+        this.loot.push(new LootItem(type, count));
+        const definition = ObjectType.fromString(ObjectCategory.Loot, type).definition;
+        if (definition === undefined) throw new Error(`Unknown loot item: ${type}`);
+        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) { // TODO Clean this up
+            this.loot.push(new LootItem(definition.ammoType as string, definition.ammoSpawnAmount as number));
+        }
     }
 
-    override damage(amount: number, source: GameObject): void {
-        const definition = this.type.definition as ObstacleDefinition;
-        if (this.health === 0 || definition.invulnerable) return;
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {
+        const definition = this.definition;
+        if (this.health === 0 || definition.indestructible) return;
+
+        const weaponDef = (weaponUsed?.definition as ItemDefinition);
+        if (definition.impenetrable &&
+            !(weaponDef.itemType === ItemType.Melee &&
+                (weaponDef as MeleeDefinition).piercingMultiplier)) {
+            return;
+        }
+
         this.health -= amount;
 
         if (this.health <= 0 || this.dead) {
@@ -123,7 +144,7 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), vClone(this.position));
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), vClone(this.position), item.count);
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
@@ -171,10 +192,9 @@ export class Obstacle extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        const definition: ObstacleDefinition = this.type.definition as ObstacleDefinition;
         stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, definition.rotationMode);
-        if (definition.variations !== undefined) {
+        stream.writeObstacleRotation(this.rotation, this.definition.rotationMode);
+        if (this.definition.variations !== undefined) {
             stream.writeVariation(this.variation);
         }
     }

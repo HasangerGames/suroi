@@ -27,6 +27,8 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { type Action } from "../inventory/action";
+import { type GunItem } from "../inventory/gunItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -118,9 +120,11 @@ export class Player extends GameObject {
         health: true,
         adrenaline: true,
         activeWeaponIndex: true,
-        inventory: true,
+        weapons: true,
+        inventory: false,
         activePlayerId: true,
-        zoom: true
+        zoom: true,
+        action: false
     };
 
     readonly inventory = new Inventory(this);
@@ -158,8 +162,25 @@ export class Player extends GameObject {
 
     body: Body;
 
-    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2) {
+    action: Action | undefined;
+
+    isDev: boolean;
+
+    /**
+     * Used to make players invunerable for 5 seconds after spawning or until they move
+     */
+    invulnerable = true;
+
+    /**
+     * Determines if the player can despawn
+     * Set to false once the player picks up loot
+     */
+    canDespawn = true;
+
+    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+
+        this.isDev = isDev;
 
         this.socket = socket;
         this.name = name;
@@ -177,7 +198,7 @@ export class Player extends GameObject {
         });
 
         this.body.createFixture({
-            shape: Circle(2.5),
+            shape: Circle(2.25),
             friction: 0.0,
             density: 1000.0,
             restitution: 0.0,
@@ -187,14 +208,22 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(2.5, this.position);
 
         // Inventory preset
-        //this.inventory.addOrReplaceWeapon(0, "m37");
-        //this.inventory.addOrReplaceWeapon(1, "mosin");
+        if (this.isDev) {
+            this.inventory.addOrReplaceWeapon(0, "deathray");
+            (this.inventory.getWeapon(0) as GunItem).ammo = 255;
+            this.inventory.addOrReplaceWeapon(1, "tango");
+            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
+            this.adrenaline = 100;
+        }
+        // this.inventory.addOrReplaceWeapon(0, "lewis_gun");
+        // this.inventory.addOrReplaceWeapon(1, "micro_uzi");
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
         this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
         if (xVelocity !== 0 || yVelocity !== 0) {
+            if (this.invulnerable) this.invulnerable = false;
             this.movesSinceLastUpdate++;
         }
     }
@@ -312,6 +341,7 @@ export class Player extends GameObject {
     }
 
     override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+        if (this.invulnerable) return;
         // Calculate damage amount
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
@@ -397,6 +427,11 @@ export class Player extends GameObject {
                 this.sendPacket(new GameOverPacket(this, false));
             }
         }
+    }
+
+    executeAction(action: Action): void {
+        this.action?.cancel();
+        this.action = action;
     }
 
     override serializePartial(stream: SuroiBitStream): void {

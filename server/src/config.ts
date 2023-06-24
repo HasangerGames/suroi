@@ -55,6 +55,13 @@ export interface ConfigType {
     readonly botProtection: boolean
     readonly disableMapGeneration: boolean
     readonly stopServerAfter: number
+
+    /**
+     * Dev mode password, this gives dev cheats, for now it only spawns the player with some weapons and 100% adrenaline. \
+     * To use it add `?devPassword=PASSWORD` on the website url, example: `127.0.0.1:3000/?devPassword=fooBar`. \
+     * If its `undefined` you won't be able to get dev mode
+     */
+    readonly devPassword?: string
 }
 
 export const Config = {
@@ -90,5 +97,7 @@ export const Config = {
     botProtection: false,
 
     disableMapGeneration: false,
-    stopServerAfter: -1
+    stopServerAfter: -1,
+
+    devPassword: undefined
 } satisfies ConfigType as ConfigType;

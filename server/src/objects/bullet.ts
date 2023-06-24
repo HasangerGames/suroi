@@ -94,10 +94,10 @@ export class Bullet {
 
 export class DamageRecord {
     damaged: GameObject;
-    damager: Player | undefined;
+    damager: Player;
     bullet: Bullet;
 
-    constructor(damaged: GameObject, damager: Player | undefined, bullet: Bullet) {
+    constructor(damaged: GameObject, damager: Player, bullet: Bullet) {
         this.damaged = damaged;
         this.damager = damager;
         this.bullet = bullet;

@@ -109,6 +109,18 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.dropItem(game.playerManager.activeItemIndex);
             }
         ),
+        reload: new Action(
+            "inventory::reload",
+            () => {
+                game.playerManager.reload();
+            }
+        ),
+        cancelAction: new Action(
+            "inventory::cancelAction",
+            () => {
+                game.playerManager.cancelAction();
+            }
+        ),
         toggleMap: new Action(
             "toggleMap",
             () => {
@@ -211,7 +223,7 @@ export function setupInputs(game: Game): void {
     if (game.playerManager.isMobile && localStorageInstance.config.mobileControls) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
-            size: 150
+            size: 125
         });
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -226,13 +238,13 @@ export function setupInputs(game: Game): void {
 
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
-            size: 150
+            size: 125
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > 70;
+            game.playerManager.attacking = data.distance > 50;
         });
         rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
@@ -284,6 +296,8 @@ const actionsNames = {
     nextItem: "Equip Next Item",
     useItem: "Use Item",
     dropActiveItem: "Drop Active Item",
+    reload: "Reload",
+    cancelAction: "Cancel Action",
     toggleMap: "Toggle Fullscreen Map",
     toggleMiniMap: "Toggle Mini Map"
 };

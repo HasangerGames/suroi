@@ -1,6 +1,8 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
-import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import {
+    ObjectCategory, PLAYER_ACTIONS_BITS, PacketType, PlayerActions
+} from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 
@@ -30,6 +32,13 @@ export class UpdatePacket extends SendingPacket {
         if (player.dirty.adrenaline) {
             stream.writeFloat(player.adrenaline, 0, 100, 8);
             player.dirty.adrenaline = false;
+        }
+
+        // Action
+        stream.writeBoolean(player.dirty.action);
+        if (player.dirty.action) {
+            stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
+            player.dirty.action = false;
         }
 
         // Active player ID

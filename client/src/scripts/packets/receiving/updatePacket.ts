@@ -10,7 +10,9 @@ import { Loot } from "../../objects/loot";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
+import {
+    GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions
+} from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -68,6 +70,26 @@ export class UpdatePacket extends ReceivingPacket {
             const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
             adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
             adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        // Action
+        if (stream.readBoolean()) {
+            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
+            switch (action) {
+                case PlayerActions.None:
+                    $("#action-container").hide().stop();
+                    scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
+                    break;
+                case PlayerActions.Reload: {
+                    scene.playSound(`${player.activeItem.idString}_reload`);
+                    const time = (player.activeItem.definition as GunDefinition).reloadTime * 1000;
+                    $("#action-container").show();
+                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, time, "linear", () => {
+                        $("#action-container").hide();
+                    });
+                    break;
+                }
+            }
         }
 
         // Active player ID
@@ -173,17 +195,13 @@ export class UpdatePacket extends ReceivingPacket {
                 const rotation = stream.readRotation(16);
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
                 const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
-                // Play firing sound
-                if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
-                    scene.playSound(`${bulletSourceDef.idString}_fire`);
-                }
 
                 // Spawn bullet
                 const bullet = scene.add.image(
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
-                    `${bulletSourceDef.idString}_trail.svg`
+                    `${bulletSourceDef.ammoType}_trail.svg`
                 ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition)).setDepth(1);
                 game.bullets.set(id, bullet);
                 scene.tweens.add({

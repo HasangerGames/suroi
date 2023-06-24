@@ -9,6 +9,7 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { type Vector } from "../../../common/src/utils/vector";
 import { distance, angleBetween } from "../../../common/src/utils/math";
+import { Obstacle } from "./obstacle";
 
 export class Explosion {
     game: Game;
@@ -31,7 +32,7 @@ export class Explosion {
         //                                                               ^^ magic number?
 
         for (const object of visibleObjects) {
-            if (!object.dead && object.hitbox !== undefined) {
+            if (!object.dead && object instanceof Obstacle) {
                 const dist = distance(this.position, object.position);
                 if (dist < definition.radius.max) {
                     let damage = definition.damage * definition.obstacleMultiplier;
@@ -40,7 +41,7 @@ export class Explosion {
                         damage *= damagePercent;
                     }
 
-                    object.damage(damage, this.source);
+                    object.damage(damage, this.source, this.type);
                 }
             }
         }

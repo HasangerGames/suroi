@@ -2,11 +2,11 @@ import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    INVENTORY_MAX_WEAPONS, ObjectCategory, Actions
+    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
 } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 // This class manages the active player data and inventory
 export class PlayerManager {
     game: Game;
@@ -43,7 +43,7 @@ export class PlayerManager {
 
     rotation = 0;
 
-    action = Actions.None;
+    action = InputActions.None;
     itemToSwitch = 0;
     itemToDrop = 0;
 
@@ -71,24 +71,34 @@ export class PlayerManager {
     }
 
     equipItem(i: number): void {
-        this.action = Actions.EquipItem;
+        this.action = InputActions.EquipItem;
         this.itemToSwitch = i;
         this.dirty.inputs = true;
     }
 
     dropItem(i: number): void {
-        this.action = Actions.DropItem;
+        this.action = InputActions.DropItem;
         this.itemToDrop = i;
         this.dirty.inputs = true;
     }
 
     swapGunSlots(): void {
-        this.action = Actions.SwapGunSlots;
+        this.action = InputActions.SwapGunSlots;
         this.dirty.inputs = true;
     }
 
     interact(): void {
-        this.action = Actions.Interact;
+        this.action = InputActions.Interact;
+        this.dirty.inputs = true;
+    }
+
+    reload(): void {
+        this.action = InputActions.Reload;
+        this.dirty.inputs = true;
+    }
+
+    cancelAction(): void {
+        this.action = InputActions.Cancel;
         this.dirty.inputs = true;
     }
 
@@ -117,10 +127,13 @@ export class PlayerManager {
         if (stream.readBoolean()) {
             this.activeItemIndex = stream.readBits(2);
             $(".inventory-slot").removeClass("active");
-            $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
+            const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
+            slotContainer.addClass("active");
+
+            $("#active-weapon-ammo").text(slotContainer.children(".item-ammo").text());
         }
 
-        // Items dirty
+        // Weapons dirty
         if (stream.readBoolean()) {
             for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
                 const container = $(`#weapon-slot-${i + 1}`);
@@ -131,13 +144,32 @@ export class PlayerManager {
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;
                     container.children(".item-image").attr("src", require(`../../assets/img/game/weapons/${itemDef.idString}.svg`)).show();
+
+                    if (itemDef.itemType === ItemType.Gun) {
+                        const ammo = stream.readUint8().toString();
+                        const gunDef = item.definition as GunDefinition;
+                        const ammoText = (`${ammo === "0" ? '<span style="color: #ff0000">0</span>' : ammo} / ${gunDef.capacity}`);
+                        container.children(".item-ammo").html(ammoText);
+                        if (i === this.activeItemIndex) $("#active-weapon-ammo").html(ammoText);
+                    }
                 } else {
                     // empty slot
                     container.removeClass("has-item");
                     container.children(".item-name").text("");
                     container.children(".item-image").removeAttr("src").hide();
+                    container.children(".item-ammo").text("");
                 }
             }
+        }
+
+        // Inventory dirty
+        if (stream.readBoolean()) {
+            stream.readBits(4); // First 4 bits are "has item" values for healing items, which are always false for now
+            const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
+            $("#12g-count").text(readInventoryCount());
+            $("#556mm-count").text(readInventoryCount());
+            $("#762mm-count").text(readInventoryCount());
+            $("#9mm-count").text(readInventoryCount());
         }
     }
 }

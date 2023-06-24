@@ -1,4 +1,4 @@
-export interface WeightedLoot { item: string, weight: number }
+export interface WeightedLoot { item: string, count?: number, weight: number }
 export interface WeightedTier { tier: string, weight: number }
 export type WeightedItem = WeightedLoot | WeightedTier;
 export interface LootTable { min: number, max: number, loot: WeightedItem[] }
@@ -9,8 +9,9 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "guns", weight: 1 },
-            { tier: "healing_items", weight: 0.5 }
-            //{ tier: "melee", weight: 0.04 }
+            { tier: "healing_items", weight: 0.5 },
+            { tier: "ammo", weight: 0.25 },
+            { tier: "melee", weight: 0.04 }
         ]
     },
     aegis_crate: {
@@ -68,7 +69,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 2,
         max: 2,
         loot: [
-            { tier: "clubs", weight: 1 }
+            { tier: "bat", weight: 1 }
         ]
     },
     gold_rock: {
@@ -84,7 +85,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     guns: [
         { item: "g19", weight: 2 },
         { item: "ak47", weight: 1.5 },
-        { item: "saf200", weight: 1.25 },
+        { item: "saf_200", weight: 1.25 },
         { item: "m37", weight: 1 },
         { item: "m3k", weight: 0.75 },
         { item: "mosin", weight: 0.02 }
@@ -93,6 +94,20 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "gauze", weight: 3 },
         { item: "cola", weight: 2 },
         { item: "medikit", weight: 1 }
+    ],
+    ammo: [
+        {
+            item: "12g", count: 10, weight: 0.75
+        },
+        {
+            item: "556mm", count: 30, weight: 1
+        },
+        {
+            item: "762mm", count: 30, weight: 1
+        },
+        {
+            item: "9mm", count: 30, weight: 1
+        }
     ],
     aegis_guns: [
         { item: "m3k", weight: 1.1 },
@@ -110,7 +125,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "ak47", weight: 1.25 },
         { item: "m3k", weight: 1.1 },
         { item: "m37", weight: 1 },
-        { item: "saf200", weight: 0.75 },
+        { item: "saf_200", weight: 0.75 },
         { item: "mosin", weight: 0.3 }
     ],
     flint_healing_items: [
@@ -119,18 +134,13 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "gauze", weight: 1 }
     ],
     melee: [
-        { item: "branch", weight: 0.5 },
-        { item: "club", weight: 1 },
-        { item: "dagger", weight: 0.1 },
-        { item: "club_op", weight: 0.1 },
+        { item: "baseball_bat", weight: 4 },
         { item: "kbar", weight: 2 }
     ],
     knife: [
-        { item: "dagger", weight: 0.2 },
         { item: "kbar", weight: 2 }
     ],
-    clubs: [
-        { item: "club", weight: 2 },
-        { item: "club_op", weight: 1 }
+    bat: [
+        { item: "baseball_bat", weight: 2 }
     ]
 };

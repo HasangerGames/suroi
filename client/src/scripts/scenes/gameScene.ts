@@ -42,36 +42,38 @@ export class GameScene extends Phaser.Scene {
         this.playerManager = core.game.playerManager;
 
         for (const material of Materials) {
-            this.loadSound(`${material}_hit_1`, `sfx/hits/${material}_hit_1`);
-            this.loadSound(`${material}_hit_2`, `sfx/hits/${material}_hit_2`);
-            this.loadSound(`${material}_destroyed`, `sfx/hits/${material}_destroyed`);
+            this.loadSound(`${material}_hit_1`, `hits/${material}_hit_1`);
+            this.loadSound(`${material}_hit_2`, `hits/${material}_hit_2`);
+            this.loadSound(`${material}_destroyed`, `hits/${material}_destroyed`);
         }
 
         for (const gun of Guns) {
-            this.loadSound(`${gun.idString}_fire`, `sfx/weapons/${gun.idString}_fire`);
-            this.loadSound(`${gun.idString}_switch`, `sfx/weapons/${gun.idString}_switch`);
+            this.loadSound(`${gun.idString}_fire`, `weapons/${gun.idString}_fire`);
+            this.loadSound(`${gun.idString}_switch`, `weapons/${gun.idString}_switch`);
+            this.loadSound(`${gun.idString}_reload`, `weapons/${gun.idString}_reload`);
         }
 
-        this.loadSound("player_hit_1", "sfx/hits/player_hit_1");
-        this.loadSound("player_hit_2", "sfx/hits/player_hit_2");
+        this.loadSound("player_hit_1", "hits/player_hit_1");
+        this.loadSound("player_hit_2", "hits/player_hit_2");
 
-        this.loadSound("health_explosion", "sfx/health_explosion");
+        this.loadSound("pickup", "pickup");
+        this.loadSound("gun_click", "gun_click");
 
-        this.loadSound("swing", "sfx/swing");
-        this.loadSound("grass_step_01", "sfx/footsteps/grass_01");
-        this.loadSound("grass_step_02", "sfx/footsteps/grass_02");
+        this.loadSound("swing", "swing");
+        this.loadSound("grass_step_01", "footsteps/grass_01");
+        this.loadSound("grass_step_02", "footsteps/grass_02");
 
         this.scale.on("resize", this.resize.bind(this));
     }
 
     private resize(): void {
-        this.cameras.main.setZoom(window.innerWidth / 2560); // 5120 = 2x
+        this.cameras.main.setZoom(window.innerWidth / 2560); // 2560 = 1x, 5120 = 2x
         this.gasRect.setSize(this.game.canvas.width * 2, this.game.canvas.height * 2).setScale(1 / this.cameras.main.zoom, 1 / this.cameras.main.zoom);
     }
 
     private loadSound(name: string, path: string): void {
         try {
-            this.load.audio(name, require(`../../assets/audio/${path}.mp3`));
+            this.load.audio(name, require(`../../assets/audio/sfx/${path}.mp3`));
             this.soundsToLoad.add(name);
         } catch (e) {
             console.warn(`Failed to load sound: ${name}`);

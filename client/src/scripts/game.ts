@@ -21,6 +21,7 @@ import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
+import { PickupPacket } from "./packets/receiving/pickupPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -92,6 +93,10 @@ export class Game {
                 }
                 case PacketType.KillFeed: {
                     new KillFeedPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                case PacketType.Pickup: {
+                    new PickupPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 // TODO: maybe disconnect players that haven't sent a ping in a while?

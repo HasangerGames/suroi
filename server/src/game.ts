@@ -48,7 +48,8 @@ import {
 } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
-import { IDAllocator } from "./utils/IDAllocator";
+import { IDAllocator } from "./utils/idAllocator";
+import { Obstacle } from "./objects/obstacle";
 
 export class Game {
     map: Map;
@@ -177,10 +178,10 @@ export class Game {
         });
 
         // Create world boundaries
-        this.createWorldBoundary(360, -0.25, 360, 0);
-        this.createWorldBoundary(-0.25, 360, 0, 360);
-        this.createWorldBoundary(360, 720.25, 360, 0);
-        this.createWorldBoundary(720.25, 360, 0, 360);
+        this.createWorldBoundary(360, 0, 360, 0);
+        this.createWorldBoundary(0, 360, 0, 360);
+        this.createWorldBoundary(360, 720, 360, 0);
+        this.createWorldBoundary(720, 360, 0, 360);
 
         // Generate map
         this.map = new Map(this);
@@ -220,11 +221,10 @@ export class Game {
 
             // Update loot positions
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y || loot.oldRotation !== loot.rotation) {
+                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
                     this.partialDirtyObjects.add(loot);
                 }
                 loot.oldPosition = vClone(loot.position);
-                loot.oldRotation = loot.rotation;
             }
 
             // Update bullets
@@ -243,8 +243,8 @@ export class Game {
 
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
-                } else {
-                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager);
+                } else if (damageRecord.damaged instanceof Obstacle) {
+                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
                 }
 
                 this.removeBullet(bullet);
@@ -384,7 +384,7 @@ export class Game {
             this.gasDirty = false;
             this.gasPercentageDirty = false;
             this.updateObjects = false;
-            
+
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
             }
@@ -413,7 +413,7 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>, name: string): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
@@ -435,7 +435,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, name, socket, spawnPosition);
+        return new Player(this, name, socket, spawnPosition, isDev);
     }
 
     // Called when a JoinPacket is sent by the client
@@ -454,6 +454,10 @@ export class Game {
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendPacket(new MapPacket(player));
+
+        setTimeout(() => {
+            player.invulnerable = false;
+        }, 5000);
 
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;
@@ -475,18 +479,21 @@ export class Game {
         if (!player.dead) {
             this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player.name, false)));
         }
-        this.livingPlayers.delete(player);
         this.connectedPlayers.delete(player);
-        this.dynamicObjects.delete(player);
-        this.removeObject(player);
-        this.world.destroyBody(player.body);
+
+        if (player.canDespawn) {
+            this.livingPlayers.delete(player);
+            this.dynamicObjects.delete(player);
+            this.removeObject(player);
+            this.world.destroyBody(player.body);
+        }
         try {
             player.socket.close();
         } catch (e) { }
     }
 
-    addLoot(type: ObjectType, position: Vector): Loot {
-        const loot = new Loot(this, type, position);
+    addLoot(type: ObjectType, position: Vector, count?: number): Loot {
+        const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
         this.dynamicObjects.add(loot);
         this.fullDirtyObjects.add(loot);
@@ -516,7 +523,7 @@ export class Game {
 
     /**
      * Delete a bullet and give the id back to the allocator
-     * @param object The object to delete
+     * @param bullet The bullet to delete
      */
     removeBullet(bullet: Bullet): void {
         this.bulletIDAllocator.give(bullet.id);

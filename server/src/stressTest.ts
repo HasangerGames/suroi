@@ -2,8 +2,8 @@ import { WebSocket } from "ws";
 
 import {
     PacketType,
-    Actions,
-    ACTIONS_BITS
+    InputActions,
+    INPUT_ACTIONS_BITS
 } from "../../common/src/constants";
 
 import { random, randomBoolean } from "../../common/src/utils/random";
@@ -44,7 +44,7 @@ for (let i = 1; i <= config.botCount; i++) {
                 stream.writeBoolean(shootStart);
                 stream.writeBoolean(false);
 
-                stream.writeBits(interact ? Actions.Interact : Actions.None, ACTIONS_BITS);
+                stream.writeBits(interact ? InputActions.Interact : InputActions.None, INPUT_ACTIONS_BITS);
                 ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
             }, 30);
         });

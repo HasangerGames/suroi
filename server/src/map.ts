@@ -47,16 +47,17 @@ export class Map {
         this.game = game;
 
         if (!Config.disableMapGeneration) {
-            this.generateObstacles("oil_tank", 1);
-            this.generateObstacles("oak_tree", 150);
+            this.generateObstacles("oil_tank", 6);
+            this.generateObstacles("oak_tree", 135);
             this.generateObstacles("pine_tree", 10);
-            this.generateObstacles("rock", 150);
-            this.generateObstacles("bush", 85);
-            this.generateObstacles("regular_crate", 150);
+            this.generateObstacles("birch_tree", 15);
+            this.generateObstacles("rock", 145);
+            this.generateObstacles("bush", 80);
+            this.generateObstacles("regular_crate", 155);
             this.generateObstacles("aegis_crate", 3);
             this.generateObstacles("flint_crate", 3);
-            this.generateObstacles("barrel", 75);
-            this.generateObstacles("super_barrel", 25);
+            this.generateObstacles("barrel", 70);
+            this.generateObstacles("super_barrel", 20);
             this.generateObstacleChildren();
             this.generateObstacles("gold_rock", 1);
         } else {

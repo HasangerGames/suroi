@@ -12,7 +12,9 @@ export interface ObstacleChildren extends ObjectDefinition {
 export interface ObstacleDefinition extends ObjectDefinition {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
     readonly health: number
-    readonly invulnerable?: boolean
+    readonly indestructible?: boolean
+    readonly impenetrable?: boolean
+    readonly hideOnMap?: boolean
     readonly scale: {
         readonly spawnMin: number
         readonly spawnMax: number
@@ -33,12 +35,13 @@ export interface ObstacleDefinition extends ObjectDefinition {
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
-function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none"): ObstacleDefinition {
+function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none", hideOnMap?: boolean): ObstacleDefinition {
     return {
         idString,
         name,
         material: "crate",
         health: 100,
+        hideOnMap,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -84,6 +87,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 4
         },
         {
+            idString: "birch_tree",
+            name: "Birch Tree",
+            material: "tree",
+            health: 240,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(3),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: "full",
+            depth: 4
+        },
+        {
             idString: "rock",
             name: "Rock",
             material: "stone",
@@ -96,7 +114,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(3.85),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
-            variations: 5,
+            variations: 7,
             particleVariations: 2
         },
         {
@@ -117,8 +135,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 3
         },
         makeCrate("regular_crate", "Regular Crate", "binary"),
-        makeCrate("flint_crate", "Flint Crate", "none"),
-        makeCrate("aegis_crate", "AEGIS Crate", "none"),
+        makeCrate("flint_crate", "Flint Crate", "none", true),
+        makeCrate("aegis_crate", "AEGIS Crate", "none", true),
         {
             idString: "barrel",
             name: "Barrel",
@@ -151,13 +169,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "oil_tank",
             name: "Oil Tank",
             material: "metal",
-            health: 1000,
+            health: 10000,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.5
+                destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-25, -9), v(25, 9)),
+            indestructible: true,
+            hitbox: new RectangleHitbox(v(-10, -5), v(10, 5)),
             rotationMode: "none"
         },
         {
