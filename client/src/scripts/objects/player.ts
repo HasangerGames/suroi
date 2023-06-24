@@ -196,6 +196,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
                 case AnimationType.Gun: {
                     const weaponDef = this.activeItem.definition as GunDefinition;
+                    this.scene.playSound(`${weaponDef.idString}_fire`);
                     if (weaponDef.itemType === ItemType.Gun) {
                         this.updateFistsPosition(false);
                         const recoilAmount = (20 * (1 - weaponDef.recoilMultiplier));
@@ -218,6 +219,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             yoyo: true
                         });
                     }
+                    break;
+                }
+                case AnimationType.GunClick: {
+                    this.scene.playSound("gun_click");
                     break;
                 }
             }

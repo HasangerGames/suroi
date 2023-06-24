@@ -1,4 +1,4 @@
-import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
@@ -8,6 +8,8 @@ import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
 import { v, vAdd } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
+import { Loot } from "../objects/loot";
+
 /**
  * A class representing a player's inventory
  */
@@ -22,10 +24,10 @@ export class Inventory {
         medikit: 0,
         cola: 0,
         tablets: 0,
-        "12g_ammo": 0,
-        "556mm_ammo": 0,
-        "762mm_ammo": 0,
-        "9mm_ammo": 0
+        "12g": 0,
+        "556mm": 0,
+        "762mm": 0,
+        "9mm": 0
     };
 
     /**
@@ -176,7 +178,7 @@ export class Inventory {
         [this._weapons[1], this._weapons[0]];
         if (this.activeWeaponIndex === 0) this.setActiveWeaponIndex(1);
         else if (this.activeWeaponIndex === 1) this.setActiveWeaponIndex(0);
-        this.owner.dirty.inventory = true;
+        this.owner.dirty.weapons = true;
     }
 
     /**
@@ -186,7 +188,7 @@ export class Inventory {
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
     addOrReplaceWeapon(slot: number, item: GunItem | MeleeItem | string): void {
-        this.owner.dirty.inventory = true;
+        this.owner.dirty.weapons = true;
         this.owner.game.fullDirtyObjects.add(this.owner);
         this.owner.fullDirtyObjects.add(this.owner);
 
@@ -209,7 +211,7 @@ export class Inventory {
         for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
             if (this._weapons[slot] === undefined) {
                 this._weapons[slot] = this._reifyItem(item);
-                this.owner.dirty.inventory = true;
+                this.owner.dirty.weapons = true;
                 this.setActiveWeaponIndex(slot);
                 return slot;
             }
@@ -227,8 +229,38 @@ export class Inventory {
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
+        const pushLoot = (loot: Loot): void => loot.body.setLinearVelocity(Vec2(Math.cos(this.owner.rotation), -Math.sin(this.owner.rotation)).mul(-0.02));
         const loot = this.owner.game.addLoot(item.type, this.owner.position);
-        loot.body.setLinearVelocity(Vec2(Math.cos(this.owner.rotation), -Math.sin(this.owner.rotation)).mul(-0.02));
+        pushLoot(loot);
+
+        if (item instanceof GunItem && item.ammo > 0) {
+            // Put the ammo in the gun back in the inventory
+            const ammoType = item.definition.ammoType;
+            this.items[ammoType] += item.ammo;
+
+            // If the new amount is more than the inventory can hold, drop the extra
+            const overAmount: number = this.items[ammoType] - MaxInventoryCapacity[ammoType];
+            if (overAmount > 0) {
+                /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
+                    const dropCount = Math.floor(amount / 60);
+                    for (let i = 0; i < dropCount; i++) {
+                        const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, 60);
+                        pushLoot(loot);
+                    }
+
+                    if (amount % 60 !== 0) {
+                        const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, amount % 60);
+                        pushLoot(loot);
+                    }
+                };
+
+                splitUpLoot(this.owner, ammoType, overAmount);*/
+                this.items[ammoType] -= overAmount;
+                const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
+                pushLoot(loot);
+            }
+            this.owner.dirty.inventory = true;
+        }
 
         this.removeWeapon(slot);
 
@@ -297,7 +329,7 @@ export class Inventory {
 
         this._weapons[slot] = item;
 
-        this.owner.dirty.inventory = true;
+        this.owner.dirty.weapons = true;
 
         if (slot === 2 && item === undefined) {
             this._weapons[slot] = new MeleeItem("fists", this.owner);
@@ -317,9 +349,9 @@ export class Inventory {
             stream.writeBits(this.activeWeaponIndex, 2);
         }
 
-        stream.writeBoolean(this.owner.dirty.inventory);
-        if (this.owner.dirty.inventory) {
-            this.owner.dirty.inventory = false;
+        stream.writeBoolean(this.owner.dirty.weapons);
+        if (this.owner.dirty.weapons) {
+            this.owner.dirty.weapons = false;
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
@@ -329,6 +361,14 @@ export class Inventory {
                         stream.writeUint8(item.ammo);
                     }
                 }
+            }
+        }
+
+        stream.writeBoolean(this.owner.dirty.inventory);
+        if (this.owner.dirty.inventory) {
+            for (const count of Object.values(this.owner.inventory.items)) {
+                stream.writeBoolean(count > 0); // Has item
+                if (count > 0) stream.writeUint8(count);
             }
         }
     }

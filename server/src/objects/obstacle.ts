@@ -26,6 +26,15 @@ import { random, weightedRandom } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 
+export class LootItem {
+    idString: string;
+    count: number;
+    constructor(idString: string, count: number) {
+        this.idString = idString;
+        this.count = count;
+    }
+}
+
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
         player: false,
@@ -51,7 +60,7 @@ export class Obstacle extends GameObject {
     body?: Body;
     spawnHitbox: Hitbox;
 
-    loot: string[] = [];
+    loot: LootItem[] = [];
 
     definition: ObstacleDefinition;
 
@@ -78,25 +87,30 @@ export class Obstacle extends GameObject {
     }
 
     private getLoot(loot: WeightedItem[]): void {
-        interface TempLootItem { item: string, isTier: boolean }
+        interface TempLootItem { item: string, count?: number, isTier: boolean }
         const items: TempLootItem[] = [];
         const weights: number[] = [];
         for (const item of loot) {
-            items.push({ item: "tier" in item ? item.tier : item.item, isTier: "tier" in item });
+            items.push({
+                item: "tier" in item ? item.tier : item.item,
+                count: "count" in item ? item.count : undefined,
+                isTier: "tier" in item
+            });
             weights.push(item.weight);
         }
         const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
 
         if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
-        else this.addLoot(selectedItem.item);
+        else this.addLoot(selectedItem.item, selectedItem.count ?? 1);
     }
 
-    private addLoot(type: string): void {
+    private addLoot(type: string, count: number): void {
         if (type === "nothing") return;
-        this.loot.push(type);
+        this.loot.push(new LootItem(type, count));
         const definition = ObjectType.fromString(ObjectCategory.Loot, type).definition;
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) {
-            this.loot.push(`${definition.ammoType as string}_ammo`);
+        if (definition === undefined) throw new Error(`Unknown loot item: ${type}`);
+        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) { // TODO Clean this up
+            this.loot.push(new LootItem(definition.ammoType as string, definition.ammoSpawnAmount as number));
         }
     }
 
@@ -130,7 +144,7 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), vClone(this.position));
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), vClone(this.position), item.count);
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;

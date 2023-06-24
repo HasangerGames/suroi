@@ -133,7 +133,7 @@ export class PlayerManager {
             $("#active-weapon-ammo").text(slotContainer.children(".item-ammo").text());
         }
 
-        // Items dirty
+        // Weapons dirty
         if (stream.readBoolean()) {
             for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
                 const container = $(`#weapon-slot-${i + 1}`);
@@ -148,9 +148,9 @@ export class PlayerManager {
                     if (itemDef.itemType === ItemType.Gun) {
                         const ammo = stream.readUint8().toString();
                         const gunDef = item.definition as GunDefinition;
-                        const ammoText = (`${ammo} / ${gunDef.capacity}`);
-                        container.children(".item-ammo").text(ammoText);
-                        if (i === this.activeItemIndex) $("#active-weapon-ammo").text(ammoText);
+                        const ammoText = (`${ammo === "0" ? '<span style="color: #ff0000">0</span>' : ammo} / ${gunDef.capacity}`);
+                        container.children(".item-ammo").html(ammoText);
+                        if (i === this.activeItemIndex) $("#active-weapon-ammo").html(ammoText);
                     }
                 } else {
                     // empty slot
@@ -160,6 +160,16 @@ export class PlayerManager {
                     container.children(".item-ammo").text("");
                 }
             }
+        }
+
+        // Inventory dirty
+        if (stream.readBoolean()) {
+            stream.readBits(4); // First 4 bits are "has item" values for healing items, which are always false for now
+            const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
+            $("#12g-count").text(readInventoryCount());
+            $("#556mm-count").text(readInventoryCount());
+            $("#762mm-count").text(readInventoryCount());
+            $("#9mm-count").text(readInventoryCount());
         }
     }
 }

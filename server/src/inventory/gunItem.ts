@@ -59,6 +59,10 @@ export class GunItem extends InventoryItem {
             return;
         }
         if (this.ammo <= 0) {
+            if (owner.inventory.items[definition.ammoType] <= 0) {
+                owner.animation.type = AnimationType.GunClick;
+                owner.animation.seq = !owner.animation.seq;
+            }
             this.reload();
             this._shots = 0;
             return;
@@ -75,7 +79,7 @@ export class GunItem extends InventoryItem {
         owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
 
-        owner.dirty.inventory = true;
+        owner.dirty.weapons = true;
 
         this.ammo--;
         this._shots++;
@@ -138,6 +142,7 @@ export class GunItem extends InventoryItem {
 
     reload(): void {
         if (this.ammo >= this.definition.capacity ||
+            this.owner.inventory.items[this.definition.ammoType] <= 0 ||
             this.owner.action?.type === PlayerActions.Reload) return;
         this.owner.executeAction(new ReloadAction(this.owner, this));
     }

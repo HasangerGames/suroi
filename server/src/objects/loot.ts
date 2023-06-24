@@ -44,10 +44,11 @@ export class Loot extends GameObject {
 
     isNew = true;
 
-    constructor(game: Game, type: ObjectType, position: Vector) {
+    constructor(game: Game, type: ObjectType, position: Vector, count?: number) {
         super(game, type, position);
 
         this.oldPosition = position;
+        if (count !== undefined) this.count = count;
 
         // Create the body and hitbox
         this.body = game.world.createBody({
@@ -133,32 +134,24 @@ export class Loot extends GameObject {
 
     interact(player: Player): void {
         const inventory = player.inventory;
-        let success = false;
         let deleteItem = true;
-
         const definition = this.type.definition as LootDefinition;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
-                success = true;
-
                 if (definition.healType === HealType.Health) player.health += definition.restoreAmount;
                 else if (definition.healType === HealType.Adrenaline) player.adrenaline += definition.restoreAmount;
-
                 break;
             }
             case ItemType.Melee: {
                 inventory.addOrReplaceWeapon(2, this.type.idString);
-                success = true;
                 break;
             }
             case ItemType.Gun: {
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
                     inventory.appendWeapon(this.type.idString);
-                    success = true;
                 } else if (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString) {
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.type.idString);
-                    success = true;
                 }
                 break;
             }
@@ -166,6 +159,7 @@ export class Loot extends GameObject {
                 const idString = this.type.idString;
                 const currentCount: number = inventory.items[idString];
                 const maxCapacity: number = MaxInventoryCapacity[idString];
+
                 if (currentCount + this.count <= maxCapacity) {
                     inventory.items[idString] += this.count;
                 } else if (currentCount + 1 > maxCapacity) {
@@ -177,25 +171,26 @@ export class Loot extends GameObject {
                     deleteItem = false;
                 }
                 console.log(inventory.items);
-                success = true;
                 break;
             }
         }
-        if (success) {
-            if (deleteItem) {
-                this.game.dynamicObjects.delete(this);
-                this.game.loot.delete(this);
-                this.game.removeObject(this);
-                this.game.world.destroyBody(this.body);
-            }
-            if (definition.itemType !== ItemType.Gun) {
-                player.sendPacket(new PickupPacket(player));
-            }
+
+        // Destroy the old loot
+        this.game.dynamicObjects.delete(this);
+        this.game.loot.delete(this);
+        this.game.removeObject(this);
+        this.game.world.destroyBody(this.body);
+        player.dirty.inventory = true;
+
+        // Send pickup packet
+        if (definition.itemType !== ItemType.Gun) {
+            player.sendPacket(new PickupPacket(player));
         }
+
+        // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) {
             const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
-            /* eslint-disable-next-line no-new */
-            new Loot(this.game, this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
+            this.game.addLoot(this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))), this.count);
         }
     }
 

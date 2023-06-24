@@ -22,7 +22,8 @@ export enum PacketType {
 export enum AnimationType {
     None,
     Melee,
-    Gun
+    Gun,
+    GunClick
 }
 
 export enum KillFeedMessageType {
@@ -77,8 +78,8 @@ export const MaxInventoryCapacity: Record<string, number> = {
     medikit: 3,
     cola: 4,
     tablets: 3,
-    "12g_ammo": 50,
-    "556mm_ammo": 150,
-    "762mm_ammo": 150,
-    "9mm_ammo": 150
+    "12g": 50,
+    "556mm": 150,
+    "762mm": 150,
+    "9mm": 150
 };

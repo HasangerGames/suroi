@@ -492,8 +492,8 @@ export class Game {
         } catch (e) { }
     }
 
-    addLoot(type: ObjectType, position: Vector): Loot {
-        const loot = new Loot(this, type, position);
+    addLoot(type: ObjectType, position: Vector, count?: number): Loot {
+        const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
         this.dynamicObjects.add(loot);
         this.fullDirtyObjects.add(loot);

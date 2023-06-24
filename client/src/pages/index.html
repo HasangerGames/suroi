@@ -198,6 +198,24 @@
         <div id="kill-msg-kills"></div>
         You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
       </div>
+    <div class="inventory-container" id="ammo-container">
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/12g.svg')%>" draggable="false">
+        <span class="ammo-count" id="12g-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/556mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="556mm-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/762mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="762mm-count">0</span>
+      </div>
+      <div class="inventory-slot ammo-slot" id="12g-slot">
+        <img class="ammo-image" src="<%=require('/src/assets/img/game/loot/9mm.svg')%>" draggable="false">
+        <span class="ammo-count" id="9mm-count">0</span>
+      </div>
+    </div>
     <div class="inventory-container" id="weapons-container">
       <div class="inventory-slot" id="weapon-slot-1">
         <span class="slot-number">1</span>

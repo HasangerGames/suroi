@@ -195,10 +195,6 @@ export class UpdatePacket extends ReceivingPacket {
                 const rotation = stream.readRotation(16);
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
                 const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
-                // Play firing sound
-                if (Phaser.Math.Distance.BetweenPoints(player.position, initialPosition) < 50) {
-                    scene.playSound(`${bulletSourceDef.idString}_fire`);
-                }
 
                 // Spawn bullet
                 const bullet = scene.add.image(

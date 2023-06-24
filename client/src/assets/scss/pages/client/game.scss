@@ -385,6 +385,7 @@
 
     @media screen and (max-width: $screen_large) {
         flex-direction: column;
+        gap: 5px;
     }
 
     .inventory-slot {
@@ -393,9 +394,20 @@
         height: 120px;
         border-radius: 10px;
 
+        &.ammo-slot {
+            width: auto;
+            height: auto;
+            padding: 0 8px 0 8px;
+        }
+
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
+
+            &.ammo-slot {
+                width: 50px;
+                height: 50px;
+            }
         }
 
         position: relative;
@@ -406,8 +418,16 @@
 
         cursor: pointer !important;
 
+        &.ammo-slot {
+            cursor: crosshair !important;
+        }
+
         &:hover {
             outline: 1px solid $orange;
+
+            &.ammo-slot {
+                outline: none;
+            }
         }
 
         &.has-item {
@@ -452,6 +472,22 @@
         margin-bottom: 10px;
     }
 
+    .ammo-image {
+        width: 50px;
+        height: 50px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    .ammo-count {
+        font-size: 20px;
+        margin-left: 8px;
+        margin-right: 3px;
+    }
+
     .item-name {
         display: block;
         text-align: center;
@@ -471,6 +507,16 @@
     @media screen and (max-width: $screen_large) {
         bottom: 8px;
         right: 8px;
+    }
+}
+
+#ammo-container {
+    bottom: 10px;
+    left: 10px;
+
+    @media screen and (max-width: $screen_large) {
+        bottom: 8px;
+        left: 8px;
     }
 }
 
