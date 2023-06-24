@@ -442,7 +442,10 @@
             padding: 0 8px 0 8px;
 
             @media screen and (max-width: $screen_large) {
-                padding: 0 5px 0 5px;
+                padding: 3px 5px 3px 5px;
+                border-radius: 5px;  
+                justify-content: left;
+                align-items: left;
             }
         }
 

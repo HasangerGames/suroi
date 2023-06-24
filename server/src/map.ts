@@ -28,7 +28,8 @@ export class Map {
         this.game = game;
 
         if (!Config.disableMapGeneration) {
-            this.generateObstacles("oil_tank", 6);
+            this.generateObstacles("oil_tank", 2, undefined, 200, true);
+            this.generateObstacles("oil_tank", 5);
             this.generateObstacles("oak_tree", 135);
             this.generateObstacles("pine_tree", 10);
             this.generateObstacles("birch_tree", 15);
@@ -42,7 +43,7 @@ export class Map {
             this.generateObstacles("gauze_crate", 1);
             this.generateObstacles("cola_crate", 1);
             this.generateObstacles("melee_crate", 1);
-            if (random(0, 1_000_000) === 500_000) this.generateObstacles("deathray_crate", 1);
+            this.generateObstacles("deathray_crate", 1, 0.000001);
             this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here
@@ -87,43 +88,50 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    private generateObstacles(idString: string, count: number, prob?: number, radius?: number): void {
+    private generateObstacles(idString: string, count: number, prob?: number, radius?: number, squareRadius?: boolean): void {
         const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
         for (let i = 0; i < count; i++) {
-            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-            const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-            let rotation: number | undefined;
-            switch (definition.rotationMode) {
-                case "full":
-                    rotation = randomRotation();
-                    break;
-                case "limited":
-                    rotation = random(0, 3);
-                    break;
-                case "binary":
-                    rotation = random(0, 1);
-                    break;
-                case "none":
-                default:
-                    rotation = 0;
-                    break;
+            if ((prob !== undefined && Math.random() < prob) || prob === undefined) {
+                const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+                const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+                const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+                let rotation: number | undefined;
+                switch (definition.rotationMode) {
+                    case "full":
+                        rotation = randomRotation();
+                        break;
+                    case "limited":
+                        rotation = random(0, 3);
+                        break;
+                    case "binary":
+                        rotation = random(0, 1);
+                        break;
+                    case "none":
+                    default:
+                        rotation = 0;
+                        break;
+                }
+
+                if (rotation === undefined) {
+                    throw new Error("Unknown rotation type");
+                }
+
+                let position = this.getRandomPositionFor(type, scale);
+                if (radius !== undefined && squareRadius !== undefined) {
+                    position = this.getRandomPositionInRadiusFor(type, scale, radius, squareRadius);
+                }
+
+                const obstacle: Obstacle = new Obstacle(
+                    this.game,
+                    type,
+                    position,
+                    rotation,
+                    scale,
+                    variation
+                );
+
+                this.game.staticObjects.add(obstacle);
             }
-
-            if (rotation === undefined) {
-                throw new Error("Unknown rotation type");
-            }
-
-            const obstacle: Obstacle = new Obstacle(
-                this.game,
-                type,
-                this.getRandomPositionFor(type, scale),
-                rotation,
-                scale,
-                variation
-            );
-
-            this.game.staticObjects.add(obstacle);
         }
     }
 
@@ -166,6 +174,57 @@ export class Map {
             getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
         } else {
             getPosition = (): Vector => v(0, 0);
+        }
+
+        // Find a valid position
+        while (collided && attempts <= 200) {
+            attempts++;
+
+            if (attempts >= 200) {
+                console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
+            }
+
+            collided = false;
+            position = getPosition();
+
+            const hitbox: Hitbox = initialHitbox.transform(position, scale);
+            for (const object of this.game.staticObjects) {
+                if (object instanceof Obstacle) {
+                    if (object.spawnHitbox.collidesWith(hitbox)) {
+                        collided = true;
+                    }
+                }
+            }
+        }
+
+        return position;
+    }
+
+    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, radius: number, squareRadius: boolean): Vector {
+        let collided = true;
+        let position: Vector = v(0, 0);
+        let attempts = 0;
+        let initialHitbox: Hitbox | undefined;
+
+        if (radius > this.width || radius > this.height) {
+            radius = Math.min(this.width, this.height);
+        }
+        // Set up the hitbox
+        if (type.category === ObjectCategory.Obstacle) {
+            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+            initialHitbox = definition.spawnHitbox ?? definition.hitbox;
+        } else if (type.category === ObjectCategory.Player) {
+            initialHitbox = new CircleHitbox(2.5);
+        }
+        if (initialHitbox === undefined) {
+            throw new Error(`Unsupported object category: ${type.category}`);
+        }
+
+        let getPosition: () => Vector;
+        if (squareRadius) {
+            getPosition = (): Vector => randomVector(this.width / 2 - radius, this.width / 2 + radius, this.height / 2 - radius, this.height / 2 + radius);
+        } else {
+            getPosition = (): Vector => randomPointInsideCircle(new Vec2(this.width / 2, this.height / 2), radius);
         }
 
         // Find a valid position
