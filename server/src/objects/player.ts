@@ -395,9 +395,9 @@ export class Player extends GameObject {
             this.game.removeObject(this);
 
             // Drop loot
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 3; i++) {
                 const item = this.inventory.getWeapon(i);
-                if (item?.type !== undefined) {
+                if (item?.type !== undefined && !item.definition.noDrop) {
                     this.game.addLoot(item.type, this.position);
                 }
             }
