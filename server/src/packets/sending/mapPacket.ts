@@ -2,7 +2,6 @@ import { SendingPacket } from "../../types/sendingPacket";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { PacketType } from "../../../../common/src/constants";
-import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { Obstacle } from "../../objects/obstacle";
 
 export class MapPacket extends SendingPacket {
@@ -12,11 +11,13 @@ export class MapPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         const game = this.player.game;
-        const objects: Obstacle[] = [...game.staticObjects].filter(object => object instanceof Obstacle) as Obstacle[];
+        const objects: Obstacle[] = [...game.staticObjects].filter(object => {
+            return object instanceof Obstacle && !object.definition.hideOnMap;
+        }) as Obstacle[];
         stream.writeBits(objects.length, 10);
         for (const object of objects) {
+            const definition = object.definition;
             stream.writeObjectType(object.type);
-            const definition: ObstacleDefinition = object.type.definition as ObstacleDefinition;
             stream.writePosition(object.position);
             stream.writeScale(object.maxScale);
             stream.writeObstacleRotation(object.rotation, definition.rotationMode);
