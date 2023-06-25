@@ -177,7 +177,7 @@ const config: Configuration = {
         }),
         new SpritesheetWebpackPlugin({
             patterns: [{
-                rootDir: path.resolve(__dirname, "../src/assets/img/game"),
+                rootDir: path.resolve(__dirname, "../public/img/game"),
                 outDir: "img/atlases",
                 filename: `main.${ATLAS_HASH}.png`
             }],
