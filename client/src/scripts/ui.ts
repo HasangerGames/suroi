@@ -28,6 +28,7 @@ $((): void => {
                 : this.show();
         }
     };
+
     const body = $(document.body);
     const usernameField = $("#username-input");
 
@@ -66,6 +67,7 @@ $((): void => {
         dropdown.toggle();
         ev.stopPropagation();
     });
+
     body.on("click", () => { dropdown.hide(); });
 
     $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
