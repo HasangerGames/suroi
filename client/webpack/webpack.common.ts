@@ -1,4 +1,4 @@
-import { version } from "../package.json";
+import { version } from "../../package.json";
 
 import * as Webpack from "webpack";
 import type WDS from "webpack-dev-server";
@@ -100,6 +100,10 @@ const config: Configuration = {
             inject: true,
             template: path.resolve(__dirname, "../src/pages/index.html"),
             chunks: ["app"],
+
+            templateParameters: {
+                APP_VERSION: version
+            },
 
             minify: {
                 removeComments: true,

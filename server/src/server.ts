@@ -1,6 +1,6 @@
 // noinspection ES6PreferShortImport
 import { Config } from "./config";
-import { version } from "../package.json";
+import { version } from "../../package.json";
 
 import {
     App,

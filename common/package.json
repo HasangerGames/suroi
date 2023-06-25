@@ -1,7 +1,7 @@
 {
   "name": "@suroi/common",
-  "version": "0.5.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --fix --ext .ts",
