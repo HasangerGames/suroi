@@ -9,10 +9,13 @@ import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
 
 import * as path from "path";
+import { createHash } from 'crypto';
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
 }
+
+const ATLAS_HASH = createHash(`sha256`).digest(`hex`).slice(0, 8);
 
 const config: Configuration = {
     entry: {
@@ -89,7 +92,10 @@ const config: Configuration = {
 
     plugins: [
         new Webpack.ProgressPlugin(),
-        new Webpack.DefinePlugin({ APP_VERSION: `"${version}"` }),
+        new Webpack.DefinePlugin({
+            APP_VERSION: `"${version}"`,
+            ATLAS_HASH: `"${ATLAS_HASH}"`
+        }),
         new HTMLWebpackPlugin({
             inject: true,
             template: path.resolve(__dirname, "../src/pages/index.html"),
@@ -169,7 +175,7 @@ const config: Configuration = {
             patterns: [{
                 rootDir: path.resolve(__dirname, "../src/assets/img/game"),
                 outDir: "img/atlases",
-                filename: `main-${version}.png`
+                filename: `main.${ATLAS_HASH}.png`
             }],
             compilerOptions: { margin: 2 }
         }),
