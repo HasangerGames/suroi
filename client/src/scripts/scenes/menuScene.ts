@@ -1,8 +1,8 @@
-import { version } from "../../../package.json";
-
 import Phaser from "phaser";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
+
+declare const ATLAS_HASH: string;
 
 export class MenuScene extends Phaser.Scene {
     menuMusic?: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
@@ -12,7 +12,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.atlas("main", `/img/atlases/main-${version}.png`, `/img/atlases/main-${version}.json`);
+        this.load.atlas("main", `/img/atlases/main.${ATLAS_HASH}.png`, `/img/atlases/main.${ATLAS_HASH}.json`);
 
         this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
         this.sound.pauseOnBlur = false;

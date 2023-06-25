@@ -1,4 +1,4 @@
-import { version } from "../package.json";
+import { version } from "../../package.json";
 
 import * as Webpack from "webpack";
 import type WDS from "webpack-dev-server";
@@ -9,10 +9,13 @@ import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
 
 import * as path from "path";
+import { createHash } from 'crypto';
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
 }
+
+const ATLAS_HASH = createHash(`sha256`).digest(`hex`).slice(0, 8);
 
 const config: Configuration = {
     entry: {
@@ -89,11 +92,18 @@ const config: Configuration = {
 
     plugins: [
         new Webpack.ProgressPlugin(),
-        new Webpack.DefinePlugin({ APP_VERSION: `"${version}"` }),
+        new Webpack.DefinePlugin({
+            APP_VERSION: `"${version}"`,
+            ATLAS_HASH: `"${ATLAS_HASH}"`
+        }),
         new HTMLWebpackPlugin({
             inject: true,
             template: path.resolve(__dirname, "../src/pages/index.html"),
             chunks: ["app"],
+
+            templateParameters: {
+                APP_VERSION: version
+            },
 
             minify: {
                 removeComments: true,
@@ -167,9 +177,9 @@ const config: Configuration = {
         }),
         new SpritesheetWebpackPlugin({
             patterns: [{
-                rootDir: path.resolve(__dirname, "../src/assets/img/game"),
+                rootDir: path.resolve(__dirname, "../public/img/game"),
                 outDir: "img/atlases",
-                filename: `main-${version}.png`
+                filename: `main.${ATLAS_HASH}.png`
             }],
             compilerOptions: { margin: 2 }
         }),
