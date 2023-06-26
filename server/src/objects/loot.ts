@@ -150,6 +150,7 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Gun: {
+                player.action?.cancel();
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
                     inventory.appendWeapon(this.type.idString);
                 } else if (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString) {

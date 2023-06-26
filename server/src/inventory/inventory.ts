@@ -74,10 +74,7 @@ export class Inventory {
             this._lastWeaponIndex = old;
         }
 
-        if (this.reloadTimeoutID !== undefined) {
-            clearTimeout(this.reloadTimeoutID);
-            this.reloadTimeoutID = undefined;
-        }
+        clearTimeout(this.reloadTimeoutID);
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
