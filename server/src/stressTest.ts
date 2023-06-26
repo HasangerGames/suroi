@@ -23,6 +23,7 @@ for (let i = 1; i <= config.botCount; i++) {
         let movingRight = false;
         let shootStart = false;
         let interact = false;
+        let angle = random(-Math.PI, Math.PI);
 
         const ws = new WebSocket(`${config.address}?name=BOT_${i}`);
 
@@ -42,7 +43,10 @@ for (let i = 1; i <= config.botCount; i++) {
                 stream.writeBoolean(movingRight);
 
                 stream.writeBoolean(shootStart);
-                stream.writeBoolean(false);
+                stream.writeBoolean(true); // rotating
+                stream.writeRotation(angle, 16);
+                angle += 0.1;
+                if (angle > Math.PI) angle = -Math.PI;
 
                 stream.writeBits(interact ? InputActions.Interact : InputActions.None, INPUT_ACTIONS_BITS);
                 ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
