@@ -599,6 +599,7 @@ export class Game {
     }
 
     end(): void {
+        log("Game ended");
         process.exit(1); // TODO Option to keep the server running
     }
 }
