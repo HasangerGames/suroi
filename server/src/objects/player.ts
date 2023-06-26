@@ -398,18 +398,17 @@ export class Player extends GameObject {
 
             // Drop loot
             for (let i = 0; i < 3; i++) {
-                const item = this.inventory.getWeapon(i);
-                if (item?.type !== undefined && !item.definition.noDrop) {
-                    this.game.addLoot(item.type, this.position);
-                }
+                this.inventory.dropWeapon(i);
             }
 
             for (const item in this.inventory.items) {
                 const count = this.inventory.items[item];
                 if (count > 0) {
                     this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, count);
+                    this.inventory.items[item] = 0;
                 }
             }
+            this.adrenaline = 0;
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
