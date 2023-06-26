@@ -20,13 +20,12 @@ export class DeathMarker extends GameObject {
         loot: false
     };
 
-    playerName: string;
+    player: Player;
     isNew = true;
 
     constructor(player: Player) {
         super(player.game, ObjectType.categoryOnly(ObjectCategory.DeathMarker), player.position);
-
-        this.playerName = player.name;
+        this.player = player;
 
         setTimeout((): void => { this.isNew = false; }, 100);
     }
@@ -39,7 +38,7 @@ export class DeathMarker extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePlayerName(this.playerName);
+        stream.writePlayerNameWithColor(this.player.name, this.player.isDev, this.player.nameColor);
         stream.writeBoolean(this.isNew);
     }
 }

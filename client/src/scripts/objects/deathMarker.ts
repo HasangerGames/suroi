@@ -16,10 +16,12 @@ export class DeathMarker extends GameObject {
     image: Phaser.GameObjects.Image;
     playerNameText: Phaser.GameObjects.Text;
 
+    container: Phaser.GameObjects.Container;
+
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, scene, type, id);
 
-        this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
+        this.image = this.scene.add.image(0, -95, "main", "death_marker.svg");
         this.playerNameText = this.scene.add.text(0, 0, "",
             {
                 fontSize: 36,
@@ -28,23 +30,26 @@ export class DeathMarker extends GameObject {
             })
             .setOrigin(0.5, 0.5)
             .setShadow(2, 2, "#000", 2, true, true);
+        this.container = this.scene.add.container(0, 0, [this.image, this.playerNameText]).setDepth(-1);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
-        this.image.setPosition(this.position.x * 20, this.position.y * 20);
+        this.container.setPosition(this.position.x * 20, this.position.y * 20);
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.playerName = stream.readPlayerName();
 
-        this.playerNameText.setPosition(this.position.x * 20, (this.position.y * 20) + 105)
-            .setText(this.playerName);
+        if (stream.readBoolean()) {
+            this.playerNameText.setColor(stream.readUTF8String(10));
+        }
+        this.playerNameText.setText(this.playerName);
 
         // Play an animation if this is a new death marker.
         if (stream.readBoolean()) {
-            this.image.setScale(0.5).setAlpha(0);
-            gsap.to(this.image, {
+            this.container.setScale(0.5).setAlpha(0);
+            gsap.to(this.container, {
                 scale: 1,
                 alpha: 1,
                 duration: 0.4
@@ -53,6 +58,7 @@ export class DeathMarker extends GameObject {
     }
 
     override destroy(): void {
+        this.container.destroy(true);
         this.image.destroy(true);
         this.playerNameText.destroy(true);
     }
