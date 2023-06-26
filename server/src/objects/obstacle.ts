@@ -50,6 +50,8 @@ export class Obstacle extends GameObject {
         loot: true
     };
 
+    readonly damageable = true;
+
     health: number;
     maxHealth: number;
     maxScale: number;

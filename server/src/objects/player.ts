@@ -44,6 +44,8 @@ export class Player extends GameObject {
         loot: false
     };
 
+    readonly damageable = true;
+
     name: string;
 
     joined = false;

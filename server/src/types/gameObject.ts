@@ -10,6 +10,7 @@ export interface CollisionFilter { player: boolean, obstacle: boolean, bullet: b
 export abstract class GameObject {
     abstract is: CollisionFilter;
     abstract collidesWith: CollisionFilter;
+    damageable = false;
 
     id: number;
     type: ObjectType;
