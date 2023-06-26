@@ -299,6 +299,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.container.sendToBack(this.images.body);
             this.images.container.sendToBack(this.images.weaponImg);
         }
+        this.images.container.bringToTop(this.images.bloodEmitter);
     }
 
     destroy(): void {
