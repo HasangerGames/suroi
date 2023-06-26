@@ -83,14 +83,14 @@ export const GasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 5,
         oldRadius: 32,
-        newRadius: 3,
+        newRadius: 0,
         dps: 9
     },
     {
         state: GasState.Waiting,
         duration: 0,
-        oldRadius: 3,
-        newRadius: 3,
+        oldRadius: 0,
+        newRadius: 0,
         dps: 10
     }
 ];
