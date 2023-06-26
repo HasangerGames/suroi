@@ -177,10 +177,7 @@ export class Loot extends GameObject {
         }
 
         // Destroy the old loot
-        this.game.dynamicObjects.delete(this);
-        this.game.loot.delete(this);
-        this.game.removeObject(this);
-        this.game.world.destroyBody(this.body);
+        this.game.removeLoot(this);
         player.dirty.inventory = true;
         this.dead = true;
 

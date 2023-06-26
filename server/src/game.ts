@@ -543,7 +543,7 @@ export class Game {
      */
     removeObject(object: GameObject): void {
         this.IDAllocator.give(object.id);
-        this.deletedObjects.add(object);
+        this.updateObjects = true;
     }
 
     get aliveCount(): number {
