@@ -275,6 +275,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
         if (weaponDef.image) {
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weaponImg.setAngle(weaponDef.image.angle);
         }
     }
 
