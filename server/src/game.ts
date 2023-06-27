@@ -54,6 +54,12 @@ import { Obstacle } from "./objects/obstacle";
 export class Game {
     map: Map;
 
+    /**
+     * A cached map packet
+     * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
+     */
+    mapPacket: MapPacket;
+
     world: World;
 
     /**
@@ -185,6 +191,8 @@ export class Game {
 
         // Generate map
         this.map = new Map(this);
+
+        this.mapPacket = new MapPacket(this);
 
         // Start the tick loop
         this.tick(30);
@@ -453,7 +461,7 @@ export class Game {
         player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
-        player.sendPacket(new MapPacket(player));
+        player.sendPacket(this.mapPacket);
 
         setTimeout(() => {
             player.invulnerable = false;
