@@ -19,6 +19,7 @@
 
     opacity: 1;
 
+    //noinspection CssUnknownTarget
     background-image: url("/public/img/backgrounds/background.png");
     background-repeat: no-repeat;
     background-size: cover;
@@ -67,7 +68,7 @@
 #splash-options,
 #splash-inventory,
 #splash-server-message {
-    background: $transparent_bg;
+    background: $menu_transparent_bg;
 
     width: 370px;
 
@@ -120,7 +121,7 @@
             margin-bottom: 10px;
 
             .news-date {
-                color: gray;
+                color: #ccc;
                 font-size: 14px;
 
                 margin-top: 5px;
@@ -236,7 +237,7 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    background: $transparent_bg;
+    background: $menu_transparent_bg;
     padding: 20px;
     border-radius: 20px;
     margin-left: 10px;
