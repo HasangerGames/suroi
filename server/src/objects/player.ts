@@ -122,7 +122,7 @@ export class Player extends GameObject {
         adrenaline: true,
         activeWeaponIndex: true,
         weapons: true,
-        inventory: false,
+        inventory: true,
         activePlayerId: true,
         zoom: true,
         action: false

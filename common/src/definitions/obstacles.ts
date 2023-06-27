@@ -4,11 +4,6 @@ import {
 } from "../utils/hitbox";
 import { v } from "../utils/vector";
 
-export interface ObstacleChildren extends ObjectDefinition {
-    readonly idvariant: number
-    readonly prob?: number
-    readonly num?: number
-}
 export interface ObstacleDefinition extends ObjectDefinition {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
     readonly health: number
@@ -28,8 +23,6 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
-    readonly children?: ObstacleChildren[]
-    specialID?: string
     readonly explosion?: string
 }
 
