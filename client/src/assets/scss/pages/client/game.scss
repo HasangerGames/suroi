@@ -193,6 +193,7 @@
             background: $transparent_bg;
             border-radius: 4px;
             font-weight: 600;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
 
             @media screen and (max-width: $screen_large) {
                 font-size: 12px;
@@ -403,6 +404,7 @@
     #kill-msg-player-name {
         font-weight: bold;
         color: $orange;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
     }
 
     #kill-msg-kills {
