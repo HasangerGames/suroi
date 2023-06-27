@@ -62,7 +62,8 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "mosin", weight: 1 }
+            { item: "mosin", weight: 1 },
+            { item: "tango_51", weight: 0.01 }
         ]
     }
 };
