@@ -200,7 +200,7 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "tango",
+        idString: "tango_51",
         name: "Tango 51",
         itemType: ItemType.Gun,
         ammoType: "762mm",

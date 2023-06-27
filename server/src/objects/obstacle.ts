@@ -92,7 +92,7 @@ export class Obstacle extends GameObject {
             new LootItem("lewis_gun", 1),
             new LootItem("mcx_spear", 1),
             new LootItem("micro_uzi", 1),
-            new LootItem("tango", 1),
+            new LootItem("tango_51", 1),
             new LootItem("940_pro", 1),
             new LootItem("m16a4", 1),
             new LootItem("12g", 1),

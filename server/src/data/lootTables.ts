@@ -69,7 +69,7 @@ export const LootTables: Record<string, LootTable> = {
 
 export const LootTiers: Record<string, WeightedLoot[]> = {
     guns: [
-        { item: "g19", weight: 2 },
+        { item: "g19", weight: 1.75 },
         { item: "ak47", weight: 1.5 },
         { item: "saf_200", weight: 1.25 },
         { item: "940_pro", weight: 1.1 },
@@ -79,8 +79,8 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "mcx_spear", weight: 0.2 },
         { item: "m16a4", weight: 0.1 },
         { item: "lewis_gun", weight: 0.02 },
-        { item: "mosin", weight: 0.001 },
-        { item: "tango", weight: 0.00001 }
+        { item: "mosin", weight: 0.005 },
+        { item: "tango_51", weight: 0.001 }
     ],
     healing_items: [
         { item: "gauze", weight: 3 },
@@ -113,7 +113,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m16a4", weight: 0.35 },
         { item: "lewis_gun", weight: 0.1 },
         { item: "mosin", weight: 0.01 },
-        { item: "tango", weight: 0.0001 }
+        { item: "tango_51", weight: 0.001 }
     ],
     special_healing_items: [
         { item: "cola", weight: 2 },

@@ -215,7 +215,7 @@ export class Player extends GameObject {
         /*if (this.isDev) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 255;
-            this.inventory.addOrReplaceWeapon(1, "tango");
+            this.inventory.addOrReplaceWeapon(1, "tango_51");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
         }*/
