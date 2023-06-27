@@ -209,7 +209,7 @@ export class UpdatePacket extends ReceivingPacket {
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
                     alpha: 0,
-                    duration: 5000,
+                    duration: 500,
                     onComplete: (): void => {
                         bullet.destroy(true);
                     }
