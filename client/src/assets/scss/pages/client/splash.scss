@@ -18,6 +18,11 @@
     left: 0;
 
     opacity: 1;
+
+    background-image: url("/public/img/backgrounds/background.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 
 #splash-logo {
@@ -71,6 +76,8 @@
 
     margin-left: 0.5rem;
     margin-right: 0.5rem;
+
+    text-shadow: 3px 3px 8px #00000064;
 }
 
 #splash-news, #splash-inventory {
