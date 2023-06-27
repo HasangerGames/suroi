@@ -357,10 +357,16 @@
     align-items: center;
 
     #adrenaline-bar {
-        background-color: $orange;
         transition: width ease-in-out 50ms;
         border-radius: 4px;
+        background: $orange;
+        background: linear-gradient(90deg, $orange 0px, #ffc800 330px);
 
+        @media screen and (max-width: $screen_large) {
+            background: linear-gradient(90deg, $orange 0px, #ffc800 230px);
+        }
+
+        background-attachment: fixed;
         position: absolute;
         top: 0;
         left: 0;
@@ -443,9 +449,8 @@
 
             @media screen and (max-width: $screen_large) {
                 padding: 3px 5px 3px 5px;
-                border-radius: 5px;  
+                border-radius: 5px;
                 justify-content: left;
-                align-items: left;
             }
         }
 
