@@ -19,7 +19,7 @@ import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { HealType } from "../../../common/src/definitions/healingItems";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { MaxInventoryCapacity } from "../../../common/src/constants";
+import { MaxInventoryCapacity, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 
 export class Loot extends GameObject {
@@ -184,7 +184,7 @@ export class Loot extends GameObject {
 
         // Send pickup packet
         if (definition.itemType !== ItemType.Gun) {
-            player.sendPacket(new PickupPacket(player));
+            player.sendPacket(new PickupPacket(player, this.type as ObjectType<ObjectCategory.Loot>));
         }
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player

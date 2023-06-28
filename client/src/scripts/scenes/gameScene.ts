@@ -53,15 +53,15 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(`${gun.idString}_reload`, `weapons/${gun.idString}_reload`);
         }
 
+        const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing"];
+        for (const sound of soundsToLoad) {
+            this.loadSound(sound, sound);
+        }
+
         this.loadSound("player_hit_1", "hits/player_hit_1");
         this.loadSound("player_hit_2", "hits/player_hit_2");
-
-        this.loadSound("pickup", "pickup");
-        this.loadSound("gun_click", "gun_click");
-
-        this.loadSound("swing", "swing");
-        this.loadSound("grass_step_01", "footsteps/grass_01");
-        this.loadSound("grass_step_02", "footsteps/grass_02");
+        this.loadSound("grass_step_1", "footsteps/grass_1");
+        this.loadSound("grass_step_2", "footsteps/grass_2");
 
         this.scale.on("resize", this.resize.bind(this));
     }
@@ -126,8 +126,8 @@ export class GameScene extends Phaser.Scene {
         // Initializes sounds
         [
             "swing",
-            "grass_step_01",
-            "grass_step_02"
+            "grass_step_1",
+            "grass_step_2"
         ].forEach(item => this.sounds.set(item, this.sound.add(item, { volume: this.volume })));
 
         this.resize();
