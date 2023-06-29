@@ -10,7 +10,6 @@ import {
     type WebSocket
 } from "uWebSockets.js";
 import sanitizeHtml from "sanitize-html";
-import process from "node:process";
 
 import { Game } from "./game";
 import type { Player } from "./objects/player";
@@ -44,7 +43,16 @@ const app = Config.ssl.enable
     })
     : App();
 
-const game = new Game();
+let game = new Game();
+
+export function endGame(): void {
+    game.stopped = true;
+    for (const player of game.connectedPlayers) {
+        player.socket.close();
+    }
+    log("Game ended");
+    game = new Game();
+}
 
 const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
@@ -90,6 +98,8 @@ app.ws("/play", {
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => {});
+
+        res.endWithoutBody(0, true);
 
         if (!game.allowJoin) {
             res.endWithoutBody(0, true);
@@ -213,15 +223,6 @@ app.listen(Config.host, Config.port, (): void => {
 
     log(`Suroi Server v${version}`, true);
     log(`Listening on ${Config.host}:${Config.port}`, true);
-
-    if (Config.stopServerAfter !== -1) {
-        log(`Automatically stopping server after ${Config.stopServerAfter} ms`, true);
-        setTimeout((): void => {
-            log("Stopping server...", true);
-            process.exit(1);
-        }, Config.stopServerAfter);
-    }
-
     log("Press Ctrl+C to exit.");
 
     if (Config.botProtection) {

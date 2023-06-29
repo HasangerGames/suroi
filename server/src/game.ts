@@ -14,7 +14,7 @@ import {
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { type PlayerContainer } from "./server";
+import { endGame, type PlayerContainer } from "./server";
 import { Map } from "./map";
 
 import { Player } from "./objects/player";
@@ -110,8 +110,9 @@ export class Game {
     killFeedMessages = new Set<KillFeedPacket>();
 
     started = false;
-    allowJoin = true;
+    allowJoin = false;
     over = false;
+    stopped = false;
 
     readonly gas = {
         stage: 0,
@@ -194,6 +195,8 @@ export class Game {
 
         this.mapPacket = new MapPacket(this);
 
+        this.allowJoin = true;
+
         // Start the tick loop
         this.tick(30);
     }
@@ -226,6 +229,8 @@ export class Game {
     tick(delay: number): void {
         setTimeout((): void => {
             this._now = Date.now();
+
+            if (this.stopped) return;
 
             // Update loot positions
             for (const loot of this.loot) {
@@ -400,7 +405,7 @@ export class Game {
             // Stop the game in 1 second if there are no more players alive
             if (this.started && this.aliveCount === 0 && !this.over) {
                 this.over = true;
-                setTimeout(this.end.bind(this), 1000);
+                setTimeout(endGame, 1000);
             }
 
             // Record performance and start the next tick
@@ -475,9 +480,6 @@ export class Game {
             setTimeout(() => {
                 this.allowJoin = false;
             }, 145000);
-
-            // Stop the game after 3 minutes no matter what
-            setTimeout(() => this.end.bind(this), 180000);
         }
     }
 
@@ -604,10 +606,5 @@ export class Game {
 
     get nextBulletID(): number {
         return this.bulletIDAllocator.takeNext();
-    }
-
-    end(): void {
-        log("Game ended");
-        process.exit(1); // TODO Option to keep the server running
     }
 }

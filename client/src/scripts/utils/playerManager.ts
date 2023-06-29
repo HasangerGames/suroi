@@ -31,7 +31,7 @@ export class PlayerManager {
         moving: false
     };
 
-    // had to put it here because its not a boolean
+    // had to put it here because it's not a boolean
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
 

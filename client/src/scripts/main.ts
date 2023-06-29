@@ -16,11 +16,11 @@ declare const API_URL: string;
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 
-export const enablePlayButton = (): void => {
+export function enablePlayButton(): void {
     playSoloBtn.removeClass("btn-disabled");
     playSoloBtn.prop("disabled", false);
     playSoloBtn.text("Play Solo");
-};
+}
 
 $(() => {
     // Join server when play button is clicked

@@ -200,7 +200,7 @@ export class Map {
         return position;
     }
 
-    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, radius: number, squareRadius: boolean): Vector {
+    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, radius: number, squareRadius: boolean): Vector { // TODO Combine with getRandomPositionFor
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;

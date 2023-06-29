@@ -120,6 +120,7 @@ export class Game {
                 if (this.gameStarted) {
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
+                    enablePlayButton();
                 }
                 if (!this.error) this.endGame();
             }
