@@ -366,7 +366,7 @@ export class Inventory {
         stream.writeBoolean(this.owner.dirty.inventory);
         if (this.owner.dirty.inventory) {
             this.owner.dirty.inventory = false;
-            for (const count of Object.values(this.owner.inventory.items)) {
+            for (const count of Object.values(this.items)) {
                 stream.writeBoolean(count > 0); // Has item
                 if (count > 0) stream.writeUint8(count);
             }

@@ -12,6 +12,7 @@ import {
     ANIMATION_TYPE_BITS,
     AnimationType,
     ObjectCategory,
+    PLAYER_RADIUS,
     type PlayerActions
 } from "../../../../common/src/constants";
 
@@ -60,6 +61,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     distSinceLastFootstep = 0;
 
     action!: PlayerActions;
+
+    readonly radius = PLAYER_RADIUS;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);

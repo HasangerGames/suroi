@@ -1,3 +1,5 @@
+import { ItemType } from "./utils/objectDefinitions";
+
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -82,4 +84,13 @@ export const MaxInventoryCapacity: Record<string, number> = {
     "556mm": 150,
     "762mm": 150,
     "9mm": 150
+};
+
+export const PLAYER_RADIUS = 2.25;
+
+export const LootRadius = {
+    0: 3.4, // Gun
+    1: 2, // Ammo
+    2: 3, // Melee
+    3: 2.5 // Healing
 };

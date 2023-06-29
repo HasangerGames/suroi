@@ -7,6 +7,7 @@ import {
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 // This class manages the active player data and inventory
 export class PlayerManager {
     game: Game;
@@ -55,6 +56,19 @@ export class PlayerManager {
     }
 
     turning = false;
+
+    readonly items: Record<string, number> = {
+        gauze: 0,
+        medikit: 0,
+        cola: 0,
+        tablets: 0,
+        "12g": 0,
+        "556mm": 0,
+        "762mm": 0,
+        "9mm": 0
+    };
+
+    readonly weapons: Array<ObjectType<ObjectCategory.Loot> | undefined> = new Array<ObjectType<ObjectCategory.Loot> | undefined>(INVENTORY_MAX_WEAPONS);
 
     _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
@@ -140,7 +154,8 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
+                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot>;
+                    this.weapons[i] = item;
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;
                     container.children(".item-image").attr("src", `/img/game/weapons/${itemDef.idString}.svg`).show();
@@ -154,6 +169,7 @@ export class PlayerManager {
                     }
                 } else {
                     // empty slot
+                    this.weapons[i] = undefined;
                     container.removeClass("has-item");
                     container.children(".item-name").text("");
                     container.children(".item-image").removeAttr("src").hide();
@@ -164,13 +180,12 @@ export class PlayerManager {
 
         // Inventory dirty
         if (stream.readBoolean()) {
-            stream.readBits(4); // First 4 bits are "has item" values for healing items, which are always false for now
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
-            const ammoarr = ["12g", "556mm", "762mm", "9mm"];
-            for (let i = 0; i < ammoarr.length; i++) {
+            for (const item in this.items) {
                 const num = readInventoryCount();
-                const ammoText = (num === MaxInventoryCapacity[ammoarr[i]] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
-                $(`#${ammoarr[i]}-count`).html(ammoText);
+                this.items[item] = num;
+                const ammoText = (num === MaxInventoryCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                $(`#${item}-count`).html(ammoText);
             }
         }
     }

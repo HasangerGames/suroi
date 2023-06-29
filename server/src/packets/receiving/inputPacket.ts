@@ -44,7 +44,6 @@ export class InputPacket extends ReceivingPacket {
                 player.inventory.dropWeapon(stream.readBits(2));
                 break;
             case InputActions.SwapGunSlots:
-                player.action?.cancel();
                 player.inventory.swapGunSlots();
                 break;
             case InputActions.Interact: {

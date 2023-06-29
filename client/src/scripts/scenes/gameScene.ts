@@ -17,6 +17,8 @@ import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
+import { Loot } from "../objects/loot";
+import { circleCollision, distance } from "../../../../common/src/utils/math";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -155,6 +157,27 @@ export class GameScene extends Phaser.Scene {
         if (this.playerManager.dirty.inputs) {
             this.playerManager.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.playerManager));
+        }
+
+        // Loop through all loot objects to check if the player is colliding with one to show the interact message
+        let minDist = Number.MAX_VALUE;
+        let closestObject: Loot | undefined;
+        const player = this.player;
+        for (const o of this.activeGame.objects) {
+            const object = o[1];
+            if (object instanceof Loot && object.canInteract(this.playerManager)) {
+                const dist = distance(object.position, player.position);
+                if (circleCollision(player.position, player.radius, object.position, object.radius) && dist < minDist) {
+                    minDist = dist;
+                    closestObject = object;
+                }
+            }
+        }
+        $("#interact-message").toggle(closestObject !== undefined);
+        if (closestObject) {
+            let interactText = `(${localStorageInstance.config.keybinds.interact[0]}) ${closestObject.type.definition.name}`;
+            if (closestObject.count > 1) interactText += ` [${closestObject.count}]`;
+            $("#interact-message").text(interactText);
         }
     }
 

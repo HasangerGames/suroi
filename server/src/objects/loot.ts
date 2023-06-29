@@ -19,7 +19,9 @@ import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { HealType } from "../../../common/src/definitions/healingItems";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { MaxInventoryCapacity, type ObjectCategory } from "../../../common/src/constants";
+import {
+    LootRadius, MaxInventoryCapacity, type ObjectCategory
+} from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 
 export class Loot extends GameObject {
@@ -59,25 +61,9 @@ export class Loot extends GameObject {
             angularDamping: 0,
             fixedRotation: true
         });
-        const itemType = (this.type.definition as LootDefinition).itemType;
-        let radius: number;
-        switch (itemType) {
-            case ItemType.Gun:
-                radius = 3.4;
-                break;
-            case ItemType.Ammo:
-                radius = 2;
-                break;
-            case ItemType.Melee:
-                radius = 3;
-                break;
-            case ItemType.Healing:
-                radius = 2.5;
-                break;
-            default:
-                radius = 2.5;
-                break;
-        }
+
+        const radius = LootRadius[(this.type.definition as LootDefinition).itemType];
+
         this.body.createFixture({
             shape: Circle(radius),
             restitution: 0,
@@ -212,6 +198,7 @@ export class Loot extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
+        stream.writeUint8(this.count);
         stream.writeBoolean(this.isNew);
     }
 }

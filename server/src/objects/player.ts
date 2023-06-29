@@ -15,7 +15,8 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
-    ObjectCategory
+    ObjectCategory,
+    PLAYER_RADIUS
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
@@ -202,14 +203,14 @@ export class Player extends GameObject {
         });
 
         this.body.createFixture({
-            shape: Circle(2.25),
+            shape: Circle(PLAYER_RADIUS),
             friction: 0.0,
             density: 1000.0,
             restitution: 0.0,
             userData: this
         });
 
-        this.hitbox = new CircleHitbox(2.5, this.position);
+        this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
 
         // Inventory preset
         /*if (this.isDev) {
@@ -391,6 +392,8 @@ export class Player extends GameObject {
             this.deathPosition = this.position.clone();
             this.game.world.destroyBody(this.body);
             this.game.aliveCountDirty = true;
+            this.adrenaline = 0;
+            this.action?.cancel();
 
             this.game.livingPlayers.delete(this);
             this.game.dynamicObjects.delete(this);
@@ -408,7 +411,6 @@ export class Player extends GameObject {
                     this.inventory.items[item] = 0;
                 }
             }
-            this.adrenaline = 0;
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
