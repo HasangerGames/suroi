@@ -4,9 +4,7 @@
   "description": "An open-source 2D battle royale game inspired by surviv.io",
   "private": true,
   "scripts": {
-    "full-install": "pnpm -r install",
-    "full-reinstall": "rm -r node_modules pnpm-lock.yaml && cd common && rm -r node_modules && cd ../server && rm -r node_modules && cd ../client && rm -r node_modules && cd .. && pnpm full-install",
-    "full-upgrade": "pnpm -r up",
+    "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules && pnpm install",
     "build": "pnpm -r build",
     "start": "node --enable-source-maps server/dist/server/src/server.js",
     "dev": "pnpm -r dev",

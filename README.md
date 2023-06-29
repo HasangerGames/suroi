@@ -34,7 +34,7 @@ git clone https://github.com/HasangerGames/suroi.git
 
 To install dependencies, open a terminal in the project root, and run this command:
 ```sh
-pnpm full-install
+pnpm install
 ```
 
 This will create a `node_modules` directory in all three folders (`client`, `common`, and `server`) and link the packages there.
