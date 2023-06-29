@@ -175,9 +175,10 @@ export class GameScene extends Phaser.Scene {
         }
         $("#interact-message").toggle(closestObject !== undefined);
         if (closestObject) {
-            let interactText = `(${localStorageInstance.config.keybinds.interact[0]}) ${closestObject.type.definition.name}`;
-            if (closestObject.count > 1) interactText += ` [${closestObject.count}]`;
-            $("#interact-message").text(interactText);
+            $("#interact-key").text(localStorageInstance.config.keybinds.interact[0]);
+            let interactText = closestObject.type.definition.name;
+            if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
+            $("#interact-text").html(interactText);
         }
     }
 

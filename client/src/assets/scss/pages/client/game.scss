@@ -259,12 +259,38 @@
     top: 35%;
     left: 50%;
     text-align: center;
-    align-items: center;
+    vertical-align: middle;
     transform: translateX(-50%);
     background-color: $transparent_bg;
-    padding: 15px;
+    padding: 8px;
     border-radius: 5px;
+}
+
+#interact-key {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    background-color: #eee;
+    border-radius: 3px;
+    border: 1px solid #b4b4b4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    color: #333;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 2px 4px;
+    white-space: nowrap;
+}
+
+#interact-text {
+    font-size: 20px;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    position: relative;
+    top: 3px;
+    margin-left: 3px;
 }
 
 #weapon-ammo-container {
