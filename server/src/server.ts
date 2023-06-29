@@ -99,8 +99,6 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => {});
 
-        res.endWithoutBody(0, true);
-
         if (!game.allowJoin) {
             res.endWithoutBody(0, true);
             return;
