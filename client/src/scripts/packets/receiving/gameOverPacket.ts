@@ -20,7 +20,7 @@ export class GameOverPacket extends ReceivingPacket {
         }
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
-        $("#game-over-player-name").text(stream.readPlayerName());
+        $("#game-over-player-name").html(stream.readPlayerNameWithColor());
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());

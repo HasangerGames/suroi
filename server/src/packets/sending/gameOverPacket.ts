@@ -5,7 +5,7 @@ import { PacketType } from "../../../../common/src/constants";
 import { type Player } from "../../objects/player";
 
 export class GameOverPacket extends SendingPacket {
-    override readonly allocBytes = 1 << 5;
+    override readonly allocBytes = 1 << 6;
     override readonly type = PacketType.GameOver;
     readonly won: boolean;
 
@@ -19,7 +19,7 @@ export class GameOverPacket extends SendingPacket {
 
         stream.writeBoolean(this.player.game.over);
         stream.writeBoolean(this.won);
-        stream.writePlayerName(this.player.name);
+        stream.writePlayerNameWithColor(this.player.name, this.player.isDev, this.player.nameColor);
         stream.writeUint8(this.player.kills);
         stream.writeUint16(this.player.damageDone);
         stream.writeUint16(this.player.damageTaken);
