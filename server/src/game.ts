@@ -552,7 +552,7 @@ export class Game {
      * @param object The object to delete
      */
     removeObject(object: GameObject): void {
-        this.IDAllocator.give(object.id);
+        this.idAllocator.give(object.id);
         this.updateObjects = true;
     }
 
@@ -596,10 +596,10 @@ export class Game {
         return distanceSquared(position.x, position.y, this.gas.currentPosition.x, this.gas.currentPosition.y) >= this.gas.currentRadius ** 2;
     }
 
-    IDAllocator = new IDAllocator(OBJECT_ID_BITS);
+    idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
     get nextObjectID(): number {
-        return this.IDAllocator.takeNext();
+        return this.idAllocator.takeNext();
     }
 
     bulletIDAllocator = new IDAllocator(8);
