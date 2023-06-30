@@ -1,5 +1,3 @@
-import { ItemType } from "./utils/objectDefinitions";
-
 export enum ObjectCategory {
     Player,
     Obstacle,

@@ -28,10 +28,8 @@ export class Explosion {
         // NOTE: the CircleHitbox distance was returning weird values and i was lazy to debug it
         // so for now its just checking if the obstacle distance is in range
         const definition = this.type.definition as ExplosionDefinition;
-        const visibleObjects: Set<GameObject> = this.game.visibleObjects[48][Math.round(this.position.x / 10) * 10][Math.round(this.position.y / 10) * 10];
-        //                                                               ^^ magic number?
 
-        for (const object of visibleObjects) {
+        for (const object of this.game.getVisibleObjects(this.position)) {
             if (!object.dead && object instanceof Obstacle) {
                 const dist = distance(this.position, object.position);
                 if (dist < definition.radius.max) {

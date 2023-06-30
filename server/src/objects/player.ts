@@ -282,7 +282,7 @@ export class Player extends GameObject {
 
         const approximateX = Math.round(this.position.x / 10) * 10;
         const approximateY = Math.round(this.position.y / 10) * 10;
-        this.nearObjects = this.game.visibleObjects[48][approximateX][approximateY];
+        this.nearObjects = this.game.getVisibleObjects(this.position);
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
 
         const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);

@@ -483,6 +483,21 @@ export class Game {
         }
     }
 
+    /**
+     * Get the visible objects at a given position and zoom level
+     * @param position The position
+     * @param zoom The zoom level, defaults to 48
+     * @returns A set with the visible game objects at the given position and zoom level
+     * @throws {Error} If the zoom level is invalid
+     */
+    getVisibleObjects(position: Vector, zoom = 48): Set<GameObject> {
+        if (this.visibleObjects[zoom] === undefined) throw new Error(`Invalid zoom level: ${zoom}`);
+        // return an empty set if the position is out of bounds
+        if (position.x < 0 || position.x > this.map.width ||
+            position.y < 0 || position.y > this.map.height) return new Set();
+        return this.visibleObjects[zoom][Math.round(position.x / 10) * 10][Math.round(position.y / 10) * 10];
+    }
+
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
