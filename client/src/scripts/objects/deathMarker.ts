@@ -21,8 +21,8 @@ export class DeathMarker extends GameObject {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, scene, type, id);
 
-        this.image = this.scene.add.image(0, -95, "main", "death_marker.svg");
-        this.playerNameText = this.scene.add.text(0, 0, "",
+        this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
+        this.playerNameText = this.scene.add.text(0, 95, "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
