@@ -24,16 +24,13 @@
 
     &.active {
         border-color: $orange;
+        background: $transparent_bg;
     }
 
     i {
         margin-right: 10px;
         width: 15px;
     }
-}
-
-.tab-content.active, .tab.active {
-    background: $transparent_bg;
 }
 
 .tab-content {
