@@ -8,6 +8,7 @@ import {
 } from "./localStorageHandler";
 import { type Game } from "../game";
 import { type MinimapScene } from "../scenes/minimapScene";
+import core from "../core";
 
 class Action {
     readonly name: string;
@@ -124,13 +125,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         toggleMap: new Action(
             "toggleMap",
             () => {
-                (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggle();
+                (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggle();
             }
         ),
         toggleMiniMap: new Action(
             "toggleMiniMap",
             () => {
-                (game.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene).toggleMiniMap();
+                (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
             }
         )
     };
@@ -223,7 +224,8 @@ export function setupInputs(game: Game): void {
     if (game.playerManager.isMobile && localStorageInstance.config.mobileControls) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
-            size: 125
+            size: localStorageInstance.config.joystickSize,
+            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
         });
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -238,7 +240,8 @@ export function setupInputs(game: Game): void {
 
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
-            size: 125
+            size: localStorageInstance.config.joystickSize,
+            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {

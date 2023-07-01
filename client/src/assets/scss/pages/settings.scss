@@ -5,13 +5,16 @@
     background-color: $bg;
     user-select: none;
     box-shadow: 0px 0px 10px #000000c8;
-
     max-width: 450px;
-    min-width: 350px;
-    width: fit-content;
+    height: 420px;
+    padding: 0px;
+    overflow: hidden;
+    border-radius: 10px;
 
     #settings-header {
         display: flex;
+        padding: 15px;
+        padding-bottom: 5px;
 
         h3 {
             margin: 5px;
@@ -25,9 +28,19 @@
         }
     }
 
+    #settings-tabs-container {
+        display: flex;
+    }
+
+    #settings-tabs {
+        width: 100%;
+    }
+
     .tab-content {
-        height: 300px;
+        height: 380px;
+        width: 100%;
         overflow-y: auto;
+        border-radius: 0;
     }
 
     .setting-title {
@@ -42,6 +55,9 @@
         }
         &.checkbox-setting {
             margin-bottom: 20px;
+        }
+        .range-input-value {
+            float: right;
         }
     }
 

@@ -1,24 +1,35 @@
+@import "../palette.scss";
+
 .tab-bar {
-    display: flex;
     user-select: none;
-    justify-content: center;
-    padding-inline: 5px;
+    width: 120px;
+    flex-direction: column;
 }
 
 .tab {
-    display: flex;
+    background: none;
+    border: none;
+    outline: none;
     padding: 6px;
-    padding-right: 10px;
+    padding-top: 10px;
     padding-left: 10px;
-    margin-inline: 5px;
     cursor: pointer;
-    border-radius: 5px 5px 0 0;
+    width: 120px;
+    text-align: left;
+    border-left: 2px solid transparent;
 
-    border-top: 4px solid transparent;
-}
+    &:focus {
+        text-decoration: underline;
+    }
 
-.tab.active {
-    border-color: $blue;
+    &.active {
+        border-color: $orange;
+    }
+
+    i {
+        margin-right: 10px;
+        width: 15px;
+    }
 }
 
 .tab-content.active, .tab.active {

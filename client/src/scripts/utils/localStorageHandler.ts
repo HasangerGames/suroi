@@ -39,13 +39,17 @@ export interface Config {
     movementSmoothing: boolean
     mobileControls: boolean
     minimapMinimized: boolean
+    leaveWarning: boolean
+    joystickSize: number
+    joystickTransparency: number
+    minimapTransparency: number
 
     devPassword: string | undefined | null
     nameColor: string | undefined | null
 }
 
 export const defaultConfig: Config = {
-    configVersion: "8",
+    configVersion: "9",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -81,6 +85,10 @@ export const defaultConfig: Config = {
     movementSmoothing: true,
     mobileControls: true,
     minimapMinimized: false,
+    leaveWarning: true,
+    joystickSize: 150,
+    joystickTransparency: 0.8,
+    minimapTransparency: 0.6,
 
     devPassword: "",
     nameColor: ""
@@ -180,11 +188,20 @@ while (config.configVersion !== defaultConfig.configVersion) {
             break;
         }
         case "7": {
-            // Version 7: Added "Reload", "Cancel Action" keybind, and save the minimap minimized state
+            // Version 8: Added "Reload", "Cancel Action" keybind, and save the minimap minimized state
             config.configVersion = "8";
             config.keybinds.reload = defaultConfig.keybinds.reload;
             config.keybinds.cancelAction = defaultConfig.keybinds.cancelAction;
-            config.minimapMinimized = false;
+            config.minimapMinimized = defaultConfig.minimapMinimized;
+            break;
+        }
+        case "8": {
+            // Version 9: Added leave warning, joystick size, joystick and minimap transparecy settings
+            config.configVersion = "9";
+            config.leaveWarning = defaultConfig.leaveWarning;
+            config.joystickSize = defaultConfig.joystickSize;
+            config.joystickTransparency = defaultConfig.joystickTransparency;
+            config.minimapTransparency = defaultConfig.minimapTransparency;
             break;
         }
         default: {

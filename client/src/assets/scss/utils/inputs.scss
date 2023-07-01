@@ -1,8 +1,10 @@
 @import "../palette.scss";
 
 input[type="range"] {
+    appearance: none;
     -webkit-appearance: none;
     background: transparent;
+    border-bottom: 1px solid transparent;
 
     @mixin input-thumb {
         height: 20px;
@@ -12,15 +14,16 @@ input[type="range"] {
         border: none;
         background: $orange;
         margin-top: -5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     }
 
     @mixin input-track {
-        background: $light;
         height: 10px;
         width: 100%;
         border-radius: 50%;
         cursor: pointer;
         border-radius: 5px;
+        background: $light;
     }
 
     &::-moz-range-thumb {
@@ -38,17 +41,26 @@ input[type="range"] {
 
     &::-webkit-slider-runnable-track {
         @include input-track;
+        background: var(--background);
+    }
+
+    &::-moz-range-progress {
+        @include input-track;
+        background: $orange;
     }
 
     &:focus {
         outline: none;
+        border-bottom-color: $orange;
     }
+
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
     }
 }
 
 input[type="checkbox"] {
+    appearance: none;
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
     position: relative;
@@ -89,6 +101,10 @@ input[type="checkbox"] {
 
     &:checked:after {
         background: $orange;
+    }
+
+    &:focus {
+        border-bottom: solid 1px $orange;
     }
 }
 

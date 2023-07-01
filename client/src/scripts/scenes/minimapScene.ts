@@ -5,8 +5,7 @@ import {
 import { localStorageInstance } from "../utils/localStorageHandler";
 import core from "../core";
 
-const MINIMAP_OPACITY_PERCENTAGE = 0.4;
-const MAP_FOCUSED_OPACITY_PERCENTAGE = 0.8;
+const MAP_FOCUSED_OPACITY = 0.8;
 
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
@@ -41,14 +40,14 @@ export class MinimapScene extends Phaser.Scene {
         const GRID_HEIGHT = 720 * this.mapScale;
         const CELL_SIZE = 16 * this.mapScale;
 
+        this.renderTexture = this.add.renderTexture(0, 0, GRID_WIDTH, GRID_HEIGHT).setOrigin(0, 0).fill(GRASS_COLOR);
+
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
             this.add.rectangle(x, 0, this.mapScale, GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0);
         }
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
             this.add.rectangle(0, y, GRID_WIDTH, this.mapScale, 0x000000, 0.35).setOrigin(0, 0);
         }
-
-        this.renderTexture = this.add.renderTexture(0, 0, 720 * this.mapScale, 720 * this.mapScale).setOrigin(0, 0);
 
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(360 * this.mapScale, 360 * this.mapScale, 512 * this.mapScale, 0x000000, 0);
@@ -109,18 +108,22 @@ export class MinimapScene extends Phaser.Scene {
 
     switchToBigMap(): void {
         this.cameras.main.setVisible(true);
-        this.cameras.main.setBackgroundColor(((MAP_FOCUSED_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = true;
         this.cameras.main.stopFollow();
         this.resizeBigMap();
         $("#minimap-border").hide();
+        this.updateBackgroundColor();
     }
 
     switchToSmallMap(): void {
         this.resizeSmallMap();
-        this.cameras.main.setBackgroundColor(((MINIMAP_OPACITY_PERCENTAGE * 0xFF | 0) * (2 ** 24)) + GRASS_COLOR);
         this.isExpanded = false;
         this.cameras.main.setVisible(this.visible);
         $("#minimap-border").toggle(this.visible);
+        this.updateBackgroundColor();
+    }
+
+    updateBackgroundColor(): void {
+        this.renderTexture?.setAlpha(this.isExpanded ? MAP_FOCUSED_OPACITY : localStorageInstance.config.minimapTransparency);
     }
 }

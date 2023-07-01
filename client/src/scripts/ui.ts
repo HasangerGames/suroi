@@ -6,6 +6,7 @@ import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
+import { type MinimapScene } from "./scenes/minimapScene";
 
 $((): void => {
     const dropdown = {
@@ -74,6 +75,10 @@ $((): void => {
     $("#btn-play-again").on("click", () => { core.game?.endGame(); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
+    $("#btn-fullscreen").on("click", () => {
+        void document.documentElement.requestFullscreen().catch();
+        $("#game-menu").hide();
+    });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape" && $("canvas").hasClass("active")) {
@@ -120,7 +125,7 @@ $((): void => {
     $("#slider-master-volume").on("input", function(this: HTMLInputElement) {
         const volume = Number(this.value);
         (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
-        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
+        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
         localStorageInstance.update({ masterVolume: volume });
     }).val(localStorageInstance.config.masterVolume);
 
@@ -156,8 +161,24 @@ $((): void => {
     // mobile controls toggle
     $("#toggle-mobile-controls").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ mobileControls: this.checked });
-        location.reload();
     }).prop("checked", localStorageInstance.config.mobileControls);
+
+    $("#slider-joystick-size").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ joystickSize: Number(this.value) });
+    }).val(localStorageInstance.config.joystickSize);
+
+    $("#slider-joystick-transparency").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ joystickTransparency: Number(this.value) });
+    }).val(localStorageInstance.config.joystickTransparency);
+
+    $("#slider-minimap-transparency").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ minimapTransparency: Number(this.value) });
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateBackgroundColor();
+    }).val(localStorageInstance.config.minimapTransparency);
+
+    $("#toggle-leave-warning").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ leaveWarning: this.checked });
+    }).prop("checked", localStorageInstance.config.leaveWarning);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < 3; i++) {
@@ -186,14 +207,31 @@ $((): void => {
                 core.game.playerManager.reload();
             }
         });
+        $("#btn-game-menu").show().on("click", () => {
+            $("#game-menu").show();
+        });
     }
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active")) {
+        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning) {
             e.preventDefault();
         }
     });
+
+    // Hack to style range inputs background and add a label with the value :)
+    function updateRangeInput(element: HTMLInputElement): void {
+        const value = Number(element.value);
+        const max = Number(element.max);
+        const min = Number(element.min);
+        const x = (value - min) / (max - min) * 100;
+        $(element).css("--background", `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`);
+        $(element).siblings(".range-input-value").text(value);
+    }
+
+    $("input[type=range]").on("input", (e) => {
+        updateRangeInput(e.target as HTMLInputElement);
+    }).each((_i, element) => { updateRangeInput(element as HTMLInputElement); });
 
     $(".tab").on("click", ev => {
         const tab = $(ev.target);
