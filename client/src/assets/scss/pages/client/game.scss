@@ -592,9 +592,6 @@ canvas {
         bottom: 5px;
         right: 5px;
     }
-    @media screen and (max-width: $screen_small) {
-        bottom: 75px;
-    }
 }
 
 #ammo-container {
@@ -607,7 +604,7 @@ canvas {
     }
 
     @media screen and (max-width: $screen_small) {
-        bottom: 75px;
+        bottom: 65px;
     }
 }
 
