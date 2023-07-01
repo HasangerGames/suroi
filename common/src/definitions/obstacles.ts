@@ -190,7 +190,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             indestructible: true,
-            hitbox: new RectangleHitbox(v(-10, -5), v(10, 5)),
+            hitbox: new RectangleHitbox(v(-9.8, -5.2), v(9.8, 5.2)),
             rotationMode: "none"
         },
         {
