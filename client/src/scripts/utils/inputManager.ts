@@ -80,6 +80,8 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             () => {
                 let index = game.playerManager.activeItemIndex + 1;
                 if (index > 1) index = 0;
+                // fallback to melee if theres no weapon on the slot
+                if (game.playerManager.weapons[index] === undefined) index = 2;
                 game.playerManager.equipItem(index);
             }
         ),
@@ -90,13 +92,17 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         previousItem: new Action(
             "inventory::previousItem",
             () => {
-                game.playerManager.equipItem(mod(game.playerManager.activeItemIndex - 1, INVENTORY_MAX_WEAPONS));
+                let index = mod(game.playerManager.activeItemIndex - 1, INVENTORY_MAX_WEAPONS);
+                if (!game.playerManager.weapons[index]) index = mod(index - 1, INVENTORY_MAX_WEAPONS);
+                game.playerManager.equipItem(index);
             }
         ),
         nextItem: new Action(
             "inventory::nextItem",
             () => {
-                game.playerManager.equipItem(mod(game.playerManager.activeItemIndex + 1, INVENTORY_MAX_WEAPONS));
+                let index = mod(game.playerManager.activeItemIndex + 1, INVENTORY_MAX_WEAPONS);
+                if (!game.playerManager.weapons[index]) index = mod(index + 1, INVENTORY_MAX_WEAPONS);
+                game.playerManager.equipItem(index);
             }
         ),
         useItem: new Action(
