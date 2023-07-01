@@ -19,6 +19,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
 import { circleCollision, distance } from "../../../../common/src/utils/math";
+import { requestFullscreen } from "../utils/misc";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -67,9 +68,7 @@ export class GameScene extends Phaser.Scene {
 
         this.scale.on("resize", this.resize.bind(this));
 
-        if (this.playerManager.isMobile) {
-            void document.documentElement.requestFullscreen().catch();
-        }
+        if (this.playerManager.isMobile) requestFullscreen();
     }
 
     private resize(): void {

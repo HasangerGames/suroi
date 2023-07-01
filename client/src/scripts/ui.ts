@@ -7,6 +7,7 @@ import { type GameScene } from "./scenes/gameScene";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
+import { requestFullscreen } from "./utils/misc";
 
 $((): void => {
     const dropdown = {
@@ -76,7 +77,7 @@ $((): void => {
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
     $("#btn-fullscreen").on("click", () => {
-        void document.documentElement.requestFullscreen().catch();
+        requestFullscreen();
         $("#game-menu").hide();
     });
 

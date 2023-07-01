@@ -220,7 +220,8 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
         }*/
-        // this.inventory.addOrReplaceWeapon(0, "lewis_gun");
+        //this.inventory.addOrReplaceWeapon(0, "940_pro");
+        //(this.inventory.getWeapon(0) as GunItem).ammo = 5;
         // this.inventory.addOrReplaceWeapon(1, "micro_uzi");
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
