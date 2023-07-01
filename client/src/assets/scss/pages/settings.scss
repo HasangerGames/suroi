@@ -13,18 +13,21 @@
     border-radius: 10px;
 
     #settings-header {
+        $headerHeight: 45px;
         display: flex;
-        padding: 15px;
-        padding-bottom: 5px;
+        height: $headerHeight;
+        align-items: center;
 
         h3 {
-            margin: 5px;
-            margin-top: 0px;
+            margin-left: 15px;
             display: flex;
         }
         #close-settings {
             margin-left: auto;
-            padding: 5px;
+            text-align: center;
+            line-height: $headerHeight;
+            width: $headerHeight;
+            height: $headerHeight;
             cursor: pointer;
         }
     }
