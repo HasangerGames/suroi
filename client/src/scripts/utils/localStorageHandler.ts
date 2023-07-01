@@ -90,7 +90,7 @@ export const defaultConfig: Config = {
     joystickSize: 150,
     joystickTransparency: 0.8,
     minimapTransparency: 0.8,
-    bigMapTransparency: 1,
+    bigMapTransparency: 0.9,
 
     devPassword: "",
     nameColor: ""
