@@ -14,7 +14,11 @@ export function randomKillWord(): string {
 
 export function requestFullscreen(): void {
     const elem = document.documentElement;
-    void elem.requestFullscreen?.().catch();
-    // @ts-expect-error webkitRequestFullscreen is a WebKit only function
-    void elem.webkitRequestFullscreen?.().catch();
+    if (elem.requestFullscreen) {
+        void elem.requestFullscreen().catch();
+    } else { // @ts-expect-error shut up eslint
+        if (elem.webkitRequestFullScreen) { // @ts-expect-error shut up eslint
+            void elem.webkitRequestFullScreen().catch();
+        }
+    }
 }
