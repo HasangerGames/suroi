@@ -320,6 +320,7 @@ export class Game {
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
+                    player.disableInvulnerability();
                     this.partialDirtyObjects.add(player);
                 }
 
@@ -334,6 +335,7 @@ export class Game {
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
                     player.startedAttacking = false;
+                    player.disableInvulnerability();
                     player.activeItem?.useItem();
                 }
 
@@ -467,10 +469,6 @@ export class Game {
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendPacket(this.mapPacket);
-
-        setTimeout(() => {
-            player.invulnerable = false;
-        }, 5000);
 
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;

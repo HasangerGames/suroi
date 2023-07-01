@@ -240,6 +240,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
+        this.images.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
+
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
 
         if (this.isActivePlayer) {

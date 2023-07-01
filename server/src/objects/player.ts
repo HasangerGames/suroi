@@ -228,7 +228,6 @@ export class Player extends GameObject {
     setVelocity(xVelocity: number, yVelocity: number): void {
         this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
         if (xVelocity !== 0 || yVelocity !== 0) {
-            if (this.invulnerable) this.invulnerable = false;
             this.movesSinceLastUpdate++;
         }
     }
@@ -275,6 +274,14 @@ export class Player extends GameObject {
 
     give(idString: string): void {
         this.inventory.appendWeapon(idString);
+    }
+
+    disableInvulnerability(): void {
+        if (this.invulnerable) {
+            this.invulnerable = false;
+            this.fullDirtyObjects.add(this);
+            this.game.fullDirtyObjects.add(this);
+        }
     }
 
     updateVisibleObjects(): void {
@@ -455,6 +462,7 @@ export class Player extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
+        stream.writeBoolean(this.invulnerable);
         stream.writeObjectType(this.activeItem.type);
     }
 }
