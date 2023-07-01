@@ -39,11 +39,7 @@ $((): void => {
 
     usernameField.val(localStorageInstance.config.playerName);
     usernameField.on("input", () => {
-        const value = usernameField.val() as string | undefined;
-
-        if (value !== undefined && value.trim().length > 0) {
-            localStorageInstance.update({ playerName: value });
-        }
+        localStorageInstance.update({ playerName: usernameField.val() as string });
     });
 
     const serverSelect: JQuery<HTMLSelectElement> = $("#server-select");
@@ -209,7 +205,7 @@ $((): void => {
             }
         });
         $("#btn-game-menu").show().on("click", () => {
-            $("#game-menu").show();
+            $("#game-menu").toggle();
         });
     }
 

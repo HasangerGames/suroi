@@ -10,6 +10,16 @@
     cursor: crosshair;
 }
 
+canvas {
+    z-index: -1;
+    display: none;
+    margin-top: 0px !important;
+    margin-left: 0px !important;
+    &.active {
+        display: block;
+    }
+}
+
 #btn-reload {
     position: absolute;
     bottom: 5px;
