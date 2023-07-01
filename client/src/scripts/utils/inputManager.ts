@@ -220,7 +220,7 @@ export function setupInputs(game: Game): void {
             (game.playerManager.isMobile && localStorageInstance.config.mobileControls)
         ) return;
 
-        game.activePlayer.rotation = game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
         game.playerManager.turning = true;
         game.playerManager.dirty.inputs = true;
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));

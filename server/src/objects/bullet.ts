@@ -5,7 +5,7 @@ import { type CollisionFilter, type GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 import { type Game } from "../game";
 import { randomFloat } from "../../../common/src/utils/random";
-import { distance } from "../../../common/src/utils/math";
+import { distanceSquared } from "../../../common/src/utils/math";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 
@@ -33,6 +33,7 @@ export class Bullet {
     speedVariance = 0;
 
     maxDistance: number;
+    maxDistanceSquared: number;
 
     dead = false;
 
@@ -55,6 +56,7 @@ export class Bullet {
         // explosion shrapnel variance
         this.speedVariance = randomFloat(0, definition.speedVariance);
         this.maxDistance = definition.maxDistance * (this.speedVariance + 1);
+        this.maxDistanceSquared = (definition.maxDistanceSquared as number) * (this.speedVariance + 1);
 
         // Init body
         this.body = game.world.createBody({
@@ -87,8 +89,8 @@ export class Bullet {
         return this.initialPosition;
     }
 
-    get distance(): number {
-        return distance(this.initialPosition, this.body.getPosition());
+    get distanceSquared(): number {
+        return distanceSquared(this.initialPosition, this.body.getPosition());
     }
 }
 

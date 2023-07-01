@@ -72,12 +72,10 @@ export const distance = (a: Vector, b: Vector): number => Math.sqrt(((b.x - a.x)
 
 /**
  * Get the distance between two points squared.
- * @param x1 The x-coordinate of the first point.
- * @param y1 The y-coordinate of the first point.
- * @param x2 The x-coordinate of the second point.
- * @param y2 The y-coordinate of the second point.
+ * @param a The first point
+ * @param b The second point
  */
-export const distanceSquared = (x1: number, y1: number, x2: number, y2: number): number => ((x2 - x1) ** 2) + ((y2 - y1) ** 2);
+export const distanceSquared = (a: Vector, b: Vector): number => ((b.x - a.x) ** 2) + ((b.y - a.y) ** 2);
 
 export function lerp(start: number, end: number, percentage: number): number {
     return start * (1.0 - percentage) + end * percentage;

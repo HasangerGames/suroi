@@ -3,7 +3,7 @@ import type { GameScene } from "../scenes/gameScene";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
 
-import { distance } from "../../../../common/src/utils/math";
+import { distanceSquared } from "../../../../common/src/utils/math";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
@@ -65,7 +65,7 @@ export function explosion(game: Game, scene: GameScene, type: ObjectType, positi
         image.destroy();
     });
 
-    if (game?.activePlayer !== undefined && distance(game.activePlayer.position, position) <= 70) {
+    if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
         if (localStorageInstance.config.cameraShake) {
             scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
         }

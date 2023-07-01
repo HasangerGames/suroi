@@ -98,7 +98,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = stream.readPosition();
 
         if (this.oldPosition !== undefined) {
-            this.distSinceLastFootstep += distanceSquared(this.oldPosition.x, this.oldPosition.y, this.position.x, this.position.y);
+            this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 10) {
                 this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
                 this.distSinceLastFootstep = 0;

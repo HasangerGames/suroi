@@ -18,7 +18,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
-import { circleCollision, distance } from "../../../../common/src/utils/math";
+import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
 import { requestFullscreen } from "../utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
@@ -171,7 +171,7 @@ export class GameScene extends Phaser.Scene {
         for (const o of this.activeGame.objects) {
             const object = o[1];
             if (object instanceof Loot && object.canInteract(this.playerManager)) {
-                const dist = distance(object.position, player.position);
+                const dist = distanceSquared(object.position, player.position);
                 if (circleCollision(player.position, player.radius, object.position, object.radius) && dist < minDist) {
                     minDist = dist;
                     closestObject = object;

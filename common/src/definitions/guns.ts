@@ -33,6 +33,7 @@ export type GunDefinition = ItemDefinition & {
         readonly speed: number
         readonly speedVariance: number
         readonly maxDistance: number
+        maxDistanceSquared?: number
     }
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -442,3 +443,7 @@ export const Guns: GunDefinition[] = [
         }
     }
 ];
+
+for (const gun of Guns) {
+    gun.ballistics.maxDistanceSquared = gun.ballistics.maxDistance ** 2;
+}

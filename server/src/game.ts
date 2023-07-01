@@ -168,7 +168,7 @@ export class Game {
         });
 
         // this return type is technically not true, but it gets typescript to shut up
-        const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distance <= object.maxDistance && !object.dead;
+        const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distanceSquared <= object.maxDistanceSquared && !object.dead;
 
         // Handle bullet collisions
         this.world.on("begin-contact", contact => {
@@ -242,7 +242,7 @@ export class Game {
 
             // Update bullets
             for (const bullet of this.bullets) {
-                if (bullet.distance >= bullet.maxDistance) {
+                if (bullet.distanceSquared >= bullet.maxDistanceSquared) {
                     if (!bullet.dead) this.removeBullet(bullet);
                     // Note: Bullets that pass their maximum distance are automatically deleted by the client,
                     // so there's no need to add them to the list of deleted bullets
@@ -610,7 +610,7 @@ export class Game {
     }
 
     isInGas(position: Vector): boolean {
-        return distanceSquared(position.x, position.y, this.gas.currentPosition.x, this.gas.currentPosition.y) >= this.gas.currentRadius ** 2;
+        return distanceSquared(position, this.gas.currentPosition) >= this.gas.currentRadius ** 2;
     }
 
     idAllocator = new IDAllocator(OBJECT_ID_BITS);
