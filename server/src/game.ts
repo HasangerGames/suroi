@@ -471,7 +471,7 @@ export class Game {
         player.sendPacket(this.mapPacket);
 
         setTimeout(() => {
-            player.invulnerable = false;
+            player.disableInvulnerability();
         }, 5000);
 
         if (this.aliveCount > 1 && !this.started) {
