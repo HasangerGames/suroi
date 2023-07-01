@@ -120,12 +120,14 @@
         <div id="right-joystick-container"></div>
       </div>
       <div id="top-left-container">
-        <div id="minimap-border"></div>
+        <div style="display: flex">
+          <div id="minimap-border"></div>
+          <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px;" id="btn-game-menu"></button>
+        </div>
         <!-- <div id="zone-timer-container">
           <img src="<%=require('../assets/img/misc/zone-icon.svg')%>">
           <span id="zone-timer">0:00</span>
         </div> -->
-        <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none;" id="btn-game-menu"></button>
         <div id="debug-hud">
           <div id="fps-counter"></div>
           <div id="ping-counter"></div>
