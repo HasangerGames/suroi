@@ -470,6 +470,10 @@ export class Game {
         player.sendPacket(new JoinedPacket(player));
         player.sendPacket(this.mapPacket);
 
+        setTimeout(() => {
+            player.invulnerable = false;
+        }, 5000);
+
         if (this.aliveCount > 1 && !this.started) {
             this.started = true;
             this.advanceGas();
