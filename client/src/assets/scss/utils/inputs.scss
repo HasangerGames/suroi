@@ -4,7 +4,7 @@ input[type="range"] {
     appearance: none;
     -webkit-appearance: none;
     background: transparent;
-    border-bottom: 1px solid transparent;
+    border-bottom: 5px solid transparent;
 
     @mixin input-thumb {
         height: 20px;
@@ -50,7 +50,7 @@ input[type="range"] {
 
     &:focus {
         outline: none;
-        border-bottom-color: $orange;
+        border-color: $blue;
     }
 
     &::-webkit-slider-thumb {
@@ -63,10 +63,12 @@ input[type="checkbox"] {
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;
     position: relative;
+    bottom: -2px;
     border: 0;
     outline: 0;
     cursor: pointer;
     margin-top: -1px;
+    border-bottom: 2px solid transparent;
 
     &:after {
         content: '';
@@ -100,6 +102,10 @@ input[type="checkbox"] {
 
     &:checked:after {
         background: $orange;
+    }
+
+    &:focus {
+        border-bottom: 4px solid $blue;
     }
 }
 

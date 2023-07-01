@@ -25,6 +25,13 @@
         margin-right: 10px;
         width: 15px;
     }
+
+    &:focus {
+        text-decoration: underline;
+        text-decoration-color: $blue;
+        text-decoration-thickness: 3px;
+        text-underline-offset: 3px;
+    }
 }
 
 .tab-content {

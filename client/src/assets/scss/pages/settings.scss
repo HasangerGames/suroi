@@ -54,12 +54,18 @@
     }
 
     .modal-item {
-        input[type=checkbox] {
-            float: right;
-        }
         &.checkbox-setting {
             margin-bottom: 20px;
         }
+
+        &:not(:first-child) {
+            margin-top: 1em;
+        }
+
+        input[type=checkbox] {
+            float: right;
+        }
+
         .range-input-value {
             float: right;
         }
