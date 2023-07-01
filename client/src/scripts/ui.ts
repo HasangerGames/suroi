@@ -173,6 +173,11 @@ $((): void => {
         (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateBackgroundColor();
     }).val(localStorageInstance.config.minimapTransparency);
 
+    $("#slider-big-map-transparency").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ bigMapTransparency: Number(this.value) });
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateBackgroundColor();
+    }).val(localStorageInstance.config.bigMapTransparency);
+
     $("#toggle-leave-warning").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ leaveWarning: this.checked });
     }).prop("checked", localStorageInstance.config.leaveWarning);

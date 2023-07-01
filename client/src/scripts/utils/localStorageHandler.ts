@@ -43,6 +43,7 @@ export interface Config {
     joystickSize: number
     joystickTransparency: number
     minimapTransparency: number
+    bigMapTransparency: number
 
     devPassword: string | undefined | null
     nameColor: string | undefined | null
@@ -89,6 +90,7 @@ export const defaultConfig: Config = {
     joystickSize: 150,
     joystickTransparency: 0.8,
     minimapTransparency: 0.8,
+    bigMapTransparency: 1,
 
     devPassword: "",
     nameColor: ""
@@ -200,6 +202,11 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.minimapTransparency = defaultConfig.minimapTransparency;
             config.keybinds.previousItem = defaultConfig.keybinds.previousItem;
             config.keybinds.nextItem = defaultConfig.keybinds.nextItem;
+        }
+        case "9": {
+            // Version 10: Added big map transparency setting
+            config.configVersion = "10";
+            config.bigMapTransparency = defaultConfig.bigMapTransparency;
             break;
         }
         default: {

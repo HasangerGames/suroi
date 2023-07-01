@@ -5,8 +5,6 @@ import {
 import { localStorageInstance } from "../utils/localStorageHandler";
 import core from "../core";
 
-const MAP_FOCUSED_OPACITY = 0.8;
-
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
     playerIndicatorDead = false;
@@ -85,6 +83,7 @@ export class MinimapScene extends Phaser.Scene {
     resizeBigMap(): void {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
+        if (this.cameras.main === undefined) return;
         this.cameras.main.setZoom(0.0012 / this.mapScale * screenHeight);
         // noinspection JSSuspiciousNameCombination
         this.cameras.main.setSize(screenHeight, screenHeight);
@@ -124,6 +123,6 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     updateBackgroundColor(): void {
-        this.renderTexture?.setAlpha(this.isExpanded ? MAP_FOCUSED_OPACITY : localStorageInstance.config.minimapTransparency);
+        this.renderTexture?.setAlpha(this.isExpanded ? localStorageInstance.config.bigMapTransparency : localStorageInstance.config.minimapTransparency);
     }
 }
