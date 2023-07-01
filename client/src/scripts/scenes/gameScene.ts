@@ -178,20 +178,36 @@ export class GameScene extends Phaser.Scene {
                 }
             }
         }
-        $("#interact-message").toggle(closestObject !== undefined);
-        if (closestObject) {
-            $("#interact-key").text(localStorageInstance.config.keybinds.interact[0]);
-            let interactText = closestObject.type.definition.name;
-            if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
-            $("#interact-text").html(interactText);
 
+        if (closestObject !== undefined) {
+            const prepareInteractText = (): void => {
+                if (closestObject === undefined) return;
+                let interactText = closestObject.type.definition.name;
+                if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
+                $("#interact-text").html(interactText);
+            };
             if (this.playerManager.isMobile) {
                 const lootDef = closestObject.type.definition as LootDefinition;
-                if ((lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
-                (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1]))) {
+                if (
+                    (lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
+                    (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])) ||
+                    (lootDef.itemType === ItemType.Melee && this.playerManager.weapons[2]?.idString === "fists")
+                ) {
                     this.playerManager.interact();
+                } else if (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee) {
+                    prepareInteractText();
+                    $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">');
+                    $("#interact-message").show();
+                    return;
                 }
+                $("#interact-message").hide();
+            } else {
+                prepareInteractText();
+                $("#interact-key").text(localStorageInstance.config.keybinds.interact[0]);
+                $("#interact-message").show();
             }
+        } else {
+            $("#interact-message").hide();
         }
     }
 

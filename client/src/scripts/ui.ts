@@ -198,7 +198,7 @@ $((): void => {
 
     // Event listener for Interact button
     if (core.game?.playerManager.isMobile) {
-        $("#btn-interact").show().on("click", () => {
+        $("#interact-message").on("click", () => {
             if (core.game !== undefined) {
                 core.game.playerManager.interact();
             }

@@ -10,12 +10,12 @@
     cursor: crosshair;
 }
 
-#btn-interact {
+#btn-reload {
     position: absolute;
     bottom: 5px;
     @media screen and (min-width: $screen_large) {
-        width: 80px;
-        height: 70px;
+        width: 70px;
+        height: 60px;
         bottom: 75px;
         left: 10px;
     }
@@ -26,31 +26,9 @@
         left: 5px;
     }
     z-index: 1000;
-    width: 70px;
-    height: 60px;
-    font-size: 15px;
-    padding: 0;
-}
-
-#btn-reload {
-    position: absolute;
-    bottom: 5px;
-    @media screen and (min-width: $screen_large) {
-        width: 80px;
-        height: 70px;
-        bottom: 75px;
-        left: 100px;
-    }
-    @media screen and (max-width: $screen_large) {
-        right: 100px;
-    }
-    @media screen and (max-width: $screen_small) {
-        right: 5px;
-    }
-    z-index: 1000;
-    width: 70px;
-    height: 60px;
-    font-size: 15px;
+    width: 60px;
+    height: 50px;
+    font-size: 25px;
     padding: 0;
 }
 
