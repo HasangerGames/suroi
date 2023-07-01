@@ -63,8 +63,8 @@ export const defaultConfig: Config = {
         lastEquippedItem: ["Q", ""],
         equipOtherGun: ["Space", ""],
         swapGunSlots: ["T", ""],
-        previousItem: ["MWheelDown", ""],
-        nextItem: ["MWheelUp", ""],
+        previousItem: ["MWheelUp", ""],
+        nextItem: ["MWheelDown", ""],
         useItem: ["Mouse0", ""],
         dropActiveItem: ["", ""],
         reload: ["R", ""],
@@ -197,11 +197,14 @@ while (config.configVersion !== defaultConfig.configVersion) {
         }
         case "8": {
             // Version 9: Added leave warning, joystick size, joystick and minimap transparecy settings
+            // And invert the next and previous weapon keybinds
             config.configVersion = "9";
             config.leaveWarning = defaultConfig.leaveWarning;
             config.joystickSize = defaultConfig.joystickSize;
             config.joystickTransparency = defaultConfig.joystickTransparency;
             config.minimapTransparency = defaultConfig.minimapTransparency;
+            config.keybinds.previousItem = defaultConfig.keybinds.previousItem;
+            config.keybinds.nextItem = defaultConfig.keybinds.nextItem;
             break;
         }
         default: {
