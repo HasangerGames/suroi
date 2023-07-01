@@ -20,6 +20,8 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
 import { circleCollision, distance } from "../../../../common/src/utils/math";
 import { requestFullscreen } from "../utils/misc";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -182,6 +184,14 @@ export class GameScene extends Phaser.Scene {
             let interactText = closestObject.type.definition.name;
             if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
             $("#interact-text").html(interactText);
+
+            if (this.playerManager.isMobile) {
+                const lootDef = closestObject.type.definition as LootDefinition;
+                if ((lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
+                (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1]))) {
+                    this.playerManager.interact();
+                }
+            }
         }
     }
 
