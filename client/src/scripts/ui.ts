@@ -209,7 +209,7 @@ $((): void => {
             }
         });
         $("#btn-game-menu").show().on("click", () => {
-            $("#game-menu").show();
+            $("#game-menu").toggle();
         });
     }
 
