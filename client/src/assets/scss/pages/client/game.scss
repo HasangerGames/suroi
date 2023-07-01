@@ -659,6 +659,7 @@ canvas {
     @media screen and (max-width: $screen_large) {
         font-size: 12px;
         max-width: fit-content;
+        width: 300px;
 
         #game-over-stats {
             width: 200px;
