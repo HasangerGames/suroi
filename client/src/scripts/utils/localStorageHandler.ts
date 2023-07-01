@@ -88,7 +88,7 @@ export const defaultConfig: Config = {
     leaveWarning: true,
     joystickSize: 150,
     joystickTransparency: 0.8,
-    minimapTransparency: 0.6,
+    minimapTransparency: 0.8,
 
     devPassword: "",
     nameColor: ""
@@ -164,7 +164,6 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version four just adds the toggleMap keybind, so just that needs porting
             config.configVersion = "4";
             config.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
-            break;
         }
         case "4": {
             // Version 5: Added "Interact", "Equip Other Gun", and "Toggle Minimap" keybinds, and mobile controls toggle
@@ -173,19 +172,16 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
             config.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
             config.mobileControls = defaultConfig.mobileControls;
-            break;
         }
         case "5": {
             // Version 6: Added "Drop Active Item" keybind
             config.configVersion = "6";
             config.keybinds.dropActiveItem = defaultConfig.keybinds.dropActiveItem;
-            break;
         }
         case "6": {
             // Version 7: Added "Swap Gun Slots" keybind
             config.configVersion = "7";
             config.keybinds.swapGunSlots = defaultConfig.keybinds.swapGunSlots;
-            break;
         }
         case "7": {
             // Version 8: Added "Reload", "Cancel Action" keybind, and save the minimap minimized state
@@ -193,11 +189,10 @@ while (config.configVersion !== defaultConfig.configVersion) {
             config.keybinds.reload = defaultConfig.keybinds.reload;
             config.keybinds.cancelAction = defaultConfig.keybinds.cancelAction;
             config.minimapMinimized = defaultConfig.minimapMinimized;
-            break;
         }
         case "8": {
-            // Version 9: Added leave warning, joystick size, joystick and minimap transparecy settings
-            // And invert the next and previous weapon keybinds
+            // Version 9: Added leave warning, joystick size, joystick and minimap transparency settings
+            // And inverted the next and previous weapon keybinds
             config.configVersion = "9";
             config.leaveWarning = defaultConfig.leaveWarning;
             config.joystickSize = defaultConfig.joystickSize;
