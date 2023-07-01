@@ -367,7 +367,8 @@ export class Player extends GameObject {
         this.health -= amount;
         if (amount > 0) {
             this.damageTaken += amount;
-            this.hitEffect = true;
+
+            if (source instanceof Player) this.hitEffect = true;
         }
         if (source instanceof Player && source !== this) {
             source.damageDone += amount;

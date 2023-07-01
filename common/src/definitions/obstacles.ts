@@ -40,7 +40,7 @@ function makeCrate(idString: string, name: string, rotationMode: "full" | "limit
             spawnMax: 1.0,
             destroy: 0.5
         },
-        hitbox: new RectangleHitbox(v(-4.3, -4.3), v(4.3, 4.3)),
+        hitbox: new RectangleHitbox(v(-4.6, -4.6), v(4.6, 4.6)),
         rotationMode,
         hasLoot: true
     };
@@ -57,7 +57,7 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
             spawnMax: 1.0,
             destroy: 0.6
         },
-        hitbox: new RectangleHitbox(v(-2.9, -2.9), v(2.9, 2.9)),
+        hitbox: new RectangleHitbox(v(-3.1, -3.1), v(3.1, 3.1)),
         rotationMode: "none",
         hasLoot: true
     };
@@ -121,7 +121,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.1,
                 destroy: 0.5
             },
-            hitbox: new CircleHitbox(3.85),
+            hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
             variations: 7,
@@ -137,7 +137,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.1,
                 destroy: 0.8
             },
-            hitbox: new CircleHitbox(4),
+            hitbox: new CircleHitbox(4.2),
             noCollisions: true,
             rotationMode: "full",
             variations: 2,
@@ -161,7 +161,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.5
             },
-            hitbox: new CircleHitbox(3.45),
+            hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
             explosion: "barrel_explosion"
         },
@@ -175,7 +175,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.5
             },
-            hitbox: new CircleHitbox(3.45),
+            hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
             explosion: "super_barrel_explosion"
         },
@@ -203,7 +203,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.1,
                 destroy: 0.3
             },
-            hitbox: new CircleHitbox(3.85),
+            hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
             hasLoot: true
