@@ -170,12 +170,12 @@ $((): void => {
 
     $("#slider-minimap-transparency").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ minimapTransparency: Number(this.value) });
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateBackgroundColor();
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
     }).val(localStorageInstance.config.minimapTransparency);
 
     $("#slider-big-map-transparency").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ bigMapTransparency: Number(this.value) });
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateBackgroundColor();
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
     }).val(localStorageInstance.config.bigMapTransparency);
 
     $("#toggle-leave-warning").on("input", function(this: HTMLInputElement) {
