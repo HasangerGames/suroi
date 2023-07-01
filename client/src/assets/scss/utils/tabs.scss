@@ -10,17 +10,11 @@
     background: none;
     border: none;
     outline: none;
-    padding: 6px;
-    padding-top: 10px;
-    padding-left: 10px;
+    padding: 10px;
     cursor: pointer;
     width: 120px;
     text-align: left;
     border-left: 2px solid transparent;
-
-    &:focus {
-        text-decoration: underline;
-    }
 
     &.active {
         border-color: $orange;
