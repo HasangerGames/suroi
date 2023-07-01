@@ -62,7 +62,7 @@ export function vClone(vector: Vector): Vector {
  * @returns A new Vector resulting from the rotation of the input Vector by the given angle.
  */
 export function vRotate(vector: Vector, angle: number): Vector {
-    const cos = Math.cos(angle); 
+    const cos = Math.cos(angle);
     const sin = Math.sin(angle);
     return v(vector.x * cos - vector.y * sin, vector.x * sin + vector.y * cos);
 }
