@@ -20,8 +20,11 @@ export class PlayerManager {
     private _adrenaline = 100;
 
     get isMobile(): boolean {
-        if (core.phaser === undefined) return false;
-        return !core.phaser.device.os.desktop && localStorageInstance.config.mobileControls;
+        return this.isActuallyMobile && localStorageInstance.config.mobileControls;
+    }
+
+    get isActuallyMobile(): boolean {
+        return core.phaser !== undefined && !core.phaser.device.os.desktop;
     }
 
     readonly movement = {

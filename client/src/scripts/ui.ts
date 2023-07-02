@@ -226,7 +226,7 @@ $((): void => {
     });
 
     // Hide mobile settings on desktop
-    $("#tab-mobile").toggle(core.phaser !== undefined && !core.phaser?.device.os.desktop);
+    $("#tab-mobile").toggle(core.game?.playerManager.isActuallyMobile);
 
     // Event listener for Interact button
     if (core.game?.playerManager.isMobile) {

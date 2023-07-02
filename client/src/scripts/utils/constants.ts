@@ -1,10 +1,9 @@
 export const HIDE_DEV_REGION = false;
-export const GRASS_COLOR = "#49993e";
-const regexOutput = GRASS_COLOR.match(/[a-f0-9]{2}/g);
-if (regexOutput === null) throw new Error("Invalid grass color");
-const [r, g, b] = regexOutput.map((value) => parseInt(value, 16));
+export const GRASS_COLOR = 0x49993e;
 export const GRASS_RGB = {
-    r, g, b
+    r: 73,
+    g: 153,
+    b: 62
 };
 export const GAS_COLOR = 0xff4800;
 export const GAS_ALPHA = 0.55;
