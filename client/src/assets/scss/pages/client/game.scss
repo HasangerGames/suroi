@@ -26,14 +26,11 @@ canvas {
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
-        bottom: 75px;
-        left: 10px;
+        bottom: 10px;
+        right: 400px;
     }
     @media screen and (max-width: $screen_large) {
-        left: 100px;
-    }
-    @media screen and (max-width: $screen_small) {
-        left: 5px;
+        right: 90px;
     }
     z-index: 1000;
     width: 60px;
@@ -460,7 +457,7 @@ canvas {
 
     @media screen and (max-width: $screen_large) {
         flex-direction: column;
-        gap: 5px;
+        gap: 3px;
     }
 
     .inventory-slot {
@@ -589,12 +586,12 @@ canvas {
     left: 10px;
 
     .inventory-container {
-        margin-top: 10px;
+        margin-top: 3px;
     }
 
     .item-slot {
-        height: 40px!important;
-        width: 95px!important;
+        height: 40px !important;
+        width: 95px !important;
         justify-content: start;
     }
 
@@ -615,7 +612,7 @@ canvas {
 
         @media screen and (max-width: $screen_large) {
             width: 30px;
-            height: 20px!important;
+            height: 20px !important;
         }
     }
 
@@ -625,21 +622,20 @@ canvas {
         left: 5px;
         display: flex;
 
-        .inventory-container {
-            margin-left: 10px;
+        #healing-items-container {
+            margin-right: 3px;
         }
+
         .item-slot {
-            height: 30px!important;
-            width: 70px!important;
+            height: 30px !important;
+            width: 70px !important;
             justify-content: start;
         }
     }
 
     @media screen and (max-width: $screen_small) {
-        bottom: 65px;
+        flex-direction: column;
     }
-    
-
 }
 
 #equipment-container {

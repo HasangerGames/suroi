@@ -156,6 +156,8 @@ export class GameScene extends Phaser.Scene {
         sound.play({ volume: this.volume });
     }
 
+    skipLootCheck = true;
+
     tick(): void {
         if (!this.activeGame.gameStarted) return;
 
@@ -163,6 +165,9 @@ export class GameScene extends Phaser.Scene {
             this.playerManager.dirty.inputs = false;
             this.activeGame.sendPacket(new InputPacket(this.playerManager));
         }
+
+        this.skipLootCheck = !this.skipLootCheck;
+        if (this.skipLootCheck) return;
 
         // Loop through all loot objects to check if the player is colliding with one to show the interact message
         let minDist = Number.MAX_VALUE;

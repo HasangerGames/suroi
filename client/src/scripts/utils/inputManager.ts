@@ -209,9 +209,7 @@ export function setupInputs(game: Game): void {
         if (event instanceof KeyboardEvent && event.repeat) return;
 
         // disable pointer events on mobile if mobile controls are enabled
-        if (event instanceof PointerEvent &&
-            game.playerManager.isMobile &&
-            localStorageInstance.config.mobileControls) return;
+        if (event instanceof PointerEvent && game.playerManager.isMobile) return;
 
         const key = getKeyFromInputEvent(event);
 
@@ -244,9 +242,7 @@ export function setupInputs(game: Game): void {
     gameUi.addEventListener("wheel", handleInputEvent);
 
     gameUi.addEventListener("pointermove", (e: MouseEvent) => {
-        if (game.playerManager === undefined ||
-            (game.playerManager.isMobile && localStorageInstance.config.mobileControls)
-        ) return;
+        if (game.playerManager === undefined || game.playerManager.isMobile) return;
 
         game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
         game.playerManager.turning = true;
@@ -255,7 +251,7 @@ export function setupInputs(game: Game): void {
     });
 
     // Mobile joysticks
-    if (game.playerManager.isMobile && localStorageInstance.config.mobileControls) {
+    if (game.playerManager.isMobile) {
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
             size: localStorageInstance.config.joystickSize,

@@ -8,6 +8,7 @@ import { type MeleeDefinition } from "../../../../common/src/definitions/melees"
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { localStorageInstance } from "./localStorageHandler";
 // This class manages the active player data and inventory
 export class PlayerManager {
     game: Game;
@@ -20,7 +21,7 @@ export class PlayerManager {
 
     get isMobile(): boolean {
         if (core.phaser === undefined) return false;
-        return !core.phaser.device.os.desktop;
+        return !core.phaser.device.os.desktop && localStorageInstance.config.mobileControls;
     }
 
     readonly movement = {
