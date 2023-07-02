@@ -1,6 +1,4 @@
-import {
-    type Body, type Shape, type Vec2
-} from "planck";
+import { type Body, type Shape, type Vec2 } from "planck";
 
 import { type Game } from "../game";
 
@@ -9,13 +7,9 @@ import { bodyFromHitbox } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import {
-    vClone, type Vector, vSub
-} from "../../../common/src/utils/vector";
+import { vClone, type Vector, vSub } from "../../../common/src/utils/vector";
 import { transformRectangle } from "../../../common/src/utils/math";
-import {
-    CircleHitbox, type Hitbox, RectangleHitbox
-} from "../../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";

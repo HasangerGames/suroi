@@ -5,9 +5,7 @@ import type { Game } from "../game";
 import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import {
-    LootRadius, MaxInventoryCapacity, type ObjectCategory
-} from "../../../../common/src/constants";
+import { LootRadius, MaxInventoryCapacity, type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";

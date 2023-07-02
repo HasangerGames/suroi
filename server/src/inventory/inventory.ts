@@ -1,5 +1,8 @@
 import {
-    INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory, PlayerActions
+    INVENTORY_MAX_WEAPONS,
+    MaxInventoryCapacity,
+    ObjectCategory,
+    PlayerActions
 } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";

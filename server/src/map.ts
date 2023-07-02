@@ -6,7 +6,8 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { type Variation } from "../../common/src/typings";
 import {
     random,
-    randomFloat, randomPointInsideCircle,
+    randomFloat,
+    randomPointInsideCircle,
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";

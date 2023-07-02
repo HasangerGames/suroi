@@ -1,6 +1,4 @@
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 import { type CollisionFilter, type GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 import { type Game } from "../game";

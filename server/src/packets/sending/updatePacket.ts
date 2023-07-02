@@ -1,7 +1,10 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
 import {
-    ObjectCategory, PLAYER_ACTIONS_BITS, PacketType, PlayerActions
+    ObjectCategory,
+    PLAYER_ACTIONS_BITS,
+    PacketType,
+    PlayerActions
 } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
