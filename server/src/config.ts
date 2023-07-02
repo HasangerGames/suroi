@@ -58,7 +58,7 @@ export interface ConfigType {
     /**
      * Dev mode password, this gives dev cheats, for now it only spawns the player with some weapons and 100% adrenaline. \
      * To use it add `?devPassword=PASSWORD` on the website url, example: `127.0.0.1:3000/?devPassword=fooBar`. \
-     * If its `undefined` you won't be able to get dev mode
+     * If set to `undefined`, dev mode will be unaccessible.
      */
     readonly devPassword?: string
 }

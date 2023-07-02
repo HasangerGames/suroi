@@ -29,6 +29,7 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
+import { type GunItem } from "../inventory/gunItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -148,11 +149,26 @@ export class Player extends GameObject {
         seq: false
     };
 
-    visibleObjects = new Set<GameObject>(); // Objects the player can see
-    nearObjects = new Set<GameObject>(); // Objects the player can see with a 1x scope
-    partialDirtyObjects = new Set<GameObject>(); // Objects that need to be partially updated
-    fullDirtyObjects = new Set<GameObject>(); // Objects that need to be fully updated
-    deletedObjects = new Set<GameObject>(); // Objects that need to be deleted
+    /**
+     * Objects the player can see
+     */
+    visibleObjects = new Set<GameObject>();
+    /**
+     * Objects the player can see with a 1x scope
+     */
+    nearObjects = new Set<GameObject>();
+    /**
+     * Objects that need to be partially updated
+     */
+    partialDirtyObjects = new Set<GameObject>();
+    /**
+     * Objects that need to be fully updated
+     */
+    fullDirtyObjects = new Set<GameObject>();
+    /**
+     * Objects that need to be deleted
+     */
+    deletedObjects = new Set<GameObject>();
 
     private _zoom!: number;
     xCullDist!: number;
@@ -171,7 +187,7 @@ export class Player extends GameObject {
     nameColor: string;
 
     /**
-     * Used to make players invunerable for 5 seconds after spawning or until they move
+     * Used to make players invulnerable for 5 seconds after spawning or until they move
      */
     invulnerable = true;
 
@@ -213,16 +229,14 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
 
         // Inventory preset
-        /*if (this.isDev) {
+        if (this.isDev) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
-            (this.inventory.getWeapon(0) as GunItem).ammo = 255;
+            (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
             this.inventory.addOrReplaceWeapon(1, "tango_51");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
-        }*/
-        //this.inventory.addOrReplaceWeapon(0, "940_pro");
-        //(this.inventory.getWeapon(0) as GunItem).ammo = 5;
-        // this.inventory.addOrReplaceWeapon(1, "micro_uzi");
+        }
+
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
@@ -388,8 +402,7 @@ export class Player extends GameObject {
                 this.killedBy = source;
                 if (source !== this) source.kills++;
                 source.sendPacket(new KillPacket(source, this, weaponUsed));
-                const killMessage = new KillKillFeedMessage(this, source, weaponUsed);
-                this.game.killFeedMessages.add(new KillFeedPacket(this, killMessage));
+                this.game.killFeedMessages.add(new KillFeedPacket(this, new KillKillFeedMessage(this, source, weaponUsed)));
             }
 
             // Destroy physics body; reset movement and attacking variables

@@ -80,7 +80,8 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             () => {
                 let index = game.playerManager.activeItemIndex + 1;
                 if (index > 1) index = 0;
-                // fallback to melee if theres no weapon on the slot
+
+                // fallback to melee if there's no weapon on the slot
                 if (game.playerManager.weapons[index] === undefined) index = 2;
                 game.playerManager.equipItem(index);
             }
@@ -339,7 +340,7 @@ const actionsNames = {
     toggleMiniMap: "Toggle Minimap"
 };
 
-// generate the input settings
+// Generate the input settings
 function generateBindsConfigScreen(): void {
     const keybindsContainer = $("#tab-keybinds-content");
     keybindsContainer.html("");
@@ -379,7 +380,7 @@ function generateBindsConfigScreen(): void {
                 if (bindButton.classList.contains("active")) {
                     let key = getKeyFromInputEvent(event);
 
-                    // remove conflicting binds
+                    // Remove conflicting binds
                     for (const a2 in defaultConfig.keybinds) {
                         const action2 = a2 as keyof KeybindActions;
                         const bindAction = keybinds[action2];
@@ -391,7 +392,7 @@ function generateBindsConfigScreen(): void {
                         });
                     }
 
-                    // remove binding with Escape
+                    // Remove binding with Escape
                     if (key === "Escape") {
                         key = "";
                     }
@@ -399,7 +400,7 @@ function generateBindsConfigScreen(): void {
                     actionBinds[bindIndex] = key;
                     localStorageInstance.update({ keybinds });
 
-                    // update the bindings screen
+                    // Update the bindings screen
                     generateBindsConfigScreen();
                 }
             }
@@ -427,7 +428,7 @@ function generateBindsConfigScreen(): void {
         }
     }
 
-    // add the reset button
+    // Add the reset button
     $("<div/>", { class: "modal-item" }).append($("<button/>", {
         class: "btn btn-darken btn-lg btn-danger",
         html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
@@ -436,7 +437,7 @@ function generateBindsConfigScreen(): void {
         generateBindsConfigScreen();
     })).appendTo(keybindsContainer);
 
-    // change the weapons slots keybind text
+    // Change the weapons slots keybind text
     for (let i = 1; i <= 3; i++) {
         const slotKeybinds = localStorageInstance.config.keybinds[`slot${i}` as keyof KeybindActions];
         $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.filter(bind => bind !== "").join(" / "));

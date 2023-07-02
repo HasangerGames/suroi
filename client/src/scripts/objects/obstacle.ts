@@ -21,10 +21,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     isNew = true;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, scene, type, id);
 
-        // the image and emmiter key, position and other properties are set after the obstacle is deserialized
+        // the image and emiter key, position and other properties are set after the obstacle is deserialized
         this.image = this.scene.add.image(0, 0, "main");
         this.emitter = this.scene.add.particles(0, 0, "main");
     }

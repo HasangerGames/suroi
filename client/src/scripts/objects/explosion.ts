@@ -7,6 +7,7 @@ import { distanceSquared } from "../../../../common/src/utils/math";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
+import { type ObjectCategory } from "../../../../common/src/constants";
 
 /**
  * Custom particle class that adds friction to its velocity.
@@ -24,8 +25,8 @@ class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
     }
 }
 
-export function explosion(game: Game, scene: GameScene, type: ObjectType, position: Vector): void {
-    const definition = type.definition as ExplosionDefinition;
+export function explosion(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
+    const definition = type.definition;
     const phaserPos = vMul(position, 20);
 
     const image = scene.add.image(phaserPos.x, phaserPos.y, "main", definition.animation.frame).setScale(0);

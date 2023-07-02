@@ -26,7 +26,9 @@ import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
 import {
-    GasState, ObjectCategory, OBJECT_ID_BITS
+    GasState,
+    ObjectCategory,
+    OBJECT_ID_BITS
 } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { type GunDefinition } from "../../common/src/definitions/guns";
@@ -50,6 +52,8 @@ import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
 import { Obstacle } from "./objects/obstacle";
+import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
+import { type LootDefinition } from "../../common/src/definitions/loots";
 
 export class Game {
     map: Map;
@@ -520,7 +524,7 @@ export class Game {
         } catch (e) { }
     }
 
-    addLoot(type: ObjectType, position: Vector, count?: number): Loot {
+    addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
         const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
         this.dynamicObjects.add(loot);
@@ -559,7 +563,7 @@ export class Game {
         this.bullets.delete(bullet);
     }
 
-    addExplosion(type: ObjectType, position: Vector, source: GameObject): Explosion {
+    addExplosion(type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
         const explosion = new Explosion(this, type, position, source);
         this.explosions.add(explosion);
         return explosion;

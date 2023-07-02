@@ -23,15 +23,21 @@ canvas {
 #btn-reload {
     position: absolute;
     bottom: 5px;
+
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
         bottom: 10px;
         right: 400px;
     }
+
     @media screen and (max-width: $screen_large) {
-        right: 90px;
+        left: 100px;
     }
+    @media screen and (max-width: $screen_small) {
+        left: 5px;
+    }
+
     z-index: 1000;
     width: 60px;
     height: 50px;
@@ -44,14 +50,15 @@ canvas {
     top: 10px;
     left: 10px;
 
-    &> div {
+    &>div {
         margin-bottom: 10px;
     }
 
     @media screen and (max-width: $screen_large) {
         top: 5px;
         left: 5px;
-        &> div {
+
+        &>div {
             margin-bottom: 5px;
         }
     }
@@ -168,9 +175,6 @@ canvas {
     }
 
     #kill-feed {
-        max-height: 210px;
-        overflow: hidden;
-
         .kill-feed-item {
             max-width: fit-content;
             padding: 8px 10px 8px 10px;
@@ -201,8 +205,12 @@ canvas {
             }
         }
 
-        .kill-feed-item.kill-feed-item-red {
-            color: #ff9696;
+        .kill-feed-item.kill-feed-item-victim {
+            background-color: hsl(0, 100%, 40%, 0.459);
+        }
+
+        .kill-feed-item.kill-feed-item-killer {
+            border: 2px solid hsl(0, 100%, 40%, 0.8);
         }
     }
 }
@@ -328,7 +336,8 @@ canvas {
     justify-content: flex-start;
     align-items: center;
 
-    #health-bar, #health-bar-animation {
+    #health-bar,
+    #health-bar-animation {
         position: absolute;
         top: 0;
         left: 0;
@@ -566,18 +575,6 @@ canvas {
         bottom: 5px;
         right: 5px;
     }
-
-    .item-image {
-        width: 90px;
-        height: 90px;
-
-        @media screen and (max-width: $screen_large) {
-            width: 50px;
-            height: 50px;
-        }
-
-        margin-bottom: 10px;
-    }
 }
 
 #items-container {
@@ -657,7 +654,8 @@ canvas {
         margin-bottom: 0;
     }
 
-    h1, h2 {
+    h1,
+    h2 {
         margin-top: 0;
         margin-bottom: 5px;
     }
@@ -678,14 +676,17 @@ canvas {
             display: flex;
             padding: .5rem 0
         }
+
         .stat-name {
             text-align: left;
         }
+
         .stat-value {
             text-align: right;
             margin-left: auto;
         }
     }
+
     @media screen and (max-width: $screen_large) {
         font-size: 12px;
         max-width: fit-content;

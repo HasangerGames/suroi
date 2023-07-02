@@ -77,12 +77,12 @@ export const distance = (a: Vector, b: Vector): number => Math.sqrt(((b.x - a.x)
  */
 export const distanceSquared = (a: Vector, b: Vector): number => ((b.x - a.x) ** 2) + ((b.y - a.y) ** 2);
 
-export function lerp(start: number, end: number, percentage: number): number {
-    return start * (1.0 - percentage) + end * percentage;
+export function lerp(start: number, end: number, interpFactor: number): number {
+    return start * (1 - interpFactor) + end * interpFactor;
 }
 
-export function vecLerp(start: Vector, end: Vector, percentage: number): Vector {
-    return vAdd(vMul(start, 1.0 - percentage), vMul(end, percentage));
+export function vecLerp(start: Vector, end: Vector, interpFactor: number): Vector {
+    return vAdd(vMul(start, 1 - interpFactor), vMul(end, interpFactor));
 }
 
 /**

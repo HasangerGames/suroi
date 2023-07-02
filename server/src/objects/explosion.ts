@@ -10,14 +10,15 @@ import { type ExplosionDefinition } from "../../../common/src/definitions/explos
 import { type Vector } from "../../../common/src/utils/vector";
 import { distance, angleBetween } from "../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
+import { type ObjectCategory } from "../../../common/src/constants";
 
 export class Explosion {
     game: Game;
-    type: ObjectType;
+    type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
     position: Vector;
     source: GameObject;
 
-    constructor(game: Game, type: ObjectType, position: Vector, source: GameObject) {
+    constructor(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector, source: GameObject) {
         this.game = game;
         this.type = type;
         this.position = position;
@@ -27,7 +28,7 @@ export class Explosion {
     explode(): void {
         // NOTE: the CircleHitbox distance was returning weird values and i was lazy to debug it
         // so for now its just checking if the obstacle distance is in range
-        const definition = this.type.definition as ExplosionDefinition;
+        const definition = this.type.definition;
 
         for (const object of this.game.getVisibleObjects(this.position)) {
             if (!object.dead && object instanceof Obstacle) {
