@@ -60,7 +60,7 @@ const bannedIPs: string[] = [];
 
 app.get("/api/getGame", (res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted(() => {});
+    res.onAborted(() => { });
     cors(res);
 
     let response: { success: boolean, address?: string };
@@ -97,7 +97,7 @@ app.ws("/play", {
      */
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => {});
+        res.onAborted((): void => { });
 
         if (!game.allowJoin) {
             res.endWithoutBody(0, true);
@@ -124,23 +124,25 @@ app.ws("/play", {
 
         let name = searchParams.get("name");
 
-        if (name === null) {
+        name = decodeURIComponent(name ?? "").trim();
+        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
             name = "Player";
         } else {
-            name = decodeURIComponent(name).trim();
-            if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
-                name = "Player";
-            } else {
-                name = sanitizeHtml(name, {
-                    allowedTags: [],
-                    allowedAttributes: {}
-                });
-            }
+            name = sanitizeHtml(name, {
+                allowedTags: [],
+                allowedAttributes: {}
+            });
         }
 
         let isDev = false;
         const devPassword = searchParams.get("devPassword");
         if (devPassword !== null && devPassword === Config.devPassword) isDev = true;
+
+        let color = searchParams.get("nameColor") ?? "";
+
+        if (color.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
+            color = `#${color}`;
+        }
 
         res.upgrade(
             {
@@ -148,7 +150,7 @@ app.ws("/play", {
                 playerName: name,
                 ip,
                 isDev,
-                nameColor: isDev ? (searchParams.get("nameColor") ?? "") : ""
+                nameColor: isDev ? color : ""
             },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),

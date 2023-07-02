@@ -52,10 +52,12 @@ $(() => {
 
     const params = new URLSearchParams(window.location.search);
     const nameColor = params.get("nameColor");
-    if (nameColor && nameColor.length > 0) localStorageInstance.update({ nameColor });
+    if (nameColor) {
+        localStorageInstance.update({ nameColor });
+    }
 
     const devPassword = params.get("devPassword");
-    if (devPassword && devPassword.length > 0) {
+    if (devPassword) {
         localStorageInstance.update({ devPassword });
         location.search = "";
     }

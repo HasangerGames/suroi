@@ -6,7 +6,8 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { type Variation } from "../../common/src/typings";
 import {
     random,
-    randomFloat, randomPointInsideCircle,
+    randomFloat,
+    randomPointInsideCircle,
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
@@ -88,14 +89,16 @@ export class Map {
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
-    private generateObstacles(idString: string, count: number, prob?: number, radius?: number, squareRadius?: boolean): void {
-        const type: ObjectType = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+    private generateObstacles(idString: string, count: number, spawnProbability?: number, radius?: number, squareRadius?: boolean): void {
+        const type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, idString);
+
         for (let i = 0; i < count; i++) {
-            if ((prob !== undefined && Math.random() < prob) || prob === undefined) {
-                const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+            if (Math.random() < (spawnProbability ?? 1)) {
+                const definition: ObstacleDefinition = type.definition;
                 const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
                 const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-                let rotation: number | undefined;
+                let rotation: number;
+
                 switch (definition.rotationMode) {
                     case "full":
                         rotation = randomRotation();
@@ -110,10 +113,6 @@ export class Map {
                     default:
                         rotation = 0;
                         break;
-                }
-
-                if (rotation === undefined) {
-                    throw new Error("Unknown rotation type");
                 }
 
                 let position = this.getRandomPositionFor(type, scale);
@@ -136,7 +135,7 @@ export class Map {
     }
 
     private obstacleTest(idString: string, position: Vec2, rotation: number, scale: number, variation: Variation): Obstacle {
-        const type = ObjectType.fromString(ObjectCategory.Obstacle, idString);
+        const type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, idString);
         const obstacle: Obstacle = new Obstacle(
             this.game,
             type,

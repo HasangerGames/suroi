@@ -6,9 +6,7 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import {
-    FireMode, AnimationType, PlayerActions
-} from "../../../common/src/constants";
+import { FireMode, AnimationType, PlayerActions } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 
 /**
@@ -58,15 +56,18 @@ export class GunItem extends InventoryItem {
             this._shots = 0;
             return;
         }
-        if (this.ammo <= 0 && this.type.idString !== "deathray") {
+
+        if (this.ammo <= 0) {
             if (owner.inventory.items[definition.ammoType] <= 0) {
                 owner.animation.type = AnimationType.GunClick;
                 owner.animation.seq = !owner.animation.seq;
             }
+
             this.reload();
             this._shots = 0;
             return;
         }
+
         this.owner.action?.cancel();
 
         if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
@@ -81,7 +82,6 @@ export class GunItem extends InventoryItem {
 
         owner.dirty.weapons = true;
 
-        if (this.type.idString !== "deathray") this.ammo--;
         this._shots++;
 
         this._lastUse = owner.game.now;
@@ -114,7 +114,11 @@ export class GunItem extends InventoryItem {
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
 
-        if (this.ammo <= 0 && this.type.idString !== "deathray") {
+        if (!definition.infiniteAmmo) {
+            --this.ammo;
+        }
+
+        if (this.ammo <= 0) {
             this.reload();
             this._shots = 0;
             return;
@@ -141,9 +145,13 @@ export class GunItem extends InventoryItem {
     }
 
     reload(): void {
-        if (this.ammo >= this.definition.capacity ||
+        if (
+            this.definition.infiniteAmmo === true ||
+            this.ammo >= this.definition.capacity ||
             this.owner.inventory.items[this.definition.ammoType] <= 0 ||
-            this.owner.action?.type === PlayerActions.Reload) return;
+            this.owner.action?.type === PlayerActions.Reload
+        ) return;
+
         this.owner.executeAction(new ReloadAction(this.owner, this));
     }
 }

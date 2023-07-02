@@ -8,11 +8,7 @@ import {
 
 import { type Obstacle } from "../objects/obstacle";
 
-import {
-    CircleHitbox,
-    type Hitbox,
-    RectangleHitbox
-} from "../../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
 import { type Vector } from "../../../common/src/utils/vector";
 

@@ -1,6 +1,4 @@
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 
 import { type Game } from "../game";
 
@@ -9,18 +7,14 @@ import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import {
-    v, vAdd, type Vector
-} from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import {
-    LootRadius, MaxInventoryCapacity, type ObjectCategory
-} from "../../../common/src/constants";
+import { LootRadius, MaxInventoryCapacity, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 
 export class Loot extends GameObject {
@@ -38,6 +32,8 @@ export class Loot extends GameObject {
         loot: true
     };
 
+    declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+
     body: Body;
 
     oldPosition: Vector;
@@ -46,7 +42,7 @@ export class Loot extends GameObject {
 
     isNew = true;
 
-    constructor(game: Game, type: ObjectType, position: Vector, count?: number) {
+    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
 
         this.oldPosition = position;
@@ -61,7 +57,7 @@ export class Loot extends GameObject {
             fixedRotation: true
         });
 
-        const radius = LootRadius[(this.type.definition as LootDefinition).itemType];
+        const radius = LootRadius[this.type.definition.itemType];
 
         this.body.createFixture({
             shape: Circle(radius),
@@ -91,7 +87,8 @@ export class Loot extends GameObject {
     canInteract(player: Player): boolean {
         if (this.dead) return false;
         const inventory = player.inventory;
-        const definition = this.type.definition as LootDefinition;
+        const definition = this.type.definition;
+
         switch (definition.itemType) {
             // average ESLint L
             // eslint-disable-next-line no-fallthrough
@@ -127,7 +124,7 @@ export class Loot extends GameObject {
 
         const inventory = player.inventory;
         let deleteItem = true;
-        const definition = this.type.definition as LootDefinition;
+        const definition = this.type.definition;
 
         switch (definition.itemType) {
             case ItemType.Melee: {
@@ -170,7 +167,7 @@ export class Loot extends GameObject {
 
         // Send pickup packet
         if (definition.itemType !== ItemType.Gun) {
-            player.sendPacket(new PickupPacket(player, this.type as ObjectType<ObjectCategory.Loot>));
+            player.sendPacket(new PickupPacket(player, this.type));
         }
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player

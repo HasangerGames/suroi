@@ -2,6 +2,7 @@ import { type ItemDefinition, type ItemType } from "../../../common/src/utils/ob
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -15,7 +16,7 @@ export abstract class InventoryItem {
     /**
      * The `ObjectType` instance associated with this item
      */
-    readonly type: ObjectType<ObjectCategory.Loot>;
+    readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
     /**
      * The player this item belongs to
      */

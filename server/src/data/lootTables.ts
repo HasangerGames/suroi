@@ -86,26 +86,16 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "tango_51", weight: 0.001 }
     ],
     healing_items: [
-        {
-            item: "gauze", weight: 3, count: 5
-        },
+        { item: "gauze", weight: 3, count: 5 },
         { item: "cola", weight: 2 },
         { item: "tablets", weight: 1 },
         { item: "medikit", weight: 1 }
     ],
     ammo: [
-        {
-            item: "12g", count: 10, weight: 0.75
-        },
-        {
-            item: "556mm", count: 30, weight: 1
-        },
-        {
-            item: "762mm", count: 30, weight: 1
-        },
-        {
-            item: "9mm", count: 30, weight: 1
-        }
+        { item: "12g", count: 10, weight: 0.75 },
+        { item: "556mm", count: 30, weight: 1 },
+        { item: "762mm", count: 30, weight: 1 },
+        { item: "9mm", count: 30, weight: 1 }
     ],
     special_guns: [
         { item: "micro_uzi", weight: 1.25 },
@@ -125,9 +115,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "cola", weight: 2 },
         { item: "tablets", weight: 1.5 },
         { item: "medikit", weight: 1.5 },
-        {
-            item: "gauze", weight: 10, count: 10
-        }
+        { item: "gauze", weight: 10, count: 10 }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },
