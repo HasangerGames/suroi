@@ -125,7 +125,9 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "cola", weight: 2 },
         { item: "tablets", weight: 1.5 },
         { item: "medikit", weight: 1.5 },
-        { item: "gauze", weight: 10, count: 10 }
+        {
+            item: "gauze", weight: 10, count: 10
+        }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },
