@@ -303,7 +303,7 @@ export const Guns: GunDefinition[] = [
         ammoType: "556mm",
         ammoSpawnAmount: 90,
         capacity: 30,
-        reloadTime: 3,
+        reloadTime: 2.5,
         cooldown: 90,
         switchCooldown: 300,
         recoilMultiplier: 0.7,
@@ -318,7 +318,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 20,
+            damage: 18,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
