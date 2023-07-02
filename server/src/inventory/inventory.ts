@@ -7,7 +7,7 @@ import {
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
-import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
@@ -16,6 +16,7 @@ import { Vec2 } from "planck";
 import { type Loot } from "../objects/loot";
 import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 
 /**
  * A class representing a player's inventory
@@ -156,7 +157,7 @@ export class Inventory {
     private _reifyItem(item: GunItem | MeleeItem | string): GunItem | MeleeItem | undefined {
         if (item instanceof GunItem || item instanceof MeleeItem) return item;
 
-        switch ((ObjectType.fromString(ObjectCategory.Loot, item).definition as ItemDefinition).itemType) {
+        switch (ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item).definition.itemType) {
             case ItemType.Gun: return new GunItem(item, this.owner);
             case ItemType.Melee: return new MeleeItem(item, this.owner);
         }

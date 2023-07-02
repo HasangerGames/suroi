@@ -26,6 +26,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
 import { MINIMAP_SCALE } from "../utils/constants";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
 
 const showMeleeDebugCircle = false;
 
@@ -34,7 +35,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     oldPosition!: Vector;
 
-    activeItem = ObjectType.fromString(ObjectCategory.Loot, "fists");
+    activeItem = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, "fists");
 
     isNew = true;
 
@@ -197,6 +198,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 case AnimationType.Gun: {
                     const weaponDef = this.activeItem.definition as GunDefinition;
                     this.scene.playSound(`${weaponDef.idString}_fire`);
+
                     if (weaponDef.itemType === ItemType.Gun) {
                         this.updateFistsPosition(false);
                         const recoilAmount = (20 * (1 - weaponDef.recoilMultiplier));
@@ -239,7 +241,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override deserializeFull(stream: SuroiBitStream): void {
         this.images.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
-        this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot>;
+        this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot, LootDefinition>;
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
@@ -293,7 +295,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weaponImg.setAngle(weaponDef.image.angle);
 
-            if (this.isActivePlayer || weaponDef.idString === "deathray") this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this.isActivePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weaponImg);

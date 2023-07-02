@@ -10,14 +10,19 @@ export type GunDefinition = ItemDefinition & {
     readonly capacity: number
     readonly reloadTime: number
     readonly singleReload?: boolean
+    readonly infiniteAmmo?: boolean
+
     readonly cooldown: number
     readonly switchCooldown: number
+
     readonly recoilMultiplier: number
     readonly recoilDuration: number
-    readonly canQuickswitch?: boolean
     readonly shotSpread: number
+
+    readonly canQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
+
     readonly fists: {
         readonly left: Vector
         readonly right: Vector
@@ -33,7 +38,6 @@ export type GunDefinition = ItemDefinition & {
         readonly speed: number
         readonly speedVariance: number
         readonly maxDistance: number
-        maxDistanceSquared?: number
     }
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -418,7 +422,8 @@ export const Guns: GunDefinition[] = [
         itemType: ItemType.Gun,
         ammoType: "762mm",
         ammoSpawnAmount: 0,
-        capacity: 255,
+        capacity: Infinity,
+        infiniteAmmo: true,
         reloadTime: 0.1,
         cooldown: 60,
         switchCooldown: 0,
@@ -443,7 +448,3 @@ export const Guns: GunDefinition[] = [
         }
     }
 ];
-
-for (const gun of Guns) {
-    gun.ballistics.maxDistanceSquared = gun.ballistics.maxDistance ** 2;
-}

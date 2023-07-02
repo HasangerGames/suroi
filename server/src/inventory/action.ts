@@ -39,12 +39,14 @@ export class ReloadAction extends Action {
 
     execute(): void {
         super.execute();
+
         const items = this.player.inventory.items;
         const definition = this.item.definition;
         const reloadAmount = definition.singleReload ? 1 : definition.capacity - this.item.ammo;
         const difference = Math.min(items[definition.ammoType], reloadAmount);
         this.item.ammo += difference;
         items[definition.ammoType] -= difference;
+
         if (definition.singleReload) this.item.reload();
         this.player.dirty.weapons = true;
         this.player.dirty.inventory = true;

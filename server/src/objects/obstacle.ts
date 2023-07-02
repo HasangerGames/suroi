@@ -14,7 +14,6 @@ import { type ObstacleDefinition } from "../../../common/src/definitions/obstacl
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
 import {
-    type LootTable,
     LootTables,
     LootTiers,
     type WeightedItem
@@ -22,6 +21,7 @@ import {
 import { random, weightedRandom } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 
 export class LootItem {
     idString: string;
@@ -63,14 +63,14 @@ export class Obstacle extends GameObject {
 
     definition: ObstacleDefinition;
 
-    constructor(game: Game, type: ObjectType, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
+    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
         super(game, type, position);
 
         this.rotation = rotation;
         this.scale = this.maxScale = scale;
         this.variation = variation;
 
-        const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+        const definition = type.definition;
         this.definition = definition;
 
         this.health = this.maxHealth = definition.health;
@@ -79,24 +79,11 @@ export class Obstacle extends GameObject {
         this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
 
         if (definition.hasLoot) {
-            const lootTable: LootTable = LootTables[this.type.idString];
+            const lootTable = LootTables[this.type.idString];
             const count = random(lootTable.min, lootTable.max);
+
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }
-        /*this.loot = [
-            new LootItem("kbar", 1),
-            new LootItem("baseball_bat", 1),
-            new LootItem("lewis_gun", 1),
-            new LootItem("mcx_spear", 1),
-            new LootItem("micro_uzi", 1),
-            new LootItem("tango_51", 1),
-            new LootItem("940_pro", 1),
-            new LootItem("m16a4", 1),
-            new LootItem("12g", 1),
-            new LootItem("556mm", 1),
-            new LootItem("762mm", 1),
-            new LootItem("9mm", 1)
-        ];*/
     }
 
     private getLoot(loot: WeightedItem[]): void {
@@ -119,9 +106,14 @@ export class Obstacle extends GameObject {
 
     private addLoot(type: string, count: number): void {
         if (type === "nothing") return;
+
         this.loot.push(new LootItem(type, count));
+
         const definition = ObjectType.fromString(ObjectCategory.Loot, type).definition;
-        if (definition === undefined) throw new Error(`Unknown loot item: ${type}`);
+        if (definition === undefined) {
+            throw new Error(`Unknown loot item: ${type}`);
+        }
+
         if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) { // TODO Clean this up
             this.loot.push(new LootItem(definition.ammoType as string, definition.ammoSpawnAmount as number));
         }
@@ -132,9 +124,10 @@ export class Obstacle extends GameObject {
         if (this.health === 0 || definition.indestructible) return;
 
         const weaponDef = (weaponUsed?.definition as ItemDefinition);
-        if (definition.impenetrable &&
-            !(weaponDef.itemType === ItemType.Melee &&
-                (weaponDef as MeleeDefinition).piercingMultiplier)) {
+        if (
+            definition.impenetrable &&
+            !(weaponDef.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).piercingMultiplier)
+        ) {
             return;
         }
 
@@ -151,9 +144,10 @@ export class Obstacle extends GameObject {
 
             if (definition.explosion !== undefined) {
                 this.game.addExplosion(
-                    ObjectType.fromString(ObjectCategory.Explosion, definition.explosion),
+                    ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, definition.explosion),
                     this.position,
-                    source);
+                    source
+                );
             }
 
             for (const item of this.loot) {

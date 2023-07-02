@@ -24,26 +24,33 @@ export class Bullet {
 
     id: number;
 
-    initialPosition: Vec2;
-    finalPosition: Vec2;
+    readonly _initialPosition: Vec2;
+    get initialPosition(): Vec2 {
+        return this._initialPosition;
+    }
+
+    readonly finalPosition: Vec2;
     rotation: number;
 
-    speedVariance = 0;
-
-    maxDistance: number;
-    maxDistanceSquared: number;
+    readonly speedVariance: number;
+    readonly maxDistance: number;
+    get maxDistanceSquared(): number { return this.maxDistance ** 2; }
 
     dead = false;
 
-    body: Body;
+    readonly body: Body;
 
-    source: GunDefinition;
-    sourceType: ObjectType;
-    shooter: Player;
+    readonly source: GunDefinition;
+    readonly sourceType: ObjectType;
+    readonly shooter: Player;
+
+    get distanceSquared(): number {
+        return distanceSquared(this.initialPosition, this.body.getPosition());
+    }
 
     constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, sourceType: ObjectType, shooter: Player) {
         this.id = game.nextBulletID;
-        this.initialPosition = position;
+        this._initialPosition = position;
         this.rotation = rotation;
         this.source = source;
         this.sourceType = sourceType;
@@ -53,8 +60,8 @@ export class Bullet {
 
         // explosion shrapnel variance
         this.speedVariance = randomFloat(0, definition.speedVariance);
-        this.maxDistance = definition.maxDistance * (this.speedVariance + 1);
-        this.maxDistanceSquared = (definition.maxDistanceSquared as number) * (this.speedVariance + 1);
+        const variance = this.speedVariance + 1;
+        this.maxDistance = definition.maxDistance * variance;
 
         // Init body
         this.body = game.world.createBody({
@@ -81,14 +88,6 @@ export class Bullet {
         const velocity = Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1));
         this.finalPosition = this.initialPosition.clone().add(Vec2(this.maxDistance * Math.sin(rotation), this.maxDistance * Math.cos(rotation)));
         this.body.setLinearVelocity(velocity);
-    }
-
-    get position(): Vec2 {
-        return this.initialPosition;
-    }
-
-    get distanceSquared(): number {
-        return distanceSquared(this.initialPosition, this.body.getPosition());
     }
 }
 

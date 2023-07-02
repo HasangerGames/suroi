@@ -27,7 +27,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     radius: number;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
         super(game, scene, type, id);
         const images = {
             background: this.scene.add.image(0, 0, "main"),

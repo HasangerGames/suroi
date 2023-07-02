@@ -1,4 +1,3 @@
-import type { Game } from "../../game";
 import type { MinimapScene } from "../../scenes/minimapScene";
 
 import { DeathMarker } from "../../objects/deathMarker";
@@ -22,6 +21,9 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
+import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type LootDefinition } from "../../../../../common/src/definitions/loots";
+import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { MINIMAP_SCALE } from "../../utils/constants";
 
@@ -30,10 +32,8 @@ export class UpdatePacket extends ReceivingPacket {
         const player: Player = this.playerManager.game.activePlayer;
         if (player === undefined) return;
 
-        const game: Game = player.game;
-
+        const game = player.game;
         const playerManager = game.playerManager;
-
         const scene = player.scene;
 
         //
@@ -145,7 +145,7 @@ export class UpdatePacket extends ReceivingPacket {
                             break;
                         }
                         case ObjectCategory.Obstacle: {
-                            object = new Obstacle(game, scene, type as ObjectType<ObjectCategory.Obstacle>, id);
+                            object = new Obstacle(game, scene, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
@@ -153,7 +153,7 @@ export class UpdatePacket extends ReceivingPacket {
                             break;
                         }
                         case ObjectCategory.Loot: {
-                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot>, id);
+                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
                             break;
                         }
                     }
@@ -260,7 +260,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(game,
                     game.activePlayer.scene,
-                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion>,
+                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion, ExplosionDefinition>,
                     stream.readPosition());
             }
         }

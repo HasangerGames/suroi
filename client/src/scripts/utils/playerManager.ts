@@ -9,7 +9,11 @@ import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { localStorageInstance } from "./localStorageHandler";
-// This class manages the active player data and inventory
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
+
+/**
+ * This class manages the active player data and inventory
+ */
 export class PlayerManager {
     game: Game;
 
@@ -72,7 +76,7 @@ export class PlayerManager {
         "9mm": 0
     };
 
-    readonly weapons: Array<ObjectType<ObjectCategory.Loot> | undefined> = new Array<ObjectType<ObjectCategory.Loot> | undefined>(INVENTORY_MAX_WEAPONS);
+    readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
 
     _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
@@ -158,7 +162,8 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot>;
+                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot, LootDefinition>;
+
                     this.weapons[i] = item;
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition as MeleeDefinition | GunDefinition;

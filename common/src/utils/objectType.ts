@@ -3,7 +3,7 @@ import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
 import { type ObjectCategory } from "../constants";
 
-export class ObjectType<T extends ObjectCategory = ObjectCategory> {
+export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     category: T;
     idNumber: number;
     idString: string;
@@ -14,8 +14,8 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory> {
         this.idString = idString;
     }
 
-    get definition(): ObjectDefinition {
-        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[this.category];
+    get definition(): U {
+        const definitions: ObjectDefinitions<U> | undefined = ObjectDefinitionsList[this.category] as ObjectDefinitions<U>;
         if (definitions !== undefined) {
             return definitions.definitions[this.idNumber];
         } else {
@@ -23,12 +23,12 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory> {
         }
     }
 
-    static categoryOnly<T extends ObjectCategory>(category: T): ObjectType<T> {
+    static categoryOnly<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T): ObjectType<T, U> {
         return new ObjectType(category, -1, "");
     }
 
-    static fromNumber<T extends ObjectCategory>(category: T, idNumber: number): ObjectType<T> {
-        const type = new ObjectType(category, idNumber, "");
+    static fromNumber<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T, idNumber: number): ObjectType<T, U> {
+        const type = new ObjectType<T, U>(category, idNumber, "");
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
@@ -39,8 +39,8 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory> {
         return type;
     }
 
-    static fromString<T extends ObjectCategory>(category: T, idString: string): ObjectType<T> {
-        const type = new ObjectType(category, -1, idString);
+    static fromString<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T, idString: string): ObjectType<T, U> {
+        const type = new ObjectType<T, U>(category, -1, idString);
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
