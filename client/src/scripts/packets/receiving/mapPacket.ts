@@ -3,26 +3,36 @@ import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { MINIMAP_SCALE } from "../../utils/constants";
+import {
+    MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE
+} from "../../utils/constants";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
+
+        // Draw the grid
+        const CELL_SIZE = 16 * MINIMAP_SCALE;
+        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
+            minimap.add.rectangle(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
+        }
+        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
+            minimap.add.rectangle(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
+        }
+
         minimap.renderTexture.beginDraw();
 
         // Draw the grid
-        /*const GRID_WIDTH = 720 * MINIMAP_SCALE;
-        const GRID_HEIGHT = 720 * MINIMAP_SCALE;
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
-
-        const graphics = minimap.make.graphics();
+        // This method isn't used because it makes the grid look really bad on mobile
+        /*const graphics = minimap.make.graphics();
         graphics.fillStyle(0x000000, 0.35);
 
-        for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
-            graphics.fillRect(x, 0, MINIMAP_SCALE, GRID_HEIGHT);
+        const CELL_SIZE = 16 * MINIMAP_SCALE;
+        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
+            graphics.fillRect(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT);
         }
-        for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
-            graphics.fillRect(0, y, GRID_WIDTH, MINIMAP_SCALE);
+        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
+            graphics.fillRect(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE);
         }
         minimap.renderTexture.batchDraw(graphics, 0, 0);*/
 

@@ -402,7 +402,7 @@ function generateBindsConfigScreen(): void {
     // add the reset button
     $("<div/>", { class: "modal-item" }).append($("<button/>", {
         class: "btn btn-darken btn-lg btn-danger",
-        text: "Reset to defaults"
+        html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
     }).on("click", () => {
         localStorageInstance.update({ keybinds: defaultConfig.keybinds });
         generateBindsConfigScreen();

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import {
-    GAS_ALPHA, GAS_COLOR, GRASS_COLOR, MINIMAP_SCALE
+    GAS_ALPHA, GAS_COLOR, GRASS_COLOR, GRASS_RGB, MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE
 } from "../utils/constants";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import core from "../core";
@@ -31,22 +31,7 @@ export class MinimapScene extends Phaser.Scene {
 
         this.playerIndicatorDead = false;
 
-        // Draw the grid
-        const GRID_WIDTH = 720 * MINIMAP_SCALE;
-        const GRID_HEIGHT = 720 * MINIMAP_SCALE;
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
-
-        this.renderTexture = this.add.renderTexture(0, 0, GRID_WIDTH, GRID_HEIGHT).setOrigin(0, 0);
-
-        //const size = (720 * MINIMAP_SCALE) + MINIMAP_SCALE;
-        //this.renderTexture = this.add.renderTexture(0, 0, size, size).setOrigin(0, 0);
-
-        for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
-            this.add.rectangle(x, 0, MINIMAP_SCALE, GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0);
-        }
-        for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
-            this.add.rectangle(0, y, GRID_WIDTH, MINIMAP_SCALE, 0x000000, 0.35).setOrigin(0, 0);
-        }
+        this.renderTexture = this.add.renderTexture(0, 0, MINIMAP_GRID_WIDTH, MINIMAP_GRID_HEIGHT).setOrigin(0, 0);
 
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(360 * MINIMAP_SCALE, 360 * MINIMAP_SCALE, 512 * MINIMAP_SCALE, 0x000000, 0);
@@ -63,7 +48,7 @@ export class MinimapScene extends Phaser.Scene {
             if (core.game?.playerManager.isMobile) this.toggle();
         });
 
-        this.playerIndicator = this.add.image(360, 360, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * MINIMAP_SCALE);
+        this.playerIndicator = this.add.image(0, 0, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * MINIMAP_SCALE);
         this.switchToSmallMap();
 
         if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
@@ -129,6 +114,8 @@ export class MinimapScene extends Phaser.Scene {
 
     updateTransparency(): void {
         if (this.cameras.main === undefined) return;
-        this.cameras.main.setAlpha(this.isExpanded ? localStorageInstance.config.bigMapTransparency : localStorageInstance.config.minimapTransparency);
+        const alpha = this.isExpanded ? localStorageInstance.config.bigMapTransparency : localStorageInstance.config.minimapTransparency;
+        this.cameras.main.setBackgroundColor({ ...GRASS_RGB, a: alpha * 255 });
+        this.cameras.main.setAlpha(alpha);
     }
 }

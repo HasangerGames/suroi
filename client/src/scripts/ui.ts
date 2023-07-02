@@ -259,7 +259,7 @@ $((): void => {
         const min = Number(element.min);
         const x = (value - min) / (max - min) * 100;
         $(element).css("--background", `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`);
-        $(element).siblings(".range-input-value").text(`${value * 100}%`);
+        $(element).siblings(".range-input-value").text(element.id !== "slider-joystick-size" ? `${value * 100}%` : value);
     }
 
     $("input[type=range]").on("input", (e) => {
