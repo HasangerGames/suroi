@@ -20,6 +20,7 @@ import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
+import { MINIMAP_SCALE } from "../../utils/constants";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -267,7 +268,7 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             if (game.gas.state === GasState.Waiting) {
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                minimap.gasCircle.setPosition(game.gas.oldPosition.x * minimap.mapScale, game.gas.oldPosition.y * minimap.mapScale).setRadius(game.gas.oldRadius * minimap.mapScale);
+                minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
                 // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
             }
         }
@@ -287,9 +288,9 @@ export class UpdatePacket extends ReceivingPacket {
                 });
                 scene.tweens.add({
                     targets: minimap.gasCircle,
-                    x: currentPosition.x * minimap.mapScale,
-                    y: currentPosition.y * minimap.mapScale,
-                    radius: currentRadius * minimap.mapScale,
+                    x: currentPosition.x * MINIMAP_SCALE,
+                    y: currentPosition.y * MINIMAP_SCALE,
+                    radius: currentRadius * MINIMAP_SCALE,
                     duration: 30
                 });
             }

@@ -29,6 +29,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
+import { MINIMAP_SCALE } from "../utils/constants";
 
 const showMeleeDebugCircle = false;
 
@@ -125,8 +126,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
         if (this.isActivePlayer && !minimap.playerIndicatorDead) {
             gsap.to(minimap.playerIndicator, {
-                x: this.position.x * minimap.mapScale,
-                y: this.position.y * minimap.mapScale,
+                x: this.position.x * MINIMAP_SCALE,
+                y: this.position.y * MINIMAP_SCALE,
                 angle: finalAngle,
                 ease: "none",
                 duration: 0.03
