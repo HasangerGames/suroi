@@ -25,7 +25,6 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
-import { type GunItem } from "../inventory/gunItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -225,14 +224,13 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
 
         // Inventory preset
-        if (this.isDev) {
+        /*if (this.isDev) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
             this.inventory.addOrReplaceWeapon(1, "tango_51");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
-        }
-
+        }*/
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 

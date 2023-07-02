@@ -65,7 +65,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "mosin", weight: 1 },
-            { item: "tango_51", weight: 0.01 }
+            { item: "tango_51", weight: 0.1 }
         ]
     }
 };
@@ -79,10 +79,10 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m37", weight: 1 },
         { item: "micro_uzi", weight: 0.75 },
         { item: "m3k", weight: 0.75 },
-        { item: "mcx_spear", weight: 0.2 },
-        { item: "m16a4", weight: 0.1 },
-        { item: "lewis_gun", weight: 0.02 },
-        { item: "mosin", weight: 0.005 },
+        { item: "m16a4", weight: 0.15 },
+        { item: "mcx_spear", weight: 0.1 },
+        { item: "lewis_gun", weight: 0.05 },
+        { item: "mosin", weight: 0.01 },
         { item: "tango_51", weight: 0.001 }
     ],
     healing_items: [
@@ -105,11 +105,11 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m3k", weight: 0.8 },
         { item: "g19", weight: 0.75 },
         { item: "saf_200", weight: 0.75 },
-        { item: "mcx_spear", weight: 0.5 },
-        { item: "m16a4", weight: 0.35 },
-        { item: "lewis_gun", weight: 0.1 },
-        { item: "mosin", weight: 0.01 },
-        { item: "tango_51", weight: 0.001 }
+        { item: "m16a4", weight: 0.5 },
+        { item: "lewis_gun", weight: 0.35 },
+        { item: "mcx_spear", weight: 0.35 },
+        { item: "mosin", weight: 0.02 },
+        { item: "tango_51", weight: 0.002 }
     ],
     special_healing_items: [
         { item: "cola", weight: 2 },
