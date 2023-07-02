@@ -93,7 +93,6 @@ export class UpdatePacket extends ReceivingPacket {
                     $("#action-name").text("Reloading...");
                     scene.playSound(`${player.activeItem.idString}_reload`);
                     actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
-
                     break;
                 }
                 case PlayerActions.UseItem: {

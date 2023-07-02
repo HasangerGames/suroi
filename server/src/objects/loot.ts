@@ -114,7 +114,17 @@ export class Loot extends GameObject {
         return false;
     }
 
-    interact(player: Player): void {
+    interact(player: Player, noPickup = false): void {
+        const createNewItem = (): void => {
+            const angle = player.rotation;
+            this.game.addLoot(this.type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
+        };
+        if (noPickup) {
+            this.game.removeLoot(this);
+            createNewItem();
+            return;
+        }
+
         const inventory = player.inventory;
         let deleteItem = true;
         const definition = this.type.definition as LootDefinition;
@@ -164,10 +174,7 @@ export class Loot extends GameObject {
         }
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
-        if (!deleteItem) {
-            const invertedAngle = (player.rotation + Math.PI) % (2 * Math.PI);
-            this.game.addLoot(this.type, vAdd(this.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))), this.count);
-        }
+        if (!deleteItem) createNewItem();
 
         // Reload active gun if the player picks up the correct ammo
         const activeWeapon = player.inventory.activeWeapon;

@@ -7,6 +7,10 @@ import { Loot } from "../../objects/loot";
 import { type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
+import { LootDefinition } from "../../../../common/src/definitions/loots";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { MeleeItem } from "../../inventory/meleeItem";
+import { GameObject } from "../../types/gameObject";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -47,27 +51,39 @@ export class InputPacket extends ReceivingPacket {
                 player.inventory.swapGunSlots();
                 break;
             case InputActions.Interact: {
-                if (player.game.now - player.lastInteractionTime < 200) return;
+                if (player.game.now - player.lastInteractionTime < 120) return;
                 player.lastInteractionTime = player.game.now;
 
-                let minDist = Number.MAX_VALUE;
-                let closestObject: Loot | undefined;
-                const detectionHitbox = new CircleHitbox(3, player.position);
-                for (const object of player.visibleObjects) {
-                    if (object instanceof Loot && object.canInteract(player)) {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
-                        const dist = distanceSquared(object.position, player.position);
-                        if (record?.collided && dist < minDist) {
-                            minDist = dist;
-                            closestObject = object;
+                const getClosestObject = (condition: (loot: Loot) => boolean): Loot | undefined => {
+                    let minDist = Number.MAX_VALUE;
+                    let closestObject: Loot | undefined;
+                    const detectionHitbox = new CircleHitbox(3, player.position);
+                    for (const object of player.visibleObjects) {
+                        if (object instanceof Loot && condition(object)) {
+                            const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
+                            const dist = distanceSquared(object.position, player.position);
+                            if (dist < minDist && record?.collided) {
+                                minDist = dist;
+                                closestObject = object;
+                            }
                         }
                     }
-                }
-                if (closestObject) {
-                    closestObject.interact(player);
+                    return closestObject;
+                };
+
+                const closestInteractableObject = getClosestObject(loot => loot.canInteract(player));
+                if (closestInteractableObject) {
+                    closestInteractableObject.interact(player);
                     player.canDespawn = false;
                     player.disableInvulnerability();
+                } else {
+                    const closestObject = getClosestObject(loot => {
+                        const definition = loot.type.definition as LootDefinition;
+                        return definition.itemType !== ItemType.Gun && definition.itemType !== ItemType.Melee;
+                    });
+                    if (closestObject) {
+                        closestObject.interact(player, true);
+                    }
                 }
                 break;
             }
