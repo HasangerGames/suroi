@@ -81,7 +81,12 @@ export class UpdatePacket extends ReceivingPacket {
             switch (action) {
                 case PlayerActions.None:
                     $("#action-container").hide().stop();
+                    // TODO Only stop the sound that's playing
                     scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
+                    scene.sounds.get("gauze")?.stop();
+                    scene.sounds.get("medikit")?.stop();
+                    scene.sounds.get("cola")?.stop();
+                    scene.sounds.get("tablets")?.stop();
                     break;
                 case PlayerActions.Reload: {
                     $("#action-container").show();
