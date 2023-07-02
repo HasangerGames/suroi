@@ -1,6 +1,4 @@
-import {
-    type Body, Circle, Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 
 import { type Game } from "../game";
 
@@ -9,18 +7,14 @@ import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import {
-    v, vAdd, type Vector
-} from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import {
-    LootRadius, MaxInventoryCapacity, type ObjectCategory
-} from "../../../common/src/constants";
+import { LootRadius, MaxInventoryCapacity, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 
 export class Loot extends GameObject {

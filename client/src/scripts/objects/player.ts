@@ -16,11 +16,7 @@ import {
     type PlayerActions
 } from "../../../../common/src/constants";
 
-import {
-    vClone,
-    type Vector,
-    vMul
-} from "../../../../common/src/utils/vector";
+import { vClone, type Vector, vMul } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";

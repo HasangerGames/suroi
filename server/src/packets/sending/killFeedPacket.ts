@@ -2,12 +2,8 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type Player } from "../../objects/player";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import {
-    KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType
-} from "../../../../common/src/constants";
-import {
-    type JoinKillFeedMessage, type KillFeedMessage, type KillKillFeedMessage
-} from "../../types/killFeedMessage";
+import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
+import { type JoinKillFeedMessage, type KillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
 
 export class KillFeedPacket extends SendingPacket {
     override readonly allocBytes = 1 << 6;

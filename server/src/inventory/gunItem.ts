@@ -6,9 +6,7 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import {
-    FireMode, AnimationType, PlayerActions
-} from "../../../common/src/constants";
+import { FireMode, AnimationType, PlayerActions } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 
 /**

@@ -3,9 +3,7 @@ import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import {
-    MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE
-} from "../../utils/constants";
+import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

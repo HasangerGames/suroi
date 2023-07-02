@@ -1,8 +1,4 @@
-import {
-    type Body,
-    Circle,
-    Vec2
-} from "planck";
+import { type Body, Circle, Vec2 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";

@@ -1,10 +1,6 @@
 import { WebSocket } from "ws";
 
-import {
-    PacketType,
-    InputActions,
-    INPUT_ACTIONS_BITS
-} from "../../common/src/constants";
+import { PacketType, InputActions, INPUT_ACTIONS_BITS } from "../../common/src/constants";
 
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";

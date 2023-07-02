@@ -11,7 +11,10 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
 import {
-    GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions
+    GasState,
+    ObjectCategory,
+    PLAYER_ACTIONS_BITS,
+    PlayerActions
 } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 

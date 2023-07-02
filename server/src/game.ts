@@ -1,9 +1,5 @@
 // noinspection ES6PreferShortImport
-import {
-    Config,
-    GasMode,
-    SpawnMode
-} from "./config";
+import { Config, GasMode, SpawnMode } from "./config";
 
 import {
     Box,
@@ -25,9 +21,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import {
-    GasState, ObjectCategory, OBJECT_ID_BITS
-} from "../../common/src/constants";
+import { GasState, ObjectCategory, OBJECT_ID_BITS } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";
@@ -36,16 +30,8 @@ import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { GasStages } from "./data/gasStages";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import {
-    v,
-    vClone,
-    type Vector
-} from "../../common/src/utils/vector";
-import {
-    distanceSquared,
-    lerp,
-    vecLerp
-} from "../../common/src/utils/math";
+import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";

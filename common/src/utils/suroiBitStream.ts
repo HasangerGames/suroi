@@ -10,10 +10,12 @@ import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
     OBJECT_CATEGORY_BITS,
-    type ObjectCategory, PACKET_TYPE_BITS,
+    type ObjectCategory,
+    PACKET_TYPE_BITS,
     type PacketType,
     VARIATION_BITS,
-    PLAYER_NAME_MAX_LENGTH, OBJECT_ID_BITS
+    PLAYER_NAME_MAX_LENGTH,
+    OBJECT_ID_BITS
 } from "../constants";
 import { type Variation } from "../typings";
 import { normalizeAngle } from "./math";
