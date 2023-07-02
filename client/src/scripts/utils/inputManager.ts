@@ -1,7 +1,7 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
 import { mod } from "../../../../common/src/utils/math";
-import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS, InputActions } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
@@ -120,6 +120,34 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             "inventory::reload",
             () => {
                 game.playerManager.reload();
+            }
+        ),
+        useGauze: new Action(
+            "inventory::useGauze",
+            () => {
+                game.playerManager.action = InputActions.UseGauze;
+                game.playerManager.dirty.inputs = true;
+            }
+        ),
+        useMedikit: new Action(
+            "inventory::useGauze",
+            () => {
+                game.playerManager.action = InputActions.UseMedikit;
+                game.playerManager.dirty.inputs = true;
+            }
+        ),
+        useCola: new Action(
+            "inventory::useGauze",
+            () => {
+                game.playerManager.action = InputActions.UseCola;
+                game.playerManager.dirty.inputs = true;
+            }
+        ),
+        useTablets: new Action(
+            "inventory::useGauze",
+            () => {
+                game.playerManager.action = InputActions.UseTablets;
+                game.playerManager.dirty.inputs = true;
             }
         ),
         cancelAction: new Action(
@@ -306,6 +334,10 @@ const actionsNames = {
     useItem: "Use Item",
     dropActiveItem: "Drop Active Item",
     reload: "Reload",
+    useGauze: "Use Gauze",
+    useMedikit: "Use Medikit",
+    useCola: "Use Cola",
+    useTablets: "Use Tablets",
     cancelAction: "Cancel Action",
     toggleMap: "Toggle Fullscreen Map",
     toggleMiniMap: "Toggle Mini Map"

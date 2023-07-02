@@ -16,6 +16,10 @@ export type KeybindActions = {
     useItem: [string, string]
     dropActiveItem: [string, string]
     reload: [string, string]
+    useGauze: [string, string]
+    useMedikit: [string, string]
+    useCola: [string, string]
+    useTablets: [string, string]
     cancelAction: [string, string]
     toggleMap: [string, string]
     toggleMiniMap: [string, string]
@@ -50,7 +54,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "9",
+    configVersion: "11",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -69,6 +73,10 @@ export const defaultConfig: Config = {
         useItem: ["Mouse0", ""],
         dropActiveItem: ["", ""],
         reload: ["R", ""],
+        useGauze: ["5", ""],
+        useMedikit: ["6", ""],
+        useCola: ["7", ""],
+        useTablets: ["8", ""],
         cancelAction: ["X", ""],
         toggleMap: ["G", "M"],
         toggleMiniMap: ["N", ""]
@@ -207,6 +215,14 @@ while (config.configVersion !== defaultConfig.configVersion) {
             // Version 10: Added big map transparency setting
             config.configVersion = "10";
             config.bigMapTransparency = defaultConfig.bigMapTransparency;
+        }
+        case "10": {
+            // Version 11: Added keybinds to use Healing Items
+            config.configVersion = "11";
+            config.keybinds.useGauze = defaultConfig.keybinds.useGauze;
+            config.keybinds.useMedikit = defaultConfig.keybinds.useMedikit;
+            config.keybinds.useCola = defaultConfig.keybinds.useCola;
+            config.keybinds.useTablets = defaultConfig.keybinds.useTablets;
             break;
         }
         default: {
