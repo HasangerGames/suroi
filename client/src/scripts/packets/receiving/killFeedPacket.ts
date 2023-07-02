@@ -89,7 +89,9 @@ export class KillFeedPacket extends ReceivingPacket {
         }
 
         killFeed.prepend(killFeedItem);
-
+        if (killFeed.children().length > 5) {
+            killFeed.children().last().remove();
+        }
         setTimeout(
             () => killFeedItem.fadeOut(1000, killFeedItem.remove.bind(killFeedItem)),
             7000
