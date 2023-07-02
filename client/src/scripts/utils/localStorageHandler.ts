@@ -120,7 +120,6 @@ if (config.configVersion !== defaultConfig.configVersion) {
         ! This switch uses fallthrough, and the omission of break is intended.
         ! This is because if we're trying to adapt a config from version 2 to 4, we
         ! need to apply both the changes from 2 to 3 and those from 3 to 4. Thus, we use fallthrough.
-        ! The only place a break is needed is before the default case, to avoid having our changes wiped.
     */
 
     let mutated = false;
