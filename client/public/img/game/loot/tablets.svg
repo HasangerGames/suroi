@@ -1,252 +1,110 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 27.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
 <svg
-   viewBox="0 0 36.686001 48.000002"
    version="1.1"
-   id="svg59"
-   sodipodi:docname="tablets.svg"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 45.535999 64.000002"
+   xml:space="preserve"
+   sodipodi:docname="oillsv2.svg"
+   width="45.535999"
+   height="64"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   width="36.686001"
-   height="48"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview61"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="14.894559"
-     inkscape:cx="17.3889"
-     inkscape:cy="12.823474"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg59" />
-  <defs
-     id="defs4">
-    <style
-       id="style2">
-      .cls-1 {
-        fill: #ed4c52;
-      }
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs36">
+	
 
-      .cls-2 {
-        fill: #5f5fed;
-      }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</defs><sodipodi:namedview
+   id="namedview34"
+   pagecolor="#505050"
+   bordercolor="#ffffff"
+   borderopacity="1"
+   inkscape:pageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="1"
+   showgrid="false"
+   inkscape:zoom="3.7236398"
+   inkscape:cx="57.739204"
+   inkscape:cy="53.979442"
+   inkscape:window-width="2560"
+   inkscape:window-height="1372"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="Layer_1" />
+<style
+   type="text/css"
+   id="style2">
+	.st0{fill:#A0ABB8;stroke:#000000;stroke-width:25;stroke-miterlimit:10;}
+	.st1{fill:#C4C4C4;}
+	.st2{fill:#FF7300;}
+	.st3{fill:#FFFFFF;}
+</style>
 
-      .cls-3 {
-        fill: #c9c9c9;
-        stroke: #454545;
-        stroke-miterlimit: 10;
-        stroke-width: 10px;
-      }
-
-      .cls-4 {
-        fill: #fff;
-        opacity: .3;
-      }
-    </style>
-  </defs>
-  <g
-     id="g906"
-     transform="matrix(0.11428571,0,0,0.11428571,-51.589711,-27.611433)">
-    <g
-       id="Layer_2"
-       data-name="Layer 2">
-      <rect
-         class="cls-3"
-         x="456.41"
-         y="246.60001"
-         width="311"
-         height="410"
-         rx="54.900002"
-         ry="54.900002"
-         id="rect6" />
-    </g>
-    <g
-       id="Layer_4"
-       data-name="Layer 4">
-      <g
-         id="Layer_3"
-         data-name="Layer 3">
-        <rect
-           class="cls-1"
-           x="484.59"
-           y="388.39999"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           id="rect9" />
-        <path
-           class="cls-1"
-           d="m 718.63,471.52 c 11.43,0 20.7,9.27 20.7,20.7 v 0 c 0,11.43 -9.27,20.7 -20.7,20.7 h -68.85 c -11.43,0 -20.7,-9.27 -20.7,-20.7 v 0 c 0,-11.43 9.27,-20.7 20.7,-20.7"
-           id="path11" />
-        <rect
-           class="cls-1"
-           x="483.89001"
-           y="298.39999"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           transform="rotate(180,539.02,319.105)"
-           id="rect13" />
-        <path
-           class="cls-2"
-           d="m 483.89,298.4 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 h -37.87 z"
-           transform="rotate(180,512.97,319.105)"
-           id="path15" />
-        <path
-           class="cls-2"
-           d="m 536.69,388.4 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 h -37.87 z"
-           id="path17" />
-        <path
-           class="cls-2"
-           d="m 718.8,471.52 c 11.34,0 20.53,9.19 20.53,20.53 v 0.59 c 0,11.2 -9.08,20.28 -20.28,20.28 h -37.87 c 0,0 0,-41.4 0,-41.4"
-           id="path19" />
-        <rect
-           class="cls-1"
-           x="485.5"
-           y="561.75"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           id="rect21" />
-        <path
-           class="cls-2"
-           d="m 537.6,561.75 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 H 537.6 Z"
-           id="path23" />
-        <rect
-           class="cls-1"
-           x="628.16998"
-           y="298.17001"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           transform="rotate(180,683.3,318.875)"
-           id="rect25" />
-        <path
-           class="cls-2"
-           d="m 628.17,298.17 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 h -37.87 z"
-           transform="rotate(180,657.25,318.875)"
-           id="path27" />
-        <rect
-           class="cls-1"
-           x="628.87"
-           y="388.17001"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           id="rect29" />
-        <path
-           class="cls-2"
-           d="m 680.97,388.17 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 h -37.87 z"
-           id="path31" />
-        <path
-           class="cls-1"
-           d="m 505.5,513.15 c -11.43,0 -20.7,-9.27 -20.7,-20.7 v 0 c 0,-11.43 9.27,-20.7 20.7,-20.7 h 68.85 c 11.43,0 20.7,9.27 20.7,20.7 v 0 c 0,11.43 -9.27,20.7 -20.7,20.7"
-           id="path33" />
-        <path
-           class="cls-2"
-           d="m 505.34,513.15 c -11.34,0 -20.53,-9.19 -20.53,-20.53 v -0.59 c 0,-11.2 9.08,-20.28 20.28,-20.28 h 37.87 c 0,0 0,41.4 0,41.4"
-           id="path35" />
-        <rect
-           class="cls-1"
-           x="629.78003"
-           y="561.52002"
-           width="110.25"
-           height="41.400002"
-           rx="20.700001"
-           ry="20.700001"
-           id="rect37" />
-        <path
-           class="cls-2"
-           d="m 681.88,561.52 h 37.62 c 11.33,0 20.53,9.2 20.53,20.53 v 0.59 c 0,11.19 -9.09,20.28 -20.28,20.28 h -37.87 z"
-           id="path39" />
-        <rect
-           class="cls-4"
-           x="620.40997"
-           y="284.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect41" />
-        <rect
-           class="cls-4"
-           x="477.41"
-           y="374.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect43" />
-        <rect
-           class="cls-4"
-           x="621.40997"
-           y="374.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect45" />
-        <rect
-           class="cls-4"
-           x="476.41"
-           y="457.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect47" />
-        <rect
-           class="cls-4"
-           x="620.40997"
-           y="457.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect49" />
-        <rect
-           class="cls-4"
-           x="476.41"
-           y="284.60001"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect51" />
-        <rect
-           class="cls-4"
-           x="477.41"
-           y="547.59998"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect53" />
-        <rect
-           class="cls-4"
-           x="621.40997"
-           y="547.59998"
-           width="126"
-           height="69"
-           rx="27.780001"
-           ry="27.780001"
-           id="rect55" />
-      </g>
-    </g>
-  </g>
+<g
+   id="g970"
+   transform="matrix(0.14712644,0,0,0.14712644,-36.914023,-11.902529)"><g
+     id="Layer_2_00000012438235742420490570000004933091950338048652_">
+	<path
+   class="st0"
+   d="m 313.6,93.4 h 184.1 c 27.7,0 50.2,24.6 50.2,54.9 v 300.2 c 0,30.3 -22.5,54.9 -50.2,54.9 H 313.6 c -27.7,0 -50.2,-24.6 -50.2,-54.9 V 148.3 c 0,-30.3 22.5,-54.9 50.2,-54.9 z"
+   id="path4" />
+</g><path
+     class="st1"
+     d="m 295.4,252.8 v -88.5 c 0,-19.3 17.2,-35 38.4,-35 h 18.5 c 21.2,0 38.4,15.7 38.4,35 v 88.5 c 0,19.3 -17.2,35 -38.4,35 h -18.5 c -21.2,-0.1 -38.4,-15.7 -38.4,-35 z"
+     id="path7" /><path
+     class="st1"
+     d="M 419.7,432.5 V 344 c 0,-19.3 17.2,-35 38.4,-35 h 18.5 c 21.2,0 38.4,15.7 38.4,35 v 88.5 c 0,19.3 -17.2,35 -38.4,35 h -18.5 c -21.2,0 -38.4,-15.7 -38.4,-35 z"
+     id="path9" /><path
+     class="st1"
+     d="M 419.7,251.6 V 163 c 0,-19.3 17.2,-35 38.4,-35 h 18.5 c 21.2,0 38.4,15.7 38.4,35 v 88.5 c 0,19.3 -17.2,35 -38.4,35 h -18.5 c -21.2,-0.1 -38.4,-15.6 -38.4,-34.9 z"
+     id="path11" /><path
+     class="st1"
+     d="m 295.4,433.8 v -88.5 c 0,-19.3 17.2,-35 38.4,-35 h 18.5 c 21.2,0 38.4,15.7 38.4,35 v 88.5 c 0,19.3 -17.2,35 -38.4,35 h -18.5 c -21.2,-0.1 -38.4,-15.7 -38.4,-35 z"
+     id="path13" /><path
+     class="st2"
+     d="m 495.9,345.9 v 86.5 c 0,14.3 -12.8,26 -28.6,26 v 0 c -15.7,0 -28.5,-11.6 -28.5,-26 v -86.5 c 0,-14.3 12.8,-26 28.5,-26 v 0 c 15.8,0 28.6,11.6 28.6,26 z"
+     id="path15" /><path
+     class="st2"
+     d="m 371.7,346.8 v 86.5 c 0,14.3 -12.8,26 -28.5,26 v 0 c -15.7,0 -28.5,-11.6 -28.5,-26 v -86.5 c 0,-14.3 12.8,-26 28.5,-26 v 0 c 15.8,0 28.5,11.7 28.5,26 z"
+     id="path17" /><path
+     class="st3"
+     d="m 371.7,393.7 v -47.2 c 0,-14.3 -12.7,-25.8 -28.3,-25.8 h -0.8 c -15.5,0 -28,11.5 -28,25.5 v 47.6 z"
+     id="path19"
+     style="fill:#008aff;fill-opacity:1" /><path
+     class="st3"
+     d="m 495.9,385.3 v 47.2 c 0,14.3 -12.7,25.8 -28.3,25.8 h -0.8 c -15.5,0 -28,-11.5 -28,-25.5 v -47.6 z"
+     id="path21"
+     style="fill:#008aff;fill-opacity:1" /><path
+     class="st2"
+     d="m 371.3,165.3 v 86.5 c 0,14.3 -12.8,26 -28.5,26 v 0 c -15.7,0 -28.5,-11.6 -28.5,-26 v -86.5 c 0,-14.3 12.8,-26 28.5,-26 v 0 c 15.7,0 28.5,11.7 28.5,26 z"
+     id="path23" /><path
+     class="st3"
+     d="m 371.3,204.9 v 47.2 c 0,14.3 -12.7,25.8 -28.3,25.8 h -0.8 c -15.5,0 -28,-11.5 -28,-25.5 v -47.6 z"
+     id="path25"
+     style="fill:#008aff;fill-opacity:1" /><path
+     class="st2"
+     d="m 438.5,251 v -86.5 c 0,-14.3 12.8,-26 28.6,-26 v 0 c 15.7,0 28.5,11.6 28.5,26 V 251 c 0,14.3 -12.8,26 -28.5,26 v 0 c -15.9,0.1 -28.6,-11.5 -28.6,-26 z"
+     id="path27" /><path
+     class="st3"
+     d="m 438.5,211.6 v -47.2 c 0,-14.3 12.7,-25.8 28.3,-25.8 h 0.8 c 15.5,0 28,11.5 28,25.5 v 47.6 h -57.2 z"
+     id="path29"
+     style="fill:#008aff;fill-opacity:1" /></g>
 </svg>
