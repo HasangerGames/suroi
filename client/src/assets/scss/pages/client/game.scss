@@ -575,6 +575,18 @@ canvas {
         bottom: 5px;
         right: 5px;
     }
+
+    .item-image {
+        width: 90px;
+        height: 90px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 50px;
+            height: 50px;
+        }
+
+        margin-bottom: 10px;
+    }
 }
 
 #items-container {

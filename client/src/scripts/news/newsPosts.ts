@@ -17,25 +17,28 @@ export const news: NewsPost[] = [
         longContent: `<h2>Suroi v0.6.0</h2>
 
 <h3>New features & changes</h3>
-<ul></ul>
-<li>Better healing items! Healing items can now be picked up, and take time to use. Added tablets, which heal 50% adrenaline.</li>
-<li>Mobile improvements! Added auto loot pickup, and improved the UI.</li>
-<li>Better kill feed! Redesigned the kill feed. It now shows weapon icons instead of names.</li>
-<li>Better settings! The settings menu has been redesigned. Added options to change minimap and joystick transparency, and joystick size.</li>
-<li>The Lewis gun and Tango 51 are now more common. The MCX Spear is now less common.</li>
-<li>The Tango 51 now has a chance to drop from gold rocks.</li>
-<li>Buffed the 940 Pro.</li>
-<li>The gas has been nerfed slightly, and now shrinks completely.</li>
-<li>Added a background to the menu.</li>
-<li>Added Featured YouTubr and Streamr to the menu.</li>
-<li>Optimized minimap texture generation, which should improve load times on mobile.</li>
-<li>Minor tweaks to textures and sound effects.</li>
+<ul>
+  <li>Better healing items! Healing items can now be picked up, and take time to use. Added tablets, which heal 50% adrenaline.</li>
+  <li>Mobile improvements! Added auto loot pickup, and improved the UI.</li>
+  <li>Better kill feed! Redesigned the kill feed. It now shows weapon icons instead of names.</li>
+  <li>Better settings! The settings menu has been redesigned. Added options to change minimap and joystick transparency, and joystick size.</li>
+  <li>The Lewis gun and Tango 51 are now more common. The MCX Spear is now less common.</li>
+  <li>The Tango 51 now has a chance to drop from gold rocks.</li>
+  <li>Buffed the 940 Pro.</li>
+  <li>The gas has been nerfed slightly, and now shrinks completely.</li>
+  <li>Added a background to the menu.</li>
+  <li>Added Featured YouTubr and Streamr to the menu.</li>
+  <li>Optimized minimap texture generation, which should improve load times on mobile.</li>
+  <li>Minor tweaks to textures and sound effects.</li>
+</ul>
 
 <h3>Bug fixes</h3>
-<li>Fixed a bug causing reloading to break when picking up a gun.</li>
-<li>Fixed blood particles not appearing.</li>
-<li>Blood particles no longer appear when the player is damaged by gas.</li>
-<li>Fixed opaque obstacles on the minimap.</li>`
+<ul>
+  <li>Fixed a bug causing reloading to break when picking up a gun.</li>
+  <li>Fixed blood particles not appearing.</li>
+  <li>Blood particles no longer appear when the player is damaged by gas.</li>
+  <li>Fixed opaque obstacles on the minimap.</li>
+</ul>`
     },
     {
         date: 1687625334000,
