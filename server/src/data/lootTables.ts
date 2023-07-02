@@ -41,7 +41,9 @@ export const LootTables: Record<string, LootTable> = {
         min: 3,
         max: 5,
         loot: [
-            { item: "gauze", weight: 1 }
+            {
+                item: "gauze", weight: 1, count: 5
+            }
         ]
     },
     deathray_crate: {
@@ -84,8 +86,11 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "tango_51", weight: 0.001 }
     ],
     healing_items: [
-        { item: "gauze", weight: 3 },
+        {
+            item: "gauze", weight: 3, count: 5
+        },
         { item: "cola", weight: 2 },
+        { item: "tablets", weight: 1 },
         { item: "medikit", weight: 1 }
     ],
     ammo: [
@@ -118,8 +123,9 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
     ],
     special_healing_items: [
         { item: "cola", weight: 2 },
+        { item: "tablets", weight: 1.5 },
         { item: "medikit", weight: 1.5 },
-        { item: "gauze", weight: 1 }
+        { item: "gauze", weight: 10, count: 10 }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },

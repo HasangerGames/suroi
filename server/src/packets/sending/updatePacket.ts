@@ -5,6 +5,7 @@ import {
 } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
+import { type HealingAction } from "../../inventory/action";
 
 export class UpdatePacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -37,8 +38,12 @@ export class UpdatePacket extends SendingPacket {
         // Action
         stream.writeBoolean(player.dirty.action);
         if (player.dirty.action) {
-            stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
             player.dirty.action = false;
+            stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
+
+            if (player.action?.type === PlayerActions.UseItem) {
+                stream.writeObjectTypeNoCategory((player.action as HealingAction).item);
+            }
         }
 
         // Active player ID

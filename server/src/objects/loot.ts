@@ -17,7 +17,6 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { HealType } from "../../../common/src/definitions/healingItems";
 import { PickupPacket } from "../packets/sending/pickupPacket";
 import {
     LootRadius, MaxInventoryCapacity, type ObjectCategory
@@ -94,12 +93,6 @@ export class Loot extends GameObject {
         const inventory = player.inventory;
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
-            case ItemType.Healing: {
-                switch (definition.healType) {
-                    case HealType.Health: return player.health < 100;
-                    case HealType.Adrenaline: return player.adrenaline < 100;
-                }
-            }
             // average ESLint L
             // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
@@ -107,6 +100,7 @@ export class Loot extends GameObject {
                     !inventory.hasWeapon(1) ||
                     (inventory.activeWeaponIndex < 2 && this.type.idNumber !== inventory.activeWeapon.type.idNumber);
             }
+            case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount: number = inventory.items[idString];
@@ -126,11 +120,6 @@ export class Loot extends GameObject {
         const definition = this.type.definition as LootDefinition;
 
         switch (definition.itemType) {
-            case ItemType.Healing: {
-                if (definition.healType === HealType.Health) player.health += definition.restoreAmount;
-                else if (definition.healType === HealType.Adrenaline) player.adrenaline += definition.restoreAmount;
-                break;
-            }
             case ItemType.Melee: {
                 inventory.addOrReplaceWeapon(2, this.type.idString);
                 break;
@@ -144,6 +133,7 @@ export class Loot extends GameObject {
                 }
                 break;
             }
+            case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount: number = inventory.items[idString];

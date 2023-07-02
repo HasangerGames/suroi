@@ -316,6 +316,7 @@ export class Game {
                         speed *= player.recoil.multiplier;
                     }
                 }
+                if (player.action) speed *= player.action.speedMultiplier;
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 

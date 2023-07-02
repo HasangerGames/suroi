@@ -50,12 +50,17 @@ export enum InputActions {
     SwapGunSlots,
     Interact,
     Reload,
-    Cancel
+    Cancel,
+    UseGauze,
+    UseMedikit,
+    UseCola,
+    UseTablets
 }
 
 export enum PlayerActions {
     None,
-    Reload
+    Reload,
+    UseItem
 }
 
 const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));

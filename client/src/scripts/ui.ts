@@ -8,6 +8,7 @@ import { localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
+import { INVENTORY_MAX_WEAPONS, InputActions } from "../../../common/src/constants";
 
 $((): void => {
     const dropdown = {
@@ -183,7 +184,7 @@ $((): void => {
     }).prop("checked", localStorageInstance.config.leaveWarning);
 
     // Switch weapon slots by clicking
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
         const slotElement = $(`#weapon-slot-${i + 1}`);
         slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
             if (core.game !== undefined && slotElement.hasClass("has-item")) {
@@ -193,6 +194,36 @@ $((): void => {
             }
         });
     }
+
+    $("#gauze-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
+        if (core.game) {
+            core.game.playerManager.action = InputActions.UseGauze;
+            core.game.playerManager.dirty.inputs = true;
+            e.stopImmediatePropagation();
+        }
+    });
+    $("#medikit-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
+        if (core.game) {
+            core.game.playerManager.action = InputActions.UseMedikit;
+            core.game.playerManager.dirty.inputs = true;
+            e.stopImmediatePropagation();
+        }
+    });
+    $("#cola-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
+        if (core.game) {
+            core.game.playerManager.action = InputActions.UseCola;
+            core.game.playerManager.dirty.inputs = true;
+            e.stopImmediatePropagation();
+        }
+    });
+
+    $("#tablets-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
+        if (core.game) {
+            core.game.playerManager.action = InputActions.UseTablets;
+            core.game.playerManager.dirty.inputs = true;
+            e.stopImmediatePropagation();
+        }
+    });
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(core.game?.playerManager.isMobile);

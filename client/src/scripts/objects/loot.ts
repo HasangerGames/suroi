@@ -15,7 +15,6 @@ import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type PlayerManager } from "../utils/playerManager";
-import { HealType } from "../../../../common/src/definitions/healingItems";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     readonly images: {
@@ -116,12 +115,6 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     canInteract(player: PlayerManager): boolean {
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
-            case ItemType.Healing: {
-                switch (definition.healType) {
-                    case HealType.Health: return player.health < 100;
-                    case HealType.Adrenaline: return player.adrenaline < 100;
-                }
-            }
             // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
                 return !player.weapons[0] ||
@@ -131,6 +124,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             case ItemType.Melee: {
                 return this.type.idNumber !== player.weapons[2]?.idNumber;
             }
+            case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount: number = player.items[idString];

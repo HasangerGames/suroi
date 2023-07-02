@@ -454,8 +454,6 @@ canvas {
 
 .inventory-container {
 
-    position: absolute;
-
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -471,7 +469,7 @@ canvas {
         height: 120px;
         border-radius: 10px;
 
-        &.ammo-slot {
+        &.item-slot {
             width: auto !important;
             height: auto !important;
             padding: 0 8px 0 8px;
@@ -540,29 +538,7 @@ canvas {
         }
     }
 
-    .item-image {
-        width: 90px;
-        height: 90px;
-
-        @media screen and (max-width: $screen_large) {
-            width: 50px;
-            height: 50px;
-        }
-
-        margin-bottom: 10px;
-    }
-
-    .ammo-image {
-        width: 50px;
-        height: 50px;
-
-        @media screen and (max-width: $screen_large) {
-            width: 40px;
-            height: 30px;
-        }
-    }
-
-    .ammo-count {
+    .item-count {
         font-size: 20px;
         margin-left: 8px;
         margin-right: 3px;
@@ -585,6 +561,7 @@ canvas {
 }
 
 #weapons-container {
+    position: absolute;
     bottom: 10px;
     right: 10px;
 
@@ -592,20 +569,77 @@ canvas {
         bottom: 5px;
         right: 5px;
     }
+
+    .item-image {
+        width: 90px;
+        height: 90px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 50px;
+            height: 50px;
+        }
+
+        margin-bottom: 10px;
+    }
 }
 
-#ammo-container {
+#items-container {
+    position: absolute;
     bottom: 10px;
     left: 10px;
+
+    .inventory-container {
+        margin-top: 10px;
+    }
+
+    .item-slot {
+        height: 40px!important;
+        width: 95px!important;
+        justify-content: start;
+    }
+
+    .item-count {
+        float: right;
+        margin-left: auto;
+    }
+
+    #healing-items-container {
+        .item-image {
+            height: 30px;
+        }
+    }
+
+    .item-image {
+        width: 40px;
+        height: 40px;
+
+        @media screen and (max-width: $screen_large) {
+            width: 30px;
+            height: 20px!important;
+        }
+    }
+
 
     @media screen and (max-width: $screen_large) {
         bottom: 5px;
         left: 5px;
+        display: flex;
+
+        .inventory-container {
+            margin-left: 10px;
+        }
+        .item-slot {
+            height: 30px!important;
+            width: 70px!important;
+            justify-content: start;
+        }
     }
 
     @media screen and (max-width: $screen_small) {
         bottom: 65px;
     }
+    
+
 }
 
 #equipment-container {

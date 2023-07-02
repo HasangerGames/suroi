@@ -1,5 +1,5 @@
 import {
-    INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory
+    INVENTORY_MAX_WEAPONS, MaxInventoryCapacity, ObjectCategory, PlayerActions
 } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
@@ -11,6 +11,8 @@ import { type InventoryItem } from "./inventoryItem";
 import { v, vAdd } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { type Loot } from "../objects/loot";
+import { HealingAction } from "./action";
+import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 
 /**
  * A class representing a player's inventory
@@ -335,6 +337,21 @@ export class Inventory {
         }
 
         return old;
+    }
+
+    useItem(itemString: string): void {
+        if (!this.items[itemString]) return;
+
+        const item = ObjectType.fromString(ObjectCategory.Loot, itemString);
+        if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
+            (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
+
+        const definition = item.definition as HealingItemDefinition;
+
+        if (definition.healType === HealType.Health && this.owner.health >= 100) return;
+        if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+
+        this.owner.executeAction(new HealingAction(this.owner, item));
     }
 
     /**

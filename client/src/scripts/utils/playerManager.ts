@@ -184,7 +184,7 @@ export class PlayerManager {
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
-                const ammoText = (num === MaxInventoryCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                const ammoText = (num >= MaxInventoryCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
                 $(`#${item}-count`).html(ammoText);
             }
         }

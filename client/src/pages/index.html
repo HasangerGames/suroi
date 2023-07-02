@@ -144,7 +144,7 @@
         <div id="kill-feed"></div>
       </div>
       <div id="action-container" style="display: none;">
-        <div id="action-name">Reloading...</div>
+        <div id="action-name"></div>
         <div id="action-timer">
           <div id="action-timer-anim"></div>
         </div>
@@ -169,22 +169,42 @@
         <div id="kill-msg-kills"></div>
         You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
       </div>
-    <div class="inventory-container" id="ammo-container">
-      <div class="inventory-slot ammo-slot">
-        <img class="ammo-image" src="/img/game/loot/12g.svg" draggable="false">
-        <span class="ammo-count" id="12g-count">0</span>
+    <div id="items-container">
+      <div class="inventory-container" id="healing-items-container">
+        <div class="inventory-slot item-slot" id="gauze-slot">
+          <img class="item-image" src="/img/game/loot/gauze.svg" draggable="false">
+          <span class="item-count" id="gauze-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot" id="medikit-slot">
+          <img class="item-image" src="/img/game/loot/medikit.svg" draggable="false">
+          <span class="item-count" id="medikit-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot" id="cola-slot">
+          <img class="item-image" src="/img/game/loot/cola.svg" draggable="false">
+          <span class="item-count" id="cola-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot" id="tablets-slot">
+          <img class="item-image" src="/img/game/loot/tablets.svg" draggable="false">
+          <span class="item-count" id="tablets-count">0</span>
+        </div>
       </div>
-      <div class="inventory-slot ammo-slot">
-        <img class="ammo-image" src="/img/game/loot/556mm.svg" draggable="false">
-        <span class="ammo-count" id="556mm-count">0</span>
-      </div>
-      <div class="inventory-slot ammo-slot">
-        <img class="ammo-image" src="/img/game/loot/762mm.svg" draggable="false">
-        <span class="ammo-count" id="762mm-count">0</span>
-      </div>
-      <div class="inventory-slot ammo-slot" id="12g-slot">
-        <img class="ammo-image" src="/img/game/loot/9mm.svg" draggable="false">
-        <span class="ammo-count" id="9mm-count">0</span>
+      <div class="inventory-container" id="ammo-container">
+        <div class="inventory-slot item-slot ammo-slot">
+          <img class="item-image" src="/img/game/loot/12g.svg" draggable="false">
+          <span class="item-count" id="12g-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot ammo-slot">
+          <img class="item-image" src="/img/game/loot/556mm.svg" draggable="false">
+          <span class="item-count" id="556mm-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot ammo-slot">
+          <img class="item-image" src="/img/game/loot/762mm.svg" draggable="false">
+          <span class="item-count" id="762mm-count">0</span>
+        </div>
+        <div class="inventory-slot item-slot ammo-slot" id="12g-slot">
+          <img class="item-image" src="/img/game/loot/9mm.svg" draggable="false">
+          <span class="item-count" id="9mm-count">0</span>
+        </div>
       </div>
     </div>
     <div class="inventory-container" id="weapons-container">

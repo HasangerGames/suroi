@@ -19,6 +19,7 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { v, vAdd } from "../../../../../common/src/utils/vector";
+import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -75,20 +76,31 @@ export class UpdatePacket extends ReceivingPacket {
         // Action
         if (stream.readBoolean()) {
             const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
+            let actionTime = 0;
             switch (action) {
                 case PlayerActions.None:
                     $("#action-container").hide().stop();
                     scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
                     break;
                 case PlayerActions.Reload: {
-                    scene.playSound(`${player.activeItem.idString}_reload`);
-                    const time = (player.activeItem.definition as GunDefinition).reloadTime * 1000;
                     $("#action-container").show();
-                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, time, "linear", () => {
-                        $("#action-container").hide();
-                    });
+                    $("#action-name").text("Reloading...");
+                    scene.playSound(`${player.activeItem.idString}_reload`);
+                    actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
+
                     break;
                 }
+                case PlayerActions.UseItem: {
+                    $("#action-container").show();
+                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
+                    $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
+                    actionTime = itemDef.useTime;
+                }
+            }
+            if (actionTime > 0) {
+                $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
+                    $("#action-container").hide();
+                });
             }
         }
 

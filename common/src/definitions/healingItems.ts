@@ -4,6 +4,7 @@ export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
     readonly healType: HealType
     readonly restoreAmount: number
+    readonly useTime: number
     readonly useText: string
 }
 
@@ -16,6 +17,7 @@ export const HealingItems: HealingItemDefinition[] = [
         itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 15,
+        useTime: 2,
         useText: "Applying"
     },
     {
@@ -24,6 +26,7 @@ export const HealingItems: HealingItemDefinition[] = [
         itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 75,
+        useTime: 5,
         useText: "Using"
     },
     {
@@ -31,7 +34,8 @@ export const HealingItems: HealingItemDefinition[] = [
         name: "Cola",
         itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
-        restoreAmount: 20,
+        restoreAmount: 25,
+        useTime: 3,
         useText: "Drinking"
     },
     {
@@ -39,7 +43,8 @@ export const HealingItems: HealingItemDefinition[] = [
         name: "Tablets",
         itemType: ItemType.Healing,
         healType: HealType.Adrenaline,
-        restoreAmount: 20,
+        restoreAmount: 50,
+        useTime: 5,
         useText: "Taking"
     }
 ];
