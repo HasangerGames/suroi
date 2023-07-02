@@ -10,6 +10,34 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1688328459000,
+        author: "HAZEL",
+        title: "Tablets & Tweaks",
+        content: `A new adrenaline item, tablets, can now be found! Tablets, along with all other healing items, can now be picked up and carried—but they no longer work instantly. Check out the Featured YouTubr and Streamr on the redesigned title screen! The kill feed and settings menu have also been redesigned. A golden object may drop a very powerful weapon...`,
+        longContent: `<h2>Suroi v0.6.0</h2>
+
+<h3>New features & changes</h3>
+<ul></ul>
+<li>Better healing items! Healing items can now be picked up, and take time to use. Added tablets, which heal 50% adrenaline.</li>
+<li>Mobile improvements! Added auto loot pickup, and improved the UI.</li>
+<li>Better kill feed! Redesigned the kill feed. It now shows weapon icons instead of names.</li>
+<li>Better settings! The settings menu has been redesigned. Added options to change minimap and joystick transparency, and joystick size.</li>
+<li>The Lewis gun and Tango 51 are now more common. The MCX Spear is now less common.</li>
+<li>The Tango 51 now has a chance to drop from gold rocks.</li>
+<li>Buffed the 940 Pro.</li>
+<li>The gas has been nerfed slightly, and now shrinks completely.</li>
+<li>Added a background to the menu.</li>
+<li>Added Featured YouTubr and Streamr to the menu.</li>
+<li>Optimized minimap texture generation, which should improve load times on mobile.</li>
+<li>Minor tweaks to textures and sound effects.</li>
+
+<h3>Bug fixes</h3>
+<li>Fixed a bug causing reloading to break when picking up a gun.</li>
+<li>Fixed blood particles not appearing.</li>
+<li>Blood particles no longer appear when the player is damaged by gas.</li>
+<li>Fixed opaque obstacles on the minimap.</li>`
+    },
+    {
         date: 1687625334000,
         author: "HAZEL",
         title: "Locked & Loaded",
