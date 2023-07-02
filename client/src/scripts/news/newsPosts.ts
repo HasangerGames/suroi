@@ -19,8 +19,9 @@ export const news: NewsPost[] = [
 <h3>New features & changes</h3>
 <ul>
   <li>Better healing items! Healing items can now be picked up, and take time to use. Added tablets, which heal 50% adrenaline.</li>
-  <li>Mobile improvements! Added auto loot pickup, and improved the UI.</li>
   <li>Better kill feed! Redesigned the kill feed. It now shows weapon icons instead of names.</li>
+  <li>South America server! A 4th server, hosted in São Paulo, Brazil, is now available. To select it, click on the dropdown above the play button.</li>
+  <li>Mobile improvements! Added auto loot pickup, and improved the UI.</li>
   <li>Better settings! The settings menu has been redesigned. Added options to change minimap and joystick transparency, and joystick size.</li>
   <li>The Lewis gun and Tango 51 are now more common. The MCX Spear is now less common.</li>
   <li>The Tango 51 now has a chance to drop from gold rocks.</li>

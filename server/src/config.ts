@@ -71,6 +71,7 @@ export const Config = {
         dev: "ws://127.0.0.1:8000",
         na: "wss://suroi.io",
         eu: "wss://eu.suroi.io",
+        sa: "wss://sa.suroi.io",
         as: "wss://as.suroi.io"
     },
     defaultRegion: "na",
