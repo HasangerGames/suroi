@@ -7,10 +7,7 @@ import { Loot } from "../../objects/loot";
 import { type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
-import { LootDefinition } from "../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { MeleeItem } from "../../inventory/meleeItem";
-import { GameObject } from "../../types/gameObject";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -78,7 +75,7 @@ export class InputPacket extends ReceivingPacket {
                     player.disableInvulnerability();
                 } else {
                     const closestObject = getClosestObject(loot => {
-                        const definition = loot.type.definition as LootDefinition;
+                        const definition = loot.type.definition;
                         return definition.itemType !== ItemType.Gun && definition.itemType !== ItemType.Melee;
                     });
                     if (closestObject) {
