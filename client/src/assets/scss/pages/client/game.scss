@@ -32,10 +32,7 @@ canvas {
     }
 
     @media screen and (max-width: $screen_large) {
-        left: 100px;
-    }
-    @media screen and (max-width: $screen_small) {
-        left: 5px;
+        right: 90px;
     }
 
     z-index: 1000;
@@ -50,7 +47,7 @@ canvas {
     top: 10px;
     left: 10px;
 
-    &>div {
+    & > div {
         margin-bottom: 10px;
     }
 
