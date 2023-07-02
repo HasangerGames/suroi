@@ -5,6 +5,7 @@ import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { Obstacle } from "../../objects/obstacle";
 import { Loot } from "../../objects/loot";
+import { Bullet } from "../../objects/bullet";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
@@ -15,7 +16,6 @@ import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
-import { v, vAdd } from "../../../../../common/src/utils/vector";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
@@ -213,38 +213,10 @@ export class UpdatePacket extends ReceivingPacket {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
-                const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
-                const ballistics = bulletSourceDef.ballistics;
-                const initialPosition = stream.readPosition();
-                const rotation = stream.readRotation(16);
-                const maxDist = bulletSourceDef.ballistics.maxDistance;
-                const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
 
-                // Spawn bullet
-                const bullet = scene.add.image(
-                    initialPosition.x * 20,
-                    initialPosition.y * 20,
-                    "main",
-                    `${bulletSourceDef.ammoType}_trail.svg`
-                )
-                    .setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition))
-                    .setDepth(1)
-                    .setOrigin(1, 0.5);
+                const bullet = new Bullet(game, scene, stream);
 
                 game.bullets.set(id, bullet);
-                scene.tweens.add({
-                    targets: bullet,
-                    x: finalPosition.x * 20,
-                    y: finalPosition.y * 20,
-                    alpha: {
-                        getStart: () => ballistics.tracerOpacity?.start ?? 1,
-                        getEnd: () => ballistics.tracerOpacity?.end ?? 0
-                    },
-                    duration: maxDist / ballistics.speed,
-                    onComplete: (): void => {
-                        bullet.destroy(true);
-                    }
-                });
             }
         }
 
@@ -253,12 +225,12 @@ export class UpdatePacket extends ReceivingPacket {
             const destroyedBulletCount = stream.readUint8();
             for (let i = 0; i < destroyedBulletCount; i++) {
                 const bulletID = stream.readUint8();
-                const bullet: Phaser.GameObjects.Image | undefined = game.bullets.get(bulletID);
+                const bullet = game.bullets.get(bulletID);
                 if (bullet === undefined) {
                     console.warn(`Could not find bullet with ID ${bulletID}`);
                     continue;
                 }
-                bullet.destroy(true);
+                bullet.destroy();
                 game.bullets.delete(bulletID);
             }
         }
