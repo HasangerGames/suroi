@@ -96,6 +96,7 @@ export class UpdatePacket extends ReceivingPacket {
                     const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
                     $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
                     actionTime = itemDef.useTime;
+                    scene.playSound(itemDef.idString);
                 }
             }
             if (actionTime > 0) {

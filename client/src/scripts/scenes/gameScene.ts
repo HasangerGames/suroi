@@ -22,6 +22,7 @@ import { circleCollision, distanceSquared } from "../../../../common/src/utils/m
 import { requestFullscreen } from "../utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { HealingItems } from "../../../../common/src/definitions/healingItems";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -56,6 +57,10 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(`${gun.idString}_fire`, `weapons/${gun.idString}_fire`);
             this.loadSound(`${gun.idString}_switch`, `weapons/${gun.idString}_switch`);
             this.loadSound(`${gun.idString}_reload`, `weapons/${gun.idString}_reload`);
+        }
+
+        for (const healingItem of HealingItems) {
+            this.loadSound(healingItem.idString, `healing/${healingItem.idString}`);
         }
 
         const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing"];
@@ -177,7 +182,7 @@ export class GameScene extends Phaser.Scene {
             const object = o[1];
             if (object instanceof Loot && object.canInteract(this.playerManager)) {
                 const dist = distanceSquared(object.position, player.position);
-                if (circleCollision(player.position, player.radius, object.position, object.radius) && dist < minDist) {
+                if (dist < minDist && circleCollision(player.position, player.radius, object.position, object.radius)) {
                     minDist = dist;
                     closestObject = object;
                 }

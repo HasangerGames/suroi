@@ -336,7 +336,7 @@ const actionsNames = {
     useTablets: "Use Tablets",
     cancelAction: "Cancel Action",
     toggleMap: "Toggle Fullscreen Map",
-    toggleMiniMap: "Toggle Mini Map"
+    toggleMiniMap: "Toggle Minimap"
 };
 
 // generate the input settings
