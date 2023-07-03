@@ -74,7 +74,8 @@ $(() => {
         backgroundColor: GRASS_COLOR,
         scale: {
             mode: Phaser.Scale.RESIZE,
-            autoCenter: Phaser.Scale.CENTER_BOTH
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            parent: $("#game-ui")[0]
         }
     });
     setupInputs(core.game);
