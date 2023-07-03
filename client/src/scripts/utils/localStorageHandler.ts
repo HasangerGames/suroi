@@ -54,7 +54,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "11",
+    configVersion: "12",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -249,8 +249,8 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "11": {
             // Version 12: Developer password and color stuff
             proxy.configVersion = "12";
-            proxy.devPassword = "";
-            proxy.nameColor = "";
+            if (proxy.devPassword === undefined) proxy.devPassword = defaultConfig.devPassword;
+            if (proxy.nameColor === undefined) proxy.nameColor = defaultConfig.nameColor;
         }
         default: {
             if (!mutated) {
