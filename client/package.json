@@ -46,7 +46,7 @@
     "postcss": "^8.4.24",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.3.3",
-    "postcss-preset-env": "^8.5.1",
+    "postcss-preset-env": "^9.0.0",
     "sass": "^1.63.6",
     "sass-loader": "^13.3.2",
     "spritesheet-webpack-plugin": "^0.0.1",
