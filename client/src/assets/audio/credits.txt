@@ -1,15 +1,53 @@
-Sound effects edited by Henry Sanger
+Menu music - TTGetDunkedOn
 
-M3K switch: Dablux
-All other gun sound effects: Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+Most sound effects edited by Henry Sanger
 
-Bush rustle and hit: bush1.wav by schademans (CC BY 3.0): https://freesound.org/people/schademans/sounds/2588/
-Bush destroyed: 123OP
-Tree hit: Tree Hit With Axe (Tree Shake) by EminYILDIRIM (CC BY 4.0): https://freesound.org/people/EminYILDIRIM/sounds/608343/
-Tree destroyed, health explosion: mixkit.co
-Crate destroyed: Crate Break 4.wav by kevinkace (CC0 1.0, public domain): https://freesound.org/people/kevinkace/sounds/66780/
-Stone hit: 123OP
-Stone destroyed: Rocks - Effects - Source Recordings - 05 by GregorQuendel (CC BY 4.0): https://freesound.org/people/newlocknew/sounds/631485/
-All other sound effects: Katloo
+M3K switch - Dablux
 
-Menu music: TTGetDunkedOn
+M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios:
+https://www.fesliyanstudios.com/play-mp3/7548
+https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
+
+Model 37 fire - "Shotgun Blast" by Jim Rogers: https://soundbible.com/1919-Shotgun-Blast.html
+
+940 Pro fire - "Normal Shotgun" by Soundeffects: https://soundbible.com/2020-Normal-Shotgun.html
+
+940 Pro reload - "Reloading Magazine" by Fesliyan Studios:
+https://www.fesliyanstudios.com/play-mp3/7550
+https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
+
+Lewis gun fire - "HeavyMachineGun" from Pixabay: https://pixabay.com/sound-effects/heavymachinegun-6998/
+
+Gun click - "Handgun click" from Mixkit: https://mixkit.co/free-sound-effects/gun/
+
+Ammo pick up - "Picking_Up_TackleBox.wav" by Krisboruff: https://freesound.org/people/Krisboruff/sounds/17750/
+
+All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
+
+
+
+Cola:
+"Opening a can of soda" from Pixabay: https://pixabay.com/sound-effects/opening-a-can-of-soda-80185/
+"Soda Can Plus Pour and Fizz MUS 152" from Pixabay: https://pixabay.com/sound-effects/soda-can-plus-pour-and-fizz-mus-152-25167/
+"Gulping Noises | Drinking Noises" from Pixabay: https://pixabay.com/sound-effects/gulping-noises-drinking-noises-37758/
+
+Medikit:
+"Opening a small cardboard box" by Aiwha: https://freesound.org/people/Aiwha/sounds/415488/
+"Rustle through chord box.mp3" by hank_richard: https://freesound.org/people/hank_richard/sounds/179670/
+"Heal soft water spell" from Mixkit: https://mixkit.co/free-sound-effects/spell/
+
+Bush rustle and hit - "bush1.wav" by schademans (CC BY 3.0): https://freesound.org/people/schademans/sounds/2588/
+
+Bush destroyed - 123OP
+
+Tree hit - "Tree Hit With Axe (Tree Shake)" by EminYILDIRIM (CC BY 4.0): https://freesound.org/people/EminYILDIRIM/sounds/608343/
+
+Tree destroyed - "Falling on foil" from Mixkit: https://mixkit.co/free-sound-effects/falling/
+
+Crate destroyed - "Crate Break 4.wav" by kevinkace (CC0 1.0, public domain): https://freesound.org/people/kevinkace/sounds/66780/
+
+Stone hit - 123OP
+
+Stone destroyed - "Rocks - Effects - Source Recordings - 05" by GregorQuendel (CC BY 4.0): https://freesound.org/people/newlocknew/sounds/631485/
+
+All other sound effects - Katloo

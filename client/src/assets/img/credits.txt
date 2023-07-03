@@ -1,6 +1,6 @@
-All images edited by Henry Sanger
-Gun icons: eiπ
-Gun top down images: Tacomy Loh, ItzBlover
+Most images edited by Henry Sanger
+Gun icons: eiπ, jchen, Megashark25098
+Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098
 
 Main logo: Henry Sanger
 Small/square logo: Glek
@@ -14,10 +14,8 @@ Regular crate: Henry Sanger, 123OP
 Health crate: Henry Sanger, Radians
 Barrel explosion: Leo
 Barrel explosion particles: Radians
-Health explosion: Radians, Leo
-Health explosion particles: Radians
 Soviet crate: Henry Sanger, DogEnjoyer, 123OP
-Death marker & skull: Henry Sanger, 123OP
+Death marker & skull: Henry Sanger
 Rocks: Leo
 Rock particles: Radians
 Rock residue: Henry Sanger, Radians
@@ -26,3 +24,12 @@ Oak tree particles & residue: Radians
 Pine tree: SquareCube
 Pine tree particles: Radians
 Pine tree residue: Radians, Henry Sanger
+Birch tree, particles, & residue: Hester
+
+Mossy & cracked rocks: Hester, Leo, Henry Sanger
+Gold rock: Katloo
+
+K-bar: Radians
+Baseball Bat: Katloo
+
+Tap icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
