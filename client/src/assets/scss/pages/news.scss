@@ -1,6 +1,10 @@
 @import "../main.scss";
 @import "../pages/client/splash.scss";
 
+body {
+    background: $bg;
+}
+
 #news-page {
     background: #16161680;
     width: 80%;

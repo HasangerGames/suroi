@@ -5,6 +5,7 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 
 export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
+        $("#interact-message").hide();
         const gameOverScreen: JQuery = $("#game-over-screen");
 
         this.playerManager.game.gameOver = true;

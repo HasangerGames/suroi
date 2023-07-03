@@ -57,11 +57,11 @@ export class Map {
 
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();
-        const supportedZoomLevels: number[] = [48, 96];
+        const supportedZoomLevels: number[] = [48];
 
         for (const zoomLevel of supportedZoomLevels) {
             this.game.visibleObjects[zoomLevel] = {};
-            const xCullDist = zoomLevel * 1.75; const yCullDist = zoomLevel * 1.35;
+            const xCullDist = zoomLevel * 1.8; const yCullDist = zoomLevel * 1.35;
 
             for (let x = 0; x <= this.width / 10; x++) {
                 this.game.visibleObjects[zoomLevel][x * 10] = {};

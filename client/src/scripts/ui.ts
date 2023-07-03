@@ -35,6 +35,11 @@ $((): void => {
     const body = $(document.body);
     const usernameField = $("#username-input");
 
+    $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
+    $(window).on("resize", () => {
+        $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
+    });
+
     const gameMenu = $("#game-menu");
     const settingsMenu = $("#settings-menu");
 

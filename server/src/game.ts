@@ -510,7 +510,11 @@ export class Game {
             this.livingPlayers.delete(player);
             this.dynamicObjects.delete(player);
             this.removeObject(player);
-            this.world.destroyBody(player.body);
+            try {
+                this.world.destroyBody(player.body);
+            } catch (e) {
+                console.error("Error destroying player body. Details: ", e);
+            }
         }
         try {
             player.socket.close();

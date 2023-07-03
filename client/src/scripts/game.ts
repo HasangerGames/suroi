@@ -64,7 +64,6 @@ export class Game {
             core.phaser?.scene.start("game");
             $("#game-over-screen").hide();
             this.sendPacket(new PingPacket(this.playerManager));
-            enablePlayButton();
         };
 
         // Handle incoming messages
@@ -118,6 +117,7 @@ export class Game {
         this.socket.onclose = (): void => {
             if (!this.gameOver) {
                 if (this.gameStarted) {
+                    $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
                     enablePlayButton();
@@ -128,7 +128,6 @@ export class Game {
     }
 
     endGame(): void {
-        $("#game-ui").hide();
         $("#game-menu").hide();
         $("#game-over-screen").hide();
         $("canvas").removeClass("active");

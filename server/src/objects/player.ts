@@ -272,8 +272,8 @@ export class Player extends GameObject {
 
     set zoom(zoom: number) {
         this._zoom = zoom;
-        this.xCullDist = this._zoom * 1.5;
-        this.yCullDist = this._zoom * 1.25;
+        this.xCullDist = this._zoom * 1.8;
+        this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
     }
 
@@ -406,7 +406,11 @@ export class Player extends GameObject {
             this.movement.right = false;
             this.attacking = false;
             this.deathPosition = this.position.clone();
-            this.game.world.destroyBody(this.body);
+            try {
+                this.game.world.destroyBody(this.body);
+            } catch (e) {
+                console.error("Error destroying player body. Details: ", e);
+            }
             this.game.aliveCountDirty = true;
             this.adrenaline = 0;
             this.action?.cancel();

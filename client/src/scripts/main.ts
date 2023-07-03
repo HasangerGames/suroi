@@ -27,7 +27,7 @@ $(() => {
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
-        playSoloBtn.text("Connecting...");
+        playSoloBtn.html('<span style="position: relative; bottom: 1px;"><div class="spin"></div> Connecting...</span>');
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;

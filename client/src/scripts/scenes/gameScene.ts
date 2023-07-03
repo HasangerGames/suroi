@@ -105,8 +105,6 @@ export class GameScene extends Phaser.Scene {
             this.sounds.set(sound, this.sound.add(sound));
         }
 
-        $("#game-ui").show();
-
         // Draw the grid
         const GRID_WIDTH = 7200;
         const GRID_HEIGHT = 7200;
@@ -132,9 +130,6 @@ export class GameScene extends Phaser.Scene {
         // Follow the player w/ the camera
         this.cameras.main.startFollow(this.player.images.container);
 
-        // Send a packet indicating that the game is now active
-        this.activeGame.sendPacket(new JoinPacket(this.playerManager));
-
         // Initializes sounds
         [
             "swing",
@@ -150,6 +145,9 @@ export class GameScene extends Phaser.Scene {
         this.events.on("shutdown", () => {
             window.clearInterval(this.tickInterval);
         });
+
+        // Send a packet indicating that the game is now active
+        this.activeGame.sendPacket(new JoinPacket(this.playerManager));
     }
 
     playSound(name: string): void {

@@ -32,13 +32,13 @@
 .btn-darken:hover,
 .btn-darken:active {
     color: inherit;
-
     filter: brightness(80%);
 }
 
 .btn-disabled {
-    filter: brightness(70%);
+    filter: brightness(80%);
     pointer-events: none;
+    user-select: none;
 }
 
 // Regular buttons
@@ -125,8 +125,8 @@
 .btn-bind {
     display: flex;
     font-size: 14px;
-    margin-inline: 2.5%!important;
-    width: 45%!important;
+    margin-inline: 2.5% !important;
+    width: 45% !important;
 }
 
 .btn-bind.active {
