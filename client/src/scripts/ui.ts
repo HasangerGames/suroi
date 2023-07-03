@@ -146,12 +146,17 @@ $((): void => {
     }).prop("checked", localStorageInstance.config.showPing);
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
+    // text kill feed toggle
+    $("#toggle-text-kill-feed").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ textKillFeed: this.checked });
+    }).prop("checked", localStorageInstance.config.textKillFeed);
+
     // rotation smoothing toggle
     $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ rotationSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.rotationSmoothing);
 
-    // movement smothing toggle
+    // movement smoothing toggle
     $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ movementSmoothing: this.checked });
     }).prop("checked", localStorageInstance.config.movementSmoothing);

@@ -39,6 +39,7 @@ export interface Config {
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
+    textKillFeed: boolean
     rotationSmoothing: boolean
     movementSmoothing: boolean
     mobileControls: boolean
@@ -90,6 +91,7 @@ export const defaultConfig: Config = {
     cameraShake: true,
     showFPS: false,
     showPing: false,
+    textKillFeed: false,
     rotationSmoothing: true,
     movementSmoothing: true,
     mobileControls: true,
@@ -251,6 +253,11 @@ if (config.configVersion !== defaultConfig.configVersion) {
             proxy.configVersion = "12";
             if (proxy.devPassword === undefined) proxy.devPassword = defaultConfig.devPassword;
             if (proxy.nameColor === undefined) proxy.nameColor = defaultConfig.nameColor;
+        }
+        case "12": {
+            // Version 13: Added text-based kill feed option
+            proxy.configVersion = "13";
+            proxy.textKillFeed = defaultConfig.textKillFeed;
         }
         default: {
             if (!mutated) {

@@ -5,6 +5,8 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType } from "../../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
+import { randomKillWord } from "../../utils/misc";
+import { localStorageInstance } from "../../utils/localStorageHandler";
 // import { lerp } from "../../../../../common/src/utils/math";
 
 /*
@@ -76,8 +78,12 @@ export class KillFeedPacket extends ReceivingPacket {
                     weaponUsed = stream.readObjectType().definition as ItemDefinition;
                 }
 
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                killFeedItem.html(`${suicide ? "" : killedBy.name} <img class="kill-icon" src="${`./img/game/killfeed/${weaponUsed?.idString}_killfeed.svg`}" alt="${weaponUsed === undefined ? "" : ` (${weaponUsed?.name})`}"> ${killed.name}`);
+                /* eslint-disable @typescript-eslint/restrict-template-expressions */
+                if (localStorageInstance.config.textKillFeed) {
+                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killed.name} ${randomKillWord()} ${killedBy.name}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                } else {
+                    killFeedItem.html(`${suicide ? "" : killedBy.name} <img class="kill-icon" src="./img/game/killfeed/${weaponUsed?.idString}_killfeed.svg" alt="${weaponUsed === undefined ? "" : ` (${weaponUsed?.name})`}"> ${killed.name}`);
+                }
                 break;
             }
             case KillFeedMessageType.Join: {
