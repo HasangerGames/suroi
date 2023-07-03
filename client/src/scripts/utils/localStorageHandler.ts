@@ -221,7 +221,6 @@ if (config.configVersion !== defaultConfig.configVersion) {
             proxy.keybinds.reload = defaultConfig.keybinds.reload;
             proxy.keybinds.cancelAction = defaultConfig.keybinds.cancelAction;
             proxy.minimapMinimized = defaultConfig.minimapMinimized;
-            break;
         }
         case "8": {
             // Version 9: Added leave warning, joystick size, joystick and minimap transparency settings
@@ -241,14 +240,14 @@ if (config.configVersion !== defaultConfig.configVersion) {
         }
         case "10": {
             // Version 11: Added keybinds to use Healing Items
-            config.configVersion = "11";
-            config.keybinds.useGauze = defaultConfig.keybinds.useGauze;
-            config.keybinds.useMedikit = defaultConfig.keybinds.useMedikit;
-            config.keybinds.useCola = defaultConfig.keybinds.useCola;
-            config.keybinds.useTablets = defaultConfig.keybinds.useTablets;
+            proxy.configVersion = "11";
+            proxy.keybinds.useGauze = defaultConfig.keybinds.useGauze;
+            proxy.keybinds.useMedikit = defaultConfig.keybinds.useMedikit;
+            proxy.keybinds.useCola = defaultConfig.keybinds.useCola;
+            proxy.keybinds.useTablets = defaultConfig.keybinds.useTablets;
         }
         case "11": {
-            // Version 11: Developer password and color stuff
+            // Version 12: Developer password and color stuff
             proxy.configVersion = "12";
             proxy.devPassword = "";
             proxy.nameColor = "";
