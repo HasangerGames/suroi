@@ -27,10 +27,10 @@ export class KillFeedPacket extends SendingPacket {
                 const suicide = killed === killedBy;
 
                 stream.writeBoolean(suicide); // suicide
-                stream.writePlayerNameWithColor(killed.name, killed.isDev, killed.nameColor);
+                stream.writePlayerNameWithColor(killed);
                 stream.writeObjectID(killed.id);
                 if (!suicide) {
-                    stream.writePlayerNameWithColor(killedBy.name, killedBy.isDev, killedBy.nameColor);
+                    stream.writePlayerNameWithColor(killedBy);
                     stream.writeObjectID(killedBy.id);
                 }
 
@@ -41,11 +41,7 @@ export class KillFeedPacket extends SendingPacket {
             }
             case KillFeedMessageType.Join: {
                 const joinMessage = this.message as JoinKillFeedMessage;
-                stream.writePlayerNameWithColor(
-                    joinMessage.player.name,
-                    joinMessage.player.isDev,
-                    joinMessage.player.nameColor
-                );
+                stream.writePlayerNameWithColor(joinMessage.player);
                 stream.writeBoolean(joinMessage.joined);
                 break;
             }

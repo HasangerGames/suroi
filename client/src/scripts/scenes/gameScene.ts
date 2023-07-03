@@ -164,7 +164,7 @@ export class GameScene extends Phaser.Scene {
     skipLootCheck = true;
 
     tick(): void {
-        if (!this.activeGame.gameStarted) return;
+        if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
 
         if (this.playerManager.dirty.inputs) {
             this.playerManager.dirty.inputs = false;

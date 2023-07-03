@@ -4,7 +4,7 @@ import type { WebSocket } from "uWebSockets.js";
 import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
-import { endGame, type PlayerContainer } from "../server";
+import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -432,23 +432,6 @@ export class Player extends GameObject {
             const deathMarker = new DeathMarker(this);
             this.game.dynamicObjects.add(deathMarker);
             this.game.fullDirtyObjects.add(deathMarker);
-
-            // Winning logic
-            if (this.game.started) {
-                if (this.game.aliveCount === 1) {
-                    // End the game in 1 second
-                    this.game.over = true;
-                    setTimeout(endGame, 1000);
-
-                    // Send game over
-                    const lastManStanding: Player = [...this.game.livingPlayers][0];
-                    const gameOverPacket = new GameOverPacket(lastManStanding, true);
-                    lastManStanding.sendPacket(gameOverPacket);
-                } else if (this.game.aliveCount === 0) {
-                    this.game.over = true;
-                    setTimeout(endGame, 1000);
-                }
-            }
 
             // Send game over to dead player
             if (!this.disconnected) {

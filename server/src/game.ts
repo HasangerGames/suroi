@@ -38,6 +38,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { Obstacle } from "./objects/obstacle";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
+import { GameOverPacket } from "./packets/sending/gameOverPacket";
 
 export class Game {
     map: Map;
@@ -393,8 +394,16 @@ export class Game {
                 player.hitEffect = false;
             }
 
-            // Stop the game in 1 second if there are no more players alive
-            if (this.started && this.aliveCount === 0 && !this.over) {
+            // Winning logic
+            if (this.started && this.aliveCount < 2 && !this.over) {
+                // Send game over packet to the last man standing
+                if (this.aliveCount === 1) {
+                    const lastManStanding = [...this.livingPlayers][0];
+                    const gameOverPacket = new GameOverPacket(lastManStanding, true);
+                    lastManStanding.sendPacket(gameOverPacket);
+                }
+
+                // End the game in 1 second
                 this.over = true;
                 setTimeout(endGame, 1000);
             }

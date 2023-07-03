@@ -38,7 +38,7 @@ export class DeathMarker extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePlayerNameWithColor(this.player.name, this.player.isDev, this.player.nameColor);
+        stream.writePlayerNameWithColor(this.player);
         stream.writeBoolean(this.isNew);
     }
 }

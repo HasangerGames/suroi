@@ -7,7 +7,7 @@ export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const gameOverScreen: JQuery = $("#game-over-screen");
 
-        this.playerManager.game.gameOver = stream.readBoolean();
+        this.playerManager.game.gameOver = true;
         const won = stream.readBoolean();
 
         if (!won) {

@@ -313,20 +313,20 @@ export class SuroiBitStream extends BitStream {
     }
 
     /**
-     * Write a player name with dev colors to the stream
-     * @return The player name.
+     * Write a player name with dev colors to the stream.
+     * @param player The player to write the name of
      */
-    writePlayerNameWithColor(name: string, isDev: boolean, color: string): void {
-        this.writePlayerName(name);
-        this.writeBoolean(isDev);
-        if (isDev) {
-            this.writeUTF8String(color, 10);
+    writePlayerNameWithColor(player: { name: string, isDev: boolean, nameColor: string }): void {
+        this.writePlayerName(player.name);
+        this.writeBoolean(player.isDev);
+        if (player.isDev) {
+            this.writeUTF8String(player.nameColor, 10);
         }
     }
 
     /**
-     * Read a player name with dev colors from the stream
-     * @return The player name on a span element with the color if its a dev.
+     * Read a player name with dev colors from the stream.
+     * @return A player name wrapped in a span element, with color if it's a dev
      */
     readPlayerNameWithColor(): string {
         const playerName = this.readPlayerName();
