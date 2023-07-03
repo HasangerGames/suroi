@@ -58,26 +58,31 @@ const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 const bannedIPs: string[] = [];
 
-app.get("/api/getGame", (res, req) => {
+app.get("/api/getGame", async(res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     res.onAborted(() => { });
     cors(res);
 
     let response: { success: boolean, address?: string };
-    if (game.allowJoin) {
-        let region: string;
-        if (req.getQuery() !== undefined) {
-            const split: string[] = req.getQuery().split("=");
-            region = split.length === 2 ? split[1] : Config.defaultRegion;
-        } else {
-            region = Config.defaultRegion;
-        }
-        const regionAddress: string = Config.regions[region] ?? Config.regions[Config.defaultRegion];
-        response = { success: true, address: regionAddress };
+
+    const searchParams = new URLSearchParams(req.getQuery());
+
+    const region = searchParams.get("region") ?? Config.defaultRegion;
+
+    if (game.allowJoin && region === Config.thisRegion) {
+        response = { success: true, address: Config.regions[region] };
+    } else if (Config.regions[region] && region !== Config.thisRegion) {
+        // Fetch the find game api for the region and return that.
+        const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
+        response = await (await fetch(url)).json();
     } else {
         response = { success: false };
     }
-    res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+
+    res.cork(() => {
+        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+    })
+
 });
 
 export interface PlayerContainer {

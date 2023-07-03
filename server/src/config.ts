@@ -8,6 +8,11 @@ export interface ConfigType {
     readonly port: number
     readonly regions: Record<string, string>
     readonly defaultRegion: string
+    /**
+     * The websocket region this server is running.
+     * Used for the find game api.
+     */
+    readonly thisRegion: string
     readonly ssl: {
         readonly keyFile: string
         readonly certFile: string
@@ -75,6 +80,7 @@ export const Config = {
         as: "wss://as.suroi.io"
     },
     defaultRegion: "na",
+    thisRegion: "dev",
 
     ssl: {
         keyFile: "",
