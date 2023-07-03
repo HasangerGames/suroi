@@ -55,7 +55,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "12",
+    configVersion: "13",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -258,6 +258,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
             // Version 13: Added text-based kill feed option
             proxy.configVersion = "13";
             proxy.textKillFeed = defaultConfig.textKillFeed;
+            break;
         }
         default: {
             if (!mutated) {

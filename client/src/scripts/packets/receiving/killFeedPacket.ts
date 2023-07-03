@@ -80,7 +80,7 @@ export class KillFeedPacket extends ReceivingPacket {
 
                 /* eslint-disable @typescript-eslint/restrict-template-expressions */
                 if (localStorageInstance.config.textKillFeed) {
-                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killed.name} ${randomKillWord()} ${killedBy.name}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killedBy.name} ${randomKillWord()} ${killed.name}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
                 } else {
                     killFeedItem.html(`${suicide ? "" : killedBy.name} <img class="kill-icon" src="./img/game/killfeed/${weaponUsed?.idString}_killfeed.svg" alt="${weaponUsed === undefined ? "" : ` (${weaponUsed?.name})`}"> ${killed.name}`);
                 }
