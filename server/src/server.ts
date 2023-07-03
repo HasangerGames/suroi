@@ -81,8 +81,7 @@ app.get("/api/getGame", async(res, req) => {
 
     res.cork(() => {
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
-    })
-
+    });
 });
 
 export interface PlayerContainer {
