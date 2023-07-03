@@ -256,9 +256,10 @@ if (config.configVersion !== defaultConfig.configVersion) {
         }
         case "12": {
             // Version 13: Added text-based kill feed option
+            // Have to set configVersion twice for some reason
+            proxy.configVersion = "13";
             proxy.configVersion = "13";
             proxy.textKillFeed = defaultConfig.textKillFeed;
-            break;
         }
         default: {
             if (!mutated) {
