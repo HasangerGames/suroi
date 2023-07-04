@@ -484,7 +484,7 @@ export class Game {
             player.disableInvulnerability();
         }, 5000);
 
-        if (this.aliveCount > 1 && !this.started) {
+        if (this.aliveCount > 1 && !this.started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
                 this.started = true;
                 this.advanceGas();
