@@ -10,7 +10,7 @@ import {
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { createNewGame, endGame, type PlayerContainer } from "./server";
+import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
 import { Map } from "./map";
 
 import { Player } from "./objects/player";
@@ -415,7 +415,8 @@ export class Game {
                 this.over = true;
                 setTimeout(() => {
                     endGame(this.id); // End this game
-                    createNewGame(this.id); // Create a new game
+                    const otherID = this.id === 0 ? 1 : 0;
+                    if (!allowJoin(otherID)) createNewGame(this.id); // Create a new game if the other game isn't allowing players to join
                 }, 1000);
             }
 

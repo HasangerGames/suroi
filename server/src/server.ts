@@ -67,7 +67,7 @@ export function endGame(id: number): void {
     log(`Game #${id} ended`);
 }
 
-function allowJoin(gameID: number): boolean {
+export function allowJoin(gameID: number): boolean {
     return Boolean(games[gameID]?.allowJoin);
 }
 
