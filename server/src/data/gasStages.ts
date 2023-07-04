@@ -6,6 +6,7 @@ export interface GasStage {
     oldRadius: number
     newRadius: number
     dps: number
+    preventJoin?: boolean
 }
 
 export const GasStages: GasStage[] = [
@@ -49,7 +50,8 @@ export const GasStages: GasStage[] = [
         duration: 25,
         oldRadius: 128,
         newRadius: 64,
-        dps: 3.5
+        dps: 3.5,
+        preventJoin: true
     },
     {
         state: GasState.Advancing,

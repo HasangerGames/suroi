@@ -28,11 +28,11 @@ $(() => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
         playSoloBtn.html('<span style="position: relative; bottom: 1px;"><div class="spin"></div> Connecting...</span>');
-        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string }) => {
+        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
                 const nameColor = localStorageInstance.config.nameColor;
-                let address = `${data.address}/play?name=${encodeURIComponent($("#username-input").val() as string)}`;
+                let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
                 if (devPass && devPass.length > 0) address += `&devPassword=${devPass}`;
                 if (nameColor && nameColor.length > 0) address += `&nameColor=${nameColor}`;

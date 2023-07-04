@@ -91,10 +91,7 @@ export const Config = {
     movementSpeed: 0.031,
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
-    spawn: {
-        mode: SpawnMode.Fixed,
-        position: Vec2(360, 360)
-    },
+    spawn: { mode: SpawnMode.Fixed, position: Vec2(360, 360) },
 
     gas: { mode: GasMode.Normal },
 

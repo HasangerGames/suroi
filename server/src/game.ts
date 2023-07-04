@@ -10,7 +10,7 @@ import {
 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { endGame, type PlayerContainer } from "./server";
+import { createNewGame, endGame, type PlayerContainer } from "./server";
 import { Map } from "./map";
 
 import { Player } from "./objects/player";
@@ -41,6 +41,8 @@ import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 
 export class Game {
+    id: number;
+
     map: Map;
 
     /**
@@ -103,6 +105,8 @@ export class Game {
     over = false;
     stopped = false;
 
+    startTimeoutID?: NodeJS.Timeout;
+
     readonly gas = {
         stage: 0,
         state: GasState.Inactive,
@@ -121,10 +125,13 @@ export class Game {
 
     gasDirty = false;
     gasPercentageDirty = false;
+    gasTimeoutID?: NodeJS.Timeout;
 
     tickTimes: number[] = [];
 
-    constructor() {
+    constructor(id: number) {
+        this.id = id;
+
         this.world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
         Settings.maxLinearCorrection = 0; // Prevents collision jitter
         Settings.maxTranslation = 12.5; // Allows bullets to travel fast
@@ -404,8 +411,13 @@ export class Game {
                 }
 
                 // End the game in 1 second
+                this.allowJoin = false;
                 this.over = true;
-                setTimeout(endGame, 1000);
+                setTimeout(() => endGame(this.id), 1000);
+
+                // Create a new game
+                const id = this.id === 0 ? 1 : 0;
+                createNewGame(id);
             }
 
             // Record performance and start the next tick
@@ -416,8 +428,8 @@ export class Game {
 
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-                log(`Average ms/tick: ${mspt}`, true);
-                log(`Server load: ${((mspt / 30) * 100).toFixed(1)}%`);
+                log(`Game #${this.id} average ms/tick: ${mspt}`, true);
+                log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
@@ -473,13 +485,10 @@ export class Game {
         }, 5000);
 
         if (this.aliveCount > 1 && !this.started) {
-            this.started = true;
-            this.advanceGas();
-
-            // Stop new players from joining in the final 30 seconds
-            setTimeout(() => {
-                this.allowJoin = false;
-            }, 145000);
+            this.startTimeoutID = setTimeout(() => {
+                this.started = true;
+                this.advanceGas();
+            }, 5000);
         }
     }
 
@@ -505,7 +514,6 @@ export class Game {
             this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, false)));
         }
         this.connectedPlayers.delete(player);
-
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.dynamicObjects.delete(player);
@@ -516,6 +524,7 @@ export class Game {
                 console.error("Error destroying player body. Details: ", e);
             }
         }
+        if (this.aliveCount < 2) clearTimeout(this.startTimeoutID);
         try {
             player.socket.close();
         } catch (e) { }
@@ -589,6 +598,12 @@ export class Game {
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = this.now;
+        if (currentStage.preventJoin) {
+            log(`Game #${this.id} is preventing new players from joining`);
+            this.allowJoin = false;
+            const id = this.id === 0 ? 1 : 0;
+            createNewGame(id);
+        }
         if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
@@ -607,7 +622,7 @@ export class Game {
 
         // Start the next stage
         if (duration !== 0) {
-            setTimeout(() => this.advanceGas(), duration * 1000);
+            this.gasTimeoutID = setTimeout(() => this.advanceGas(), duration * 1000);
         }
     }
 

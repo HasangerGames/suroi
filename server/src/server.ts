@@ -43,15 +43,32 @@ const app = Config.ssl.enable
     })
     : App();
 
-let game = new Game();
+const games: Array<Game | undefined> = [];
+createNewGame(0);
 
-export function endGame(): void {
+export function createNewGame(id: number): void {
+    if (games[id] === undefined || games[id]?.stopped) {
+        log(`Creating new game with ID #${id}`);
+        games[id] = new Game(id);
+    }
+}
+
+export function endGame(id: number): void {
+    const game = games[id];
+    if (game === undefined) return;
+    game.allowJoin = false;
     game.stopped = true;
+    clearTimeout(game.startTimeoutID);
+    clearTimeout(game.gasTimeoutID);
     for (const player of game.connectedPlayers) {
         player.socket.close();
     }
-    log("Game ended");
-    game = new Game();
+    games[id] = undefined;
+    log(`Game #${id} ended`);
+}
+
+function allowJoin(gameID: number): boolean {
+    return Boolean(games[gameID]?.allowJoin);
 }
 
 const simultaneousConnections: Record<string, number> = {};
@@ -63,30 +80,40 @@ app.get("/api/getGame", async(res, req) => {
     res.onAborted(() => { });
     cors(res);
 
-    let response: { success: boolean, address?: string };
+    let response: { success: boolean, address?: string, gameID?: number };
 
     const searchParams = new URLSearchParams(req.getQuery());
 
     const region = searchParams.get("region") ?? Config.defaultRegion;
 
-    if (game.allowJoin && region === Config.thisRegion) {
-        response = { success: true, address: Config.regions[region] };
-    } else if (Config.regions[region] && region !== Config.thisRegion) {
+    if (region === Config.thisRegion) {
+        let gameID: number | undefined;
+        if (allowJoin(0)) {
+            gameID = 0;
+        } else if (allowJoin(1)) {
+            gameID = 1;
+        } else {
+            response = { success: false };
+        }
+        if (gameID !== undefined) {
+            response = { success: true, address: Config.regions[region], gameID };
+        }
+    } else if (Config.regions[region] !== undefined && region !== Config.thisRegion) {
         // Fetch the find game api for the region and return that.
         const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
         response = await (await fetch(url)).json();
     } else {
         response = { success: false };
     }
-
     res.cork(() => {
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
     });
 });
 
 export interface PlayerContainer {
+    gameID: number
     player: Player
-    playerName: string
+    name: string
     ip: string | undefined
     isDev: boolean
     nameColor: string
@@ -101,12 +128,7 @@ app.ws("/play", {
      */
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => { });
-
-        if (!game.allowJoin) {
-            res.endWithoutBody(0, true);
-            return;
-        }
+        res.onAborted((): void => {});
 
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
@@ -125,6 +147,15 @@ app.ws("/play", {
         }
 
         const searchParams = new URLSearchParams(req.getQuery());
+
+        let gameID = Number(searchParams.get("gameID"));
+        if (gameID < 0 || gameID > 1) gameID = 0;
+        const game = games[gameID];
+
+        if (game === undefined || !game.allowJoin) {
+            res.endWithoutBody(0, true);
+            return;
+        }
 
         let name = searchParams.get("name");
 
@@ -150,8 +181,9 @@ app.ws("/play", {
 
         res.upgrade(
             {
+                gameID,
                 player: undefined,
-                playerName: name,
+                name,
                 ip,
                 isDev,
                 nameColor: isDev ? color : ""
@@ -168,9 +200,11 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
-        const userData = socket.getUserData();
-        userData.player = game.addPlayer(socket, userData.playerName, userData.isDev, userData.nameColor);
-        log(`"${userData.playerName}" joined the game`);
+        const p = socket.getUserData();
+        const game = games[p.gameID];
+        if (game === undefined) return;
+        p.player = game.addPlayer(socket, p.name, p.isDev, p.nameColor);
+        log(`"${p.name}" joined game #${p.gameID}`);
     },
 
     /**
@@ -207,10 +241,12 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close(socket: WebSocket<PlayerContainer>) {
-        const p: Player = socket.getUserData().player;
-        if (Config.botProtection) simultaneousConnections[socket.getUserData().ip as string]--;
-        log(`"${p.name}" left the game`);
-        game.removePlayer(p);
+        const p = socket.getUserData();
+        if (Config.botProtection) simultaneousConnections[p.ip as string]--;
+        log(`"${p.name}" left game #${p.gameID}`);
+        const game = games[p.gameID];
+        if (game === undefined) return;
+        game.removePlayer(p.player);
     }
 });
 
