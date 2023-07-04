@@ -12,7 +12,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import type { PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
-import { ObjectCategory } from "../../../../common/src/constants";
+import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../../../common/src/constants";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 
@@ -106,8 +106,8 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Draw the grid
-        const GRID_WIDTH = 7200;
-        const GRID_HEIGHT = 7200;
+        const GRID_WIDTH = MAP_WIDTH * 10;
+        const GRID_HEIGHT = MAP_HEIGHT * 10;
         const CELL_SIZE = 160;
 
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
@@ -118,7 +118,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create gas rectangle and mask
-        this.gasCircle = this.add.circle(7200, 7200, 10240, 0x000000, 0);
+        this.gasCircle = this.add.circle(GRID_WIDTH, GRID_HEIGHT, 10240, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(0, 0, this.game.canvas.width * 2, this.game.canvas.height * 2, GAS_COLOR, GAS_ALPHA)
             .setDepth(10).setMask(this.gasMask).setScrollFactor(0, 0).setOrigin(0.25, 0.25);

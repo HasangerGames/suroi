@@ -15,7 +15,7 @@ import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { GasState, PacketType } from "../../../common/src/constants";
+import { GasState, MAP_HEIGHT, MAP_WIDTH, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
@@ -42,8 +42,8 @@ export class Game {
     readonly gas = {
         state: GasState.Inactive,
         initialDuration: 0,
-        oldPosition: v(360, 360),
-        newPosition: v(360, 360),
+        oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
+        newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         oldRadius: 534.6,
         newRadius: 534.6
     };
