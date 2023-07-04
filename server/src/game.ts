@@ -413,11 +413,10 @@ export class Game {
                 // End the game in 1 second
                 this.allowJoin = false;
                 this.over = true;
-                setTimeout(() => endGame(this.id), 1000);
-
-                // Create a new game
-                const id = this.id === 0 ? 1 : 0;
-                createNewGame(id);
+                setTimeout(() => {
+                    endGame(this.id); // End this game
+                    createNewGame(this.id); // Create a new game
+                }, 1000);
             }
 
             // Record performance and start the next tick
@@ -524,7 +523,10 @@ export class Game {
                 console.error("Error destroying player body. Details: ", e);
             }
         }
-        if (this.aliveCount < 2) clearTimeout(this.startTimeoutID);
+        if (this.aliveCount < 2) {
+            clearTimeout(this.startTimeoutID);
+            this.startTimeoutID = undefined;
+        }
         try {
             player.socket.close();
         } catch (e) { }
@@ -607,7 +609,7 @@ export class Game {
         if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
-                this.gas.newPosition = randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius);
+                this.gas.newPosition = Config.gas.mode !== GasMode.Debug ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius) : v(360, 360);
             } else {
                 this.gas.newPosition = vClone(this.gas.oldPosition);
             }
