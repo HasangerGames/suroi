@@ -12,11 +12,10 @@ export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
 
     playerName!: string;
+    nameColor = "#dcdcdc";
 
     image: Phaser.GameObjects.Image;
     playerNameText: Phaser.GameObjects.Text;
-
-    container: Phaser.GameObjects.Container;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, scene, type, id);
@@ -25,26 +24,24 @@ export class DeathMarker extends GameObject {
         this.playerNameText = this.scene.add.text(0, 95, "",
             {
                 fontSize: 36,
-                fontFamily: "Inter",
-                color: "#dcdcdc"
+                fontFamily: "Inter"
             })
             .setOrigin(0.5, 0.5)
             .setShadow(2, 2, "#000", 2, true, true);
-        this.container = this.scene.add.container(0, 0, [this.image, this.playerNameText]).setDepth(-1);
+        this.container.add([this.image, this.playerNameText]).setDepth(-1);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
-        this.container.setPosition(this.position.x * 20, this.position.y * 20);
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.playerName = stream.readPlayerName();
 
         if (stream.readBoolean()) {
-            this.playerNameText.setColor(stream.readUTF8String(10));
+            this.nameColor = stream.readUTF8String(10);
         }
-        this.playerNameText.setText(this.playerName);
+        this.playerNameText.setText(this.playerName).setColor(this.nameColor);
 
         // Play an animation if this is a new death marker.
         if (stream.readBoolean()) {
@@ -57,8 +54,8 @@ export class DeathMarker extends GameObject {
         }
     }
 
-    override destroy(): void {
-        this.container.destroy(true);
+    destroy(): void {
+        super.destroy();
         this.image.destroy(true);
         this.playerNameText.destroy(true);
     }

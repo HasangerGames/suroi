@@ -16,9 +16,8 @@ import { type PlayerManager } from "../utils/playerManager";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     readonly images: {
-        background: Phaser.GameObjects.Image
+        readonly background: Phaser.GameObjects.Image
         readonly item: Phaser.GameObjects.Image
-        readonly container: Phaser.GameObjects.Container
     };
 
     created = false;
@@ -29,14 +28,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
         super(game, scene, type, id);
-        const images = {
+        this.images = {
             background: this.scene.add.image(0, 0, "main"),
-            item: this.scene.add.image(0, 0, "main", `${this.type.idString}.svg`),
-            container: undefined as unknown as Phaser.GameObjects.Container
+            item: this.scene.add.image(0, 0, "main", `${this.type.idString}.svg`)
         };
 
-        images.container = this.scene.add.container(0, 0, [images.background, images.item]).setDepth(1);
-        this.images = images;
+        this.container.add([this.images.background, this.images.item]).setDepth(1);
 
         // Set the loot texture based on the type
         const definition = this.type.definition;
@@ -61,7 +58,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (backgroundTexture !== undefined) {
             this.images.background.setTexture("main", backgroundTexture);
         } else {
-            this.images.background.setVisible(false); // TODO Figure out why destroy doesn't work
+            this.images.background.setVisible(false); // @TODO Figure out why destroy doesn't work
+            // I think you can't destroy a container child without destroying the container first
+            // - Leo
         }
 
         this.radius = LootRadius[(this.type.definition as LootDefinition).itemType];
@@ -69,32 +68,21 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
-
-        if (!this.created) {
-            this.images.container.setPosition(this.position.x * 20, this.position.y * 20);
-        } else {
-            this.scene.tweens.add({
-                targets: this.images.container,
-                x: this.position.x * 20,
-                y: this.position.y * 20,
-                duration: 30
-            });
-        }
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
         // Loot should only be fully updated on creation
         if (this.created) {
             console.warn("Full update of existing loot");
-            return;
         }
 
         this.count = stream.readUint8();
+        const isNew = stream.readBoolean();
 
         // Play an animation if this is new loot
-        if (stream.readBoolean()) {
-            this.images.container.setScale(0.5);
-            gsap.to(this.images.container, {
+        if (isNew) {
+            this.container.setScale(0.5);
+            gsap.to(this.container, {
                 scale: 1,
                 ease: "elastic.out(1.01, 0.3)",
                 duration: 1
@@ -104,8 +92,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         this.created = true;
     }
 
-    override destroy(): void {
-        this.images.container.destroy(true);
+    destroy(): void {
+        super.destroy();
         this.images.item.destroy(true);
         this.images.background.destroy(true);
     }

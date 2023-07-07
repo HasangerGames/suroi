@@ -12,11 +12,10 @@ import {
     ANIMATION_TYPE_BITS,
     AnimationType,
     ObjectCategory,
-    PLAYER_RADIUS,
-    type PlayerActions
+    PLAYER_RADIUS
 } from "../../../../common/src/constants";
 
-import { vClone, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -49,7 +48,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly rightFist: Phaser.GameObjects.Image
         readonly weaponImg: Phaser.GameObjects.Image
         readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
-        readonly container: Phaser.GameObjects.Container
     };
 
     leftFistAnim!: Phaser.Tweens.Tween;
@@ -58,19 +56,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     distSinceLastFootstep = 0;
 
-    action!: PlayerActions;
-
     readonly radius = PLAYER_RADIUS;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);
         this.isActivePlayer = isActivePlayer;
 
-        const images = {
-            body: this.scene.add.image(0, 0, "main", "player_base.svg"), //.setAlpha(0.5),
+        this.images = {
+            body: this.scene.add.image(0, 0, "main", "player_base.svg"),
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
-            weaponImg: this.scene.add.image(0, 0, "main"), //.setAlpha(0.5),
+            weaponImg: this.scene.add.image(0, 0, "main"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -80,11 +76,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 scale: { start: 0.75, end: 1 },
                 alpha: { start: 1, end: 0 },
                 emitting: false
-            }),
-            container: undefined as unknown as Phaser.GameObjects.Container
+            })
         };
-        images.container = this.scene.add.container(0, 0, [images.body, images.leftFist, images.rightFist, images.weaponImg, images.bloodEmitter]).setDepth(2);
-        this.images = images;
+
+        this.container.add([this.images.body,
+            this.images.leftFist,
+            this.images.rightFist,
+            this.images.weaponImg,
+            this.images.bloodEmitter]).setDepth(2);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -103,21 +102,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        const phaserPos = vMul(this.position, 20);
         this.rotation = stream.readRotation(16);
 
-        if (this.isNew || !localStorageInstance.config.movementSmoothing) {
-            this.images.container.setPosition(phaserPos.x, phaserPos.y);
-        } else {
-            gsap.to(this.images.container, {
-                x: phaserPos.x,
-                y: phaserPos.y,
-                ease: "none",
-                duration: 0.03
-            });
-        }
-
-        const oldAngle = this.images.container.angle;
+        const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
         const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
@@ -132,9 +119,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
-            this.images.container.setRotation(this.rotation);
+            this.container.setRotation(this.rotation);
         } else {
-            gsap.to(this.images.container, {
+            gsap.to(this.container, {
                 angle: finalAngle,
                 ease: "none",
                 duration: 0.03
@@ -188,8 +175,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     if (showMeleeDebugCircle) {
                         const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
-                        this.images.container.add(meleeDebugCircle);
-                        setTimeout(() => this.images.container.remove(meleeDebugCircle, true), 500);
+                        this.container.add(meleeDebugCircle);
+                        setTimeout(() => this.container.remove(meleeDebugCircle, true), 500);
                     }
 
                     this.scene.playSound("swing");
@@ -239,7 +226,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
-        this.images.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
+        this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
         this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot, LootDefinition>;
 
@@ -298,17 +285,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (this.isActivePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.container.bringToTop(this.images.weaponImg);
-            this.images.container.bringToTop(this.images.body);
+            this.container.bringToTop(this.images.weaponImg);
+            this.container.bringToTop(this.images.body);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.container.sendToBack(this.images.body);
-            this.images.container.sendToBack(this.images.weaponImg);
+            this.container.sendToBack(this.images.body);
+            this.container.sendToBack(this.images.weaponImg);
         }
-        this.images.container.bringToTop(this.images.bloodEmitter);
+        this.container.bringToTop(this.images.bloodEmitter);
     }
 
     destroy(): void {
-        this.images.container.destroy(true);
+        super.destroy();
         this.images.body.destroy(true);
         this.images.leftFist.destroy(true);
         this.images.rightFist.destroy(true);

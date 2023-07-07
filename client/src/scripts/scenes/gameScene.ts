@@ -128,7 +128,7 @@ export class GameScene extends Phaser.Scene {
         this.playerManager.name = $("#username-input").text();
 
         // Follow the player w/ the camera
-        this.cameras.main.startFollow(this.player.images.container);
+        this.cameras.main.startFollow(this.player.container);
 
         // Initializes sounds
         [
