@@ -70,8 +70,7 @@ export class Loot extends GameObject {
         this.hitbox = new CircleHitbox(radius, this.position);
 
         // Push the loot in a random direction
-        const angle = randomRotation();
-        this.body.setLinearVelocity(Vec2(Math.cos(angle), Math.sin(angle)).mul(0.005));
+        this.push(randomRotation(), 0.005);
 
         setTimeout((): void => { this.isNew = false; }, 100);
     }
@@ -211,6 +210,11 @@ export class Loot extends GameObject {
         ) {
             activeWeapon.reload();
         }
+    }
+
+    push(angle: number, velocity: number): void {
+        const vel = this.body.getLinearVelocity();
+        this.body.setLinearVelocity(vel.add(Vec2(Math.cos(angle), -Math.sin(angle)).mul(velocity)));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

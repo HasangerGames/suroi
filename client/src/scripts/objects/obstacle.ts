@@ -24,8 +24,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, scene, type, id);
 
-        // the image and emiter key, position and other properties are set after the obstacle is deserialized
+        // the image and emitter key, position and other properties are set after the obstacle is deserialized
         this.image = this.scene.add.image(0, 0, "main");
+        this.container.add(this.image);
+        // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
         this.emitter = this.scene.add.particles(0, 0, "main");
     }
 
@@ -37,22 +39,17 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const definition = this.type.definition as ObstacleDefinition;
 
         // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
-        if (oldScale !== this.scale) {
-            if (oldScale < this.scale) {
-                this.image.setScale(oldScale);
+        this.image.setScale(this.destroyed ? 1 : this.scale);
+        if (oldScale !== this.scale && !this.isNew && !destroyed) {
+            this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
+            let numParticle = 1;
+            const destroyScale = definition.scale.destroy;
+            if ((oldScale - this.scale) * 2 > (1 - destroyScale)) {
+                numParticle = 3;
+            } else if ((oldScale - this.scale) * 4 > (1 - destroyScale)) {
+                numParticle = 2;
             }
-            if (!this.isNew && !destroyed) {
-                this.image.setScale(this.scale);
-                this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
-                let numParticle = 1;
-                const destroyScale = definition.scale.destroy;
-                if ((oldScale - this.scale) * 2 > (1 - destroyScale)) {
-                    numParticle = 3;
-                } else if ((oldScale - this.scale) * 4 > (1 - destroyScale)) {
-                    numParticle = 2;
-                }
-                this.emitter.emitParticle(numParticle);
-            }
+            this.emitter.emitParticle(numParticle);
         }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
@@ -61,8 +58,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (!this.isNew) {
                 this.scene.playSound(`${definition.material}_destroyed`);
                 this.image.setTexture("main", `${this.type.idString}_residue.svg`);
-                this.image.setRotation(this.rotation).setScale(this.scale);
-                this.image.setDepth(0);
+                this.container.setRotation(this.rotation).setScale(this.scale);
+                this.container.setDepth(0);
                 this.emitter.explode(10);
             }
         }
@@ -83,15 +80,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         let texture = this.type.idString;
         if (this.destroyed) texture += "_residue";
         else if (hasVariations) texture += `_${this.variation + 1}`;
+        // Update the obstacle image
         this.image.setFrame(`${texture}.svg`);
 
-        // Update the obstacle image
-        this.image.setPosition(this.position.x * 20, this.position.y * 20)
-            .setRotation(this.rotation)
-            .setScale(this.scale)
-            .setDepth(this.destroyed || definition.depth === undefined ? 0 : definition.depth);
-
-        this.emitter.setPosition(this.position.x * 20, this.position.y * 20);
+        this.container.setRotation(this.rotation)
+            .setDepth(this.destroyed ? 0 : definition.depth ?? 0);
 
         // If there are multiple particle variations, generate a list of variation image names
         const particleImage = `${this.type.idString}_particle`;
@@ -113,11 +106,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             speed: { min: 125, max: 175 },
             scale: { start: 1, end: 0 },
             emitting: false
-        })
-            .setDepth((definition.depth ?? 0) + 1);
+        }).setDepth((definition.depth ?? 0) + 1).setPosition(this.container.x, this.container.y);
     }
 
-    override destroy(): void {
+    destroy(): void {
+        super.destroy();
         this.image.destroy(true);
         this.emitter.destroy(true);
     }

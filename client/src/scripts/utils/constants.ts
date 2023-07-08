@@ -1,3 +1,5 @@
+import { MAP_HEIGHT, MAP_WIDTH } from "../../../../common/src/constants";
+
 export const HIDE_DEV_REGION = false;
 export const GRASS_COLOR = 0x49993e;
 export const GRASS_RGB = {
@@ -9,5 +11,5 @@ export const GAS_COLOR = 0xff4800;
 export const GAS_ALPHA = 0.55;
 
 export const MINIMAP_SCALE = 2;
-export const MINIMAP_GRID_WIDTH = 720 * MINIMAP_SCALE;
-export const MINIMAP_GRID_HEIGHT = 720 * MINIMAP_SCALE;
+export const MINIMAP_GRID_WIDTH = MAP_WIDTH * MINIMAP_SCALE;
+export const MINIMAP_GRID_HEIGHT = MAP_HEIGHT * MINIMAP_SCALE;

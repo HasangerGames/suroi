@@ -2,7 +2,6 @@
 import { Config, GasMode, SpawnMode } from "./config";
 
 import {
-    Box,
     Fixture,
     Settings,
     Vec2,
@@ -21,7 +20,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { GasState, ObjectCategory, OBJECT_ID_BITS } from "../../common/src/constants";
+import { GasState, ObjectCategory, OBJECT_ID_BITS, MAP_WIDTH, MAP_HEIGHT } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";
@@ -113,11 +112,11 @@ export class Game {
         initialDuration: 0,
         countdownStart: 0,
         percentage: 0,
-        oldPosition: v(360, 360),
-        newPosition: v(360, 360),
+        oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
+        newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         oldRadius: 512,
         newRadius: 512,
-        currentPosition: v(360, 360),
+        currentPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         currentRadius: 512,
         dps: 0,
         ticksSinceLastDamage: 0
@@ -180,12 +179,6 @@ export class Game {
             }
         });
 
-        // Create world boundaries
-        this.createWorldBoundary(360, 0, 360, 0);
-        this.createWorldBoundary(0, 360, 0, 360);
-        this.createWorldBoundary(360, 720, 360, 0);
-        this.createWorldBoundary(720, 360, 0, 360);
-
         // Generate map
         this.map = new Map(this);
 
@@ -195,31 +188,6 @@ export class Game {
 
         // Start the tick loop
         this.tick(30);
-    }
-
-    private createWorldBoundary(x: number, y: number, width: number, height: number): void {
-        const boundary = this.world.createBody({
-            type: "static",
-            position: Vec2(x, y)
-        });
-
-        boundary.createFixture({
-            shape: Box(width, height),
-            userData: {
-                is: {
-                    player: false,
-                    obstacle: true,
-                    bullet: false,
-                    loot: false
-                },
-                collidesWith: {
-                    player: true,
-                    obstacle: false,
-                    bullet: true,
-                    loot: true
-                }
-            }
-        });
     }
 
     tick(delay: number): void {
@@ -248,6 +216,8 @@ export class Game {
             // Do damage to objects hit by bullets
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
+                // Bullets from dead players should not deal damage
+                if (bullet.shooter.dead) continue;
                 const definition = bullet.source.ballistics;
 
                 if (damageRecord.damaged instanceof Player) {
@@ -610,7 +580,9 @@ export class Game {
         if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
-                this.gas.newPosition = Config.gas.mode !== GasMode.Debug ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius) : v(360, 360);
+                this.gas.newPosition = Config.gas.mode !== GasMode.Debug
+                    ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius)
+                    : v(MAP_WIDTH / 2, MAP_HEIGHT / 2);
             } else {
                 this.gas.newPosition = vClone(this.gas.oldPosition);
             }

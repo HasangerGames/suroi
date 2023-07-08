@@ -138,11 +138,12 @@ if (config.configVersion !== defaultConfig.configVersion) {
      * `default` case
      */
     let proxy = new Proxy(config, {
-        set() {
+        set<K extends keyof Config>(target: Config, key: K, value: Config[K]) {
             mutated = true;
 
             // We don't need this proxy anymore
             proxy = config;
+            target[key] = value;
 
             return true;
         }
@@ -251,13 +252,11 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "11": {
             // Version 12: Developer password and color stuff
             proxy.configVersion = "12";
-            if (proxy.devPassword === undefined) proxy.devPassword = defaultConfig.devPassword;
-            if (proxy.nameColor === undefined) proxy.nameColor = defaultConfig.nameColor;
+            proxy.devPassword = defaultConfig.devPassword;
+            proxy.nameColor = defaultConfig.nameColor;
         }
         case "12": {
             // Version 13: Added text-based kill feed option
-            // Have to set configVersion twice for some reason
-            proxy.configVersion = "13";
             proxy.configVersion = "13";
             proxy.textKillFeed = defaultConfig.textKillFeed;
         }

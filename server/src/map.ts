@@ -14,20 +14,26 @@ import {
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { ObjectCategory } from "../../common/src/constants";
+import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
-import { Vec2 } from "planck";
+import { Box, Vec2 } from "planck";
 import { Scopes } from "../../common/src/definitions/scopes";
 
 export class Map {
     game: Game;
 
-    readonly width = 720;
-    readonly height = 720;
+    readonly width = MAP_WIDTH;
+    readonly height = MAP_HEIGHT;
 
     constructor(game: Game) {
         const mapStartTime = Date.now();
         this.game = game;
+
+        // Create world boundaries
+        this.createWorldBoundary(this.width / 2, 0, this.width / 2, 0);
+        this.createWorldBoundary(0, this.height / 2, 0, this.height / 2);
+        this.createWorldBoundary(this.width / 2, this.height, this.width / 2, 0);
+        this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
 
         if (!Config.disableMapGeneration) {
             this.generateObstacles("oil_tank", 2, undefined, 200, true);
@@ -247,5 +253,30 @@ export class Map {
         }
 
         return position;
+    }
+
+    private createWorldBoundary(x: number, y: number, width: number, height: number): void {
+        const boundary = this.game.world.createBody({
+            type: "static",
+            position: Vec2(x, y)
+        });
+
+        boundary.createFixture({
+            shape: Box(width, height),
+            userData: {
+                is: {
+                    player: false,
+                    obstacle: true,
+                    bullet: false,
+                    loot: false
+                },
+                collidesWith: {
+                    player: true,
+                    obstacle: false,
+                    bullet: true,
+                    loot: true
+                }
+            }
+        });
     }
 }

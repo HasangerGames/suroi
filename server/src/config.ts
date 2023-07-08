@@ -1,4 +1,5 @@
 import { Vec2 } from "planck";
+import { MAP_HEIGHT, MAP_WIDTH } from "../../common/src/constants";
 
 export enum SpawnMode { Random, Radius, Fixed}
 export enum GasMode { Normal, Debug, Disabled }
@@ -91,7 +92,7 @@ export const Config = {
     movementSpeed: 0.029,
     get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
-    spawn: { mode: SpawnMode.Fixed, position: Vec2(360, 360) },
+    spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
 
     gas: { mode: GasMode.Normal },
 

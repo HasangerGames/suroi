@@ -4,6 +4,7 @@ import {
 } from "../utils/constants";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import core from "../core";
+import { MAP_HEIGHT, MAP_WIDTH } from "../../../../common/src/constants";
 
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
@@ -34,9 +35,14 @@ export class MinimapScene extends Phaser.Scene {
         this.renderTexture = this.add.renderTexture(0, 0, MINIMAP_GRID_WIDTH, MINIMAP_GRID_HEIGHT).setOrigin(0, 0);
 
         // Create gas rectangle and mask
-        this.gasCircle = this.add.circle(360 * MINIMAP_SCALE, 360 * MINIMAP_SCALE, 512 * MINIMAP_SCALE, 0x000000, 0);
+        this.gasCircle = this.add.circle(MAP_WIDTH / 2 * MINIMAP_SCALE, MAP_HEIGHT / 2 * MINIMAP_SCALE, 512 * MINIMAP_SCALE, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
-        this.gasRect = this.add.rectangle(360 * MINIMAP_SCALE, 360 * MINIMAP_SCALE, 1000 * MINIMAP_SCALE, 1000 * MINIMAP_SCALE, GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
+
+        this.gasRect = this.add.rectangle(MAP_WIDTH / 2 * MINIMAP_SCALE,
+            MAP_HEIGHT / 2 * MINIMAP_SCALE,
+            (MAP_WIDTH + 250) * MINIMAP_SCALE,
+            (MAP_HEIGHT + 250) * MINIMAP_SCALE,
+            GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
 
         this.scale.on("resize", (): void => {
             if (this.isExpanded) this.resizeBigMap();
@@ -71,11 +77,11 @@ export class MinimapScene extends Phaser.Scene {
         if (this.cameras.main === undefined) return;
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        this.cameras.main.setZoom(0.0012 / MINIMAP_SCALE * screenHeight);
+        this.cameras.main.setZoom((0.85 * screenHeight) / (MAP_HEIGHT * MINIMAP_SCALE));
         // noinspection JSSuspiciousNameCombination
         this.cameras.main.setSize(screenHeight, screenHeight);
         this.cameras.main.setPosition(screenWidth / 2 - screenHeight / 2, 0);
-        this.cameras.main.centerOn(360 * MINIMAP_SCALE, 380 * MINIMAP_SCALE);
+        this.cameras.main.centerOn(MAP_WIDTH / 2 * MINIMAP_SCALE, (MAP_HEIGHT * 1.1) / 2 * MINIMAP_SCALE);
         this.updateTransparency();
     }
 

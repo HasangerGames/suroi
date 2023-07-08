@@ -5,6 +5,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory } from "../../../../common/src/constants";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 /*
     Since this class seems to only ever be instantiated
@@ -17,23 +18,49 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory> {
     id: number;
     type: ObjectType<T>;
 
-    game: Game;
-    scene: GameScene;
+    readonly game: Game;
+    readonly scene: GameScene;
 
-    position!: Vector;
+    _position!: Vector;
+
+    set position(pos: Vector) {
+        // Animate the position
+        if (this.position === undefined || !localStorageInstance.config.movementSmoothing) {
+            this.container.setPosition(pos.x * 20, pos.y * 20);
+        } else {
+            this.scene.tweens.add({
+                targets: this.container,
+                x: pos.x * 20,
+                y: pos.y * 20,
+                duration: 30
+            });
+        }
+        this._position = pos;
+    }
+
+    get position(): Vector {
+        return this._position;
+    }
+
     rotation!: number;
 
     dead = false;
+
+    readonly container: Phaser.GameObjects.Container;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<T>, id: number) {
         this.game = game;
         this.scene = scene;
         this.type = type;
         this.id = id;
+
+        this.container = scene.add.container();
+    }
+
+    destroy(): void {
+        this.container.destroy();
     }
 
     abstract deserializePartial(stream: SuroiBitStream): void;
     abstract deserializeFull(stream: SuroiBitStream): void;
-
-    abstract destroy(): void;
 }
