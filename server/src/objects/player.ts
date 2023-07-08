@@ -8,12 +8,7 @@ import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 
 import { ObjectType } from "../../../common/src/utils/objectType";
-import {
-    ANIMATION_TYPE_BITS,
-    AnimationType,
-    ObjectCategory,
-    PLAYER_RADIUS
-} from "../../../common/src/constants";
+import { ANIMATION_TYPE_BITS, AnimationType, ObjectCategory, PLAYER_RADIUS } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
@@ -25,6 +20,11 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
+import { Helmets } from "../../../common/src/definitions/helmets";
+import { Vests } from "../../../common/src/definitions/vests";
+import { type GunItem } from "../inventory/gunItem";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Backpacks } from "../../../common/src/definitions/backpacks";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -231,6 +231,8 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
         }*/
+        this.inventory.addOrReplaceWeapon(0, "tango_51");
+        (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 
@@ -363,14 +365,21 @@ export class Player extends GameObject {
 
     override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
         if (this.invulnerable) return;
+
         // Calculate damage amount
+        if (this.inventory.helmetLevel > 0) {
+            amount -= amount * Helmets[this.inventory.helmetLevel - 1].damageReductionPercentage;
+        }
+        if (this.inventory.vestLevel > 0) {
+            amount -= amount * Vests[this.inventory.vestLevel - 1].damageReductionPercentage;
+        }
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
         }
         if (this.health - amount <= 0) {
             amount = this.health;
         }
-        if (this.dead) amount = 0;
+        if (amount < 0 || this.dead) amount = 0;
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
@@ -413,24 +422,39 @@ export class Player extends GameObject {
             }
             this.game.aliveCountDirty = true;
             this.adrenaline = 0;
+            this.inventory.helmetLevel = this.inventory.vestLevel = this.inventory.backpackLevel = 0;
+            this.dirty.inventory = true;
             this.action?.cancel();
 
             this.game.livingPlayers.delete(this);
             this.game.dynamicObjects.delete(this);
             this.game.removeObject(this);
 
+            //
             // Drop loot
+            //
+
+            // Drop weapons
             for (let i = 0; i < 3; i++) {
                 this.inventory.dropWeapon(i);
             }
 
+            // Drop inventory items
             for (const item in this.inventory.items) {
                 const count = this.inventory.items[item];
                 if (count > 0) {
-                    this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, count);
-                    this.inventory.items[item] = 0;
+                    const itemType: ObjectType<ObjectCategory.Loot, LootDefinition> = ObjectType.fromString(ObjectCategory.Loot, item);
+                    if (!itemType.definition.noDrop) {
+                        this.game.addLoot(itemType, this.position, count);
+                        this.inventory.items[item] = 0;
+                    }
                 }
             }
+
+            // Drop equipment
+            this.dropEquipment("helmet", Helmets);
+            this.dropEquipment("vest", Vests);
+            this.dropEquipment("backpack", Backpacks);
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
@@ -441,6 +465,13 @@ export class Player extends GameObject {
             if (!this.disconnected) {
                 this.sendPacket(new GameOverPacket(this, false));
             }
+        }
+    }
+
+    dropEquipment(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
+        const level = this.inventory[`${equipmentType}Level`];
+        if (level > 0) {
+            this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, definitions[equipmentType === "backpack" ? level : level - 1].idString), this.position, 1);
         }
     }
 

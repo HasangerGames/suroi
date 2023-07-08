@@ -10,7 +10,8 @@ export const Scopes: ScopeDefinition[] = [
         idString: "1x_scope",
         name: "1x Scope",
         itemType: ItemType.Scope,
-        zoomLevel: 48
+        zoomLevel: 48,
+        noDrop: true
     },
     {
         idString: "2x_scope",

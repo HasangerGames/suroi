@@ -6,7 +6,7 @@ import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
@@ -14,9 +14,12 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, LootRadius, ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
-import { Backpacks } from "../../../common/src/definitions/backpacks";
+import { type BackpackDefinition, Backpacks } from "../../../common/src/definitions/backpacks";
+import { Helmets } from "../../../common/src/definitions/helmets";
+import { Vests } from "../../../common/src/definitions/vests";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -123,9 +126,9 @@ export class Loot extends GameObject {
     }
 
     interact(player: Player, noPickup = false): void {
-        const createNewItem = (): void => {
+        const createNewItem = (type = this.type): void => {
             const angle = player.rotation;
-            this.game.addLoot(this.type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
+            this.game.addLoot(type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
         };
         if (noPickup) {
             this.game.removeLoot(this);
@@ -136,6 +139,14 @@ export class Loot extends GameObject {
         const inventory = player.inventory;
         let deleteItem = true;
         const definition = this.type.definition;
+
+        const updateEquipmentLevel = (equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void => {
+            const level = inventory[`${equipmentType}Level`];
+            if (level > 0) {
+                createNewItem(ObjectType.fromString(ObjectCategory.Loot, definitions[equipmentType === "backpack" ? level : level - 1].idString));
+            }
+            inventory[`${equipmentType}Level`] = (definition as ArmorDefinition | BackpackDefinition).level;
+        };
 
         switch (definition.itemType) {
             case ItemType.Melee: {
@@ -170,14 +181,17 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Armor: {
-                if (definition.armorType === ArmorType.Helmet) inventory.helmetLevel = definition.level;
-                else if (definition.armorType === ArmorType.Vest) inventory.vestLevel = definition.level;
+                if (definition.armorType === ArmorType.Helmet) {
+                    updateEquipmentLevel("helmet", Helmets);
+                } else if (definition.armorType === ArmorType.Vest) {
+                    updateEquipmentLevel("vest", Vests);
+                }
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Backpack: {
-                inventory.backpackLevel = definition.level;
+                updateEquipmentLevel("backpack", Backpacks);
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
@@ -188,9 +202,10 @@ export class Loot extends GameObject {
             }
         }
 
+        player.dirty.inventory = true;
+
         // Destroy the old loot
         this.game.removeLoot(this);
-        player.dirty.inventory = true;
         this.dead = true;
 
         // Send pickup packet
