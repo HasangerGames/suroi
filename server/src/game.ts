@@ -578,9 +578,9 @@ export class Game {
         if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {
-                this.gas.newPosition = Config.gas.mode !== GasMode.Debug 
-                ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius) 
-                : v(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+                this.gas.newPosition = Config.gas.mode !== GasMode.Debug
+                    ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius)
+                    : v(MAP_WIDTH / 2, MAP_HEIGHT / 2);
             } else {
                 this.gas.newPosition = vClone(this.gas.oldPosition);
             }
