@@ -1,6 +1,5 @@
 import {
     INVENTORY_MAX_WEAPONS,
-    MaxInventoryCapacity,
     ObjectCategory,
     PlayerActions
 } from "../../../common/src/constants";
@@ -17,6 +16,7 @@ import { type Loot } from "../objects/loot";
 import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Backpacks } from "../../../common/src/definitions/backpacks";
 
 /**
  * A class representing a player's inventory
@@ -35,8 +35,17 @@ export class Inventory {
         "12g": 0,
         "556mm": 0,
         "762mm": 0,
-        "9mm": 0
+        "9mm": 0,
+        "1x_scope": 1,
+        "2x_scope": 0,
+        "4x_scope": 0,
+        "8x_scope": 0,
+        "15x_scope": 0
     };
+
+    helmetLevel = 0;
+    vestLevel = 0;
+    backpackLevel = 0;
 
     /**
      * An internal array storing weapons
@@ -244,7 +253,7 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount: number = this.items[ammoType] - MaxInventoryCapacity[ammoType];
+            const overAmount: number = this.items[ammoType] - Backpacks[this.backpackLevel].maxCapacity[ammoType];
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);

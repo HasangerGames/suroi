@@ -2,7 +2,7 @@ import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions, MaxInventoryCapacity
+    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
 } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
@@ -10,6 +10,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { localStorageInstance } from "./localStorageHandler";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
 
 /**
  * This class manages the active player data and inventory
@@ -73,7 +74,12 @@ export class PlayerManager {
         "12g": 0,
         "556mm": 0,
         "762mm": 0,
-        "9mm": 0
+        "9mm": 0,
+        "1x_scope": 1,
+        "2x_scope": 0,
+        "4x_scope": 0,
+        "8x_scope": 0,
+        "15x_scope": 0
     };
 
     readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
@@ -193,7 +199,7 @@ export class PlayerManager {
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
-                const ammoText = (num >= MaxInventoryCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                const ammoText = (num >= Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
                 $(`#${item}-count`).html(ammoText);
             }
         }

@@ -84,7 +84,7 @@ export class Obstacle extends GameObject {
 
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }
-        this.loot = [
+        this.loot.push(
             new LootItem("hard_hat", 1),
             new LootItem("m1_helmet", 1),
             new LootItem("tactical_helmet", 1),
@@ -98,7 +98,7 @@ export class Obstacle extends GameObject {
             new LootItem("4x_scope", 1),
             new LootItem("8x_scope", 1),
             new LootItem("15x_scope", 1)
-        ];
+        );
     }
 
     private getLoot(loot: WeightedItem[]): void {

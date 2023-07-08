@@ -5,7 +5,7 @@ import type { Game } from "../game";
 import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import { LootRadius, MaxInventoryCapacity, type ObjectCategory } from "../../../../common/src/constants";
+import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -13,6 +13,7 @@ import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type PlayerManager } from "../utils/playerManager";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
 
 export class Loot extends GameObject<ObjectCategory.Loot> {
     readonly images: {
@@ -120,6 +121,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     }
 
     canInteract(player: PlayerManager): boolean {
+        const activePlayer = this.game.activePlayer;
         const definition = this.type.definition as LootDefinition;
         switch (definition.itemType) {
             // eslint-disable-next-line no-fallthrough
@@ -135,11 +137,19 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount: number = player.items[idString];
-                const maxCapacity: number = MaxInventoryCapacity[idString];
+                const maxCapacity: number = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Armor: {
-                return true;
+                if (definition.armorType === ArmorType.Helmet) return definition.level > activePlayer.helmetLevel;
+                else if (definition.armorType === ArmorType.Vest) return definition.level > activePlayer.vestLevel;
+                else return false;
+            }
+            case ItemType.Backpack: {
+                return definition.level > activePlayer.backpackLevel;
+            }
+            case ItemType.Scope: {
+                return player.items[this.type.idString] === 0;
             }
         }
         return false;

@@ -63,6 +63,9 @@ export enum PlayerActions {
     UseItem
 }
 
+// ArmorType has to be in constants.ts and not armors.ts, or it'll cause recursive import issues
+export enum ArmorType { Helmet, Vest }
+
 const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 
 export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
@@ -77,17 +80,6 @@ export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
-
-export const MaxInventoryCapacity: Record<string, number> = {
-    gauze: 10,
-    medikit: 3,
-    cola: 4,
-    tablets: 3,
-    "12g": 50,
-    "556mm": 150,
-    "762mm": 150,
-    "9mm": 150
-};
 
 export const PLAYER_RADIUS = 2.25;
 

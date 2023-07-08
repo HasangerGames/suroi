@@ -460,5 +460,8 @@ export class Player extends GameObject {
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.invulnerable);
         stream.writeObjectType(this.activeItem.type);
+        stream.writeBits(this.inventory.helmetLevel, 2);
+        stream.writeBits(this.inventory.vestLevel, 2);
+        stream.writeBits(this.inventory.backpackLevel, 2);
     }
 }
