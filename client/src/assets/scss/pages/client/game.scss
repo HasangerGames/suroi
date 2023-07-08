@@ -636,8 +636,26 @@
 }
 
 #equipment-container {
+    position: absolute;
     bottom: 10px;
-    left: 10px;
+    right: 25%;
+
+    @media screen and (max-width: $screen_small) {
+        bottom: 125px;
+        right: 10px;
+    }
+
+    .inventory-slot {
+        width: 55px;
+        height: 78px;
+
+        .item-image {
+            width: 45px;
+            height: 45px;
+            align-self: flex-start;
+            margin-top: 5px;
+        }
+    }
 }
 
 #game-over-screen {

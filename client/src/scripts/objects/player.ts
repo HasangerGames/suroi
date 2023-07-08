@@ -327,8 +327,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.container.bringToTop(this.images.weapon);
             this.images.container.bringToTop(this.images.body);
-            this.images.container.bringToTop(this.images.helmet);
             this.images.container.bringToTop(this.images.backpack);
+            this.images.container.bringToTop(this.images.helmet);
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.container.sendToBack(this.images.helmet);
             this.images.container.sendToBack(this.images.backpack);
@@ -340,26 +340,36 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateEquipment(): void {
-        // Helmet
-        if (this.helmetLevel > 0) {
-            this.images.helmet.setTexture("main", `${Helmets[this.helmetLevel - 1].idString}_world.svg`).setVisible(true);
-        } else {
-            this.images.helmet.setVisible(false);
-        }
+        this.updateEquipmentWorldImage("helmet", Helmets, this.helmetLevel);
+        this.updateEquipmentWorldImage("vest", Vests, this.vestLevel);
+        this.updateEquipmentWorldImage("backpack", Backpacks, this.backpackLevel);
 
-        // Vest
-        if (this.vestLevel > 0) {
-            this.images.vest.setTexture("main", `${Vests[this.vestLevel - 1].idString}_world.svg`).setVisible(true);
-        } else {
-            this.images.vest.setVisible(false);
+        if (this.isActivePlayer) {
+            this.updateEquipmentSlot("helmet", Helmets, this.helmetLevel);
+            this.updateEquipmentSlot("vest", Vests, this.vestLevel);
+            this.updateEquipmentSlot("backpack", Backpacks, this.backpackLevel);
         }
+    }
 
-        // Backpack
-        if (this.backpackLevel > 0) {
-            const backpackDef = Backpacks[this.backpackLevel];
-            this.images.backpack.setTexture("main", `${backpackDef.idString}_world.svg`).setVisible(true);
+    updateEquipmentWorldImage(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[], level: number): void {
+        const image = this.images[equipmentType];
+        if (this[`${equipmentType}Level`] > 0) {
+            image.setTexture("main", `${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
         } else {
-            this.images.backpack.setVisible(false);
+            image.setVisible(false);
+        }
+    }
+
+    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[], level: number): void {
+        const container = $(`#${equipmentType}-slot`);
+        const levelIndex = equipmentType === "backpack" ? level : level - 1;
+        if (level > 0) {
+            const definition = definitions[levelIndex];
+            container.children(".item-name").text(`Lvl. ${level}`);
+            container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
+            container.show();
+        } else {
+            container.hide();
         }
     }
 
