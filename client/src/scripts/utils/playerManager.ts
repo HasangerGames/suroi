@@ -195,11 +195,12 @@ export class PlayerManager {
 
         // Inventory dirty
         if (stream.readBoolean()) {
+            const backpackLevel = stream.readBits(2);
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
-                const ammoText = (num >= Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                const ammoText = (num >= Backpacks[backpackLevel].maxCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
                 $(`#${item}-count`).html(ammoText);
             }
         }

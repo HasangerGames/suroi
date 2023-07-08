@@ -9,10 +9,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "guns", weight: 1 },
-            { tier: "helmets", weight: 1 },
-            { tier: "vests", weight: 1 },
-            { tier: "backpacks", weight: 1 },
-            { tier: "scopes", weight: 1 },
+            { tier: "equipment", weight: 1 },
             { tier: "healing_items", weight: 0.5 },
             { tier: "ammo", weight: 0.2 },
             { tier: "melee", weight: 0.04 }
@@ -23,7 +20,8 @@ export const LootTables: Record<string, LootTable> = {
         max: 4,
         loot: [
             { tier: "special_guns", weight: 1 },
-            { tier: "special_healing_items", weight: 0.75 }
+            { tier: "special_healing_items", weight: 0.75 },
+            { tier: "special_equipment", weight: 0.5 }
         ]
     },
     flint_crate: {
@@ -31,6 +29,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 4,
         loot: [
             { tier: "special_guns", weight: 1 },
+            { tier: "special_equipment", weight: 0.65 },
             { tier: "special_healing_items", weight: 0.1 }
         ]
     },
@@ -95,25 +94,22 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "tablets", weight: 1 },
         { item: "medikit", weight: 1 }
     ],
-    helmets: [
+    equipment: [
         { item: "hard_hat", weight: 1 },
         { item: "m1_helmet", weight: 0.2 },
-        { item: "tactical_helmet", weight: 0.05 }
-    ],
-    vests: [
+        { item: "tactical_helmet", weight: 0.03 },
+
         { item: "vest", weight: 1 },
         { item: "bulletproof_vest", weight: 0.2 },
-        { item: "tactical_vest", weight: 0.05 }
-    ],
-    backpacks: [
+        { item: "tactical_vest", weight: 0.03 },
+
         { item: "satchel", weight: 1 },
         { item: "regular_backpack", weight: 0.2 },
-        { item: "tactical_backpack", weight: 0.05 }
-    ],
-    scopes: [
+        { item: "tactical_backpack", weight: 0.03 },
+
         { item: "2x_scope", weight: 1 },
         { item: "4x_scope", weight: 0.2 },
-        { item: "8x_scope", weight: 0.05 },
+        { item: "8x_scope", weight: 0.03 },
         { item: "15x_scope", weight: 0.001 }
     ],
     ammo: [
@@ -141,6 +137,24 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "tablets", weight: 1.5 },
         { item: "medikit", weight: 1.5 },
         { item: "gauze", weight: 10, count: 10 }
+    ],
+    special_equipment: [
+        { item: "hard_hat", weight: 1 },
+        { item: "m1_helmet", weight: 0.4 },
+        { item: "tactical_helmet", weight: 0.05 },
+
+        { item: "vest", weight: 1 },
+        { item: "bulletproof_vest", weight: 0.4 },
+        { item: "tactical_vest", weight: 0.05 },
+
+        { item: "satchel", weight: 1 },
+        { item: "regular_backpack", weight: 0.4 },
+        { item: "tactical_backpack", weight: 0.05 },
+
+        { item: "2x_scope", weight: 1 },
+        { item: "4x_scope", weight: 0.4 },
+        { item: "8x_scope", weight: 0.06 },
+        { item: "15x_scope", weight: 0.002 }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },
