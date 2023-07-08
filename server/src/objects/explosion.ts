@@ -1,5 +1,3 @@
-import { Vec2 } from "planck";
-
 import { type Game } from "../game";
 
 import { type GameObject } from "../types/gameObject";
@@ -62,15 +60,7 @@ export class Explosion {
             const dist = distance(loot.position, this.position);
             if (dist < definition.radius.max) {
                 const angle = angleBetween(loot.position, this.position);
-                // it works, please don't ask questions
-                const velocity = loot.body
-                    .getLinearVelocity()
-                    .add(
-                        Vec2(Math.cos(angle), Math.sin(angle))
-                            .mul(definition.radius.max - dist).mul(0.006)
-                    );
-
-                loot.body.setLinearVelocity(velocity);
+                loot.push(-angle, ((definition.radius.max - dist) * 0.006));
             }
         }
     }

@@ -11,9 +11,6 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
-import { v, vAdd } from "../../../common/src/utils/vector";
-import { Vec2 } from "planck";
-import { type Loot } from "../objects/loot";
 import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
@@ -193,18 +190,14 @@ export class Inventory {
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
     addOrReplaceWeapon(slot: number, item: GunItem | MeleeItem | string): void {
-        this.owner.dirty.weapons = true;
         this.owner.game.fullDirtyObjects.add(this.owner);
-        this.owner.fullDirtyObjects.add(this.owner);
+        // Save current index because dropWeapon sets it to fists
+        const index = this._activeWeaponIndex;
+        // Drop old item into the game world and set the new item
+        this.dropWeapon(slot, -0.01);
+        this._setWeapon(slot, this._reifyItem(item));
 
-        // Drop old item into the game world
-        const oldItem: GunItem | MeleeItem | undefined = this._setWeapon(slot, this._reifyItem(item));
-
-        if (oldItem === undefined || oldItem.definition.noDrop) return;
-        const invertedAngle = (this.owner.rotation + Math.PI) % (2 * Math.PI);
-
-        this.owner.game.addLoot(oldItem.type, vAdd(this.owner.position, v(0.4 * Math.cos(invertedAngle), 0.4 * Math.sin(invertedAngle))));
-        this.setActiveWeaponIndex(this._activeWeaponIndex);
+        this.setActiveWeaponIndex(index);
     }
 
     /**
@@ -227,16 +220,16 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
+     * @param pushForce The velocity to push the loot, defaults to -0.02
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number): GunItem | MeleeItem | undefined {
+    dropWeapon(slot: number, pushForce = -0.02): GunItem | MeleeItem | undefined {
         const item = this._weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
-        const pushLoot = (loot: Loot): void => loot.body.setLinearVelocity(Vec2(Math.cos(this.owner.rotation), -Math.sin(this.owner.rotation)).mul(-0.02));
         const loot = this.owner.game.addLoot(item.type, this.owner.position);
-        pushLoot(loot);
+        loot.push(this.owner.rotation, pushForce);
 
         if (item instanceof GunItem && item.ammo > 0) {
             // Put the ammo in the gun back in the inventory
@@ -262,7 +255,7 @@ export class Inventory {
                 splitUpLoot(this.owner, ammoType, overAmount);*/
                 this.items[ammoType] -= overAmount;
                 const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
-                pushLoot(loot);
+                loot.push(this.owner.rotation, pushForce);
             }
             this.owner.dirty.inventory = true;
         }
