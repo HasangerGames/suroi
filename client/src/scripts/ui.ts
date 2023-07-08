@@ -192,6 +192,11 @@ $((): void => {
     $("#toggle-leave-warning").on("input", function(this: HTMLInputElement) {
         localStorageInstance.update({ leaveWarning: this.checked });
     }).prop("checked", localStorageInstance.config.leaveWarning);
+    
+    $("#toggle-hide-minimap").on("input", function(this: HTMLInputElement) {
+        localStorageInstance.update({ minimapMinimized: this.checked });
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
+    }).prop("checked", localStorageInstance.config.minimapMinimized);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
