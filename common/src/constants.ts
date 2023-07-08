@@ -95,5 +95,8 @@ export const LootRadius = {
     0: 3.4, // Gun
     1: 2, // Ammo
     2: 3, // Melee
-    3: 2.5 // Healing
+    3: 2.5, // Healing
+    4: 3, // Armor
+    5: 3, // Backpack
+    6: 3 // Scope
 };

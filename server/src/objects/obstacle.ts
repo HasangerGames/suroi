@@ -84,6 +84,21 @@ export class Obstacle extends GameObject {
 
             for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
         }
+        this.loot = [
+            new LootItem("hard_hat", 1),
+            new LootItem("m1_helmet", 1),
+            new LootItem("tactical_helmet", 1),
+            new LootItem("vest", 1),
+            new LootItem("bulletproof_vest", 1),
+            new LootItem("tactical_vest", 1),
+            new LootItem("satchel", 1),
+            new LootItem("regular_backpack", 1),
+            new LootItem("tactical_backpack", 1),
+            new LootItem("2x_scope", 1),
+            new LootItem("4x_scope", 1),
+            new LootItem("8x_scope", 1),
+            new LootItem("15x_scope", 1)
+        ];
     }
 
     private getLoot(loot: WeightedItem[]): void {
@@ -98,7 +113,7 @@ export class Obstacle extends GameObject {
             });
             weights.push(item.weight);
         }
-        const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
+        const selectedItem = weightedRandom<TempLootItem>(items, weights);
 
         if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
         else this.addLoot(selectedItem.item, selectedItem.count ?? 1);

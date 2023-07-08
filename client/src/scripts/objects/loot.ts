@@ -47,6 +47,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 this.images.item.setScale(0.85);
                 break;
             }
+            //
+            // No background for ammo
+            //
             case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
                 const imageScale = (definition as MeleeDefinition).image?.lootScale;
@@ -55,6 +58,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
             case ItemType.Healing: {
                 backgroundTexture = "loot_background_healing.svg";
+                break;
+            }
+            case ItemType.Armor:
+            case ItemType.Backpack:
+            case ItemType.Scope: {
+                backgroundTexture = "loot_background_equipment.svg";
                 break;
             }
         }
@@ -128,6 +137,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 const currentCount: number = player.items[idString];
                 const maxCapacity: number = MaxInventoryCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
+            }
+            case ItemType.Armor: {
+                return true;
             }
         }
         return false;

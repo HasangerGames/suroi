@@ -107,6 +107,9 @@ export class Loot extends GameObject {
             case ItemType.Melee: {
                 return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
             }
+            case ItemType.Armor: {
+                return true;
+            }
         }
         return false;
     }

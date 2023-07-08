@@ -8,6 +8,10 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 2,
         loot: [
+            { tier: "helmets", weight: 10 },
+            { tier: "vests", weight: 10 },
+            { tier: "backpacks", weight: 10 },
+            { tier: "scopes", weight: 10 },
             { tier: "guns", weight: 1 },
             { tier: "healing_items", weight: 0.75 },
             { tier: "ammo", weight: 0.2 },
@@ -90,6 +94,27 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "cola", weight: 2 },
         { item: "tablets", weight: 1 },
         { item: "medikit", weight: 1 }
+    ],
+    helmets: [
+        { item: "hard_hat", weight: 1 },
+        { item: "m1_helmet", weight: 1 },
+        { item: "tactical_helmet", weight: 1 }
+    ],
+    vests: [
+        { item: "vest", weight: 1 },
+        { item: "bulletproof_vest", weight: 1 },
+        { item: "tactical_vest", weight: 1 }
+    ],
+    backpacks: [
+        { item: "satchel", weight: 1 },
+        { item: "regular_backpack", weight: 1 },
+        { item: "tactical_backpack", weight: 1 }
+    ],
+    scopes: [
+        { item: "2x_scope", weight: 1 },
+        { item: "4x_scope", weight: 1 },
+        { item: "8x_scope", weight: 1 },
+        { item: "15x_scope", weight: 1 }
     ],
     ammo: [
         { item: "12g", count: 10, weight: 0.75 },
