@@ -216,6 +216,8 @@ export class Game {
             // Do damage to objects hit by bullets
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
+                // Bullets from dead players should not deal damage
+                if (bullet.shooter.dead) continue;
                 const definition = bullet.source.ballistics;
 
                 if (damageRecord.damaged instanceof Player) {
