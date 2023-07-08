@@ -4,7 +4,7 @@ import core from "./core";
 
 import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
-import { localStorageInstance } from "./utils/localStorageHandler";
+import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
@@ -110,93 +110,100 @@ $((): void => {
 
     // load settings values and event listeners
 
+    function addSliderListener(elementId: string, settingName: keyof Config, callback?: (value: number) => void): void {
+        const element = $(elementId)[0] as HTMLInputElement;
+        if (!element) console.error("Invalid element id");
+
+        element.addEventListener("input", () => {
+            const value = Number(element.value);
+            const obj: Partial<Config> = {};
+            (obj[settingName] as number) = value;
+            localStorageInstance.update(obj);
+
+            callback?.(value);
+        });
+
+        element.value = (localStorageInstance.config[settingName] as number).toString();
+    }
+
+    function addCheckboxListener(elementId: string, settingName: keyof Config, callback?: (value: boolean) => void): void {
+        const element = $(elementId)[0] as HTMLInputElement;
+
+        element.addEventListener("input", () => {
+            const value = element.checked;
+            const obj: Partial<Config> = {};
+            (obj[settingName] as boolean) = value;
+            localStorageInstance.update(obj);
+
+            callback?.(value);
+        });
+
+        element.checked = localStorageInstance.config[settingName] as boolean;
+    }
+
     // music volume
-    $("#slider-music-volume").on("input", function(this: HTMLInputElement) {
-        const volume = Number(this.value) * localStorageInstance.config.masterVolume;
+    addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
+        const volume = value * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
-        localStorageInstance.update({ musicVolume: volume });
-    }).val(localStorageInstance.config.musicVolume);
+    });
 
     // sfx volume
-    $("#slider-sfx-volume").on("input", function(this: HTMLInputElement) {
-        const volume = Number(this.value) * localStorageInstance.config.masterVolume;
+    addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
+        const volume = value * localStorageInstance.config.masterVolume;
         (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
-        localStorageInstance.update({ sfxVolume: volume });
-    }).val(localStorageInstance.config.sfxVolume);
+    });
 
     // master volume
-    $("#slider-master-volume").on("input", function(this: HTMLInputElement) {
-        const volume = Number(this.value);
+    addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
+        const volume = value * localStorageInstance.config.masterVolume;
         (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
-        localStorageInstance.update({ masterVolume: volume });
-    }).val(localStorageInstance.config.masterVolume);
+    });
 
     // camera shake
-    $("#toggle-camera-shake").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ cameraShake: this.checked });
-    }).prop("checked", localStorageInstance.config.cameraShake);
+    addCheckboxListener("#toggle-camera-shake", "cameraShake");
 
     // fps toggle
-    $("#toggle-fps").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ showFPS: this.checked });
-        $("#fps-counter").toggle(this.checked);
-    }).prop("checked", localStorageInstance.config.showFPS);
+    addCheckboxListener("#toggle-fps", "showFPS", (value: boolean) => {
+        $("#fps-counter").toggle(value);
+    });
     $("#fps-counter").toggle(localStorageInstance.config.showFPS);
 
     // ping toggle
-    $("#toggle-ping").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ showPing: this.checked });
-        $("#ping-counter").toggle(this.checked);
-    }).prop("checked", localStorageInstance.config.showPing);
+    addCheckboxListener("#toggle-ping", "showPing", (value: boolean) => {
+        $("#ping-counter").toggle(value);
+    });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
     // text kill feed toggle
-    $("#toggle-text-kill-feed").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ textKillFeed: this.checked });
-    }).prop("checked", localStorageInstance.config.textKillFeed);
+    addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
 
     // rotation smoothing toggle
-    $("#toggle-rotation-smoothing").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ rotationSmoothing: this.checked });
-    }).prop("checked", localStorageInstance.config.rotationSmoothing);
+    addCheckboxListener("#toggle-rotation-smoothing", "rotationSmoothing");
 
     // movement smoothing toggle
-    $("#toggle-movement-smoothing").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ movementSmoothing: this.checked });
-    }).prop("checked", localStorageInstance.config.movementSmoothing);
+    addCheckboxListener("#toggle-movement-smoothing", "movementSmoothing");
 
-    // mobile controls toggle
-    $("#toggle-mobile-controls").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ mobileControls: this.checked });
-    }).prop("checked", localStorageInstance.config.mobileControls);
+    // mobile controls stuff
+    addCheckboxListener("#toggle-mobile-controls", "mobileControls");
+    addSliderListener("#slider-joystick-size", "joystickSize");
+    addSliderListener("#slider-joystick-transparency", "joystickTransparency");
 
-    $("#slider-joystick-size").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ joystickSize: Number(this.value) });
-    }).val(localStorageInstance.config.joystickSize);
-
-    $("#slider-joystick-transparency").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ joystickTransparency: Number(this.value) });
-    }).val(localStorageInstance.config.joystickTransparency);
-
-    $("#slider-minimap-transparency").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ minimapTransparency: Number(this.value) });
+    // Minimap stuff
+    addSliderListener("#slider-minimap-transparency", "minimapTransparency", () => {
         (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
-    }).val(localStorageInstance.config.minimapTransparency);
+    });
 
-    $("#slider-big-map-transparency").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ bigMapTransparency: Number(this.value) });
+    addSliderListener("#slider-big-map-transparency", "bigMapTransparency", () => {
         (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
-    }).val(localStorageInstance.config.bigMapTransparency);
+    });
 
-    $("#toggle-leave-warning").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ leaveWarning: this.checked });
-    }).prop("checked", localStorageInstance.config.leaveWarning);
-    
-    $("#toggle-hide-minimap").on("input", function(this: HTMLInputElement) {
-        localStorageInstance.update({ minimapMinimized: this.checked });
+    addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
         (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
-    }).prop("checked", localStorageInstance.config.minimapMinimized);
+    });
+
+    // Leave warning
+    addCheckboxListener("#toggle-leave-warning", "leaveWarning");
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
