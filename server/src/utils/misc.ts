@@ -11,6 +11,8 @@ import { type Obstacle } from "../objects/obstacle";
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
 import { type Vector } from "../../../common/src/utils/vector";
+import path from "path";
+import fs from "fs";
 
 export function v2v(v: Vector): Vec2 {
     return Vec2(v.x, v.y);
@@ -59,3 +61,27 @@ export function bodyFromHitbox(world: World,
     }
     return body;
 }
+
+// Apparently this function is not used but i didn't want to remove it lol
+
+/**
+ * Recursively read a directory.
+ * @param dir The absolute path to the directory.
+ * @returns An array representation of the directory's contents.
+ */
+export const readDirectory = (dir: string): string[] => {
+    let results: string[] = [];
+    const files = fs.readdirSync(dir);
+
+    for (const file of files) {
+        const filePath = path.resolve(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+            const res = readDirectory(filePath);
+            results = results.concat(res);
+        } else results.push(filePath);
+    }
+
+    return results;
+};

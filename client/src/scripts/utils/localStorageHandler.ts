@@ -1,3 +1,5 @@
+import { mergeDeep } from "../../../../common/src/utils/misc";
+
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type KeybindActions = {
     moveUp: [string, string]
@@ -109,7 +111,8 @@ export const defaultConfig: Config = {
 const configKey = "config";
 const storedConfig = localStorage.getItem(configKey);
 
-let config: Config = storedConfig !== null ? JSON.parse(storedConfig) : defaultConfig;
+// Do a deep merge to add new config keys
+let config = storedConfig !== null ? mergeDeep(defaultConfig, JSON.parse(storedConfig)) as Config : defaultConfig;
 let rewriteConfigToLS = storedConfig === null;
 
 if (config.configVersion !== defaultConfig.configVersion) {
@@ -153,11 +156,6 @@ if (config.configVersion !== defaultConfig.configVersion) {
     /* eslint-disable no-fallthrough */
     // noinspection FallThroughInSwitchStatementJS
     switch (config.configVersion) {
-        case undefined: {
-            // Version 1: Keybinds and versioning
-            proxy.configVersion = "1";
-            proxy.keybinds = { ...defaultConfig.keybinds };
-        }
         case "1": {
             // Version 2: cameraShake, sfxVolume and translate the single bind system to the double bind system
             proxy.configVersion = "2";
@@ -183,83 +181,25 @@ if (config.configVersion !== defaultConfig.configVersion) {
             }
 
             proxy.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as Config["keybinds"];
-
-            proxy.sfxVolume = defaultConfig.sfxVolume;
-            proxy.cameraShake = defaultConfig.cameraShake;
         }
-        case "2": {
-            // Version 3: More debug options
-            proxy.configVersion = "3";
-            proxy.showFPS = defaultConfig.showFPS;
-            proxy.showPing = defaultConfig.showPing;
-            proxy.rotationSmoothing = defaultConfig.rotationSmoothing;
-            proxy.movementSmoothing = defaultConfig.movementSmoothing;
-        }
-        case "3": {
-            // Version 4: toggleMap keybind
-            proxy.configVersion = "4";
-            proxy.keybinds.toggleMap = defaultConfig.keybinds.toggleMap;
-        }
-        case "4": {
-            // Version 5: Added "Interact", "Equip Other Gun", and "Toggle Minimap" keybinds, and mobile controls toggle
-            proxy.configVersion = "5";
-            proxy.keybinds.interact = defaultConfig.keybinds.interact;
-            proxy.keybinds.equipOtherGun = defaultConfig.keybinds.equipOtherGun;
-            proxy.keybinds.toggleMiniMap = defaultConfig.keybinds.toggleMiniMap;
-            proxy.mobileControls = defaultConfig.mobileControls;
-        }
-        case "5": {
-            // Version 6: Added "Drop Active Item" keybind
-            proxy.configVersion = "6";
-            proxy.keybinds.dropActiveItem = defaultConfig.keybinds.dropActiveItem;
-        }
-        case "6": {
-            // Version 7: Added "Swap Gun Slots" keybind
-            proxy.configVersion = "7";
-            proxy.keybinds.swapGunSlots = defaultConfig.keybinds.swapGunSlots;
-        }
-        case "7": {
-            // Version 8: Added "Reload", "Cancel Action" keybind, and save the minimap minimized state
-            proxy.configVersion = "8";
-            proxy.keybinds.reload = defaultConfig.keybinds.reload;
-            proxy.keybinds.cancelAction = defaultConfig.keybinds.cancelAction;
-            proxy.minimapMinimized = defaultConfig.minimapMinimized;
-        }
+        // Skip old porting code thats not necessary
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
         case "8": {
             // Version 9: Added leave warning, joystick size, joystick and minimap transparency settings
             // And inverted the next and previous weapon keybinds
             proxy.configVersion = "9";
-            proxy.leaveWarning = defaultConfig.leaveWarning;
-            proxy.joystickSize = defaultConfig.joystickSize;
-            proxy.joystickTransparency = defaultConfig.joystickTransparency;
-            proxy.minimapTransparency = defaultConfig.minimapTransparency;
             proxy.keybinds.previousItem = defaultConfig.keybinds.previousItem;
             proxy.keybinds.nextItem = defaultConfig.keybinds.nextItem;
         }
-        case "9": {
-            // Version 10: Added big map transparency setting
-            proxy.configVersion = "10";
-            proxy.bigMapTransparency = defaultConfig.bigMapTransparency;
-        }
-        case "10": {
-            // Version 11: Added keybinds to use Healing Items
-            proxy.configVersion = "11";
-            proxy.keybinds.useGauze = defaultConfig.keybinds.useGauze;
-            proxy.keybinds.useMedikit = defaultConfig.keybinds.useMedikit;
-            proxy.keybinds.useCola = defaultConfig.keybinds.useCola;
-            proxy.keybinds.useTablets = defaultConfig.keybinds.useTablets;
-        }
-        case "11": {
-            // Version 12: Developer password and color stuff
-            proxy.configVersion = "12";
-            proxy.devPassword = defaultConfig.devPassword;
-            proxy.nameColor = defaultConfig.nameColor;
-        }
-        case "12": {
-            // Version 13: Added text-based kill feed option
-            proxy.configVersion = "13";
-            proxy.textKillFeed = defaultConfig.textKillFeed;
-        }
+        case "9":
+        case "10":
+        case "11":
+        case "12":
         default: {
             if (!mutated) {
                 config = defaultConfig;
