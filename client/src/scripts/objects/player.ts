@@ -78,7 +78,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
-            helmet: this.scene.add.image(0, 0, "main").setVisible(false),
+            helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
