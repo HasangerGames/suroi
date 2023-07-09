@@ -58,7 +58,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "14",
+    configVersion: "13",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -202,7 +202,6 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "10":
         case "11":
         case "12":
-        case "13":
         default: {
             if (!mutated) {
                 config = defaultConfig;
