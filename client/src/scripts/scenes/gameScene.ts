@@ -81,7 +81,10 @@ export class GameScene extends Phaser.Scene {
     resize(anim = false): void {
         if (this.cameras.main === undefined) return;
 
-        const zoom = (window.innerWidth / 2560) * (48 / this.playerManager.zoom); // 2560 = 1x, 5120 = 2x
+        let size = window.innerWidth;
+        if (window.innerHeight > window.innerWidth) size = window.innerHeight;
+
+        const zoom = (size / 2560) * (48 / this.playerManager.zoom); // 2560 = 1x, 5120 = 2x
         if (anim) {
             this.cameras.main.zoomTo(zoom, 800, "Circ.easeOut", true, this.resizeGas);
         } else {
