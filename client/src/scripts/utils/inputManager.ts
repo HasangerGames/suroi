@@ -227,7 +227,7 @@ export function setupInputs(game: Game): void {
 
     let mWheelStopTimer: number | undefined;
     function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
-        if (event instanceof KeyboardEvent && event.repeat) return;
+        if (!$("canvas").hasClass("active")) return;
 
         // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && game.playerManager.isMobile) return;
