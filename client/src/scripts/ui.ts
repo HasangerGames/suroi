@@ -8,7 +8,9 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
-import { INVENTORY_MAX_WEAPONS, InputActions } from "../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { Scopes } from "../../../common/src/definitions/scopes";
+import { HealingItems } from "../../../common/src/definitions/healingItems";
 
 $((): void => {
     const dropdown = {
@@ -149,8 +151,7 @@ $((): void => {
 
     // sfx volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
-        const volume = value * localStorageInstance.config.masterVolume;
-        (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
+        (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
     });
 
     // master volume
@@ -174,6 +175,9 @@ $((): void => {
         $("#ping-counter").toggle(value);
     });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
+
+    // client-side prediction toggle
+    addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 
     // text kill feed toggle
     addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
@@ -199,7 +203,7 @@ $((): void => {
     });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap(true);
     });
 
     // Leave warning
@@ -217,35 +221,23 @@ $((): void => {
         });
     }
 
-    $("#gauze-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseGauze;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
-    $("#medikit-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseMedikit;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
-    $("#cola-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseCola;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
+    for (const scope of Scopes) {
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            if (core.game) {
+                core.game.playerManager.useItem(scope.idString);
+                e.stopPropagation();
+            }
+        });
+    }
 
-    $("#tablets-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseTablets;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
+    for (const item of HealingItems) {
+        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            if (core.game) {
+                core.game.playerManager.useItem(item.idString);
+                e.stopPropagation();
+            }
+        });
+    }
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(core.game?.playerManager.isActuallyMobile);

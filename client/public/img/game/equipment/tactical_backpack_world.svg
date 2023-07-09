@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   width="51.161999"
+   height="83.344002"
+   viewBox="0 0 51.161998 83.343999"
+   id="svg85"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs17">
+    <radialGradient
+       cx="240"
+       cy="180"
+       r="0"
+       gradientUnits="userSpaceOnUse"
+       id="color-1">
+      <stop
+         offset="0"
+         stop-color="#5d5d5d"
+         id="stop2" />
+      <stop
+         offset="1"
+         stop-color="#2f2f2f"
+         id="stop4" />
+    </radialGradient>
+    <radialGradient
+       cx="244.60088"
+       cy="179.50987"
+       r="13.85715"
+       gradientUnits="userSpaceOnUse"
+       id="color-2"
+       gradientTransform="translate(0,-0.16151315)">
+      <stop
+         offset="0"
+         stop-color="#484848"
+         id="stop7" />
+      <stop
+         offset="1"
+         stop-color="#2a2a2a"
+         id="stop9" />
+    </radialGradient>
+    <radialGradient
+       cx="241.46732"
+       cy="179.84322"
+       r="6.09447"
+       gradientUnits="userSpaceOnUse"
+       id="color-3"
+       gradientTransform="translate(0.1520802,0.052765)">
+      <stop
+         offset="0"
+         stop-color="#646464"
+         id="stop12" />
+      <stop
+         offset="1"
+         stop-color="#2a2a2a"
+         id="stop14" />
+    </radialGradient>
+  </defs>
+  <g
+     transform="matrix(1.9999885,0,0,1.9999885,-447.04983,-318.28863)"
+     id="g83">
+    <g
+       data-paper-data="{&quot;isPaintingLayer&quot;:true}"
+       fill-rule="nonzero"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       stroke-dasharray="none"
+       stroke-dashoffset="0"
+       style="mix-blend-mode:normal"
+       id="g81">
+      <g
+         id="g2"
+         transform="matrix(1,0,0,-1,-0.01419,359.9627)">
+        <path
+           d="m 233.94286,188.54834 c 0,-6.4902 0,-22.63181 0,-26.0221 0,-1.47451 0.86641,-2.63101 1.72526,-2.63101 1.19771,0 6.88889,0 8.79659,0 0.84621,0 1.42081,1.06879 1.42081,2.78579 0,6.10169 0,21.80376 0,25.40302 0,1.60687 -0.66445,3.25009 -1.62378,3.25009 -2.05768,0 -7.67207,0 -8.79659,0 -0.70953,0 -1.52229,-0.70929 -1.52229,-2.78579 z"
+           fill="#343434"
+           stroke="#000000"
+           stroke-width="1.5"
+           stroke-linecap="butt"
+           id="path1" />
+        <path
+           d="m 234.40087,162.0956 h 7.53333"
+           fill="none"
+           stroke="#000000"
+           stroke-width="1.5"
+           stroke-linecap="round"
+           id="path2" />
+      </g>
+      <g
+         id="g1"
+         transform="translate(-0.01419)">
+        <path
+           d="m 233.94286,188.54834 c 0,-6.4902 0,-22.63181 0,-26.0221 0,-1.47451 0.86641,-2.63101 1.72526,-2.63101 1.19771,0 6.88889,0 8.79659,0 0.84621,0 1.42081,1.06879 1.42081,2.78579 0,6.10169 0,21.80376 0,25.40302 0,1.60687 -0.66445,3.25009 -1.62378,3.25009 -2.05768,0 -7.67207,0 -8.79659,0 -0.70953,0 -1.52229,-0.70929 -1.52229,-2.78579 z"
+           fill="#343434"
+           stroke="#000000"
+           stroke-width="1.5"
+           stroke-linecap="butt"
+           id="path25" />
+        <path
+           d="m 234.40087,162.0956 h 7.53333"
+           fill="none"
+           stroke="#000000"
+           stroke-width="1.5"
+           stroke-linecap="round"
+           id="path77" />
+      </g>
+      <path
+         d="m 224.2762,184.74448 c 0,-2.60424 0,-8.22799 0,-9.58837 0,-0.59166 0.34765,-1.05572 0.69227,-1.05572 0.48059,0 1.88146,0 2.64694,0 0.33955,0 0.57011,0.42886 0.57011,1.11782 0,2.44835 0,7.89574 0,9.33997 0,0.64477 -0.26661,1.30412 -0.65155,1.30412 -0.82566,0 -2.19571,0 -2.64693,0 -0.2847,0 -0.61083,-0.28461 -0.61083,-1.11782 z"
+         fill="#343434"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path19" />
+      <path
+         d="m 226.50953,189.42747 c 0,-5.09011 0,-16.35471 0,-19.01363 0,-1.15642 0.54484,-2.06345 1.08493,-2.06345 0.75317,0 2.9486,0 4.14826,0 0.53214,0 0.89347,0.83823 0.89347,2.18483 0,4.78542 0,15.7053 0,18.52811 0,1.26024 -0.41783,2.54897 -1.02111,2.54897 -1.29397,0 -3.44111,0 -4.14826,0 -0.44619,0 -0.95729,-0.55629 -0.95729,-2.18483 z"
+         fill="#343434"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path21" />
+      <path
+         d="m 228.60953,186.90272 c 0,-3.7499 0,-11.97335 0,-13.93218 0,-0.85194 0.54484,-1.52015 1.08493,-1.52015 0.75317,0 2.9486,0 4.14826,0 0.53214,0 0.89347,0.61753 0.89347,1.60957 0,3.52544 0,11.49492 0,13.5745 0,0.92842 -0.41783,1.87784 -1.02111,1.87784 -1.29397,0 -3.44111,0 -4.14826,0 -0.44619,0 -0.95729,-0.40982 -0.95729,-1.60957 z"
+         fill="#343434"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path23" />
+      <path
+         d=""
+         fill="url(#color-1)"
+         stroke="#000000"
+         stroke-width="5.5"
+         stroke-linecap="butt"
+         id="path29"
+         style="fill:url(#color-1)" />
+      <path
+         d=""
+         fill="#1d1d1d"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path31" />
+      <path
+         d=""
+         fill="#1d1d1d"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path33" />
+      <path
+         d=""
+         fill="#626262"
+         stroke="#000000"
+         stroke-width="0.5"
+         stroke-linecap="butt"
+         id="path35" />
+      <path
+         d=""
+         fill="#626262"
+         stroke="#000000"
+         stroke-width="0.5"
+         stroke-linecap="butt"
+         id="path37" />
+      <path
+         d=""
+         fill="#484848"
+         stroke="#000000"
+         stroke-width="4"
+         stroke-linecap="butt"
+         id="path39" />
+      <path
+         d=""
+         fill="#484848"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path41" />
+      <path
+         d=""
+         fill="#484848"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path43" />
+      <path
+         d=""
+         data-paper-data="{&quot;index&quot;:null}"
+         fill="#484848"
+         stroke="#000000"
+         stroke-width="4"
+         stroke-linecap="butt"
+         id="path45" />
+      <path
+         d=""
+         data-paper-data="{&quot;index&quot;:null}"
+         fill="#484848"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path47" />
+      <path
+         d=""
+         data-paper-data="{&quot;index&quot;:null}"
+         fill="#484848"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path49" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path51" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path53" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path55" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path57" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path59" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path61" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path63" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path65" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path67" />
+      <path
+         d=""
+         fill="#0a0a0a"
+         stroke="none"
+         stroke-width="0"
+         stroke-linecap="butt"
+         id="path69" />
+      <path
+         d="m 231.94286,191.1242 c 0,-5.99079 0,-19.29917 0,-22.42858 0,-1.36105 1.2196,-2.42857 2.42857,-2.42857 1.68595,0 8.80033,0 11.48571,0 1.19118,0 2,0.98655 2,2.57143 0,5.63218 0,18.53485 0,21.85715 0,1.48323 -0.9353,3 -2.28571,3 -2.8965,0 -9.90278,0 -11.48571,0 -0.99877,0 -2.14286,-0.65472 -2.14286,-2.57143 z"
+         fill="url(#color-2)"
+         stroke="#000000"
+         stroke-width="2.5"
+         stroke-linecap="butt"
+         id="path71"
+         style="fill:url(#color-2)" />
+      <path
+         d="m 239.95209,188.05277 0.1,-16.14286 h 3.1 v 16.14286 z"
+         fill="url(#color-3)"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path73"
+         style="fill:url(#color-3)" />
+      <path
+         d="m 238.74976,184.18849 v -8.41429 h 5.6 v 8.41429 z"
+         fill="#919191"
+         stroke="#000000"
+         stroke-width="1.5"
+         stroke-linecap="butt"
+         id="path79" />
+    </g>
+  </g>
+</svg>

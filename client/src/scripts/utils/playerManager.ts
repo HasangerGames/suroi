@@ -2,14 +2,18 @@ import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
-    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions, MaxInventoryCapacity
+    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
 } from "../../../../common/src/constants";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 import { localStorageInstance } from "./localStorageHandler";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { ItemPacket } from "../packets/sending/itemPacket";
+import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
+import { mod } from "../../../../common/src/utils/math";
 
 /**
  * This class manages the active player data and inventory
@@ -65,6 +69,8 @@ export class PlayerManager {
 
     turning = false;
 
+    zoom = 48;
+
     readonly items: Record<string, number> = {
         gauze: 0,
         medikit: 0,
@@ -73,8 +79,15 @@ export class PlayerManager {
         "12g": 0,
         "556mm": 0,
         "762mm": 0,
-        "9mm": 0
+        "9mm": 0,
+        "1x_scope": 1,
+        "2x_scope": 0,
+        "4x_scope": 0,
+        "8x_scope": 0,
+        "15x_scope": 0
     };
+
+    scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
     readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
 
@@ -120,6 +133,10 @@ export class PlayerManager {
         this.dirty.inputs = true;
     }
 
+    useItem(item: string): void {
+        this.game.sendPacket(new ItemPacket(this, ObjectType.fromString(ObjectCategory.Loot, item)));
+    }
+
     get health(): number {
         return this._health;
     }
@@ -136,6 +153,18 @@ export class PlayerManager {
         this._adrenaline = adrenaline;
     }
 
+    switchScope(direction: number): void {
+        const scopeId = Scopes.indexOf(this.scope.definition);
+        let scopeString = this.scope.idString;
+        for (let i = mod(scopeId + direction, Scopes.length); i < Scopes.length && i >= 0; i += direction) {
+            if (this.items[Scopes[i].idString]) {
+                scopeString = Scopes[i].idString;
+                break;
+            }
+        }
+        if (scopeString !== this.scope.idString) this.useItem(scopeString);
+    }
+
     constructor(game: Game) {
         this.game = game;
     }
@@ -144,7 +173,7 @@ export class PlayerManager {
         // Active item index
         if (stream.readBoolean()) {
             this.activeItemIndex = stream.readBits(2);
-            $(".inventory-slot").removeClass("active");
+            $("#weapons-container").children(".inventory-slot").removeClass("active");
             const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
             slotContainer.addClass("active");
 
@@ -185,13 +214,21 @@ export class PlayerManager {
 
         // Inventory dirty
         if (stream.readBoolean()) {
+            const backpackLevel = stream.readBits(2);
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
-                const ammoText = (num >= MaxInventoryCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
+                const ammoText = (num >= Backpacks[backpackLevel].maxCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
                 $(`#${item}-count`).html(ammoText);
+
+                if (item.includes("scope")) {
+                    $(`#${item}-slot`).toggle(num > 0).removeClass("active");
+                }
             }
+            this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as typeof this.scope;
+
+            $(`#${this.scope.idString}-slot`).addClass("active");
         }
     }
 }

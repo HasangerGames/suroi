@@ -22,7 +22,10 @@ export enum ItemType {
     Gun,
     Ammo,
     Melee,
-    Healing
+    Healing,
+    Armor,
+    Backpack,
+    Scope
 }
 
 export interface ItemDefinition extends ObjectDefinition {

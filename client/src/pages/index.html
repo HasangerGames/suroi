@@ -84,9 +84,9 @@
         <div id="splash-featured-people">
           <div class="featured-container">
             <p class="featured-heading">Featured YouTubr</p>
-            <a class="featured-content" href="https://www.youtube.com/watch?v=ZHVlRHcn1p0" target="_blank">
+            <a class="featured-content" href="https://www.youtube.com/watch?v=I5iBTfFV_ws" target="_blank">
               <img class="featured-logo" src="/img/misc/youtube-icon.svg" alt="YouTube icon">
-              <span class="featured-name">123OP</span>
+              <span class="featured-name">Summit</span>
             </a>
           </div>
           <div class="featured-container">
@@ -151,6 +151,23 @@
         <div id="debug-hud">
           <div id="fps-counter"></div>
           <div id="ping-counter"></div>
+        </div>
+      </div>
+      <div class="inventory-container" id="scopes-container">
+        <div class="inventory-slot item-slot" id="1x_scope-slot" style="display: none;">
+          <img class="item-image" src="/img/game/loot/1x_scope.svg" draggable="false">
+        </div>
+        <div class="inventory-slot item-slot" id="2x_scope-slot" style="display: none;">
+          <img class="item-image" src="/img/game/loot/2x_scope.svg" draggable="false">
+        </div>
+        <div class="inventory-slot item-slot" id="4x_scope-slot" style="display: none;">
+          <img class="item-image" src="/img/game/loot/4x_scope.svg" draggable="false">
+        </div>
+        <div class="inventory-slot item-slot" id="8x_scope-slot" style="display: none;">
+          <img class="item-image" src="/img/game/loot/8x_scope.svg" draggable="false">
+        </div>
+        <div class="inventory-slot item-slot" id="15x_scope-slot" style="display: none;">
+          <img class="item-image" src="/img/game/loot/15x_scope.svg" draggable="false">
         </div>
       </div>
       <div class="ui-leaderboard">
@@ -225,6 +242,20 @@
           <img class="item-image" src="/img/game/loot/9mm.svg" draggable="false">
           <span class="item-count" id="9mm-count">0</span>
         </div>
+      </div>
+    </div>
+    <div class="inventory-container" id="equipment-container">
+      <div class="inventory-slot has-item" id="helmet-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot has-item" id="vest-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
+      </div>
+      <div class="inventory-slot has-item" id="backpack-slot">
+        <img class="item-image" draggable="false">
+        <span class="item-name"></span>
       </div>
     </div>
     <div class="inventory-container" id="weapons-container">
@@ -383,6 +414,12 @@
               <label>
                 <span class="setting-title">Show ping</span>
                 <input type="checkbox" id="toggle-ping">
+              </label>
+            </div>
+            <div class="modal-item checkbox-setting">
+              <label>
+                <span class="setting-title">Client-side prediction</span>
+                <input type="checkbox" id="toggle-client-side-prediction">
               </label>
             </div>
             <div class="modal-item checkbox-setting">

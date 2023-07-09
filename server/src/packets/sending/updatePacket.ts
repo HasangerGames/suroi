@@ -38,6 +38,13 @@ export class UpdatePacket extends SendingPacket {
             player.dirty.adrenaline = false;
         }
 
+        // Zoom
+        stream.writeBoolean(player.dirty.zoom);
+        if (player.dirty.zoom) {
+            stream.writeUint8(player.zoom);
+            player.dirty.zoom = false;
+        }
+
         // Action
         stream.writeBoolean(player.dirty.action);
         if (player.dirty.action) {
@@ -68,7 +75,8 @@ export class UpdatePacket extends SendingPacket {
         stream.writeBoolean(fullObjectsDirty);
 
         if (fullObjectsDirty) {
-            stream.writeUint8(player.fullDirtyObjects.size);
+            stream.writeUint16(player.fullDirtyObjects.size);
+
             for (const fullObject of player.fullDirtyObjects) {
                 stream.writeObjectType(fullObject.type);
                 stream.writeObjectID(fullObject.id);
@@ -83,7 +91,8 @@ export class UpdatePacket extends SendingPacket {
         stream.writeBoolean(partialObjectsDirty);
 
         if (partialObjectsDirty) {
-            stream.writeUint8(player.partialDirtyObjects.size);
+            stream.writeUint16(player.partialDirtyObjects.size);
+
             for (const partialObject of player.partialDirtyObjects) {
                 stream.writeObjectID(partialObject.id);
                 partialObject.serializePartial(stream);
@@ -96,7 +105,8 @@ export class UpdatePacket extends SendingPacket {
         stream.writeBoolean(deletedObjectsDirty);
 
         if (deletedObjectsDirty) {
-            stream.writeUint8(player.deletedObjects.size);
+            stream.writeUint16(player.deletedObjects.size);
+
             for (const deletedObject of player.deletedObjects) {
                 stream.writeObjectID(deletedObject.id);
             }

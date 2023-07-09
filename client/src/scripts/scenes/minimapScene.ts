@@ -65,12 +65,15 @@ export class MinimapScene extends Phaser.Scene {
         else this.switchToBigMap();
     }
 
-    toggleMiniMap(): void {
+    toggleMiniMap(noSwitchToggle = false): void {
         if (this.cameras.main === undefined) return;
         this.visible = !this.visible;
         this.cameras.main.setVisible(this.visible);
         $("#minimap-border").toggle(this.visible);
         localStorageInstance.update({ minimapMinimized: !this.visible });
+        if (!noSwitchToggle) {
+            $("#toggle-hide-minimap").prop("checked", !this.visible);
+        }
     }
 
     resizeBigMap(): void {

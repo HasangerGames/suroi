@@ -78,9 +78,19 @@ export class GameScene extends Phaser.Scene {
         if (this.playerManager.isMobile) requestFullscreen();
     }
 
-    private resize(): void {
+    resize(anim = false): void {
         if (this.cameras.main === undefined) return;
-        this.cameras.main.setZoom(window.innerWidth / 2560); // 2560 = 1x, 5120 = 2x
+
+        const zoom = (window.innerWidth / 2560) * (48 / this.playerManager.zoom); // 2560 = 1x, 5120 = 2x
+        if (anim) {
+            this.cameras.main.zoomTo(zoom, 800, "Circ.easeOut", true, this.resizeGas);
+        } else {
+            this.cameras.main.setZoom(zoom);
+            this.resizeGas();
+        }
+    }
+
+    private resizeGas(): void {
         this.gasRect?.setSize(this.game.canvas.width * 2, this.game.canvas.height * 2).setScale(1 / this.cameras.main.zoom, 1 / this.cameras.main.zoom);
     }
 

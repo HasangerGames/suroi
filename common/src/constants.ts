@@ -16,7 +16,8 @@ export enum PacketType {
     Kill,
     KillFeed,
     Pickup,
-    Ping
+    Ping,
+    Item
 }
 
 export enum AnimationType {
@@ -50,11 +51,7 @@ export enum InputActions {
     SwapGunSlots,
     Interact,
     Reload,
-    Cancel,
-    UseGauze,
-    UseMedikit,
-    UseCola,
-    UseTablets
+    Cancel
 }
 
 export enum PlayerActions {
@@ -62,6 +59,9 @@ export enum PlayerActions {
     Reload,
     UseItem
 }
+
+// ArmorType has to be in constants.ts and not armors.ts, or it'll cause recursive import issues
+export enum ArmorType { Helmet, Vest }
 
 const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 
@@ -80,22 +80,14 @@ export const PLAYER_NAME_MAX_LENGTH = 16;
 export const MAP_WIDTH = 720;
 export const MAP_HEIGHT = 720;
 
-export const MaxInventoryCapacity: Record<string, number> = {
-    gauze: 10,
-    medikit: 3,
-    cola: 4,
-    tablets: 3,
-    "12g": 50,
-    "556mm": 150,
-    "762mm": 150,
-    "9mm": 150
-};
-
 export const PLAYER_RADIUS = 2.25;
 
 export const LootRadius = {
     0: 3.4, // Gun
     1: 2, // Ammo
     2: 3, // Melee
-    3: 2.5 // Healing
+    3: 2.5, // Healing
+    4: 3, // Armor
+    5: 3, // Backpack
+    6: 3 // Scope
 };

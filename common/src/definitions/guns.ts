@@ -73,7 +73,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(120, 2) },
         ballistics: {
-            damage: 10,
+            damage: 12,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -104,7 +104,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(100, 3) },
         singleReload: true,
         ballistics: {
-            damage: 6.5,
+            damage: 7,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -256,7 +256,7 @@ export const Guns: GunDefinition[] = [
         capacity: 17,
         reloadTime: 2,
         ballistics: {
-            damage: 5.5,
+            damage: 6.5,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -285,7 +285,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 12,
+            damage: 14,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -318,7 +318,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 18,
+            damage: 24,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -351,7 +351,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(88, 0) },
         ballistics: {
-            damage: 4,
+            damage: 7,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -380,7 +380,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 10,
+            damage: 14,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -409,7 +409,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(128, 0) },
         ballistics: {
-            damage: 10,
+            damage: 16,
             obstacleMultiplier: 3,
             speed: 0.35,
             speedVariance: 0,

@@ -17,6 +17,7 @@ import { Obstacle } from "./objects/obstacle";
 import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Box, Vec2 } from "planck";
+import { Scopes } from "../../common/src/definitions/scopes";
 
 export class Map {
     game: Game;
@@ -63,9 +64,7 @@ export class Map {
 
         // Calculate visible objects
         const visibleObjectsStartTime = Date.now();
-        const supportedZoomLevels: number[] = [48];
-
-        for (const zoomLevel of supportedZoomLevels) {
+        for (const zoomLevel of Scopes.map(scope => scope.zoomLevel)) {
             this.game.visibleObjects[zoomLevel] = {};
             const xCullDist = zoomLevel * 1.8; const yCullDist = zoomLevel * 1.35;
 

@@ -5,12 +5,13 @@ import type { Game } from "../game";
 import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import { LootRadius, MaxInventoryCapacity, type ObjectCategory } from "../../../../common/src/constants";
+import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type PlayerManager } from "../utils/playerManager";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -42,6 +43,9 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
                 this.images.item.setScale(0.85);
                 break;
             }
+            //
+            // No background for ammo
+            //
             case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
                 const imageScale = definition.image?.lootScale;
@@ -50,6 +54,12 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             }
             case ItemType.Healing: {
                 backgroundTexture = "loot_background_healing.svg";
+                break;
+            }
+            case ItemType.Armor:
+            case ItemType.Backpack:
+            case ItemType.Scope: {
+                backgroundTexture = "loot_background_equipment.svg";
                 break;
             }
         }
@@ -98,8 +108,8 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     }
 
     canInteract(player: PlayerManager): boolean {
+        const activePlayer = this.game.activePlayer;
         const definition = this.type.definition;
-
         switch (definition.itemType) {
             // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
@@ -114,8 +124,19 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount: number = player.items[idString];
-                const maxCapacity: number = MaxInventoryCapacity[idString];
+                const maxCapacity: number = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
+            }
+            case ItemType.Armor: {
+                if (definition.armorType === ArmorType.Helmet) return definition.level > activePlayer.helmetLevel;
+                else if (definition.armorType === ArmorType.Vest) return definition.level > activePlayer.vestLevel;
+                else return false;
+            }
+            case ItemType.Backpack: {
+                return definition.level > activePlayer.backpackLevel;
+            }
+            case ItemType.Scope: {
+                return player.items[this.type.idString] === 0;
             }
         }
         return false;

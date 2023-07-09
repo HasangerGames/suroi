@@ -26,6 +26,9 @@ import type { MeleeDefinition } from "../../../../common/src/definitions/melees"
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
 import { MINIMAP_SCALE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Helmets } from "../../../../common/src/definitions/helmets";
+import { Vests } from "../../../../common/src/definitions/vests";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
 
 const showMeleeDebugCircle = false;
 
@@ -43,10 +46,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
     animationSeq!: boolean;
 
     readonly images: {
+        readonly vest: Phaser.GameObjects.Image
         readonly body: Phaser.GameObjects.Image
         readonly leftFist: Phaser.GameObjects.Image
         readonly rightFist: Phaser.GameObjects.Image
-        readonly weaponImg: Phaser.GameObjects.Image
+        readonly backpack: Phaser.GameObjects.Image
+        readonly helmet: Phaser.GameObjects.Image
+        readonly weapon: Phaser.GameObjects.Image
         readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
     };
 
@@ -56,6 +62,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     distSinceLastFootstep = 0;
 
+    helmetLevel = 0;
+    vestLevel = 0;
+    backpackLevel = 0;
+
     readonly radius = PLAYER_RADIUS;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
@@ -63,10 +73,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.isActivePlayer = isActivePlayer;
 
         this.images = {
+            vest: this.scene.add.image(0, 0, "main").setVisible(false),
             body: this.scene.add.image(0, 0, "main", "player_base.svg"),
             leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
             rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
-            weaponImg: this.scene.add.image(0, 0, "main"),
+            backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
+            helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
+            weapon: this.scene.add.image(0, 0, "main"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -78,12 +91,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 emitting: false
             })
         };
-
-        this.container.add([this.images.body,
+        this.container.add([
+            this.images.vest,
+            this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            this.images.weaponImg,
-            this.images.bloodEmitter]).setDepth(2);
+            this.images.weapon,
+            this.images.backpack,
+            this.images.helmet,
+            this.images.bloodEmitter
+        ]).setDepth(2);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -96,7 +113,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
-            if (this.distSinceLastFootstep > 10) {
+            if (this.distSinceLastFootstep > 9) {
                 this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
                 this.distSinceLastFootstep = 0;
             }
@@ -118,14 +135,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
-            this.container.setRotation(this.rotation);
-        } else {
-            gsap.to(this.container, {
-                angle: finalAngle,
-                ease: "none",
-                duration: 0.03
-            });
+        if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
+            if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
+                this.container.setRotation(this.rotation);
+            } else {
+                gsap.to(this.container, {
+                    angle: finalAngle,
+                    ease: "none",
+                    duration: 0.03
+                });
+            }
         }
 
         // Animation
@@ -163,7 +182,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                     if (weaponDef.image !== undefined) {
                         this.weaponAnim = this.scene.tweens.add({
-                            targets: this.images.weaponImg,
+                            targets: this.images.weapon,
                             x: weaponDef.image.usePosition.x,
                             y: weaponDef.image.usePosition.y,
                             duration: weaponDef.fists.animationDuration,
@@ -190,7 +209,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         this.updateFistsPosition(false);
                         const recoilAmount = (20 * (1 - weaponDef.recoilMultiplier));
                         this.weaponAnim = this.scene.tweens.add({
-                            targets: this.images.weaponImg,
+                            targets: this.images.weapon,
                             x: weaponDef.image.position.x - recoilAmount,
                             duration: 50,
                             yoyo: true
@@ -234,6 +253,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
         }
 
+        this.helmetLevel = stream.readBits(2);
+        this.vestLevel = stream.readBits(2);
+        this.backpackLevel = stream.readBits(2);
+        this.updateEquipment();
+
         this.updateFistsPosition(true);
         this.updateWeapon();
         this.isNew = false;
@@ -265,33 +289,73 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
         }
         if (weaponDef.image) {
-            this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
-            this.images.weaponImg.setAngle(weaponDef.image.angle);
+            this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weapon.setAngle(weaponDef.image.angle);
         }
     }
 
     updateWeapon(): void {
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
-        this.images.weaponImg.setVisible(weaponDef.image !== undefined);
+        this.images.weapon.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
-                this.images.weaponImg.setFrame(`${weaponDef.idString}.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}.svg`);
             } else if (weaponDef.itemType === ItemType.Gun) {
-                this.images.weaponImg.setFrame(`${weaponDef.idString}_world.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}_world.svg`);
             }
-            this.images.weaponImg.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
-            this.images.weaponImg.setAngle(weaponDef.image.angle);
+            this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weapon.setAngle(weaponDef.image.angle);
 
             if (this.isActivePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
         }
         if (weaponDef.itemType === ItemType.Gun) {
-            this.container.bringToTop(this.images.weaponImg);
+            this.container.bringToTop(this.images.weapon);
             this.container.bringToTop(this.images.body);
+            this.container.bringToTop(this.images.backpack);
+            this.container.bringToTop(this.images.helmet);
         } else if (weaponDef.itemType === ItemType.Melee) {
+            this.container.sendToBack(this.images.helmet);
+            this.container.sendToBack(this.images.backpack);
             this.container.sendToBack(this.images.body);
-            this.container.sendToBack(this.images.weaponImg);
+            this.container.sendToBack(this.images.vest);
+            this.container.sendToBack(this.images.weapon);
         }
         this.container.bringToTop(this.images.bloodEmitter);
+    }
+
+    updateEquipment(): void {
+        this.updateEquipmentWorldImage("helmet", Helmets);
+        this.updateEquipmentWorldImage("vest", Vests);
+        this.updateEquipmentWorldImage("backpack", Backpacks);
+
+        if (this.isActivePlayer) {
+            this.updateEquipmentSlot("helmet", Helmets);
+            this.updateEquipmentSlot("vest", Vests);
+            this.updateEquipmentSlot("backpack", Backpacks);
+        }
+    }
+
+    updateEquipmentWorldImage(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
+        const level = this[`${equipmentType}Level`];
+        const image = this.images[equipmentType];
+        if (level > 0) {
+            image.setTexture("main", `${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
+        } else {
+            image.setVisible(false);
+        }
+    }
+
+    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
+        const container = $(`#${equipmentType}-slot`);
+        const level = this[`${equipmentType}Level`];
+        if (level > 0) {
+            const definition = definitions[equipmentType === "backpack" ? level : level - 1];
+            container.children(".item-name").text(`Lvl. ${level}`);
+            container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
+            container.show();
+        } else {
+            container.hide();
+        }
     }
 
     destroy(): void {
@@ -299,7 +363,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.body.destroy(true);
         this.images.leftFist.destroy(true);
         this.images.rightFist.destroy(true);
-        this.images.weaponImg.destroy(true);
+        this.images.weapon.destroy(true);
         this.images.bloodEmitter.destroy(true);
     }
 }

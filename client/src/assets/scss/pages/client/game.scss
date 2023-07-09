@@ -458,9 +458,10 @@
 
     .inventory-slot {
         background: $transparent_bg;
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
         border-radius: 10px;
+        font-size: 15px;
 
         &.item-slot {
             width: auto !important;
@@ -635,8 +636,61 @@
 }
 
 #equipment-container {
+    position: absolute;
     bottom: 10px;
-    left: 10px;
+    right: 25%;
+
+    @media screen and (max-width: $screen_small) {
+        bottom: 125px;
+        right: 10px;
+    }
+
+    .inventory-slot {
+        width: 55px;
+        height: 78px;
+
+        .item-image {
+            width: 45px;
+            height: 45px;
+            align-self: flex-start;
+            margin-top: 5px;
+        }
+    }
+}
+
+
+#scopes-container {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    flex-direction: row!important;
+
+    .inventory-slot {
+        justify-content: center;
+        padding: 4px;
+
+        height: fit-content!important;
+        width: fit-content!important;
+
+        opacity: 0.75;
+
+        .item-image {
+            width: 30px;
+            height: 30px;
+        }
+
+        &.active {
+            outline: none;
+            opacity: 1;
+
+            .item-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    }
 }
 
 #game-over-screen {

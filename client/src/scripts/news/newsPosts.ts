@@ -10,6 +10,21 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1688932576000,
+        author: "HAZEL",
+        title: "Geared Up",
+        bannerImage: require("../../assets/img/news/v0.7.0.png"),
+        content: `A long-awaited shipment, containing helmets, vests, backpacks, and scopes, has finally arrived on the island! Protect yourself with helmets and vests, pack in extra ammo with backpacks, and get the jump on your enemy with scopes. Unfortunately, due to supply shortages, guns have become more scarce.`,
+        longContent: `<h2>Suroi v0.7.0</h2>
+
+<h3>New features & changes</h3>
+<ul>
+  <li>Equipment! Added helmets, vests, backpacks, and scopes.</li>
+  <li>Replaced the 940 Pro with the HP18-12, a functionally identical gun which should be easier to distinguish from other shotguns.</li>
+  <li>Added client-side prediction, which should make the game feel a lot more responsive. It can be turned off in settings.</li>
+</ul>`
+    },
+    {
         date: 1688328459000,
         author: "HAZEL",
         title: "Tablets & Tweaks",

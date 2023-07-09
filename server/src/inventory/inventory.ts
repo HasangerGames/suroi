@@ -1,6 +1,5 @@
 import {
     INVENTORY_MAX_WEAPONS,
-    MaxInventoryCapacity,
     ObjectCategory,
     PlayerActions
 } from "../../../common/src/constants";
@@ -14,6 +13,8 @@ import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Backpacks } from "../../../common/src/definitions/backpacks";
+import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 
 /**
  * A class representing a player's inventory
@@ -32,8 +33,29 @@ export class Inventory {
         "12g": 0,
         "556mm": 0,
         "762mm": 0,
-        "9mm": 0
+        "9mm": 0,
+        "1x_scope": 1,
+        "2x_scope": 0,
+        "4x_scope": 0,
+        "8x_scope": 0,
+        "15x_scope": 0
     };
+
+    helmetLevel = 0;
+    vestLevel = 0;
+    backpackLevel = 0;
+
+    private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+
+    get scope(): ObjectType<ObjectCategory.Loot, ScopeDefinition> {
+        return this._scope;
+    }
+
+    set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
+        this._scope = scope;
+        this.owner.zoom = scope.definition.zoomLevel;
+        this.owner.dirty.inventory = true;
+    }
 
     /**
      * An internal array storing weapons
@@ -248,7 +270,7 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = this.items[ammoType] - MaxInventoryCapacity[ammoType];
+            const overAmount = this.items[ammoType] - Backpacks[this.backpackLevel].maxCapacity[ammoType];
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
@@ -347,15 +369,32 @@ export class Inventory {
         if (!this.items[itemString]) return;
 
         const item = ObjectType.fromString(ObjectCategory.Loot, itemString);
-        if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
-            (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
+        const definition = item.definition as LootDefinition;
 
-        const definition = item.definition as HealingItemDefinition;
+        switch (definition.itemType) {
+            case ItemType.Healing: {
+                if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
+                    (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
 
-        if (definition.healType === HealType.Health && this.owner.health >= 100) return;
-        if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+                const definition = item.definition as HealingItemDefinition;
 
-        this.owner.executeAction(new HealingAction(this.owner, item));
+                if (definition.healType === HealType.Health && this.owner.health >= 100) return;
+                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+
+                this.owner.executeAction(new HealingAction(this.owner, item));
+                break;
+            }
+            case ItemType.Scope: {
+                this.scope = item as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+                break;
+            }
+        }
+    }
+
+    setScope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>): void {
+        this.scope = scope;
+        this.owner.zoom = scope.definition.zoomLevel;
+        this.owner.dirty.zoom = true;
     }
 
     /**
@@ -387,10 +426,12 @@ export class Inventory {
         stream.writeBoolean(this.owner.dirty.inventory);
         if (this.owner.dirty.inventory) {
             this.owner.dirty.inventory = false;
+            stream.writeBits(this.backpackLevel, 2);
             for (const count of Object.values(this.items)) {
                 stream.writeBoolean(count > 0); // Has item
                 if (count > 0) stream.writeUint8(count);
             }
+            stream.writeObjectTypeNoCategory(this.scope);
         }
     }
 }

@@ -98,7 +98,7 @@ export class Obstacle extends GameObject {
             });
             weights.push(item.weight);
         }
-        const selectedItem: TempLootItem = weightedRandom<TempLootItem>(items, weights);
+        const selectedItem = weightedRandom<TempLootItem>(items, weights);
 
         if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
         else this.addLoot(selectedItem.item, selectedItem.count ?? 1);
