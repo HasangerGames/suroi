@@ -41,6 +41,7 @@ export interface Config {
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
+    clientSidePrediction: boolean
     textKillFeed: boolean
     rotationSmoothing: boolean
     movementSmoothing: boolean
@@ -57,7 +58,7 @@ export interface Config {
 }
 
 export const defaultConfig: Config = {
-    configVersion: "13",
+    configVersion: "14",
     playerName: "",
     keybinds: {
         moveUp: ["W", "ArrowUp"],
@@ -93,6 +94,7 @@ export const defaultConfig: Config = {
     cameraShake: true,
     showFPS: false,
     showPing: false,
+    clientSidePrediction: true,
     textKillFeed: false,
     rotationSmoothing: true,
     movementSmoothing: true,
@@ -200,6 +202,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "10":
         case "11":
         case "12":
+        case "13":
         default: {
             if (!mutated) {
                 config = defaultConfig;

@@ -8,7 +8,7 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
-import { INVENTORY_MAX_WEAPONS, InputActions } from "../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 
 $((): void => {
     const dropdown = {
@@ -149,8 +149,7 @@ $((): void => {
 
     // sfx volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
-        const volume = value * localStorageInstance.config.masterVolume;
-        (core.phaser?.scene.getScene("game") as GameScene).volume = volume;
+        (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
     });
 
     // master volume
@@ -174,6 +173,9 @@ $((): void => {
         $("#ping-counter").toggle(value);
     });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
+
+    // client-side prediction toggle
+    addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 
     // text kill feed toggle
     addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
@@ -199,7 +201,7 @@ $((): void => {
     });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
+        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap(true);
     });
 
     // Leave warning

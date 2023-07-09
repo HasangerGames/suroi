@@ -135,14 +135,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
-            this.container.setRotation(this.rotation);
-        } else {
-            gsap.to(this.container, {
-                angle: finalAngle,
-                ease: "none",
-                duration: 0.03
-            });
+        if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
+            if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
+                this.container.setRotation(this.rotation);
+            } else {
+                gsap.to(this.container, {
+                    angle: finalAngle,
+                    ease: "none",
+                    duration: 0.03
+                });
+            }
         }
 
         // Animation

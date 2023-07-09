@@ -246,6 +246,7 @@ export function setupInputs(game: Game): void {
         if (game.playerManager === undefined || game.playerManager.isMobile) return;
 
         game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        if (localStorageInstance.config.clientSidePrediction && !game.gameOver) game.activePlayer.container.rotation = game.playerManager.rotation;
         game.playerManager.turning = true;
         game.playerManager.dirty.inputs = true;
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
