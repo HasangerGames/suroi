@@ -22,7 +22,6 @@ import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
 import { Helmets } from "../../../common/src/definitions/helmets";
 import { Vests } from "../../../common/src/definitions/vests";
-import { type GunItem } from "../inventory/gunItem";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { Backpacks } from "../../../common/src/definitions/backpacks";
 
@@ -231,8 +230,6 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.adrenaline = 100;
         }*/
-        this.inventory.addOrReplaceWeapon(0, "tango_51");
-        (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
         this.inventory.addOrReplaceWeapon(2, "fists");
     }
 

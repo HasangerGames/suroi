@@ -216,18 +216,21 @@ export class Game {
             // Do damage to objects hit by bullets
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
+
+                // Delete the bullet
+                this.removeBullet(bullet);
+                this.deletedBulletIDs.add(bullet.id);
+
                 // Bullets from dead players should not deal damage
                 if (bullet.shooter.dead) continue;
-                const definition = bullet.source.ballistics;
 
+                // Do the damage
+                const definition = bullet.source.ballistics;
                 if (damageRecord.damaged instanceof Player) {
                     damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
                 } else if (damageRecord.damaged instanceof Obstacle) {
                     damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
                 }
-
-                this.removeBullet(bullet);
-                this.deletedBulletIDs.add(bullet.id);
             }
             this.damageRecords.clear();
 

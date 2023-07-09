@@ -17,10 +17,10 @@ export const Backpacks: BackpackDefinition[] = [
             medikit: 1,
             cola: 2,
             tablets: 1,
-            "12g": 10,
-            "556mm": 60,
-            "762mm": 60,
-            "9mm": 60
+            "12g": 15,
+            "556mm": 90,
+            "762mm": 90,
+            "9mm": 120
         }
     },
     {
@@ -31,12 +31,12 @@ export const Backpacks: BackpackDefinition[] = [
         maxCapacity: {
             gauze: 10,
             medikit: 2,
-            cola: 4,
+            cola: 5,
             tablets: 2,
-            "12g": 20,
-            "556mm": 90,
-            "762mm": 90,
-            "9mm": 90
+            "12g": 30,
+            "556mm": 180,
+            "762mm": 180,
+            "9mm": 240
         }
     },
     {
@@ -47,12 +47,12 @@ export const Backpacks: BackpackDefinition[] = [
         maxCapacity: {
             gauze: 15,
             medikit: 3,
-            cola: 5,
+            cola: 10,
             tablets: 3,
-            "12g": 40,
-            "556mm": 120,
-            "762mm": 120,
-            "9mm": 120
+            "12g": 60,
+            "556mm": 240,
+            "762mm": 240,
+            "9mm": 330
         }
     },
     {
@@ -61,14 +61,14 @@ export const Backpacks: BackpackDefinition[] = [
         itemType: ItemType.Backpack,
         level: 3,
         maxCapacity: {
-            gauze: 25,
+            gauze: 30,
             medikit: 4,
-            cola: 8,
+            cola: 15,
             tablets: 4,
-            "12g": 60,
-            "556mm": 200,
-            "762mm": 200,
-            "9mm": 200
+            "12g": 90,
+            "556mm": 300,
+            "762mm": 300,
+            "9mm": 420
         }
     }
 ];
