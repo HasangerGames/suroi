@@ -5,30 +5,8 @@
    height="60.428001"
    viewBox="0 0 34.643 60.428"
    id="svg83"
-   sodipodi:docname="satchel_world.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview85"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="10.192032"
-     inkscape:cx="-10.792745"
-     inkscape:cy="18.543899"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg83" />
   <defs
      id="defs27">
     <radialGradient
@@ -99,7 +77,8 @@
        cy="179.78572"
        r="7.6428599"
        gradientUnits="userSpaceOnUse"
-       id="color-5">
+       id="color-5"
+       gradientTransform="translate(0,0.21428)">
       <stop
          offset="0"
          stop-color="#595959"
@@ -260,22 +239,26 @@
          stroke-width="2.5"
          id="path71"
          style="fill:url(#color-2)" />
+      <g
+         id="g1"
+         transform="translate(0,0.142855)">
+        <path
+           d="m 232.28572,177.28572 v -5.28571 h 3 v 5.28571 z"
+           fill="url(#color-3)"
+           stroke="#343434"
+           stroke-width="1"
+           id="path73"
+           style="fill:url(#color-3)" />
+        <path
+           d="m 232.30953,187.71429 v -5.28571 h 3 v 5.28571 z"
+           fill="url(#color-4)"
+           stroke="#343434"
+           stroke-width="1"
+           id="path75"
+           style="fill:url(#color-4)" />
+      </g>
       <path
-         d="m 232.28572,177.28572 v -5.28571 h 3 v 5.28571 z"
-         fill="url(#color-3)"
-         stroke="#343434"
-         stroke-width="1"
-         id="path73"
-         style="fill:url(#color-3)" />
-      <path
-         d="m 232.30953,187.71429 v -5.28571 h 3 v 5.28571 z"
-         fill="url(#color-4)"
-         stroke="#343434"
-         stroke-width="1"
-         id="path75"
-         style="fill:url(#color-4)" />
-      <path
-         d="m 239.00001,188.00001 v -16.42857 h 4 v 16.42857 z"
+         d="m 239.00001,188.21429 v -16.42857 h 4 v 16.42857 z"
          fill="url(#color-5)"
          stroke="#343434"
          stroke-width="1.5"
