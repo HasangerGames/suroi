@@ -1,7 +1,7 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
 import { mod } from "../../../../common/src/utils/math";
-import { INVENTORY_MAX_WEAPONS, InputActions } from "../../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import {
     localStorageInstance, type KeybindActions, defaultConfig
@@ -125,32 +125,40 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 game.playerManager.reload();
             }
         ),
+        previousScope: new Action(
+            "inventory::previousScope",
+            () => {
+                game.playerManager.switchScope(-1);
+            }
+        ),
+        nextScope: new Action(
+            "inventory::nextScope",
+            () => {
+                game.playerManager.switchScope(1);
+            }
+        ),
         useGauze: new Action(
             "inventory::useGauze",
             () => {
-                game.playerManager.action = InputActions.UseGauze;
-                game.playerManager.dirty.inputs = true;
+                game.playerManager.useItem("gauze");
             }
         ),
         useMedikit: new Action(
-            "inventory::useGauze",
+            "inventory::useMediKit",
             () => {
-                game.playerManager.action = InputActions.UseMedikit;
-                game.playerManager.dirty.inputs = true;
+                game.playerManager.useItem("medikit");
             }
         ),
         useCola: new Action(
-            "inventory::useGauze",
+            "inventory::useCola",
             () => {
-                game.playerManager.action = InputActions.UseCola;
-                game.playerManager.dirty.inputs = true;
+                game.playerManager.useItem("cola");
             }
         ),
         useTablets: new Action(
-            "inventory::useGauze",
+            "inventory::useTablets",
             () => {
-                game.playerManager.action = InputActions.UseTablets;
-                game.playerManager.dirty.inputs = true;
+                game.playerManager.useItem("tablets");
             }
         ),
         cancelAction: new Action(
@@ -415,6 +423,8 @@ const actionsNames = {
     useItem: "Use Item",
     dropActiveItem: "Drop Active Item",
     reload: "Reload",
+    previousScope: "Previous Scope",
+    nextScope: "Next Scope",
     useGauze: "Use Gauze",
     useMedikit: "Use Medikit",
     useCola: "Use Cola",

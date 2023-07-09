@@ -26,7 +26,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
-function makeCrate(idString: string, name: string, rotationMode: "full" | "limited" | "binary" | "none", hideOnMap?: boolean): ObstacleDefinition {
+function makeCrate(idString: string, name: string, rotationMode: ObstacleDefinition["rotationMode"], hideOnMap?: boolean): ObstacleDefinition {
     return {
         idString,
         name,

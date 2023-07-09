@@ -23,6 +23,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
+import { ItemPacket } from "./packets/receiving/itemPacket";
 
 /**
  * Apply CORS headers to a response.
@@ -228,6 +229,10 @@ app.ws("/play", {
                 }
                 case PacketType.Ping: {
                     new PingedPacket(player).deserialize(stream);
+                    break;
+                }
+                case PacketType.Item: {
+                    new ItemPacket(player).deserialize(stream);
                     break;
                 }
             }

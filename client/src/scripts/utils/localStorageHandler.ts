@@ -18,6 +18,8 @@ export type KeybindActions = {
     useItem: [string, string]
     dropActiveItem: [string, string]
     reload: [string, string]
+    previousScope: [string, string]
+    nextScope: [string, string]
     useGauze: [string, string]
     useMedikit: [string, string]
     useCola: [string, string]
@@ -77,6 +79,8 @@ export const defaultConfig: Config = {
         useItem: ["Mouse0", ""],
         dropActiveItem: ["", ""],
         reload: ["R", ""],
+        previousScope: ["", ""],
+        nextScope: ["", ""],
         useGauze: ["5", ""],
         useMedikit: ["6", ""],
         useCola: ["7", ""],

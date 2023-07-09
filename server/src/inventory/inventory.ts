@@ -14,6 +14,7 @@ import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { Backpacks } from "../../../common/src/definitions/backpacks";
+import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 
 /**
  * A class representing a player's inventory
@@ -43,6 +44,18 @@ export class Inventory {
     helmetLevel = 0;
     vestLevel = 0;
     backpackLevel = 0;
+
+    private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+
+    get scope(): ObjectType<ObjectCategory.Loot, ScopeDefinition> {
+        return this._scope;
+    }
+
+    set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
+        this._scope = scope;
+        this.owner.zoom = scope.definition.zoomLevel;
+        this.owner.dirty.inventory = true;
+    }
 
     /**
      * An internal array storing weapons
@@ -356,15 +369,32 @@ export class Inventory {
         if (!this.items[itemString]) return;
 
         const item = ObjectType.fromString(ObjectCategory.Loot, itemString);
-        if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
-            (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
+        const definition = item.definition as LootDefinition;
 
-        const definition = item.definition as HealingItemDefinition;
+        switch (definition.itemType) {
+            case ItemType.Healing: {
+                if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
+                    (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
 
-        if (definition.healType === HealType.Health && this.owner.health >= 100) return;
-        if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+                const definition = item.definition as HealingItemDefinition;
 
-        this.owner.executeAction(new HealingAction(this.owner, item));
+                if (definition.healType === HealType.Health && this.owner.health >= 100) return;
+                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+
+                this.owner.executeAction(new HealingAction(this.owner, item));
+                break;
+            }
+            case ItemType.Scope: {
+                this.scope = item as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+                break;
+            }
+        }
+    }
+
+    setScope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>): void {
+        this.scope = scope;
+        this.owner.zoom = scope.definition.zoomLevel;
+        this.owner.dirty.zoom = true;
     }
 
     /**
@@ -401,6 +431,7 @@ export class Inventory {
                 stream.writeBoolean(count > 0); // Has item
                 if (count > 0) stream.writeUint8(count);
             }
+            stream.writeObjectTypeNoCategory(this.scope);
         }
     }
 }

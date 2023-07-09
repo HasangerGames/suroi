@@ -8,7 +8,12 @@ import { type PlayerContainer } from "../server";
 import { type SendingPacket } from "../types/sendingPacket";
 
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { ANIMATION_TYPE_BITS, AnimationType, ObjectCategory, PLAYER_RADIUS } from "../../../common/src/constants";
+import {
+    ANIMATION_TYPE_BITS,
+    AnimationType,
+    ObjectCategory,
+    PLAYER_RADIUS
+} from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
@@ -200,8 +205,6 @@ export class Player extends GameObject {
         this.socket = socket;
         this.name = name;
         this.rotation = 0;
-        this.zoom = 48;
-        // fixme    ^^ magic number
 
         this.joinTime = game.now;
 
@@ -231,6 +234,8 @@ export class Player extends GameObject {
             this.adrenaline = 100;
         }*/
         this.inventory.addOrReplaceWeapon(2, "fists");
+
+        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -274,6 +279,7 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
+        this.updateVisibleObjects();
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition | undefined {

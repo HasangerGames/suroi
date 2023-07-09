@@ -90,18 +90,6 @@ export class InputPacket extends ReceivingPacket {
             case InputActions.Cancel:
                 player.action?.cancel();
                 break;
-            case InputActions.UseGauze:
-                player.inventory.useItem("gauze");
-                break;
-            case InputActions.UseMedikit:
-                player.inventory.useItem("medikit");
-                break;
-            case InputActions.UseCola:
-                player.inventory.useItem("cola");
-                break;
-            case InputActions.UseTablets:
-                player.inventory.useItem("tablets");
-                break;
         }
     }
 }

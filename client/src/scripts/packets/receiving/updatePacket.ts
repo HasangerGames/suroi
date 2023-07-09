@@ -77,6 +77,13 @@ export class UpdatePacket extends ReceivingPacket {
             adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
+        // Zoom
+
+        if (stream.readBoolean()) {
+            playerManager.zoom = stream.readUint8();
+            scene.resize(true);
+        }
+
         // Action
         if (stream.readBoolean()) {
             const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
@@ -131,7 +138,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Full objects
         if (stream.readBoolean()) {
-            const fullObjectCount = stream.readUint8();
+            const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
@@ -179,7 +186,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Partial objects
         if (stream.readBoolean()) {
-            const partialObjectCount = stream.readUint8();
+            const partialObjectCount = stream.readUint16();
             for (let i = 0; i < partialObjectCount; i++) {
                 const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
@@ -193,7 +200,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Deleted objects
         if (stream.readBoolean()) {
-            const deletedObjectCount = stream.readUint8();
+            const deletedObjectCount = stream.readUint16();
             for (let i = 0; i < deletedObjectCount; i++) {
                 const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);

@@ -658,6 +658,41 @@
     }
 }
 
+
+#scopes-container {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+    flex-direction: row!important;
+
+    .inventory-slot {
+        justify-content: center;
+        padding: 4px;
+
+        height: fit-content!important;
+        width: fit-content!important;
+
+        opacity: 0.75;
+
+        .item-image {
+            width: 30px;
+            height: 30px;
+        }
+
+        &.active {
+            outline: none;
+            opacity: 1;
+
+            .item-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    }
+}
+
 #game-over-screen {
     text-align: center;
 

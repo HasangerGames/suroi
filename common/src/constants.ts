@@ -16,7 +16,8 @@ export enum PacketType {
     Kill,
     KillFeed,
     Pickup,
-    Ping
+    Ping,
+    Item
 }
 
 export enum AnimationType {
@@ -50,11 +51,7 @@ export enum InputActions {
     SwapGunSlots,
     Interact,
     Reload,
-    Cancel,
-    UseGauze,
-    UseMedikit,
-    UseCola,
-    UseTablets
+    Cancel
 }
 
 export enum PlayerActions {
@@ -82,7 +79,6 @@ export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
 export const MAP_WIDTH = 720;
 export const MAP_HEIGHT = 720;
-
 
 export const PLAYER_RADIUS = 2.25;
 

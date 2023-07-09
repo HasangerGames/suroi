@@ -8,7 +8,9 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
-import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { Scopes } from "../../../common/src/definitions/scopes";
+import { HealingItems } from "../../../common/src/definitions/healingItems";
 
 $((): void => {
     const dropdown = {
@@ -219,35 +221,23 @@ $((): void => {
         });
     }
 
-    $("#gauze-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseGauze;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
-    $("#medikit-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseMedikit;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
-    $("#cola-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseCola;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
+    for (const scope of Scopes) {
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            if (core.game) {
+                core.game.playerManager.useItem(scope.idString);
+                e.stopPropagation();
+            }
+        });
+    }
 
-    $("#tablets-slot")[0].addEventListener("pointerdown", (e: PointerEvent) => {
-        if (core.game) {
-            core.game.playerManager.action = InputActions.UseTablets;
-            core.game.playerManager.dirty.inputs = true;
-            e.stopImmediatePropagation();
-        }
-    });
+    for (const item of HealingItems) {
+        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            if (core.game) {
+                core.game.playerManager.useItem(item.idString);
+                e.stopPropagation();
+            }
+        });
+    }
 
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(core.game?.playerManager.isActuallyMobile);

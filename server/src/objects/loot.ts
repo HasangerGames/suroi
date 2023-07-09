@@ -17,9 +17,10 @@ import { PickupPacket } from "../packets/sending/pickupPacket";
 import { ArmorType, LootRadius, ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition, Backpacks } from "../../../common/src/definitions/backpacks";
+import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { Helmets } from "../../../common/src/definitions/helmets";
 import { Vests } from "../../../common/src/definitions/vests";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -199,6 +200,11 @@ export class Loot extends GameObject {
             }
             case ItemType.Scope: {
                 inventory.items[this.type.idString] = 1;
+                player.dirty.inventory = true;
+                const scope = this.type as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+                if (scope.definition.zoomLevel > player.inventory.scope.definition.zoomLevel) {
+                    player.inventory.scope = scope;
+                }
                 break;
             }
         }
