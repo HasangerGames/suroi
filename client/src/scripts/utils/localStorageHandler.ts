@@ -114,7 +114,7 @@ const configKey = "config";
 const storedConfig = localStorage.getItem(configKey);
 
 // Do a deep merge to add new config keys
-let config = storedConfig !== null ? mergeDeep(defaultConfig, JSON.parse(storedConfig)) as Config : defaultConfig;
+let config = storedConfig !== null ? mergeDeep(JSON.parse(JSON.stringify(defaultConfig)), JSON.parse(storedConfig)) as Config : defaultConfig;
 let rewriteConfigToLS = storedConfig === null;
 
 if (config.configVersion !== defaultConfig.configVersion) {
@@ -184,7 +184,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
 
             proxy.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as Config["keybinds"];
         }
-        // Skip old porting code thats not necessary
+        // Skip old porting code that's not necessary
         case "2":
         case "3":
         case "4":
@@ -201,7 +201,9 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "9":
         case "10":
         case "11":
-        case "12":
+        case "12": {
+            proxy.configVersion = defaultConfig.configVersion;
+        }
         default: {
             if (!mutated) {
                 config = defaultConfig;
