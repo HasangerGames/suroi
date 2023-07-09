@@ -99,7 +99,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m1_helmet", weight: 0.2 },
         { item: "tactical_helmet", weight: 0.03 },
 
-        { item: "vest", weight: 1 },
+        { item: "basic_vest", weight: 1 },
         { item: "bulletproof_vest", weight: 0.2 },
         { item: "tactical_vest", weight: 0.03 },
 
@@ -143,7 +143,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "m1_helmet", weight: 0.4 },
         { item: "tactical_helmet", weight: 0.05 },
 
-        { item: "vest", weight: 1 },
+        { item: "basic_vest", weight: 1 },
         { item: "bulletproof_vest", weight: 0.4 },
         { item: "tactical_vest", weight: 0.05 },
 
