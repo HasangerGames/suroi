@@ -99,8 +99,8 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
-                const currentCount: number = inventory.items[idString];
-                const maxCapacity: number = MaxInventoryCapacity[idString];
+                const currentCount = inventory.items[idString];
+                const maxCapacity = MaxInventoryCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Melee: {
@@ -115,6 +115,7 @@ export class Loot extends GameObject {
             const angle = player.rotation;
             this.game.addLoot(this.type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
         };
+
         if (noPickup) {
             this.game.removeLoot(this);
             createNewItem();

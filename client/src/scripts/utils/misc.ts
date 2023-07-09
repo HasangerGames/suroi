@@ -6,7 +6,7 @@ export function v2v(v: Vector): Vector2 {
     return new Vector2(v.x, v.y);
 }
 
-const killWords: string[] = ["killed", "destroyed", "ended", "murdered", "wiped out", "annihilated", "slaughtered", "obliterated"];
+const killWords = ["killed", "destroyed", "ended", "murdered", "wiped out", "annihilated", "slaughtered", "obliterated"];
 
 export function randomKillWord(): string {
     return killWords[random(0, killWords.length - 1)];

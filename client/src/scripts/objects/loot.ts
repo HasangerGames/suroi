@@ -10,11 +10,9 @@ import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type PlayerManager } from "../utils/playerManager";
 
-export class Loot extends GameObject<ObjectCategory.Loot> {
+export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
         readonly background: Phaser.GameObjects.Image
         readonly item: Phaser.GameObjects.Image
@@ -38,15 +36,15 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         // Set the loot texture based on the type
         const definition = this.type.definition;
         let backgroundTexture: string | undefined;
-        switch ((definition as LootDefinition).itemType) {
+        switch (definition.itemType) {
             case ItemType.Gun: {
-                backgroundTexture = `loot_background_gun_${(definition as GunDefinition).ammoType}.svg`;
+                backgroundTexture = `loot_background_gun_${definition.ammoType}.svg`;
                 this.images.item.setScale(0.85);
                 break;
             }
             case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
-                const imageScale = (definition as MeleeDefinition).image?.lootScale;
+                const imageScale = definition.image?.lootScale;
                 if (imageScale !== undefined) this.images.item.setScale(imageScale);
                 break;
             }
@@ -58,12 +56,13 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         if (backgroundTexture !== undefined) {
             this.images.background.setTexture("main", backgroundTexture);
         } else {
-            this.images.background.setVisible(false); // @TODO Figure out why destroy doesn't work
+            this.images.background.setVisible(false);
+            // fixme Figure out why destroy doesn't work
             // I think you can't destroy a container child without destroying the container first
             // - Leo
         }
 
-        this.radius = LootRadius[(this.type.definition as LootDefinition).itemType];
+        this.radius = LootRadius[(this.type.definition).itemType];
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -99,7 +98,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     }
 
     canInteract(player: PlayerManager): boolean {
-        const definition = this.type.definition as LootDefinition;
+        const definition = this.type.definition;
+
         switch (definition.itemType) {
             // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {

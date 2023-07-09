@@ -21,8 +21,8 @@ import { Loot } from "../objects/loot";
 import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
 import { requestFullscreen } from "../utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { getIconFromInputName } from "../utils/inputManager";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -160,64 +160,140 @@ export class GameScene extends Phaser.Scene {
     }
 
     skipLootCheck = true;
+    // why is this here
 
-    tick(): void {
-        if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
+    tick = (() => {
+        const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
+        /*
+            Context: rerendering ui elements needlessly is bad, so we
+            determine the information that should trigger a re-render if
+            changed, and cache them in order to detect such changes
 
-        if (this.playerManager.dirty.inputs) {
-            this.playerManager.dirty.inputs = false;
-            this.activeGame.sendPacket(new InputPacket(this.playerManager));
-        }
+            In the case of the pickup message thingy, those informations are:
+            - the item the pickup message concerns
+            - its quantity
+            - the bind to interact has changed
+        */
+        const cache: {
+            loot?: Loot
+            pickupBind?: string
+            readonly clear: () => void
+            readonly pickupBindIsValid: () => boolean
+        } = {
+            clear() {
+                this.loot = this.pickupBind = undefined;
+            },
+            pickupBindIsValid() {
+                return getPickupBind() === this.pickupBind;
+            }
+        };
+        /**
+         * When a bind is changed, the corresponding html won't
+         * get changed because rendering only occurs when an item
+         * is interactable. We thus store whether the intent to
+         * change was acknowledged here.
+         */
+        let bindChangeAcknowledged = false;
 
-        this.skipLootCheck = !this.skipLootCheck;
-        if (this.skipLootCheck) return;
+        return (): void => {
+            if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
 
-        // Loop through all loot objects to check if the player is colliding with one to show the interact message
-        let minDist = Number.MAX_VALUE;
-        let closestObject: Loot | undefined;
-        const player = this.player;
-        for (const o of this.activeGame.objects) {
-            const object = o[1];
-            if (object instanceof Loot && object.canInteract(this.playerManager)) {
-                const dist = distanceSquared(object.position, player.position);
-                if (dist < minDist && circleCollision(player.position, player.radius, object.position, object.radius)) {
-                    minDist = dist;
-                    closestObject = object;
+            if (this.playerManager.dirty.inputs) {
+                this.playerManager.dirty.inputs = false;
+                this.activeGame.sendPacket(new InputPacket(this.playerManager));
+            }
+
+            this.skipLootCheck = !this.skipLootCheck;
+            if (this.skipLootCheck) return;
+
+            // Loop through all loot objects to check if the player is colliding with one to show the interact message
+            let minDist = Number.MAX_VALUE;
+            let closestObject: Loot | undefined;
+            const player = this.player;
+
+            for (const o of this.activeGame.objects) {
+                const object = o[1];
+                if (object instanceof Loot && object.canInteract(this.playerManager)) {
+                    const dist = distanceSquared(object.position, player.position);
+                    if (dist < minDist && circleCollision(player.position, player.radius, object.position, object.radius)) {
+                        minDist = dist;
+                        closestObject = object;
+                    }
                 }
             }
-        }
 
-        if (closestObject !== undefined) {
-            const prepareInteractText = (): void => {
-                if (closestObject === undefined) return;
-                let interactText = closestObject.type.definition.name;
-                if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
-                $("#interact-text").html(interactText);
+            const differences = {
+                loot: cache.loot?.id !== closestObject?.id,
+                bind: !cache.pickupBindIsValid()
             };
-            if (this.playerManager.isMobile) {
-                const lootDef = closestObject.type.definition as LootDefinition;
-                if (
-                    (lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
-                    (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])) ||
-                    (lootDef.itemType === ItemType.Melee && this.playerManager.weapons[2]?.idString === "fists")
-                ) {
-                    this.playerManager.interact();
-                } else if (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee) {
-                    prepareInteractText();
-                    $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">');
-                    $("#interact-message").show();
-                    return;
+
+            if (differences.bind) bindChangeAcknowledged = false;
+
+            if (
+                differences.loot ||
+                differences.bind
+            ) {
+                // Cache miss, rerender
+                cache.clear();
+                cache.loot = closestObject;
+                cache.pickupBind = getPickupBind();
+
+                if (closestObject !== undefined) {
+                    const prepareInteractText = (): void => {
+                        if (
+                            closestObject === undefined ||
+
+                            // If the loot object hasn't changed, we don't need to redo the text
+                            !differences.loot
+                        ) return;
+
+                        let interactText = closestObject.type.definition.name;
+                        if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
+                        $("#interact-text").text(interactText);
+                    };
+
+                    if (this.playerManager.isMobile) {
+                        const lootDef = closestObject.type.definition;
+
+                        // Autoloot
+                        if (
+                            (lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
+                            (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1]))
+                        ) {
+                            this.playerManager.interact();
+                        } else if (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee) {
+                            prepareInteractText();
+
+                            $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">');
+                            $("#interact-message").show();
+                            return;
+                        }
+
+                        $("#interact-message").hide();
+                    } else {
+                        prepareInteractText();
+
+                        if (!bindChangeAcknowledged) {
+                            bindChangeAcknowledged = true;
+
+                            const input = getPickupBind();
+                            const icon = getIconFromInputName(input);
+
+                            if (icon === undefined) {
+                                $("#interact-key").text(input);
+                            } else {
+                                $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
+                            }
+                        }
+
+                        $("#interact-message").show();
+                    }
+                } else {
+                    $("#interact-message").hide();
                 }
-                $("#interact-message").hide();
-            } else {
-                prepareInteractText();
-                $("#interact-key").text(localStorageInstance.config.keybinds.interact[0]);
-                $("#interact-message").show();
             }
-        } else {
-            $("#interact-message").hide();
-        }
-    }
+        };
+    })();
 
     update(): void {
         if (localStorageInstance.config.showFPS) {
