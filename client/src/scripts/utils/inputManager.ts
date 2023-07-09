@@ -12,17 +12,19 @@ import core from "../core";
 
 class Action {
     readonly name: string;
-    readonly on?: () => void;
-    readonly off?: () => void;
+    readonly on: () => void;
+    readonly off: () => void;
     private down = false;
 
     constructor(name: string, on?: () => void, off?: () => void) {
         this.name = name;
+
         this.on = () => {
             if (this.down) return;
             this.down = true;
             on?.();
         };
+
         this.off = () => {
             if (!this.down) return;
             this.down = false;
@@ -197,22 +199,63 @@ export function setupInputs(game: Game): void {
         bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
     }
 
-    function fireAllEventsAtKey(key: string, down: boolean): void {
-        bindings.get(key)?.forEach(action => {
+    /**
+     * Fires all events attached to a certain input channel
+     * @param key The input channel to fire
+     * @param down Whether the key is being pressed down or released
+     * @returns The number of actions triggered
+     */
+    function fireAllEventsAtKey(key: string, down: boolean): number {
+        const actions = bindings.get(key);
+
+        actions?.forEach(action => {
             down
                 ? action.on?.()
                 : action.off?.();
         });
+
+        return actions?.length ?? 0;
     }
 
     let mWheelStopTimer: number | undefined;
     function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
         if (event instanceof KeyboardEvent && event.repeat) return;
 
-        // disable pointer events on mobile if mobile controls are enabled
+        // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && game.playerManager.isMobile) return;
 
+        /*
+            We don't want to allow keybinds to work with modifiers, because firstly,
+            pressing ctrl + R to reload is dumb and secondly, doing that refreshes the page
+
+            We already fire preventDefault to allow Tab and right-click binds to not be totally
+            unusable, and so we need to disallow modifiers. However, in the case that someone binds
+            an action to shift or control, they should still be able to do that.
+
+            In essence, we need to only process inputs which are a single modifier key or which are
+            a normal key without modifiers.
+
+            This only applies to keyboard events
+        */
+
+        if (event instanceof KeyboardEvent) {
+            let modifierCount = 0;
+            switch (true) {
+                case event.altKey: modifierCount++; break;
+                case event.metaKey: modifierCount++; break;
+                case event.ctrlKey: modifierCount++; break;
+                case event.shiftKey: modifierCount++; break;
+            }
+
+            // As stated before, more than one modifier or a modifier alongside another key should invalidate an input
+            if (
+                modifierCount > 1 ||
+                (modifierCount === 1 && !["Shift", "Control", "Alt", "Meta"].includes(event.key))
+            ) return;
+        }
+
         const key = getKeyFromInputEvent(event);
+        let actionsFired = 0;
 
         if (event instanceof WheelEvent) {
             /*
@@ -224,13 +267,18 @@ export function setupInputs(game: Game): void {
             */
             clearTimeout(mWheelStopTimer);
             mWheelStopTimer = window.setTimeout(() => {
-                fireAllEventsAtKey(key, false);
+                actionsFired = fireAllEventsAtKey(key, false);
             }, 50);
 
-            fireAllEventsAtKey(key, true);
+            actionsFired = fireAllEventsAtKey(key, true);
             return;
         }
-        fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+
+        actionsFired = fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+
+        if (actionsFired > 0) {
+            event.preventDefault();
+        }
     }
 
     const gameUi = $("#game-ui")[0];
@@ -295,6 +343,7 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
             key = "Space";
         }
     }
+
     if (event instanceof WheelEvent) {
         switch (true) {
             case event.deltaX > 0: { key = "MWheelRight"; break; }
@@ -309,10 +358,44 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
         }
         return key;
     }
+
     if (event instanceof MouseEvent) {
         key = `Mouse${event.button}`;
     }
+
     return key;
+}
+
+// Nowhere else to put this…
+export function getIconFromInputName(input: string): string | undefined {
+    let name: string | undefined;
+
+    input = input.toLowerCase();
+    if (
+        [
+            "mouse",
+            "mwheel",
+            "tab",
+            "enter",
+            "capslock",
+            "shift",
+            "alt",
+            "meta",
+            "control",
+            "arrow",
+            "backspace",
+            "escape",
+            "space"
+        ].some(query => input.startsWith(query))
+    ) {
+        if (input === "meta") { // "meta" means different things depending on the OS
+            name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
+        } else {
+            name = input.toLowerCase().replace(/ /g, "");
+        }
+    }
+
+    return name === undefined ? name : `./img/misc/${name}_icon.svg`;
 }
 
 const actionsNames = {
@@ -380,6 +463,7 @@ function generateBindsConfigScreen(): void {
 
                 if (bindButton.classList.contains("active")) {
                     let key = getKeyFromInputEvent(event);
+                    event.preventDefault();
 
                     // Remove conflicting binds
                     for (const a2 in defaultConfig.keybinds) {
@@ -444,4 +528,5 @@ function generateBindsConfigScreen(): void {
         $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.filter(bind => bind !== "").join(" / "));
     }
 }
+
 generateBindsConfigScreen();

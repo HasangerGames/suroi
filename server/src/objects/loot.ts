@@ -103,8 +103,8 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
-                const currentCount: number = inventory.items[idString];
-                const maxCapacity: number = Backpacks[inventory.backpackLevel].maxCapacity[idString];
+                const currentCount = inventory.items[idString];
+                const maxCapacity = Backpacks[inventory.backpackLevel].maxCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Melee: {
@@ -130,6 +130,7 @@ export class Loot extends GameObject {
             const angle = player.rotation;
             this.game.addLoot(type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
         };
+
         if (noPickup) {
             this.game.removeLoot(this);
             createNewItem();
@@ -165,8 +166,8 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
-                const currentCount: number = inventory.items[idString];
-                const maxCapacity: number = Backpacks[inventory.backpackLevel].maxCapacity[idString];
+                const currentCount = inventory.items[idString];
+                const maxCapacity = Backpacks[inventory.backpackLevel].maxCapacity[idString];
 
                 if (currentCount + this.count <= maxCapacity) {
                     inventory.items[idString] += this.count;

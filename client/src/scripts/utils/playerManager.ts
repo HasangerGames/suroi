@@ -84,18 +84,14 @@ export class PlayerManager {
 
     readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
 
-    _lastItemIndex = 0;
+    private _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
 
     private _activeItemIndex = 2;
-
+    get activeItemIndex(): number { return this._activeItemIndex; }
     set activeItemIndex(i: number) {
         if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
         this._activeItemIndex = i;
-    }
-
-    get activeItemIndex(): number {
-        return this._activeItemIndex;
     }
 
     equipItem(i: number): void {

@@ -401,6 +401,7 @@ export class Game {
 
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+
                 log(`Game #${this.id} average ms/tick: ${mspt}`, true);
                 log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
@@ -574,12 +575,14 @@ export class Game {
         this.gas.initialDuration = duration;
         this.gas.percentage = 1;
         this.gas.countdownStart = this.now;
+
         if (currentStage.preventJoin) {
             log(`Game #${this.id} is preventing new players from joining`);
             this.allowJoin = false;
             const id = this.id === 0 ? 1 : 0;
             createNewGame(id);
         }
+
         if (currentStage.state === GasState.Waiting) {
             this.gas.oldPosition = vClone(this.gas.newPosition);
             if (currentStage.newRadius !== 0) {

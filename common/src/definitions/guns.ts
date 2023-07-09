@@ -143,8 +143,8 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "940_pro",
-        name: "940 Pro",
+        idString: "hp18_12",
+        name: "HP18-12",
         itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 20,
