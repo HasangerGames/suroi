@@ -20,7 +20,7 @@ export const news: NewsPost[] = [
 <h3>New features & changes</h3>
 <ul>
   <li>Equipment! Added helmets, vests, backpacks, and scopes.</li>
-  <li>Replaced the 940 Pro with the HP18-12, a functionally identical gun which should be easier to distinguish from other shotguns.</li>
+  <li>Replaced the 940 Pro with the HP18, a functionally identical gun which should be easier to distinguish from other shotguns.</li>
   <li>Added client-side prediction, which should make the game feel a lot more responsive. It can be turned off in settings.</li>
 </ul>`
     },
