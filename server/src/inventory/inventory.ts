@@ -119,14 +119,9 @@ export class Inventory {
     }
 
     /**
-     * The number of weapons in this inventory
-     */
-    private _weaponCount = 0;
-
-    /**
      * @return The number of weapons in this inventory
      */
-    get weaponCount(): number { return this._weaponCount; }
+    get weaponCount(): number { return this._weapons.reduce((acc, item) => acc + +(item !== undefined), 0); }
 
     /**
      * Creates a new inventory.
@@ -203,7 +198,7 @@ export class Inventory {
             (slot === this._activeWeaponIndex && this._weapons[slot]?.definition.noDrop !== true) ||
 
             // Only melee in inventory, swap to new item's slot
-            this._weaponCount === 1
+            this.weaponCount === 1
         ) {
             index = slot;
         }
@@ -226,8 +221,7 @@ export class Inventory {
     appendWeapon(item: GunItem | MeleeItem | string): number {
         for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
             if (this._weapons[slot] === undefined) {
-                this._weapons[slot] = this._reifyItem(item);
-                this.owner.dirty.weapons = true;
+                this._setWeapon(slot, this._reifyItem(item));
                 return slot;
             }
         }
@@ -324,6 +318,8 @@ export class Inventory {
      * Forcefully sets a weapon in a given slot. Note that this operation will never leave the inventory empty:
      * in the case of the attempted removal of this inventory's only item, the operation will be cancelled, and fists will be put in
      * the melee slot
+     *
+     * If the only item was fists and an item is added in slots 0 or 1, it will be swapped to
      * @param slot The slot to place the item in
      * @param item The item to place there
      * @returns The item that was previously located in the slot, if any
@@ -333,22 +329,15 @@ export class Inventory {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set weapon in invalid slot '${slot}'`);
 
         const old = this._weapons[slot];
-
-        const wasEmpty = old === undefined;
-        const isEmpty = item === undefined;
-
         this._weapons[slot] = item;
-
-        if (wasEmpty !== isEmpty) {
-            isEmpty ? --this._weaponCount : ++this._weaponCount;
-        }
-
-        this._weapons[slot] = item;
-
         this.owner.dirty.weapons = true;
 
         if (slot === 2 && item === undefined) {
             this._weapons[slot] = new MeleeItem("fists", this.owner);
+        }
+
+        if (slot < 2 && this.weaponCount === 2) {
+            this.setActiveWeaponIndex(slot);
         }
 
         return old;

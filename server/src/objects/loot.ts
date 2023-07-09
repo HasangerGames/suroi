@@ -143,8 +143,8 @@ export class Loot extends GameObject {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
-                const currentCount: number = inventory.items[idString];
-                const maxCapacity: number = MaxInventoryCapacity[idString];
+                const currentCount = inventory.items[idString];
+                const maxCapacity = MaxInventoryCapacity[idString];
 
                 if (currentCount + this.count <= maxCapacity) {
                     inventory.items[idString] += this.count;
