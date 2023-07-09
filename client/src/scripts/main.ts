@@ -39,7 +39,7 @@ $(() => {
                 core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
-                $("#splash-server-message-text").html("Game in progress.<br>Please try again in 30 seconds.");
+                $("#splash-server-message-text").html("Error joining game.<br>Please try again in 30 seconds.");
                 $("#splash-server-message").show();
                 enablePlayButton();
             }

@@ -102,7 +102,11 @@ app.get("/api/getGame", async(res, req) => {
     } else if (Config.regions[region] !== undefined && region !== Config.thisRegion) {
         // Fetch the find game api for the region and return that.
         const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
-        response = await (await fetch(url)).json();
+        try {
+            response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
+        } catch (e) {
+            response = { success: false };
+        }
     } else {
         response = { success: false };
     }
