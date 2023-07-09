@@ -6,6 +6,7 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { localStorageInstance } from "../utils/localStorageHandler";
+import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 
 /*
     Since this class seems to only ever be instantiated
@@ -14,9 +15,9 @@ import { localStorageInstance } from "../utils/localStorageHandler";
     that it can manage its own deserialization, allowing us
     to remove all these definite assignment assertions
 */
-export abstract class GameObject<T extends ObjectCategory = ObjectCategory> {
+export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     id: number;
-    type: ObjectType<T>;
+    type: ObjectType<T, U>;
 
     readonly game: Game;
     readonly scene: GameScene;
@@ -48,7 +49,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory> {
 
     readonly container: Phaser.GameObjects.Container;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<T>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<T, U>, id: number) {
         this.game = game;
         this.scene = scene;
         this.type = type;

@@ -10,7 +10,7 @@ import { randomBoolean } from "../../../../common/src/utils/random";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation } from "../../../../common/src/typings";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
+export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
     destroyed!: boolean;
 
@@ -36,7 +36,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.scale = stream.readScale();
         const destroyed = stream.readBoolean();
 
-        const definition = this.type.definition as ObstacleDefinition;
+        const definition = this.type.definition;
 
         // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
         this.image.setScale(this.destroyed ? 1 : this.scale);
@@ -71,7 +71,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         // Get position, rotation, and variations
         this.position = stream.readPosition();
 
-        const definition = this.type.definition as ObstacleDefinition;
+        const definition = this.type.definition;
         this.rotation = stream.readObstacleRotation(definition.rotationMode);
 
         const hasVariations = definition.variations !== undefined;

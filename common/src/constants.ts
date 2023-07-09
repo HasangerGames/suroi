@@ -80,7 +80,6 @@ export const PLAYER_NAME_MAX_LENGTH = 16;
 export const MAP_WIDTH = 720;
 export const MAP_HEIGHT = 720;
 
-
 export const MaxInventoryCapacity: Record<string, number> = {
     gauze: 10,
     medikit: 3,
