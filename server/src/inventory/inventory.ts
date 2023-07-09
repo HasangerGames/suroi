@@ -64,7 +64,7 @@ export class Inventory {
 
     /**
      * Sets the index pointing to the active item, if it is valid. Passing an invalid index throws a `RangeError`
-     * If the assignment is successful, `Player#activeItemIndexDirty` is automatically set to `true` if the active item index changes
+     * If the assignment is successful, `Player#dirty.activeWeaponIndex` is automatically set to `true` if the active item index changes
      * @param slot The new slot
      */
     setActiveWeaponIndex(slot: number): boolean {
@@ -212,7 +212,10 @@ export class Inventory {
         this.dropWeapon(slot, -0.01);
         this._setWeapon(slot, this._reifyItem(item));
 
-        if (index !== undefined) this.setActiveWeaponIndex(index);
+        if (index !== undefined) {
+            this.setActiveWeaponIndex(index);
+            this.owner.dirty.activeWeaponIndex = false;
+        }
     }
 
     /**
