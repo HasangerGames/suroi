@@ -115,9 +115,9 @@ export class MinimapScene extends Phaser.Scene {
 
     switchToSmallMap(): void {
         if (this.cameras.main === undefined) return;
-        this.resizeSmallMap();
         this.isExpanded = false;
         this.cameras.main.setVisible(this.visible);
+        this.resizeSmallMap();
         $("#minimap-border").toggle(this.visible);
     }
 
