@@ -3,7 +3,7 @@ import { BitStream } from "@damienvesper/bit-buffer";
 import { type Vector } from "./vector";
 import { ObjectType } from "./objectType";
 
-import { type ObjectDefinitions } from "./objectDefinitions";
+import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
 import {
@@ -133,7 +133,7 @@ export class SuroiBitStream extends BitStream {
      * Write a game object type, minus the category, to the stream.
      * @param type The ObjectType
      */
-    writeObjectTypeNoCategory(type: ObjectType): void {
+    writeObjectTypeNoCategory<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(type: ObjectType<T, U>): void {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
         if (definitions !== undefined) {
             this.writeBits(type.idNumber, definitions.bitCount);
@@ -144,9 +144,9 @@ export class SuroiBitStream extends BitStream {
      * Read a game object type from stream.
      * @return The object type.
      */
-    readObjectType(): ObjectType {
-        const category: ObjectCategory = this.readBits(OBJECT_CATEGORY_BITS);
-        return this.readObjectTypeNoCategory(category);
+    readObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(): ObjectType<T, U> {
+        const category = this.readBits(OBJECT_CATEGORY_BITS) as T;
+        return this.readObjectTypeNoCategory<T, U>(category);
     }
 
     /**
@@ -154,7 +154,7 @@ export class SuroiBitStream extends BitStream {
      * @param category The object category
      * @return The object type
      */
-    readObjectTypeNoCategory(category: ObjectCategory): ObjectType {
+    readObjectTypeNoCategory<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T): ObjectType<T, U> {
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
 
         if (definitions !== undefined) {

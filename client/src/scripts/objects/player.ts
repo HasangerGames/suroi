@@ -247,7 +247,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override deserializeFull(stream: SuroiBitStream): void {
         this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
-        this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot, LootDefinition>;
+        this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);

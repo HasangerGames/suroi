@@ -230,7 +230,10 @@ export class UpdatePacket extends ReceivingPacket {
                     initialPosition.y * 20,
                     "main",
                     `${bulletSourceDef.ammoType}_trail.svg`
-                ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition)).setDepth(1);
+                )
+                    .setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition))
+                    .setDepth(1);
+
                 game.bullets.set(id, bullet);
                 scene.tweens.add({
                     targets: bullet,
@@ -264,10 +267,12 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                explosion(game,
+                explosion(
+                    game,
                     game.activePlayer.scene,
-                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion, ExplosionDefinition>,
-                    stream.readPosition());
+                    stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
+                    stream.readPosition()
+                );
             }
         }
 

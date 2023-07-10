@@ -187,7 +187,7 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as ObjectType<ObjectCategory.Loot, LootDefinition>;
+                    const item = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
 
                     this.weapons[i] = item;
                     container.children(".item-name").text(item.definition.name);
@@ -226,7 +226,8 @@ export class PlayerManager {
                     $(`#${item}-slot`).toggle(num > 0).removeClass("active");
                 }
             }
-            this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot) as typeof this.scope;
+
+            this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
 
             $(`#${this.scope.idString}-slot`).addClass("active");
         }
