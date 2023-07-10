@@ -9,13 +9,13 @@ import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
 
 import * as path from "path";
-import { createHash } from "crypto";
+import { createHash, randomBytes } from "crypto";
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
 }
 
-const ATLAS_HASH = createHash("sha256").digest("hex").slice(0, 8);
+const ATLAS_HASH = createHash("sha256").update(randomBytes(512)).digest("hex").slice(0, 8);
 
 const config: Configuration = {
     entry: {

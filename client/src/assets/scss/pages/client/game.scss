@@ -17,8 +17,8 @@
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
-        bottom: 10px;
-        right: 400px;
+        bottom: 130px;
+        right: 10px;
     }
 
     @media screen and (max-width: $screen_large) {
@@ -640,20 +640,43 @@
     bottom: 10px;
     right: 25%;
 
-    @media screen and (max-width: $screen_small) {
-        bottom: 125px;
-        right: 10px;
+    @media screen and (max-width: 1500px) {
+        bottom: 15px;
+        gap: 2px;
+        right: 45%;
+        transform: translateX(50%);
+    }
+
+    @media screen and (max-width: $screen_large) {
+        bottom: 4px;
+        flex-direction: row;
     }
 
     .inventory-slot {
         width: 55px;
         height: 78px;
 
+        @media screen and (max-width: 1500px) {
+            width: 40px;
+            height: 40px;
+
+            .item-name {
+                display: none;
+            }
+        }
+
         .item-image {
             width: 45px;
             height: 45px;
             align-self: flex-start;
             margin-top: 5px;
+
+            @media screen and (max-width: 1500px) {
+                width: 32px;
+                height: 32px;
+                align-self: center;
+                margin-top: 0;
+            }
         }
     }
 }

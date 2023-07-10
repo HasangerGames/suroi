@@ -270,7 +270,7 @@ export class GameScene extends Phaser.Scene {
 
                         // Autoloot
                         if (
-                            (lootDef.itemType === ItemType.Ammo || lootDef.itemType === ItemType.Healing) ||
+                            (lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
                             (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1]))
                         ) {
                             this.playerManager.interact();
