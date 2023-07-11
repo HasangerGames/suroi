@@ -6,7 +6,7 @@ import { type CollisionFilter, GameObject } from "../types/gameObject";
 import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
@@ -14,13 +14,11 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
-import { type BackpackDefinition, Backpacks } from "../../../common/src/definitions/backpacks";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { Helmets } from "../../../common/src/definitions/helmets";
-import { Vests } from "../../../common/src/definitions/vests";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -105,19 +103,19 @@ export class Loot extends GameObject {
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = Backpacks[inventory.backpackLevel].maxCapacity[idString];
+                const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Melee: {
                 return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
             }
             case ItemType.Armor: {
-                if (definition.armorType === ArmorType.Helmet) return definition.level > inventory.helmetLevel;
-                else if (definition.armorType === ArmorType.Vest) return definition.level > inventory.vestLevel;
+                if (definition.armorType === ArmorType.Helmet) return definition.level > (inventory.helmet?.definition.level ?? 0);
+                else if (definition.armorType === ArmorType.Vest) return definition.level > (inventory.vest?.definition.level ?? 0);
                 else return false;
             }
             case ItemType.Backpack: {
-                return definition.level > inventory.backpackLevel;
+                return definition.level > inventory.backpack.definition.level;
             }
             case ItemType.Scope: {
                 return inventory.items[this.type.idString] === 0;
@@ -142,14 +140,6 @@ export class Loot extends GameObject {
         let deleteItem = true;
         const definition = this.type.definition;
 
-        const updateEquipmentLevel = (equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void => {
-            const level = inventory[`${equipmentType}Level`];
-            if (level > 0) {
-                createNewItem(ObjectType.fromString(ObjectCategory.Loot, definitions[equipmentType === "backpack" ? level : level - 1].idString));
-            }
-            inventory[`${equipmentType}Level`] = (definition as ArmorDefinition | BackpackDefinition).level;
-        };
-
         switch (definition.itemType) {
             case ItemType.Melee: {
                 inventory.addOrReplaceWeapon(2, this.type.idString);
@@ -168,7 +158,7 @@ export class Loot extends GameObject {
             case ItemType.Ammo: {
                 const idString = this.type.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = Backpacks[inventory.backpackLevel].maxCapacity[idString];
+                const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
 
                 if (currentCount + this.count <= maxCapacity) {
                     inventory.items[idString] += this.count;
@@ -183,17 +173,23 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Armor: {
-                if (definition.armorType === ArmorType.Helmet) {
-                    updateEquipmentLevel("helmet", Helmets);
-                } else if (definition.armorType === ArmorType.Vest) {
-                    updateEquipmentLevel("vest", Vests);
+                const item = this.type.definition as ArmorDefinition;
+                switch (item.armorType) {
+                    case ArmorType.Helmet:
+                        if (player.inventory.helmet) createNewItem(player.inventory.helmet);
+                        player.inventory.helmet = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
+                        break;
+                    case ArmorType.Vest:
+                        if (player.inventory.vest) createNewItem(player.inventory.vest);
+                        player.inventory.vest = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
                 }
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Backpack: {
-                updateEquipmentLevel("backpack", Backpacks);
+                if (player.inventory.backpack.definition.level > 0) createNewItem(player.inventory.backpack);
+                player.inventory.backpack = this.type as ObjectType<ObjectCategory.Loot, BackpackDefinition>;
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;

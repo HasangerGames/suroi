@@ -13,8 +13,9 @@ import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { Backpacks } from "../../../common/src/definitions/backpacks";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 
 /**
  * A class representing a player's inventory
@@ -41,9 +42,9 @@ export class Inventory {
         "15x_scope": 0
     };
 
-    helmetLevel = 0;
-    vestLevel = 0;
-    backpackLevel = 0;
+    helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
+    vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
+    backpack: ObjectType<ObjectCategory.Loot, BackpackDefinition> = ObjectType.fromString(ObjectCategory.Loot, "bag");
 
     private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
@@ -270,7 +271,7 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = this.items[ammoType] - Backpacks[this.backpackLevel].maxCapacity[ammoType];
+            const overAmount = this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
@@ -426,7 +427,7 @@ export class Inventory {
         stream.writeBoolean(this.owner.dirty.inventory);
         if (this.owner.dirty.inventory) {
             this.owner.dirty.inventory = false;
-            stream.writeBits(this.backpackLevel, 2);
+            stream.writeBits(this.backpack.definition.level, 2);
             for (const count of Object.values(this.items)) {
                 stream.writeBoolean(count > 0); // Has item
                 if (count > 0) stream.writeUint8(count);

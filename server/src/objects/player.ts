@@ -25,10 +25,7 @@ import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
-import { Helmets } from "../../../common/src/definitions/helmets";
-import { Vests } from "../../../common/src/definitions/vests";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { Backpacks } from "../../../common/src/definitions/backpacks";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -370,11 +367,11 @@ export class Player extends GameObject {
         if (this.invulnerable) return;
 
         // Calculate damage amount
-        if (this.inventory.helmetLevel > 0) {
-            amount -= amount * Helmets[this.inventory.helmetLevel - 1].damageReductionPercentage;
+        if (this.inventory.helmet) {
+            amount -= amount * this.inventory.helmet.definition.damageReductionPercentage;
         }
-        if (this.inventory.vestLevel > 0) {
-            amount -= amount * Vests[this.inventory.vestLevel - 1].damageReductionPercentage;
+        if (this.inventory.vest) {
+            amount -= amount * this.inventory.vest.definition.damageReductionPercentage;
         }
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
@@ -425,7 +422,6 @@ export class Player extends GameObject {
             }
             this.game.aliveCountDirty = true;
             this.adrenaline = 0;
-            this.inventory.helmetLevel = this.inventory.vestLevel = this.inventory.backpackLevel = 0;
             this.dirty.inventory = true;
             this.action?.cancel();
 
@@ -455,9 +451,12 @@ export class Player extends GameObject {
             }
 
             // Drop equipment
-            this.dropEquipment("helmet", Helmets);
-            this.dropEquipment("vest", Vests);
-            this.dropEquipment("backpack", Backpacks);
+            if (this.inventory.helmet) this.game.addLoot(this.inventory.helmet, this.position);
+            if (this.inventory.vest) this.game.addLoot(this.inventory.vest, this.position);
+            if (this.inventory.backpack.definition.level > 0) this.game.addLoot(this.inventory.backpack, this.position);
+
+            this.inventory.helmet = this.inventory.vest = undefined;
+            this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
 
             // Create death marker
             const deathMarker = new DeathMarker(this);
@@ -468,13 +467,6 @@ export class Player extends GameObject {
             if (!this.disconnected) {
                 this.sendPacket(new GameOverPacket(this, false));
             }
-        }
-    }
-
-    dropEquipment(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
-        const level = this.inventory[`${equipmentType}Level`];
-        if (level > 0) {
-            this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, definitions[equipmentType === "backpack" ? level : level - 1].idString), this.position, 1);
         }
     }
 
@@ -494,8 +486,8 @@ export class Player extends GameObject {
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.invulnerable);
         stream.writeObjectType(this.activeItem.type);
-        stream.writeBits(this.inventory.helmetLevel, 2);
-        stream.writeBits(this.inventory.vestLevel, 2);
-        stream.writeBits(this.inventory.backpackLevel, 2);
+        stream.writeBits(this.inventory.helmet?.definition.level ?? 0, 2);
+        stream.writeBits(this.inventory.vest?.definition.level ?? 0, 2);
+        stream.writeBits(this.inventory.backpack.definition.level, 2);
     }
 }
