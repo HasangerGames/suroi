@@ -1,6 +1,7 @@
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
+import { AnyTxtRecord } from "dns";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
@@ -49,6 +50,23 @@ export type GunDefinition = ItemDefinition & {
         // note: the time between bursts is burstCooldown, and the time between shots within a burst is cooldown
     }
 });
+
+export const GunIndex: any = [
+    ["ak47", 0],
+    ["m3k", 1],
+    ["m37", 2],
+    ["hp18", 3],
+    ["mosin", 4],
+    ["tango_51", 5],
+    ["g19", 6],
+    ["saf_200", 7],
+    ["m16a4", 8],
+    ["micro_uzi", 9],
+    ["mcx_spear", 10],
+    ["lewis_gun", 11],
+    ["deathray", 12]
+]
+
 
 export const Guns: GunDefinition[] = [
     {

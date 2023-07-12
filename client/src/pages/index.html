@@ -87,37 +87,6 @@
             <a class="featured-content" id="youtube-featured-content" href="" target="_blank">
               <img class="featured-logo" src="/img/misc/youtube-icon.svg" alt="YouTube icon">
               <span class="featured-name" id="youtube-feature-name"></span>
-              <script>
-                function getYoutuber() {
-                      const youtubers = [
-                      {
-                      "name": "Summit",
-                      "youtube_link": "https://www.youtube.com/@SummitNewsNetwork"
-                      },
-                      {
-                          "name": "123OP",
-                          "youtube_link": "https://www.youtube.com/@123op."
-                      },
-                      {
-                          "name": "Gonestar",
-                          "youtube_link": "https://www.youtube.com/@gonester"
-                        },
-                         {
-                          "name": "TEAMFIGHTER 27",
-                          "youtube_link": "https://www.youtube.com/@teamfighter279"
-                        },
-
-                       ]
-                    function getRandomInt(max) {
-                    return Math.floor(Math.random() * max);
-                     }
-                     let youtuber_id = getRandomInt(youtubers.length);
-
-                     document.getElementById("youtube-feature-name").innerText = youtubers[youtuber_id].name;
-                     document.getElementById("youtube-featured-content").href = youtubers[youtuber_id].youtube_link;
-                }
-                getYoutuber();
-              </script>
             </a>
           </div>
           <div class="featured-container">
