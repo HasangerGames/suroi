@@ -90,30 +90,10 @@
             </a>
           </div>
           <div class="featured-container">
-            <p class="featured-heading">Featured Streamer</p>
+            <p class="featured-heading">Featured Streamr</p>
             <a class="featured-content" id="twitch-featured-content" target="_blank" href="">
               <img class="featured-logo" src="/img/misc/twitch-icon.svg" alt="Twitch icon">
               <span class="featured-name" id="twitch-featured-name"></span>
-              <script>
-                function getTwitchStreamer() {
-                  const TwitchStreamers = [
-                    {
-                      "name": "iMoRTaL_Mafia",
-                      "twitch_link": "https://www.twitch.tv/videos/1854751139"
-                    }
-                  ]
-
-                  function getRandomInt(max) {
-                    return Math.floor(Math.random() * max);
-                  }
-
-                  let TwitchStreamer_id = getRandomInt(TwitchStreamers.length);
-
-                  document.getElementById("twitch-featured-name").innerText = TwitchStreamers[TwitchStreamer_id].name;
-                  document.getElementById("twitch-featured-content").href = TwitchStreamers[TwitchStreamer_id].twitch_link;
-                }
-                getTwitchStreamer();
-              </script>
             </a>
           </div>
         </div>
