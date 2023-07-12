@@ -35,13 +35,13 @@ export class MinimapScene extends Phaser.Scene {
         this.renderTexture = this.add.renderTexture(0, 0, MINIMAP_GRID_WIDTH, MINIMAP_GRID_HEIGHT).setOrigin(0, 0);
 
         // Create gas rectangle and mask
-        this.gasCircle = this.add.circle(MAP_WIDTH / 2 * MINIMAP_SCALE, MAP_HEIGHT / 2 * MINIMAP_SCALE, 512 * MINIMAP_SCALE, 0x000000, 0);
+        this.gasCircle = this.add.circle(MAP_WIDTH / 2 * MINIMAP_SCALE, MAP_HEIGHT / 2 * MINIMAP_SCALE, 750 * MINIMAP_SCALE, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
 
         this.gasRect = this.add.rectangle(MAP_WIDTH / 2 * MINIMAP_SCALE,
             MAP_HEIGHT / 2 * MINIMAP_SCALE,
-            (MAP_WIDTH + 250) * MINIMAP_SCALE,
-            (MAP_HEIGHT + 250) * MINIMAP_SCALE,
+            (MAP_WIDTH * 1.2) * MINIMAP_SCALE,
+            (MAP_HEIGHT * 1.3) * MINIMAP_SCALE,
             GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
 
         this.scale.on("resize", (): void => {

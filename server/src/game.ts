@@ -115,11 +115,11 @@ export class Game {
         percentage: 0,
         oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        oldRadius: 512,
-        newRadius: 512,
+        oldRadius: GasStages[0].oldRadius,
+        newRadius: GasStages[0].newRadius,
         currentPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        currentRadius: 512,
-        dps: 0,
+        currentRadius: GasStages[0].oldRadius,
+        dps: 20,
         ticksSinceLastDamage: 0
     };
 
