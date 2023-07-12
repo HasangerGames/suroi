@@ -195,6 +195,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "gold_rock",
             name: "Gold Rock",
             material: "stone",
+            hideOnMap: true,
             health: 250,
             scale: {
                 spawnMin: 0.9,
