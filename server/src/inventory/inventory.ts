@@ -430,7 +430,7 @@ export class Inventory {
             stream.writeBits(this.backpack.definition.level, 2);
             for (const count of Object.values(this.items)) {
                 stream.writeBoolean(count > 0); // Has item
-                if (count > 0) stream.writeUint8(count);
+                if (count > 0) stream.writeBits(count, 9);
             }
             stream.writeObjectTypeNoCategory(this.scope);
         }

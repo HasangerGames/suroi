@@ -215,7 +215,7 @@ export class PlayerManager {
         // Inventory dirty
         if (stream.readBoolean()) {
             const backpackLevel = stream.readBits(2);
-            const readInventoryCount = (): number => stream.readBoolean() ? stream.readUint8() : 0;
+            const readInventoryCount = (): number => stream.readBoolean() ? stream.readBits(9) : 0;
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
