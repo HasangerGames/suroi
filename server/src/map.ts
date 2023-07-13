@@ -51,7 +51,6 @@ export class Map {
             this.generateObstacles("gauze_crate", 1);
             this.generateObstacles("cola_crate", 1);
             this.generateObstacles("melee_crate", 1);
-            this.generateObstacles("deathray_crate", 1, 0.000001);
             this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here

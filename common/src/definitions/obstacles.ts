@@ -147,7 +147,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeCrate("aegis_crate", "AEGIS Crate", "none", true),
         makeSpecialCrate("gauze_crate", "Gauze Crate"),
         makeSpecialCrate("cola_crate", "Cola Crate"),
-        makeSpecialCrate("deathray_crate", "Death Ray Crate"),
         makeSpecialCrate("melee_crate", "Melee Crate"),
         {
             idString: "barrel",
