@@ -50,7 +50,6 @@ export type GunDefinition = ItemDefinition & {
     }
 });
 
-
 export const Guns: GunDefinition[] = [
     {
         idString: "ak47",

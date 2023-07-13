@@ -51,7 +51,7 @@ $((): void => {
             name: "Gonester",
             link: "https://www.youtube.com/@gonester"
         },
-            {
+        {
             name: "TEAMFIGHTER 27",
             link: "https://www.youtube.com/@teamfighter279"
         }
@@ -59,7 +59,7 @@ $((): void => {
 
     const youtuber = Youtubers[Math.floor(Math.random() * Youtubers.length)];
     $("#youtube-feature-name").text(youtuber.name);
-    $("#youtube-featured-content").attr('href', youtuber.link);
+    $("#youtube-featured-content").attr("href", youtuber.link);
 
     const TwitchStreamers = [
         {
@@ -70,7 +70,7 @@ $((): void => {
     const streamer = TwitchStreamers[Math.floor(Math.random() * TwitchStreamers.length)];
 
     $("#twitch-featured-name").text(streamer.name);
-    $("#twitch-featured-content").attr('href', streamer.link);
+    $("#twitch-featured-content").attr("href", streamer.link);
 
     $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
     $(window).on("resize", () => {
