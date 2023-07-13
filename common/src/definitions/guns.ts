@@ -158,7 +158,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         bulletCount: 20,
         shotSpread: 30,
-        length: 12,
+        length: 11,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
