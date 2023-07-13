@@ -77,8 +77,8 @@ export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
-export const MAP_WIDTH = 720;
-export const MAP_HEIGHT = 720;
+export const MAP_WIDTH = 1024;
+export const MAP_HEIGHT = 1024;
 
 export const PLAYER_RADIUS = 2.25;
 

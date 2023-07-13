@@ -320,9 +320,6 @@ export function setupInputs(game: Game): void {
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-            if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
-                game.activePlayer.container.rotation = game.playerManager.movementAngle;
-            }
             game.playerManager.movement.moving = true;
             game.playerManager.dirty.inputs = true;
         });
@@ -339,6 +336,9 @@ export function setupInputs(game: Game): void {
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+            if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
+                game.activePlayer.container.setRotation(game.playerManager.rotation);
+            }
             game.playerManager.turning = true;
             game.playerManager.attacking = data.distance > 50;
         });

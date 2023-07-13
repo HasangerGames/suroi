@@ -137,7 +137,7 @@ app.ws("/play", {
 
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
-            if (bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
+            if (Config.bannedIPs.includes(ip) || bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
                 if (!bannedIPs.includes(ip)) bannedIPs.push(ip);
                 res.endWithoutBody(0, true);
                 log(`Connection blocked: ${ip}`);

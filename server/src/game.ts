@@ -38,6 +38,7 @@ import { Obstacle } from "./objects/obstacle";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 
 export class Game {
     id: number;
@@ -48,7 +49,7 @@ export class Game {
      * A cached map packet
      * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
      */
-    mapPacket: MapPacket;
+    private readonly mapPacketStream: SuroiBitStream;
 
     world: World;
 
@@ -114,11 +115,11 @@ export class Game {
         percentage: 0,
         oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        oldRadius: 512,
-        newRadius: 512,
+        oldRadius: GasStages[0].oldRadius,
+        newRadius: GasStages[0].newRadius,
         currentPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        currentRadius: 512,
-        dps: 0,
+        currentRadius: GasStages[0].oldRadius,
+        dps: 20,
         ticksSinceLastDamage: 0
     };
 
@@ -182,7 +183,9 @@ export class Game {
         // Generate map
         this.map = new Map(this);
 
-        this.mapPacket = new MapPacket(this);
+        const mapPacket = new MapPacket(this);
+        this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
+        mapPacket.serialize(this.mapPacketStream)
 
         this.allowJoin = true;
 
@@ -452,7 +455,7 @@ export class Game {
         player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
-        player.sendPacket(this.mapPacket);
+        player.sendData(this.mapPacketStream);
 
         setTimeout(() => {
             player.disableInvulnerability();
