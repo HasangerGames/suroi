@@ -272,9 +272,10 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         const minimap = scene.scene.get("minimap") as MinimapScene;
-
+         
+        let gas = stream.readBoolean();
         // Gas
-        if (stream.readBoolean()) {
+        if (gas) {
             game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
             game.gas.oldPosition = stream.readPosition();
@@ -282,9 +283,13 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             if (game.gas.state === GasState.Waiting) {
+                $("#gas-msg-info").text("");
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
                 // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
+            }
+            else {
+                $("#gas-msg-info").text("The fog is coming...");
             }
         }
 
