@@ -49,7 +49,7 @@ $((): void => {
                           "youtube_link": "https://www.youtube.com/@123op."
                       },
                       {
-                          "name": "Gonestar",
+                          "name": "Gonester",
                           "youtube_link": "https://www.youtube.com/@gonester"
                         },
                          {
