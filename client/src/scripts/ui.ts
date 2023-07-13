@@ -1,3 +1,4 @@
+
 import $ from "jquery";
 
 import core from "./core";
@@ -36,6 +37,56 @@ $((): void => {
 
     const body = $(document.body);
     const usernameField = $("#username-input");
+
+    function getYoutuber() {
+                      const youtubers = [
+                      {
+                      "name": "Summit",
+                      "youtube_link": "https://www.youtube.com/@SummitNewsNetwork"
+                      },
+                      {
+                          "name": "123OP",
+                          "youtube_link": "https://www.youtube.com/@123op."
+                      },
+                      {
+                          "name": "Gonestar",
+                          "youtube_link": "https://www.youtube.com/@gonester"
+                        },
+                         {
+                          "name": "TEAMFIGHTER 27",
+                          "youtube_link": "https://www.youtube.com/@teamfighter279"
+                        },
+
+                       ]
+                    function getRandomInt(max: number) {
+                    return Math.floor(Math.random() * max);
+                     }
+                     let youtuber_id = getRandomInt(youtubers.length);
+
+                     $("#youtube-feature-name").append(document.createTextNode(youtubers[youtuber_id].name));
+                     $("#youtube-featured-content").attr('href', `${youtubers[youtuber_id].youtube_link}`);
+                }
+    getYoutuber();
+
+    function getTwitchStreamer() {
+                  const TwitchStreamers = [
+                    {
+                      "name": "iMoRTaL_Mafia",
+                      "twitch_link": "https://www.twitch.tv/videos/1854751139"
+                    }
+                  ]
+
+                  function getRandomInt(max: number) {
+                    return Math.floor(Math.random() * max);
+                  }
+
+                  let TwitchStreamer_id = getRandomInt(TwitchStreamers.length);
+
+                  $("#twitch-featured-name").append(document.createTextNode(TwitchStreamers[TwitchStreamer_id].name));
+                  $("#twitch-featured-content").attr('href', `${TwitchStreamers[TwitchStreamer_id].twitch_link}`);
+                }
+    getTwitchStreamer();
+    
 
     $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
     $(window).on("resize", () => {
