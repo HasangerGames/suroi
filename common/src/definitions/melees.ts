@@ -61,16 +61,16 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 125,
             randomFist: false,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(75, 20),
-            useRight: v(38, -35)
+            left: v(40, 20),
+            right: v(50, -30),
+            useLeft: v(60, -50),
+            useRight: v(-10, -50)
         },
         image: {
-            position: v(100, 50),
-            usePosition: v(115, -15),
-            angle: 60,
-            useAngle: 0,
+            position: v(45, 30),
+            usePosition: v(50, -50),
+            angle: 140,
+            useAngle: 45,
             lootScale: 0.65
         }
     },
