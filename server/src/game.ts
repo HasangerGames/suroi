@@ -383,6 +383,11 @@ export class Game {
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
                     const gameOverPacket = new GameOverPacket(lastManStanding, true);
+                    lastManStanding.movement.up = false;
+                    lastManStanding.movement.down = false;
+                    lastManStanding.movement.left = false;
+                    lastManStanding.movement.right = false;
+                    lastManStanding.attacking = false;
                     lastManStanding.sendPacket(gameOverPacket);
                 }
 
