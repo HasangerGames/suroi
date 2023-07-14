@@ -1,7 +1,6 @@
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
-import { AnyTxtRecord } from "dns";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
@@ -51,7 +50,6 @@ export type GunDefinition = ItemDefinition & {
     }
 });
 
-
 export const Guns: GunDefinition[] = [
     {
         idString: "ak47",
@@ -75,8 +73,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(120, 2) },
         ballistics: {
-            damage: 12,
-            obstacleMultiplier: 2,
+            damage: 13.5,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 125
@@ -89,8 +87,8 @@ export const Guns: GunDefinition[] = [
         ammoType: "12g",
         ammoSpawnAmount: 18,
         capacity: 9,
-        reloadTime: 0.8,
-        cooldown: 750,
+        reloadTime: 0.5,
+        cooldown: 700,
         switchCooldown: 500,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
@@ -107,7 +105,7 @@ export const Guns: GunDefinition[] = [
         singleReload: true,
         ballistics: {
             damage: 7,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 80
@@ -118,10 +116,10 @@ export const Guns: GunDefinition[] = [
         name: "Model 37",
         itemType: ItemType.Gun,
         ammoType: "12g",
-        ammoSpawnAmount: 10,
+        ammoSpawnAmount: 15,
         capacity: 5,
-        reloadTime: 1,
-        cooldown: 1000,
+        reloadTime: 0.75,
+        cooldown: 925,
         switchCooldown: 500,
         recoilMultiplier: 0.5,
         recoilDuration: 550,
@@ -138,7 +136,7 @@ export const Guns: GunDefinition[] = [
         singleReload: true,
         ballistics: {
             damage: 10,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 64
@@ -149,9 +147,9 @@ export const Guns: GunDefinition[] = [
         name: "HP18",
         itemType: ItemType.Gun,
         ammoType: "12g",
-        ammoSpawnAmount: 20,
+        ammoSpawnAmount: 15,
         capacity: 5,
-        reloadTime: 0.85,
+        reloadTime: 0.725,
         singleReload: true,
         cooldown: 300,
         switchCooldown: 400,
@@ -160,7 +158,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         bulletCount: 20,
         shotSpread: 30,
-        length: 12,
+        length: 11,
         fists: {
             left: v(65, 0),
             right: v(130, -6),
@@ -169,7 +167,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(115, 3) },
         ballistics: {
             damage: 3,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 48
@@ -182,7 +180,7 @@ export const Guns: GunDefinition[] = [
         ammoType: "762mm",
         ammoSpawnAmount: 20,
         capacity: 5,
-        reloadTime: 1,
+        reloadTime:  0.85,
         singleReload: true,
         cooldown: 1750,
         switchCooldown: 750,
@@ -199,7 +197,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(105, 4) },
         ballistics: {
-            damage: 60,
+            damage: 68,
             obstacleMultiplier: 2,
             speed: 0.35,
             speedVariance: 0,
@@ -259,7 +257,7 @@ export const Guns: GunDefinition[] = [
         reloadTime: 2,
         ballistics: {
             damage: 6.5,
-            obstacleMultiplier: 2,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 60
@@ -272,13 +270,13 @@ export const Guns: GunDefinition[] = [
         ammoType: "9mm",
         ammoSpawnAmount: 90,
         capacity: 30,
-        reloadTime: 2,
-        cooldown: 65,
+        reloadTime: 1.8,
+        cooldown: 30,
         switchCooldown: 300,
         recoilMultiplier: 0.75,
         recoilDuration: 750,
         fireMode: FireMode.Burst,
-        shotSpread: 8,
+        shotSpread: 4,
         length: 9,
         fists: {
             left: v(65, 0),
@@ -287,15 +285,15 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 14,
-            obstacleMultiplier: 2,
+            damage: 14.5,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 80
         },
         burstProperties: {
             shotsPerBurst: 3,
-            burstCooldown: 500
+            burstCooldown: 300
         }
     },
     {
@@ -305,8 +303,8 @@ export const Guns: GunDefinition[] = [
         ammoType: "556mm",
         ammoSpawnAmount: 90,
         capacity: 30,
-        reloadTime: 2.5,
-        cooldown: 90,
+        reloadTime: 2.2,
+        cooldown: 40,
         switchCooldown: 300,
         recoilMultiplier: 0.7,
         recoilDuration: 900,
@@ -320,15 +318,15 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 24,
-            obstacleMultiplier: 2,
+            damage: 19,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 96
         },
         burstProperties: {
             shotsPerBurst: 3,
-            burstCooldown: 600
+            burstCooldown: 400
         }
     },
     {
@@ -338,8 +336,8 @@ export const Guns: GunDefinition[] = [
         ammoType: "9mm",
         ammoSpawnAmount: 96,
         capacity: 32,
-        reloadTime: 2,
-        cooldown: 50,
+        reloadTime: 1.75,
+        cooldown: 40,
         switchCooldown: 300,
         recoilMultiplier: 0.75,
         recoilDuration: 60,
@@ -353,8 +351,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(88, 0) },
         ballistics: {
-            damage: 7,
-            obstacleMultiplier: 2,
+            damage: 9,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 64
@@ -365,10 +363,10 @@ export const Guns: GunDefinition[] = [
         name: "MCX Spear",
         itemType: ItemType.Gun,
         ammoType: "762mm",
-        ammoSpawnAmount: 60,
+        ammoSpawnAmount: 80,
         capacity: 20,
-        reloadTime: 2.5,
-        cooldown: 120,
+        reloadTime: 2.75,
+        cooldown: 87.5,
         switchCooldown: 400,
         recoilMultiplier: 0.65,
         recoilDuration: 240,
@@ -382,8 +380,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 14,
-            obstacleMultiplier: 2,
+            damage: 15,
+            obstacleMultiplier: 1,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 128
@@ -412,7 +410,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(128, 0) },
         ballistics: {
             damage: 16,
-            obstacleMultiplier: 3,
+            obstacleMultiplier: 2.5,
             speed: 0.35,
             speedVariance: 0,
             maxDistance: 128

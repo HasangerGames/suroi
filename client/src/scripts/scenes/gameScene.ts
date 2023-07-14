@@ -131,7 +131,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create gas rectangle and mask
-        this.gasCircle = this.add.circle(GRID_WIDTH, GRID_HEIGHT, 750*20, 0x000000, 0);
+        this.gasCircle = this.add.circle(GRID_WIDTH, GRID_HEIGHT, 750 * 20, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
         this.gasRect = this.add.rectangle(0, 0, this.game.canvas.width * 2, this.game.canvas.height * 2, GAS_COLOR, GAS_ALPHA)
             .setDepth(10).setMask(this.gasMask).setScrollFactor(0, 0).setOrigin(0.25, 0.25);

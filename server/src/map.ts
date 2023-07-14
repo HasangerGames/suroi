@@ -11,13 +11,14 @@ import {
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
-import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { Obstacles, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Box, Vec2 } from "planck";
 import { Scopes } from "../../common/src/definitions/scopes";
+import { Loots } from "../../common/src/definitions/loots";
 
 export class Map {
     game: Game;
@@ -51,15 +52,38 @@ export class Map {
             this.generateObstacles("gauze_crate", 1);
             this.generateObstacles("cola_crate", 1);
             this.generateObstacles("melee_crate", 1);
-            this.generateObstacles("deathray_crate", 1, 0.000001);
             this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here
-            this.obstacleTest("regular_crate", Vec2(363, 363), 0, 1, 0);
-            this.obstacleTest("regular_crate", Vec2(373, 363), Math.PI / 2, 1, 0);
-            this.obstacleTest("regular_crate", Vec2(383, 363), Math.PI, 1, 0);
-            this.obstacleTest("regular_crate", Vec2(393, 363), -Math.PI / 2, 1, 0);
+
+            // Generate all Obstacles
+            const obstaclePos = Vec2(this.width / 2 - 140, this.height / 2);
+
+            for (const obstacle of Obstacles.definitions) {
+                for (let i = 0; i < (obstacle.variations ?? 1); i++) {
+                    this.obstacleTest(obstacle.idString, obstaclePos.clone(), 0, 1, i as Variation);
+
+                    obstaclePos.x += 20;
+                    if (obstaclePos.x > this.width / 2 - 20) {
+                        obstaclePos.x = this.width / 2 - 140;
+                        obstaclePos.y -= 20;
+                    }
+                }
+            }
+
+            // Generate all Loots
+            const itemPos = Vec2(this.width / 2, this.height / 2);
+            for (const item of Loots.definitions) {
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 255);
+
+                itemPos.x += 10;
+                if (itemPos.x > this.width / 2 + 100) {
+                    itemPos.x = this.width / 2;
+                    itemPos.y -= 10;
+                }
+            }
         }
+
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
 
         // Calculate visible objects
