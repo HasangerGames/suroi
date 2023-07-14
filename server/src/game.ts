@@ -185,7 +185,7 @@ export class Game {
 
         const mapPacket = new MapPacket(this);
         this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
-        mapPacket.serialize(this.mapPacketStream)
+        mapPacket.serialize(this.mapPacketStream);
 
         this.allowJoin = true;
 

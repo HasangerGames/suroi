@@ -49,13 +49,6 @@ export const LootTables: Record<string, LootTable> = {
             }
         ]
     },
-    deathray_crate: {
-        min: 1,
-        max: 1,
-        loot: [
-            { item: "deathray", weight: 1 }
-        ]
-    },
     melee_crate: {
         min: 2,
         max: 2,
