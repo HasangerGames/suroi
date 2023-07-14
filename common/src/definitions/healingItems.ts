@@ -17,7 +17,7 @@ export const HealingItems: HealingItemDefinition[] = [
         itemType: ItemType.Healing,
         healType: HealType.Health,
         restoreAmount: 15,
-        useTime: 2,
+        useTime: 3,
         useText: "Applying"
     },
     {
@@ -25,8 +25,8 @@ export const HealingItems: HealingItemDefinition[] = [
         name: "Medikit",
         itemType: ItemType.Healing,
         healType: HealType.Health,
-        restoreAmount: 75,
-        useTime: 5,
+        restoreAmount: 100,
+        useTime: 6,
         useText: "Using"
     },
     {
