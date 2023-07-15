@@ -30,6 +30,7 @@ import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 
 const showMeleeDebugCircle = false;
 
@@ -361,6 +362,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const definition = definitions[equipmentType === "backpack" ? level : level - 1];
             container.children(".item-name").text(`Lvl. ${level}`);
             container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
+
+            let itemTooltip = definition.name;
+            if (equipmentType === "helmet" || equipmentType === "vest") {
+                itemTooltip += `<br>Reduces ${(definition as ArmorDefinition).damageReductionPercentage * 100}% damage`;
+            }
+            container.children(".item-tooltip").html(itemTooltip);
         }
         container.css("visibility", level > 0 ? "visible" : "hidden");
     }
