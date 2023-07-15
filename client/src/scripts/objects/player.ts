@@ -361,10 +361,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const definition = definitions[equipmentType === "backpack" ? level : level - 1];
             container.children(".item-name").text(`Lvl. ${level}`);
             container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
-            container.show();
-        } else {
-            container.hide();
         }
+        container.css("visibility", level > 0 ? "visible" : "hidden");
     }
 
     destroy(): void {
