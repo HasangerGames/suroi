@@ -9,12 +9,7 @@ import { Loot } from "../../objects/loot";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import {
-    GasState,
-    ObjectCategory,
-    PLAYER_ACTIONS_BITS,
-    PlayerActions
-} from "../../../../../common/src/constants";
+import { GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -272,24 +267,35 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         const minimap = scene.scene.get("minimap") as MinimapScene;
-         
-        let gas = stream.readBoolean();
+
         // Gas
-        if (gas) {
+        if (stream.readBoolean()) {
             game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
             game.gas.oldPosition = stream.readPosition();
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
+            let gasMessage: string | undefined;
             if (game.gas.state === GasState.Waiting) {
-                $("#gas-msg-info").text("");
+                gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
                 // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
+            } else if (game.gas.state === GasState.Advancing) {
+                gasMessage = "Toxic gas is advancing! Move to the safe zone";
+            } else if (game.gas.state === GasState.Inactive) {
+                gasMessage = "Waiting for players...";
             }
-            else {
-                $("#gas-msg-info").text("The fog is coming...");
+            if (game.gas.initialDuration !== 0) {
+                $("#gas-msg-info").text(gasMessage ?? "");
+                $("#gas-msg").fadeIn();
+                if (game.gas.state === GasState.Inactive) {
+                    $("#gas-msg-info").css("color", "white");
+                } else {
+                    $("#gas-msg-info").css("color", "cyan");
+                    setTimeout(() => $("#gas-msg").fadeOut(1000), 5000);
+                }
             }
         }
 
