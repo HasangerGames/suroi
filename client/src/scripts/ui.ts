@@ -1,3 +1,4 @@
+
 import $ from "jquery";
 
 import core from "./core";
@@ -36,6 +37,40 @@ $((): void => {
 
     const body = $(document.body);
     const usernameField = $("#username-input");
+
+    const Youtubers = [
+        {
+            name: "Summit",
+            link: "https://www.youtube.com/@SummitNewsNetwork"
+        },
+        {
+            name: "123OP",
+            link: "https://www.youtube.com/@123op."
+        },
+        {
+            name: "Gonester",
+            link: "https://www.youtube.com/@gonester"
+        },
+        {
+            name: "TEAMFIGHTER 27",
+            link: "https://www.youtube.com/@teamfighter279"
+        }
+    ];
+
+    const youtuber = Youtubers[Math.floor(Math.random() * Youtubers.length)];
+    $("#youtube-feature-name").text(youtuber.name);
+    $("#youtube-featured-content").attr("href", youtuber.link);
+
+    const TwitchStreamers = [
+        {
+            name: "iMoRTaL_Mafia",
+            link: "https://www.twitch.tv/videos/1854751139"
+        }
+    ];
+    const streamer = TwitchStreamers[Math.floor(Math.random() * TwitchStreamers.length)];
+
+    $("#twitch-featured-name").text(streamer.name);
+    $("#twitch-featured-content").attr("href", streamer.link);
 
     $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
     $(window).on("resize", () => {

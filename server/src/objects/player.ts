@@ -279,8 +279,8 @@ export class Player extends GameObject {
         this.updateVisibleObjects();
     }
 
-    get activeItemDefinition(): MeleeDefinition | GunDefinition | undefined {
-        return this.activeItem?.type.definition as MeleeDefinition | GunDefinition;
+    get activeItemDefinition(): MeleeDefinition | GunDefinition {
+        return this.activeItem.type.definition as MeleeDefinition | GunDefinition;
     }
 
     give(idString: string): void {

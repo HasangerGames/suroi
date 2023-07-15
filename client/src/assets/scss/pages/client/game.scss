@@ -445,6 +445,28 @@
     }
 }
 
+#gas-msg {
+        text-align: center;
+        position: absolute;
+        top: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+
+        @media screen and (max-width: $screen_large) {
+            top: 100px;
+        }
+
+        #gas-msg-info {
+            font-weight: bold;
+            font-size: 36px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+
+            @media screen and (max-width: $screen_large) {
+                font-size: 14px;
+            }
+        }
+}
+
 .inventory-container {
 
     display: flex;

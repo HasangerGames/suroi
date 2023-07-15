@@ -23,6 +23,8 @@ export class GunItem extends InventoryItem {
 
     ignoreSwitchCooldown = false;
 
+    private readonly _reloadTimeoutID: NodeJS.Timeout | undefined;
+
     /**
      * Constructs a new gun
      * @param idString The `idString` of a `GunDefinition` in the item schema that this object is to base itself off of
@@ -63,7 +65,6 @@ export class GunItem extends InventoryItem {
                 owner.animation.seq = !owner.animation.seq;
             }
 
-            this.reload();
             this._shots = 0;
             return;
         }
@@ -86,7 +87,7 @@ export class GunItem extends InventoryItem {
 
         this._lastUse = owner.game.now;
 
-        const spread = degreesToRadians(definition.shotSpread);
+        const spread = degreesToRadians(definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0));
 
         let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
@@ -119,7 +120,7 @@ export class GunItem extends InventoryItem {
         }
 
         if (this.ammo <= 0) {
-            this.reload();
+            setTimeout(this.reload.bind(this), 500);
             this._shots = 0;
             return;
         }
@@ -128,16 +129,16 @@ export class GunItem extends InventoryItem {
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
             this.owner.activeItem === this
         ) {
-            setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
+            setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
         }
     }
 
     override useItem(): void {
-        let attackCooldown = this.definition.cooldown;
+        let attackCooldown = this.definition.fireDelay;
         if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
         if (
             this.owner.game.now - this._lastUse > attackCooldown &&
-            (this.owner.game.now - this._switchDate > this.definition.switchCooldown || (this.definition.canQuickswitch ?? this.ignoreSwitchCooldown))
+            (this.owner.game.now - this._switchDate > this.definition.switchDelay || (this.definition.canQuickswitch ?? this.ignoreSwitchCooldown))
         ) {
             this.ignoreSwitchCooldown = false;
             this._useItemNoDelayCheck(true);

@@ -185,7 +185,7 @@ export class Game {
 
         const mapPacket = new MapPacket(this);
         this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
-        mapPacket.serialize(this.mapPacketStream)
+        mapPacket.serialize(this.mapPacketStream);
 
         this.allowJoin = true;
 
@@ -289,6 +289,7 @@ export class Game {
                     }
                 }
                 if (player.action) speed *= player.action.speedMultiplier;
+                speed *= player.activeItemDefinition.speedMultiplier;
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
@@ -303,7 +304,10 @@ export class Game {
                 }
 
                 // Regenerate health
-                player.health += player.adrenaline * 0.00039;
+                if(player.adrenaline >= 87.5) player.health += 0.166;
+                else if(player.adrenaline >= 50) player.health += 0.158;
+                else if(player.adrenaline >= 25) player.health += 0.124;
+                else if(player.adrenaline > 0) player.health += 0.0332;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
@@ -383,6 +387,11 @@ export class Game {
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
                     const gameOverPacket = new GameOverPacket(lastManStanding, true);
+                    lastManStanding.movement.up = false;
+                    lastManStanding.movement.down = false;
+                    lastManStanding.movement.left = false;
+                    lastManStanding.movement.right = false;
+                    lastManStanding.attacking = false;
                     lastManStanding.sendPacket(gameOverPacket);
                 }
 
