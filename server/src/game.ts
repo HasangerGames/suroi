@@ -304,7 +304,10 @@ export class Game {
                 }
 
                 // Regenerate health
-                player.health += player.adrenaline * 0.00039;
+                if(player.adrenaline >= 87.5) player.health += 0.166;
+                else if(player.adrenaline >= 50) player.health += 0.158;
+                else if(player.adrenaline >= 25) player.health += 0.124;
+                else if(player.adrenaline > 0) player.health += 0.0332;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
