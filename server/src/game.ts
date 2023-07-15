@@ -289,6 +289,7 @@ export class Game {
                     }
                 }
                 if (player.action) speed *= player.action.speedMultiplier;
+                speed *= player.activeItemDefinition.speedMultiplier;
 
                 player.setVelocity(movement.x * speed, movement.y * speed);
 

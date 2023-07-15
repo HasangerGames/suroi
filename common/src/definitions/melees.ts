@@ -11,6 +11,7 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly radius: number
     readonly offset: Vector
     readonly cooldown: number
+    readonly speedMultiplier: number
     readonly fists: {
         readonly animationDuration: number
         readonly randomFist: boolean
@@ -40,6 +41,7 @@ export const Melees: MeleeDefinition[] = [
         offset: v(2.5, 0),
         cooldown: 250,
         noDrop: true,
+        speedMultiplier: 1,
         fists: {
             animationDuration: 125,
             randomFist: true,
@@ -58,6 +60,7 @@ export const Melees: MeleeDefinition[] = [
         radius: 4,
         offset: v(5.4, 1.2),
         cooldown: 450,
+        speedMultiplier: 1,
         fists: {
             animationDuration: 125,
             randomFist: false,
@@ -83,6 +86,7 @@ export const Melees: MeleeDefinition[] = [
         radius: 2.7,
         offset: v(3.1, 0.9),
         cooldown: 200,
+        speedMultiplier: 1,
         fists: {
             animationDuration: 125,
             randomFist: false,
