@@ -540,6 +540,22 @@
             outline: 3px solid $orange;
             cursor: crosshair !important;
         }
+
+        .item-tooltip {
+            position: absolute;
+            background-color: $transparent_bg;
+            padding: 5px;
+            border-radius: 5px;
+            z-index: 1;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 150ms linear;
+            font-size: 14px;
+        }
+
+        &:hover .item-tooltip {
+            opacity: 1;
+        }
     }
 
     .slot-number {
@@ -628,7 +644,7 @@
         width: 95px !important;
         justify-content: start;
 
-        &.full {
+        &.full .item-count {
             color: $orange;
         }
         opacity: .65;
@@ -646,6 +662,17 @@
     #healing-items-container {
         .item-image {
             height: 30px;
+        }
+
+        .inventory-slot .item-tooltip {
+            width: max-content;
+            max-width: 120px;
+            bottom: 50px;
+            left: -12.5%;
+        }
+
+        .inventory-slot:first-child .item-tooltip {
+            left: 0px;
         }
     }
 
@@ -667,6 +694,11 @@
 
         #healing-items-container {
             margin-right: 3px;
+
+            .inventory-slot .item-tooltip {
+                bottom: 0px;
+                left: 150px!important;
+            }
         }
 
         .item-slot {
@@ -678,6 +710,12 @@
 
     @media screen and (max-width: $screen_small) {
         flex-direction: column;
+
+        #healing-items-container {
+            .inventory-slot .item-tooltip {
+                left: 80px !important
+            }
+        }
     }
 }
 
@@ -691,20 +729,27 @@
         right: 10px;
     }
 
-    @media screen and (max-width: $screen_large) {
-        bottom: 4px;
-        flex-direction: row;
-        right: 12%;
-    }
-
     .inventory-slot {
         width: 55px;
         height: 78px;
+
+        .item-tooltip {
+            bottom: 85px;
+            width: max-content;
+        }
 
         @media screen and (max-width: 1500px) {
             width: 40px;
             height: 60px;
             font-size: small;
+
+            .item-tooltip {
+                bottom: 70px;
+            }
+
+            &:last-child .item-tooltip {
+                right: 0px;
+            }
         }
 
         .item-image {
@@ -719,6 +764,13 @@
             }
         }
     }
+
+    @media screen and (max-width: $screen_large) {
+        bottom: 4px;
+        flex-direction: row;
+        right: 12%;
+    }
+
 }
 
 
@@ -744,6 +796,10 @@
             height: 30px;
         }
 
+        .item-tooltip {
+            margin-top: 80px;
+        }
+
         &.active {
             outline: none;
             opacity: 1;
@@ -752,7 +808,11 @@
                 width: 60px;
                 height: 60px;
             }
+            .item-tooltip {
+                margin-top: 110px;
+            }
         }
+
     }
 }
 

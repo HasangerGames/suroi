@@ -85,7 +85,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             console.warn("Full update of existing loot");
         }
 
-        this.count = stream.readUint8();
+        this.count = stream.readBits(9);
         const isNew = stream.readBoolean();
 
         // Play an animation if this is new loot
