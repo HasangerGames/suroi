@@ -243,7 +243,7 @@ export class Loot extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeUint8(this.count);
+        stream.writeBits(this.count, 9);
         stream.writeBoolean(this.isNew);
     }
 }
