@@ -11,6 +11,7 @@ import { GameObject } from "../types/gameObject";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
+    GasState,
     ObjectCategory,
     PLAYER_RADIUS
 } from "../../../../common/src/constants";
@@ -133,6 +134,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 ease: "none",
                 duration: 0.03
             });
+            if (this.game.gas.oldRadius !== 0 && this.game.gas.state !== GasState.Inactive) {
+                minimap.gasToCenterLine.setTo(
+                    this.game.gas.newPosition.x * MINIMAP_SCALE,
+                    this.game.gas.newPosition.y * MINIMAP_SCALE,
+                    minimap.playerIndicator.x,
+                    minimap.playerIndicator.y
+                );
+            }
         }
 
         if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {

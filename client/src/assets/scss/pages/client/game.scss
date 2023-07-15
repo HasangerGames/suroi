@@ -67,27 +67,39 @@
     }
 }
 
-#zone-timer-container {
+#gas-timer {
     width: 80px;
-    padding: 8px;
+    padding: 6px 9px 6px 9px;
     display: flex;
     border-radius: 6px;
     align-items: center;
     background-color: $transparent_bg;
+    font-size: 17px;
 
-    #zone-timer {
+    &.advancing {
+        animation: advancing 2s linear infinite;
+    }
+
+    @keyframes advancing {
+        0% { background-color: #ff4800aa; }
+        50% { background-color: #000000aa; }
+        100% { background-color: #ff4800aa; }
+    }
+
+    #gas-timer-text {
         float: right;
         margin-left: auto;
+    }
+
+    #gas-timer-image {
+        position: relative;
+        bottom: 1px;
     }
 
     @media screen and (max-width: $screen_large) {
         padding: 4px;
         font-size: 10px;
         width: 60px;
-    }
-
-    @media screen and (max-width: $screen_large) {
-        padding: 4px;
     }
 }
 

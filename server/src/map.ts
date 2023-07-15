@@ -37,14 +37,14 @@ export class Map {
         this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
 
         if (!Config.disableMapGeneration) {
-            this.generateObstacles("oil_tank", 2, undefined, 200, true);
-            this.generateObstacles("oil_tank", 5);
-            this.generateObstacles("oak_tree", 135);
-            this.generateObstacles("pine_tree", 10);
-            this.generateObstacles("birch_tree", 15);
-            this.generateObstacles("rock", 145);
-            this.generateObstacles("bush", 80);
-            this.generateObstacles("regular_crate", 155);
+            this.generateObstacles("oil_tank", 3, undefined, 200, true);
+            this.generateObstacles("oil_tank", 6);
+            this.generateObstacles("oak_tree", 140);
+            this.generateObstacles("pine_tree", 12);
+            this.generateObstacles("birch_tree", 16);
+            this.generateObstacles("rock", 150);
+            this.generateObstacles("bush", 85);
+            this.generateObstacles("regular_crate", 160);
             this.generateObstacles("aegis_crate", 3);
             this.generateObstacles("flint_crate", 3);
             this.generateObstacles("barrel", 70);

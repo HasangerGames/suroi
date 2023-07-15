@@ -44,8 +44,8 @@ export class Game {
         initialDuration: 0,
         oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        oldRadius: 534.6,
-        newRadius: 534.6
+        oldRadius: 2048,
+        newRadius: 2048
     };
 
     connect(address: string): void {
