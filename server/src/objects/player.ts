@@ -231,7 +231,7 @@ export class Player extends GameObject {
             this.adrenaline = 100;
         }*/
         this.inventory.addOrReplaceWeapon(2, "fists");
-
+        this.dirty.activeWeaponIndex = true;
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
     }
 

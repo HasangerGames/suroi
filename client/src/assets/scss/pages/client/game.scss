@@ -536,10 +536,6 @@
             }
         }
 
-        &.has-item {
-            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
-        }
-
         &.active {
             outline: 3px solid $orange;
             cursor: crosshair !important;
@@ -568,8 +564,6 @@
 
     .item-count {
         font-size: 20px;
-        margin-left: 8px;
-        margin-right: 3px;
 
         @media screen and (max-width: $screen_large) {
             font-size: 14px;
@@ -609,6 +603,15 @@
 
         margin-bottom: 10px;
     }
+
+    .inventory-slot {
+        opacity: 0.65;
+
+        &.has-item {
+            opacity: 1;            
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+        }
+    }
 }
 
 #items-container {
@@ -624,6 +627,15 @@
         height: 40px !important;
         width: 95px !important;
         justify-content: start;
+
+        &.full {
+            color: $orange;
+        }
+        opacity: .65;
+
+        &.has-item {
+            opacity: 1;
+        }
     }
 
     .item-count {
@@ -675,15 +687,14 @@
     right: 25%;
 
     @media screen and (max-width: 1500px) {
-        bottom: 15px;
-        gap: 2px;
-        right: 45%;
-        transform: translateX(50%);
+        bottom: 130px;
+        right: 10px;
     }
 
     @media screen and (max-width: $screen_large) {
         bottom: 4px;
         flex-direction: row;
+        right: 12%;
     }
 
     .inventory-slot {
@@ -692,11 +703,8 @@
 
         @media screen and (max-width: 1500px) {
             width: 40px;
-            height: 40px;
-
-            .item-name {
-                display: none;
-            }
+            height: 60px;
+            font-size: small;
         }
 
         .item-image {
@@ -708,8 +716,6 @@
             @media screen and (max-width: 1500px) {
                 width: 32px;
                 height: 32px;
-                align-self: center;
-                margin-top: 0;
             }
         }
     }

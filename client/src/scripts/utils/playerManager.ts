@@ -219,8 +219,11 @@ export class PlayerManager {
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;
-                const ammoText = (num >= Backpacks[backpackLevel].maxCapacity[item] ? `<span style="color: #FFAF2C">${num}</span>` : num.toString());
-                $(`#${item}-count`).html(ammoText);
+
+                $(`#${item}-count`).text(num);
+
+                $(`#${item}-slot`).toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
+                $(`#${item}-slot`).toggleClass("has-item", num > 0);
 
                 if (item.includes("scope")) {
                     $(`#${item}-slot`).toggle(num > 0).removeClass("active");
