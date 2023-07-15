@@ -15,7 +15,8 @@ export class MinimapScene extends Phaser.Scene {
     gasRect!: Phaser.GameObjects.Rectangle;
     gasCircle!: Phaser.GameObjects.Arc;
     gasMask!: Phaser.Display.Masks.GeometryMask;
-    // gasToCenterLine!: Phaser.GameObjects.Line;
+    gasNewPosCircle!: Phaser.GameObjects.Arc;
+    gasToCenterLine!: Phaser.GameObjects.Line;
 
     renderTexture!: Phaser.GameObjects.RenderTexture;
 
@@ -37,6 +38,8 @@ export class MinimapScene extends Phaser.Scene {
         // Create gas rectangle and mask
         this.gasCircle = this.add.circle(MAP_WIDTH / 2 * MINIMAP_SCALE, MAP_HEIGHT / 2 * MINIMAP_SCALE, 750 * MINIMAP_SCALE, 0x000000, 0);
         this.gasMask = this.make.graphics().createGeometryMask(this.gasCircle).setInvertAlpha(true);
+        this.gasNewPosCircle = this.add.circle(0, 0, 0).setStrokeStyle(3, 0xffffff).setDepth(15);
+        this.gasToCenterLine = this.add.line(0, 0, 0, 0, 0, 0).setStrokeStyle(12, 0x00ffff).setDepth(14);
 
         this.gasRect = this.add.rectangle(MAP_WIDTH / 2 * MINIMAP_SCALE,
             MAP_HEIGHT / 2 * MINIMAP_SCALE,
@@ -54,7 +57,7 @@ export class MinimapScene extends Phaser.Scene {
             if (core.game?.playerManager.isMobile) this.toggle();
         });
 
-        this.playerIndicator = this.add.image(0, 0, "main", "player_indicator.svg").setDepth(10).setScale(0.1 * MINIMAP_SCALE);
+        this.playerIndicator = this.add.image(0, 0, "main", "player_indicator.svg").setDepth(16).setScale(0.1 * MINIMAP_SCALE);
         this.switchToSmallMap();
 
         if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();

@@ -281,13 +281,23 @@ export class UpdatePacket extends ReceivingPacket {
                 gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
-                // minimap.gasToCenterLine.setTo(game.gas.oldPosition.x * 10, game.gas.oldPosition.y * 10, minimap.playerIndicator.x, minimap.playerIndicator.y);
+                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
+                if (game.gas.oldRadius === 0) minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
             } else if (game.gas.state === GasState.Advancing) {
                 gasMessage = "Toxic gas is advancing! Move to the safe zone";
             } else if (game.gas.state === GasState.Inactive) {
                 gasMessage = "Waiting for players...";
             }
-            if (game.gas.initialDuration !== 0) {
+
+            if (game.gas.state === GasState.Advancing) {
+                $("#gas-timer").addClass("advancing");
+                $("#gas-timer-image").attr("src", require("../../../assets/img/misc/gas-advancing-icon.svg"));
+            } else {
+                $("#gas-timer").removeClass("advancing");
+                $("#gas-timer-image").attr("src", require("../../../assets/img/misc/gas-waiting-icon.svg"));
+            }
+
+            if (game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) {
                 $("#gas-msg-info").text(gasMessage ?? "");
                 $("#gas-msg").fadeIn();
                 if (game.gas.state === GasState.Inactive) {
@@ -302,6 +312,8 @@ export class UpdatePacket extends ReceivingPacket {
         // Gas percentage
         if (stream.readBoolean()) {
             const percentage = stream.readFloat(0, 1, 16);
+            const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * percentage);
+            $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
             if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);

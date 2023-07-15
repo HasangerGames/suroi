@@ -248,7 +248,7 @@ export class Game {
                 this.gasPercentageDirty = true;
             }
 
-            // Red zone damage
+            // Gas damage
             this.gas.ticksSinceLastDamage++;
             let gasDamage = false;
             if (this.gas.ticksSinceLastDamage >= 30) {
@@ -304,10 +304,10 @@ export class Game {
                 }
 
                 // Regenerate health
-                if(player.adrenaline >= 87.5) player.health += 0.166;
-                else if(player.adrenaline >= 50) player.health += 0.158;
-                else if(player.adrenaline >= 25) player.health += 0.124;
-                else if(player.adrenaline > 0) player.health += 0.0332;
+                if (player.adrenaline >= 87.5) player.health += 0.166;
+                else if (player.adrenaline >= 50) player.health += 0.158;
+                else if (player.adrenaline >= 25) player.health += 0.124;
+                else if (player.adrenaline > 0) player.health += 0.0332;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
