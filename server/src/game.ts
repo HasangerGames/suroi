@@ -41,7 +41,8 @@ import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 
 export class Game {
-    id: number;
+    readonly _id: number;
+    get id(): number { return this._id; }
 
     map: Map;
 
@@ -51,7 +52,8 @@ export class Game {
      */
     private readonly mapPacketStream: SuroiBitStream;
 
-    world: World;
+    readonly _world: World;
+    get world(): World { return this._world; }
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -62,47 +64,47 @@ export class Game {
     /**
      * A Set of all the static objects in the world
      */
-    staticObjects = new Set<GameObject>();
+    readonly staticObjects = new Set<GameObject>();
     /**
      * A Set of all the dynamic (moving) objects in the world
      */
-    dynamicObjects = new Set<GameObject>();
-    visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
+    readonly dynamicObjects = new Set<GameObject>();
+    readonly visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
     updateObjects = false;
 
     aliveCountDirty = false;
 
-    partialDirtyObjects = new Set<GameObject>();
-    fullDirtyObjects = new Set<GameObject>();
-    deletedObjects = new Set<GameObject>();
+    readonly partialDirtyObjects = new Set<GameObject>();
+    readonly fullDirtyObjects = new Set<GameObject>();
+    readonly deletedObjects = new Set<GameObject>();
 
-    livingPlayers: Set<Player> = new Set<Player>();
-    connectedPlayers: Set<Player> = new Set<Player>();
+    readonly livingPlayers: Set<Player> = new Set<Player>();
+    readonly connectedPlayers: Set<Player> = new Set<Player>();
 
-    loot: Set<Loot> = new Set<Loot>();
-    explosions: Set<Explosion> = new Set<Explosion>();
+    readonly loot: Set<Loot> = new Set<Loot>();
+    readonly explosions: Set<Explosion> = new Set<Explosion>();
     /**
      * All bullets that currently exist
      */
-    bullets = new Set<Bullet>();
+    readonly bullets = new Set<Bullet>();
     /**
      * All bullets created this tick
      */
-    newBullets = new Set<Bullet>();
-    deletedBulletIDs = new Set<number>();
+    readonly newBullets = new Set<Bullet>();
+    readonly deletedBulletIDs = new Set<number>();
     /**
      * All records of damage by bullets this tick
      */
-    damageRecords = new Set<DamageRecord>();
+    readonly damageRecords = new Set<DamageRecord>();
 
     /**
      * All kill feed messages this tick
      */
-    killFeedMessages = new Set<KillFeedPacket>();
+    readonly killFeedMessages = new Set<KillFeedPacket>();
 
-    started = false;
+    private _started = false;
     allowJoin = false;
-    over = false;
+    private _over = false;
     stopped = false;
 
     startTimeoutID?: NodeJS.Timeout;
@@ -130,9 +132,9 @@ export class Game {
     tickTimes: number[] = [];
 
     constructor(id: number) {
-        this.id = id;
+        this._id = id;
 
-        this.world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
+        this._world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
         Settings.maxLinearCorrection = 0; // Prevents collision jitter
         Settings.maxTranslation = 12.5; // Allows bullets to travel fast
 
@@ -164,19 +166,33 @@ export class Game {
         });
 
         // this return type is technically not true, but it gets typescript to shut up
-        const shouldDie = (object: unknown): object is Bullet => object instanceof Bullet && object.distanceSquared <= object.maxDistanceSquared && !object.dead;
+        const isValidBullet = (object: unknown): object is Bullet => object instanceof Bullet && object.distanceSquared <= object.maxDistanceSquared && !object.dead;
 
         // Handle bullet collisions
         this.world.on("begin-contact", contact => {
             const objectA = contact.getFixtureA().getUserData();
             const objectB = contact.getFixtureB().getUserData();
 
-            if (shouldDie(objectA)) {
-                objectA.dead = true;
-                this.damageRecords.add(new DamageRecord(objectB as GameObject, objectA.shooter, objectA));
-            } else if (shouldDie(objectB)) {
-                objectB.dead = true;
-                this.damageRecords.add(new DamageRecord(objectA as GameObject, objectB.shooter, objectB));
+            let bullet: Bullet | undefined;
+            let target: GameObject | undefined;
+
+            if (isValidBullet(objectA)) [bullet, target] = [objectA, objectB as GameObject];
+            if (isValidBullet(objectB)) [bullet, target] = [objectB, objectA as GameObject];
+
+            if (bullet && target) {
+                /*
+                    fixme This is broken right now, and it's not clear why
+                */
+                // const penetration = bullet.source.ballistics.penetration;
+                // if (
+                //     !(penetration?.players === true && target instanceof Player) &&
+                //     !(penetration?.obstacles === true && target instanceof Obstacle)
+                // ) {
+                // Delete the bullet
+                bullet.dead = true;
+                // }
+
+                this.damageRecords.add(new DamageRecord(target, bullet.shooter, bullet));
             }
         });
 
@@ -219,20 +235,28 @@ export class Game {
             // Do damage to objects hit by bullets
             for (const damageRecord of this.damageRecords) {
                 const bullet = damageRecord.bullet;
+                const [damagedIsPlayer, damagedIsObstacle] = [damageRecord.damaged instanceof Player, damageRecord.damaged instanceof Obstacle];
 
                 // Delete the bullet
+                // fixme broken rn
+                // const penetration = bullet.source.ballistics.penetration;
+                // if (
+                //     !(penetration?.players === true && damagedIsPlayer) &&
+                //     !(penetration?.obstacles === true && damagedIsObstacle)
+                // ) {
                 this.removeBullet(bullet);
                 this.deletedBulletIDs.add(bullet.id);
+                // }
 
                 // Bullets from dead players should not deal damage
                 if (bullet.shooter.dead) continue;
 
                 // Do the damage
                 const definition = bullet.source.ballistics;
-                if (damageRecord.damaged instanceof Player) {
-                    damageRecord.damaged.damage(definition.damage, damageRecord.damager, bullet.sourceType);
-                } else if (damageRecord.damaged instanceof Obstacle) {
-                    damageRecord.damaged.damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
+                if (damagedIsPlayer) {
+                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.sourceType);
+                } else if (damagedIsObstacle) {
+                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
                 }
             }
             this.damageRecords.clear();
@@ -304,10 +328,10 @@ export class Game {
                 }
 
                 // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 0.082 // 2.75 / 33.3;
-                else if (player.adrenaline >= 50) player.health += 0.0638 // 2.125 / 33.3;
-                else if (player.adrenaline >= 25) player.health += 0.0337 // 1.125 / 33.3;
-                else if (player.adrenaline > 0) player.health += 0.0187 // 0.625 / 33.3;
+                if (player.adrenaline >= 87.5) player.health += 0.082; // 2.75 / 33.3
+                else if (player.adrenaline >= 50) player.health += 0.0638; // 2.125 / 33.3
+                else if (player.adrenaline >= 25) player.health += 0.0337; // 1.125 / 33.3
+                else if (player.adrenaline > 0) player.health += 0.0187; // 0.625 / 33.3
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
@@ -382,26 +406,25 @@ export class Game {
             }
 
             // Winning logic
-            if (this.started && this.aliveCount < 2 && !this.over) {
+            if (this._started && this.aliveCount < 2 && !this._over) {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
-                    const gameOverPacket = new GameOverPacket(lastManStanding, true);
                     lastManStanding.movement.up = false;
                     lastManStanding.movement.down = false;
                     lastManStanding.movement.left = false;
                     lastManStanding.movement.right = false;
                     lastManStanding.attacking = false;
-                    lastManStanding.sendPacket(gameOverPacket);
+                    lastManStanding.sendPacket(new GameOverPacket(lastManStanding, true));
                 }
 
                 // End the game in 1 second
                 this.allowJoin = false;
-                this.over = true;
+                this._over = true;
                 setTimeout(() => {
-                    endGame(this.id); // End this game
-                    const otherID = this.id === 0 ? 1 : 0;
-                    if (!allowJoin(otherID)) createNewGame(this.id); // Create a new game if the other game isn't allowing players to join
+                    endGame(this._id); // End this game
+                    const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
+                    if (!allowJoin(otherID)) createNewGame(this._id); // Create a new game if the other game isn't allowing players to join
                 }, 1000);
             }
 
@@ -414,7 +437,7 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                log(`Game #${this.id} average ms/tick: ${mspt}`, true);
+                log(`Game #${this._id} average ms/tick: ${mspt}`, true);
                 log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
@@ -470,9 +493,9 @@ export class Game {
             player.disableInvulnerability();
         }, 5000);
 
-        if (this.aliveCount > 1 && !this.started && this.startTimeoutID === undefined) {
+        if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
-                this.started = true;
+                this._started = true;
                 this.advanceGas();
             }, 5000);
         }
@@ -589,9 +612,9 @@ export class Game {
         this.gas.countdownStart = this.now;
 
         if (currentStage.preventJoin) {
-            log(`Game #${this.id} is preventing new players from joining`);
+            log(`Game #${this._id} is preventing new players from joining`);
             this.allowJoin = false;
-            const id = this.id === 0 ? 1 : 0;
+            const id = this._id === 0 ? 1 : 0;
             createNewGame(id);
         }
 

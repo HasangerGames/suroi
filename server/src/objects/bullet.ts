@@ -25,9 +25,7 @@ export class Bullet {
     id: number;
 
     readonly _initialPosition: Vec2;
-    get initialPosition(): Vec2 {
-        return this._initialPosition;
-    }
+    get initialPosition(): Vec2 { return this._initialPosition; }
 
     readonly finalPosition: Vec2;
     rotation: number;

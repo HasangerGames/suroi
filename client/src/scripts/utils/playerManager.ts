@@ -14,6 +14,8 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { ItemPacket } from "../packets/sending/itemPacket";
 import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
 import { mod } from "../../../../common/src/utils/math";
+import { Ammos } from "../../../../common/src/definitions/ammos";
+import { HealingItems } from "../../../../common/src/definitions/healingItems";
 
 /**
  * This class manages the active player data and inventory
@@ -71,21 +73,28 @@ export class PlayerManager {
 
     zoom = 48;
 
-    readonly items: Record<string, number> = {
-        gauze: 0,
-        medikit: 0,
-        cola: 0,
-        tablets: 0,
-        "12g": 0,
-        "556mm": 0,
-        "762mm": 0,
-        "9mm": 0,
-        "1x_scope": 1,
-        "2x_scope": 0,
-        "4x_scope": 0,
-        "8x_scope": 0,
-        "15x_scope": 0
-    };
+    // Shove it
+    /* eslint-disable @typescript-eslint/indent */
+    readonly items: Record<string, number> = [HealingItems, Ammos, Scopes]
+        .flat()
+        .reduce<Record<string, number>>(
+            (acc, cur) => {
+                let amount = 0;
+
+                if (cur.itemType === ItemType.Ammo && cur.ephemeral) {
+                    amount = Infinity;
+                }
+
+                if (cur.itemType === ItemType.Scope && cur.giveByDefault) {
+                    amount = 1;
+                }
+
+                acc[cur.idString] = amount;
+
+                return acc;
+            },
+            {}
+        );
 
     scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
@@ -216,6 +225,7 @@ export class PlayerManager {
         if (stream.readBoolean()) {
             const backpackLevel = stream.readBits(2);
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readBits(9) : 0;
+
             for (const item in this.items) {
                 const num = readInventoryCount();
                 this.items[item] = num;

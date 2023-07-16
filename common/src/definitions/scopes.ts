@@ -3,6 +3,7 @@ import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 export interface ScopeDefinition extends ItemDefinition {
     readonly itemType: ItemType.Scope
     readonly zoomLevel: number
+    readonly giveByDefault?: boolean
 }
 
 export const Scopes: ScopeDefinition[] = [
@@ -11,7 +12,8 @@ export const Scopes: ScopeDefinition[] = [
         name: "1x Scope",
         itemType: ItemType.Scope,
         zoomLevel: 48,
-        noDrop: true
+        noDrop: true,
+        giveByDefault: true
     },
     {
         idString: "2x_scope",

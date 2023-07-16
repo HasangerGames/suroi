@@ -8,6 +8,7 @@ import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { FireMode, AnimationType, PlayerActions } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
+import { clearTimeout } from "timers";
 
 /**
  * A class representing a firearm
@@ -23,7 +24,8 @@ export class GunItem extends InventoryItem {
 
     ignoreSwitchCooldown = false;
 
-    private readonly _reloadTimeoutID: NodeJS.Timeout | undefined;
+    private _reloadTimeoutID: NodeJS.Timeout | undefined;
+    cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
 
     /**
      * Constructs a new gun
@@ -120,7 +122,13 @@ export class GunItem extends InventoryItem {
         }
 
         if (this.ammo <= 0) {
-            setTimeout(this.reload.bind(this), 500);
+            this._reloadTimeoutID = setTimeout(
+                () => {
+                    this.reload();
+                },
+                this.definition.fireDelay
+            );
+
             this._shots = 0;
             return;
         }
@@ -150,7 +158,8 @@ export class GunItem extends InventoryItem {
             this.definition.infiniteAmmo === true ||
             this.ammo >= this.definition.capacity ||
             this.owner.inventory.items[this.definition.ammoType] <= 0 ||
-            this.owner.action?.type === PlayerActions.Reload
+            this.owner.action?.type === PlayerActions.Reload ||
+            this.owner.activeItem !== this
         ) return;
 
         this.owner.executeAction(new ReloadAction(this.owner, this));

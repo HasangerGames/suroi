@@ -214,8 +214,10 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
+                const ballistics = bulletSourceDef.ballistics;
                 const initialPosition = stream.readPosition();
                 const rotation = stream.readRotation(16);
+                const speedVariance = stream.readFloat32();
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
                 const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
 
@@ -227,15 +229,19 @@ export class UpdatePacket extends ReceivingPacket {
                     `${bulletSourceDef.ammoType}_trail.svg`
                 )
                     .setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition))
-                    .setDepth(1);
+                    .setDepth(1)
+                    .setOrigin(1, 0.5);
 
                 game.bullets.set(id, bullet);
                 scene.tweens.add({
                     targets: bullet,
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
-                    alpha: 0,
-                    duration: 500,
+                    alpha: {
+                        getStart: () => ballistics.tracerOpacity?.start ?? 1,
+                        getEnd: () => ballistics.tracerOpacity?.end ?? 0
+                    },
+                    duration: maxDist / (ballistics.speed * (1 + speedVariance)),
                     onComplete: (): void => {
                         bullet.destroy(true);
                     }

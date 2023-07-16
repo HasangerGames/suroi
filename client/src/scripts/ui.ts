@@ -86,7 +86,7 @@ $((): void => {
         localStorageInstance.update({ playerName: usernameField.val() as string });
     });
 
-    const serverSelect: JQuery<HTMLSelectElement> = $("#server-select");
+    const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
     serverSelect.val(localStorageInstance.config.region);
@@ -294,6 +294,8 @@ $((): void => {
     }
 
     for (const ammo of Ammos) {
+        if (ammo.ephemeral === true) continue;
+
         $("#ammo-container").append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
             <img class="item-image" src="/img/game/loot/${ammo.idString}.svg" draggable="false">

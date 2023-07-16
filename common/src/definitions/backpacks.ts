@@ -20,8 +20,10 @@ export const Backpacks: BackpackDefinition[] = [
             "12g": 15,
             "556mm": 90,
             "762mm": 90,
-            "9mm": 120
-        }
+            "9mm": 120,
+            power_cell: Infinity
+        },
+        noDrop: true
     },
     {
         idString: "satchel",
@@ -36,7 +38,8 @@ export const Backpacks: BackpackDefinition[] = [
             "12g": 30,
             "556mm": 180,
             "762mm": 180,
-            "9mm": 240
+            "9mm": 240,
+            power_cell: Infinity
         }
     },
     {
@@ -52,7 +55,8 @@ export const Backpacks: BackpackDefinition[] = [
             "12g": 60,
             "556mm": 240,
             "762mm": 240,
-            "9mm": 330
+            "9mm": 330,
+            power_cell: Infinity
         }
     },
     {
@@ -68,7 +72,8 @@ export const Backpacks: BackpackDefinition[] = [
             "12g": 90,
             "556mm": 300,
             "762mm": 300,
-            "9mm": 420
+            "9mm": 420,
+            power_cell: Infinity
         }
     }
 ];
