@@ -43,8 +43,8 @@ export class MinimapScene extends Phaser.Scene {
 
         this.gasRect = this.add.rectangle(MAP_WIDTH / 2 * MINIMAP_SCALE,
             MAP_HEIGHT / 2 * MINIMAP_SCALE,
-            (MAP_WIDTH * 1.2) * MINIMAP_SCALE,
-            (MAP_HEIGHT * 1.3) * MINIMAP_SCALE,
+            (MAP_WIDTH * 1.5) * MINIMAP_SCALE,
+            (MAP_HEIGHT * 1.5) * MINIMAP_SCALE,
             GAS_COLOR, GAS_ALPHA).setDepth(10).setMask(this.gasMask);
 
         this.scale.on("resize", (): void => {
