@@ -296,27 +296,46 @@
 #weapon-ammo-container {
     position: absolute;
     bottom: 100px;
-    left: 50%;
+    left: calc(50% + (65px / 2));
     transform: translateX(-50%);
-    background: $transparent_bg;
-    border-radius: 8px;
-    width: 160px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
+    display: flex;
+    align-items: baseline;
+
+    font-weight: bold;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    
+    
+    div {
+        display: flex;
+        background: $transparent_bg;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+    }
 
     @media screen and (max-width: $screen_large) {
         bottom: 65px;
         width: 120px;
     }
 
-    #active-weapon-ammo {
-        font-size: x-large;
-
+    #weapon-clip-ammo {
+        font-size: xx-large;
+        width: 100px;
+        height: 50px;
+        border-radius: 4px;
+        
         @media screen and (max-width: $screen_large) {
             font-size: 16px;
         }
+    }
+
+    #weapon-inventory-ammo {
+        width: 60px;
+        height: 30px;
+        margin-left: 5px;
+        border-radius: 4px;
+        margin-top: auto;
+        font-size: large;
     }
 }
 
@@ -624,8 +643,6 @@
             width: 50px;
             height: 50px;
         }
-
-        margin-bottom: 10px;
     }
 
     .inventory-slot {

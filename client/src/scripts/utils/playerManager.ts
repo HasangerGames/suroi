@@ -100,6 +100,8 @@ export class PlayerManager {
 
     readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
 
+    readonly weaponsAmmo = new Array<number>(INVENTORY_MAX_WEAPONS);
+
     private _lastItemIndex = 0;
     get lastItemIndex(): number { return this._lastItemIndex; }
 
@@ -178,17 +180,31 @@ export class PlayerManager {
         this.game = game;
     }
 
-    deserializeInventory(stream: SuroiBitStream): void {
-        // Active item index
-        if (stream.readBoolean()) {
-            this.activeItemIndex = stream.readBits(2);
-            $("#weapons-container").children(".inventory-slot").removeClass("active");
-            const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
-            slotContainer.addClass("active");
-
-            $("#active-weapon-ammo").text(slotContainer.children(".item-ammo").text());
+    private updateActiveWeaponAmmoUi(): void {
+        if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun)) {
+            $("#weapon-ammo-container").hide();
+            return;
         }
 
+        $("#weapon-ammo-container").show();
+        const ammo = this.weaponsAmmo[this.activeItemIndex];
+        $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
+
+        const ammoType = (this.weapons[this.activeItemIndex]?.definition as GunDefinition).ammoType;
+        let totalAmmo: number | string = this.items[ammoType];
+
+        for (const ammo of Ammos) {
+            if (ammo.idString === ammoType && ammo.ephemeral) {
+                totalAmmo = "∞";
+                break;
+            }
+        }
+
+        $("#weapon-inventory-ammo").text(totalAmmo);
+    }
+
+    deserializeInventory(stream: SuroiBitStream): void {
+        // TODO: clean up this mess lmfao
         // Weapons dirty
         if (stream.readBoolean()) {
             for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
@@ -204,11 +220,11 @@ export class PlayerManager {
                     container.children(".item-image").attr("src", `/img/game/weapons/${itemDef.idString}.svg`).show();
 
                     if (itemDef.itemType === ItemType.Gun) {
-                        const ammo = stream.readUint8().toString();
-                        const gunDef = item.definition as GunDefinition;
-                        const ammoText = (`${ammo === "0" ? '<span style="color: #ff0000">0</span>' : ammo} / ${gunDef.capacity}`);
-                        container.children(".item-ammo").html(ammoText);
-                        if (i === this.activeItemIndex) $("#active-weapon-ammo").html(ammoText);
+                        const ammo = stream.readUint8();
+                        this.weaponsAmmo[i] = ammo;
+
+                        container.children(".item-ammo").text(ammo)
+                            .css("color", ammo > 0 ? "inherit" : "red");
                     }
                 } else {
                     // empty slot
@@ -219,6 +235,17 @@ export class PlayerManager {
                     container.children(".item-ammo").text("");
                 }
             }
+            this.updateActiveWeaponAmmoUi();
+        }
+
+        // Active item index
+        if (stream.readBoolean()) {
+            this.activeItemIndex = stream.readBits(2);
+            $("#weapons-container").children(".inventory-slot").removeClass("active");
+            const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
+            slotContainer.addClass("active");
+
+            this.updateActiveWeaponAmmoUi();
         }
 
         // Inventory dirty
@@ -241,8 +268,9 @@ export class PlayerManager {
             }
 
             this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
-
             $(`#${this.scope.idString}-slot`).addClass("active");
+
+            this.updateActiveWeaponAmmoUi();
         }
     }
 }

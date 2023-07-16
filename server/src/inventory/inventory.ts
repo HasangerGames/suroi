@@ -414,12 +414,6 @@ export class Inventory {
      * @param stream The bit stream to write the inventory
     */
     serializeInventory(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.owner.dirty.activeWeaponIndex);
-        if (this.owner.dirty.activeWeaponIndex) {
-            this.owner.dirty.activeWeaponIndex = false;
-            stream.writeBits(this.activeWeaponIndex, 2);
-        }
-
         stream.writeBoolean(this.owner.dirty.weapons);
         if (this.owner.dirty.weapons) {
             this.owner.dirty.weapons = false;
@@ -433,6 +427,12 @@ export class Inventory {
                     }
                 }
             }
+        }
+
+        stream.writeBoolean(this.owner.dirty.activeWeaponIndex);
+        if (this.owner.dirty.activeWeaponIndex) {
+            this.owner.dirty.activeWeaponIndex = false;
+            stream.writeBits(this.activeWeaponIndex, 2);
         }
 
         stream.writeBoolean(this.owner.dirty.inventory);
