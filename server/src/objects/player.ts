@@ -242,17 +242,12 @@ export class Player extends GameObject {
             this.inventory.helmet = ObjectType.fromString(ObjectCategory.Loot, "tactical_helmet");
             this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "tactical_backpack");
 
-            this.inventory.items["1x_scope"] = 1;
-            this.inventory.items["2x_scope"] = 1;
-            this.inventory.items["4x_scope"] = 1;
-            this.inventory.items["8x_scope"] = 1;
-            this.inventory.items["15x_scope"] = 1;
-
             for (const item of Object.keys(this.inventory.items)) {
-                this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item];
+                this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item] ?? 1;
             }
+            
+            this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
 
-            this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
         this.dirty.activeWeaponIndex = true;

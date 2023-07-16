@@ -222,7 +222,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(105, 4) },
         ballistics: {
             damage: 68,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 1.5,
             speed: 0.33,
             maxDistance: 180,
             tracerWidth: 1.4,
@@ -255,7 +255,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(125, 4) },
         ballistics: {
             damage: 80,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 1.5,
             speed: 0.35,
             maxDistance: 250,
             tracerWidth: 1.6,
