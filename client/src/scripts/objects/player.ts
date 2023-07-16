@@ -41,6 +41,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, "fists");
 
+    oldItem = this.activeItem.idNumber;
+
     isNew = true;
 
     isActivePlayer: boolean;
@@ -257,6 +259,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override deserializeFull(stream: SuroiBitStream): void {
         this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
+        this.oldItem = this.activeItem.idNumber;
         this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
 
         if (this.isActivePlayer) {
@@ -316,7 +319,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
 
-            if (this.isActivePlayer) this.scene.playSound(`${this.activeItem.idString}_switch`);
+            if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
+                this.scene.playSound(`${this.activeItem.idString}_switch`);
+            }
         }
         if (weaponDef.itemType === ItemType.Gun) {
             this.container.bringToTop(this.images.weapon);

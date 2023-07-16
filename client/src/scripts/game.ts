@@ -13,6 +13,7 @@ import { PingPacket } from "./packets/sending/pingPacket";
 import { type Player } from "./objects/player";
 import { type SendingPacket } from "./types/sendingPacket";
 import { type GameObject } from "./types/gameObject";
+import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { GasState, MAP_HEIGHT, MAP_WIDTH, PacketType } from "../../../common/src/constants";
@@ -28,7 +29,7 @@ export class Game {
 
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
-    bullets: Map<number, Phaser.GameObjects.Image> = new Map<number, Phaser.GameObjects.Image>();
+    bullets: Map<number, Bullet> = new Map<number, Bullet>();
     activePlayer!: Player;
 
     gameStarted = false;
