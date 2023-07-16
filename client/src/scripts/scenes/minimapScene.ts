@@ -52,10 +52,16 @@ export class MinimapScene extends Phaser.Scene {
             else this.resizeSmallMap();
         });
 
-        // HACK: Use the gas rect to handle click events
-        this.gasRect.setInteractive().on("pointerdown", () => {
-            if (core.game?.playerManager.isMobile) this.toggle();
-        });
+        if (core.game?.playerManager.isMobile) {
+            const minimapElement = document.getElementById("minimap-border");
+            if (minimapElement) {
+                minimapElement.addEventListener("click", () => this.toggle());
+            }
+            // Using mousedown instead of pointerdown because we don't want to close the minimap if the user decides to move around while having it open
+            onmousedown = (e: MouseEvent): void => {
+                if (this.isExpanded) this.toggle();
+            };
+        }
 
         this.playerIndicator = this.add.image(0, 0, "main", "player_indicator.svg").setDepth(16).setScale(0.1 * MINIMAP_SCALE);
         this.switchToSmallMap();
