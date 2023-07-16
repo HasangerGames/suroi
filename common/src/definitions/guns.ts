@@ -381,6 +381,36 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "mp40",
+        name: "MP40",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.1,
+        fireDelay: 100,
+        switchDelay: 300,
+        speedMultiplier: 0.93,
+        recoilMultiplier: 0.9,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 4,
+        moveSpread: 2,
+        length: 16.3,
+        fists: {
+            left: v(65, 0),
+            right: v(140, -5),
+            animationDuration: 100
+        },
+        image: { position: v(110, 0) },
+        ballistics: {
+            damage: 12,
+            obstacleMultiplier: 1,
+            speed: 0.25,
+            maxDistance: 120
+        }
+    },
+    {
         idString: "mcx_spear",
         name: "MCX Spear",
         itemType: ItemType.Gun,
@@ -436,6 +466,36 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 16,
             obstacleMultiplier: 2.5,
+            speed: 0.3,
+            maxDistance: 180
+        }
+    },
+    {
+        idString: "vss",
+        name: "VSS",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 60,
+        capacity: 20,
+        reloadTime: 2.15,
+        fireDelay: 175,
+        switchDelay: 400,
+        speedMultiplier: 0.95,
+        recoilMultiplier: 0.7,
+        recoilDuration: 500,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 2,
+        length: 14,
+        fists: {
+            left: v(65, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(100, 0) },
+        ballistics: {
+            damage: 23,
+            obstacleMultiplier: 2,
             speed: 0.3,
             maxDistance: 180
         }

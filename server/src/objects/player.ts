@@ -224,7 +224,8 @@ export class Player extends GameObject {
 
         // Inventory preset
         if (this.isDev) {
-            this.inventory.addOrReplaceWeapon(0, "deathray");
+            this.inventory.addOrReplaceWeapon(0, "mp40");
+            this.inventory.items["9mm"] = 90;
             // (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
             // this.inventory.addOrReplaceWeapon(1, "tango_51");
             // (this.inventory.getWeapon(1) as GunItem).ammo = 5;

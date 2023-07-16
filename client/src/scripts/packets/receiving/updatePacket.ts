@@ -22,6 +22,8 @@ import { type ExplosionDefinition } from "../../../../../common/src/definitions/
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { MINIMAP_SCALE } from "../../utils/constants";
 
+const debugBullets = false;
+
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.playerManager.game.activePlayer;
@@ -225,13 +227,14 @@ export class UpdatePacket extends ReceivingPacket {
                     initialPosition.x * 20,
                     initialPosition.y * 20,
                     "main",
-                    `${bulletSourceDef.ammoType}_trail.svg`
+                    debugBullets ? "debug_trail.svg" : `${bulletSourceDef.ammoType}_trail.svg`
                 )
                     .setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition))
-                    .setDepth(1)
+                    .setDepth(debugBullets ? 100 : 1)
                     .setOrigin(1, 0.5);
 
                 game.bullets.set(id, bullet);
+                if (debugBullets) continue;
                 scene.tweens.add({
                     targets: bullet,
                     x: finalPosition.x * 20,
