@@ -80,8 +80,8 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "mcx_spear", weight: 0.1 },
         { item: "vss", weight: 0.075 },
         { item: "lewis_gun", weight: 0.05 },
-        { item: "mosin", weight: 0.01 },
-        { item: "tango_51", weight: 0.001 }
+        { item: "mosin", weight: 0.02 },
+        { item: "tango_51", weight: 0.002 }
     ],
     healing_items: [
         { item: "gauze", weight: 3, count: 5 },
@@ -126,8 +126,8 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "g19", weight: 0.45 },
         { item: "lewis_gun", weight: 0.35 },
         { item: "mcx_spear", weight: 0.35 },
-        { item: "mosin", weight: 0.02 },
-        { item: "tango_51", weight: 0.002 }
+        { item: "mosin", weight: 0.04 },
+        { item: "tango_51", weight: 0.004 }
     ],
     special_healing_items: [
         { item: "cola", weight: 2 },
