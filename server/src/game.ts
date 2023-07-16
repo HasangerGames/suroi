@@ -189,10 +189,15 @@ export class Game {
                 //     !(penetration?.obstacles === true && target instanceof Obstacle)
                 // ) {
                 // Delete the bullet
-                bullet.dead = true;
+                let deleteBullet = true;
                 // }
 
-                this.damageRecords.add(new DamageRecord(target, bullet.shooter, bullet));
+                // Obstacles with noCollisions like bushes
+                if (target instanceof Obstacle && target.definition.noCollisions) deleteBullet = false;
+
+                bullet.dead = deleteBullet;
+
+                this.damageRecords.add(new DamageRecord(target, bullet.shooter, bullet, deleteBullet));
             }
         });
 
@@ -244,8 +249,10 @@ export class Game {
                 //     !(penetration?.players === true && damagedIsPlayer) &&
                 //     !(penetration?.obstacles === true && damagedIsObstacle)
                 // ) {
-                this.removeBullet(bullet);
-                this.deletedBulletIDs.add(bullet.id);
+                if (damageRecord.deleteBullet) {
+                    this.removeBullet(bullet);
+                    this.deletedBulletIDs.add(bullet.id);
+                }
                 // }
 
                 // Bullets from dead players should not deal damage
