@@ -27,6 +27,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
         super(game, scene, type, id);
+
         this.images = {
             background: this.scene.add.image(0, 0, "main"),
             item: this.scene.add.image(0, 0, "main", `${this.type.idString}.svg`)
@@ -85,7 +86,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             console.warn("Full update of existing loot");
         }
 
-        this.count = stream.readUint8();
+        this.count = stream.readBits(9);
         const isNew = stream.readBoolean();
 
         // Play an animation if this is new loot

@@ -25,14 +25,11 @@ export class Bullet {
     id: number;
 
     readonly _initialPosition: Vec2;
-    get initialPosition(): Vec2 {
-        return this._initialPosition;
-    }
+    get initialPosition(): Vec2 { return this._initialPosition; }
 
     readonly finalPosition: Vec2;
     rotation: number;
 
-    readonly speedVariance: number;
     readonly maxDistance: number;
     get maxDistanceSquared(): number { return this.maxDistance ** 2; }
 
@@ -58,10 +55,7 @@ export class Bullet {
 
         const definition = this.source.ballistics;
 
-        // explosion shrapnel variance
-        this.speedVariance = randomFloat(0, definition.speedVariance);
-        const variance = this.speedVariance + 1;
-        this.maxDistance = definition.maxDistance * variance;
+        this.maxDistance = definition.maxDistance;
 
         // Init body
         this.body = game.world.createBody({
@@ -85,7 +79,7 @@ export class Bullet {
             mass: 0.0
         });
 
-        const velocity = Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed * (this.speedVariance + 1));
+        const velocity = Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed);
         this.finalPosition = this.initialPosition.clone().add(Vec2(this.maxDistance * Math.sin(rotation), this.maxDistance * Math.cos(rotation)));
         this.body.setLinearVelocity(velocity);
     }
@@ -95,10 +89,12 @@ export class DamageRecord {
     damaged: GameObject;
     damager: Player;
     bullet: Bullet;
+    deleteBullet: boolean;
 
-    constructor(damaged: GameObject, damager: Player, bullet: Bullet) {
+    constructor(damaged: GameObject, damager: Player, bullet: Bullet, deleteBullet: boolean) {
         this.damaged = damaged;
         this.damager = damager;
         this.bullet = bullet;
+        this.deleteBullet = deleteBullet;
     }
 }

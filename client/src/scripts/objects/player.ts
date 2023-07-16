@@ -30,6 +30,7 @@ import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 
 const showMeleeDebugCircle = false;
 
@@ -256,7 +257,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     override deserializeFull(stream: SuroiBitStream): void {
         this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
-        this.activeItem = stream.readObjectType() as ObjectType<ObjectCategory.Loot, LootDefinition>;
+        this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
@@ -361,10 +362,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const definition = definitions[equipmentType === "backpack" ? level : level - 1];
             container.children(".item-name").text(`Lvl. ${level}`);
             container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
-            container.show();
-        } else {
-            container.hide();
+
+            let itemTooltip = definition.name;
+            if (equipmentType === "helmet" || equipmentType === "vest") {
+                itemTooltip += `<br>Reduces ${(definition as ArmorDefinition).damageReductionPercentage * 100}% damage`;
+            }
+            container.children(".item-tooltip").html(itemTooltip);
         }
+        container.css("visibility", level > 0 ? "visible" : "hidden");
     }
 
     destroy(): void {

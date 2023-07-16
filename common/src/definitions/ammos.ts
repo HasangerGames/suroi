@@ -2,6 +2,13 @@ import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo
+    /**
+     * Marking an ammo type as `ephemeral` does the following:
+     * - All players start with it maxed out
+     * - It cannot be depleted nor dropped
+     * - It does not show up on the HUD
+     */
+    readonly ephemeral?: boolean
 }
 
 export const Ammos: AmmoDefinition[] = [
@@ -24,6 +31,13 @@ export const Ammos: AmmoDefinition[] = [
         idString: "9mm",
         name: "9mm",
         itemType: ItemType.Ammo
+    },
+    {
+        // Potentially Ostentatious Weaponized Energetic Ruination
+        idString: "power_cell",
+        name: "P.O.W.E.R. cell",
+        itemType: ItemType.Ammo,
+        ephemeral: true
     }/*,
     {
         idString: "50ae",

@@ -11,7 +11,8 @@ import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
 import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { HealingItems } from "../../../common/src/definitions/healingItems";
+import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
+import { Ammos } from "../../../common/src/definitions/ammos";
 
 $((): void => {
     const dropdown = {
@@ -85,7 +86,7 @@ $((): void => {
         localStorageInstance.update({ playerName: usernameField.val() as string });
     });
 
-    const serverSelect: JQuery<HTMLSelectElement> = $("#server-select");
+    const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
     serverSelect.val(localStorageInstance.config.region);
@@ -256,7 +257,14 @@ $((): void => {
         });
     }
 
+    // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
+        $("#scopes-container").append(`
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="/img/game/loot/${scope.idString}.svg" draggable="false">
+            <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
+        </div>`);
+
         $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
             if (core.game) {
                 core.game.playerManager.useItem(scope.idString);
@@ -266,12 +274,33 @@ $((): void => {
     }
 
     for (const item of HealingItems) {
+        $("#healing-items-container").append(`
+        <div class="inventory-slot item-slot" id="${item.idString}-slot">
+            <img class="item-image" src="/img/game/loot/${item.idString}.svg" draggable="false">
+            <span class="item-count" id="${item.idString}-count">0</span>
+            <div class="item-tooltip">
+                ${item.name}
+                <br>
+                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
+            </div>
+        </div>`);
+
         $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
             if (core.game) {
                 core.game.playerManager.useItem(item.idString);
                 e.stopPropagation();
             }
         });
+    }
+
+    for (const ammo of Ammos) {
+        if (ammo.ephemeral === true) continue;
+
+        $("#ammo-container").append(`
+        <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
+            <img class="item-image" src="/img/game/loot/${ammo.idString}.svg" draggable="false">
+            <span class="item-count" id="${ammo.idString}-count">0</span>
+        </div>`);
     }
 
     // Hide mobile settings on desktop

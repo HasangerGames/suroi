@@ -11,11 +11,12 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
-import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 
 /**
  * A class representing a player's inventory
@@ -26,21 +27,28 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    readonly items: Record<string, number> = {
-        gauze: 0,
-        medikit: 0,
-        cola: 0,
-        tablets: 0,
-        "12g": 0,
-        "556mm": 0,
-        "762mm": 0,
-        "9mm": 0,
-        "1x_scope": 1,
-        "2x_scope": 0,
-        "4x_scope": 0,
-        "8x_scope": 0,
-        "15x_scope": 0
-    };
+    // Shove it
+    /* eslint-disable @typescript-eslint/indent */
+    readonly items: Record<string, number> = [HealingItems, Ammos, Scopes]
+        .flat()
+        .reduce<Record<string, number>>(
+            (acc, cur) => {
+                let amount = 0;
+
+                if (cur.itemType === ItemType.Ammo && cur.ephemeral) {
+                    amount = Infinity;
+                }
+
+                if (cur.itemType === ItemType.Scope && cur.giveByDefault) {
+                    amount = 1;
+                }
+
+                acc[cur.idString] = amount;
+
+                return acc;
+            },
+            {}
+        );
 
     helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
     vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
@@ -101,6 +109,9 @@ export class Inventory {
         }
 
         clearTimeout(this._reloadTimeoutID);
+        if (this.activeWeapon.category === ItemType.Gun) {
+            (this.activeWeapon as GunItem).cancelReload();
+        }
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
@@ -271,7 +282,7 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral ? 0 : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);

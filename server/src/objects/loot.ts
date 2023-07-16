@@ -173,8 +173,7 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Armor: {
-                const item = this.type.definition as ArmorDefinition;
-                switch (item.armorType) {
+                switch (definition.armorType) {
                     case ArmorType.Helmet:
                         if (player.inventory.helmet) createNewItem(player.inventory.helmet);
                         player.inventory.helmet = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
@@ -183,6 +182,7 @@ export class Loot extends GameObject {
                         if (player.inventory.vest) createNewItem(player.inventory.vest);
                         player.inventory.vest = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
                 }
+
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
@@ -190,6 +190,7 @@ export class Loot extends GameObject {
             case ItemType.Backpack: {
                 if (player.inventory.backpack.definition.level > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = this.type as ObjectType<ObjectCategory.Loot, BackpackDefinition>;
+
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
@@ -197,10 +198,12 @@ export class Loot extends GameObject {
             case ItemType.Scope: {
                 inventory.items[this.type.idString] = 1;
                 player.dirty.inventory = true;
+
                 const scope = this.type as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
                 if (scope.definition.zoomLevel > player.inventory.scope.definition.zoomLevel) {
                     player.inventory.scope = scope;
                 }
+
                 break;
             }
         }
@@ -243,7 +246,7 @@ export class Loot extends GameObject {
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeUint8(this.count);
+        stream.writeBits(this.count, 9);
         stream.writeBoolean(this.isNew);
     }
 }

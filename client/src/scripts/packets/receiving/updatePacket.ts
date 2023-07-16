@@ -214,6 +214,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
                 const bulletSourceDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as GunDefinition;
+                const ballistics = bulletSourceDef.ballistics;
                 const initialPosition = stream.readPosition();
                 const rotation = stream.readRotation(16);
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
@@ -225,14 +226,21 @@ export class UpdatePacket extends ReceivingPacket {
                     initialPosition.y * 20,
                     "main",
                     `${bulletSourceDef.ammoType}_trail.svg`
-                ).setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition)).setDepth(1);
+                )
+                    .setRotation(Phaser.Math.Angle.BetweenPoints(initialPosition, finalPosition))
+                    .setDepth(1)
+                    .setOrigin(1, 0.5);
+
                 game.bullets.set(id, bullet);
                 scene.tweens.add({
                     targets: bullet,
                     x: finalPosition.x * 20,
                     y: finalPosition.y * 20,
-                    alpha: 0,
-                    duration: 500,
+                    alpha: {
+                        getStart: () => ballistics.tracerOpacity?.start ?? 1,
+                        getEnd: () => ballistics.tracerOpacity?.end ?? 0
+                    },
+                    duration: maxDist / ballistics.speed,
                     onComplete: (): void => {
                         bullet.destroy(true);
                     }
@@ -259,10 +267,12 @@ export class UpdatePacket extends ReceivingPacket {
         if (stream.readBoolean()) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
-                explosion(game,
+                explosion(
+                    game,
                     game.activePlayer.scene,
-                    stream.readObjectType() as ObjectType<ObjectCategory.Explosion, ExplosionDefinition>,
-                    stream.readPosition());
+                    stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
+                    stream.readPosition()
+                );
             }
         }
 
