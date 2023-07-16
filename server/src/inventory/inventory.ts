@@ -119,11 +119,11 @@ export class Inventory {
             const now = this.owner.game.now;
 
             this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
-                now - this.owner.lastSwitch >= 1500 &&
+                now - this.owner.lastSwitch >= 1000 &&
                 now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
                 item.definition.canQuickswitch === true
             )
-                ? 300
+                ? 250
                 : item.definition.switchDelay;
 
             this.owner.lastSwitch = this.owner.game.now;
@@ -284,7 +284,10 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral ? 0 : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral
+                ? 0
+                : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
