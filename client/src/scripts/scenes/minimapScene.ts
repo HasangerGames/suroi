@@ -55,7 +55,7 @@ export class MinimapScene extends Phaser.Scene {
         if (core.game?.playerManager.isMobile) {
             const minimapElement = document.getElementById("minimap-border");
             if (minimapElement) {
-                minimapElement.addEventListener("click", () => this.toggle());
+                minimapElement.addEventListener("click", () => { this.toggle(); });
             }
             // Using mousedown instead of pointerdown because we don't want to close the minimap if the user decides to move around while having it open
             onmousedown = (e: MouseEvent): void => {
