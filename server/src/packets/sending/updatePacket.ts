@@ -124,9 +124,6 @@ export class UpdatePacket extends SendingPacket {
                 stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.idString));
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
-                stream.writeFloat32(bullet.speedVariance);
-                // TODO: write bullet speed variance and calculate it on the client
-                // does this count?
             }
         }
 

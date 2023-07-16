@@ -217,7 +217,6 @@ export class UpdatePacket extends ReceivingPacket {
                 const ballistics = bulletSourceDef.ballistics;
                 const initialPosition = stream.readPosition();
                 const rotation = stream.readRotation(16);
-                const speedVariance = stream.readFloat32();
                 const maxDist = bulletSourceDef.ballistics.maxDistance;
                 const finalPosition = vAdd(initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
 
@@ -241,7 +240,7 @@ export class UpdatePacket extends ReceivingPacket {
                         getStart: () => ballistics.tracerOpacity?.start ?? 1,
                         getEnd: () => ballistics.tracerOpacity?.end ?? 0
                     },
-                    duration: maxDist / (ballistics.speed * (1 + speedVariance)),
+                    duration: maxDist / ballistics.speed,
                     onComplete: (): void => {
                         bullet.destroy(true);
                     }
