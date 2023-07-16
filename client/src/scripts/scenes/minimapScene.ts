@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import {
-    GAS_ALPHA, GAS_COLOR, GRASS_COLOR, GRASS_RGB, MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE
+    GAS_ALPHA, GAS_COLOR, MINIMAP_COLOR, MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE
 } from "../utils/constants";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import core from "../core";
@@ -103,7 +103,7 @@ export class MinimapScene extends Phaser.Scene {
             this.cameras.main.setPosition(10, 10);
             this.cameras.main.setZoom(1 / MINIMAP_SCALE / 2);
         }
-        this.cameras.main.setBackgroundColor(GRASS_COLOR);
+        this.cameras.main.setBackgroundColor(MINIMAP_COLOR);
         this.cameras.main.startFollow(this.playerIndicator);
         $("#scopes-container").show();
         this.updateTransparency();
@@ -129,7 +129,6 @@ export class MinimapScene extends Phaser.Scene {
     updateTransparency(): void {
         if (this.cameras.main === undefined) return;
         const alpha = this.isExpanded ? localStorageInstance.config.bigMapTransparency : localStorageInstance.config.minimapTransparency;
-        this.cameras.main.setBackgroundColor({ ...GRASS_RGB, a: alpha * 255 });
         this.cameras.main.setAlpha(alpha);
     }
 }
