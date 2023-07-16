@@ -52,7 +52,7 @@ export class Explosion {
                     damage *= damagePercent;
                 }
 
-                player.damage(damage, this.source, this.type);
+                player.damage(damage, undefined, this.type);
             }
         }
 

@@ -57,6 +57,7 @@ export interface Config {
 
     devPassword?: string
     nameColor?: string
+    lobbyClearing?: boolean
 }
 
 export const defaultConfig: Config = {
@@ -111,7 +112,8 @@ export const defaultConfig: Config = {
     bigMapTransparency: 0.9,
 
     devPassword: "",
-    nameColor: ""
+    nameColor: "",
+    lobbyClearing: false
 };
 
 const configKey = "config";

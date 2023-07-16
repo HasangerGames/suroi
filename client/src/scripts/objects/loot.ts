@@ -12,6 +12,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type PlayerManager } from "../utils/playerManager";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -111,8 +112,8 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     canInteract(player: PlayerManager): boolean {
         const activePlayer = this.game.activePlayer;
         const definition = this.type.definition;
+
         switch (definition.itemType) {
-            // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
                 return !player.weapons[0] ||
                     !player.weapons[1] ||
@@ -124,9 +125,9 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.type.idString;
-                const currentCount: number = player.items[idString];
-                const maxCapacity: number = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
-                return currentCount + 1 <= maxCapacity;
+                const currentCount = player.items[idString];
+                const maxCapacity = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
+                return (definition as AmmoDefinition).ephemeral === true || currentCount + 1 <= maxCapacity;
             }
             case ItemType.Armor: {
                 if (definition.armorType === ArmorType.Helmet) return definition.level > activePlayer.helmetLevel;

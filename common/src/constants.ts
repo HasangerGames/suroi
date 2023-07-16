@@ -61,7 +61,10 @@ export enum PlayerActions {
 }
 
 // ArmorType has to be in constants.ts and not armors.ts, or it'll cause recursive import issues
-export enum ArmorType { Helmet, Vest }
+export enum ArmorType {
+    Helmet,
+    Vest
+}
 
 const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
 

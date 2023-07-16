@@ -7,6 +7,7 @@ export interface AmmoDefinition extends ItemDefinition {
      * - All players start with it maxed out
      * - It cannot be depleted nor dropped
      * - It does not show up on the HUD
+     * - It can always be picked up
      */
     readonly ephemeral?: boolean
 }

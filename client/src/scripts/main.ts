@@ -32,10 +32,12 @@ $(() => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
                 const nameColor = localStorageInstance.config.nameColor;
+                const lobbyClearing = localStorageInstance.config.lobbyClearing;
                 let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
-                if (devPass && devPass.length > 0) address += `&devPassword=${devPass}`;
-                if (nameColor && nameColor.length > 0) address += `&nameColor=${nameColor}`;
+                if (devPass) address += `&devPassword=${devPass}`;
+                if (nameColor) address += `&nameColor=${nameColor}`;
+                if (lobbyClearing) address += "&lobbyClearing";
                 core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
@@ -51,9 +53,15 @@ $(() => {
     });
 
     const params = new URLSearchParams(window.location.search);
+
     const nameColor = params.get("nameColor");
     if (nameColor) {
         localStorageInstance.update({ nameColor });
+    }
+
+    const lobbyClearing = params.get("lobbyClearing");
+    if (lobbyClearing) {
+        localStorageInstance.update({ lobbyClearing: lobbyClearing !== null });
     }
 
     const devPassword = params.get("devPassword");
