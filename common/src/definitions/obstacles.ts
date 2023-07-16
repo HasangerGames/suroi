@@ -89,7 +89,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.1,
                 destroy: 0.75
             },
-            hitbox: new CircleHitbox(7),
+            hitbox: new CircleHitbox(3),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
             depth: 4
