@@ -79,7 +79,7 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.75,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
-        shotSpread: 3,
+        shotSpread: 2,
         moveSpread: 2,
         length: 10,
         fists: {
@@ -401,8 +401,8 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.9,
         recoilDuration: 150,
         fireMode: FireMode.Auto,
-        shotSpread: 4,
-        moveSpread: 2,
+        shotSpread: 2,
+        moveSpread: 1,
         length: 8,
         fists: {
             left: v(65, 0),
