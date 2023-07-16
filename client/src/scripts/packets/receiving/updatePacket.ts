@@ -44,13 +44,13 @@ export class UpdatePacket extends ReceivingPacket {
             if (playerManager.health < 1 && playerManager.health > 0) roundedHealth = 1;
 
             const healthPercentage = `${roundedHealth}%`;
-            const healthBar: JQuery<HTMLDivElement> = $("#health-bar");
-            const healthBarPercentage: JQuery<HTMLSpanElement> = $("#health-bar-percentage");
+            const healthBar = $<HTMLDivElement>("#health-bar");
+            const healthBarAmount = $<HTMLSpanElement>("#health-bar-percentage");
 
             healthBar.width(healthPercentage);
             $("#health-bar-animation").width(healthPercentage);
 
-            healthBarPercentage.text(playerManager.health < 1 && playerManager.health > 0 ? "1" : roundedHealth);
+            healthBarAmount.text(playerManager.health < 1 && playerManager.health > 0 ? "1" : roundedHealth);
 
             if (playerManager.health < 60 && playerManager.health > 10) {
                 healthBar.css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
@@ -60,7 +60,7 @@ export class UpdatePacket extends ReceivingPacket {
                 healthBar.css("background-color", "#f8f9fa");
             }
 
-            healthBarPercentage.css("color", playerManager.health <= 40 ? "#ffffff" : "#000000");
+            healthBarAmount.css("color", playerManager.health <= 40 ? "#ffffff" : "#000000");
         }
 
         // Adrenaline

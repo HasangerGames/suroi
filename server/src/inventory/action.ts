@@ -1,14 +1,15 @@
 import { type ObjectCategory, PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 
 export abstract class Action {
-    player: Player;
+    readonly player: Player;
     private readonly _timeoutId: ReturnType<typeof setTimeout>;
-    abstract readonly type: PlayerActions;
-    speedMultiplier = 1;
+    abstract get type(): PlayerActions;
+    readonly speedMultiplier = 1 as number;
 
     protected constructor(player: Player, time: number) {
         this.player = player;
@@ -29,8 +30,9 @@ export abstract class Action {
 }
 
 export class ReloadAction extends Action {
-    type = PlayerActions.Reload;
-    item: GunItem;
+    private readonly _type = PlayerActions.Reload;
+    get type(): PlayerActions.Reload { return this._type; }
+    readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
         super(player, item.definition.reloadTime);
@@ -54,11 +56,13 @@ export class ReloadAction extends Action {
 }
 
 export class HealingAction extends Action {
-    type = PlayerActions.UseItem;
-    item: ObjectType<ObjectCategory.Loot>;
-    speedMultiplier = 0.5;
+    private readonly _type = PlayerActions.UseItem;
+    get type(): PlayerActions.UseItem { return this._type; }
 
-    constructor(player: Player, item: ObjectType<ObjectCategory.Loot>) {
+    readonly item: ObjectType<ObjectCategory.Loot, LootDefinition>;
+    override readonly speedMultiplier = 0.5;
+
+    constructor(player: Player, item: ObjectType<ObjectCategory.Loot, LootDefinition>) {
         const itemDef = item.definition as HealingItemDefinition;
         super(player, itemDef.useTime);
         this.item = item;

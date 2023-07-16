@@ -48,26 +48,25 @@ export class KillFeedPacket extends ReceivingPacket {
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
         switch (messageType) {
             case KillFeedMessageType.Kill: {
-                const suicide = stream.readBoolean();
+                const twoPartyInteraction = stream.readBoolean();
                 const killed = {
                     name: stream.readPlayerNameWithColor(),
                     id: stream.readObjectID()
                 };
-                //@ts-expect-error The IntelliSense works, so we take it and run with it
-                const killedBy: typeof suicide extends true ? undefined : { name: string, id: number } = suicide
-                    ? undefined
-                    : {
+
+                const killedBy = twoPartyInteraction
+                    ? {
                         name: stream.readPlayerNameWithColor(),
                         id: stream.readObjectID()
-                    };
+                    }
+                    : undefined;
 
                 switch (true) {
-                    case suicide:
                     case killed.id === this.playerManager.game.activePlayer.id: { // was killed
                         killFeedItem.addClass("kill-feed-item-victim");
                         break;
                     }
-                    case killedBy.id === this.playerManager.game.activePlayer.id: { // killed other
+                    case killedBy?.id === this.playerManager.game.activePlayer.id: { // killed other
                         killFeedItem.addClass("kill-feed-item-killer");
                         break;
                     }
@@ -78,12 +77,25 @@ export class KillFeedPacket extends ReceivingPacket {
                     weaponUsed = stream.readObjectType().definition as ItemDefinition;
                 }
 
-                /* eslint-disable @typescript-eslint/restrict-template-expressions */
+                const gasKill = stream.readBoolean();
+
+                /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-non-null-assertion */
                 if (localStorageInstance.config.textKillFeed) {
-                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${killedBy.name} ${randomKillWord()} ${killed.name}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                    const message = twoPartyInteraction
+                        ? `${killedBy!.name} ${randomKillWord()} ${killed.name}`
+                        : gasKill
+                            ? `${killed.name} died to the gas`
+                            : `${killed.name} committed suicide`;
+
+                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
                 } else {
-                    killFeedItem.html(`${suicide ? "" : killedBy.name} <img class="kill-icon" src="./img/game/killfeed/${weaponUsed?.idString}_killfeed.svg" alt="${weaponUsed === undefined ? "" : ` (${weaponUsed?.name})`}"> ${killed.name}`);
+                    const killerName = twoPartyInteraction ? killedBy!.name : "";
+                    const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
+                    const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : ` (${weaponUsed?.name})`;
+
+                    killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/game/killfeed/${iconSrc}_killfeed.svg" alt="${altText}"> ${killed.name}`);
                 }
+
                 break;
             }
             case KillFeedMessageType.Join: {

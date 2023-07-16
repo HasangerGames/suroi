@@ -1,5 +1,5 @@
 import { SendingPacket } from "../../types/sendingPacket";
-import { type Player } from "../../objects/player";
+import { Player } from "../../objects/player";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
@@ -24,12 +24,12 @@ export class KillFeedPacket extends SendingPacket {
                 const killMessage = this.message as KillKillFeedMessage;
                 const killed = killMessage.killed;
                 const killedBy = killMessage.killedBy;
-                const suicide = killed === killedBy;
+                const twoPartyInteraction = killedBy instanceof Player;
 
-                stream.writeBoolean(suicide); // suicide
+                stream.writeBoolean(twoPartyInteraction);
                 stream.writePlayerNameWithColor(killed);
                 stream.writeObjectID(killed.id);
-                if (!suicide) {
+                if (twoPartyInteraction) {
                     stream.writePlayerNameWithColor(killedBy);
                     stream.writeObjectID(killedBy.id);
                 }
@@ -37,6 +37,9 @@ export class KillFeedPacket extends SendingPacket {
                 const usedWeapon = killMessage.weaponUsed !== undefined;
                 stream.writeBoolean(usedWeapon);
                 if (killMessage.weaponUsed !== undefined) stream.writeObjectType(killMessage.weaponUsed);
+
+                stream.writeBoolean((killedBy === "gas"));
+
                 break;
             }
             case KillFeedMessageType.Join: {

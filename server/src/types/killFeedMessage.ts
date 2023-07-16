@@ -21,10 +21,10 @@ export class JoinKillFeedMessage extends KillFeedMessage {
 export class KillKillFeedMessage extends KillFeedMessage {
     override readonly type = KillFeedMessageType.Kill;
     readonly killed: Player;
-    readonly killedBy: Player;
+    readonly killedBy?: Player | "gas";
     readonly weaponUsed?: ObjectType;
 
-    constructor(killed: Player, killedBy: Player, weaponUsed?: ObjectType) {
+    constructor(killed: Player, killedBy?: Player | "gas", weaponUsed?: ObjectType) {
         super();
         this.killed = killed;
         this.killedBy = killedBy;

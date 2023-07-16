@@ -58,7 +58,7 @@ export class Bullet {
 
         this.scaleTween = scene.tweens.add({
             targets: this.image,
-            scaleX: ballistics.tracerLenght ?? 1,
+            scaleX: ballistics.tracerLength ?? 1,
             duration: ballistics.speed * 500
         });
     }
@@ -70,7 +70,7 @@ export class Bullet {
         this.scene.tweens.add({
             targets: this.image,
             scaleX: 0,
-            duration: ballistics.speed * 500 * (ballistics.tracerLenght ?? 1),
+            duration: ballistics.speed * 500 * (ballistics.tracerLength ?? 1),
             onComplete: () => {
                 this.image.destroy(true);
             }

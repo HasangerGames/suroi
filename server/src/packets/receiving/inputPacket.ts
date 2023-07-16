@@ -55,6 +55,7 @@ export class InputPacket extends ReceivingPacket {
                     let minDist = Number.MAX_VALUE;
                     let closestObject: Loot | undefined;
                     const detectionHitbox = new CircleHitbox(3, player.position);
+
                     for (const object of player.visibleObjects) {
                         if (object instanceof Loot && condition(object)) {
                             const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
@@ -65,6 +66,7 @@ export class InputPacket extends ReceivingPacket {
                             }
                         }
                     }
+
                     return closestObject;
                 };
 
@@ -76,8 +78,10 @@ export class InputPacket extends ReceivingPacket {
                 } else {
                     const closestObject = getClosestObject(loot => {
                         const definition = loot.type.definition;
+
                         return definition.itemType !== ItemType.Gun && definition.itemType !== ItemType.Melee;
                     });
+
                     if (closestObject) {
                         closestObject.interact(player, true);
                     }
@@ -85,7 +89,9 @@ export class InputPacket extends ReceivingPacket {
                 break;
             }
             case InputActions.Reload:
-                if (player.activeItem instanceof GunItem) player.activeItem.reload();
+                if (player.activeItem instanceof GunItem) {
+                    player.activeItem.reload();
+                }
                 break;
             case InputActions.Cancel:
                 player.action?.cancel();

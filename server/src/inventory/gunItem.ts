@@ -6,7 +6,7 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode, AnimationType, PlayerActions } from "../../../common/src/constants";
+import { FireMode, AnimationType } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
 
@@ -21,8 +21,6 @@ export class GunItem extends InventoryItem {
     ammo = 0;
 
     private _shots = 0;
-
-    ignoreSwitchCooldown = false;
 
     private _reloadTimeoutID: NodeJS.Timeout | undefined;
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
@@ -146,9 +144,8 @@ export class GunItem extends InventoryItem {
         if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
         if (
             this.owner.game.now - this._lastUse > attackCooldown &&
-            (this.owner.game.now - this._switchDate > this.definition.switchDelay || (this.definition.canQuickswitch ?? this.ignoreSwitchCooldown))
+            this.owner.game.now - this._switchDate > this.owner.effectiveSwitchDelay
         ) {
-            this.ignoreSwitchCooldown = false;
             this._useItemNoDelayCheck(true);
         }
     }
@@ -158,7 +155,7 @@ export class GunItem extends InventoryItem {
             this.definition.infiniteAmmo === true ||
             this.ammo >= this.definition.capacity ||
             this.owner.inventory.items[this.definition.ammoType] <= 0 ||
-            this.owner.action?.type === PlayerActions.Reload ||
+            this.owner.action !== undefined ||
             this.owner.activeItem !== this
         ) return;
 

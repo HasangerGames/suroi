@@ -1,7 +1,6 @@
 import {
     INVENTORY_MAX_WEAPONS,
-    ObjectCategory,
-    PlayerActions
+    ObjectCategory
 } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
@@ -115,25 +114,28 @@ export class Inventory {
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
-        const oldItem = this._weapons[old];
         const item = this._weapons[slot];
         if (item !== undefined) {
+            const now = this.owner.game.now;
+
+            this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
+                now - this.owner.lastSwitch >= 1000 &&
+                now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
+                item.definition.canQuickswitch === true
+            )
+                ? 250
+                : item.definition.switchDelay;
+
+            this.owner.lastSwitch = this.owner.game.now;
             item._switchDate = this.owner.game.now;
-            if (
-                item instanceof GunItem &&
-                oldItem instanceof GunItem &&
-                oldItem.definition.canQuickswitch
-            ) {
-                item.ignoreSwitchCooldown = true;
-            }
 
             if (item instanceof GunItem && item.ammo <= 0) {
-                this._reloadTimeoutID = setTimeout(() => { item.reload(); }, 450);
+                this._reloadTimeoutID = setTimeout(() => { item.reload(); }, this.owner.effectiveSwitchDelay);
             }
         }
 
         this.owner.attacking = false;
-        this.owner.recoil.active = false; // allows for quickswitching
+        this.owner.recoil.active = false;
 
         if (slot !== old) {
             this.owner.dirty.activeWeaponIndex = true;
@@ -207,7 +209,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-        [this._weapons[1], this._weapons[0]];
+            [this._weapons[1], this._weapons[0]];
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
     }
@@ -282,7 +284,10 @@ export class Inventory {
             this.items[ammoType] += item.ammo;
 
             // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral ? 0 : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral
+                ? 0
+                : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+
             if (overAmount > 0) {
                 /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
@@ -380,13 +385,14 @@ export class Inventory {
     useItem(itemString: string): void {
         if (!this.items[itemString]) return;
 
-        const item = ObjectType.fromString(ObjectCategory.Loot, itemString);
-        const definition = item.definition as LootDefinition;
+        const item = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, itemString);
+        const definition = item.definition;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
-                if (this.owner.action && this.owner.action.type === PlayerActions.UseItem &&
-                    (this.owner.action as HealingAction).item.idNumber === item.idNumber) return;
+                if (
+                    (this.owner.action as HealingAction | undefined)?.item.idNumber === item.idNumber
+                ) return;
 
                 const definition = item.definition as HealingItemDefinition;
 

@@ -297,7 +297,7 @@ export class Game {
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
                 // This system allows opposite movement keys to cancel each other out.
-                const movement: Vector = v(0, 0);
+                const movement = v(0, 0);
 
                 if (player.isMobile && player.movement.moving) {
                     movement.x = Math.cos(player.movement.angle) * 1.45;
@@ -349,7 +349,7 @@ export class Game {
 
                 // Gas damage
                 if (gasDamage && this.isInGas(player.position)) {
-                    player.damage(this.gas.dps);
+                    player.piercingDamage(this.gas.dps, "gas");
                 }
 
                 player.turning = false;
@@ -454,7 +454,7 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean, nameColor: string): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean, nameColor: string, lobbyClearing: boolean): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
@@ -476,7 +476,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, name, socket, spawnPosition, isDev, nameColor);
+        return new Player(this, name, socket, spawnPosition, isDev, nameColor, lobbyClearing);
     }
 
     // Called when a JoinPacket is sent by the client

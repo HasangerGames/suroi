@@ -45,13 +45,13 @@ export class Map {
             this.generateObstacles("rock", 150);
             this.generateObstacles("bush", 85);
             this.generateObstacles("regular_crate", 160);
-            this.generateObstacles("aegis_crate", 3);
-            this.generateObstacles("flint_crate", 3);
+            this.generateObstacles("aegis_crate", 6);
+            this.generateObstacles("flint_crate", 6);
             this.generateObstacles("barrel", 70);
             this.generateObstacles("super_barrel", 20);
-            this.generateObstacles("gauze_crate", 1);
-            this.generateObstacles("cola_crate", 1);
-            this.generateObstacles("melee_crate", 1);
+            this.generateObstacles("gauze_crate", 5);
+            this.generateObstacles("cola_crate", 5);
+            this.generateObstacles("melee_crate", 5);
             this.generateObstacles("gold_rock", 1);
         } else {
             // Obstacle debug code goes here

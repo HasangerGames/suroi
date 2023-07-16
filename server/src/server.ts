@@ -122,6 +122,7 @@ export interface PlayerContainer {
     ip: string | undefined
     isDev: boolean
     nameColor: string
+    lobbyClearing: boolean
 }
 
 app.ws("/play", {
@@ -184,6 +185,8 @@ app.ws("/play", {
             color = `#${color}`;
         }
 
+        const lobbyClearing = searchParams.get("lobbyClearing") !== null;
+
         res.upgrade(
             {
                 gameID,
@@ -191,7 +194,8 @@ app.ws("/play", {
                 name,
                 ip,
                 isDev,
-                nameColor: isDev ? color : ""
+                nameColor: isDev ? color : "",
+                lobbyClearing
             },
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
@@ -205,11 +209,11 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
-        const p = socket.getUserData();
-        const game = games[p.gameID];
+        const userData = socket.getUserData();
+        const game = games[userData.gameID];
         if (game === undefined) return;
-        p.player = game.addPlayer(socket, p.name, p.isDev, p.nameColor);
-        log(`"${p.name}" joined game #${p.gameID}`);
+        userData.player = game.addPlayer(socket, userData.name, userData.isDev, userData.nameColor, userData.lobbyClearing);
+        log(`"${userData.name}" joined game #${userData.gameID}`);
     },
 
     /**

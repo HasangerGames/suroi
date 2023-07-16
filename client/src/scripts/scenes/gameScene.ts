@@ -186,10 +186,12 @@ export class GameScene extends Phaser.Scene {
             - the item the pickup message concerns
             - its quantity
             - the bind to interact has changed
+            - whether the user can interact with it
         */
         const cache: {
             loot?: Loot
             pickupBind?: string
+            canInteract?: boolean
             readonly clear: () => void
             readonly pickupBindIsValid: () => boolean
         } = {
@@ -222,34 +224,39 @@ export class GameScene extends Phaser.Scene {
             // Loop through all loot objects to check if the player is colliding with one to show the interact message
             let minDist = Number.MAX_VALUE;
             let closestObject: Loot | undefined;
+            let canInteract: boolean | undefined;
             const player = this.player;
 
             for (const o of this.activeGame.objects) {
                 const object = o[1];
-                if (object instanceof Loot && object.canInteract(this.playerManager)) {
+                if (object instanceof Loot) {
                     const dist = distanceSquared(object.position, player.position);
                     if (dist < minDist && circleCollision(player.position, player.radius, object.position, object.radius)) {
                         minDist = dist;
                         closestObject = object;
+                        canInteract = closestObject.canInteract(this.playerManager);
                     }
                 }
             }
 
             const differences = {
                 loot: cache.loot?.id !== closestObject?.id,
-                bind: !cache.pickupBindIsValid()
+                bind: !cache.pickupBindIsValid(),
+                canInteract: cache.canInteract !== canInteract
             };
 
             if (differences.bind) bindChangeAcknowledged = false;
 
             if (
                 differences.loot ||
-                differences.bind
+                differences.bind ||
+                differences.canInteract
             ) {
                 // Cache miss, rerender
                 cache.clear();
                 cache.loot = closestObject;
                 cache.pickupBind = getPickupBind();
+                cache.canInteract = canInteract;
 
                 if (closestObject !== undefined) {
                     const prepareInteractText = (): void => {
@@ -277,7 +284,11 @@ export class GameScene extends Phaser.Scene {
                         } else if (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee) {
                             prepareInteractText();
 
-                            $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">');
+                            if (canInteract) {
+                                $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">').show();
+                            } else {
+                                $("#interact-key").hide();
+                            }
                             $("#interact-message").show();
                             return;
                         }
@@ -297,6 +308,12 @@ export class GameScene extends Phaser.Scene {
                             } else {
                                 $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
                             }
+                        }
+
+                        if (canInteract) {
+                            $("#interact-key").show();
+                        } else {
+                            $("#interact-key").hide();
                         }
 
                         $("#interact-message").show();

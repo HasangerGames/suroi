@@ -11,6 +11,7 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
+    INVENTORY_MAX_WEAPONS,
     ObjectCategory,
     PLAYER_RADIUS
 } from "../../../common/src/constants";
@@ -26,6 +27,7 @@ import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type GunItem } from "../inventory/gunItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -193,7 +195,10 @@ export class Player extends GameObject {
      */
     canDespawn = true;
 
-    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean, nameColor: string) {
+    lastSwitch = 0;
+    effectiveSwitchDelay = 0;
+
+    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean, nameColor: string, lobbyClearing: boolean) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
         this.isDev = isDev;
@@ -222,19 +227,35 @@ export class Player extends GameObject {
 
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
 
-        // Inventory preset
-        if (this.isDev) {
-            this.inventory.addOrReplaceWeapon(0, "mp40");
-            this.inventory.items["9mm"] = 90;
-            // (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
-            // this.inventory.addOrReplaceWeapon(1, "tango_51");
-            // (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            // this.adrenaline = 100;
-        }
         this.inventory.addOrReplaceWeapon(2, "fists");
+        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
+
+        // Inventory preset
+        if (this.isDev && lobbyClearing) {
+            this.inventory.addOrReplaceWeapon(0, "deathray");
+            (this.inventory.getWeapon(0) as GunItem).ammo = 1;
+            this.inventory.addOrReplaceWeapon(1, "deathray");
+            (this.inventory.getWeapon(1) as GunItem).ammo = 1;
+            this.inventory.addOrReplaceWeapon(2, "kbar");
+
+            this.inventory.vest = ObjectType.fromString(ObjectCategory.Loot, "tactical_vest");
+            this.inventory.helmet = ObjectType.fromString(ObjectCategory.Loot, "tactical_helmet");
+            this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "tactical_backpack");
+
+            this.inventory.items["1x_scope"] = 1;
+            this.inventory.items["2x_scope"] = 1;
+            this.inventory.items["4x_scope"] = 1;
+            this.inventory.items["8x_scope"] = 1;
+            this.inventory.items["15x_scope"] = 1;
+
+            for (const item of Object.keys(this.inventory.items)) {
+                this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item];
+            }
+
+            this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
+        }
 
         this.dirty.activeWeaponIndex = true;
-        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -367,14 +388,7 @@ export class Player extends GameObject {
         }
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
-        if (this.invulnerable) return;
-
-        // Reduction are merged additively
-        amount *= 1 - (
-            (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
-        );
-
+    private _clampDamageAmount(amount: number): number {
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
         }
@@ -384,6 +398,30 @@ export class Player extends GameObject {
         }
 
         if (amount < 0 || this.dead) amount = 0;
+
+        return amount;
+    }
+
+    override damage(amount: number, source?: Player, weaponUsed?: ObjectType): void {
+        if (this.invulnerable) return;
+
+        // Reduction are merged additively
+        amount *= 1 - (
+            (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
+        );
+
+        amount = this._clampDamageAmount(amount);
+
+        this.piercingDamage(amount, source, weaponUsed);
+    }
+
+    /**
+     * Deals damage whilst ignoring protective modifiers but not invulnerability
+     */
+    piercingDamage(amount: number, source?: Player | "gas", weaponUsed?: ObjectType): void {
+        if (this.invulnerable) return;
+
+        amount = this._clampDamageAmount(amount);
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
@@ -399,82 +437,97 @@ export class Player extends GameObject {
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
 
+        if (this.health <= 0) this.die(source, weaponUsed);
+    }
+
+    // dies of death
+    die(source?: Player | "gas", weaponUsed?: ObjectType): void {
         // Death logic
-        if (this.health <= 0 && !this.dead) {
-            this.health = 0;
-            this.dead = true;
+        if (this.health > 0 || this.dead) return;
 
-            // Send kill packets
-            if (source instanceof Player) {
-                this.killedBy = source;
-                if (source !== this) source.kills++;
-                source.sendPacket(new KillPacket(source, this, weaponUsed));
-                this.game.killFeedMessages.add(new KillFeedPacket(this, new KillKillFeedMessage(this, source, weaponUsed)));
+        this.health = 0;
+        this.dead = true;
+
+        // Send kill packets
+        if (source instanceof Player) {
+            this.killedBy = source;
+            if (source !== this) source.kills++;
+            source.sendPacket(new KillPacket(source, this, weaponUsed));
+        }
+
+        this.game.killFeedMessages.add(
+            new KillFeedPacket(
+                this,
+                new KillKillFeedMessage(
+                    this,
+                    source === this ? undefined : source,
+                    weaponUsed
+                )
+            )
+        );
+
+        // Destroy physics body; reset movement and attacking variables
+        this.movement.up = false;
+        this.movement.down = false;
+        this.movement.left = false;
+        this.movement.right = false;
+        this.attacking = false;
+        this.deathPosition = this.position.clone();
+        try {
+            this.game.world.destroyBody(this.body);
+        } catch (e) {
+            console.error("Error destroying player body. Details: ", e);
+        }
+        this.game.aliveCountDirty = true;
+        this.adrenaline = 0;
+        this.dirty.inventory = true;
+        this.action?.cancel();
+
+        this.game.livingPlayers.delete(this);
+        this.game.dynamicObjects.delete(this);
+        this.game.removeObject(this);
+
+        //
+        // Drop loot
+        //
+
+        // Drop weapons
+        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
+            this.inventory.dropWeapon(i);
+        }
+
+        // Drop inventory items
+        for (const item in this.inventory.items) {
+            const count = this.inventory.items[item];
+
+            if (count > 0) {
+                const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item);
+                if (
+                    itemType.definition.noDrop === true ||
+                    ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
+                ) continue;
+
+                this.game.addLoot(itemType, this.position, count);
+                this.inventory.items[item] = 0;
             }
+        }
 
-            // Destroy physics body; reset movement and attacking variables
-            this.movement.up = false;
-            this.movement.down = false;
-            this.movement.left = false;
-            this.movement.right = false;
-            this.attacking = false;
-            this.deathPosition = this.position.clone();
-            try {
-                this.game.world.destroyBody(this.body);
-            } catch (e) {
-                console.error("Error destroying player body. Details: ", e);
-            }
-            this.game.aliveCountDirty = true;
-            this.adrenaline = 0;
-            this.dirty.inventory = true;
-            this.action?.cancel();
+        // Drop equipment
+        if (this.inventory.helmet && this.inventory.helmet.definition.noDrop !== true) this.game.addLoot(this.inventory.helmet, this.position);
+        if (this.inventory.vest && this.inventory.vest.definition.noDrop !== true) this.game.addLoot(this.inventory.vest, this.position);
+        if (this.inventory.backpack.definition.noDrop !== true) this.game.addLoot(this.inventory.backpack, this.position);
 
-            this.game.livingPlayers.delete(this);
-            this.game.dynamicObjects.delete(this);
-            this.game.removeObject(this);
+        this.inventory.helmet = this.inventory.vest = undefined;
+        this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
 
-            //
-            // Drop loot
-            //
+        // Create death marker
+        const deathMarker = new DeathMarker(this);
+        this.game.dynamicObjects.add(deathMarker);
+        this.game.fullDirtyObjects.add(deathMarker);
 
-            // Drop weapons
-            for (let i = 0; i < 3; i++) {
-                this.inventory.dropWeapon(i);
-            }
-
-            // Drop inventory items
-            for (const item in this.inventory.items) {
-                const count = this.inventory.items[item];
-
-                if (count > 0) {
-                    const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item);
-                    if (
-                        itemType.definition.noDrop === true ||
-                        ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
-                    ) continue;
-
-                    this.game.addLoot(itemType, this.position, count);
-                    this.inventory.items[item] = 0;
-                }
-            }
-
-            // Drop equipment
-            if (this.inventory.helmet && this.inventory.helmet.definition.noDrop !== true) this.game.addLoot(this.inventory.helmet, this.position);
-            if (this.inventory.vest && this.inventory.vest.definition.noDrop !== true) this.game.addLoot(this.inventory.vest, this.position);
-            if (this.inventory.backpack.definition.noDrop !== true) this.game.addLoot(this.inventory.backpack, this.position);
-
-            this.inventory.helmet = this.inventory.vest = undefined;
-            this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
-
-            // Create death marker
-            const deathMarker = new DeathMarker(this);
-            this.game.dynamicObjects.add(deathMarker);
-            this.game.fullDirtyObjects.add(deathMarker);
-
-            // Send game over to dead player
-            if (!this.disconnected) {
-                this.sendPacket(new GameOverPacket(this, false));
-            }
+        // Send game over to dead player
+        if (!this.disconnected) {
+            this.sendPacket(new GameOverPacket(this, false));
         }
     }
 
