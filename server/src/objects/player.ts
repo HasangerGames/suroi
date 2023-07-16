@@ -396,7 +396,7 @@ export class Player extends GameObject {
         return amount;
     }
 
-    override damage(amount: number, source?: Player, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
         if (this.invulnerable) return;
 
         // Reduction are merged additively
@@ -412,7 +412,7 @@ export class Player extends GameObject {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: Player | "gas", weaponUsed?: ObjectType): void {
+    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: ObjectType): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
@@ -435,7 +435,7 @@ export class Player extends GameObject {
     }
 
     // dies of death
-    die(source?: Player | "gas", weaponUsed?: ObjectType): void {
+    die(source?: GameObject | "gas", weaponUsed?: ObjectType): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -447,18 +447,18 @@ export class Player extends GameObject {
             this.killedBy = source;
             if (source !== this) source.kills++;
             source.sendPacket(new KillPacket(source, this, weaponUsed));
-        }
 
-        this.game.killFeedMessages.add(
-            new KillFeedPacket(
-                this,
-                new KillKillFeedMessage(
+            this.game.killFeedMessages.add(
+                new KillFeedPacket(
                     this,
-                    source === this ? undefined : source,
-                    weaponUsed
+                    new KillKillFeedMessage(
+                        this,
+                        source === this ? undefined : source,
+                        weaponUsed
+                    )
                 )
-            )
-        );
+            );
+        }
 
         // Destroy physics body; reset movement and attacking variables
         this.movement.up = false;
