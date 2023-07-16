@@ -288,9 +288,12 @@
 #interact-text {
     font-size: 20px;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    margin-left: 3px;
+}
+
+#interact-key.active + #interact-text {
     position: relative;
     top: 3px;
-    margin-left: 3px;
 }
 
 #weapon-ammo-container {
@@ -303,8 +306,7 @@
 
     font-weight: bold;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
-    
-    
+
     div {
         display: flex;
         background: $transparent_bg;
@@ -323,7 +325,7 @@
         width: 100px;
         height: 50px;
         border-radius: 4px;
-        
+
         @media screen and (max-width: $screen_large) {
             font-size: 16px;
         }

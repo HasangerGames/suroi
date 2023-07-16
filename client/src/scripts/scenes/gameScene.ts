@@ -287,7 +287,7 @@ export class GameScene extends Phaser.Scene {
                             if (canInteract) {
                                 $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">').show();
                             } else {
-                                $("#interact-key").hide();
+                                $("#interact-key").removeClass("active").hide();
                             }
                             $("#interact-message").show();
                             return;
@@ -311,9 +311,9 @@ export class GameScene extends Phaser.Scene {
                         }
 
                         if (canInteract) {
-                            $("#interact-key").show();
+                            $("#interact-key").addClass("active").show();
                         } else {
-                            $("#interact-key").hide();
+                            $("#interact-key").removeClass("active").hide();
                         }
 
                         $("#interact-message").show();

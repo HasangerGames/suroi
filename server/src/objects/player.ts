@@ -245,9 +245,8 @@ export class Player extends GameObject {
             for (const item of Object.keys(this.inventory.items)) {
                 this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item] ?? 1;
             }
-            
-            this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
 
+            this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
         }
 
         this.dirty.activeWeaponIndex = true;
