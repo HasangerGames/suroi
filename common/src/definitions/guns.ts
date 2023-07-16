@@ -90,7 +90,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 13.5,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.3,
             speedVariance: 0,
             maxDistance: 180
         }
@@ -123,7 +123,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 7,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.2,
             speedVariance: 0,
             maxDistance: 80
         }
@@ -156,7 +156,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 10,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.16,
             speedVariance: 0,
             maxDistance: 64
         }
@@ -189,7 +189,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 3,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.12,
             speedVariance: 0,
             maxDistance: 48
         }
@@ -285,9 +285,9 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 6.5,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.2,
             speedVariance: 0,
-            maxDistance: 60
+            maxDistance: 80
         }
     },
     {
@@ -304,8 +304,8 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.75,
         recoilDuration: 750,
         fireMode: FireMode.Burst,
-        shotSpread: 3,
-        moveSpread: 2,
+        shotSpread: 2,
+        moveSpread: 1,
         length: 9,
         fists: {
             left: v(65, 0),
@@ -316,7 +316,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 14.5,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.25,
             speedVariance: 0,
             maxDistance: 96
         },
@@ -339,7 +339,7 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.7,
         recoilDuration: 900,
         fireMode: FireMode.Burst,
-        shotSpread: 2,
+        shotSpread: 0.5,
         moveSpread: 1,
         length: 9.5,
         fists: {
@@ -351,7 +351,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 19,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.3,
             speedVariance: 0,
             maxDistance: 180
         },
@@ -386,7 +386,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 9,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.25,
             speedVariance: 0,
             maxDistance: 64
         }
@@ -417,7 +417,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 15,
             obstacleMultiplier: 1,
-            speed: 0.35,
+            speed: 0.3,
             speedVariance: 0,
             maxDistance: 180
         }
@@ -448,7 +448,7 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 16,
             obstacleMultiplier: 2.5,
-            speed: 0.35,
+            speed: 0.3,
             speedVariance: 0,
             maxDistance: 180
         }
