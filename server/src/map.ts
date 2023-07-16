@@ -74,7 +74,7 @@ export class Map {
             // Generate all Loots
             const itemPos = Vec2(this.width / 2, this.height / 2);
             for (const item of Loots.definitions) {
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 255);
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 511);
 
                 itemPos.x += 10;
                 if (itemPos.x > this.width / 2 + 100) {

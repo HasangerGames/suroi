@@ -62,7 +62,7 @@ export const Melees: MeleeDefinition[] = [
         cooldown: 450,
         speedMultiplier: 1,
         fists: {
-            animationDuration: 125,
+            animationDuration: 225,
             randomFist: false,
             left: v(40, 20),
             right: v(50, -30),
@@ -88,7 +88,7 @@ export const Melees: MeleeDefinition[] = [
         cooldown: 200,
         speedMultiplier: 1,
         fists: {
-            animationDuration: 125,
+            animationDuration: 100,
             randomFist: false,
             left: v(38, 35),
             right: v(38, -35),
