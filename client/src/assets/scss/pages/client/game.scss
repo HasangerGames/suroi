@@ -37,7 +37,7 @@
     top: 10px;
     left: 10px;
 
-    & > div {
+    &>div {
         margin-bottom: 10px;
     }
 
@@ -81,9 +81,17 @@
     }
 
     @keyframes advancing {
-        0% { background-color: #ff4800aa; }
-        50% { background-color: #000000aa; }
-        100% { background-color: #ff4800aa; }
+        0% {
+            background-color: #ff4800aa;
+        }
+
+        50% {
+            background-color: #000000aa;
+        }
+
+        100% {
+            background-color: #ff4800aa;
+        }
     }
 
     #gas-timer-text {
@@ -458,25 +466,25 @@
 }
 
 #gas-msg {
-        text-align: center;
-        position: absolute;
-        top: 200px;
-        left: 50%;
-        transform: translateX(-50%);
+    text-align: center;
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    @media screen and (max-width: $screen_large) {
+        top: 100px;
+    }
+
+    #gas-msg-info {
+        font-weight: bold;
+        font-size: 36px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 
         @media screen and (max-width: $screen_large) {
-            top: 100px;
+            font-size: 14px;
         }
-
-        #gas-msg-info {
-            font-weight: bold;
-            font-size: 36px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-
-            @media screen and (max-width: $screen_large) {
-                font-size: 14px;
-            }
-        }
+    }
 }
 
 .inventory-container {
@@ -624,7 +632,7 @@
         opacity: 0.65;
 
         &.has-item {
-            opacity: 1;            
+            opacity: 1;
             background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
     }
@@ -647,6 +655,7 @@
         &.full .item-count {
             color: $orange;
         }
+
         opacity: .65;
 
         &.has-item {
@@ -669,6 +678,7 @@
             max-width: 120px;
             bottom: 50px;
             left: -12.5%;
+            pointer-events: none;
         }
 
         .inventory-slot:first-child .item-tooltip {
@@ -697,7 +707,7 @@
 
             .inventory-slot .item-tooltip {
                 bottom: 0px;
-                left: 150px!important;
+                left: 150px !important;
             }
         }
 
@@ -780,14 +790,14 @@
     left: 50%;
     transform: translateX(-50%);
     align-items: center;
-    flex-direction: row!important;
+    flex-direction: row !important;
 
     .inventory-slot {
         justify-content: center;
         padding: 4px;
 
-        height: fit-content!important;
-        width: fit-content!important;
+        height: fit-content !important;
+        width: fit-content !important;
 
         opacity: 0.75;
 
@@ -808,6 +818,7 @@
                 width: 60px;
                 height: 60px;
             }
+
             .item-tooltip {
                 margin-top: 110px;
             }

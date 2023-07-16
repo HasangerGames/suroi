@@ -30,16 +30,27 @@ export type GunDefinition = ItemDefinition & {
         readonly right: Vector
         readonly animationDuration: number
     }
+
     readonly image: {
         readonly position: Vector
         readonly angle?: number
     }
+
     readonly ballistics: {
         readonly damage: number
         readonly obstacleMultiplier: number
         readonly speed: number
         readonly speedVariance: number
         readonly maxDistance: number
+        // fixme doesn't work right now
+        readonly penetration?: {
+            readonly players?: boolean
+            readonly obstacles?: boolean
+        }
+        readonly tracerOpacity?: {
+            readonly start?: number
+            readonly end?: number
+        }
     }
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -446,20 +457,20 @@ export const Guns: GunDefinition[] = [
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
-        ammoType: "762mm",
+        ammoType: "power_cell",
+        noDrop: true,
         ammoSpawnAmount: 0,
-        capacity: Infinity,
-        infiniteAmmo: true,
-        reloadTime: 0.1,
+        capacity: 1,
+        reloadTime: 1.4,
         fireDelay: 60,
-        switchDelay: 0,
+        switchDelay: 500,
         speedMultiplier: 1,
         recoilMultiplier: 1,
-        recoilDuration: 0,
+        recoilDuration: 100,
         fireMode: FireMode.Auto,
-        shotSpread: 15,
-        moveSpread: 5,
-        bulletCount: 10,
+        shotSpread: 0.15,
+        moveSpread: 0.1,
+        bulletCount: 1,
         length: 11,
         fists: {
             left: v(65, 0),
@@ -468,11 +479,19 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 10,
-            obstacleMultiplier: 1,
-            speed: 0.35,
-            speedVariance: 0,
-            maxDistance: 128
+            damage: 300,
+            obstacleMultiplier: 2,
+            speed: 0.5,
+            speedVariance: 0.5,
+            maxDistance: 400,
+            penetration: {
+                players: true,
+                obstacles: true
+            },
+            tracerOpacity: {
+                start: 1,
+                end: 0.5
+            }
         }
     }
 ];

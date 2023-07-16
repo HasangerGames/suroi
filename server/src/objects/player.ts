@@ -223,14 +223,16 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
 
         // Inventory preset
-        /*if (this.isDev) {
+        if (this.isDev) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
-            (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
-            this.inventory.addOrReplaceWeapon(1, "tango_51");
-            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.adrenaline = 100;
-        }*/
+            // (this.inventory.getWeapon(0) as GunItem).ammo = Infinity;
+            // this.inventory.addOrReplaceWeapon(1, "tango_51");
+            // (this.inventory.getWeapon(1) as GunItem).ammo = 5;
+            // this.adrenaline = 100;
+        }
+
         this.inventory.addOrReplaceWeapon(2, "fists");
+
         this.dirty.activeWeaponIndex = true;
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
     }
@@ -311,10 +313,12 @@ export class Player extends GameObject {
         const maxY = this.position.y + this.yCullDist;
 
         for (const object of this.game.dynamicObjects) {
-            if (object.position.x > minX &&
+            if (
+                object.position.x > minX &&
                 object.position.x < maxX &&
                 object.position.y > minY &&
-                object.position.y < maxY) {
+                object.position.y < maxY
+            ) {
                 newVisibleObjects.add(object);
                 if (!this.visibleObjects.has(object)) {
                     this.fullDirtyObjects.add(object);
@@ -366,19 +370,19 @@ export class Player extends GameObject {
     override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
         if (this.invulnerable) return;
 
-        // Calculate damage amount
-        if (this.inventory.helmet) {
-            amount -= amount * this.inventory.helmet.definition.damageReductionPercentage;
-        }
-        if (this.inventory.vest) {
-            amount -= amount * this.inventory.vest.definition.damageReductionPercentage;
-        }
+        // Reduction are merged additively
+        amount *= 1 - (
+            (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
+        );
+
         if (this.health - amount > 100) {
             amount = -(100 - this.health);
         }
+
         if (this.health - amount <= 0) {
             amount = this.health;
         }
+
         if (amount < 0 || this.dead) amount = 0;
 
         // Decrease health; update damage done and damage taken
@@ -441,19 +445,23 @@ export class Player extends GameObject {
             // Drop inventory items
             for (const item in this.inventory.items) {
                 const count = this.inventory.items[item];
+
                 if (count > 0) {
-                    const itemType: ObjectType<ObjectCategory.Loot, LootDefinition> = ObjectType.fromString(ObjectCategory.Loot, item);
-                    if (!itemType.definition.noDrop) {
-                        this.game.addLoot(itemType, this.position, count);
-                        this.inventory.items[item] = 0;
-                    }
+                    const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item);
+                    if (
+                        itemType.definition.noDrop === true ||
+                        ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
+                    ) continue;
+
+                    this.game.addLoot(itemType, this.position, count);
+                    this.inventory.items[item] = 0;
                 }
             }
 
             // Drop equipment
-            if (this.inventory.helmet) this.game.addLoot(this.inventory.helmet, this.position);
-            if (this.inventory.vest) this.game.addLoot(this.inventory.vest, this.position);
-            if (this.inventory.backpack.definition.level > 0) this.game.addLoot(this.inventory.backpack, this.position);
+            if (this.inventory.helmet && this.inventory.helmet.definition.noDrop !== true) this.game.addLoot(this.inventory.helmet, this.position);
+            if (this.inventory.vest && this.inventory.vest.definition.noDrop !== true) this.game.addLoot(this.inventory.vest, this.position);
+            if (this.inventory.backpack.definition.noDrop !== true) this.game.addLoot(this.inventory.backpack, this.position);
 
             this.inventory.helmet = this.inventory.vest = undefined;
             this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
