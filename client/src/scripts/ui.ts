@@ -325,7 +325,7 @@ $((): void => {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning) {
+        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning && !core.game?.gameOver) {
             e.preventDefault();
         }
     });
