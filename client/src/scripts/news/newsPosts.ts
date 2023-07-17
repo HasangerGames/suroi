@@ -10,18 +10,23 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
-        date: 1688932576000,
+        date: 1689622834000,
         author: "HAZEL",
-        title: "Geared Up",
-        bannerImage: require("../../assets/img/news/v0.7.0.png"),
-        content: `A long-awaited shipment, containing helmets, vests, backpacks, and scopes, has finally arrived on the island! Protect yourself with helmets and vests, pack in extra ammo with backpacks, and get the jump on your enemy with scopes. Unfortunately, due to supply shortages, guns have become more scarce.`,
-        longContent: `<h2>Suroi v0.7.0</h2>
+        title: "Untrodden Lands",
+        content: `H.A.Z.E.L. has made various improvements to weapons systems to refine them further, and a small shipment of antiquated arms has been received from Flint Industries. Scouts have explored more of the island. We've mapped out the gas release points, allowing us to predict the gas's movement accurately. Additionally, new AR software updates have been pushed out to ensure battle readiness.`,
+        longContent: `<h2>Suroi v0.8.0</h2>
 
 <h3>New features & changes</h3>
 <ul>
-  <li>Equipment! Added helmets, vests, backpacks, and scopes.</li>
-  <li>Replaced the 940 Pro with the HP18, a functionally identical gun which should be easier to distinguish from other shotguns.</li>
-  <li>Added client-side prediction, which should make the game feel a lot more responsive. It can be turned off in settings.</li>
+  <li>Bigger map! The map is now bigger, and games are longer.</li>
+  <li>More guns! Added 2 guns: the MP40 (an SMG), and the VSS (a DMR).</li>
+  <li>Gun improvements! Guns now slow you down when holding, and spread is higher when moving. Gun icons have been simplified.</li>
+  <li>Gas improvements! A white circle now appears on the map, showing where the gas will shrink to. Messages now appear when the gas is advancing, and gas death messages have been added.</li>
+  <li>Lots of tweaks to gun stats and loot tables.</li>
+  <li>New menu music!</li>
+  <li>New obstacle! Added the blueberry bush.</li>
+  <li>The secondary ammo counter now displays the total ammo in the inventory, instead of the gun clip size.</li>
+  <li>The gold rock is no longer shown on the map.</li>
 </ul>`
     },
     {
