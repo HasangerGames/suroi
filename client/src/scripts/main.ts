@@ -60,7 +60,7 @@ $(() => {
     }
 
     const lobbyClearing = params.get("lobbyClearing");
-    if (lobbyClearing) {
+    if (lobbyClearing !== undefined) {
         localStorageInstance.update({ lobbyClearing: lobbyClearing !== null });
     }
 
