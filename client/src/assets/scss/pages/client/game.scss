@@ -580,6 +580,7 @@
             opacity: 0;
             transition: opacity 150ms linear;
             font-size: 14px;
+            pointer-events: none;
         }
 
         &:hover .item-tooltip {
@@ -697,7 +698,6 @@
             max-width: 120px;
             bottom: 50px;
             left: -12.5%;
-            pointer-events: none;
         }
 
         .inventory-slot:first-child .item-tooltip {
