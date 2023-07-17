@@ -55,12 +55,18 @@ export interface ConfigType {
      * A basic filter that censors only the most extreme swearing.
      */
     readonly censorUsernames: boolean
+
+    /**
+     * The map name, must be a valid value from the server maps definitions
+     * Example: "main" for the main map or "debug" for the debug map
+     */
+    readonly mapName: string
+
     /**
      * Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 5 times in 5 seconds.
      */
     readonly botProtection: boolean
     readonly bannedIPs: string[]
-    readonly disableMapGeneration: boolean
     readonly disableLobbyClearing: boolean
 
     /**
@@ -103,7 +109,8 @@ export const Config = {
     botProtection: false,
     bannedIPs: [],
 
-    disableMapGeneration: false,
+    mapName: "main",
+
     disableLobbyClearing: false,
 
     devPassword: "dev"
