@@ -3,7 +3,7 @@ import { type Body, type Shape, type Vec2 } from "planck";
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { bodyFromHitbox } from "../utils/misc";
+import { type LootItem, bodyFromHitbox, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -13,24 +13,11 @@ import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Variation } from "../../../common/src/typings";
-import {
-    LootTables,
-    LootTiers,
-    type WeightedItem
-} from "../data/lootTables";
-import { random, weightedRandom } from "../../../common/src/utils/random";
+import { LootTables } from "../data/lootTables";
+import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-
-export class LootItem {
-    idString: string;
-    count: number;
-    constructor(idString: string, count: number) {
-        this.idString = idString;
-        this.count = count;
-    }
-}
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -82,40 +69,9 @@ export class Obstacle extends GameObject {
             const lootTable = LootTables[this.type.idString];
             const count = random(lootTable.min, lootTable.max);
 
-            for (let i = 0; i < count; i++) this.getLoot(lootTable.loot);
-        }
-    }
-
-    private getLoot(loot: WeightedItem[]): void {
-        interface TempLootItem { item: string, count?: number, isTier: boolean }
-        const items: TempLootItem[] = [];
-        const weights: number[] = [];
-        for (const item of loot) {
-            items.push({
-                item: "tier" in item ? item.tier : item.item,
-                count: "count" in item ? item.count : undefined,
-                isTier: "tier" in item
-            });
-            weights.push(item.weight);
-        }
-        const selectedItem = weightedRandom<TempLootItem>(items, weights);
-
-        if (selectedItem.isTier) this.getLoot(LootTiers[selectedItem.item]);
-        else this.addLoot(selectedItem.item, selectedItem.count ?? 1);
-    }
-
-    private addLoot(type: string, count: number): void {
-        if (type === "nothing") return;
-
-        this.loot.push(new LootItem(type, count));
-
-        const definition = ObjectType.fromString(ObjectCategory.Loot, type).definition;
-        if (definition === undefined) {
-            throw new Error(`Unknown loot item: ${type}`);
-        }
-
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) { // TODO Clean this up
-            this.loot.push(new LootItem(definition.ammoType as string, definition.ammoSpawnAmount as number));
+            for (let i = 0; i < count; i++) {
+                this.loot = this.loot.concat(getLootTableLoot(lootTable.loot));
+            }
         }
     }
 
