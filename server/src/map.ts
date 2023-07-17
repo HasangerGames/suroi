@@ -41,13 +41,13 @@ export class Map {
         if (!Config.disableMapGeneration) {
             this.generateObstacles("oil_tank", 3, undefined, 200, true);
             this.generateObstacles("oil_tank", 6);
+            this.generateObstacles("regular_crate", 150);
             this.generateObstacles("oak_tree", 140);
             this.generateObstacles("pine_tree", 12);
             this.generateObstacles("birch_tree", 16);
             this.generateObstacles("rock", 140);
             this.generateObstacles("bush", 85);
             this.generateObstacles("blueberry_bush", 20);
-            this.generateObstacles("regular_crate", 120);
             this.generateObstacles("aegis_crate", random(3, 4));
             this.generateObstacles("flint_crate", random(3, 4));
             this.generateObstacles("barrel", 70);

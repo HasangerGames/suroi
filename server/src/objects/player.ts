@@ -28,6 +28,7 @@ import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type GunItem } from "../inventory/gunItem";
+import { Config } from "../config";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -231,7 +232,7 @@ export class Player extends GameObject {
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
 
         // Inventory preset
-        if (this.isDev && lobbyClearing) {
+        if (this.isDev && lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
             this.inventory.addOrReplaceWeapon(1, "deathray");

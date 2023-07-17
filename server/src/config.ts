@@ -61,6 +61,7 @@ export interface ConfigType {
     readonly botProtection: boolean
     readonly bannedIPs: string[]
     readonly disableMapGeneration: boolean
+    readonly disableLobbyClearing: boolean
 
     /**
      * Dev mode password, this gives dev cheats, for now it only spawns the player with some weapons and 100% adrenaline. \
@@ -103,6 +104,7 @@ export const Config = {
     bannedIPs: [],
 
     disableMapGeneration: false,
+    disableLobbyClearing: false,
 
     devPassword: "dev"
 } satisfies ConfigType as ConfigType;
