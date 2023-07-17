@@ -77,7 +77,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
             variations: 3,
-            depth: 4
+            depth: 5
         },
         {
             idString: "pine_tree",
@@ -92,7 +92,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
-            depth: 4
+            depth: 5
         },
         {
             idString: "birch_tree",
@@ -107,7 +107,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(3),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
-            depth: 4
+            depth: 5
         },
         {
             idString: "rock",
@@ -140,7 +140,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "full",
             variations: 2,
             particleVariations: 2,
-            depth: 3
+            depth: 4
         },
         makeCrate("regular_crate", "Regular Crate", "binary"),
         makeCrate("flint_crate", "Flint Crate", "none", true),

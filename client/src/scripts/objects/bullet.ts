@@ -38,7 +38,7 @@ export class Bullet {
             "main",
             `${this.source.definition.ammoType}_trail.svg`
         ).setRotation(Phaser.Math.Angle.BetweenPoints(this.initialPosition, finalPosition))
-            .setDepth(1)
+            .setDepth(3)
             .setOrigin(1, 0.5)
             .setScale(0, ballistics.tracerWidth ?? 1);
 

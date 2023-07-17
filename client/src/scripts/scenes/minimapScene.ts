@@ -8,7 +8,6 @@ import { MAP_HEIGHT, MAP_WIDTH } from "../../../../common/src/constants";
 
 export class MinimapScene extends Phaser.Scene {
     playerIndicator!: Phaser.GameObjects.Image;
-    playerIndicatorDead = false;
     isExpanded!: boolean;
     visible = true;
 
@@ -30,8 +29,6 @@ export class MinimapScene extends Phaser.Scene {
 
     create(): void {
         this.scene.bringToTop();
-
-        this.playerIndicatorDead = false;
 
         this.renderTexture = this.add.renderTexture(0, 0, MINIMAP_GRID_WIDTH, MINIMAP_GRID_HEIGHT).setOrigin(0, 0);
 
@@ -58,7 +55,7 @@ export class MinimapScene extends Phaser.Scene {
                 minimapElement.addEventListener("click", () => { this.toggle(); });
             }
             // Using mousedown instead of pointerdown because we don't want to close the minimap if the user decides to move around while having it open
-            onmousedown = (e: MouseEvent): void => {
+            onmousedown = () => {
                 if (this.isExpanded) this.toggle();
             };
         }

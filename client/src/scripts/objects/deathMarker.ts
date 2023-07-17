@@ -28,7 +28,7 @@ export class DeathMarker extends GameObject {
             })
             .setOrigin(0.5, 0.5)
             .setShadow(2, 2, "#000", 2, true, true);
-        this.container.add([this.image, this.playerNameText]).setDepth(-1);
+        this.container.add([this.image, this.playerNameText]).setDepth(1);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {

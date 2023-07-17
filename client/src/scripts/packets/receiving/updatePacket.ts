@@ -259,16 +259,34 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             let gasMessage: string | undefined;
+            // TODO Clean up code
             if (game.gas.state === GasState.Waiting) {
                 gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
                 scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
                 minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
                 minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                if (game.gas.oldRadius === 0) minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
+                if (game.gas.oldRadius === 0) {
+                    minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
+                } else {
+                    minimap.gasToCenterLine.setTo(
+                        game.gas.newPosition.x * MINIMAP_SCALE,
+                        game.gas.newPosition.y * MINIMAP_SCALE,
+                        minimap.playerIndicator.x,
+                        minimap.playerIndicator.y
+                    );
+                }
             } else if (game.gas.state === GasState.Advancing) {
                 gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
+                minimap.gasToCenterLine.setTo(
+                    game.gas.newPosition.x * MINIMAP_SCALE,
+                    game.gas.newPosition.y * MINIMAP_SCALE,
+                    minimap.playerIndicator.x,
+                    minimap.playerIndicator.y
+                );
             } else if (game.gas.state === GasState.Inactive) {
                 gasMessage = "Waiting for players...";
+                minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
             }
 
             if (game.gas.state === GasState.Advancing) {

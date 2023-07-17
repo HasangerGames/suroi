@@ -14,7 +14,6 @@ export class GameOverPacket extends ReceivingPacket {
         if (!won) {
             gameOverScreen.removeClass("chicken-dinner");
             const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
-            minimap.playerIndicatorDead = true;
             minimap.playerIndicator.setTexture("main", "player_indicator_dead.svg").setAngle(0);
         } else {
             gameOverScreen.addClass("chicken-dinner");

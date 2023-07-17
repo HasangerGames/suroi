@@ -104,7 +104,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.backpack,
             this.images.helmet,
             this.images.bloodEmitter
-        ]).setDepth(2);
+        ]).setDepth(3);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -129,7 +129,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
         const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
-        if (this.isActivePlayer && !minimap.playerIndicatorDead) {
+        if (this.isActivePlayer && !this.game.gameOver) {
             gsap.to(minimap.playerIndicator, {
                 x: this.position.x * MINIMAP_SCALE,
                 y: this.position.y * MINIMAP_SCALE,

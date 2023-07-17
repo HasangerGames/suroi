@@ -58,8 +58,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             if (!this.isNew) {
                 this.scene.playSound(`${definition.material}_destroyed`);
                 this.image.setTexture("main", `${this.type.idString}_residue.svg`);
-                this.container.setRotation(this.rotation).setScale(this.scale);
-                this.container.setDepth(0);
+                this.container.setRotation(this.rotation).setScale(this.scale).setDepth(0);
                 this.emitter.explode(10);
             }
         }

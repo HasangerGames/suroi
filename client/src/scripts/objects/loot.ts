@@ -34,7 +34,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             item: this.scene.add.image(0, 0, "main", `${this.type.idString}.svg`)
         };
 
-        this.container.add([this.images.background, this.images.item]).setDepth(1);
+        this.container.add([this.images.background, this.images.item]).setDepth(2);
 
         // Set the loot texture based on the type
         const definition = this.type.definition;
