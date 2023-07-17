@@ -21,27 +21,36 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
+    readonly spawnWithLoot?: boolean
     readonly explosion?: string
+
+    readonly frames?: {
+        readonly base?: string
+        readonly particle?: string
+        readonly residue?: string
+    }
 }
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
 
-function makeCrate(idString: string, name: string, rotationMode: ObstacleDefinition["rotationMode"], hideOnMap?: boolean): ObstacleDefinition {
-    return {
-        idString,
-        name,
-        material: "crate",
-        health: 100,
-        hideOnMap,
-        scale: {
-            spawnMin: 1.0,
-            spawnMax: 1.0,
-            destroy: 0.5
+function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
+    const definition = {
+        ...{
+            idString,
+            name,
+            material: "crate",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new RectangleHitbox(v(-4.6, -4.6), v(4.6, 4.6)),
+            hasLoot: true
         },
-        hitbox: new RectangleHitbox(v(-4.6, -4.6), v(4.6, 4.6)),
-        rotationMode,
-        hasLoot: true
+        ...options
     };
+    return definition as ObstacleDefinition;
 }
 
 function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
@@ -57,7 +66,11 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         },
         hitbox: new RectangleHitbox(v(-3.1, -3.1), v(3.1, 3.1)),
         rotationMode: "none",
-        hasLoot: true
+        hasLoot: true,
+        frames: {
+            particle: "regular_crate_particle",
+            residue: "regular_crate_residue"
+        }
     };
 }
 
@@ -142,9 +155,38 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             particleVariations: 2,
             depth: 4
         },
-        makeCrate("regular_crate", "Regular Crate", "binary"),
-        makeCrate("flint_crate", "Flint Crate", "none", true),
-        makeCrate("aegis_crate", "AEGIS Crate", "none", true),
+        {
+            idString: "blueberry_bush",
+            name: "Blueberry Bush",
+            material: "bush",
+            health: 80,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.8
+            },
+            hitbox: new CircleHitbox(4.2),
+            noCollisions: true,
+            rotationMode: "full",
+            particleVariations: 2,
+            depth: 3,
+            spawnWithLoot: true,
+            frames: {
+                particle: "bush_particle",
+                residue: "bush_residue"
+            }
+        },
+        makeCrate("regular_crate", "Regular Crate", {
+            rotationMode: "binary"
+        }),
+        makeCrate("flint_crate", "Flint Crate", {
+            rotationMode: "none",
+            hideOnMap: true
+        }),
+        makeCrate("aegis_crate", "AEGIS Crate", {
+            rotationMode: "none",
+            hideOnMap: true
+        }),
         makeSpecialCrate("gauze_crate", "Gauze Crate"),
         makeSpecialCrate("cola_crate", "Cola Crate"),
         makeSpecialCrate("melee_crate", "Melee Crate"),

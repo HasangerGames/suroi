@@ -73,6 +73,19 @@ export class Obstacle extends GameObject {
                 this.loot = this.loot.concat(getLootTableLoot(lootTable.loot));
             }
         }
+
+        if (definition.spawnWithLoot) {
+            const lootTable = LootTables[this.type.idString];
+
+            const items = getLootTableLoot(lootTable.loot);
+
+            for (const item of items) {
+                this.game.addLoot(
+                    ObjectType.fromString(ObjectCategory.Loot, item.idString),
+                    this.position,
+                    item.count);
+            }
+        }
     }
 
     override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {

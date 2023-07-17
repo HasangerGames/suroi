@@ -46,6 +46,7 @@ export class Map {
             this.generateObstacles("birch_tree", 16);
             this.generateObstacles("rock", 150);
             this.generateObstacles("bush", 85);
+            this.generateObstacles("blueberry_bush", 20);
             this.generateObstacles("regular_crate", 100);
             this.generateObstacles("aegis_crate", 6);
             this.generateObstacles("flint_crate", 6);
