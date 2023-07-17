@@ -117,7 +117,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToBigMap(): void {
-        if (this.cameras.main === undefined) return;
+        if (this.cameras.main === undefined || this.fullScreenCamera === undefined) return;
         this.fullScreenCamera.setVisible(true);
         this.isExpanded = true;
         this.resizeBigMap();
@@ -126,7 +126,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     switchToSmallMap(): void {
-        if (this.cameras.main === undefined) return;
+        if (this.cameras.main === undefined || this.fullScreenCamera === undefined) return;
         this.isExpanded = false;
         this.fullScreenCamera.setVisible(false);
         this.cameras.main.setVisible(this.visible);
@@ -135,7 +135,7 @@ export class MinimapScene extends Phaser.Scene {
     }
 
     updateTransparency(): void {
-        if (this.cameras.main === undefined) return;
+        if (this.cameras.main === undefined || this.fullScreenCamera === undefined) return;
         this.cameras.main.setBackgroundColor({ ...GRASS_RGB, a: localStorageInstance.config.minimapTransparency * 255 });
         this.cameras.main.setAlpha(localStorageInstance.config.minimapTransparency);
         this.fullScreenCamera.setBackgroundColor({ ...GRASS_RGB, a: localStorageInstance.config.bigMapTransparency * 255 });
