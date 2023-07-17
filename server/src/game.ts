@@ -461,7 +461,7 @@ export class Game {
                 let foundPosition = false;
                 while (!foundPosition) {
                     spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
-                    if (!this.isInGas(spawnPosition)) foundPosition = true;
+                    if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) foundPosition = true;
                 }
                 break;
             }
