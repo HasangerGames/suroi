@@ -57,7 +57,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             this.destroyed = true;
             if (!this.isNew) {
                 this.scene.playSound(`${definition.material}_destroyed`);
-                this.image.setTexture("main", `${this.type.idString}_residue.svg`);
+                this.image.setTexture("main", `${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
                 this.container.setRotation(this.rotation).setScale(this.scale).setDepth(0);
                 this.emitter.explode(10);
             }
@@ -76,8 +76,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const hasVariations = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
 
-        let texture = this.type.idString;
-        if (this.destroyed) texture += "_residue";
+        let texture = definition.frames?.base ?? `${definition.idString}`;
+        if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
         else if (hasVariations) texture += `_${this.variation + 1}`;
         // Update the obstacle image
         this.image.setFrame(`${texture}.svg`);
@@ -86,7 +86,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             .setDepth(this.destroyed ? 0 : definition.depth ?? 0);
 
         // If there are multiple particle variations, generate a list of variation image names
-        const particleImage = `${this.type.idString}_particle`;
+        const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
         let frames: string[] | undefined;
 
         if (definition.particleVariations !== undefined) {

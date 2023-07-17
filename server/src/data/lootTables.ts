@@ -73,6 +73,14 @@ export const LootTables: Record<string, LootTable> = {
             { item: "mosin", weight: 1 },
             { item: "tango_51", weight: 0.1 }
         ]
+    },
+    blueberry_bush: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "equipment", weight: 1 },
+            { tier: "healing_items", weight: 1 }
+        ]
     }
 };
 
