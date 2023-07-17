@@ -44,21 +44,21 @@ export class Map {
             this.generateObstacles("oak_tree", 140);
             this.generateObstacles("pine_tree", 12);
             this.generateObstacles("birch_tree", 16);
-            this.generateObstacles("rock", 150);
+            this.generateObstacles("rock", 140);
             this.generateObstacles("bush", 85);
             this.generateObstacles("blueberry_bush", 20);
-            this.generateObstacles("regular_crate", 100);
-            this.generateObstacles("aegis_crate", 6);
-            this.generateObstacles("flint_crate", 6);
+            this.generateObstacles("regular_crate", 120);
+            this.generateObstacles("aegis_crate", random(3, 4));
+            this.generateObstacles("flint_crate", random(3, 4));
             this.generateObstacles("barrel", 70);
             this.generateObstacles("super_barrel", 20);
-            this.generateObstacles("gauze_crate", 5);
-            this.generateObstacles("cola_crate", 5);
-            this.generateObstacles("melee_crate", 5);
+            this.generateObstacles("gauze_crate", 1);
+            this.generateObstacles("cola_crate", 1);
+            this.generateObstacles("melee_crate", 1);
             this.generateObstacles("gold_rock", 1);
 
             // ground loot
-            this.generateLoots("ground_loot", 70);
+            this.generateLoots("ground_loot", 40);
         } else {
             // Obstacle debug code goes here
 

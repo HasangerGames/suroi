@@ -814,6 +814,10 @@
         width: 55px;
         height: 78px;
 
+        &.has-item {
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+        }
+
         .item-tooltip {
             bottom: 85px;
             width: max-content;
@@ -838,7 +842,7 @@
             }
 
             &:last-child .item-tooltip {
-                right: 0px;
+                right: 0;
             }
         }
 
