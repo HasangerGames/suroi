@@ -202,7 +202,7 @@ export class Game {
         });
 
         // Generate map
-        this.map = new Map(this);
+        this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);
         this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
