@@ -4,11 +4,11 @@
 <svg
    width="512"
    height="512"
-   viewBox="0 0 135.46667 135.46667"
+   viewBox="0 0 135.46668 135.46668"
    version="1.1"
    id="svg8"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="sad.svg"
+   sodipodi:docname="dab.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -63,6 +63,42 @@
          transform="matrix(0.8,0,0,0.8,10,0)"
          inkscape:connector-curvature="0" />
     </marker>
+    <filter
+       y="-0.17175695"
+       height="1.3435138"
+       inkscape:menu-tooltip="Darkens the edge with an inner blur and adds a flexible glow"
+       inkscape:menu="Shadows and Glows"
+       inkscape:label="Dark and Glow"
+       style="color-interpolation-filters:sRGB"
+       id="filter43338"
+       x="-0.17175695"
+       width="1.3435138">
+      <feGaussianBlur
+         stdDeviation="5"
+         result="result6"
+         id="feGaussianBlur43328" />
+      <feComposite
+         result="result8"
+         in="SourceGraphic"
+         operator="atop"
+         in2="result6"
+         id="feComposite43330" />
+      <feComposite
+         result="result9"
+         operator="over"
+         in2="SourceAlpha"
+         in="result8"
+         id="feComposite43332" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 "
+         result="result10"
+         id="feColorMatrix43334" />
+      <feBlend
+         in="result10"
+         mode="normal"
+         in2="result6"
+         id="feBlend43336" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -71,9 +107,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.96102398"
-     inkscape:cx="199.7869"
-     inkscape:cy="221.63859"
+     inkscape:zoom="1.2596949"
+     inkscape:cx="178.61468"
+     inkscape:cy="265.14357"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -89,7 +125,7 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     showguides="false"
+     showguides="true"
      inkscape:showpageshadow="2"
      inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#d1d1d1"
@@ -119,37 +155,45 @@
      id="layer1"
      transform="translate(0,-183.023)">
     <g
-       id="g860"
-       transform="matrix(1.2430749,0,0,1.2430749,-12.430704,-56.919004)">
+       id="g865"
+       transform="matrix(1.1420952,0,0,1.1420952,-15.304073,-38.834362)">
       <circle
-         style="opacity:1;fill:#ff0a0a;fill-opacity:1;fill-rule:nonzero;stroke:#5d0000;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         style="opacity:1;fill:#0aff20;fill-opacity:1;fill-rule:nonzero;stroke:#005d08;stroke-width:7.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
          id="path10"
-         cx="64.488503"
-         cy="247.51151"
-         r="49.488537" />
-      <g
-         id="g853"
-         transform="translate(-0.18943596)">
-        <circle
-           style="opacity:1;fill:#5d0000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.412;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-           id="path5010"
-           cx="42.209942"
-           cy="236.89757"
-           r="7.5" />
-        <circle
-           cy="87.145935"
-           cx="-236.89804"
-           id="circle5014"
-           style="opacity:1;fill:#5d0000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.412;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
-           transform="rotate(-90)"
-           r="7.5" />
-      </g>
+         cx="91.146019"
+         cy="253.56091"
+         r="37.116402" />
+      <circle
+         style="opacity:1;fill:#005d08;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4.80923;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="path5010"
+         cx="97.895836"
+         cy="251.48134"
+         r="5.625" />
+      <circle
+         cy="116.08334"
+         cx="-251.81467"
+         id="circle5014"
+         style="opacity:1;fill:#005d08;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4.80923;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         transform="rotate(-90)"
+         r="5.625" />
       <path
-         style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#5d0000;stroke-width:6.5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke markers fill"
-         d="m 34.122184,276.35574 c -0.508813,1.07956 27.08219,-36.31455 60.708332,0"
+         style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#005d08;stroke-width:4.15937;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke markers fill"
+         d="m 87.3125,262.96904 c -0.277794,-0.80967 14.786,27.23591 33.14471,0"
          id="path917"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cc" />
+      <circle
+         style="opacity:1;fill:#0aff20;fill-opacity:1;fill-rule:nonzero;stroke:#005d08;stroke-width:4.95;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="circle23503"
+         cx="28.633762"
+         cy="233.29384"
+         r="12.758763" />
+      <circle
+         style="opacity:1;fill:#0aff20;fill-opacity:1;fill-rule:nonzero;stroke:#005d08;stroke-width:4.95;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="circle31539"
+         cx="67.118759"
+         cy="249.58322"
+         r="12.758763" />
     </g>
   </g>
 </svg>
