@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -248,6 +248,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
             hasLoot: true
-        }
+        },
+        {
+            idString: "wall",
+            name: "Wooden Wall",
+            material: "wood",
+            health: 10000,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            indestructible: true,
+            hitbox: new RectangleHitbox(v(-0.6, -12), v(0.6, 12)),
+            spawnHitbox: new RectangleHitbox(v(-0.6, -12), v(0.6, 12)),
+            rotationMode: "none"
+        },
     ]
 );
