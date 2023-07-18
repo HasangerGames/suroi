@@ -69,7 +69,11 @@ export function endGame(id: number): void {
 }
 
 export function allowJoin(gameID: number): boolean {
-    return Boolean(games[gameID]?.allowJoin);
+    const game = games[gameID];
+    if (game !== undefined) {
+        return game.allowJoin && game.aliveCount < Config.playerLimit;
+    }
+    return false;
 }
 
 const simultaneousConnections: Record<string, number> = {};

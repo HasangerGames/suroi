@@ -56,6 +56,8 @@ export interface ConfigType {
      */
     readonly censorUsernames: boolean
 
+    readonly playerLimit: number
+
     /**
      * The map name, must be a valid value from the server maps definitions
      * Example: "main" for the main map or "debug" for the debug map
@@ -108,6 +110,8 @@ export const Config = {
 
     botProtection: false,
     bannedIPs: [],
+
+    playerLimit: 80,
 
     mapName: "main",
 
