@@ -75,7 +75,7 @@ export class GameScene extends Phaser.Scene {
 
         this.scale.on("resize", this.resize.bind(this));
 
-        if (this.playerManager.isMobile) requestFullscreen();
+        //if (this.playerManager.isMobile) requestFullscreen();
     }
 
     resize(anim = false): void {
