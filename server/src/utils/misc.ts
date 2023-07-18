@@ -9,7 +9,6 @@ import {
 import { type Obstacle } from "../objects/obstacle";
 
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type Orientation } from "../../../common/src/typings";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type WeightedItem, LootTiers } from "../data/lootTables";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -22,7 +21,6 @@ export function v2v(v: Vector): Vec2 {
 
 export function bodyFromHitbox(world: World,
     hitbox: Hitbox,
-    orientation: Orientation = 0,
     scale = 1,
     noCollisions = false,
     obstacle: Obstacle

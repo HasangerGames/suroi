@@ -3,6 +3,7 @@ import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { ObjectCategory } from "../../../../../common/src/constants";
 import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
 
 export class MapPacket extends ReceivingPacket {
@@ -40,17 +41,29 @@ export class MapPacket extends ReceivingPacket {
             const type = stream.readObjectType();
 
             const position = stream.readPosition();
-            const scale = stream.readScale();
 
-            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const rotation = stream.readObstacleRotation(definition.rotationMode);
+            let rotation = 0;
+            let scale = 1;
 
-            const hasVariations = definition.variations !== undefined;
             let texture = type.idString;
-            let variation = 0;
-            if (hasVariations) {
-                variation = stream.readVariation();
-                texture += `_${variation + 1}`;
+
+            switch (type.category) {
+                case ObjectCategory.Obstacle: {
+                    scale = stream.readScale();
+                    const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+                    rotation = stream.readObstacleRotation(definition.rotationMode);
+
+                    const hasVariations = definition.variations !== undefined;
+                    let variation = 0;
+                    if (hasVariations) {
+                        variation = stream.readVariation();
+                        texture += `_${variation + 1}`;
+                    }
+                    break;
+                }
+                case ObjectCategory.Building:
+                    texture += "_ceiling";
+                    break;
             }
 
             // Create the obstacle image
@@ -61,8 +74,7 @@ export class MapPacket extends ReceivingPacket {
                 frame: `${texture}.svg`,
                 add: false,
                 scale: scale / (20 / MINIMAP_SCALE),
-                rotation,
-                depth: definition.depth ?? 1
+                rotation
             }));
         }
         minimap.renderTexture.endDraw();

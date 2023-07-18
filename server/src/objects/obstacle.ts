@@ -12,7 +12,7 @@ import { transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
-import { type Variation } from "../../../common/src/typings";
+import { type Orientation, type Variation } from "../../../common/src/typings";
 import { LootTables } from "../data/lootTables";
 import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
@@ -61,9 +61,18 @@ export class Obstacle extends GameObject {
         this.definition = definition;
 
         this.health = this.maxHealth = definition.health;
-        this.hitbox = definition.hitbox.transform(this.position, this.scale);
-        this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale);
-        this.body = bodyFromHitbox(game.world, this.hitbox, 0, this.scale, definition.noCollisions, this);
+
+        let hitboxRotation: Orientation = 0;
+
+        if (this.definition.rotationMode === "limited") {
+            hitboxRotation = rotation as Orientation;
+        }
+
+        this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
+
+        this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
+
+        this.body = bodyFromHitbox(game.world, this.hitbox, this.scale, definition.noCollisions, this);
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];

@@ -222,7 +222,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "oil_tank",
             name: "Oil Tank",
             material: "metal",
-            health: 10000,
+            health: 2500,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -231,7 +231,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hitbox: new RectangleHitbox(v(-13, -6.85), v(13, 6.85)),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
-            rotationMode: "none"
+            rotationMode: "limited"
         },
         {
             idString: "gold_rock",

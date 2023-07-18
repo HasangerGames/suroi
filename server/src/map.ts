@@ -2,8 +2,8 @@ import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { type Variation } from "../../common/src/typings";
+import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { type Variation, type Orientation } from "../../common/src/typings";
 import {
     random,
     randomFloat,
@@ -160,27 +160,31 @@ export class Map {
                         break;
                 }
 
-                let position = this.getRandomPositionFor(type, scale);
-                if (radius !== undefined) {
-                    position = this.getRandomPositionInRadiusFor(type, scale, radius, squareRadius);
+                let orientation: Orientation = 0;
+
+                if (definition.rotationMode === "limited") {
+                    orientation = rotation as Orientation;
                 }
 
-                const obstacle: Obstacle = new Obstacle(
-                    this.game,
-                    type,
-                    position,
-                    rotation,
-                    scale,
-                    variation
-                );
+                let position = this.getRandomPositionFor(type, scale, orientation);
+                if (radius !== undefined) {
+                    position = this.getRandomPositionInRadiusFor(type, scale, orientation, radius, squareRadius);
+                }
 
-                this.game.staticObjects.add(obstacle);
+                this.genObstacle(type, position, rotation, scale, variation);
             }
         }
     }
 
-    obstacleTest(idString: string, position: Vector, rotation: number, scale: number, variation: Variation): Obstacle {
-        const type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, idString);
+    genObstacle(type: string | ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+        position: Vector,
+        rotation: number,
+        scale: number,
+        variation?: Variation): Obstacle {
+        if (typeof type === "string") {
+            type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, type);
+        }
+
         const obstacle: Obstacle = new Obstacle(
             this.game,
             type,
@@ -212,7 +216,7 @@ export class Map {
         }
     }
 
-    getRandomPositionFor(type: ObjectType, scale = 1, getPosition?: () => Vector): Vector {
+    getRandomPositionFor(type: ObjectType, scale = 1, orientation: Orientation = 0, getPosition?: () => Vector): Vector {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
@@ -268,11 +272,12 @@ export class Map {
             collided = false;
             position = getPosition();
 
-            const hitbox: Hitbox = initialHitbox.transform(position, scale);
+            const hitbox: Hitbox = initialHitbox.transform(position, scale, orientation);
             for (const object of this.game.staticObjects) {
-                if (object instanceof Obstacle) {
+                if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;
+                        break;
                     }
                 }
             }
@@ -281,7 +286,7 @@ export class Map {
         return position;
     }
 
-    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, radius: number, squareRadius?: boolean): Vector {
+    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, orientation: Orientation = 0, radius: number, squareRadius?: boolean): Vector {
         if (radius > this.width || radius > this.height) {
             radius = Math.min(this.width, this.height);
         }
@@ -293,7 +298,7 @@ export class Map {
             getPosition = (): Vector => randomPointInsideCircle(new Vec2(this.width / 2, this.height / 2), radius);
         }
 
-        return this.getRandomPositionFor(type, scale, getPosition);
+        return this.getRandomPositionFor(type, scale, orientation, getPosition);
     }
 
     private createWorldBoundary(x: number, y: number, width: number, height: number): void {

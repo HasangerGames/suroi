@@ -89,7 +89,7 @@ export const Maps: Record<string, mapDefinition> = {
 
             for (const obstacle of Obstacles.definitions) {
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.obstacleTest(obstacle.idString, obstaclePos, 0, 1, i as Variation);
+                    map.genObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {

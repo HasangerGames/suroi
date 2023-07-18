@@ -15,6 +15,8 @@ import {
     rectRectCollision
 } from "./math";
 
+import { transformRectangle } from "./math";
+
 import { type Orientation } from "../typings";
 
 export abstract class Hitbox {
@@ -104,8 +106,10 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(vClone(this.min), vClone(this.max));
     }
 
-    transform(position: Vector): Hitbox {
-        return new RectangleHitbox(vAdd(this.min, position), vAdd(this.max, position));
+    transform(position: Vector, scale: number, orientation: Orientation): Hitbox {
+        const rect = transformRectangle(position, this.min, this.max, scale, orientation);
+
+        return new RectangleHitbox(rect.min, rect.max);
     }
 
     intersectsLine(a: Vector, b: Vector): boolean {
