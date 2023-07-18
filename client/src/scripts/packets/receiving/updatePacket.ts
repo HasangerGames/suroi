@@ -21,6 +21,8 @@ import { type LootDefinition } from "../../../../../common/src/definitions/loots
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { MINIMAP_SCALE } from "../../utils/constants";
+import { Building } from "../../objects/building";
+import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -155,6 +157,10 @@ export class UpdatePacket extends ReceivingPacket {
                         }
                         case ObjectCategory.Loot: {
                             object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                            break;
+                        }
+                        case ObjectCategory.Building: {
+                            object = new Building(game, scene, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
                             break;
                         }
                     }

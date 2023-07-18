@@ -1,4 +1,5 @@
 import { ObjectCategory } from "../../../common/src/constants";
+import { Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Variation } from "../../../common/src/typings";
@@ -7,6 +8,8 @@ import { v } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface mapDefinition {
+
+    buildings?: Record<string, number>
 
     obstacles?: Record<string, number>
 
@@ -71,6 +74,16 @@ export const Maps: Record<string, mapDefinition> = {
     },
     debug: {
         genCallback: (map: Map) => {
+            // Generate all Buildings
+
+            const buildingPos = v(map.width / 2, map.height / 2 + 30);
+
+            for (const building of Buildings.definitions) {
+                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos);
+
+                buildingPos.y += 40;
+            }
+
             // Generate all Obstacles
             const obstaclePos = v(map.width / 2 - 140, map.height / 2);
 

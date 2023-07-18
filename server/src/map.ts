@@ -21,6 +21,8 @@ import { Scopes } from "../../common/src/definitions/scopes";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
+import { type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { Building } from "./objects/building";
 
 export class Map {
     game: Game;
@@ -44,6 +46,13 @@ export class Map {
             throw new Error(`Unknown map: ${mapName}`);
         }
 
+        // Generate buildings
+
+        for (const building in mapDefinition.buildings) {
+            this.generateBuildings(building, mapDefinition.buildings[building]);
+        }
+
+        // Generate Obstacles
         for (const obstacle in mapDefinition.specialObstacles) {
             const spawnConfig = mapDefinition.specialObstacles[obstacle];
 
@@ -66,6 +75,7 @@ export class Map {
             this.generateObstacles(obstacle, mapDefinition.obstacles[obstacle]);
         }
 
+        // Generate loots
         for (const loot in mapDefinition.loots) {
             this.generateLoots(loot, mapDefinition.loots[loot]);
         }
@@ -104,6 +114,24 @@ export class Map {
         }
 
         log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
+    }
+
+    generateBuildings(idString: string, count: number): void {
+        const type = ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, idString);
+
+        for (let i = 0; i < count; i++) {
+            const position = this.getRandomPositionFor(type);
+
+            this.generateBuilding(type, position);
+        }
+    }
+
+    generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector): Building {
+        const building = new Building(this.game, type, vClone(position));
+
+        this.game.staticObjects.add(building);
+
+        return building;
     }
 
     generateObstacles(idString: string, count: number, spawnProbability?: number, radius?: number, squareRadius?: boolean): void {
@@ -203,6 +231,11 @@ export class Map {
             }
             case ObjectCategory.Loot: {
                 initialHitbox = new CircleHitbox(5);
+                break;
+            }
+            case ObjectCategory.Building: {
+                initialHitbox = (type.definition as BuildingDefinition).spawnHitbox;
+                break;
             }
         }
 
@@ -211,8 +244,10 @@ export class Map {
         }
 
         if (!getPosition) {
-            if (type.category === ObjectCategory.Obstacle || type.category === ObjectCategory.Loot ||
-                 (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
+            if (type.category === ObjectCategory.Obstacle ||
+                type.category === ObjectCategory.Loot ||
+                type.category === ObjectCategory.Building ||
+            (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
                 getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
                 const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };

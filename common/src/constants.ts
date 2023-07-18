@@ -3,7 +3,8 @@ export enum ObjectCategory {
     Obstacle,
     Explosion,
     DeathMarker,
-    Loot
+    Loot,
+    Building
 }
 
 export enum PacketType {
