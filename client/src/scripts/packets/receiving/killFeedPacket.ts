@@ -93,7 +93,7 @@ export class KillFeedPacket extends ReceivingPacket {
                     const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
                     const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : ` (${weaponUsed?.name})`;
 
-                    killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/game/killfeed/${iconSrc}_killfeed.svg" alt="${altText}"> ${killed.name}`);
+                    killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}"> ${killed.name}`);
                 }
 
                 break;

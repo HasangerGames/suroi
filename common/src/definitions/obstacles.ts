@@ -169,7 +169,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             noCollisions: true,
             rotationMode: "full",
             particleVariations: 2,
-            depth: 3,
+            depth: 4,
             spawnWithLoot: true,
             frames: {
                 particle: "bush_particle",
