@@ -25,6 +25,8 @@ const config: Configuration = {
         news: path.resolve(__dirname, "../src/news.ts")
     },
 
+    devtool: "source-map",
+
     resolve: { extensions: [".js", ".ts"] },
 
     module: {
