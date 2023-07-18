@@ -392,11 +392,11 @@ export const Guns: GunDefinition[] = [
     },
     {
         idString: "mp40",
-        name: "MP 40",
+        name: "MP40",
         itemType: ItemType.Gun,
         ammoType: "9mm",
-        ammoSpawnAmount: 90,
-        capacity: 30,
+        ammoSpawnAmount: 96,
+        capacity: 32,
         reloadTime: 2.1,
         fireDelay: 90,
         switchDelay: 300,
@@ -414,7 +414,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 12,
+            damage: 11.5,
             obstacleMultiplier: 1.25,
             speed: 0.25,
             maxDistance: 120
