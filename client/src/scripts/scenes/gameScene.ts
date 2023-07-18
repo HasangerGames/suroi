@@ -19,7 +19,6 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
 import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
-import { requestFullscreen } from "../utils/misc";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { getIconFromInputName } from "../utils/inputManager";
@@ -75,7 +74,7 @@ export class GameScene extends Phaser.Scene {
 
         this.scale.on("resize", this.resize.bind(this));
 
-        if (this.playerManager.isMobile) requestFullscreen();
+        //if (this.playerManager.isMobile) requestFullscreen();
     }
 
     resize(anim = false): void {
