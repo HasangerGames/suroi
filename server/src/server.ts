@@ -162,7 +162,7 @@ app.ws("/play", {
         if (gameID < 0 || gameID > 1) gameID = 0;
         const game = games[gameID];
 
-        if (game === undefined || !game.allowJoin) {
+        if (game === undefined || !allowJoin(gameID)) {
             res.endWithoutBody(0, true);
             return;
         }
