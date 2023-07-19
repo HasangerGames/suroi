@@ -250,18 +250,46 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true
         },
         {
-            idString: "wall",
-            name: "Wooden Wall",
-            material: "wood",
-            health: 10000,
+            idString: "warehouse_wall_1",
+            name: "Warehouse Wall",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hitbox: new RectangleHitbox(v(-0.7, -17.3), v(0.7, 17.3)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "warehouse_wall_2",
+            name: "Warehouse Wall",
+            material: "metal",
+            health: 1000,
             indestructible: true,
-            hitbox: new RectangleHitbox(v(-0.7, -12.9), v(0.7, 12.9)),
-            rotationMode: "none"
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-5, -0.7), v(5, 0.7)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "warehouse_wall_3",
+            name: "Warehouse Wall",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-15.5, -0.7), v(15.5, 0.7)),
+            rotationMode: "limited"
         }
     ]
 );

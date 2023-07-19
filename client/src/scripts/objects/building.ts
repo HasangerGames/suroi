@@ -7,14 +7,18 @@ import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 
 export class Building extends GameObject {
+    readonly images: {
+        floor: Phaser.GameObjects.Image
+    };
+
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building>, id: number) {
         super(game, scene, type, id);
 
-        const text = this.scene.add.text(0, 0, this.type.definition.name, {
-            fontSize: 64
-        });
+        this.images = {
+            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`)
+        };
 
-        this.container.add(text);
+        this.container.add([this.images.floor]).setDepth(-1);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */

@@ -129,8 +129,13 @@ export class Map {
     generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector): Building {
         const building = new Building(this.game, type, vClone(position));
 
-        this.game.staticObjects.add(building);
+        const definition = type.definition;
 
+        for (const obstacleData of definition.obstacles) {
+            this.genObstacle(obstacleData.idString, vAdd(position, obstacleData.position), obstacleData.rotation ?? 0, 1);
+        }
+
+        this.game.staticObjects.add(building);
         return building;
     }
 

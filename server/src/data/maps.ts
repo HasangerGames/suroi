@@ -37,6 +37,9 @@ interface mapDefinition {
 
 export const Maps: Record<string, mapDefinition> = {
     main: {
+        buildings: {
+            warehouse: 10
+        },
         obstacles: {
             oil_tank: 6,
             regular_crate: 150,
