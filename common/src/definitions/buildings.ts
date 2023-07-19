@@ -62,5 +62,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(0, 11.5)
             }
         ]
+    },
+    {
+        idString: "house",
+        name: "House",
+        spawnHitbox: new RectangleHitbox(v(-20, 20), v(-20, 20)),
+
+        obstacles: []
     }
 ]);

@@ -14,9 +14,16 @@ export class Building extends GameObject {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building>, id: number) {
         super(game, scene, type, id);
 
-        this.images = {
+        if(type.idString === "house") {
+            this.images = {
+            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`).setScale(0.6)
+        };
+        }
+        else {
+            this.images = {
             floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`)
         };
+        }
 
         this.container.add([this.images.floor]).setDepth(-1);
     }
