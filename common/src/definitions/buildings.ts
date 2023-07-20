@@ -68,8 +68,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
         obstacles: [
             {
-                idString: "fridge",
-                position: v(0, 11.5)
+                idString: "house_wall_1",
+                position: v(0, 12.5)
+            },
+            {
+                idString: "house_wall_2",
+                position: v(0, 18.5)
+            },
+            {
+                idString: "house_wall_3",
+                position: v(0, 24.5)
+            },
+            {
+                idString: "house_wall_4",
+                position: v(0, 30.5)
             }
         ]
     }
