@@ -1,5 +1,5 @@
 // noinspection ES6PreferShortImport
-import { Config, GasMode, SpawnMode } from "./config";
+import { Config, SpawnMode } from "./config";
 
 import {
     Fixture,
@@ -11,6 +11,7 @@ import type { WebSocket } from "uWebSockets.js";
 
 import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
 import { Map } from "./map";
+import { Gas } from "./gas";
 
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
@@ -20,17 +21,16 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { GasState, ObjectCategory, OBJECT_ID_BITS, MAP_WIDTH, MAP_HEIGHT } from "../../common/src/constants";
+import { ObjectCategory, OBJECT_ID_BITS } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
-import { GasStages } from "./data/gasStages";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
+import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
@@ -109,25 +109,7 @@ export class Game {
 
     startTimeoutID?: NodeJS.Timeout;
 
-    readonly gas = {
-        stage: 0,
-        state: GasState.Inactive,
-        initialDuration: 0,
-        countdownStart: 0,
-        percentage: 0,
-        oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        oldRadius: GasStages[0].oldRadius,
-        newRadius: GasStages[0].newRadius,
-        currentPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        currentRadius: GasStages[0].oldRadius,
-        dps: 20,
-        ticksSinceLastDamage: 0
-    };
-
-    gasDirty = false;
-    gasPercentageDirty = false;
-    gasTimeoutID?: NodeJS.Timeout;
+    gas: Gas;
 
     tickTimes: number[] = [];
 
@@ -208,6 +190,8 @@ export class Game {
         this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
         mapPacket.serialize(this.mapPacketStream);
 
+        this.gas = new Gas(this);
+
         this.allowJoin = true;
 
         // Start the tick loop
@@ -274,22 +258,7 @@ export class Game {
             }
 
             // Update gas
-            if (this.gas.state !== GasState.Inactive) {
-                this.gas.percentage = (this.now - this.gas.countdownStart) / (1000 * this.gas.initialDuration);
-                this.gasPercentageDirty = true;
-            }
-
-            // Gas damage
-            this.gas.ticksSinceLastDamage++;
-            let gasDamage = false;
-            if (this.gas.ticksSinceLastDamage >= 30) {
-                this.gas.ticksSinceLastDamage = 0;
-                gasDamage = true;
-                if (this.gas.state === GasState.Advancing) {
-                    this.gas.currentPosition = vecLerp(this.gas.oldPosition, this.gas.newPosition, this.gas.percentage);
-                    this.gas.currentRadius = lerp(this.gas.oldRadius, this.gas.newRadius, this.gas.percentage);
-                }
-            }
+            this.gas.tick();
 
             // Update physics
             this.world.step(30);
@@ -348,7 +317,7 @@ export class Game {
                 }
 
                 // Gas damage
-                if (gasDamage && this.isInGas(player.position)) {
+                if (this.gas.doDamage && this.gas.isInGas(player.position)) {
                     player.piercingDamage(this.gas.dps, "gas");
                 }
 
@@ -404,8 +373,8 @@ export class Game {
             this.explosions.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
-            this.gasDirty = false;
-            this.gasPercentageDirty = false;
+            this.gas.dirty = false;
+            this.gas.percentageDirty = false;
             this.updateObjects = false;
 
             for (const player of this.livingPlayers) {
@@ -503,7 +472,7 @@ export class Game {
         if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
                 this._started = true;
-                this.advanceGas();
+                this.gas.advanceGas();
             }, 5000);
         }
     }
@@ -605,52 +574,6 @@ export class Game {
 
     get aliveCount(): number {
         return this.livingPlayers.size;
-    }
-
-    advanceGas(): void {
-        if (Config.gas.mode === GasMode.Disabled) return;
-        const currentStage = GasStages[this.gas.stage + 1];
-        if (currentStage === undefined) return;
-        const duration = Config.gas.mode === GasMode.Debug && currentStage.duration !== 0 ? Config.gas.overrideDuration : currentStage.duration;
-        this.gas.stage++;
-        this.gas.state = currentStage.state;
-        this.gas.initialDuration = duration;
-        this.gas.percentage = 1;
-        this.gas.countdownStart = this.now;
-
-        if (currentStage.preventJoin) {
-            log(`Game #${this._id} is preventing new players from joining`);
-            this.allowJoin = false;
-            const id = this._id === 0 ? 1 : 0;
-            createNewGame(id);
-        }
-
-        if (currentStage.state === GasState.Waiting) {
-            this.gas.oldPosition = vClone(this.gas.newPosition);
-            if (currentStage.newRadius !== 0) {
-                this.gas.newPosition = Config.gas.mode !== GasMode.Debug
-                    ? randomPointInsideCircle(this.gas.oldPosition, currentStage.oldRadius - currentStage.newRadius)
-                    : v(MAP_WIDTH / 2, MAP_HEIGHT / 2);
-            } else {
-                this.gas.newPosition = vClone(this.gas.oldPosition);
-            }
-            this.gas.currentPosition = vClone(this.gas.oldPosition);
-            this.gas.currentRadius = currentStage.oldRadius;
-        }
-        this.gas.oldRadius = currentStage.oldRadius;
-        this.gas.newRadius = currentStage.newRadius;
-        this.gas.dps = currentStage.dps;
-        this.gasDirty = true;
-        this.gasPercentageDirty = true;
-
-        // Start the next stage
-        if (duration !== 0) {
-            this.gasTimeoutID = setTimeout(() => this.advanceGas(), duration * 1000);
-        }
-    }
-
-    isInGas(position: Vector): boolean {
-        return distanceSquared(position, this.gas.currentPosition) >= this.gas.currentRadius ** 2;
     }
 
     idAllocator = new IDAllocator(OBJECT_ID_BITS);

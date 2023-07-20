@@ -148,7 +148,7 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Gas
-        const gasDirty = game.gasDirty || player.fullUpdate;
+        const gasDirty = game.gas.dirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);
         if (gasDirty) {
             stream.writeBits(game.gas.state, 2);
@@ -160,7 +160,7 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Gas percentage
-        const gasPercentageDirty = game.gasPercentageDirty || player.fullUpdate;
+        const gasPercentageDirty = game.gas.percentageDirty || player.fullUpdate;
         stream.writeBoolean(gasPercentageDirty);
         if (gasPercentageDirty) {
             stream.writeFloat(game.gas.percentage, 0, 1, 16);
