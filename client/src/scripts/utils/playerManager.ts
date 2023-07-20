@@ -16,6 +16,8 @@ import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions
 import { mod } from "../../../../common/src/utils/math";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { EmoteSlot } from "./constants";
+import { v } from "../../../../common/src/utils/vector";
 
 /**
  * This class manages the active player data and inventory
@@ -49,6 +51,13 @@ export class PlayerManager {
     // had to put it here because it's not a boolean
     // and inputManager assumes all keys of `movement` are booleans
     movementAngle = 0;
+
+    mouseX = 0;
+    mouseY = 0;
+
+    emoteWheelActive = false;
+    emoteWheelPosition = v(0, 0);
+    selectedEmoteSlot = EmoteSlot.None;
 
     readonly dirty = {
         health: true,

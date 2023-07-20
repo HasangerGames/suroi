@@ -6,8 +6,10 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { Loot } from "../../objects/loot";
 import { type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory } from "../../../../common/src/constants";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { EmotePacket } from "../sending/emotePacket";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -95,6 +97,12 @@ export class InputPacket extends ReceivingPacket {
                 break;
             case InputActions.Cancel:
                 player.action?.cancel();
+                break;
+            case InputActions.TopEmoteSlot:
+            case InputActions.RightEmoteSlot:
+            case InputActions.BottomEmoteSlot:
+            case InputActions.LeftEmoteSlot:
+                player.sendPacket(new EmotePacket(player, ObjectType.fromString(ObjectCategory.Emote, "happy_face"), player.id));
                 break;
         }
     }

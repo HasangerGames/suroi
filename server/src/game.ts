@@ -1,12 +1,7 @@
 // noinspection ES6PreferShortImport
 import { Config, SpawnMode } from "./config";
 
-import {
-    Fixture,
-    Settings,
-    Vec2,
-    World
-} from "planck";
+import { Fixture, Settings, Vec2, World } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
@@ -21,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { ObjectCategory, OBJECT_ID_BITS } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";

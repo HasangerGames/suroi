@@ -914,6 +914,20 @@
     }
 }
 
+#emote-wheel {
+    position: absolute;
+    width: 286px;
+    height: 286px;
+    //noinspection CssUnknownTarget
+    background-image: url("../../img/misc/emote_wheel.svg");
+}
+
+#emote-wheel-highlight {
+    position: absolute;
+    width: 286px;
+    height: 286px;
+}
+
 #game-over-screen {
     text-align: center;
 

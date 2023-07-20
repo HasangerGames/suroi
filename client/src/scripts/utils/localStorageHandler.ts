@@ -27,6 +27,7 @@ export type KeybindActions = {
     cancelAction: [string, string]
     toggleMap: [string, string]
     toggleMiniMap: [string, string]
+    emoteWheel: [string, string]
 };
 
 export interface Config {
@@ -88,7 +89,8 @@ export const defaultConfig: Config = {
         useTablets: ["8", ""],
         cancelAction: ["X", ""],
         toggleMap: ["G", "M"],
-        toggleMiniMap: ["N", ""]
+        toggleMiniMap: ["N", ""],
+        emoteWheel: ["Mouse1", ""]
     },
     masterVolume: 1,
     musicVolume: 1,

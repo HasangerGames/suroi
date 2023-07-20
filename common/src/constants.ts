@@ -3,7 +3,8 @@ export enum ObjectCategory {
     Obstacle,
     Explosion,
     DeathMarker,
-    Loot
+    Loot,
+    Emote
 }
 
 export enum PacketType {
@@ -17,7 +18,8 @@ export enum PacketType {
     KillFeed,
     Pickup,
     Ping,
-    Item
+    Item,
+    Emote
 }
 
 export enum AnimationType {
@@ -51,7 +53,11 @@ export enum InputActions {
     SwapGunSlots,
     Interact,
     Reload,
-    Cancel
+    Cancel,
+    TopEmoteSlot,
+    RightEmoteSlot,
+    BottomEmoteSlot,
+    LeftEmoteSlot
 }
 
 export enum PlayerActions {

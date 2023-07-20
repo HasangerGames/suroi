@@ -31,6 +31,7 @@ import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 
 const showMeleeDebugCircle = false;
 
@@ -63,6 +64,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     };
 
     readonly emoteContainer: Phaser.GameObjects.Container;
+    _emoteTween?: Phaser.Tweens.Tween;
+    _emoteHideTimeoutID?: NodeJS.Timeout;
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
@@ -88,8 +91,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
-            emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg").setPosition(0, -150),
-            emoteImage: this.scene.add.image(0, 0, "main", "picasso_face.svg").setPosition(0, -150),
+            emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
+            emoteImage: this.scene.add.image(0, 0, "main", "happy_face.svg"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -111,7 +114,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.helmet,
             this.images.bloodEmitter
         ]).setDepth(3);
-        this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage]).setDepth(10);
+        this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage])
+            .setDepth(10)
+            .setScale(0)
+            .setAlpha(0)
+            .setVisible(false);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -155,12 +162,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (!localStorageInstance.config.movementSmoothing) {
-            this.images.emoteBackground.setPosition(this.position.x * 20, (this.position.y * 20) - 150);
+            this.emoteContainer.setPosition(this.position.x * 20, (this.position.y * 20) - 175);
         } else {
             this.scene.tweens.add({
-                targets: [this.images.emoteBackground, this.images.emoteImage],
+                targets: this.emoteContainer,
                 x: this.position.x * 20,
-                y: (this.position.y * 20) - 150,
+                y: (this.position.y * 20) - 175,
                 duration: 30
             });
         }
@@ -398,6 +405,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
             container.children(".item-tooltip").html(itemTooltip);
         }
         container.css("visibility", level > 0 ? "visible" : "hidden");
+    }
+
+    emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
+        this._emoteTween?.destroy();
+        clearTimeout(this._emoteHideTimeoutID);
+        this.scene.playSound("emote");
+        this.emoteContainer.setVisible(true).setScale(0).setAlpha(0);
+        this._emoteTween = this.scene.tweens.add({
+            targets: this.emoteContainer,
+            scale: 1,
+            alpha: 1,
+            ease: "Back.out",
+            duration: 250
+        });
+        this._emoteHideTimeoutID = setTimeout(() => {
+            this.scene.tweens.add({
+                targets: this.emoteContainer,
+                scale: 0,
+                alpha: 0,
+                duration: 200,
+                onComplete: () => this.emoteContainer.setVisible(false)
+            });
+        }, 4000);
     }
 
     destroy(): void {
