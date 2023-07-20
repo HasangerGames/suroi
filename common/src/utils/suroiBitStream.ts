@@ -257,7 +257,7 @@ export class SuroiBitStream extends BitStream {
             case "full":
                 return this.readRotation(4);
             case "limited": // 4 possible orientations
-                return normalizeAngle(this.readBits(2) * (Math.PI / 2));
+                return -normalizeAngle(this.readBits(2) * (Math.PI / 2));
             case "binary": // 2 possible orientations
                 if (this.readBoolean()) return Math.PI / 2;
                 else return 0;

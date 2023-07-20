@@ -41,6 +41,9 @@ export class MapPacket extends SendingPacket {
                     }
                     break;
                 }
+                case ObjectCategory.Building:
+                    stream.writeObstacleRotation(object.rotation, "limited");
+                    break;
             }
         }
     }

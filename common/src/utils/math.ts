@@ -153,6 +153,10 @@ export function distanceToRectangle(min: Vector, max: Vector, circlePos: Vector,
     return { collided: distSquared < radSquared, distance: radSquared - distSquared };
 }
 
+export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
+    return (n1 + n2) % 4 as Orientation;
+}
+
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
     if (orientation === 0) return vAdd(position1, position2);
     let xOffset: number, yOffset: number;

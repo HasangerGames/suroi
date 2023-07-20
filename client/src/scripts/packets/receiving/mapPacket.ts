@@ -63,6 +63,7 @@ export class MapPacket extends ReceivingPacket {
                 }
                 case ObjectCategory.Building:
                     texture += "_ceiling";
+                    rotation = stream.readObstacleRotation("limited");
                     break;
             }
 

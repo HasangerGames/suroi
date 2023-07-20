@@ -2,7 +2,7 @@ import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { type Variation, type Orientation } from "../../common/src/typings";
 import {
     random,
@@ -23,6 +23,7 @@ import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Building } from "./objects/building";
+import { addAdjust, addOrientations } from "../../common/src/utils/math";
 
 export class Map {
     game: Game;
@@ -126,13 +127,25 @@ export class Map {
         }
     }
 
-    generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector): Building {
-        const building = new Building(this.game, type, vClone(position));
+    generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation?: Orientation): Building {
+        if (orientation === undefined) orientation = random(0, 3) as Orientation;
+
+        const building = new Building(this.game, type, vClone(position), orientation);
 
         const definition = type.definition;
 
         for (const obstacleData of definition.obstacles) {
-            this.genObstacle(obstacleData.idString, vAdd(position, obstacleData.position), obstacleData.rotation ?? 0, 1);
+            const obstaclePos = addAdjust(position, obstacleData.position, orientation);
+
+            const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.idString);
+
+            let obstacleRotation = obstacleData.rotation ?? 0;
+
+            if (obstacleType.definition.rotationMode === "limited") {
+                obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
+            }
+
+            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, 1);
         }
 
         this.game.staticObjects.add(building);

@@ -7,6 +7,7 @@ import { type Game } from "../game";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
+import { type Orientation } from "../../../common/src/typings";
 
 export class Building extends GameObject {
     readonly is: CollisionFilter = {
@@ -27,13 +28,14 @@ export class Building extends GameObject {
 
     readonly spawnHitbox: Hitbox;
 
-    /* eslint-disable @typescript-eslint/no-useless-constructor */
-    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector) {
+    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, type, position);
 
         this.definition = type.definition;
 
-        this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1);
+        this.rotation = orientation;
+
+        this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
@@ -45,5 +47,6 @@ export class Building extends GameObject {
 
     override serializeFull(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
+        stream.writeObstacleRotation(this.rotation, "limited");
     }
 }

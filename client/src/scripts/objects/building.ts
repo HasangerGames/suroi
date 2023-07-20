@@ -9,21 +9,16 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 export class Building extends GameObject {
     readonly images: {
         floor: Phaser.GameObjects.Image
+        ceiling: Phaser.GameObjects.Image
     };
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building>, id: number) {
         super(game, scene, type, id);
 
-        if(type.idString === "house") {
-            this.images = {
-            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`).setScale(0.6)
+        this.images = {
+            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`),
+            ceiling: scene.add.image(0, 0, "main", `${type.idString}_ceiling.svg`).setDepth(10).setAlpha(0.5) // temporary
         };
-        }
-        else {
-            this.images = {
-            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`)
-        };
-        }
 
         this.container.add([this.images.floor]).setDepth(-1);
     }
@@ -35,6 +30,11 @@ export class Building extends GameObject {
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
+
+        this.rotation = stream.readObstacleRotation("limited");
+
+        this.container.setRotation(this.rotation);
+        this.images.ceiling.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
     }
 
     destroy(): void {

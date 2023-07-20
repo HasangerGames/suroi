@@ -2,7 +2,7 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
-import { type Variation } from "../../../common/src/typings";
+import { type Orientation, type Variation } from "../../../common/src/typings";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { v } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
@@ -38,8 +38,7 @@ interface mapDefinition {
 export const Maps: Record<string, mapDefinition> = {
     main: {
         buildings: {
-            warehouse: 10,
-            house: 10,
+            warehouse: 10
         },
         obstacles: {
             oil_tank: 6,
@@ -83,9 +82,10 @@ export const Maps: Record<string, mapDefinition> = {
             const buildingPos = v(map.width / 2, map.height / 2 + 30);
 
             for (const building of Buildings.definitions) {
-                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos);
-
-                buildingPos.y += 40;
+                for (let orientation = 0; orientation < 4; orientation++) {
+                    map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
+                    buildingPos.y += 40;
+                }
             }
 
             // Generate all Obstacles

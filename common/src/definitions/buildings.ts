@@ -18,7 +18,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "warehouse",
         name: "Warehouse",
-        spawnHitbox: new RectangleHitbox(v(-20, 20), v(-20, 20)),
+        spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
 
         obstacles: [
             {
@@ -66,7 +66,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "house",
         name: "House",
-        spawnHitbox: new RectangleHitbox(v(-20, 20), v(-20, 20)),
+        spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
 
         obstacles: []
     }
