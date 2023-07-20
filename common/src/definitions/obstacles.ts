@@ -290,6 +290,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-15.5, -0.7), v(15.5, 0.7)),
             rotationMode: "limited"
-        }
+        },
+        {
+            idString: "fridge",
+            name: "Fridge",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            variations: 3,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.3, -2.2), v(3.3, 2.3)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "stove",
+            name: "Stove",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            variations: 3,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.3, -2.2), v(3.3, 2.3)),
+            rotationMode: "limited"
+        },
     ]
 );
