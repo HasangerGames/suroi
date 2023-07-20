@@ -95,7 +95,6 @@ export class MinimapScene extends Phaser.Scene {
         this.fullScreenCamera.setSize(screenHeight, screenHeight);
         this.fullScreenCamera.setPosition(screenWidth / 2 - screenHeight / 2, 0);
         this.fullScreenCamera.centerOn(MAP_WIDTH / 2 * MINIMAP_SCALE, (MAP_HEIGHT * 1.1) / 2 * MINIMAP_SCALE);
-        $("#scopes-container").hide();
         this.updateTransparency();
     }
 
@@ -112,7 +111,6 @@ export class MinimapScene extends Phaser.Scene {
         }
         this.cameras.main.setBackgroundColor(GRASS_COLOR);
         this.cameras.main.startFollow(this.playerIndicator);
-        $("#scopes-container").show();
         this.updateTransparency();
     }
 
@@ -123,6 +121,8 @@ export class MinimapScene extends Phaser.Scene {
         this.resizeBigMap();
         this.cameras.main.setVisible(false);
         $("#minimap-border").hide();
+        $("#scopes-container").toggle(!this.isExpanded);
+        $("#gas-msg").toggle(!this.isExpanded);
     }
 
     switchToSmallMap(): void {
@@ -132,6 +132,8 @@ export class MinimapScene extends Phaser.Scene {
         this.cameras.main.setVisible(this.visible);
         this.resizeSmallMap();
         $("#minimap-border").toggle(this.visible);
+        $("#scopes-container").toggle(!this.isExpanded);
+        $("#gas-msg").toggle(!this.isExpanded);
     }
 
     updateTransparency(): void {
