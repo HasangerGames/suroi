@@ -122,7 +122,7 @@ export class MinimapScene extends Phaser.Scene {
         this.cameras.main.setVisible(false);
         $("#minimap-border").hide();
         $("#scopes-container").toggle(!this.isExpanded);
-        $("#gas-msg").toggle(!this.isExpanded);
+        $("#gas-msg-info").toggle(!this.isExpanded);
     }
 
     switchToSmallMap(): void {
@@ -133,7 +133,7 @@ export class MinimapScene extends Phaser.Scene {
         this.resizeSmallMap();
         $("#minimap-border").toggle(this.visible);
         $("#scopes-container").toggle(!this.isExpanded);
-        $("#gas-msg").toggle(!this.isExpanded);
+        $("#gas-msg-info").toggle(!this.isExpanded);
     }
 
     updateTransparency(): void {

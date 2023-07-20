@@ -448,7 +448,9 @@ export class Player extends GameObject {
             this.killedBy = source;
             if (source !== this) source.kills++;
             source.sendPacket(new KillPacket(source, this, weaponUsed));
+        }
 
+        if (source instanceof Player || source === "gas") {
             this.game.killFeedMessages.add(
                 new KillFeedPacket(
                     this,
