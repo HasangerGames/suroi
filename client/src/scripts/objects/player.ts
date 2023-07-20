@@ -58,7 +58,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly helmet: Phaser.GameObjects.Image
         readonly weapon: Phaser.GameObjects.Image
         readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
+        readonly emoteBackground: Phaser.GameObjects.Image
+        readonly emoteImage: Phaser.GameObjects.Image
     };
+
+    readonly emoteContainer: Phaser.GameObjects.Container;
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
@@ -84,6 +88,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
+            emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg").setPosition(0, -150),
+            emoteImage: this.scene.add.image(0, 0, "main", "picasso_face.svg").setPosition(0, -150),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -105,6 +111,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.helmet,
             this.images.bloodEmitter
         ]).setDepth(3);
+        this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage]).setDepth(10);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -145,6 +152,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     minimap.playerIndicator.y
                 );
             }
+        }
+
+        if (!localStorageInstance.config.movementSmoothing) {
+            this.images.emoteBackground.setPosition(this.position.x * 20, (this.position.y * 20) - 150);
+        } else {
+            this.scene.tweens.add({
+                targets: [this.images.emoteBackground, this.images.emoteImage],
+                x: this.position.x * 20,
+                y: (this.position.y * 20) - 150,
+                duration: 30
+            });
         }
 
         if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
@@ -336,6 +354,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.sendToBack(this.images.weapon);
         }
         this.container.bringToTop(this.images.bloodEmitter);
+        gsap.to([this.images.emoteBackground, this.images.emoteImage], {
+            alpha: 1,
+            scale: 1,
+            duration: 500
+        });
     }
 
     updateEquipment(): void {
