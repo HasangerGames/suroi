@@ -80,7 +80,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 150,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 2,
+        moveSpread: 4,
         length: 10,
         fists: {
             left: v(65, 0),
@@ -89,7 +89,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(120, 2) },
         ballistics: {
-            damage: 13.5,
+            damage: 14,
             obstacleMultiplier: 1.5,
             speed: 0.26,
             maxDistance: 160
@@ -105,7 +105,7 @@ export const Guns: GunDefinition[] = [
         reloadTime: 0.55,
         fireDelay: 700,
         switchDelay: 700,
-        speedMultiplier: 0.93,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
         fireMode: FireMode.Single,
@@ -142,7 +142,7 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.5,
         recoilDuration: 550,
         fireMode: FireMode.Single,
-        shotSpread: 12,
+        shotSpread: 11,
         moveSpread: 3,
         canQuickswitch: true,
         bulletCount: 10,
@@ -176,7 +176,7 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.6,
         recoilDuration: 600,
         fireMode: FireMode.Single,
-        bulletCount: 20,
+        bulletCount: 18,
         shotSpread: 15,
         moveSpread: 7,
         canQuickswitch: true,
@@ -189,7 +189,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(115, 3) },
         ballistics: {
             damage: 5,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 0.5,
             speed: 0.12,
             maxDistance: 40,
             tracerLength: 0.7
@@ -221,10 +221,10 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(105, 4) },
         ballistics: {
-            damage: 68,
-            obstacleMultiplier: 1.5,
+            damage: 64,
+            obstacleMultiplier: 1,
             speed: 0.33,
-            maxDistance: 180,
+            maxDistance: 200,
             tracerWidth: 1.4,
             tracerLength: 2.5
         }
@@ -236,7 +236,7 @@ export const Guns: GunDefinition[] = [
         ammoType: "762mm",
         ammoSpawnAmount: 20,
         capacity: 5,
-        reloadTime: 3,
+        reloadTime: 2.6,
         fireDelay: 1800,
         switchDelay: 750,
         speedMultiplier: 0.9,
@@ -254,9 +254,9 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(125, 4) },
         ballistics: {
-            damage: 80,
-            obstacleMultiplier: 1.5,
-            speed: 0.35,
+            damage: 75,
+            obstacleMultiplier: 1,
+            speed: 0.4,
             maxDistance: 250,
             tracerWidth: 1.6,
             tracerLength: 3.5
@@ -267,15 +267,15 @@ export const Guns: GunDefinition[] = [
         name: "G19",
         itemType: ItemType.Gun,
         ammoType: "9mm",
-        ammoSpawnAmount: 68,
-        fireDelay: 60,
+        ammoSpawnAmount: 60,
+        fireDelay: 110,
         switchDelay: 250,
-        speedMultiplier: 0.95,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.8,
         recoilDuration: 90,
-        fireMode: FireMode.Auto,
-        shotSpread: 10,
-        moveSpread: 5,
+        fireMode: FireMode.Single,
+        shotSpread: 7,
+        moveSpread: 7,
         length: 6,
         fists: {
             left: v(65, 0),
@@ -283,11 +283,11 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(78, 0) },
-        capacity: 17,
-        reloadTime: 2,
+        capacity: 15,
+        reloadTime: 1.5,
         ballistics: {
-            damage: 6.5,
-            obstacleMultiplier: 1.1,
+            damage: 11.75,
+            obstacleMultiplier: 1,
             speed: 0.14,
             maxDistance: 80
         }
@@ -316,8 +316,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(80, 0) },
         ballistics: {
-            damage: 16,
-            obstacleMultiplier: 1.2,
+            damage: 15.5,
+            obstacleMultiplier: 1,
             speed: 0.25,
             maxDistance: 150
         },
@@ -340,8 +340,8 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.7,
         recoilDuration: 900,
         fireMode: FireMode.Burst,
-        shotSpread: 0.5,
-        moveSpread: 1,
+        shotSpread: 1,
+        moveSpread: 1.5,
         length: 9.5,
         fists: {
             left: v(65, 0),
@@ -350,8 +350,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 22,
-            obstacleMultiplier: 1.4,
+            damage: 21,
+            obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 180
         },
@@ -370,12 +370,12 @@ export const Guns: GunDefinition[] = [
         reloadTime: 1.75,
         fireDelay: 40,
         switchDelay: 300,
-        speedMultiplier: 0.98,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
         recoilDuration: 60,
         fireMode: FireMode.Auto,
-        shotSpread: 8,
-        moveSpread: 4,
+        shotSpread: 9,
+        moveSpread: 10,
         length: 6,
         fists: {
             left: v(65, 0),
@@ -385,14 +385,14 @@ export const Guns: GunDefinition[] = [
         image: { position: v(88, 0) },
         ballistics: {
             damage: 9,
-            obstacleMultiplier: 1.3,
+            obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 86
         }
     },
     {
         idString: "mp40",
-        name: "MP40",
+        name: "MP 40",
         itemType: ItemType.Gun,
         ammoType: "9mm",
         ammoSpawnAmount: 96,
@@ -414,8 +414,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 11.5,
-            obstacleMultiplier: 1.25,
+            damage: 11,
+            obstacleMultiplier: 1,
             speed: 0.25,
             maxDistance: 120
         }
@@ -430,12 +430,12 @@ export const Guns: GunDefinition[] = [
         reloadTime: 2.75,
         fireDelay: 87.5,
         switchDelay: 400,
-        speedMultiplier: 0.9,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.65,
         recoilDuration: 240,
         fireMode: FireMode.Auto,
-        shotSpread: 1.5,
-        moveSpread: 2,
+        shotSpread: 2,
+        moveSpread: 2.5,
         length: 9,
         fists: {
             left: v(65, 0),
@@ -444,8 +444,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(110, 0) },
         ballistics: {
-            damage: 15,
-            obstacleMultiplier: 1.6,
+            damage: 16,
+            obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 180,
             tracerLength: 1.4
@@ -458,7 +458,7 @@ export const Guns: GunDefinition[] = [
         ammoType: "762mm",
         ammoSpawnAmount: 94,
         capacity: 47,
-        reloadTime: 4,
+        reloadTime: 3.4,
         fireDelay: 120,
         switchDelay: 400,
         speedMultiplier: 0.8,
@@ -466,7 +466,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 240,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 2,
+        moveSpread: 4,
         length: 14,
         fists: {
             left: v(65, 0),
@@ -478,7 +478,7 @@ export const Guns: GunDefinition[] = [
             damage: 16,
             obstacleMultiplier: 2.5,
             speed: 0.3,
-            maxDistance: 180,
+            maxDistance: 160,
             tracerWidth: 1.1,
             tracerLength: 1.4
         }
@@ -491,14 +491,14 @@ export const Guns: GunDefinition[] = [
         ammoSpawnAmount: 60,
         capacity: 20,
         reloadTime: 2.15,
-        fireDelay: 175,
+        fireDelay: 140,
         switchDelay: 400,
-        speedMultiplier: 0.95,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
         recoilDuration: 500,
         fireMode: FireMode.Single,
-        shotSpread: 1,
-        moveSpread: 1,
+        shotSpread: 2,
+        moveSpread: 1.5,
         length: 10,
         fists: {
             left: v(65, 0),
@@ -507,9 +507,9 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(100, 0) },
         ballistics: {
-            damage: 23,
-            obstacleMultiplier: 1.3,
-            speed: 0.3,
+            damage: 24,
+            obstacleMultiplier: 1.5,
+            speed: 0.22,
             maxDistance: 180,
             tracerLength: 1.3,
             tracerOpacity: {
