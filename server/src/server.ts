@@ -60,7 +60,7 @@ export function endGame(id: number): void {
     game.allowJoin = false;
     game.stopped = true;
     clearTimeout(game.startTimeoutID);
-    clearTimeout(game.gasTimeoutID);
+    clearTimeout(game.gas.timeoutId);
     for (const player of game.connectedPlayers) {
         player.socket.close();
     }
