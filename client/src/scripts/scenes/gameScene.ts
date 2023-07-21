@@ -12,16 +12,17 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import type { PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../../../common/src/constants";
+import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS } from "../../../../common/src/constants";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
-import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
+import { circleCollision, distanceSquared, rectangleCollision } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { getIconFromInputName } from "../utils/inputManager";
+import { Building } from "../objects/building";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
@@ -234,6 +235,11 @@ export class GameScene extends Phaser.Scene {
                         minDist = dist;
                         closestObject = object;
                         canInteract = closestObject.canInteract(this.playerManager);
+                    }
+                } else if (object instanceof Building) {
+                    object.images.ceiling.setVisible(true);
+                    if (rectangleCollision(object.ceilingHitbox.min, object.ceilingHitbox.max, player.position, player.radius)) {
+                        object.images.ceiling.setVisible(false);
                     }
                 }
             }

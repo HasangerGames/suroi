@@ -106,7 +106,7 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(vClone(this.min), vClone(this.max));
     }
 
-    transform(position: Vector, scale: number, orientation: Orientation): Hitbox {
+    transform(position: Vector, scale = 1, orientation = 0 as Orientation): Hitbox {
         const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
