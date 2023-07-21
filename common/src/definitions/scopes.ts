@@ -19,24 +19,24 @@ export const Scopes: ScopeDefinition[] = [
         idString: "2x_scope",
         name: "2x Scope",
         itemType: ItemType.Scope,
-        zoomLevel: 56
+        zoomLevel: 62
     },
     {
         idString: "4x_scope",
         name: "4x Scope",
         itemType: ItemType.Scope,
-        zoomLevel: 72
+        zoomLevel: 83
     },
     {
         idString: "8x_scope",
         name: "8x Scope",
         itemType: ItemType.Scope,
-        zoomLevel: 96
+        zoomLevel: 116
     },
     {
         idString: "15x_scope",
         name: "15x Scope",
         itemType: ItemType.Scope,
-        zoomLevel: 128
+        zoomLevel: 178
     }
 ];
