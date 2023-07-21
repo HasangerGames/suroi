@@ -1,9 +1,12 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { Loots } from "../../../common/src/definitions/loots";
+import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Variation } from "../../../common/src/typings";
+import { circleCollision } from "../../../common/src/utils/math";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { v } from "../../../common/src/utils/vector";
+import { randomPointInsideCircle } from "../../../common/src/utils/random";
+import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface mapDefinition {
@@ -95,6 +98,90 @@ export const Maps: Record<string, mapDefinition> = {
                 if (itemPos.x > map.width / 2 + 100) {
                     itemPos.x = map.width / 2;
                     itemPos.y -= 10;
+                }
+            }
+        }
+    },
+    // Arena map to test guns with really bad custom generation code lol
+    arena: {
+        genCallback: (map: Map) => {
+            // Function to generate all game loot items
+            const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
+                const width = 50;
+
+                const startPos = vClone(pos);
+                startPos.x -= width / 2;
+                const itemPos = vClone(startPos);
+
+                for (const item of Loots.definitions) {
+                    const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item.idString);
+                    const def = itemType.definition;
+
+                    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
+                    if (((def.itemType === ItemType.Melee || def.itemType === ItemType.Scope) && def.noDrop) ||
+                        "ephemeral" in def ||
+                        (def.itemType === ItemType.Backpack && def.level === 0)) continue;
+
+                    map.game.addLoot(itemType, itemPos, Infinity);
+
+                    itemPos.x += xOff;
+                    if ((xOff > 0 && itemPos.x > startPos.x + width) || (xOff < 0 && itemPos.x < startPos.x - width)) {
+                        itemPos.x = startPos.x;
+                        itemPos.y -= yOff;
+                    }
+                }
+            };
+
+            // Fixed obstacles
+            const obstacles = [
+                { id: "rock", pos: v(10, 10) },
+                { id: "rock", pos: v(30, 40) },
+                { id: "rock", pos: v(30, 80) },
+                { id: "regular_crate", pos: v(20, 15) },
+                { id: "barrel", pos: v(25, 25) },
+                { id: "rock", pos: v(80, 10) },
+                { id: "rock", pos: v(60, 15) },
+                { id: "oak_tree", pos: v(20, 70) },
+                { id: "oil_tank", pos: v(120, 25) },
+                { id: "birch_tree", pos: v(110, 50) }
+            ];
+
+            const center = v(map.width / 2, map.height / 2);
+
+            for (const obstacle of obstacles) {
+                map.obstacleTest(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
+                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1, 1);
+                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1, 1);
+                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1, 1);
+            }
+
+            genLoots(vAdd(center, v(-70, 70)), 8, 8);
+            genLoots(vAdd(center, v(70, 70)), 8, 8);
+            genLoots(vAdd(center, v(-70, -70)), -8, 8);
+            genLoots(vAdd(center, v(70, -70)), -8, 8);
+
+            // Generate random obstacles around the center
+            const randomObstacles: mapDefinition["obstacles"] = {
+                oak_tree: 50,
+                rock: 50,
+                bush: 20,
+                birch_tree: 5,
+                barrel: 15,
+                super_barrel: 2
+            };
+
+            const getPos = (): Vector => {
+                let pos = vClone(center);
+                while (circleCollision(center, 120, pos, 1)) {
+                    pos = randomPointInsideCircle(center, 250);
+                }
+                return pos;
+            };
+
+            for (const obstacle in randomObstacles) {
+                const obstacleType = ObjectType.fromString(ObjectCategory.Obstacle, obstacle);
+                for (let i = 0; i < randomObstacles[obstacle]; i++) {
+                    map.obstacleTest(obstacle, map.getRandomPositionFor(obstacleType, 1, getPos), 0, 1, 1);
                 }
             }
         }
