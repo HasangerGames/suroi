@@ -359,7 +359,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3.3, -2.2), v(3.3, 2.3)),
+            hitbox: new RectangleHitbox(v(-4.3, -2.6), v(4.3, 3)),
             rotationMode: "limited"
         },
         {
@@ -374,7 +374,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3.3, -2.2), v(3.3, 2.3)),
+            hitbox: new RectangleHitbox(v(-4.2, -2.7), v(4.2, 3)),
             rotationMode: "limited"
         }
     ]
