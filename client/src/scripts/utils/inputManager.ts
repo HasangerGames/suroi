@@ -207,6 +207,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                         game.playerManager.action = InputActions.LeftEmoteSlot;
                         break;
                 }
+                game.playerManager.dirty.inputs = true;
                 game.playerManager.emoteWheelActive = false;
                 game.playerManager.selectedEmoteSlot = EmoteSlot.None;
             }
@@ -359,6 +360,7 @@ export function setupInputs(game: Game): void {
                     .css("background-image", `url(${require(`../../assets/img/misc/emote_wheel_highlight_${slotName}.svg`)}`)
                     .show();
             } else {
+                player.selectedEmoteSlot = EmoteSlot.None;
                 $("#emote-wheel-highlight").hide();
             }
         }

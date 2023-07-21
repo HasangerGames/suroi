@@ -85,9 +85,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images = {
             vest: this.scene.add.image(0, 0, "main").setVisible(false),
-            body: this.scene.add.image(0, 0, "main", "player_base.svg"),
-            leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
-            rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
+            body: this.scene.add.image(0, 0, "main", "forest_camo_base.svg"),
+            leftFist: this.scene.add.image(0, 0, "main", "forest_camo_fist.svg"),
+            rightFist: this.scene.add.image(0, 0, "main", "forest_camo_fist.svg"),
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
