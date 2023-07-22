@@ -157,6 +157,7 @@ export class ComplexHitbox extends Hitbox {
 
             throw new Error("Invalid hitbox object");
         }
+         throw new Error("Invalid hitbox object");
     }
 
     clone(): ComplexHitbox {

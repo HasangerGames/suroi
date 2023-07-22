@@ -386,6 +386,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox([
             new RectangleHitbox(v(12, -23), v(14, 1.2)),
+            new RectangleHitbox(v(10, -23), v(14, -21))
             ]),
             rotationMode: "limited"
         }
