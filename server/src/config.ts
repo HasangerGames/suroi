@@ -1,7 +1,7 @@
 import { Vec2 } from "planck";
 import { MAP_HEIGHT, MAP_WIDTH } from "../../common/src/constants";
 
-export enum SpawnMode { Random, Radius, Fixed}
+export enum SpawnMode { Random, Radius, Fixed }
 export enum GasMode { Normal, Debug, Disabled }
 
 export interface ConfigType {

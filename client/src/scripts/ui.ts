@@ -1,4 +1,3 @@
-
 import $ from "jquery";
 
 import core from "./core";
