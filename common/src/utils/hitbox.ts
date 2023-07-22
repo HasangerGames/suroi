@@ -12,7 +12,8 @@ import {
     distanceToCircle,
     distanceToRectangle,
     rectangleCollision,
-    rectRectCollision
+    rectRectCollision,
+    rectangleDistanceToRectangle
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -102,7 +103,7 @@ export class RectangleHitbox extends Hitbox {
         if (that instanceof CircleHitbox) {
             return distanceToRectangle(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
-            throw new Error("Not implemented"); // TODO Write a rectangleDistanceToRectangle function
+            return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max); // TODO Write a rectangleDistanceToRectangle function
         }
 
         throw new Error("Invalid hitbox object");
