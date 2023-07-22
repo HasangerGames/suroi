@@ -5,6 +5,8 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
+import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
+import { vAdd, vMul } from "../../../../../common/src/utils/vector";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -40,7 +42,7 @@ export class MapPacket extends ReceivingPacket {
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
 
-            const position = stream.readPosition();
+            let position = stream.readPosition();
 
             let rotation = 0;
             let scale = 1;
@@ -64,6 +66,8 @@ export class MapPacket extends ReceivingPacket {
                 case ObjectCategory.Building:
                     texture += "_ceiling";
                     rotation = stream.readObstacleRotation("limited");
+
+                    position = vAdd(position, vMul((type.definition as BuildingDefinition).ceilingImagePos, MINIMAP_SCALE));
                     break;
             }
 

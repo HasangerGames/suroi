@@ -145,7 +145,7 @@ export class Map {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
-            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, 1);
+            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation);
         }
 
         this.game.staticObjects.add(building);

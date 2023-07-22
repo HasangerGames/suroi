@@ -13,6 +13,7 @@ import { normalizeAngle } from "../../../../common/src/utils/math";
 export class Building extends GameObject {
     readonly images: {
         floor: Phaser.GameObjects.Image
+        ceilingContainer: Phaser.GameObjects.Container
         ceiling: Phaser.GameObjects.Image
     };
 
@@ -24,15 +25,19 @@ export class Building extends GameObject {
 
     ceilingVisible = true;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building>, id: number) {
+    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, scene, type, id);
 
+        const definition = type.definition;
         this.images = {
-            floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`),
-            ceiling: scene.add.image(0, 0, "main", `${type.idString}_ceiling.svg`).setDepth(8)
+            floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "main", `${type.idString}_floor.svg`),
+            ceilingContainer: scene.add.container(),
+            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "main", `${type.idString}_ceiling.svg`)
         };
 
-        this.container.add([this.images.floor]).setDepth(-1);
+        this.container.add(this.images.floor).setDepth(-1);
+
+        this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);
 
         this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.clone();
     }
@@ -63,13 +68,14 @@ export class Building extends GameObject {
         this.rotation = -normalizeAngle(this.orientation * (Math.PI / 2));
 
         this.container.setRotation(this.rotation);
-        this.images.ceiling.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
+        this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
         this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
     }
 
     destroy(): void {
         super.destroy();
         this.images.floor.destroy();
+        this.images.ceilingContainer.destroy();
         this.images.ceiling.destroy();
     }
 }
