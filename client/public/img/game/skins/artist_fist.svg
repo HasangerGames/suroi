@@ -1357,7 +1357,7 @@
        xlink:href="#linearGradient6655"
        id="linearGradient1457"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-192.58919,-171.61965)"
+       gradientTransform="translate(-151.40635,-290.955)"
        x1="25.140934"
        y1="178.76891"
        x2="30.753597"
@@ -1711,7 +1711,7 @@
        clip-path="url(#clipPath1406)" /><circle
        style="fill:url(#linearGradient1457);fill-opacity:1;stroke:#152900;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path292-5-5-4"
-       cx="-164.64192"
-       cy="9.9555979"
-       r="3.96875"
-       transform="rotate(-90)" /></g></svg>
+       cx="-123.45909"
+       cy="-109.37975"
+       transform="rotate(-135)"
+       r="3.96875" /></g></svg>

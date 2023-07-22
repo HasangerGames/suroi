@@ -27,7 +27,7 @@
      showgrid="false"
      showguides="true"
      inkscape:zoom="5.6568543"
-     inkscape:cx="-30.935922"
+     inkscape:cx="-30.935921"
      inkscape:cy="14.849242"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
@@ -1361,7 +1361,7 @@
        x2="12.761931"
        y2="184.38158"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-174.59752,-171.61964)" /><style
+       gradientTransform="translate(-133.41469,-290.95499)" /><style
        id="style4553">.cls-1{fill-rule:evenodd;}</style><linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient24929"
@@ -1708,11 +1708,10 @@
        d="m 100.35467,157.82889 c -0.0201,-0.20771 -0.24063,-0.2455 -0.435173,-0.24188 -0.199613,0.0149 -0.385769,0.0907 -0.390936,0.30546 -0.0064,0.25646 0.204597,0.2455 0.395996,0.23849 0.216573,-0.008 0.456943,-0.0255 0.430113,-0.30207"
        style="fill:#2d332d;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.01524"
        id="path210"
-       clip-path="url(#clipPath1406)" /><ellipse
+       clip-path="url(#clipPath1406)" /><circle
        style="fill:url(#linearGradient2058-2);fill-opacity:1;stroke:#092215;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path292-6-8-1"
-       cx="-164.64192"
-       cy="9.9555979"
-       rx="3.9687514"
-       ry="3.96875"
-       transform="rotate(-90)" /></g></svg>
+       cx="-123.45909"
+       cy="-109.37975"
+       transform="rotate(-135)"
+       r="3.96875" /></g></svg>
