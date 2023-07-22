@@ -515,6 +515,9 @@ export class Game {
             } catch (e) {
                 console.error("Error destroying player body. Details: ", e);
             }
+        } else {
+            player.rotation = 0;
+            this.partialDirtyObjects.add(player);
         }
         if (this.aliveCount < 2) {
             clearTimeout(this.startTimeoutID);
