@@ -14,7 +14,7 @@ export class MenuScene extends Phaser.Scene {
     preload(): void {
         this.load.atlas("main", `/img/atlases/main.${ATLAS_HASH}.png`, `/img/atlases/main.${ATLAS_HASH}.json`);
 
-        this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
+        this.load.audio("menu", "/audio/music/menu_music.mp3");
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
     }

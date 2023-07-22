@@ -87,7 +87,7 @@ export class KillFeedPacket extends ReceivingPacket {
                             ? `${killed.name} died to the gas`
                             : `${killed.name} committed suicide`;
 
-                    killFeedItem.html(`<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                    killFeedItem.html(`<img class="kill-icon" src="/img/misc/skull.svg" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
                 } else {
                     const killerName = twoPartyInteraction ? killedBy!.name : "";
                     const iconSrc = gasKill ? "gas" : weaponUsed?.idString;

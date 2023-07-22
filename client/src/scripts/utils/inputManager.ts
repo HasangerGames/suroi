@@ -357,7 +357,7 @@ export function setupInputs(game: Game): void {
                 }
                 $("#emote-wheel-highlight")
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    .css("background-image", `url(${require(`../../assets/img/misc/emote_wheel_highlight_${slotName}.svg`)}`)
+                    .css("background-image", `url("/img/misc/emote_wheel_highlight_${slotName}.svg")`)
                     .show();
             } else {
                 player.selectedEmoteSlot = EmoteSlot.None;

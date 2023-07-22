@@ -919,7 +919,7 @@
     width: 286px;
     height: 286px;
     //noinspection CssUnknownTarget
-    background-image: url("../../img/misc/emote_wheel.svg");
+    background-image: url("../../../public/img/misc/emote_wheel.svg");
 
     & > div {
         width: 84px;
@@ -961,7 +961,7 @@
 
     &.chicken-dinner {
         //noinspection CssUnknownTarget
-        background-image: url("../../img/misc/chicken-dinner.png");
+        background-image: url("../../../public/img/misc/chicken-dinner.png");
         color: white;
         text-shadow: 1px 1px 2px black;
     }
