@@ -24,7 +24,7 @@ export class GunItem extends InventoryItem {
 
     private _reloadTimeoutID: NodeJS.Timeout | undefined;
 
-    private _burtTimeoutID: NodeJS.Timeout | undefined;
+    private _burstTimeoutID: NodeJS.Timeout | undefined;
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
 
     /**
@@ -72,11 +72,11 @@ export class GunItem extends InventoryItem {
         }
 
         this.owner.action?.cancel();
-        clearTimeout(this._burtTimeoutID);
+        clearTimeout(this._burstTimeoutID);
 
         if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
             this._shots = 0;
-            this._burtTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.burstProperties.burstCooldown);
+            this._burstTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.burstProperties.burstCooldown);
             return;
         }
 
