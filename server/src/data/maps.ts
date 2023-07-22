@@ -87,7 +87,7 @@ export const Maps: Record<string, mapDefinition> = {
             for (const building of Buildings.definitions) {
                 for (let orientation = 0; orientation < 4; orientation++) {
                     map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
-                    buildingPos.y += 40;
+                    buildingPos.y += 100;
                 }
             }
 

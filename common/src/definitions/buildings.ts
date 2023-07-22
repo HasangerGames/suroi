@@ -22,6 +22,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 }
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
+    /*
     {
         idString: "warehouse",
         name: "Warehouse",
@@ -75,12 +76,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(0, 11.5)
             }
         ]
-    },
+    },*/
     {
         idString: "house",
         name: "House",
         spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
-        ceilingHitbox: new RectangleHitbox(v(-16, -16), v(16, 16)),
+        ceilingHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-49, -35), v(15, 22)),
+            new RectangleHitbox(v(15, -37), v(48, 6)),
+            new RectangleHitbox(v(-43, -15), v(-19, 32))
+        ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -3.5),
         obstacles: [
