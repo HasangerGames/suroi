@@ -14,6 +14,7 @@ import { Scopes } from "../../../common/src/definitions/scopes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
+import { Emotes } from "../../../common/src/definitions/emotes";
 
 $((): void => {
     const dropdown = {
@@ -154,16 +155,14 @@ $((): void => {
     });
 
     // Load skins & emotes
-    const loadout = localStorageInstance.config.loadout;
-
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css("background-image", `url("/img/game/skins/${skinID}_base.svg")`);
         $("#skin-left-fist, #skin-right-fist").css("background-image", `url("/img/game/skins/${skinID}_fist.svg")`);
     };
-    updateSplashCustomize(loadout.skin);
+    updateSplashCustomize(localStorageInstance.config.loadout.skin);
 
     for (const skin of Skins) {
-        if (skin.notInLoadout || (skin.roleRequired !== undefined && skin.roleRequired !== localStorageInstance.config.role)) continue;
+        if (skin.notInLoadout ?? (skin.roleRequired !== undefined && skin.roleRequired !== localStorageInstance.config.role)) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -178,11 +177,8 @@ $((): void => {
         skinItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
-                    skin: skin.idString,
-                    topEmote: loadout.topEmote,
-                    rightEmote: loadout.rightEmote,
-                    bottomEmote: loadout.bottomEmote,
-                    leftEmote: loadout.leftEmote
+                    ...localStorageInstance.config.loadout,
+                    skin: skin.idString
                 }
             });
             $(this).addClass("selected").siblings().removeClass("selected");
@@ -191,7 +187,48 @@ $((): void => {
         $("#skins-list").append(skinItem);
     }
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    $(`#skin-${loadout.skin}`).addClass("selected");
+    $(`#skin-${localStorageInstance.config.loadout.skin}`).addClass("selected");
+
+    let selectedEmoteSlot: string | undefined;
+    const getSelectedEmoteSlot = (): string | undefined => selectedEmoteSlot;
+
+    for (const emote of Emotes.definitions) {
+        // noinspection CssUnknownTarget
+        const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+  <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
+  <span class="emote-name">${emote.name}</span>
+</div>`);
+        emoteItem.on("click", function() {
+            if (selectedEmoteSlot === undefined) return;
+            localStorageInstance.update({
+                loadout: {
+                    ...localStorageInstance.config.loadout,
+                    [`${getSelectedEmoteSlot()}Emote`]: emote.idString
+                }
+            });
+            $(this).addClass("selected").siblings().removeClass("selected");
+            $(`#emote-customize-wheel > .emote-${getSelectedEmoteSlot()}`)
+                .css("background-image", `url("/img/game/emotes/${emote.idString}.svg")`);
+        });
+        $("#emotes-list").append(emoteItem);
+    }
+
+    for (const slot of ["top", "right", "bottom", "left"] as Array<"top" | "right" | "bottom" | "left">) {
+        $(`#emote-customize-wheel > .emote-${slot}`)
+            .css("background-image", `url("/img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
+            .on("click", () => {
+                if (selectedEmoteSlot === slot) {
+                    selectedEmoteSlot = undefined;
+                    $("#emote-customize-wheel-highlight").hide();
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "default");
+                } else {
+                    selectedEmoteSlot = slot;
+                    $("#emote-customize-wheel-highlight").css("background-image", `url("/img/misc/emote_wheel_highlight_${slot}.svg")`).show();
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
+                    $(`#emote-${localStorageInstance.config.loadout[`${slot}Emote`]}`).addClass("selected");
+                }
+            });
+    }
 
     // Disable context menu
     $("#game-ui").on("contextmenu", e => { e.preventDefault(); });

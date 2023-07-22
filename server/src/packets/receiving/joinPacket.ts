@@ -6,7 +6,6 @@ import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        this.player.game.activatePlayer(this.player);
         this.player.isMobile = stream.readBoolean();
         const skin = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot);
         if (skin.definition.roleRequired === undefined || skin.definition.roleRequired === this.player.role) {
@@ -15,5 +14,6 @@ export class JoinPacket extends ReceivingPacket {
         for (let i = 0; i < 4; i++) {
             this.player.loadout.emotes[i] = stream.readObjectTypeNoCategory(ObjectCategory.Emote);
         }
+        this.player.game.activatePlayer(this.player);
     }
 }

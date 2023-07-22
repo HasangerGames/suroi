@@ -914,7 +914,7 @@
     }
 }
 
-#emote-wheel {
+#emote-wheel, #emote-customize-wheel {
     position: absolute;
     width: 286px;
     height: 286px;
@@ -927,28 +927,28 @@
         position: absolute;
     }
 
-    #emote-top {
+    .emote-top {
         top: 14px;
         left: 101px;
     }
 
-    #emote-right {
+    .emote-right {
         right: 14px;
         top: 101px;
     }
 
-    #emote-bottom {
+    .emote-bottom {
         bottom: 14px;
         left: 101px;
     }
 
-    #emote-left {
+    .emote-left {
         left: 14px;
         top: 101px;
     }
 }
 
-#emote-wheel-highlight {
+#emote-wheel-highlight, #emote-customize-wheel-highlight {
     position: absolute;
     width: 286px;
     height: 286px;

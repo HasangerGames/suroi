@@ -119,6 +119,52 @@
         }
     }
 
+    #emote-customize-wheel {
+        .emote-top, .emote-right, .emote-bottom, .emote-left {
+            cursor: pointer;
+            z-index: 10;
+        }
+    }
+
+    #emotes-list {
+        position: absolute;
+        left: 430px;
+        width: calc(100% - 430px);
+        max-height: 100%;
+        height: 100%;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-bottom: 70px;
+
+        .emotes-list-item-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            padding: 5px;
+            margin-right: 5px;
+            background-color: $transparent_bg;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .emotes-list-item {
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+        }
+
+        .emote-name {
+            font-weight: bold;
+            @include text-shadow;
+        }
+    }
+
     #settings-tabs, #customize-tabs {
         width: 100%;
         height: 380px;
@@ -152,6 +198,11 @@
     .tab-content {
         width: 100%;
         border-radius: 0;
+    }
+
+    #tab-emotes-content {
+        display: flex;
+        flex-direction: column;
     }
 
     .setting-title {
