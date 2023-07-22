@@ -25,9 +25,11 @@ export class PlayerManager {
 
     name!: string;
 
-    private _health = 100;
+    maxHealth = 100;
+    health = this.maxHealth;
 
-    private _adrenaline = 100;
+    maxAdrenaline = 100;
+    adrenaline = 0;
 
     get isMobile(): boolean {
         return this.isActuallyMobile && localStorageInstance.config.mobileControls;
@@ -146,22 +148,6 @@ export class PlayerManager {
 
     useItem(item: string): void {
         this.game.sendPacket(new ItemPacket(this, ObjectType.fromString(ObjectCategory.Loot, item)));
-    }
-
-    get health(): number {
-        return this._health;
-    }
-
-    set health(health: number) {
-        this._health = health;
-    }
-
-    get adrenaline(): number {
-        return this._adrenaline;
-    }
-
-    set adrenaline(adrenaline: number) {
-        this._adrenaline = adrenaline;
     }
 
     switchScope(direction: number): void {

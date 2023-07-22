@@ -24,6 +24,7 @@ export type GunDefinition = ItemDefinition & {
     readonly canQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
+    readonly killstreak?: boolean
 
     readonly fists: {
         readonly left: Vector

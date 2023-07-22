@@ -39,7 +39,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     oldPosition!: Vector;
 
-    activeItem = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, "fists");
+    activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
 
     oldItem = this.activeItem.idNumber;
 
@@ -87,7 +87,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
-                rotate: { min: 0, max: 360 },
                 lifespan: 1000,
                 speed: { min: 20, max: 30 },
                 scale: { start: 0.75, end: 1 },
@@ -137,6 +136,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 ease: "none",
                 duration: 0.03
             });
+
             if (this.game.gas.oldRadius !== 0 && this.game.gas.state !== GasState.Inactive) {
                 minimap.gasToCenterLine.setTo(
                     this.game.gas.newPosition.x * MINIMAP_SCALE,
@@ -226,12 +226,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             duration: 50,
                             yoyo: true
                         });
+
                         this.leftFistAnim = this.scene.tweens.add({
                             targets: this.images.leftFist,
                             x: weaponDef.fists.left.x - recoilAmount,
                             duration: 50,
                             yoyo: true
                         });
+
                         this.rightFistAnim = this.scene.tweens.add({
                             targets: this.images.rightFist,
                             x: weaponDef.fists.right.x - recoilAmount,
@@ -263,7 +265,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
 
         if (this.isActivePlayer) {
-            $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
+            $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
         }
 
         this.helmetLevel = stream.readBits(2);
@@ -301,6 +303,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
             this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
         }
+
         if (weaponDef.image) {
             this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);

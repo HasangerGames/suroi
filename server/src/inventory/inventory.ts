@@ -396,8 +396,8 @@ export class Inventory {
 
                 const definition = item.definition as HealingItemDefinition;
 
-                if (definition.healType === HealType.Health && this.owner.health >= 100) return;
-                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+                if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
+                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
                 this.owner.executeAction(new HealingAction(this.owner, item));
                 break;
@@ -426,7 +426,7 @@ export class Inventory {
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
-                    stream.writeObjectTypeNoCategory(item.type);
+                    stream.writeObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(item.type);
                     if (item instanceof GunItem) {
                         // TODO: find a better place to send the ammo instead of sending it with the inventory guns
                         stream.writeUint8(item.ammo);

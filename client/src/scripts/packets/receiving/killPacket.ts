@@ -15,7 +15,7 @@ export class KillPacket extends ReceivingPacket {
         $("#kill-msg-kills").text(killText);
         $("#kill-msg-word").text(randomKillWord());
         $("#kill-msg-player-name").html(stream.readPlayerNameWithColor()); // name
-        $("#kill-msg-weapon-used").text(stream.readBoolean() ? ` with ${stream.readObjectType().definition.name}` : "");
+        $("#kill-msg-weapon-used").text(stream.readBoolean() ? ` with ${stream.readObjectType().definition.name}${stream.readBoolean() ? `(streak: ${stream.readUint8()})` : ""}` : "");
 
         const killModal = $("#kill-msg");
         killModal.fadeIn(350, (): void => {

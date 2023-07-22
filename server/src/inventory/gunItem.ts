@@ -6,15 +6,17 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode, AnimationType } from "../../../common/src/constants";
+import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 
 /**
  * A class representing a firearm
  */
 export class GunItem extends InventoryItem {
     declare readonly category: ItemType.Gun;
+    declare readonly type: ObjectType<ObjectCategory.Loot, GunDefinition>;
 
     readonly definition: GunDefinition;
 
@@ -26,6 +28,14 @@ export class GunItem extends InventoryItem {
 
     private _burstTimeoutID: NodeJS.Timeout | undefined;
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
+
+    private readonly _stats = {
+        kills: 0,
+        damage: 0
+    };
+    // shut the up
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
+    get stats() { return this._stats; }
 
     /**
      * Constructs a new gun
@@ -40,7 +50,7 @@ export class GunItem extends InventoryItem {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 
-        this.definition = this.type.definition as GunDefinition;
+        this.definition = this.type.definition;
     }
 
     /**
@@ -108,9 +118,8 @@ export class GunItem extends InventoryItem {
             this.owner.game.addBullet(
                 position,
                 angle,
-                definition,
-                this.type,
-                owner
+                this,
+                this.owner
             );
         }
 

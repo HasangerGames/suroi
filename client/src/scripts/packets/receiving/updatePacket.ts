@@ -35,9 +35,14 @@ export class UpdatePacket extends ReceivingPacket {
         // Active player data
         //
 
+        // Max health
+        if (stream.readBoolean()) {
+            playerManager.maxHealth = stream.readFloat32();
+        }
+
         // Health
         if (stream.readBoolean()) {
-            playerManager.health = stream.readFloat(0, 100, 8);
+            playerManager.health = stream.readFloat(0, playerManager.maxHealth, 8);
             let roundedHealth = Math.round(playerManager.health);
 
             // This doesn't get set to the exact number because the stream has trouble reading it correctly.
@@ -63,17 +68,21 @@ export class UpdatePacket extends ReceivingPacket {
             healthBarAmount.css("color", playerManager.health <= 40 ? "#ffffff" : "#000000");
         }
 
+        // Max health
+        if (stream.readBoolean()) {
+            playerManager.maxAdrenaline = stream.readFloat32();
+        }
+
         // Adrenaline
         if (stream.readBoolean()) {
-            playerManager.adrenaline = stream.readFloat(0, 100, 8);
+            playerManager.adrenaline = stream.readFloat(0, playerManager.maxAdrenaline, 8);
             $("#adrenaline-bar").width(`${playerManager.adrenaline}%`);
-            const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
+            const adrenalineBarPercentage = $<HTMLSpanElement>("#adrenaline-bar-percentage");
             adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
             adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
         // Zoom
-
         if (stream.readBoolean()) {
             playerManager.zoom = stream.readUint8();
             scene.resize(true);

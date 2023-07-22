@@ -27,8 +27,9 @@ import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type GunItem } from "../inventory/gunItem";
+import { GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
+import { MeleeItem } from "../inventory/meleeItem";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -52,9 +53,35 @@ export class Player extends GameObject {
     joined = false;
     disconnected = false;
 
-    private _health = 100;
+    private _maxHealth = 100;
+    get maxHealth(): number { return this._maxHealth; }
+    set maxHealth(maxHealth: number) {
+        this._maxHealth = maxHealth;
+        this.health = this._health;
+    }
+
+    private _health = this._maxHealth;
+    get health(): number { return this._health; }
+    set health(health: number) {
+        this._health = Math.min(health, this._maxHealth);
+
+        this.dirty.health = true;
+    }
+
+    private _maxAdrenaline = 100;
+    get maxAdrenaline(): number { return this._maxAdrenaline; }
+    set maxAdrenaline(maxAdrenaline: number) {
+        this._maxAdrenaline = maxAdrenaline;
+        this.adrenaline = this._adrenaline;
+    }
 
     private _adrenaline = 0;
+    get adrenaline(): number { return this._adrenaline; }
+    set adrenaline(adrenaline: number) {
+        this._adrenaline = Math.min(Math.max(adrenaline, 0), this._maxAdrenaline);
+
+        this.dirty.adrenaline = true;
+    }
 
     killedBy?: Player;
 
@@ -119,7 +146,9 @@ export class Player extends GameObject {
      * updating
      */
     readonly dirty = {
+        maxHealth: true,
         health: true,
+        maxAdrenaline: true,
         adrenaline: true,
         activeWeaponIndex: true,
         weapons: true,
@@ -264,27 +293,6 @@ export class Player extends GameObject {
         return this.deathPosition ?? this.body.getPosition();
     }
 
-    get health(): number {
-        return this._health;
-    }
-
-    set health(health: number) {
-        this._health = health;
-        if (this._health > 100) this._health = 100;
-        this.dirty.health = true;
-    }
-
-    get adrenaline(): number {
-        return this._adrenaline;
-    }
-
-    set adrenaline(adrenaline: number) {
-        this._adrenaline = adrenaline;
-        if (this._adrenaline < 0) this._adrenaline = 0;
-        if (this.adrenaline > 100) this._adrenaline = 100;
-        this.dirty.adrenaline = true;
-    }
-
     get zoom(): number {
         return this._zoom;
     }
@@ -384,8 +392,8 @@ export class Player extends GameObject {
     }
 
     private _clampDamageAmount(amount: number): number {
-        if (this.health - amount > 100) {
-            amount = -(100 - this.health);
+        if (this.health - amount > this.maxHealth) {
+            amount = -(this.maxHealth - this.health);
         }
 
         if (this.health - amount <= 0) {
@@ -397,7 +405,7 @@ export class Player extends GameObject {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
         // Reduction are merged additively
@@ -413,15 +421,21 @@ export class Player extends GameObject {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: ObjectType): void {
+    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
+
+        const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
         if (amount > 0) {
             this.damageTaken += amount;
+
+            if (canTrackStats) {
+                weaponUsed.stats.damage += amount;
+            }
 
             if (source instanceof Player) this.hitEffect = true;
         }
@@ -432,11 +446,16 @@ export class Player extends GameObject {
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
 
-        if (this.health <= 0) this.die(source, weaponUsed);
+        if (this.health <= 0) {
+            this.die(source, weaponUsed);
+            if (canTrackStats) {
+                weaponUsed.stats.kills++;
+            }
+        }
     }
 
     // dies of death
-    die(source?: GameObject | "gas", weaponUsed?: ObjectType): void {
+    die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 
