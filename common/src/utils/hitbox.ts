@@ -139,8 +139,24 @@ export class ComplexHitbox extends Hitbox {
         return false;
     }
 
-    distanceTo(): CollisionRecord {
-        throw new Error("Not implemented");
+    distanceTo(that: Hitbox): CollisionRecord {
+        for(const hitbox of this.hitBoxes) {
+            if(hitbox instanceof CircleHitbox) {
+                if (that instanceof CircleHitbox) {
+                  return distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
+                } else if (that instanceof RectangleHitbox) {
+                  return distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
+                }
+            } else if (hitbox instanceof RectangleHitbox) {
+                 if (that instanceof CircleHitbox) {
+                    return distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
+                 } else if (that instanceof RectangleHitbox) {
+                    return rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max); // TODO Write a rectangleDistanceToRectangle function
+                 }
+            }
+
+            throw new Error("Invalid hitbox object");
+        }
     }
 
     clone(): ComplexHitbox {
