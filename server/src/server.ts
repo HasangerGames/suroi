@@ -82,7 +82,8 @@ const bannedIPs: string[] = [];
 
 app.get("/api/getGame", async(res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted(() => { });
+    let aborted = false;
+    res.onAborted(() => { aborted = true; });
     cors(res);
 
     let response: { success: boolean, address?: string, gameID?: number };
@@ -114,9 +115,11 @@ app.get("/api/getGame", async(res, req) => {
     } else {
         response = { success: false };
     }
-    res.cork(() => {
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
-    });
+    if (!aborted) {
+        res.cork(() => {
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+        });
+    }
 });
 
 export interface PlayerContainer {
