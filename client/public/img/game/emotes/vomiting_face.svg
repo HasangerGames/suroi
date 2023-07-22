@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    version="1.1"
-   width="128"
-   height="128"
-   viewBox="0 0 127.99999 128"
+   width="84"
+   height="84"
+   viewBox="0 0 83.999996 83.999998"
    id="svg30"
-   sodipodi:docname="vomiting.svg"
+   sodipodi:docname="vomiting_face.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -30,10 +30,11 @@
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg30" />
+     inkscape:current-layer="svg30"
+     units="px" />
   <g
      id="g846"
-     transform="matrix(0.93721474,0,0,0.93721474,3.516172,-9.3830867e-6)">
+     transform="matrix(0.61504717,0,0,0.61504717,2.3074881,-5.9442524e-6)">
     <path
        d="m 2.50001,64.53572 c 0,-34.26136 27.77435,-62.03571 62.03571,-62.03571 34.26139,0 62.03571,27.77435 62.03571,62.03571 0,34.26139 -27.77432,62.03571 -62.03571,62.03571 -34.26136,0 -62.03571,-27.77432 -62.03571,-62.03571 z"
        fill="#f3be3a"
