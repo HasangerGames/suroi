@@ -18,7 +18,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
-import { circleCollision, distanceSquared, rectangleCollision } from "../../../../common/src/utils/math";
+import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { getIconFromInputName } from "../utils/inputManager";
@@ -237,7 +237,7 @@ export class GameScene extends Phaser.Scene {
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
                 } else if (object instanceof Building) {
-                    object.toggleCeiling(!rectangleCollision(object.ceilingHitbox.min, object.ceilingHitbox.max, player.position, player.radius));
+                    object.toggleCeiling(!object.ceilingHitbox.collidesWith(player.hitBox));
                 }
             }
 

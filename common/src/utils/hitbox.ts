@@ -149,7 +149,12 @@ export class ComplexHitbox extends Hitbox {
     transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
         const hitBoxes: Hitbox[] = [];
         for (const hitbox of this.hitBoxes) {
-            hitBoxes.push(hitbox.transform(position, scale, orientation));
+            // i have no idea why but that makes it work correctly
+            let newOrientation = orientation;
+            if (orientation === 1) newOrientation = 3;
+            else if (orientation === 3) newOrientation = 1;
+
+            hitBoxes.push(hitbox.transform(position, scale, newOrientation));
         }
         return new ComplexHitbox(hitBoxes);
     }

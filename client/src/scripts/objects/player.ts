@@ -31,6 +31,7 @@ import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 
 const showMeleeDebugCircle = false;
 
@@ -71,6 +72,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     backpackLevel = 0;
 
     readonly radius = PLAYER_RADIUS;
+
+    hitBox = new CircleHitbox(this.radius);
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);
@@ -114,6 +117,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
+
+        this.hitBox.position = this.position;
 
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);

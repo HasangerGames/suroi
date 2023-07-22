@@ -5,7 +5,7 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { normalizeAngle } from "../../../../common/src/utils/math";
@@ -16,7 +16,7 @@ export class Building extends GameObject {
         ceiling: Phaser.GameObjects.Image
     };
 
-    ceilingHitbox: RectangleHitbox;
+    ceilingHitbox: Hitbox;
 
     orientation!: Orientation;
 
@@ -64,7 +64,7 @@ export class Building extends GameObject {
 
         this.container.setRotation(this.rotation);
         this.images.ceiling.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
-        this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation) as RectangleHitbox;
+        this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
     }
 
     destroy(): void {
