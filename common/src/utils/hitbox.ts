@@ -124,7 +124,6 @@ export class RectangleHitbox extends Hitbox {
 }
 
 export class ComplexHitbox extends Hitbox {
-
     hitBoxes: Hitbox[];
 
     constructor(hitBoxes: Hitbox[]) {
@@ -149,7 +148,7 @@ export class ComplexHitbox extends Hitbox {
 
     transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
         const hitBoxes: Hitbox[] = [];
-        for (let hitbox of this.hitBoxes) {
+        for (const hitbox of this.hitBoxes) {
             hitBoxes.push(hitbox.transform(position, scale, orientation));
         }
         return new ComplexHitbox(hitBoxes);

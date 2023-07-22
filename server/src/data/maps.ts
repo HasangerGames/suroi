@@ -1,6 +1,6 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
-import { LootDefinition, Loots } from "../../../common/src/definitions/loots";
+import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
@@ -41,8 +41,7 @@ interface mapDefinition {
 export const Maps: Record<string, mapDefinition> = {
     main: {
         buildings: {
-            warehouse: 10,
-            house: 10
+            warehouse: 10
         },
         obstacles: {
             oil_tank: 6,

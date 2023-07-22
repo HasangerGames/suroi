@@ -5,9 +5,9 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { BuildingDefinition } from "../../../../common/src/definitions/buildings";
-import { Orientation } from "../../../../common/src/typings";
+import { type RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type Orientation } from "../../../../common/src/typings";
 import { normalizeAngle } from "../../../../common/src/utils/math";
 
 export class Building extends GameObject {
@@ -16,23 +16,40 @@ export class Building extends GameObject {
         ceiling: Phaser.GameObjects.Image
     };
 
-
     ceilingHitbox: RectangleHitbox;
 
     orientation!: Orientation;
+
+    ceilingTween?: Phaser.Tweens.Tween;
+
+    ceilingVisible = true;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building>, id: number) {
         super(game, scene, type, id);
 
         this.images = {
             floor: scene.add.image(0, 0, "main", `${type.idString}_floor.svg`),
-            ceiling: scene.add.image(0, 0, "main", `${type.idString}_ceiling.svg`).setDepth(10)
+            ceiling: scene.add.image(0, 0, "main", `${type.idString}_ceiling.svg`).setDepth(8)
         };
 
         this.container.add([this.images.floor]).setDepth(-1);
 
-
         this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.clone();
+    }
+
+    toggleCeiling(visible: boolean): void {
+        if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
+
+        this.ceilingTween?.destroy();
+
+        this.ceilingTween = this.scene.tweens.add({
+            targets: this.images.ceiling,
+            alpha: visible ? 1 : 0,
+            duration: 200,
+            onended: () => {
+                this.ceilingVisible = visible;
+            }
+        });
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */

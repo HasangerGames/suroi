@@ -1,5 +1,5 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {

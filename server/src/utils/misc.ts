@@ -25,13 +25,12 @@ export function bodyFromHitbox(world: World,
     noCollisions = false,
     obstacle: Obstacle
 ): Body | undefined {
-
     const body = world.createBody({
         type: "static",
         fixedRotation: true
     });
 
-    const createFixture = (hitbox: Hitbox) => {
+    const createFixture = (hitbox: Hitbox): void => {
         if (hitbox instanceof CircleHitbox) {
             body.createFixture({
                 shape: Circle(hitbox.radius * scale),
@@ -50,7 +49,7 @@ export function bodyFromHitbox(world: World,
                 isSensor: noCollisions
             });
         }
-    }
+    };
 
     if (hitbox instanceof CircleHitbox) {
         body.setPosition(Vec2(hitbox.position));
@@ -66,13 +65,10 @@ export function bodyFromHitbox(world: World,
 
         body.setPosition(Vec2(hitbox.min.x + width, hitbox.min.y + height));
         createFixture(hitbox);
-
     } else if (hitbox instanceof ComplexHitbox) {
-
         for (const hitBox of hitbox.hitBoxes) {
             createFixture(hitBox);
         }
-
     }
     return body;
 }

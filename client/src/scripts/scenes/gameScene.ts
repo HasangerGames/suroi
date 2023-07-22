@@ -12,7 +12,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import type { PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS } from "../../../../common/src/constants";
+import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../../../common/src/constants";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 
@@ -237,10 +237,7 @@ export class GameScene extends Phaser.Scene {
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
                 } else if (object instanceof Building) {
-                    object.images.ceiling.setVisible(true);
-                    if (rectangleCollision(object.ceilingHitbox.min, object.ceilingHitbox.max, player.position, player.radius)) {
-                        object.images.ceiling.setVisible(false);
-                    }
+                    object.toggleCeiling(!rectangleCollision(object.ceilingHitbox.min, object.ceilingHitbox.max, player.position, player.radius));
                 }
             }
 
