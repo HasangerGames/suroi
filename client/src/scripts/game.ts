@@ -23,7 +23,6 @@ import { v } from "../../../common/src/utils/vector";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { EmotePacket } from "./packets/receiving/emotePacket";
 
 export class Game {
     socket!: WebSocket;
@@ -98,10 +97,6 @@ export class Game {
                 }
                 case PacketType.Pickup: {
                     new PickupPacket(this.playerManager).deserialize(stream);
-                    break;
-                }
-                case PacketType.Emote: {
-                    new EmotePacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 // TODO: maybe disconnect players that haven't sent a ping in a while?

@@ -92,7 +92,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
             emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
-            emoteImage: this.scene.add.image(0, 0, "main", "happy_face.svg"),
+            emoteImage: this.scene.add.image(0, 0, "main"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -411,6 +411,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this._emoteTween?.destroy();
         clearTimeout(this._emoteHideTimeoutID);
         this.scene.playSound("emote");
+        this.images.emoteImage.setTexture("main", `${type.idString}.svg`);
         this.emoteContainer.setVisible(true).setScale(0).setAlpha(0);
         this._emoteTween = this.scene.tweens.add({
             targets: this.emoteContainer,

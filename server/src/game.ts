@@ -34,6 +34,7 @@ import { type ExplosionDefinition } from "../../common/src/definitions/explosion
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { type Emote } from "./objects/emote";
 
 export class Game {
     readonly _id: number;
@@ -78,6 +79,7 @@ export class Game {
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
+    readonly emotes: Set<Emote> = new Set<Emote>();
     /**
      * All bullets that currently exist
      */
@@ -355,6 +357,15 @@ export class Game {
                     }
                 }
 
+                // Emotes
+                if (this.emotes.size !== 0) {
+                    for (const emote of this.emotes) {
+                        if (player.visibleObjects.has(emote.player)) {
+                            player.emotes.add(emote);
+                        }
+                    }
+                }
+
                 for (const message of this.killFeedMessages) player.sendPacket(message);
                 player.sendPacket(new UpdatePacket(player));
             }
@@ -366,6 +377,7 @@ export class Game {
             this.newBullets.clear();
             this.deletedBulletIDs.clear();
             this.explosions.clear();
+            this.emotes.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;

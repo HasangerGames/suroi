@@ -101,6 +101,18 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "Lying Face"
         },
         {
+            idString: "suroi_logo",
+            name: "Suroi Logo"
+        },
+        {
+            idString: "aegis_logo",
+            name: "AEGIS Logo"
+        },
+        {
+            idString: "flint_logo",
+            name: "Flint Industries Logo"
+        },
+        {
             idString: "pog",
             name: "Pog"
         },

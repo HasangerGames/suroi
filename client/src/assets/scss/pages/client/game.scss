@@ -920,6 +920,32 @@
     height: 286px;
     //noinspection CssUnknownTarget
     background-image: url("../../img/misc/emote_wheel.svg");
+
+    & > div {
+        width: 84px;
+        height: 84px;
+        position: absolute;
+    }
+
+    #emote-top {
+        top: 14px;
+        left: 101px;
+    }
+
+    #emote-right {
+        right: 14px;
+        top: 101px;
+    }
+
+    #emote-bottom {
+        bottom: 14px;
+        left: 101px;
+    }
+
+    #emote-left {
+        left: 14px;
+        top: 101px;
+    }
 }
 
 #emote-wheel-highlight {

@@ -18,8 +18,7 @@ export enum PacketType {
     KillFeed,
     Pickup,
     Ping,
-    Item,
-    Emote
+    Item
 }
 
 export enum AnimationType {

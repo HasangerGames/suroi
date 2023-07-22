@@ -4,7 +4,6 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import {
     INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
 } from "../../../../common/src/constants";
-import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../../common/src/utils/objectType";
@@ -225,7 +224,7 @@ export class PlayerManager {
 
                     this.weapons[i] = item;
                     container.children(".item-name").text(item.definition.name);
-                    const itemDef = item.definition as MeleeDefinition | GunDefinition;
+                    const itemDef = item.definition;
                     container.children(".item-image").attr("src", `/img/game/weapons/${itemDef.idString}.svg`).show();
 
                     if (itemDef.itemType === ItemType.Gun) {
@@ -268,11 +267,12 @@ export class PlayerManager {
 
                 $(`#${item}-count`).text(num);
 
-                $(`#${item}-slot`).toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
-                $(`#${item}-slot`).toggleClass("has-item", num > 0);
+                const itemSlot = $(`#${item}-slot`);
+                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
+                itemSlot.toggleClass("has-item", num > 0);
 
                 if (item.includes("scope")) {
-                    $(`#${item}-slot`).toggle(num > 0).removeClass("active");
+                    itemSlot.toggle(num > 0).removeClass("active");
                 }
             }
 
