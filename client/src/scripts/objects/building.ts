@@ -52,5 +52,7 @@ export class Building extends GameObject {
 
     destroy(): void {
         super.destroy();
+        this.images.floor.destroy();
+        this.images.ceiling.destroy();
     }
 }
