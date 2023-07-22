@@ -34,6 +34,13 @@ export interface Config {
     // this needs to be updated every time the config changes, because old configs need to be invalidated/ported
     configVersion: string
     playerName: string
+    loadout: {
+        skin: string
+        topEmote: string
+        rightEmote: string
+        bottomEmote: string
+        leftEmote: string
+    }
     keybinds: KeybindActions
     masterVolume: number
     sfxVolume: number
@@ -57,6 +64,7 @@ export interface Config {
     bigMapTransparency: number
 
     devPassword?: string
+    role?: string
     nameColor?: string
     lobbyClearing?: boolean
 }
@@ -64,6 +72,13 @@ export interface Config {
 export const defaultConfig: Config = {
     configVersion: "13",
     playerName: "",
+    loadout: {
+        skin: "desert_camo",
+        topEmote: "happy_face",
+        rightEmote: "thumbs_up",
+        bottomEmote: "suroi_logo",
+        leftEmote: "sad_face"
+    },
     keybinds: {
         moveUp: ["W", "ArrowUp"],
         moveDown: ["S", "ArrowDown"],

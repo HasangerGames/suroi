@@ -85,9 +85,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images = {
             vest: this.scene.add.image(0, 0, "main").setVisible(false),
-            body: this.scene.add.image(0, 0, "main", "forest_camo_base.svg"),
-            leftFist: this.scene.add.image(0, 0, "main", "forest_camo_fist.svg"),
-            rightFist: this.scene.add.image(0, 0, "main", "forest_camo_fist.svg"),
+            body: this.scene.add.image(0, 0, "main"),
+            leftFist: this.scene.add.image(0, 0, "main"),
+            rightFist: this.scene.add.image(0, 0, "main"),
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
@@ -285,7 +285,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
         this.oldItem = this.activeItem.idNumber;
-        this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
+        this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
+
+        const skinID = stream.readObjectTypeNoCategory(ObjectCategory.Loot).idString;
+        this.images.body.setTexture("main", `${skinID}_base.svg`);
+        this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
+        this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);

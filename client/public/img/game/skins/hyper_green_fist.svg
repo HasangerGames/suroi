@@ -42,7 +42,7 @@
        y2="225.82001"
        gradientUnits="userSpaceOnUse"
        id="color-2"
-       gradientTransform="matrix(0.26850931,0,0,0.26850931,-68.932302,-52.160286)">
+       gradientTransform="matrix(0.26850931,0,0,-0.26850931,-68.932302,61.171773)">
       <stop
          offset="0"
          stop-color="#65e1e3"
@@ -58,13 +58,13 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       d="m 0.53700644,4.5057434 c 0,-2.1918783 1.77686036,-3.96873863 3.96873866,-3.96873863 2.1918886,0 3.9687387,1.77687043 3.9687387,3.96873863 0,2.1918886 -1.7768703,3.9687387 -3.9687387,3.9687387 -2.1918783,0 -3.96873866,-1.7768602 -3.96873866,-3.9687387 z"
+       d="m 0.53700644,4.5057435 c 0,2.1918783 1.77686036,3.9687386 3.96873866,3.9687386 2.1918886,0 3.9687387,-1.7768704 3.9687387,-3.9687386 0,-2.1918886 -1.7768703,-3.96873873 -3.9687387,-3.96873873 -2.1918783,0 -3.96873866,1.77686023 -3.96873866,3.96873873 z"
        fill="url(#color-2)"
        stroke="#2e2a20"
        stroke-width="0.529167"
        stroke-linecap="round"
        stroke-miterlimit="4"
        id="path25"
-       style="mix-blend-mode:normal;fill:url(#color-2);fill-rule:nonzero;stroke-width:1.05836;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke:#082b0b;stroke-opacity:1" />
+       style="mix-blend-mode:normal;fill:url(#color-2);fill-rule:nonzero;stroke:#082b0b;stroke-width:1.05836;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   </g>
 </svg>

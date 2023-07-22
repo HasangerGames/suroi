@@ -35,7 +35,13 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
             throw new Error(`No definitions found for object category: ${category} (object ID = ${idNumber})`);
         }
 
-        type.idString = definitions.definitions[type.idNumber].idString;
+        let definition = definitions.definitions[type.idNumber];
+        if (definition === undefined) {
+            console.warn(`ID number out of range (ID = ${idNumber}, category = ${category})`);
+            definition = definitions.definitions[0];
+        }
+
+        type.idString = definition.idString;
         return type;
     }
 

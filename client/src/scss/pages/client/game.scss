@@ -208,7 +208,7 @@
             background: $transparent_bg;
             border-radius: 4px;
             font-weight: 600;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+            @include text-shadow;
 
             @media screen and (max-width: $screen_large) {
                 font-size: 12px;
@@ -306,7 +306,7 @@
 
 #interact-text {
     font-size: 20px;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    @include text-shadow;
     margin-left: 3px;
 }
 
@@ -324,7 +324,7 @@
     align-items: baseline;
 
     font-weight: bold;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    @include text-shadow;
 
     div {
         display: flex;
@@ -499,7 +499,7 @@
     #kill-msg-player-name {
         font-weight: bold;
         color: $orange;
-        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        @include text-shadow;
     }
 
     #kill-msg-kills {
@@ -957,7 +957,7 @@
 #game-over-screen {
     text-align: center;
 
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    @include text-shadow;
 
     &.chicken-dinner {
         //noinspection CssUnknownTarget

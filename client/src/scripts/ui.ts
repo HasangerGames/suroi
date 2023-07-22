@@ -13,6 +13,7 @@ import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Ammos } from "../../../common/src/definitions/ammos";
+import { Skins } from "../../../common/src/definitions/skins";
 
 $((): void => {
     const dropdown = {
@@ -73,10 +74,9 @@ $((): void => {
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
 
-    $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
-    $(window).on("resize", () => {
-        $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
-    });
+    const toggleRotateMessage = (): JQuery => $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
+    toggleRotateMessage();
+    $(window).on("resize", toggleRotateMessage);
 
     const gameMenu = $("#game-menu");
     const settingsMenu = $("#settings-menu");
@@ -143,10 +143,60 @@ $((): void => {
         settingsMenu.fadeOut(250);
     });
 
+    const customizeMenu = $("#customize-menu");
+
+    $("#btn-customize").on("click", () => {
+        customizeMenu.fadeToggle(250);
+    });
+
+    $("#close-customize").on("click", () => {
+        customizeMenu.fadeOut(250);
+    });
+
+    // Load skins & emotes
+    const loadout = localStorageInstance.config.loadout;
+
+    const updateSplashCustomize = (skinID: string): void => {
+        $("#skin-base").css("background-image", `url("/img/game/skins/${skinID}_base.svg")`);
+        $("#skin-left-fist, #skin-right-fist").css("background-image", `url("/img/game/skins/${skinID}_fist.svg")`);
+    };
+    updateSplashCustomize(loadout.skin);
+
+    for (const skin of Skins) {
+        if (skin.notInLoadout || (skin.roleRequired !== undefined && skin.roleRequired !== localStorageInstance.config.role)) continue;
+
+        /* eslint-disable @typescript-eslint/restrict-template-expressions */
+        // noinspection CssUnknownTarget
+        const skinItem = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
+  <div class="skins-list-item">
+    <div class="skin-base" style="background-image: url('/img/game/skins/${skin.idString}_base.svg')"></div>
+    <div class="skin-left-fist" style="background-image: url('/img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-right-fist" style="background-image: url('/img/game/skins/${skin.idString}_fist.svg')"></div>
+  </div>
+  <span class="skin-name">${skin.name}</span>
+</div>`);
+        skinItem.on("click", function() {
+            localStorageInstance.update({
+                loadout: {
+                    skin: skin.idString,
+                    topEmote: loadout.topEmote,
+                    rightEmote: loadout.rightEmote,
+                    bottomEmote: loadout.bottomEmote,
+                    leftEmote: loadout.leftEmote
+                }
+            });
+            $(this).addClass("selected").siblings().removeClass("selected");
+            updateSplashCustomize(skin.idString);
+        });
+        $("#skins-list").append(skinItem);
+    }
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    $(`#skin-${loadout.skin}`).addClass("selected");
+
     // Disable context menu
     $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
 
-    // load settings values and event listeners
+    // Load settings values and event listeners
 
     function addSliderListener(elementId: string, settingName: keyof Config, callback?: (value: number) => void): void {
         const element = $(elementId)[0] as HTMLInputElement;
@@ -179,52 +229,52 @@ $((): void => {
         element.checked = localStorageInstance.config[settingName] as boolean;
     }
 
-    // music volume
+    // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
         const volume = value * localStorageInstance.config.masterVolume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
     });
 
-    // sfx volume
+    // SFX volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
         (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
     });
 
-    // master volume
+    // Master volume
     addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
         const volume = value * localStorageInstance.config.masterVolume;
         (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
         core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
     });
 
-    // camera shake
+    // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cameraShake");
 
-    // fps toggle
+    // FPS toggle
     addCheckboxListener("#toggle-fps", "showFPS", (value: boolean) => {
         $("#fps-counter").toggle(value);
     });
     $("#fps-counter").toggle(localStorageInstance.config.showFPS);
 
-    // ping toggle
+    // Ping toggle
     addCheckboxListener("#toggle-ping", "showPing", (value: boolean) => {
         $("#ping-counter").toggle(value);
     });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
-    // client-side prediction toggle
+    // Client-side prediction toggle
     addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 
-    // text kill feed toggle
+    // Text kill feed toggle
     addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
 
-    // rotation smoothing toggle
+    // Rotation smoothing toggle
     addCheckboxListener("#toggle-rotation-smoothing", "rotationSmoothing");
 
-    // movement smoothing toggle
+    // Movement smoothing toggle
     addCheckboxListener("#toggle-movement-smoothing", "movementSmoothing");
 
-    // mobile controls stuff
+    // Mobile controls stuff
     addCheckboxListener("#toggle-mobile-controls", "mobileControls");
     addSliderListener("#slider-joystick-size", "joystickSize");
     addSliderListener("#slider-joystick-transparency", "joystickTransparency");

@@ -22,7 +22,7 @@
      showgrid="false"
      inkscape:zoom="9.401987"
      inkscape:cx="49.24491"
-     inkscape:cy="46.266816"
+     inkscape:cy="45.841374"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -38,7 +38,7 @@
        y2="222.86386"
        gradientUnits="userSpaceOnUse"
        id="color-1"
-       gradientTransform="matrix(1.0148413,0,0,1.0148413,-198.56192,-136.17142)">
+       gradientTransform="matrix(0.71760117,0.71760117,-0.71760117,0.71760117,0.88326974,-255.33182)">
       <stop
          offset="0"
          stop-color="#00e312"
@@ -102,7 +102,7 @@
      id="path21"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
-     d="M 0,45.00003 C 0,20.147228 20.147207,0 45,0 c 24.852803,0 45,20.147228 45,45.00003 0,24.852803 -20.147167,45 -45,45 -24.852803,0 -45,-20.147207 -45,-45 z"
+     d="m 13.180182,13.18022 c 17.573585,-17.5735847 46.066053,-17.5735996 63.639631,-2.2e-5 17.573586,17.573586 17.573564,46.066048 -2.1e-5,63.639633 -17.573586,17.573585 -46.066004,17.573606 -63.63961,-10e-7 -17.5735858,-17.573585 -17.5735787,-46.066031 0,-63.63961 z"
      fill="url(#color-1)"
      stroke="none"
      stroke-width="0"

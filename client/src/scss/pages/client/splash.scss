@@ -43,6 +43,7 @@
 #splash-modals {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 
     width: 100vw;
     max-height: 299px;
@@ -63,11 +64,11 @@
             order: 2;
         }
 
-        #splash-featured-people {
+        #splash-customize {
             order: 3;
         }
 
-        #splash-inventory {
+        #splash-featured-people {
             order: 4;
         }
     }
@@ -75,7 +76,7 @@
 
 #splash-news,
 #splash-options,
-#splash-inventory,
+#splash-customize,
 #splash-server-message,
 #splash-rotate-message {
     background: $transparent_bg;
@@ -91,7 +92,7 @@
 
 #splash-news,
 #splash-options,
-#splash-inventory,
+#splash-customize,
 #splash-server-message,
 #server-select {
     text-shadow: 3px 3px 8px #00000064;
@@ -126,7 +127,7 @@
     }
 }
 
-#splash-news, #splash-inventory {
+#splash-news, #splash-customize {
     height: 312px;
 }
 
@@ -206,6 +207,41 @@
 #splash-center {
     margin-right: 15px;
     max-width: 370px;
+}
+
+#splash-customize {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    #skin-container {
+        position: relative;
+        width: 153px;
+        height: 147px;
+
+        #skin-base {
+            position: absolute;
+            top: 0;
+            left: 9px;
+            width: 135px;
+            height: 135px;
+            background-size: cover;
+            transform: rotate(90deg);
+        }
+
+        #skin-left-fist, #skin-right-fist {
+            position: absolute;
+            top: 96px;
+            width: 51px;
+            height: 51px;
+            background-size: cover;
+            transform: rotate(90deg);
+        }
+
+        #skin-right-fist {
+            right: 0;
+        }
+    }
 }
 
 #splash-options {
@@ -290,12 +326,10 @@
     margin-right: -8px;
 }
 
-#splash-inventory {
+#splash-customize {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
-
     color: #ffffff91;
 }
 
