@@ -8,7 +8,7 @@ import {
 
 import { type Obstacle } from "../objects/obstacle";
 
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../../../common/src/utils/hitbox";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type WeightedItem, LootTiers } from "../data/lootTables";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -25,39 +25,54 @@ export function bodyFromHitbox(world: World,
     noCollisions = false,
     obstacle: Obstacle
 ): Body | undefined {
-    let body: Body | undefined;
-    if (hitbox instanceof CircleHitbox) {
-        body = world.createBody({
-            type: "static",
-            position: v2v(hitbox.position),
-            fixedRotation: true
-        });
 
-        body.createFixture({
-            shape: Circle(hitbox.radius * scale),
-            userData: obstacle,
-            isSensor: noCollisions
-        });
+    const body = world.createBody({
+        type: "static",
+        fixedRotation: true
+    });
+
+    const createFixture = (hitbox: Hitbox) => {
+        if (hitbox instanceof CircleHitbox) {
+            body.createFixture({
+                shape: Circle(hitbox.radius * scale),
+                userData: obstacle,
+                isSensor: noCollisions
+            });
+        } else if (hitbox instanceof RectangleHitbox) {
+            const width = hitbox.width / 2;
+            const height = hitbox.height / 2;
+
+            if (width === 0 || height === 0) return undefined;
+
+            body.createFixture({
+                shape: Box(width, height),
+                userData: obstacle,
+                isSensor: noCollisions
+            });
+        }
+    }
+
+    if (hitbox instanceof CircleHitbox) {
+        body.setPosition(Vec2(hitbox.position));
+        createFixture(hitbox);
     } else if (hitbox instanceof RectangleHitbox) {
-        const width = (hitbox.max.x - hitbox.min.x) / 2;
-        const height = (hitbox.max.y - hitbox.min.y) / 2;
+        const width = hitbox.width / 2;
+        const height = hitbox.height / 2;
 
         if (width === 0 || height === 0) return undefined;
 
         // obstacle.collision.halfWidth = width;
         // obstacle.collision.halfHeight = height;
 
-        body = world.createBody({
-            type: "static",
-            position: Vec2(hitbox.min.x + width, hitbox.min.y + height),
-            fixedRotation: true
-        });
+        body.setPosition(Vec2(hitbox.min.x + width, hitbox.min.y + height));
+        createFixture(hitbox);
 
-        body.createFixture({
-            shape: Box(width, height),
-            userData: obstacle,
-            isSensor: noCollisions
-        });
+    } else if (hitbox instanceof ComplexHitbox) {
+
+        for (const hitBox of hitbox.hitBoxes) {
+            createFixture(hitBox);
+        }
+
     }
     return body;
 }

@@ -62,7 +62,7 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius, vClone(this.position));
     }
 
-    transform(position: Vector, scale = 1, orientation?: Orientation): Hitbox {
+    transform(position: Vector, scale = 1): Hitbox {
         return new CircleHitbox(this.radius * scale, vAdd(this.position, position));
     }
 
@@ -75,11 +75,17 @@ export class RectangleHitbox extends Hitbox {
     min: Vector;
     max: Vector;
 
+    width: number;
+    height: number;
+
     constructor(min: Vector, max: Vector) {
         super();
 
         this.min = min;
         this.max = max;
+
+        this.width = max.x - min.x;
+        this.height = max.y - min.y;
     }
 
     collidesWith(that: Hitbox): boolean {
@@ -113,9 +119,46 @@ export class RectangleHitbox extends Hitbox {
     }
 
     intersectsLine(a: Vector, b: Vector): boolean {
-        const width = this.max.x - this.min.x;
-        const height = this.max.y - this.min.y;
+        return boxLine(this.min.x, this.min.y, this.width, this.height, a.x, a.y, b.x, b.y);
+    }
+}
 
-        return boxLine(this.min.x, this.min.y, width, height, a.x, a.y, b.x, b.y);
+export class ComplexHitbox extends Hitbox {
+
+    hitBoxes: Hitbox[];
+
+    constructor(hitBoxes: Hitbox[]) {
+        super();
+        this.hitBoxes = hitBoxes;
+    }
+
+    collidesWith(that: Hitbox): boolean {
+        for (const hitbox of this.hitBoxes) {
+            if (hitbox.collidesWith(that)) return true;
+        }
+        return false;
+    }
+
+    distanceTo(): CollisionRecord {
+        throw new Error("Not implemented");
+    }
+
+    clone(): ComplexHitbox {
+        return new ComplexHitbox(this.hitBoxes);
+    }
+
+    transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
+        const hitBoxes: Hitbox[] = [];
+        for (let hitbox of this.hitBoxes) {
+            hitBoxes.push(hitbox.transform(position, scale, orientation));
+        }
+        return new ComplexHitbox(hitBoxes);
+    }
+
+    intersectsLine(a: Vector, b: Vector): boolean {
+        for (const hitbox of this.hitBoxes) {
+            if (hitbox.intersectsLine(a, b)) return true;
+        }
+        return false;
     }
 }
