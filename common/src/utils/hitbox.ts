@@ -63,7 +63,7 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius, vClone(this.position));
     }
 
-    transform(position: Vector, scale = 1): Hitbox {
+    transform(position: Vector, scale = 1): CircleHitbox {
         return new CircleHitbox(this.radius * scale, vAdd(this.position, position));
     }
 
@@ -113,7 +113,7 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(vClone(this.min), vClone(this.max));
     }
 
-    transform(position: Vector, scale = 1, orientation = 0 as Orientation): Hitbox {
+    transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
         const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
@@ -125,9 +125,9 @@ export class RectangleHitbox extends Hitbox {
 }
 
 export class ComplexHitbox extends Hitbox {
-    hitBoxes: Hitbox[];
+    hitBoxes: Array<RectangleHitbox | CircleHitbox>;
 
-    constructor(hitBoxes: Hitbox[]) {
+    constructor(hitBoxes: Array<RectangleHitbox | CircleHitbox>) {
         super();
         this.hitBoxes = hitBoxes;
     }
@@ -139,25 +139,34 @@ export class ComplexHitbox extends Hitbox {
         return false;
     }
 
-    distanceTo(that: Hitbox): CollisionRecord {
-        for(const hitbox of this.hitBoxes) {
-            if(hitbox instanceof CircleHitbox) {
+    distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+        let distance = Number.MAX_VALUE;
+        let record: CollisionRecord;
+
+        for (const hitbox of this.hitBoxes) {
+            let newRecord: CollisionRecord;
+
+            if (hitbox instanceof CircleHitbox) {
                 if (that instanceof CircleHitbox) {
-                  return distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
+                    newRecord = distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
                 } else if (that instanceof RectangleHitbox) {
-                  return distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
+                    newRecord = distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
                 }
             } else if (hitbox instanceof RectangleHitbox) {
-                 if (that instanceof CircleHitbox) {
-                    return distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
-                 } else if (that instanceof RectangleHitbox) {
-                    return rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max); // TODO Write a rectangleDistanceToRectangle function
-                 }
+                if (that instanceof CircleHitbox) {
+                    newRecord = distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
+                } else if (that instanceof RectangleHitbox) {
+                    newRecord = rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max);
+                }
             }
-
-            throw new Error("Invalid hitbox object");
+            /* eslint-disable @typescript-eslint/no-non-null-assertion */
+            if (newRecord!.distance < distance) {
+                record = newRecord!;
+                distance = newRecord!.distance;
+            }
         }
-         throw new Error("Invalid hitbox object");
+
+        return record!;
     }
 
     clone(): ComplexHitbox {
@@ -165,7 +174,7 @@ export class ComplexHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
-        const hitBoxes: Hitbox[] = [];
+        const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
         for (const hitbox of this.hitBoxes) {
             // i have no idea why but that makes it work correctly
             let newOrientation = orientation;
