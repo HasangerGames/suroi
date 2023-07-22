@@ -295,8 +295,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "house_wall_1",
             name: "House Wall Small",
             material: "wood",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -309,8 +308,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "house_wall_2",
             name: "House Wall Medium",
             material: "wood",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -323,8 +321,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "house_wall_3",
             name: "House Wall Large",
             material: "wood",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -337,8 +334,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "house_wall_4",
             name: "House Wall Extra Large",
             material: "wood",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -369,6 +365,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             variations: 3,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-4.2, -2.7), v(4.2, 3)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "house_exterior",
+            name: "House Exterior",
+            material: "wood",
+            health: 1000,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

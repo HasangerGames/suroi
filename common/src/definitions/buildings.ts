@@ -89,21 +89,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -3.5),
         obstacles: [
-            {
-                idString: "house_wall_1",
-                position: v(0, 12.5)
-            },
-            {
-                idString: "house_wall_2",
-                position: v(0, 18.5)
-            },
-            {
-                idString: "house_wall_3",
-                position: v(0, 24.5)
-            },
-            {
-                idString: "house_wall_4",
-                position: v(0, 30.5)
+             {
+                idString: "house_exterior",
+                position: v(0, 2.6)
             }
         ]
     }
