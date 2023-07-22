@@ -1,5 +1,5 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
+import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
@@ -384,7 +384,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-4.2, -2.7), v(4.2, 3)),
+            hitbox: new ComplexHitbox([
+            new RectangleHitbox(v(12, -23), v(14, 1.2)),
+            ]),
             rotationMode: "limited"
         }
     ]
