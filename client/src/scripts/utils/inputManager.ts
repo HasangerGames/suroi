@@ -182,17 +182,16 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         emoteWheel: new Action(
             "emoteWheel",
             () => {
-                $("#emote-wheel, #emote-wheel-highlight")
+                $("#emote-wheel")
                     .css("left", `${game.playerManager.mouseX - 143}px`)
-                    .css("top", `${game.playerManager.mouseY - 143}px`);
-                $("#emote-wheel").show();
-                $("#emote-wheel-highlight").hide();
+                    .css("top", `${game.playerManager.mouseY - 143}px`)
+                    .css("background-image", 'url("/img/misc/emote_wheel.svg")')
+                    .show();
                 game.playerManager.emoteWheelActive = true;
                 game.playerManager.emoteWheelPosition = v(game.playerManager.mouseX, game.playerManager.mouseY);
             },
             () => {
                 $("#emote-wheel").hide();
-                $("#emote-wheel-highlight").hide();
                 switch (game.playerManager.selectedEmoteSlot) {
                     case EmoteSlot.Top:
                         game.playerManager.action = InputActions.TopEmoteSlot;
@@ -355,13 +354,10 @@ export function setupInputs(game: Game): void {
                     player.selectedEmoteSlot = EmoteSlot.Left;
                     slotName = "left";
                 }
-                $("#emote-wheel-highlight")
-                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                    .css("background-image", `url("/img/misc/emote_wheel_highlight_${slotName}.svg")`)
-                    .show();
+                $("#emote-wheel").css("background-image", `url("/img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("/img/misc/emote_wheel.svg")`);
             } else {
                 player.selectedEmoteSlot = EmoteSlot.None;
-                $("#emote-wheel-highlight").hide();
+                $("#emote-wheel").css("background-image", 'url("/img/misc/emote_wheel.svg")');
             }
         }
 

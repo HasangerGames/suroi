@@ -217,15 +217,15 @@ $((): void => {
         $(`#emote-customize-wheel > .emote-${slot}`)
             .css("background-image", `url("/img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
             .on("click", () => {
-                if (selectedEmoteSlot === slot) {
-                    selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel-highlight").hide();
-                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "default");
-                } else {
+                if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel-highlight").css("background-image", `url("/img/misc/emote_wheel_highlight_${slot}.svg")`).show();
+                    $("#emote-customize-wheel").css("background-image", `url("/img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
                     $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
                     $(`#emote-${localStorageInstance.config.loadout[`${slot}Emote`]}`).addClass("selected");
+                } else {
+                    selectedEmoteSlot = undefined;
+                    $("#emote-customize-wheel").css("background-image", 'url("/img/misc/emote_wheel.svg")');
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "default");
                 }
             });
     }

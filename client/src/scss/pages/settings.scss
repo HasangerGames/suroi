@@ -119,7 +119,17 @@
         }
     }
 
+    #tab-emotes-content {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+    }
+
     #emote-customize-wheel {
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+
         .emote-top, .emote-right, .emote-bottom, .emote-left {
             cursor: pointer;
             z-index: 10;
@@ -127,16 +137,11 @@
     }
 
     #emotes-list {
-        position: absolute;
-        left: 430px;
-        width: calc(100% - 430px);
-        max-height: 100%;
-        height: 100%;
         overflow-y: scroll;
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        padding-bottom: 70px;
+        gap: 8px;
 
         .emotes-list-item-container {
             display: flex;
@@ -145,7 +150,6 @@
             border: 5px solid transparent;
             border-radius: 10px;
             padding: 5px;
-            margin-right: 5px;
             background-color: $transparent_bg;
 
             &.selected {
@@ -162,6 +166,92 @@
         .emote-name {
             font-weight: bold;
             @include text-shadow;
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        #emotes-list {
+            gap: 5px;
+            .emotes-list-item {
+                width: 42px;
+                height: 42px;
+                background-size: contain;
+            }
+        }
+
+        #emote-customize-wheel {
+            width: 191px;
+            height: 191px;
+            background-size: contain;
+
+            & > div {
+                width: 56px;
+                height: 56px;
+                background-size: contain;
+            }
+
+            .emote-top {
+                top: 9px;
+                left: 67px;
+            }
+
+            .emote-right {
+                right: 9px;
+                top: 67px;
+            }
+
+            .emote-bottom {
+                bottom: 9px;
+                left: 67px;
+            }
+
+            .emote-left {
+                left: 9px;
+                top: 67px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 530px) {
+        #emote-customize-wheel {
+            width: 143px;
+            height: 143px;
+
+            & > div {
+                width: 42px;
+                height: 42px;
+            }
+
+            .emote-top {
+                top: 7px;
+                left: 51px;
+            }
+
+            .emote-right {
+                right: 7px;
+                top: 51px;
+            }
+
+            .emote-bottom {
+                bottom: 7px;
+                left: 51px;
+            }
+
+            .emote-left {
+                left: 7px;
+                top: 51px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 475px) {
+        #tab-emotes-content {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #emotes-list {
+            padding-bottom: 16px;
         }
     }
 
@@ -198,11 +288,6 @@
     .tab-content {
         width: 100%;
         border-radius: 0;
-    }
-
-    #tab-emotes-content {
-        display: flex;
-        flex-direction: column;
     }
 
     .setting-title {
