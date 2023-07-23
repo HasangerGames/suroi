@@ -98,11 +98,43 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(-19.5, -15.6),
                 rotation: 2
             },
+            {
+                id: "couch",
+                position: v(-13.5, 26),
+            },
+            {
+                id: "drawer_large",
+                position: v(8.5, 26),
+                rotation: 3
+            },
+            {
+                id: "tv",
+                position: v(11.5, 26)
+            },
             // House Exterior
             {
                 id: "house_exterior",
                 position: v(0, 2.6)
-            }
+            },
+            // Chair Bottom
+            {
+                id: "chair",
+                position: v(-40, -10)
+            },
+            // Chair Top
+            {
+                id: "chair",
+                position: v(-40, 0),
+                rotation: 2
+            },
+            {
+                id: "table",
+                position: v(-40, -5)
+            },
+            {
+                id: "drawer_small",
+                position: v(-43, 10)
+            },
         ]
     },
     {
