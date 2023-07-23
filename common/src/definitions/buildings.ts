@@ -89,10 +89,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -3.5),
         obstacles: [
-             {
-                idString: "house_exterior",
-                position: v(0, 2.6)
-             },
              // Bathroom Left
              {
                 idString: "house_wall_3",
@@ -102,13 +98,43 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
              // Bathroom Top
              {
                 idString: "house_wall_2",
-                position: v(-3, 2.4)
+                position: v(-1.5, 2.4)
              },
              //Entrance Right
              {
                 idString: "house_wall_3",
-                position: v(-3.6, -8),
+                position: v(-25.2, -8),
                 rotation: 1
+             },
+             // Kitchen Top
+             {
+                idString: "house_wall_2",
+                position: v(-20.4, 2.4)
+             },
+             // Living Room Bottom Right
+             {
+                idString: "house_wall_2",
+                position: v(6.1, 14.6)
+             },
+             // Living Room Left
+             {
+                idString: "house_wall_3",
+                position: v(-18.25, 25),
+                rotation: 1
+             },
+             // Living Room Bottom Left
+             {
+                idString: "house_wall_3",
+                position: v(-18, 14.4)
+             },
+             {
+                idString: "house_wall_2",
+                position: v(-42, 14.4)
+             },
+             // House Exterior
+             {
+                idString: "house_exterior",
+                position: v(0, 2.6)
              },
         ]
     }
