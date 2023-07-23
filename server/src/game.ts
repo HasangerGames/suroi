@@ -39,6 +39,7 @@ import { type ExplosionDefinition } from "../../common/src/definitions/explosion
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { Building } from "./objects/building";
 
 export class Game {
     readonly _id: number;
@@ -320,6 +321,22 @@ export class Game {
                 if (this.gas.doDamage && this.gas.isInGas(player.position)) {
                     player.piercingDamage(this.gas.dps, "gas");
                 }
+
+                let isInsideBuilding = false;
+                for (const object of player.nearObjects) {
+                    if (object instanceof Building) {
+                        if (object.ceilingHitbox.collidesWith(player.hitbox)) {
+                            isInsideBuilding = true;
+                            break;
+                        }
+                    }
+                }
+                if (isInsideBuilding && !player.isInsideBuilding) {
+                    player.zoom = 48;
+                } else if (!player.isInsideBuilding) {
+                    player.zoom = player.inventory.scope.definition.zoomLevel;
+                }
+                player.isInsideBuilding = isInsideBuilding;
 
                 player.turning = false;
             }

@@ -41,7 +41,7 @@ interface mapDefinition {
 export const Maps: Record<string, mapDefinition> = {
     main: {
         buildings: {
-            warehouse: 10
+            warehouse: 4
         },
         obstacles: {
             oil_tank: 6,
@@ -82,7 +82,7 @@ export const Maps: Record<string, mapDefinition> = {
         genCallback: (map: Map) => {
             // Generate all Buildings
 
-            const buildingPos = v(map.width / 2, map.height / 2 + 30);
+            const buildingPos = v(map.width / 2, map.height / 2 + 50);
 
             for (const building of Buildings.definitions) {
                 for (let orientation = 0; orientation < 4; orientation++) {

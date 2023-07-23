@@ -61,7 +61,6 @@ export class Inventory {
 
     set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
         this._scope = scope;
-        this.owner.zoom = scope.definition.zoomLevel;
         this.owner.dirty.inventory = true;
     }
 
@@ -407,12 +406,6 @@ export class Inventory {
                 break;
             }
         }
-    }
-
-    setScope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>): void {
-        this.scope = scope;
-        this.owner.zoom = scope.definition.zoomLevel;
-        this.owner.dirty.zoom = true;
     }
 
     /**

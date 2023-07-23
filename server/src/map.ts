@@ -137,7 +137,7 @@ export class Map {
         for (const obstacleData of definition.obstacles) {
             const obstaclePos = addAdjust(position, obstacleData.position, orientation);
 
-            const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.idString);
+            const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.id);
 
             let obstacleRotation = obstacleData.rotation ?? 0;
 
@@ -146,6 +146,18 @@ export class Map {
             }
 
             this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation);
+        }
+
+        if (definition.lootSpawners) {
+            for (const lootData of definition.lootSpawners) {
+                const loot = getLootTableLoot(LootTables[lootData.table].loot);
+
+                for (const item of loot) {
+                    this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString),
+                        addAdjust(position, lootData.position, orientation),
+                        item.count);
+                }
+            }
         }
 
         this.game.staticObjects.add(building);

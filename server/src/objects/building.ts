@@ -28,6 +28,8 @@ export class Building extends GameObject {
 
     readonly spawnHitbox: Hitbox;
 
+    readonly ceilingHitbox: Hitbox;
+
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, type, position);
 
@@ -36,6 +38,8 @@ export class Building extends GameObject {
         this.rotation = orientation;
 
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
+
+        this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, orientation);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
