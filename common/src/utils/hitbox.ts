@@ -178,12 +178,7 @@ export class ComplexHitbox extends Hitbox {
         this.position = position;
         const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
         for (const hitbox of this.hitBoxes) {
-            // i have no idea why but that makes it work correctly
-            let newOrientation = orientation;
-            if (orientation === 1) newOrientation = 3;
-            else if (orientation === 3) newOrientation = 1;
-
-            hitBoxes.push(hitbox.transform(position, scale, newOrientation));
+            hitBoxes.push(hitbox.transform(position, scale, orientation));
         }
         return new ComplexHitbox(hitBoxes);
     }
