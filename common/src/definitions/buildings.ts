@@ -33,7 +33,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "warehouse",
         name: "Warehouse",
-        spawnHitbox: new RectangleHitbox(v(-24, -40), v(24, 40)),
+        spawnHitbox: new RectangleHitbox(v(-30, -44), v(30, 44)),
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-20, -40), v(20, 40))
         ]),
@@ -78,7 +78,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 // TODO: better way of adding random obstacles
                 get id() {
-                    return weightedRandom(["regular_crate", "flint_crate"], [0.9, 0.1]);
+                    return weightedRandom(["regular_crate", "flint_crate"], [0.7, 0.3]);
                 },
                 position: v(-14, -28.5)
             },

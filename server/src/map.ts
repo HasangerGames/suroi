@@ -282,7 +282,10 @@ export class Map {
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
             (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
+                let offset = 12;
+                if (type.category === ObjectCategory.Building) offset = 50;
+
+                getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
                 const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
@@ -302,7 +305,8 @@ export class Map {
             collided = false;
             position = getPosition();
 
-            const hitbox: Hitbox = initialHitbox.transform(position, scale, orientation);
+            const hitbox = initialHitbox.transform(position, scale, orientation);
+
             for (const object of this.game.staticObjects) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
