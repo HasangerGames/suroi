@@ -161,6 +161,21 @@ export class UpdatePacket extends SendingPacket {
             }
         }
 
+        // Emotes
+        const emotesDirty = player.emotes.size !== 0;
+        stream.writeBoolean(emotesDirty);
+
+        if (emotesDirty) {
+            stream.writeBits(player.emotes.size, 7);
+
+            for (const emote of player.emotes) {
+                stream.writeObjectTypeNoCategory(emote.type);
+                stream.writeObjectID(emote.player.id);
+            }
+
+            player.emotes.clear();
+        }
+
         // Gas
         const gasDirty = game.gas.dirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);

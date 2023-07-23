@@ -1,7 +1,7 @@
 import { Vec2 } from "planck";
 import { MAP_HEIGHT, MAP_WIDTH } from "../../common/src/constants";
 
-export enum SpawnMode { Random, Radius, Fixed}
+export enum SpawnMode { Random, Radius, Fixed }
 export enum GasMode { Normal, Debug, Disabled }
 
 export interface ConfigType {
@@ -72,11 +72,11 @@ export interface ConfigType {
     readonly disableLobbyClearing: boolean
 
     /**
-     * Dev mode password, this gives dev cheats, for now it only spawns the player with some weapons and 100% adrenaline. \
-     * To use it add `?devPassword=PASSWORD` on the website url, example: `127.0.0.1:3000/?devPassword=fooBar`. \
-     * If set to `undefined`, dev mode will be unaccessible.
+     * Roles. Each role has a different password and can give exclusive skins and cheats.
+     * If noPrivileges is set to true for a role, cheats will be disabled for that role.
+     * To use roles, add `?password=PASSWORD` on the website url, example: `127.0.0.1:3000/?password=fooBar`.
      */
-    readonly devPassword?: string
+    readonly roles: Record<string, { password: string, noPrivileges?: boolean }>
 }
 
 export const Config = {
@@ -117,5 +117,13 @@ export const Config = {
 
     disableLobbyClearing: false,
 
-    devPassword: "dev"
+    roles: {
+        dev: { password: "dev" },
+        artist: { password: "artist", noPrivileges: true },
+        hasanger: { password: "hasanger" },
+        leia: { password: "leia" },
+        katie: { password: "katie" },
+        eipi: { password: "eipi" },
+        "123op": { password: "123op" }
+    }
 } satisfies ConfigType as ConfigType;

@@ -1,4 +1,3 @@
-// noinspection ES6PreferShortImport
 import { Config } from "./config";
 import { version } from "../../package.json";
 
@@ -82,7 +81,8 @@ const bannedIPs: string[] = [];
 
 app.get("/api/getGame", async(res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-    res.onAborted(() => { });
+    let aborted = false;
+    res.onAborted(() => { aborted = true; });
     cors(res);
 
     let response: { success: boolean, address?: string, gameID?: number };
@@ -114,16 +114,19 @@ app.get("/api/getGame", async(res, req) => {
     } else {
         response = { success: false };
     }
-    res.cork(() => {
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
-    });
+    if (!aborted) {
+        res.cork(() => {
+            res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
+        });
+    }
 });
 
 export interface PlayerContainer {
     gameID: number
-    player: Player
+    player?: Player
     name: string
     ip: string | undefined
+    role?: string
     isDev: boolean
     nameColor: string
     lobbyClearing: boolean
@@ -140,6 +143,7 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => {});
 
+        // Bot protection
         const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
         if (Config.botProtection) {
             if (Config.bannedIPs.includes(ip) || bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
@@ -167,8 +171,8 @@ app.ws("/play", {
             return;
         }
 
+        // Name
         let name = searchParams.get("name");
-
         name = decodeURIComponent(name ?? "").trim();
         if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
             name = "Player";
@@ -179,28 +183,40 @@ app.ws("/play", {
             });
         }
 
+        // Role
+        const password = searchParams.get("password");
+        const givenRole = searchParams.get("role");
+        let role: string | undefined;
         let isDev = false;
-        const devPassword = searchParams.get("devPassword");
-        if (devPassword !== null && devPassword === Config.devPassword) isDev = true;
+        if (
+            password !== null &&
+            givenRole !== null &&
+            givenRole in Config.roles &&
+            Config.roles[givenRole].password === password
+        ) {
+            role = givenRole;
+            isDev = !Config.roles[givenRole].noPrivileges;
+        }
 
+        // Name color
         let color = searchParams.get("nameColor") ?? "";
-
         if (color.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
             color = `#${color}`;
         }
 
-        const lobbyClearing = searchParams.get("lobbyClearing") !== null;
-
+        // Upgrade the connection
+        const userData: PlayerContainer = {
+            gameID,
+            player: undefined,
+            name,
+            ip,
+            role,
+            isDev,
+            nameColor: isDev ? color : "",
+            lobbyClearing: searchParams.get("lobbyClearing") !== null
+        };
         res.upgrade(
-            {
-                gameID,
-                player: undefined,
-                name,
-                ip,
-                isDev,
-                nameColor: isDev ? color : "",
-                lobbyClearing
-            },
+            userData,
             req.getHeader("sec-websocket-key"),
             req.getHeader("sec-websocket-protocol"),
             req.getHeader("sec-websocket-extensions"),
@@ -216,7 +232,7 @@ app.ws("/play", {
         const userData = socket.getUserData();
         const game = games[userData.gameID];
         if (game === undefined) return;
-        userData.player = game.addPlayer(socket, userData.name, userData.isDev, userData.nameColor, userData.lobbyClearing);
+        userData.player = game.addPlayer(socket);
         log(`"${userData.name}" joined game #${userData.gameID}`);
     },
 
@@ -230,6 +246,7 @@ app.ws("/play", {
         try {
             const packetType = stream.readPacketType();
             const player = socket.getUserData().player;
+            if (player === undefined) return;
             switch (packetType) {
                 case PacketType.Join: {
                     new JoinPacket(player).deserialize(stream);
@@ -262,7 +279,7 @@ app.ws("/play", {
         if (Config.botProtection) simultaneousConnections[p.ip as string]--;
         log(`"${p.name}" left game #${p.gameID}`);
         const game = games[p.gameID];
-        if (game === undefined) return;
+        if (game === undefined || p.player === undefined) return;
         game.removePlayer(p.player);
     }
 });

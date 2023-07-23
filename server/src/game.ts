@@ -1,12 +1,7 @@
 // noinspection ES6PreferShortImport
 import { Config, SpawnMode } from "./config";
 
-import {
-    Fixture,
-    Settings,
-    Vec2,
-    World
-} from "planck";
+import { Fixture, Settings, Vec2, World } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
@@ -21,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { ObjectCategory, OBJECT_ID_BITS } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -39,6 +34,7 @@ import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
+import { type Emote } from "./objects/emote";
 
 export class Game {
     readonly _id: number;
@@ -83,6 +79,7 @@ export class Game {
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
+    readonly emotes: Set<Emote> = new Set<Emote>();
     /**
      * All bullets that currently exist
      */
@@ -360,6 +357,15 @@ export class Game {
                     }
                 }
 
+                // Emotes
+                if (this.emotes.size !== 0) {
+                    for (const emote of this.emotes) {
+                        if (player.visibleObjects.has(emote.player)) {
+                            player.emotes.add(emote);
+                        }
+                    }
+                }
+
                 for (const message of this.killFeedMessages) player.sendPacket(message);
                 player.sendPacket(new UpdatePacket(player));
             }
@@ -371,6 +377,7 @@ export class Game {
             this.newBullets.clear();
             this.deletedBulletIDs.clear();
             this.explosions.clear();
+            this.emotes.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
@@ -423,7 +430,7 @@ export class Game {
         }, delay);
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>, name: string, isDev: boolean, nameColor: string, lobbyClearing: boolean): Player {
+    addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = Vec2(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
@@ -445,7 +452,7 @@ export class Game {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        return new Player(this, name, socket, spawnPosition, isDev, nameColor, lobbyClearing);
+        return new Player(this, socket, spawnPosition);
     }
 
     // Called when a JoinPacket is sent by the client
@@ -508,6 +515,9 @@ export class Game {
             } catch (e) {
                 console.error("Error destroying player body. Details: ", e);
             }
+        } else {
+            player.rotation = 0;
+            this.partialDirtyObjects.add(player);
         }
         if (this.aliveCount < 2) {
             clearTimeout(this.startTimeoutID);

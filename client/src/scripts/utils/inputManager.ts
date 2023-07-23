@@ -1,14 +1,14 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
-import { mod } from "../../../../common/src/utils/math";
-import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
+import { angleBetween, distanceSquared, mod } from "../../../../common/src/utils/math";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
-import {
-    localStorageInstance, type KeybindActions, defaultConfig
-} from "./localStorageHandler";
+import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
 import { type Game } from "../game";
 import { type MinimapScene } from "../scenes/minimapScene";
 import core from "../core";
+import { v } from "../../../../common/src/utils/vector";
+import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 
 class Action {
     readonly name: string;
@@ -178,6 +178,38 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             () => {
                 (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
             }
+        ),
+        emoteWheel: new Action(
+            "emoteWheel",
+            () => {
+                $("#emote-wheel")
+                    .css("left", `${game.playerManager.mouseX - 143}px`)
+                    .css("top", `${game.playerManager.mouseY - 143}px`)
+                    .css("background-image", 'url("/img/misc/emote_wheel.svg")')
+                    .show();
+                game.playerManager.emoteWheelActive = true;
+                game.playerManager.emoteWheelPosition = v(game.playerManager.mouseX, game.playerManager.mouseY);
+            },
+            () => {
+                $("#emote-wheel").hide();
+                switch (game.playerManager.selectedEmoteSlot) {
+                    case EmoteSlot.Top:
+                        game.playerManager.action = InputActions.TopEmoteSlot;
+                        break;
+                    case EmoteSlot.Right:
+                        game.playerManager.action = InputActions.RightEmoteSlot;
+                        break;
+                    case EmoteSlot.Bottom:
+                        game.playerManager.action = InputActions.BottomEmoteSlot;
+                        break;
+                    case EmoteSlot.Left:
+                        game.playerManager.action = InputActions.LeftEmoteSlot;
+                        break;
+                }
+                game.playerManager.dirty.inputs = true;
+                game.playerManager.emoteWheelActive = false;
+                game.playerManager.selectedEmoteSlot = EmoteSlot.None;
+            }
         )
     };
 }
@@ -300,13 +332,41 @@ export function setupInputs(game: Game): void {
 
     gameUi.addEventListener("pointermove", (e: MouseEvent) => {
         if (game.playerManager === undefined || game.playerManager.isMobile) return;
+        const player = game.playerManager;
+        player.mouseX = e.clientX;
+        player.mouseY = e.clientY;
 
-        game.playerManager.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
-            game.activePlayer.container.rotation = game.playerManager.rotation;
+        if (player.emoteWheelActive) {
+            const mousePosition = v(e.clientX, e.clientY);
+            if (distanceSquared(player.emoteWheelPosition, mousePosition) > 500) {
+                const angle = angleBetween(player.emoteWheelPosition, mousePosition);
+                let slotName: string | undefined;
+                if (angle >= SECOND_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE) {
+                    player.selectedEmoteSlot = EmoteSlot.Top;
+                    slotName = "top";
+                } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
+                    player.selectedEmoteSlot = EmoteSlot.Right;
+                    slotName = "right";
+                } else if (angle >= FIRST_EMOTE_ANGLE && angle <= THIRD_EMOTE_ANGLE) {
+                    player.selectedEmoteSlot = EmoteSlot.Bottom;
+                    slotName = "bottom";
+                } else if (angle >= THIRD_EMOTE_ANGLE && angle <= SECOND_EMOTE_ANGLE) {
+                    player.selectedEmoteSlot = EmoteSlot.Left;
+                    slotName = "left";
+                }
+                $("#emote-wheel").css("background-image", `url("/img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("/img/misc/emote_wheel.svg")`);
+            } else {
+                player.selectedEmoteSlot = EmoteSlot.None;
+                $("#emote-wheel").css("background-image", 'url("/img/misc/emote_wheel.svg")');
+            }
         }
-        game.playerManager.turning = true;
-        game.playerManager.dirty.inputs = true;
+
+        player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+        if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
+            game.activePlayer.container.rotation = player.rotation;
+        }
+        player.turning = true;
+        player.dirty.inputs = true;
         // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 
@@ -436,7 +496,8 @@ const actionsNames = {
     useTablets: "Use Tablets",
     cancelAction: "Cancel Action",
     toggleMap: "Toggle Fullscreen Map",
-    toggleMiniMap: "Toggle Minimap"
+    toggleMiniMap: "Toggle Minimap",
+    emoteWheel: "Emote Wheel"
 };
 
 // Generate the input settings

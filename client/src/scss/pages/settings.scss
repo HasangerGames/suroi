@@ -1,0 +1,327 @@
+@import "../utils/tabs.scss";
+@import "../palette.scss";
+
+#settings-menu {
+    background-color: $bg;
+    max-width: 450px;
+}
+
+#customize-menu {
+    background-color: #3e8235;
+    max-width: 750px;
+}
+
+// TODO Refactor this, make classes
+#settings-menu, #customize-menu {
+    user-select: none;
+    box-shadow: 0 0 10px #000000c8;
+    padding: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 101;
+
+    #settings-header, #customize-header {
+        $headerHeight: 45px;
+        display: flex;
+        height: $headerHeight;
+        align-items: center;
+
+        h3 {
+            margin-left: 15px;
+            display: flex;
+        }
+        #close-settings, #close-customize {
+            margin-left: auto;
+            text-align: center;
+            line-height: $headerHeight;
+            width: $headerHeight;
+            height: $headerHeight;
+            cursor: pointer;
+        }
+    }
+
+    #customize-header {
+        @include text-shadow;
+    }
+
+    #settings-tabs-container, #customize-tabs-container {
+        display: flex;
+    }
+
+    #skin-name {
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        z-index: 1000;
+        background-color: #49993e;
+        width: 100%;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    #skins-list {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 100%;
+        overflow-y: scroll;
+
+        .skins-list-item-container {
+            padding: 8px;
+            margin: 8px;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .skins-list-item {
+            position: relative;
+            width: 102px;
+            height: 98px;
+
+            .skin-base {
+                position: relative;
+                top: 0;
+                left: 6px;
+                width: 90px;
+                height: 90px;
+                background-size: cover;
+                transform: rotate(90deg);
+            }
+
+            .skin-left-fist, .skin-right-fist {
+                position: absolute;
+                top: 64px;
+                width: 34px;
+                height: 34px;
+                background-size: cover;
+                transform: rotate(90deg);
+            }
+
+            .skin-right-fist {
+                left: 68px;
+            }
+        }
+
+        .skin-name {
+            font-weight: bold;
+            @include text-shadow;
+        }
+    }
+
+    #tab-emotes-content {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+    }
+
+    #emote-customize-wheel {
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+
+        .emote-top, .emote-right, .emote-bottom, .emote-left {
+            cursor: pointer;
+            z-index: 10;
+        }
+    }
+
+    #emotes-list {
+        overflow-y: scroll;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .emotes-list-item-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: $transparent_bg;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .emotes-list-item {
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+        }
+
+        .emote-name {
+            font-weight: bold;
+            @include text-shadow;
+        }
+    }
+
+    @media screen and (max-width: 654px) {
+        #emotes-list {
+            gap: 5px;
+
+            .emotes-list-item-container {
+                border-width: 3px;
+            }
+
+            .emotes-list-item {
+                width: 42px;
+                height: 42px;
+                background-size: contain;
+            }
+        }
+
+        #emote-customize-wheel {
+            width: 191px;
+            height: 191px;
+            background-size: contain;
+
+            & > div {
+                width: 56px;
+                height: 56px;
+                background-size: contain;
+            }
+
+            .emote-top {
+                top: 9px;
+                left: 67px;
+            }
+
+            .emote-right {
+                right: 9px;
+                top: 67px;
+            }
+
+            .emote-bottom {
+                bottom: 9px;
+                left: 67px;
+            }
+
+            .emote-left {
+                left: 9px;
+                top: 67px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 530px) {
+        #emote-customize-wheel {
+            width: 143px;
+            height: 143px;
+
+            & > div {
+                width: 42px;
+                height: 42px;
+            }
+
+            .emote-top {
+                top: 7px;
+                left: 51px;
+            }
+
+            .emote-right {
+                right: 7px;
+                top: 51px;
+            }
+
+            .emote-bottom {
+                bottom: 7px;
+                left: 51px;
+            }
+
+            .emote-left {
+                left: 7px;
+                top: 51px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 475px) {
+        #tab-emotes-content {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #emotes-list {
+            padding-bottom: 16px;
+        }
+    }
+
+    #settings-tabs, #customize-tabs {
+        width: 100%;
+        height: 380px;
+        max-height: 80vh;
+        overflow-y: scroll;
+    }
+
+    #settings-tabs {
+        background: $transparent_bg;
+    }
+
+    #customize-tabs {
+        background: #49993e;
+    }
+
+    #customize-tab-bar .tab {
+        @include text-shadow;
+        padding-top: 7px;
+
+        &.active {
+            background: #49993e;
+        }
+
+        & > img {
+            position: relative;
+            top: 3px;
+            margin-right: 5px;
+        }
+    }
+
+    .tab-content {
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .setting-title {
+        margin: 0.2em;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .modal-item {
+        &.checkbox-setting {
+            margin-bottom: 20px;
+        }
+
+        &:not(:first-child) {
+            margin-top: 1em;
+        }
+
+        input[type=checkbox] {
+            float: right;
+        }
+
+        .range-input-value {
+            float: right;
+        }
+    }
+
+    &.in-game {
+        background-color: $transparent_bg;
+        box-shadow: none;
+    }
+}
+

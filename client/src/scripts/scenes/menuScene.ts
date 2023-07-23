@@ -12,9 +12,13 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.atlas("main", `/img/atlases/main.${ATLAS_HASH}.png`, `/img/atlases/main.${ATLAS_HASH}.json`);
+        for (const atlas of ["main"]) {
+            const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
+            console.log(`Loading atlas: ${location.toString()}${path}.png`);
+            this.load.atlas(atlas, `/${path}.png`, `/${path}.json`);
+        }
 
-        this.load.audio("menu", require("../../assets/audio/music/menu_music.mp3"));
+        this.load.audio("menu", "/audio/music/menu_music.mp3");
         this.sound.pauseOnBlur = false;
         this.input.mouse?.disableContextMenu();
     }
