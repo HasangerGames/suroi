@@ -506,7 +506,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "window",
             name: "Window",
-            material: "wood",
+            material: "glass",
             health: 100,
             scale: {
                 spawnMin: 1.0,
@@ -519,7 +519,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "bed",
             name: "Bed",
-            material: "glass",
+            material: "wood",
             health: 100,
             scale: {
                 spawnMin: 1.0,
