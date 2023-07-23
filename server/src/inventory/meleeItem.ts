@@ -20,13 +20,6 @@ export class MeleeItem extends InventoryItem {
 
     readonly definition: MeleeDefinition;
 
-    private readonly _stats = {
-        kills: 0,
-        damage: 0
-    };
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
-    get stats() { return this._stats; }
-
     /**
      * Constructs a new melee weapon
      * @param idString The `idString` of a `MeleeDefinition` in the item schema that this object is to base itself off of

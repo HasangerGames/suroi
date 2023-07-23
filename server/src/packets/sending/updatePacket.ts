@@ -34,7 +34,7 @@ export class UpdatePacket extends SendingPacket {
         // Health
         stream.writeBoolean(player.dirty.health);
         if (player.dirty.health) {
-            stream.writeFloat(player.health, 0, player.maxHealth, 8);
+            stream.writeFloat(player.health, 0, player.maxHealth, 10);
             player.dirty.health = false;
         }
 

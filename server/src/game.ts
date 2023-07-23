@@ -275,19 +275,12 @@ export class Game {
                     if (player.movement.right) movement.x++;
                 }
 
-                // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                let speed = (movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed) * (1 + (player.adrenaline / 1000));
-
-                if (player.recoil.active) {
-                    if (player.recoil.time < this.now) {
-                        player.recoil.active = false;
-                    } else {
-                        speed *= player.recoil.multiplier;
-                    }
+                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+                    movement.x *= Math.SQRT1_2;
+                    movement.y *= Math.SQRT1_2;
                 }
-                if (player.action) speed *= player.action.speedMultiplier;
-                speed *= player.activeItemDefinition.speedMultiplier;
 
+                const speed = player.calculateSpeed();
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
@@ -425,8 +418,7 @@ export class Game {
                 this.tickTimes = [];
             }
 
-            const newDelay = Math.max(0, 30 - tickTime);
-            this.tick(newDelay);
+            this.tick(Math.max(0, 30 - tickTime));
         }, delay);
     }
 

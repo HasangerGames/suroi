@@ -91,12 +91,12 @@ export class KillFeedPacket extends ReceivingPacket {
                             ? `${killed.name} died to the gas`
                             : `${killed.name} committed suicide`;
 
-                    killFeedItem.html(`${killstreak !== undefined && killstreak > 1 ? killstreak : ""}<img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                    killFeedItem.html(`${killstreak !== undefined && killstreak > 1 ? killstreak : ""}<img class="kill-icon" src="./img/misc/skull.svg" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
                 } else {
                     const killerName = twoPartyInteraction ? killedBy!.name : "";
                     const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
                     const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : ` (${weaponUsed?.name})`;
-                    const killstreakText = killstreak !== undefined && killstreak > 1 ? ` <span style="font-size: 80%">(${killstreak} <img class="kill-icon" src="${require("../../../assets/img/misc/skull.svg")}" alt="Skull" height=12>)</span>` : "";
+                    const killstreakText = killstreak !== undefined && killstreak > 1 ? ` <span style="font-size: 80%">(${killstreak} <img class="kill-icon" src="./img/misc/skull.svg" alt="Skull" height=12>)</span>` : "";
 
                     killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">${killstreakText} ${killed.name}`);
                 }

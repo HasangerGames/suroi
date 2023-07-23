@@ -560,5 +560,60 @@ export const Guns: GunDefinition[] = [
             },
             tracerLength: 2
         }
+    },
+    {
+        idString: "snowball_shotty",
+        name: "Snowball Shotty",
+        itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 15,
+        capacity: 5,
+        reloadTime: 0.75,
+        fireDelay: 925,
+        switchDelay: 925,
+        speedMultiplier: 0.93,
+        recoilMultiplier: 0.5,
+        recoilDuration: 550,
+        fireMode: FireMode.Single,
+        shotSpread: 11,
+        moveSpread: 3,
+        canQuickswitch: true,
+        killstreak: true,
+        bulletCount: 10,
+        length: 6.5,
+        fists: {
+            left: v(70, 0),
+            right: v(130, -6),
+            animationDuration: 100
+        },
+        image: { position: v(90, 0) },
+        singleReload: true,
+        ballistics: {
+            damage: 10,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            maxDistance: 48
+        },
+        wearerAttributes: {
+            passive: {
+                maxHealth: 0.51,
+                maxAdrenaline: 0.8
+            },
+            on: {
+                kill: {
+                    limit: 5,
+                    maxHealth: 1.488,
+                    maxAdrenaline: 1.201,
+                    minAdrenaline: 6,
+                    healthRestored: 230,
+                    adrenalineRestored: 30,
+                    speedBoost: 1.02
+                },
+                damageDealt: {
+                    healthRestored: 1,
+                    adrenalineRestored: 1
+                }
+            }
+        }
     }
 ];

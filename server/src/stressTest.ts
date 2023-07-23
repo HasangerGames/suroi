@@ -1,9 +1,10 @@
 import { WebSocket } from "ws";
 
-import { PacketType, InputActions, INPUT_ACTIONS_BITS } from "../../common/src/constants";
+import { PacketType, InputActions, INPUT_ACTIONS_BITS, ObjectCategory } from "../../common/src/constants";
 
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { ObjectType } from "../../common/src/utils/objectType";
 
 const config = {
     address: "ws://127.0.0.1:8000/play",
@@ -25,9 +26,14 @@ for (let i = 1; i <= config.botCount; i++) {
 
         ws.addEventListener("error", console.error);
         ws.addEventListener("open", () => {
-            const stream = SuroiBitStream.alloc(4);
+            const stream = SuroiBitStream.alloc(8);
             stream.writePacketType(PacketType.Join);
             stream.writeBoolean(false);
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, "forest_camo"));
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "happy_face"));
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "sad_face"));
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"));
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_down"));
             ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
 
             setInterval(() => {
@@ -58,8 +64,7 @@ for (let i = 1; i <= config.botCount; i++) {
             shootStart = randomBoolean();
             interact = randomBoolean();
 
-            const direction: number = random(1, 8);
-            switch (direction) {
+            switch (random(1, 8)) {
                 case 1:
                     movingUp = true;
                     break;

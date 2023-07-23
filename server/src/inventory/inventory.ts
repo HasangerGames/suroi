@@ -116,6 +116,13 @@ export class Inventory {
         // (started)
         const item = this._weapons[slot];
         if (item !== undefined) {
+            const oldItem = this._weapons[old];
+            if (oldItem) {
+                oldItem.isActive = false;
+            }
+
+            item.isActive = true;
+
             const now = this.owner.game.now;
 
             this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
@@ -210,6 +217,7 @@ export class Inventory {
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
             [this._weapons[1], this._weapons[0]];
+
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
     }
@@ -379,6 +387,9 @@ export class Inventory {
             this.setActiveWeaponIndex(slot);
         }
 
+        item?.refreshModifiers();
+        this.owner.updateAndApplyModifiers();
+
         return old;
     }
 
@@ -390,9 +401,8 @@ export class Inventory {
 
         switch (definition.itemType) {
             case ItemType.Healing: {
-                if (
-                    (this.owner.action as HealingAction | undefined)?.item.idNumber === item.idNumber
-                ) return;
+                // Already consuming something else
+                if (this.owner.action instanceof HealingAction) return;
 
                 const definition = item.definition as HealingItemDefinition;
 

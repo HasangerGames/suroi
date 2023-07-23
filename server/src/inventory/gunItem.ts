@@ -29,14 +29,6 @@ export class GunItem extends InventoryItem {
     private _burstTimeoutID: NodeJS.Timeout | undefined;
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
 
-    private readonly _stats = {
-        kills: 0,
-        damage: 0
-    };
-    // shut the up
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
-    get stats() { return this._stats; }
-
     /**
      * Constructs a new gun
      * @param idString The `idString` of a `GunDefinition` in the item schema that this object is to base itself off of
@@ -114,10 +106,9 @@ export class GunItem extends InventoryItem {
         }
 
         for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-            const angle = normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2);
             this.owner.game.addBullet(
                 position,
-                angle,
+                normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2),
                 this,
                 this.owner
             );

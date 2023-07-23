@@ -20,7 +20,6 @@ export interface ConfigType {
         readonly enable: boolean
     }
     readonly movementSpeed: number
-    get diagonalSpeed(): number
     /**
      * There are 3 spawn modes: SpawnMode.Random, SpawnMode.Radius, and SpawnMode.Fixed.
      * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
@@ -100,11 +99,10 @@ export const Config = {
     },
 
     movementSpeed: 0.029,
-    get diagonalSpeed() { return this.movementSpeed / Math.SQRT2; },
 
     spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
 
-    gas: { mode: GasMode.Normal },
+    gas: { mode: GasMode.Disabled },
 
     censorUsernames: true,
 
@@ -113,7 +111,7 @@ export const Config = {
 
     playerLimit: 80,
 
-    mapName: "debug",
+    mapName: "arena",
 
     disableLobbyClearing: false,
 
