@@ -369,11 +369,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
+                // Comments assume the building is not rotated (rotation = 0)
                 new RectangleHitbox(v(-48.33, 33.2), v(48.33, 35.1)), // Topmost wall
-                new RectangleHitbox(v(11.9, -9.48), v(13.86, 33.2)), // Wall coming off of topmost wall
+                new RectangleHitbox(v(11.9, 10.9), v(13.86, 33.2)), // Wall coming off of topmost wall
                 new RectangleHitbox(v(46.4, -9.48), v(48.33, 33.2)), // Rightmost wall
                 new RectangleHitbox(v(41.05, -9.48), v(46.43, -7.58)), // Short wall coming off of rightmost wall
-                new RectangleHitbox(v(14.05, -9.48), v(19.37, -7.61)) // Short wall to the left of the previous one
+                new RectangleHitbox(v(13.86, -9.48), v(19.37, -7.61)), // Short wall to the left of the previous one
+                new RectangleHitbox(v(11.9, -21.5), v(13.86, 1.2)), // Wall coming off of the longer bottommost wall
+                new RectangleHitbox(v(-26.2, -23.5), v(13.86, -21.57)), // Longer bottommost wall
+                new RectangleHitbox(v(-48.33, -23.5), v(-36.25, -21.57)), // Shorter bottommost wall
+                new RectangleHitbox(v(-48.33, -23.5), v(-46.4, 33.2)), // Leftmost wall
+                new RectangleHitbox(v(-41.1, -35.13), v(-37.85, -32)), // Left post
+                new RectangleHitbox(v(-24.1, -35.13), v(-20.85, -32)) // Right post
             ]),
             rotationMode: "limited"
         },
