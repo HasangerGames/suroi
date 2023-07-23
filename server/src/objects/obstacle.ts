@@ -1,15 +1,15 @@
-import { type Body, type Shape, type Vec2 } from "planck";
+import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
 
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { type LootItem, bodyFromHitbox, getLootTableLoot } from "../utils/misc";
+import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { vClone, type Vector, vSub } from "../../../common/src/utils/vector";
 import { transformRectangle } from "../../../common/src/utils/math";
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Orientation, type Variation } from "../../../common/src/typings";
@@ -43,7 +43,7 @@ export class Obstacle extends GameObject {
 
     variation: Variation;
 
-    body?: Body;
+    body: Body;
     spawnHitbox: Hitbox;
 
     loot: LootItem[] = [];
@@ -72,7 +72,53 @@ export class Obstacle extends GameObject {
 
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
 
-        this.body = bodyFromHitbox(game.world, this.hitbox, this.scale, definition.noCollisions, this, this.game);
+        this.body = this.game.world.createBody({
+            type: "static",
+            fixedRotation: true
+        });
+        const createFixture = (hitbox: Hitbox): void => {
+            if (hitbox instanceof CircleHitbox) {
+                this.body.createFixture({
+                    shape: Circle(hitbox.radius * scale),
+                    userData: this,
+                    isSensor: definition.noCollisions
+                });
+            } else if (hitbox instanceof RectangleHitbox) {
+                const width = hitbox.width / 2;
+                const height = hitbox.height / 2;
+                this.body.createFixture({
+                    shape: Box(width, height, Vec2(hitbox.min.x + width, hitbox.min.y + height)),
+                    userData: this,
+                    isSensor: definition.noCollisions
+                });
+                game.staticObjects.add(new Obstacle(
+                    game,
+                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                    Vec2(hitbox.min.x, hitbox.min.y),
+                    0,
+                    1
+                ));
+                game.staticObjects.add(new Obstacle(
+                    game,
+                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                    Vec2(hitbox.max.x, hitbox.max.y),
+                    0,
+                    1
+                ));
+                game.staticObjects.add(new Obstacle(
+                    game,
+                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                    Vec2(hitbox.min.x + width, hitbox.min.y + height),
+                    0,
+                    1
+                ));
+            }
+        };
+        if (this.hitbox instanceof ComplexHitbox) {
+            for (const hitBox of this.hitbox.hitBoxes) createFixture(hitBox);
+        } else {
+            createFixture(this.hitbox);
+        }
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];
@@ -85,7 +131,6 @@ export class Obstacle extends GameObject {
 
         if (definition.spawnWithLoot) {
             const lootTable = LootTables[this.type.idString];
-
             const items = getLootTableLoot(lootTable.loot);
 
             for (const item of items) {
@@ -117,7 +162,7 @@ export class Obstacle extends GameObject {
 
             this.scale = definition.scale.spawnMin;
 
-            if (this.body != null) this.game.world.destroyBody(this.body);
+            this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
 
             if (definition.explosion !== undefined) {
@@ -140,7 +185,7 @@ export class Obstacle extends GameObject {
             const scaleFactor = this.scale / oldScale;
 
             // Transform the Planck.js Body
-            if (this.body != null) {
+            if (this.body !== null) {
                 const shape = this.body.getFixtureList()?.getShape() as Shape & { m_vertices: Vec2[] };
                 if (this.hitbox instanceof CircleHitbox) {
                     shape.m_radius = shape.m_radius * scaleFactor;

@@ -371,8 +371,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                new RectangleHitbox(v(-48.33, 33.2), v(48.33, 35.1)),
-                new RectangleHitbox(v(46.33, 32.1), v(48.33, -35.1))
+                new RectangleHitbox(v(-48.33, 33.2), v(48.33, 35.1)), // Topmost wall
+                new RectangleHitbox(v(11.9, -9.48), v(13.86, 33.2)), // Wall coming off of topmost wall
+                new RectangleHitbox(v(46.4, -9.48), v(48.33, 33.2)), // Rightmost wall
+                new RectangleHitbox(v(41.05, -9.48), v(46.43, -7.58)), // Short wall coming off of rightmost wall
+                new RectangleHitbox(v(14.05, -9.48), v(19.37, -7.61)) // Short wall to the left of the previous one
             ]),
             rotationMode: "limited"
         },

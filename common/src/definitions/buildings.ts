@@ -53,7 +53,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "house_wall_2",
                 position: v(-1.5, 2.4)
             },
-            //Entrance Right
+            // Entrance Right
             {
                 id: "house_wall_3",
                 position: v(-25.2, -8),
