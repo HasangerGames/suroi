@@ -68,19 +68,19 @@ export function bodyFromHitbox(world: World,
     } else if (hitbox instanceof ComplexHitbox) {
         for (const hitBox of hitbox.hitBoxes) {
             if (hitBox instanceof CircleHitbox) {
-                 body.setPosition(Vec2(hitBox.position));
-                 createFixture(hitBox);
+                body.setPosition(Vec2(hitBox.position));
+                createFixture(hitBox);
             } else if (hitBox instanceof RectangleHitbox) {
-                 const width = hitBox.width / 2;
-                 const height = hitBox.height / 2;
+                const width = hitBox.width / 2;
+                const height = hitBox.height / 2;
 
-                 if (width === 0 || height === 0) return undefined;
+                if (width === 0 || height === 0) return undefined;
 
-                 // obstacle.collision.halfWidth = width;
+                // obstacle.collision.halfWidth = width;
                 // obstacle.collision.halfHeight = height;
 
-                 body.setPosition(Vec2(hitBox.min.x + width, hitBox.min.y + height));
-                 createFixture(hitBox);
+                body.setPosition(Vec2(hitBox.min.x + width, hitBox.min.y + height));
+                createFixture(hitBox);
             }
         }
     }

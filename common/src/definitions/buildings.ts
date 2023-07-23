@@ -1,14 +1,20 @@
 import { type Variation } from "../typings";
 import { type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
 
 interface buildingObstacle {
-    idString: string
+    id: string
     position: Vector
     rotation?: number
     variation?: Variation
     scale?: number
+}
+
+interface LootSpawner {
+    position: Vector
+    table: string
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
@@ -17,66 +23,78 @@ export interface BuildingDefinition extends ObjectDefinition {
     hideOnMap?: boolean
     obstacles: buildingObstacle[]
 
+    lootSpawners?: LootSpawner[]
+
     floorImagePos: Vector
     ceilingImagePos: Vector
 }
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
-    /*
     {
         idString: "warehouse",
         name: "Warehouse",
-        spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
+        spawnHitbox: new RectangleHitbox(v(-30, -44), v(30, 44)),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-16, -16), v(16, 16)),
-            new RectangleHitbox(v(-5, 15), v(5, 22))
+            new RectangleHitbox(v(-20, -40), v(20, 40))
         ]),
 
-        floorImagePos: v(0, 2.35),
+        floorImagePos: v(0, 0.31),
         ceilingImagePos: v(0, 0),
         obstacles: [
             {
-                idString: "warehouse_wall_1",
-                position: v(-16.4, 0)
+                id: "warehouse_wall_1",
+                position: v(-20, 0),
+                rotation: 1
             },
             {
-                idString: "warehouse_wall_1",
-                position: v(16.4, 0)
+                id: "warehouse_wall_1",
+                position: v(20, 0),
+                rotation: 1
             },
             {
-                idString: "warehouse_wall_2",
-                position: v(10.4, -16.7)
+                id: "warehouse_wall_2",
+                position: v(14, -34.4)
             },
             {
-                idString: "warehouse_wall_2",
-                position: v(-10.4, -16.7)
+                id: "warehouse_wall_2",
+                position: v(-14, -34.4)
             },
             {
-                idString: "warehouse_wall_3",
-                position: v(0, 16.6)
+                id: "warehouse_wall_2",
+                position: v(14, 34.4)
             },
             {
-                idString: "regular_crate",
-                position: v(-10.5, -10.5)
+                id: "warehouse_wall_2",
+                position: v(-14, 34.4)
             },
             {
-                idString: "regular_crate",
-                position: v(10.5, -10.5)
+                id: "regular_crate",
+                position: v(14, 28.5)
             },
             {
-                idString: "regular_crate",
-                position: v(-10.5, 10.5)
+                id: "regular_crate",
+                position: v(-14, 28.5)
             },
             {
-                idString: "regular_crate",
-                position: v(10.5, 10.5)
+                // TODO: better way of adding random obstacles
+                get id() {
+                    return weightedRandom(["regular_crate", "flint_crate"], [0.7, 0.3]);
+                },
+                position: v(-14, -28.5)
             },
             {
-                idString: "barrel",
-                position: v(0, 11.5)
+                id: "barrel",
+                position: v(14.6, -29.2)
+            }
+        ],
+
+        lootSpawners: [
+            {
+                position: v(0, 0),
+                table: "warehouse"
             }
         ]
-    },*/
+    },
     {
         idString: "house",
         name: "House",
@@ -91,49 +109,49 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
              // Bathroom Left
              {
-                idString: "house_wall_3",
+                id: "house_wall_3",
                 position: v(-3.6, -8),
                 rotation: 1
              },
              // Bathroom Top
              {
-                idString: "house_wall_2",
+                id: "house_wall_2",
                 position: v(-1.5, 2.4)
              },
              //Entrance Right
              {
-                idString: "house_wall_3",
+                id: "house_wall_3",
                 position: v(-25.2, -8),
                 rotation: 1
              },
              // Kitchen Top
              {
-                idString: "house_wall_2",
+                id: "house_wall_2",
                 position: v(-20.4, 2.4)
              },
              // Living Room Bottom Right
              {
-                idString: "house_wall_2",
+                id: "house_wall_2",
                 position: v(6.1, 14.6)
              },
              // Living Room Left
              {
-                idString: "house_wall_3",
+                id: "house_wall_3",
                 position: v(-18.25, 25),
                 rotation: 1
              },
              // Living Room Bottom Left
              {
-                idString: "house_wall_3",
+                id: "house_wall_3",
                 position: v(-18, 14.4)
              },
              {
-                idString: "house_wall_2",
+                id: "house_wall_2",
                 position: v(-42, 14.4)
              },
              // House Exterior
              {
-                idString: "house_exterior",
+                id: "house_exterior",
                 position: v(0, 2.6)
              },
         ]

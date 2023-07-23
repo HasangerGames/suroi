@@ -45,6 +45,8 @@ export class Player extends GameObject {
         loot: false
     };
 
+    hitbox: CircleHitbox;
+
     readonly damageable = true;
 
     name: string;
@@ -199,6 +201,8 @@ export class Player extends GameObject {
     lastSwitch = 0;
     effectiveSwitchDelay = 0;
 
+    isInsideBuilding = false;
+
     constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean, nameColor: string, lobbyClearing: boolean) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
@@ -247,7 +251,7 @@ export class Player extends GameObject {
                 this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item] ?? 1;
             }
 
-            this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
+            this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
         this.dirty.activeWeaponIndex = true;
@@ -290,6 +294,7 @@ export class Player extends GameObject {
     }
 
     set zoom(zoom: number) {
+        if (this._zoom === zoom) return;
         this._zoom = zoom;
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;

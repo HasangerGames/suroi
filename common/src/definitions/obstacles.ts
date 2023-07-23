@@ -260,7 +260,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-0.7, -17.3), v(0.7, 17.3)),
+            hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
             rotationMode: "limited"
         },
         {
@@ -274,21 +274,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-5, -0.7), v(5, 0.7)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "warehouse_wall_3",
-            name: "Warehouse Wall",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
-            hitbox: new RectangleHitbox(v(-15.5, -0.7), v(15.5, 0.7)),
+            hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
             rotationMode: "limited"
         },
         {
@@ -385,8 +371,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -23), v(14, 1.2)),
-            new RectangleHitbox(v(10, -23), v(14, -21))
+                new RectangleHitbox(v(12, -23), v(14, 1.2)),
+                new RectangleHitbox(v(10, -23), v(14, -21))
             ]),
             rotationMode: "limited"
         }

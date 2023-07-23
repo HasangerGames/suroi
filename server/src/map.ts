@@ -137,7 +137,7 @@ export class Map {
         for (const obstacleData of definition.obstacles) {
             const obstaclePos = addAdjust(position, obstacleData.position, orientation);
 
-            const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.idString);
+            const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.id);
 
             let obstacleRotation = obstacleData.rotation ?? 0;
 
@@ -146,6 +146,18 @@ export class Map {
             }
 
             this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation);
+        }
+
+        if (definition.lootSpawners) {
+            for (const lootData of definition.lootSpawners) {
+                const loot = getLootTableLoot(LootTables[lootData.table].loot);
+
+                for (const item of loot) {
+                    this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString),
+                        addAdjust(position, lootData.position, orientation),
+                        item.count);
+                }
+            }
         }
 
         this.game.staticObjects.add(building);
@@ -270,7 +282,10 @@ export class Map {
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
             (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                getPosition = (): Vector => randomVector(12, this.width - 12, 12, this.height - 12);
+                let offset = 12;
+                if (type.category === ObjectCategory.Building) offset = 50;
+
+                getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
                 const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
@@ -290,7 +305,8 @@ export class Map {
             collided = false;
             position = getPosition();
 
-            const hitbox: Hitbox = initialHitbox.transform(position, scale, orientation);
+            const hitbox = initialHitbox.transform(position, scale, orientation);
+
             for (const object of this.game.staticObjects) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {

@@ -81,6 +81,14 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "equipment", weight: 1 },
             { tier: "healing_items", weight: 1 }
         ]
+    },
+    warehouse: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "special_guns", weight: 1 },
+            { tier: "special_equipment", weight: 0.65 }
+        ]
     }
 };
 
