@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../ut
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -488,6 +488,45 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "small_table",
+            name: "Small Table",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-5.2, -2.2), v(5.3, 1.8)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "window",
+            name: "Window",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-0.9, -4.7), v(0.9, 4.7)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "bed",
+            name: "Bed",
+            material: "glass",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
             rotationMode: "limited"
         }
     ]

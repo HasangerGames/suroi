@@ -86,7 +86,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "toilet",
-                position: v(9, -14.4)
+                position: v(7, -14.4)
             },
             {
                 id: "stove",
@@ -134,6 +134,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "drawer_small",
                 position: v(-43, 10)
+            },
+            {
+                id: "bed",
+                position: v(-40.5, 28.5)
+            },
+            {
+                id: "small_table",
+                position: v(-29, 34)
+            },
+            {
+                id: "small_table",
+                position: v(-0.5, -13),
+                rotation: 1
+            },
+            {
+                id: "window",
+                position: v(0, 35),
+                rotation: 1
             },
         ]
     },
