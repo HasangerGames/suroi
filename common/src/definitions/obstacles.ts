@@ -333,8 +333,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "fridge",
             name: "Fridge",
             material: "metal",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             variations: 3,
             scale: {
                 spawnMin: 1.0,
@@ -348,8 +347,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "stove",
             name: "Stove",
             material: "metal",
-            health: 1000,
-            indestructible: true,
+            health: 100,
             variations: 3,
             scale: {
                 spawnMin: 1.0,
@@ -408,8 +406,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 10
         },
         {
-            idString: "drawer",
-            name: "Drawer",
+            idString: "drawer_large",
+            name: "Large Drawer",
             material: "wood",
             health: 100,
             scale: {
@@ -417,7 +415,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
+            hitbox: new RectangleHitbox(v(-6.3, -2.5), v(6.3, 3)),
             rotationMode: "limited"
         },
         {
@@ -430,7 +428,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
+            hitbox: new RectangleHitbox(v(-3.5, -7.5), v(3.4, 7.5)),
             rotationMode: "limited"
         },
         {
@@ -443,7 +441,46 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-0.5, -4), v(0.5, 4)),
+            hitbox: new RectangleHitbox(v(-0.8, -7.5), v(0.3, 7.6)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "table",
+            name: "Table",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.8, -5.6), v(3.8, 5.6)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "drawer_small",
+            name: "Small Drawer",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "chair",
+            name: "Chair",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
             rotationMode: "limited"
         }
     ]
