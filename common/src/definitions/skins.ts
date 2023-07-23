@@ -66,7 +66,7 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "tomato",
+        idString: "tomato_skin",
         name: "Tomato",
         itemType: ItemType.Skin
     },
