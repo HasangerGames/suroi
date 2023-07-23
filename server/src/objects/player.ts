@@ -29,6 +29,9 @@ import { type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
+import { Emote } from "./emote";
+import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -48,6 +51,11 @@ export class Player extends GameObject {
     readonly damageable = true;
 
     name: string;
+
+    loadout: {
+        skin: ObjectType<ObjectCategory.Loot, SkinDefinition>
+        emotes: Array<ObjectType<ObjectCategory.Emote, EmoteDefinition>>
+    };
 
     joined = false;
     disconnected = false;
@@ -168,6 +176,10 @@ export class Player extends GameObject {
      * Objects that need to be deleted
      */
     deletedObjects = new Set<GameObject>();
+    /**
+     * Emotes being sent to the player this tick
+     */
+    emotes = new Set<Emote>();
 
     private _zoom!: number;
     xCullDist!: number;
@@ -181,8 +193,8 @@ export class Player extends GameObject {
 
     action: Action | undefined;
 
+    role: string | undefined;
     isDev: boolean;
-
     nameColor: string;
 
     /**
@@ -199,14 +211,26 @@ export class Player extends GameObject {
     lastSwitch = 0;
     effectiveSwitchDelay = 0;
 
-    constructor(game: Game, name: string, socket: WebSocket<PlayerContainer>, position: Vec2, isDev: boolean, nameColor: string, lobbyClearing: boolean) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
-        this.isDev = isDev;
-        this.nameColor = nameColor;
-
+        const userData = socket.getUserData();
         this.socket = socket;
-        this.name = name;
+        this.name = userData.name;
+        this.role = userData.role;
+        this.isDev = userData.isDev;
+        this.nameColor = userData.nameColor;
+
+        this.loadout = {
+            skin: ObjectType.fromString(ObjectCategory.Loot, "forest_camo"),
+            emotes: [
+                ObjectType.fromString(ObjectCategory.Emote, "happy_face"),
+                ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"),
+                ObjectType.fromString(ObjectCategory.Emote, "suroi_logo"),
+                ObjectType.fromString(ObjectCategory.Emote, "sad_face")
+            ]
+        };
+
         this.rotation = 0;
 
         this.joinTime = game.now;
@@ -232,7 +256,7 @@ export class Player extends GameObject {
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
 
         // Inventory preset
-        if (this.isDev && lobbyClearing && !Config.disableLobbyClearing) {
+        if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
             this.inventory.addOrReplaceWeapon(1, "deathray");
@@ -303,6 +327,10 @@ export class Player extends GameObject {
 
     give(idString: string): void {
         this.inventory.appendWeapon(idString);
+    }
+
+    emote(slot: number): void {
+        this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
 
     disableInvulnerability(): void {
@@ -543,7 +571,8 @@ export class Player extends GameObject {
 
     override serializeFull(stream: SuroiBitStream): void {
         stream.writeBoolean(this.invulnerable);
-        stream.writeObjectType(this.activeItem.type);
+        stream.writeObjectTypeNoCategory(this.activeItem.type);
+        stream.writeObjectTypeNoCategory(this.loadout.skin);
         stream.writeBits(this.inventory.helmet?.definition.level ?? 0, 2);
         stream.writeBits(this.inventory.vest?.definition.level ?? 0, 2);
         stream.writeBits(this.inventory.backpack.definition.level, 2);

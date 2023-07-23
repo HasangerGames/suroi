@@ -1,0 +1,45 @@
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+
+    src: url("../../../public/fonts/Inter-Regular.woff") format("woff2"),
+        url("../../../public/fonts/Inter-Regular.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+
+    src: url("../../../public/fonts/Inter-SemiBold.woff") format("woff2"),
+        url("../../../public/fonts/Inter-SemiBold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+
+    src: url("../../../public/fonts/Inter-Bold.woff") format("woff2"),
+        url("../../../public/fonts/Inter-Bold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+
+    src: url("../../../public/fonts/Inter-ExtraBold.woff") format("woff2"),
+        url("../../../public/fonts/Inter-ExtraBold.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Russo One";
+    font-display: swap;
+    src: url("../../../public/fonts/RussoOne-Regular.ttf") format("truetype");
+}

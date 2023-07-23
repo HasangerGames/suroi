@@ -1,1 +1,1 @@
-import "./assets/scss/pages/changelog.scss";
+import "./scss/pages/changelog.scss";

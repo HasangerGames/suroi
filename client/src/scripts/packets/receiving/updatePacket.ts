@@ -21,6 +21,7 @@ import { type LootDefinition } from "../../../../../common/src/definitions/loots
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { MINIMAP_SCALE } from "../../utils/constants";
+import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -248,6 +249,18 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
+        // Emotes
+        if (stream.readBoolean()) {
+            const emoteCount = stream.readBits(7);
+            for (let i = 0; i < emoteCount; i++) {
+                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
+                const playerID = stream.readObjectID();
+                const player = this.playerManager.game.objects.get(playerID);
+                if (player === undefined || !(player instanceof Player)) return;
+                player.emote(emoteType);
+            }
+        }
+
         const minimap = scene.scene.get("minimap") as MinimapScene;
 
         // Gas
@@ -291,10 +304,10 @@ export class UpdatePacket extends ReceivingPacket {
 
             if (game.gas.state === GasState.Advancing) {
                 $("#gas-timer").addClass("advancing");
-                $("#gas-timer-image").attr("src", require("../../../assets/img/misc/gas-advancing-icon.svg"));
+                $("#gas-timer-image").attr("src", "/img/misc/gas-advancing-icon.svg");
             } else {
                 $("#gas-timer").removeClass("advancing");
-                $("#gas-timer-image").attr("src", require("../../../assets/img/misc/gas-waiting-icon.svg"));
+                $("#gas-timer-image").attr("src", "/img/misc/gas-waiting-icon.svg");
             }
 
             if (game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) {

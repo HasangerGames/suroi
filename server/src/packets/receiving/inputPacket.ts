@@ -96,6 +96,18 @@ export class InputPacket extends ReceivingPacket {
             case InputActions.Cancel:
                 player.action?.cancel();
                 break;
+            case InputActions.TopEmoteSlot:
+                player.emote(0);
+                break;
+            case InputActions.RightEmoteSlot:
+                player.emote(1);
+                break;
+            case InputActions.BottomEmoteSlot:
+                player.emote(2);
+                break;
+            case InputActions.LeftEmoteSlot:
+                player.emote(3);
+                break;
         }
     }
 }
