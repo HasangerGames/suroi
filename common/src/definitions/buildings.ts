@@ -131,6 +131,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "table",
                 position: v(-40, -5)
             },
+            // Dining Room Drawer
             {
                 id: "drawer_small",
                 position: v(-43, 10)
@@ -139,19 +140,33 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "bed",
                 position: v(-40.5, 28.5)
             },
+            // Bedroom Table
             {
                 id: "small_table",
                 position: v(-29, 34)
             },
+            // Toilet Table
             {
                 id: "small_table",
                 position: v(-0.5, -13),
                 rotation: 1
             },
+            // Living Room Window
             {
                 id: "window",
-                position: v(0, 35),
+                position: v(-1.5, 37),
                 rotation: 1
+            },
+            // Bedroom Window
+            {
+                id: "window",
+                position: v(-28.5, 37),
+                rotation: 1
+            },
+            // Dining Room Window
+            {
+                id: "window",
+                position: v(-47.5, 8.5),
             },
         ]
     },
