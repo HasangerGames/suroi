@@ -33,14 +33,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "house",
         name: "House",
-        spawnHitbox: new RectangleHitbox(v(-55, -50), v(55, 50)),
+        spawnHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
+            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
+            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+        ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-48, -35), v(12, 20)),
-            new RectangleHitbox(v(15, -37), v(48, 6)),
-            new RectangleHitbox(v(-43, -15), v(-19, 32))
+                new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
+                new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
+                new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
         ]),
         floorImagePos: v(0, 0),
-        ceilingImagePos: v(0, -3.5),
+        ceilingImagePos: v(0, -1.5),
         obstacles: [
             // Bathroom Left
             {
