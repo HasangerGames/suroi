@@ -76,48 +76,11 @@ export class Obstacle extends GameObject {
             type: "static",
             fixedRotation: true
         });
-        const createFixture = (hitbox: Hitbox): void => {
-            if (hitbox instanceof CircleHitbox) {
-                this.body.createFixture({
-                    shape: Circle(hitbox.radius * scale),
-                    userData: this,
-                    isSensor: definition.noCollisions
-                });
-            } else if (hitbox instanceof RectangleHitbox) {
-                const width = hitbox.width / 2;
-                const height = hitbox.height / 2;
-                this.body.createFixture({
-                    shape: Box(width, height, Vec2(hitbox.min.x + width, hitbox.min.y + height)),
-                    userData: this,
-                    isSensor: definition.noCollisions
-                });
-                game.staticObjects.add(new Obstacle(
-                    game,
-                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                    Vec2(hitbox.min.x, hitbox.min.y),
-                    0,
-                    1
-                ));
-                game.staticObjects.add(new Obstacle(
-                    game,
-                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                    Vec2(hitbox.max.x, hitbox.max.y),
-                    0,
-                    1
-                ));
-                game.staticObjects.add(new Obstacle(
-                    game,
-                    ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                    Vec2(hitbox.min.x + width, hitbox.min.y + height),
-                    0,
-                    1
-                ));
-            }
-        };
+
         if (this.hitbox instanceof ComplexHitbox) {
-            for (const hitBox of this.hitbox.hitBoxes) createFixture(hitBox);
+            for (const hitBox of this.hitbox.hitBoxes) this.createFixture(hitBox);
         } else {
-            createFixture(this.hitbox);
+            this.createFixture(this.hitbox);
         }
 
         if (this.hitbox instanceof CircleHitbox) {
@@ -143,6 +106,45 @@ export class Obstacle extends GameObject {
                     this.position,
                     item.count);
             }
+        }
+    }
+
+    private createFixture(hitbox: Hitbox): void {
+        if (hitbox instanceof CircleHitbox) {
+            this.body.createFixture({
+                shape: Circle(hitbox.radius * this.scale),
+                userData: this,
+                isSensor: this.definition.noCollisions
+            });
+        } else if (hitbox instanceof RectangleHitbox) {
+            const width = hitbox.width / 2;
+            const height = hitbox.height / 2;
+            this.body.createFixture({
+                shape: Box(width, height, Vec2(hitbox.min.x + width, hitbox.min.y + height)),
+                userData: this,
+                isSensor: this.definition.noCollisions
+            });
+            /*this.game.dynamicObjects.add(new Obstacle(
+                this.game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.min.x, hitbox.min.y),
+                0,
+                1
+            ));
+            this.game.dynamicObjects.add(new Obstacle(
+                this.game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.max.x, hitbox.max.y),
+                0,
+                1
+            ));
+            this.game.dynamicObjects.add(new Obstacle(
+                this.game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.min.x + width, hitbox.min.y + height),
+                0,
+                1
+            ));*/
         }
     }
 
@@ -188,18 +190,6 @@ export class Obstacle extends GameObject {
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
             const scaleFactor = this.scale / oldScale;
 
-            // Transform the Planck.js Body
-            if (this.body !== null) {
-                const shape = this.body.getFixtureList()?.getShape() as Shape & { m_vertices: Vec2[] };
-                if (this.hitbox instanceof CircleHitbox) {
-                    shape.m_radius = shape.m_radius * scaleFactor;
-                } else if (this.hitbox instanceof RectangleHitbox) {
-                    for (let i = 0, length = shape.m_vertices.length; i < length; i++) {
-                        shape.m_vertices[i] = shape.m_vertices[i].clone().mul(scaleFactor);
-                    }
-                }
-            }
-
             // Transform the hitbox
             // TODO Move this code to the Hitbox classes
             if (this.hitbox instanceof CircleHitbox) {
@@ -214,6 +204,21 @@ export class Obstacle extends GameObject {
                 );
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
+                this.hitbox.width = this.hitbox.max.x - this.hitbox.min.x;
+                this.hitbox.height = this.hitbox.max.y - this.hitbox.min.y;
+            }
+
+            // Transform the Planck.js Body
+            if (this.body !== null) {
+                const shape = this.body.getFixtureList()?.getShape() as Shape & { m_vertices: Vec2[] };
+                if (this.hitbox instanceof CircleHitbox) {
+                    shape.m_radius = shape.m_radius * scaleFactor;
+                } else if (this.hitbox instanceof RectangleHitbox) {
+                    // copium >:(
+                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+                    this.body.destroyFixture(this.body.getFixtureList()!);
+                    this.createFixture(this.hitbox);
+                }
             }
 
             this.game.partialDirtyObjects.add(this);
