@@ -48,6 +48,8 @@ export class Player extends GameObject {
         loot: false
     };
 
+    //fast = false;
+
     hitbox: CircleHitbox;
 
     readonly damageable = true;

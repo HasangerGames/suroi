@@ -125,6 +125,7 @@ export class RectangleHitbox extends Hitbox {
 }
 
 export class ComplexHitbox extends Hitbox {
+    position = v(0, 0);
     hitBoxes: Array<RectangleHitbox | CircleHitbox>;
 
     constructor(hitBoxes: Array<RectangleHitbox | CircleHitbox>) {
@@ -174,6 +175,7 @@ export class ComplexHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
+        this.position = position;
         const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
         for (const hitbox of this.hitBoxes) {
             // i have no idea why but that makes it work correctly

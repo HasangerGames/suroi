@@ -10,7 +10,7 @@ import { randomPointInsideCircle } from "../../../common/src/utils/random";
 import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
-interface mapDefinition {
+interface MapDefinition {
 
     buildings?: Record<string, number>
 
@@ -38,7 +38,7 @@ interface mapDefinition {
     genCallback?: (map: Map) => void
 }
 
-export const Maps: Record<string, mapDefinition> = {
+export const Maps: Record<string, MapDefinition> = {
     main: {
         buildings: {
             warehouse: 4,
@@ -120,6 +120,11 @@ export const Maps: Record<string, mapDefinition> = {
             }
         }
     },
+    houseExterior: {
+        genCallback: (map: Map) => {
+            map.genObstacle("house_exterior", v(512, 512), 0, 1, 0);
+        }
+    },
     // Arena map to test guns with really bad custom generation code lol
     arena: {
         genCallback: (map: Map) => {
@@ -179,7 +184,7 @@ export const Maps: Record<string, mapDefinition> = {
             genLoots(vAdd(center, v(70, -70)), -8, 8);
 
             // Generate random obstacles around the center
-            const randomObstacles: mapDefinition["obstacles"] = {
+            const randomObstacles: MapDefinition["obstacles"] = {
                 oak_tree: 50,
                 rock: 50,
                 bush: 20,

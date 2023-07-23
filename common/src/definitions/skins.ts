@@ -145,5 +145,12 @@ export const Skins: SkinDefinition[] = [
         name: "no kil pls",
         itemType: ItemType.Skin,
         notInLoadout: true
+    },
+    {
+        idString: "debug",
+        name: "Debug",
+        itemType: ItemType.Skin,
+        roleRequired: "dev",
+        notInLoadout: true
     }
 ];

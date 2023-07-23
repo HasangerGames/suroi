@@ -72,7 +72,7 @@ export class Obstacle extends GameObject {
 
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
 
-        this.body = bodyFromHitbox(game.world, this.hitbox, this.scale, definition.noCollisions, this);
+        this.body = bodyFromHitbox(game.world, this.hitbox, this.scale, definition.noCollisions, this, this.game);
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];

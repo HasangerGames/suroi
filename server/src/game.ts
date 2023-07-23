@@ -287,6 +287,19 @@ export class Game {
                     }
                 }
                 if (player.action) speed *= player.action.speedMultiplier;
+                /*if (this.emotes.size > 0) {
+                    player.fast = !player.fast;
+                    if (player.fast) {
+                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
+                        player.fullDirtyObjects.add(player);
+                        this.fullDirtyObjects.add(player);
+                    } else {
+                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
+                        player.fullDirtyObjects.add(player);
+                        this.fullDirtyObjects.add(player);
+                    }
+                }
+                if (player.fast) speed *= 30;*/
                 speed *= player.activeItemDefinition.speedMultiplier;
 
                 player.setVelocity(movement.x * speed, movement.y * speed);

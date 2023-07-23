@@ -371,7 +371,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                new RectangleHitbox(v(12, -23), v(14, 1.2))
+                new RectangleHitbox(v(-48.33, 33.2), v(48.33, 35.1)),
+                new RectangleHitbox(v(46.33, 32.1), v(48.33, -35.1))
             ]),
             rotationMode: "limited"
         },
@@ -387,6 +388,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
             rotationMode: "limited"
+        },
+        {
+            idString: "debug_marker",
+            name: "Debug Marker",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 1.0
+            },
+            hitbox: new CircleHitbox(0),
+            rotationMode: "limited",
+            depth: 10
         }
     ]
 );

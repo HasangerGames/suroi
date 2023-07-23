@@ -1,19 +1,14 @@
-import {
-    type Body,
-    Box,
-    Circle,
-    Vec2,
-    type World
-} from "planck";
+import { type Body, Box, Circle, Vec2, type World } from "planck";
 
-import { type Obstacle } from "../objects/obstacle";
+import { Obstacle } from "../objects/obstacle";
 
-import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type Vector } from "../../../common/src/utils/vector";
-import { type WeightedItem, LootTiers } from "../data/lootTables";
+import { LootTiers, type WeightedItem } from "../data/lootTables";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../common/src/constants";
 import { weightedRandom } from "../../../common/src/utils/random";
+import { type Game } from "../game";
 
 export function v2v(v: Vector): Vec2 {
     return Vec2(v.x, v.y);
@@ -23,13 +18,13 @@ export function bodyFromHitbox(world: World,
     hitbox: Hitbox,
     scale = 1,
     noCollisions = false,
-    obstacle: Obstacle
+    obstacle: Obstacle,
+    game: Game
 ): Body | undefined {
     const body = world.createBody({
         type: "static",
         fixedRotation: true
     });
-
     const createFixture = (hitbox: Hitbox): void => {
         if (hitbox instanceof CircleHitbox) {
             body.createFixture({
@@ -44,10 +39,31 @@ export function bodyFromHitbox(world: World,
             if (width === 0 || height === 0) return undefined;
 
             body.createFixture({
-                shape: Box(width, height),
+                shape: Box(width, height, Vec2(hitbox.min.x + width, hitbox.min.y + height)),
                 userData: obstacle,
                 isSensor: noCollisions
             });
+            game.staticObjects.add(new Obstacle(
+                game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.min.x, hitbox.min.y),
+                0,
+                1
+            ));
+            game.staticObjects.add(new Obstacle(
+                game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.max.x, hitbox.max.y),
+                0,
+                1
+            ));
+            game.staticObjects.add(new Obstacle(
+                game,
+                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
+                Vec2(hitbox.min.x + width, hitbox.min.y + height),
+                0,
+                1
+            ));
         }
     };
 
@@ -66,23 +82,8 @@ export function bodyFromHitbox(world: World,
         body.setPosition(Vec2(hitbox.min.x + width, hitbox.min.y + height));
         createFixture(hitbox);
     } else if (hitbox instanceof ComplexHitbox) {
-        for (const hitBox of hitbox.hitBoxes) {
-            if (hitBox instanceof CircleHitbox) {
-                body.setPosition(Vec2(hitBox.position));
-                createFixture(hitBox);
-            } else if (hitBox instanceof RectangleHitbox) {
-                const width = hitBox.width / 2;
-                const height = hitBox.height / 2;
-
-                if (width === 0 || height === 0) return undefined;
-
-                // obstacle.collision.halfWidth = width;
-                // obstacle.collision.halfHeight = height;
-
-                body.setPosition(Vec2(hitBox.min.x + width, hitBox.min.y + height));
-                createFixture(hitBox);
-            }
-        }
+        body.setPosition(v2v(hitbox.position));
+        for (const hitBox of hitbox.hitBoxes) createFixture(hitBox);
     }
     return body;
 }
