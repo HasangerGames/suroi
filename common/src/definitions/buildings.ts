@@ -35,7 +35,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "House",
         spawnHitbox: new RectangleHitbox(v(-55, -50), v(55, 50)),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-49, -35), v(15, 22)),
+            new RectangleHitbox(v(-48, -35), v(12, 20)),
             new RectangleHitbox(v(15, -37), v(48, 6)),
             new RectangleHitbox(v(-43, -15), v(-19, 32))
         ]),
@@ -100,7 +100,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "couch",
-                position: v(-13.5, 26),
+                position: v(-13.5, 26)
             },
             {
                 id: "drawer_large",
@@ -166,8 +166,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Dining Room Window
             {
                 id: "window",
-                position: v(-47.5, 8.5),
-            },
+                position: v(-47.5, 8.5)
+            }
         ]
     },
     {

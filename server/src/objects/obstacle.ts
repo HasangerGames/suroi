@@ -120,6 +120,10 @@ export class Obstacle extends GameObject {
             createFixture(this.hitbox);
         }
 
+        if (this.hitbox instanceof CircleHitbox) {
+            this.body.setPosition(Vec2(this.position));
+        }
+
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];
             const count = random(lootTable.min, lootTable.max);
