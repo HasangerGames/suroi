@@ -447,10 +447,11 @@ export class Player extends GameObject {
         this.game.partialDirtyObjects.add(this);
 
         if (this.health <= 0) {
-            this.die(source, weaponUsed);
             if (canTrackStats) {
                 weaponUsed.stats.kills++;
             }
+
+            this.die(source, weaponUsed);
         }
     }
 

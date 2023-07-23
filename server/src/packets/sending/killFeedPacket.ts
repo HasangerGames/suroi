@@ -41,9 +41,11 @@ export class KillFeedPacket extends SendingPacket {
                 stream.writeBoolean(weaponWasUsed);
                 if (weaponWasUsed) {
                     const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
+                    const shouldTrackStats = canTrackStats && weaponUsed.definition.killstreak === true;
+
                     stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
-                    stream.writeBoolean(canTrackStats && weaponUsed.definition.killstreak === true);
-                    if (canTrackStats) {
+                    stream.writeBoolean(shouldTrackStats);
+                    if (shouldTrackStats) {
                         stream.writeUint8(weaponUsed.stats.kills);
                     }
                 }
