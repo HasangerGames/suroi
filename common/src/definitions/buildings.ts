@@ -98,7 +98,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "house",
         name: "House",
-        spawnHitbox: new RectangleHitbox(v(-20, -20), v(20, 20)),
+        spawnHitbox: new RectangleHitbox(v(-55, -50), v(55, 50)),
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-49, -35), v(15, 22)),
             new RectangleHitbox(v(15, -37), v(48, 6)),
