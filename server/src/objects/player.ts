@@ -222,7 +222,7 @@ export class Player extends GameObject {
         this.nameColor = userData.nameColor;
 
         this.loadout = {
-            skin: ObjectType.fromString(ObjectCategory.Loot, "desert_camo"),
+            skin: ObjectType.fromString(ObjectCategory.Loot, "forest_camo"),
             emotes: [
                 ObjectType.fromString(ObjectCategory.Emote, "happy_face"),
                 ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"),

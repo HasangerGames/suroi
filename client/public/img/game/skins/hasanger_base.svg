@@ -55,12 +55,13 @@
        x2="25.400002"
        y2="11.90625"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-1.5875009)" />
+       gradientTransform="translate(-13.493751,4.9317302)" />
   </defs>
   <circle
      style="fill:url(#linearGradient3566);fill-opacity:1;stroke-width:1.48828;stroke-linecap:round"
      id="circle1956"
-     cy="11.90625"
-     cx="11.90625"
-     r="11.90625" />
+     cy="16.83798"
+     cx="0"
+     r="11.90625"
+     transform="rotate(-45)" />
 </svg>

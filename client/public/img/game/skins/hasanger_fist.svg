@@ -44,7 +44,7 @@
        fy="21.431248"
        r="4.4979167"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(4.0955086,0,0,1,-87.608361,-25.929163)" />
+       gradientTransform="matrix(4.0955086,0,0,1,-96.604192,-25.929163)" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3564">
@@ -62,7 +62,7 @@
      style="fill:url(#radialGradient7366);fill-opacity:1;stroke:#540000;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path292"
      cy="-4.4979153"
-     cx="4.4979153"
-     transform="rotate(90)"
+     cx="-4.4979153"
+     transform="scale(-1)"
      r="3.96875" />
 </svg>

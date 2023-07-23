@@ -51,15 +51,14 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "artist"
     },
     {
-        idString: "desert_camo",
-        name: "Desert Camo",
+        idString: "forest_camo",
+        name: "Forest Camo",
         itemType: ItemType.Skin
     },
     {
-        idString: "forest_camo",
-        name: "Forest Camo",
-        itemType: ItemType.Skin,
-        notInLoadout: true
+        idString: "desert_camo",
+        name: "Desert Camo",
+        itemType: ItemType.Skin
     },
     {
         idString: "arctic_camo",
@@ -67,28 +66,28 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "red_hot",
-        name: "Red Hot",
+        idString: "tomato",
+        name: "Tomato",
         itemType: ItemType.Skin
     },
     {
-        idString: "neon_green",
-        name: "Neon Green",
+        idString: "greenhorn",
+        name: "Greenhorn",
         itemType: ItemType.Skin
     },
     {
-        idString: "deep_blue",
-        name: "Deep Blue",
+        idString: "blue_blood",
+        name: "Blue Blood",
         itemType: ItemType.Skin
     },
     {
-        idString: "pure_silver",
-        name: "Pure Silver",
+        idString: "silver_lining",
+        name: "Silver Lining",
         itemType: ItemType.Skin
     },
     {
-        idString: "pure_gold",
-        name: "Pure Gold",
+        idString: "pot_o_gold",
+        name: "Pot o' Gold",
         itemType: ItemType.Skin
     },
     {
@@ -97,18 +96,18 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "hyper_green",
-        name: "Hyper Green",
+        idString: "algae",
+        name: "Algae",
         itemType: ItemType.Skin
     },
     {
-        idString: "hyper_blue",
-        name: "Hyper Blue",
+        idString: "twilight_zone",
+        name: "Twilight Zone",
         itemType: ItemType.Skin
     },
     {
-        idString: "sunset",
-        name: "Sunset",
+        idString: "bubblegum",
+        name: "Bubblegum",
         itemType: ItemType.Skin
     },
     {

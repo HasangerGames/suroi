@@ -73,7 +73,7 @@ export const defaultConfig: Config = {
     configVersion: "13",
     playerName: "",
     loadout: {
-        skin: "desert_camo",
+        skin: "forest_camo",
         topEmote: "happy_face",
         rightEmote: "thumbs_up",
         bottomEmote: "suroi_logo",

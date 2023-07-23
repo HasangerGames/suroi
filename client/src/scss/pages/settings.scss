@@ -169,9 +169,14 @@
         }
     }
 
-    @media screen and (max-width: 650px) {
+    @media screen and (max-width: 654px) {
         #emotes-list {
             gap: 5px;
+
+            .emotes-list-item-container {
+                border-width: 3px;
+            }
+
             .emotes-list-item {
                 width: 42px;
                 height: 42px;
