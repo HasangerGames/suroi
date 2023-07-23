@@ -32,6 +32,7 @@ import { Vests } from "../../../../common/src/definitions/vests";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 
 const showMeleeDebugCircle = false;
 
@@ -59,7 +60,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly helmet: Phaser.GameObjects.Image
         readonly weapon: Phaser.GameObjects.Image
         readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
+        readonly emoteBackground: Phaser.GameObjects.Image
+        readonly emoteImage: Phaser.GameObjects.Image
     };
+
+    readonly emoteContainer: Phaser.GameObjects.Container;
+    _emoteTween?: Phaser.Tweens.Tween;
+    _emoteHideTimeoutID?: NodeJS.Timeout;
 
     leftFistAnim!: Phaser.Tweens.Tween;
     rightFistAnim!: Phaser.Tweens.Tween;
@@ -81,12 +88,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images = {
             vest: this.scene.add.image(0, 0, "main").setVisible(false),
-            body: this.scene.add.image(0, 0, "main", "player_base.svg"),
-            leftFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
-            rightFist: this.scene.add.image(0, 0, "main", "player_fist.svg"),
+            body: this.scene.add.image(0, 0, "main"),
+            leftFist: this.scene.add.image(0, 0, "main"),
+            rightFist: this.scene.add.image(0, 0, "main"),
             backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
             helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
             weapon: this.scene.add.image(0, 0, "main"),
+            emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
+            emoteImage: this.scene.add.image(0, 0, "main"),
             bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -108,6 +117,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.helmet,
             this.images.bloodEmitter
         ]).setDepth(3);
+        this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage])
+            .setDepth(10)
+            .setScale(0)
+            .setAlpha(0)
+            .setVisible(false);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -150,6 +164,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     minimap.playerIndicator.y
                 );
             }
+        }
+
+        if (!localStorageInstance.config.movementSmoothing) {
+            this.emoteContainer.setPosition(this.position.x * 20, (this.position.y * 20) - 175);
+        } else {
+            this.scene.tweens.add({
+                targets: this.emoteContainer,
+                x: this.position.x * 20,
+                y: (this.position.y * 20) - 175,
+                duration: 30
+            });
         }
 
         if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
@@ -265,7 +290,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
 
         this.oldItem = this.activeItem.idNumber;
-        this.activeItem = stream.readObjectType<ObjectCategory.Loot, LootDefinition>();
+        this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
+
+        const skinID = stream.readObjectTypeNoCategory(ObjectCategory.Loot).idString;
+        this.images.body.setTexture("main", `${skinID}_base.svg`);
+        this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
+        this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle((this.activeItem.definition as ItemDefinition).itemType === ItemType.Gun);
@@ -341,6 +371,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.sendToBack(this.images.weapon);
         }
         this.container.bringToTop(this.images.bloodEmitter);
+        gsap.to([this.images.emoteBackground, this.images.emoteImage], {
+            alpha: 1,
+            scale: 1,
+            duration: 500
+        });
     }
 
     updateEquipment(): void {
@@ -382,6 +417,30 @@ export class Player extends GameObject<ObjectCategory.Player> {
         container.css("visibility", level > 0 ? "visible" : "hidden");
     }
 
+    emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
+        this._emoteTween?.destroy();
+        clearTimeout(this._emoteHideTimeoutID);
+        this.scene.playSound("emote");
+        this.images.emoteImage.setTexture("main", `${type.idString}.svg`);
+        this.emoteContainer.setVisible(true).setScale(0).setAlpha(0);
+        this._emoteTween = this.scene.tweens.add({
+            targets: this.emoteContainer,
+            scale: 1,
+            alpha: 1,
+            ease: "Back.out",
+            duration: 250
+        });
+        this._emoteHideTimeoutID = setTimeout(() => {
+            this.scene.tweens.add({
+                targets: this.emoteContainer,
+                scale: 0,
+                alpha: 0,
+                duration: 200,
+                onComplete: () => this.emoteContainer.setVisible(false)
+            });
+        }, 4000);
+    }
+
     destroy(): void {
         super.destroy();
         this.images.body.destroy(true);
@@ -389,5 +448,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.rightFist.destroy(true);
         this.images.weapon.destroy(true);
         this.images.bloodEmitter.destroy(true);
+        this.emoteContainer.destroy(true);
+        this.images.emoteBackground.destroy(true);
+        this.images.emoteImage.destroy(true);
     }
 }

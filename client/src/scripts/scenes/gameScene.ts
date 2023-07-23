@@ -63,7 +63,7 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(healingItem.idString, `healing/${healingItem.idString}`);
         }
 
-        const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing"];
+        const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing", "emote"];
         for (const sound of soundsToLoad) {
             this.loadSound(sound, sound);
         }
@@ -99,7 +99,7 @@ export class GameScene extends Phaser.Scene {
 
     private loadSound(name: string, path: string): void {
         try {
-            this.load.audio(name, require(`../../assets/audio/sfx/${path}.mp3`));
+            this.load.audio(name, `/audio/sfx/${path}.mp3`);
             this.soundsToLoad.add(name);
         } catch (e) {
             console.warn(`Failed to load sound: ${name}`);

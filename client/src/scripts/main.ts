@@ -31,11 +31,14 @@ $(() => {
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
+                const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
                 let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
-                if (devPass) address += `&devPassword=${devPass}`;
+                if (devPass) address += `&password=${devPass}`;
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing";
                 core.game?.connect(address);
@@ -64,9 +67,15 @@ $(() => {
         localStorageInstance.update({ lobbyClearing: lobbyClearing !== null });
     }
 
-    const devPassword = params.get("devPassword");
+    const devPassword = params.get("password");
     if (devPassword) {
         localStorageInstance.update({ devPassword });
+        location.search = "";
+    }
+
+    const role = params.get("role");
+    if (role) {
+        localStorageInstance.update({ role });
         location.search = "";
     }
 

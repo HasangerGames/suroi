@@ -4,7 +4,8 @@ export enum ObjectCategory {
     Explosion,
     DeathMarker,
     Loot,
-    Building
+    Building,
+    Emote
 }
 
 export enum PacketType {
@@ -52,7 +53,11 @@ export enum InputActions {
     SwapGunSlots,
     Interact,
     Reload,
-    Cancel
+    Cancel,
+    TopEmoteSlot,
+    RightEmoteSlot,
+    BottomEmoteSlot,
+    LeftEmoteSlot
 }
 
 export enum PlayerActions {
@@ -93,5 +98,6 @@ export const LootRadius = {
     3: 2.5, // Healing
     4: 3, // Armor
     5: 3, // Backpack
-    6: 3 // Scope
+    6: 3, // Scope
+    7: 3 // Skin
 };

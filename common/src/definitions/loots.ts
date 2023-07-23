@@ -6,9 +6,10 @@ import { type AmmoDefinition, Ammos } from "./ammos";
 import { type ArmorDefinition, Armors } from "./armors";
 import { type ScopeDefinition, Scopes } from "./scopes";
 import { type BackpackDefinition, Backpacks } from "./backpacks";
+import { type SkinDefinition, Skins } from "./skins";
 
-export type LootDefinition = GunDefinition | AmmoDefinition | MeleeDefinition | HealingItemDefinition | ArmorDefinition | BackpackDefinition | ScopeDefinition;
+export type LootDefinition = GunDefinition | AmmoDefinition | MeleeDefinition | HealingItemDefinition | ArmorDefinition | BackpackDefinition | ScopeDefinition | SkinDefinition;
 
 export const Loots = new ObjectDefinitions<LootDefinition>(
-    Array.prototype.concat(Guns, Ammos, Melees, HealingItems, Armors, Backpacks, Scopes)
+    Array.prototype.concat(Guns, Ammos, Melees, HealingItems, Armors, Backpacks, Scopes, Skins)
 );

@@ -319,8 +319,11 @@ export class SuroiBitStream extends BitStream {
      */
     writePlayerNameWithColor(player: { name: string, isDev: boolean, nameColor: string }): void {
         this.writePlayerName(player.name);
-        this.writeBoolean(player.isDev);
-        if (player.isDev) {
+
+        const hasColor = player.isDev && player.nameColor.length > 0;
+
+        this.writeBoolean(hasColor);
+        if (hasColor) {
             this.writeUTF8String(player.nameColor, 10);
         }
     }
@@ -331,8 +334,8 @@ export class SuroiBitStream extends BitStream {
      */
     readPlayerNameWithColor(): string {
         const playerName = this.readPlayerName();
-        const isDev = this.readBoolean();
-        const style = isDev ? `style="color: ${this.readUTF8String(10)}"` : "";
+        const hasColor = this.readBoolean();
+        const style = hasColor ? `style="color: ${this.readUTF8String(10)}"` : "";
 
         return `<span ${style}>${playerName}</span>`;
     }

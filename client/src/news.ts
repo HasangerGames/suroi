@@ -1,7 +1,7 @@
 import $ from "jquery";
 
-import "./assets/scss/pages/client.scss";
-import "./assets/scss/pages/news.scss";
+import "./scss/pages/client.scss";
+import "./scss/pages/news.scss";
 
 import "./scripts/news/newsGenerator";
 

@@ -13,3 +13,16 @@ export const GAS_ALPHA = 0.55;
 export const MINIMAP_SCALE = 2;
 export const MINIMAP_GRID_WIDTH = MAP_WIDTH * MINIMAP_SCALE;
 export const MINIMAP_GRID_HEIGHT = MAP_HEIGHT * MINIMAP_SCALE;
+
+export enum EmoteSlot {
+    Top,
+    Right,
+    Bottom,
+    Left,
+    None
+}
+
+export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
+export const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
+export const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);
+export const FOURTH_EMOTE_ANGLE = Math.atan2(1, -1);
