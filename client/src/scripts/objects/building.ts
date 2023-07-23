@@ -5,7 +5,7 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type Hitbox } from "../../../../common/src/utils/hitbox";
+import { ComplexHitbox, type RectangleHitbox, type Hitbox, type CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { normalizeAngle } from "../../../../common/src/utils/math";
@@ -69,7 +69,21 @@ export class Building extends GameObject {
 
         this.container.setRotation(this.rotation);
         this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
-        this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
+
+        if (!(this.ceilingHitbox instanceof ComplexHitbox)) {
+            this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
+        } else {
+            const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
+            for (const hitbox of this.ceilingHitbox.hitBoxes) {
+                // i have no idea why but that makes it work correctly
+                let newOrientation = this.orientation;
+                if (this.orientation === 1) newOrientation = 3;
+                else if (this.orientation === 3) newOrientation = 1;
+
+                hitBoxes.push(hitbox.transform(this.position, 1, newOrientation));
+            }
+            this.ceilingHitbox = new ComplexHitbox(hitBoxes);
+        }
     }
 
     destroy(): void {
