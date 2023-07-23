@@ -113,7 +113,7 @@ export const Config = {
 
     playerLimit: 80,
 
-    mapName: "houseExterior",
+    mapName: "debug",
 
     disableLobbyClearing: false,
 

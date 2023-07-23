@@ -403,6 +403,45 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(0),
             rotationMode: "limited",
             depth: 10
+        },
+        {
+            idString: "drawer",
+            name: "Drawer",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "couch",
+            name: "Couch",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "tv",
+            name: "TV",
+            material: "metal",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-0.5, -4), v(0.5, 4)),
+            rotationMode: "limited"
         }
     ]
 );
