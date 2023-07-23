@@ -1,4 +1,3 @@
-
 import $ from "jquery";
 
 import core from "./core";
@@ -9,9 +8,9 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
-import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
+import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -154,13 +153,12 @@ $((): void => {
         customizeMenu.fadeOut(250);
     });
 
-    // Load skins & emotes
+    // Load skins
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css("background-image", `url("/img/game/skins/${skinID}_base.svg")`);
         $("#skin-left-fist, #skin-right-fist").css("background-image", `url("/img/game/skins/${skinID}_fist.svg")`);
     };
     updateSplashCustomize(localStorageInstance.config.loadout.skin);
-
     for (const skin of Skins) {
         if (skin.notInLoadout ?? (skin.roleRequired !== undefined && skin.roleRequired !== localStorageInstance.config.role)) continue;
 
@@ -186,12 +184,10 @@ $((): void => {
         });
         $("#skins-list").append(skinItem);
     }
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     $(`#skin-${localStorageInstance.config.loadout.skin}`).addClass("selected");
 
+    // Load emotes
     let selectedEmoteSlot: string | undefined;
-    const getSelectedEmoteSlot = (): string | undefined => selectedEmoteSlot;
-
     for (const emote of Emotes.definitions) {
         // noinspection CssUnknownTarget
         const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
@@ -203,16 +199,15 @@ $((): void => {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
-                    [`${getSelectedEmoteSlot()}Emote`]: emote.idString
+                    [`${selectedEmoteSlot}Emote`]: emote.idString
                 }
             });
             $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-customize-wheel > .emote-${getSelectedEmoteSlot()}`)
+            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`)
                 .css("background-image", `url("/img/game/emotes/${emote.idString}.svg")`);
         });
         $("#emotes-list").append(emoteItem);
     }
-
     for (const slot of ["top", "right", "bottom", "left"] as Array<"top" | "right" | "bottom" | "left">) {
         $(`#emote-customize-wheel > .emote-${slot}`)
             .css("background-image", `url("/img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
@@ -393,18 +388,45 @@ $((): void => {
     // Hide mobile settings on desktop
     $("#tab-mobile").toggle(core.game?.playerManager.isActuallyMobile);
 
-    // Event listener for Interact button
+    // Mobile event listeners
     if (core.game?.playerManager.isMobile) {
+        // Interact message
         $("#interact-message").on("click", () => {
             if (core.game !== undefined) {
                 core.game.playerManager.interact();
             }
         });
+
+        // Reload button
         $("#btn-reload").show().on("click", () => {
             if (core.game !== undefined) {
                 core.game.playerManager.reload();
             }
         });
+
+        // Emote button & wheel
+        $("#emote-wheel")
+            .css("top", "50%")
+            .css("left", "50%")
+            .css("transform", "translate(-50%, -50%)");
+        $("#btn-emotes").show().on("click", () => {
+            $("#emote-wheel").show();
+        });
+        const createEmoteWheelListener = (slot: string, action: InputActions): void => {
+            $(`#emote-wheel .emote-${slot}`).on("click", () => {
+                if (core.game !== undefined) {
+                    $("#emote-wheel").hide();
+                    core.game.playerManager.action = action;
+                    core.game.playerManager.dirty.inputs = true;
+                }
+            });
+        };
+        createEmoteWheelListener("top", InputActions.TopEmoteSlot);
+        createEmoteWheelListener("right", InputActions.RightEmoteSlot);
+        createEmoteWheelListener("bottom", InputActions.BottomEmoteSlot);
+        createEmoteWheelListener("left", InputActions.LeftEmoteSlot);
+
+        // Game menu
         $("#btn-game-menu").show().on("click", () => {
             $("#game-menu").toggle();
         });

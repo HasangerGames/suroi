@@ -147,7 +147,12 @@
       <div id="top-left-container">
         <div style="display: flex">
           <div id="minimap-border"></div>
-          <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px;" id="btn-game-menu"></button>
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
+            <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
+              <img src="/img/misc/emotes_icon.svg" style="margin-bottom: -3px">
+            </button>
+          </div>
         </div>
         <div id="gas-timer">
           <img id="gas-timer-image" src="/img/misc/gas-waiting-icon.svg">
