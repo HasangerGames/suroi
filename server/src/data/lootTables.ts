@@ -118,9 +118,18 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { tier: "cola", weight: 1 },
-          ]
+            { tier: "cola", weight: 1 }
+        ]
     },
+    box: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "equipment", weight: 1 },
+            { tier: "ammo", weight: 1 },
+            { tier: "guns", weight: 0.5 }
+        ]
+    }
 };
 
 export const LootTiers: Record<string, WeightedLoot[]> = {

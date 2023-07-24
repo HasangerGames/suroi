@@ -39,9 +39,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
-                new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-                new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-                new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
+            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
+            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -1.5),
@@ -55,7 +55,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Bathroom Top
             {
                 id: "house_wall_2",
-                position: v(-1.5, 2.4)
+                position: v(-1.5, 2.4),
+                rotation: 0
             },
             // Entrance Right
             {
@@ -66,12 +67,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Kitchen Top
             {
                 id: "house_wall_2",
-                position: v(-20.4, 2.4)
+                position: v(-20.4, 2.4),
+                rotation: 0
             },
             // Living Room Bottom Right
             {
                 id: "house_wall_2",
-                position: v(6.1, 14.6)
+                position: v(6.1, 14.6),
+                rotation: 0
             },
             // Living Room Left
             {
@@ -82,15 +85,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Living Room Bottom Left
             {
                 id: "house_wall_3",
-                position: v(-18, 14.4)
+                position: v(-18, 14.4),
+                rotation: 0
             },
             {
                 id: "house_wall_2",
-                position: v(-42, 14.4)
+                position: v(-42, 14.4),
+                rotation: 0
             },
             {
                 id: "toilet",
-                position: v(7, -14.4)
+                position: v(7, -14.4),
+                rotation: 0
             },
             {
                 id: "stove",
@@ -104,7 +110,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "couch",
-                position: v(-13.5, 26)
+                position: v(-13.5, 26),
+                rotation: 0
             },
             {
                 id: "drawer_large",
@@ -113,17 +120,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "tv",
-                position: v(11.5, 26)
+                position: v(11.5, 26),
+                rotation: 0
             },
             // House Exterior
             {
                 id: "house_exterior",
-                position: v(0, 2.6)
+                position: v(0, 2.6),
+                rotation: 0
             },
             // Chair Bottom
             {
                 id: "chair",
-                position: v(-40, -10)
+                position: v(-40, -10),
+                rotation: 0
             },
             // Chair Top
             {
@@ -133,21 +143,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "table",
-                position: v(-40, -5)
+                position: v(-40, -5),
+                rotation: 0
             },
             // Dining Room Drawer
             {
                 id: "drawer_small",
-                position: v(-43, 10)
+                position: v(-43, 10),
+                rotation: 0
             },
             {
                 id: "bed",
-                position: v(-40.5, 28.5)
+                position: v(-40.5, 28.5),
+                rotation: 0
             },
             // Bedroom Table
             {
                 id: "small_table",
-                position: v(-29, 34)
+                position: v(-29, 34),
+                rotation: 0
             },
             // Toilet Table
             {
@@ -170,7 +184,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Dining Room Window
             {
                 id: "window",
-                position: v(-47.5, 8.5)
+                position: v(-47.5, 8.5),
+                rotation: 0
             }
         ]
     },
@@ -197,19 +212,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "warehouse_wall_2",
-                position: v(14, -34.4)
+                position: v(14, -34.4),
+                rotation: 0
             },
             {
                 id: "warehouse_wall_2",
-                position: v(-14, -34.4)
+                position: v(-14, -34.4),
+                rotation: 0
             },
             {
                 id: "warehouse_wall_2",
-                position: v(14, 34.4)
+                position: v(14, 34.4),
+                rotation: 0
             },
             {
                 id: "warehouse_wall_2",
-                position: v(-14, 34.4)
+                position: v(-14, 34.4),
+                rotation: 0
             },
             {
                 id: "regular_crate",
@@ -229,6 +248,40 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "barrel",
                 position: v(14.6, -29.2)
+            },
+            {
+                id: "metal_shelf",
+                position: v(-16, 0),
+                rotation: 1
+            },
+            {
+                id: "box",
+                position: v(-15.7, 0)
+            },
+            {
+                id: "box",
+                position: v(-15.8, 6.4)
+            },
+            {
+                id: "box",
+                position: v(-15.7, -8)
+            },
+            {
+                id: "metal_shelf",
+                position: v(16, 0),
+                rotation: 1
+            },
+            {
+                id: "box",
+                position: v(15.8, 0)
+            },
+            {
+                id: "box",
+                position: v(15.7, 6)
+            },
+            {
+                id: "box",
+                position: v(15.6, -7)
             }
         ],
 
