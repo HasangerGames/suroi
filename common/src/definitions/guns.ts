@@ -537,6 +537,7 @@ export const Guns: GunDefinition[] = [
         shotSpread: 0.15,
         moveSpread: 0.1,
         canQuickswitch: true,
+        killstreak: true,
         bulletCount: 1,
         length: 11,
         fists: {
@@ -578,6 +579,7 @@ export const Guns: GunDefinition[] = [
         shotSpread: 11,
         moveSpread: 3,
         canQuickswitch: true,
+        killstreak: true,
         bulletCount: 10,
         length: 8,
         fists: {
