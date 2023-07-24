@@ -562,8 +562,8 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "snowball_shotty",
-        name: "Snowball Shotty",
+        idString: "revitalizer",
+        name: "Revitalizer",
         itemType: ItemType.Gun,
         ammoType: "12g",
         ammoSpawnAmount: 15,
@@ -578,9 +578,8 @@ export const Guns: GunDefinition[] = [
         shotSpread: 11,
         moveSpread: 3,
         canQuickswitch: true,
-        killstreak: true,
         bulletCount: 10,
-        length: 6.5,
+        length: 8,
         fists: {
             left: v(70, 0),
             right: v(130, -6),
@@ -604,7 +603,7 @@ export const Guns: GunDefinition[] = [
                     limit: 5,
                     maxHealth: 1.488,
                     maxAdrenaline: 1.201,
-                    minAdrenaline: 6,
+                    minAdrenaline: 8,
                     healthRestored: 230,
                     adrenalineRestored: 30,
                     speedBoost: 1.02

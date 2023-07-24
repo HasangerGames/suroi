@@ -30,6 +30,7 @@ export class PlayerManager {
     health = this.maxHealth;
 
     maxAdrenaline = 100;
+    minAdrenaline = 0;
     adrenaline = 0;
 
     get isMobile(): boolean {

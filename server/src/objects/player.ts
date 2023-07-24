@@ -314,18 +314,14 @@ export class Player extends GameObject {
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
-            this.inventory.addOrReplaceWeapon(1, "deathray");
-            (this.inventory.getWeapon(1) as GunItem).ammo = 1;
+
+            this.inventory.addOrReplaceWeapon(1, "revitalizer");
+            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
+            this.inventory.items["12gauge"] = 15;
+
             this.inventory.addOrReplaceWeapon(2, "kbar");
 
-            this.inventory.vest = ObjectType.fromString(ObjectCategory.Loot, "tactical_vest");
-            this.inventory.helmet = ObjectType.fromString(ObjectCategory.Loot, "tactical_helmet");
-            this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "tactical_backpack");
-
-            for (const item of Object.keys(this.inventory.items)) {
-                this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item] ?? 1;
-            }
-
+            this.inventory.items["2x_scope"] = 1;
             this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
         }
 

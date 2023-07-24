@@ -34,7 +34,7 @@ export class UpdatePacket extends SendingPacket {
         // Health
         stream.writeBoolean(player.dirty.health);
         if (player.dirty.health) {
-            stream.writeFloat(player.health, 0, player.maxHealth, 10);
+            stream.writeFloat(player.health, 0, player.maxHealth, 12);
             player.dirty.health = false;
         }
 
@@ -45,10 +45,17 @@ export class UpdatePacket extends SendingPacket {
             player.dirty.maxAdrenaline = false;
         }
 
+        // Min adrenaline
+        stream.writeBoolean(player.dirty.minAdrenaline);
+        if (player.dirty.minAdrenaline) {
+            stream.writeFloat32(player.minAdrenaline);
+            player.dirty.minAdrenaline = false;
+        }
+
         // Adrenaline
         stream.writeBoolean(player.dirty.adrenaline);
         if (player.dirty.adrenaline) {
-            stream.writeFloat(player.adrenaline, 0, player.maxAdrenaline, 8);
+            stream.writeFloat(player.adrenaline, player.minAdrenaline, player.maxAdrenaline, 10);
             player.dirty.adrenaline = false;
         }
 

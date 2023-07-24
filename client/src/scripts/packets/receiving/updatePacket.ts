@@ -50,7 +50,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Health
         if (stream.readBoolean()) {
-            playerManager.health = stream.readFloat(0, playerManager.maxHealth, 10);
+            playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
             const absolute = playerManager.health;
             const realPercentage = 100 * absolute / playerManager.maxHealth;
             const percentage = adjustForLowValues(Math.round(realPercentage));
@@ -81,9 +81,14 @@ export class UpdatePacket extends ReceivingPacket {
             playerManager.maxAdrenaline = stream.readFloat32();
         }
 
+        // Min adrenaline
+        if (stream.readBoolean()) {
+            playerManager.minAdrenaline = stream.readFloat32();
+        }
+
         // Adrenaline
         if (stream.readBoolean()) {
-            playerManager.adrenaline = stream.readFloat(0, playerManager.maxAdrenaline, 8);
+            playerManager.adrenaline = stream.readFloat(playerManager.minAdrenaline, playerManager.maxAdrenaline, 10);
 
             const absolute = playerManager.adrenaline;
             const percentage = 100 * absolute / playerManager.maxAdrenaline;
