@@ -44,6 +44,8 @@ export class CircleHitbox extends Hitbox {
             return circleCollision(that.position, that.radius, this.position, this.radius);
         } else if (that instanceof RectangleHitbox) {
             return rectangleCollision(that.min, that.max, this.position, this.radius);
+        } else if (that instanceof ComplexHitbox) {
+            return that.collidesWith(this);
         }
 
         throw new Error("Invalid hitbox object");
@@ -94,6 +96,8 @@ export class RectangleHitbox extends Hitbox {
             return rectangleCollision(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
             return rectRectCollision(that.min, that.max, this.min, this.max);
+        } else if (that instanceof ComplexHitbox) {
+            return that.collidesWith(this);
         }
 
         return false;
