@@ -84,8 +84,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 4,
         length: 10,
         fists: {
-            left: v(65, 0),
-            right: v(140, -5),
+            left: v(140, -5),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(120, 2) },
@@ -116,11 +116,11 @@ export const Guns: GunDefinition[] = [
         bulletCount: 9,
         length: 10,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(130, -6),
+            right: v(65, 0),
             animationDuration: 100
         },
-        image: { position: v(100, 3) },
+        image: { position: v(110, 1) },
         singleReload: true,
         ballistics: {
             damage: 9,
@@ -149,11 +149,11 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         length: 10,
         fists: {
-            left: v(70, 0),
-            right: v(130, -6),
+            left: v(145, -6),
+            right: v(60, 0),
             animationDuration: 100
         },
-        image: { position: v(90, 0) },
+        image: { position: v(105, 0) },
         singleReload: true,
         ballistics: {
             damage: 10,
@@ -183,11 +183,11 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         length: 11,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(150, -3),
+            right: v(75, 0),
             animationDuration: 100
         },
-        image: { position: v(115, 3) },
+        image: { position: v(100, 0) },
         ballistics: {
             damage: 5,
             obstacleMultiplier: 0.5,
@@ -216,8 +216,8 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         length: 11,
         fists: {
-            left: v(75, 0),
-            right: v(145, -1),
+            left: v(145, -1),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(105, 4) },
@@ -249,8 +249,8 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         length: 13,
         fists: {
-            left: v(75, 0),
-            right: v(145, -1),
+            left: v(145, -1),
+            right: v(75, 0),
             animationDuration: 100
         },
         image: { position: v(125, 4) },
@@ -279,8 +279,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 7,
         length: 6,
         fists: {
-            left: v(65, 0),
-            right: v(70, 4),
+            left: v(70, 4),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(78, 0) },
@@ -311,8 +311,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 1,
         length: 9,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(130, -6),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(80, 0) },
@@ -345,8 +345,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 1.5,
         length: 9.5,
         fists: {
-            left: v(65, 0),
-            right: v(120, -7),
+            left: v(120, -7),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(100, 0) },
@@ -379,8 +379,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 10,
         length: 6,
         fists: {
-            left: v(65, 0),
-            right: v(70, 4),
+            left: v(70, 4),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(88, 0) },
@@ -409,8 +409,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 2,
         length: 8,
         fists: {
-            left: v(65, 0),
-            right: v(140, -5),
+            left: v(140, -5),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(100, 0) },
@@ -439,8 +439,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 2.5,
         length: 9,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(130, -6),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(110, 0) },
@@ -470,8 +470,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 4,
         length: 14,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(130, -6),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(128, 0) },
@@ -502,8 +502,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 1.5,
         length: 10,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(130, -6),
+            right: v(65, 0),
             animationDuration: 100
         },
         image: { position: v(100, 0) },
@@ -541,11 +541,11 @@ export const Guns: GunDefinition[] = [
         bulletCount: 1,
         length: 11,
         fists: {
-            left: v(65, 0),
-            right: v(130, -6),
+            left: v(135, -6),
+            right: v(75, 0),
             animationDuration: 100
         },
-        image: { position: v(100, 0) },
+        image: { position: v(90, 0) },
         ballistics: {
             damage: 300,
             obstacleMultiplier: 2,
@@ -583,8 +583,8 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         length: 8,
         fists: {
-            left: v(70, 0),
-            right: v(130, -6),
+            left: v(155, -6),
+            right: v(75, 0),
             animationDuration: 100
         },
         image: { position: v(90, 0) },
