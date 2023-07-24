@@ -423,7 +423,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-6.3, -2.5), v(6.3, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true
         },
         {
             idString: "couch",
@@ -475,7 +476,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true
         },
         {
             idString: "chair",
