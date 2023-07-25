@@ -3,9 +3,7 @@ import { type CollisionFilter, type GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 import { type Game } from "../game";
 import { distanceSquared } from "../../../common/src/utils/math";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-
+import { type GunItem } from "../inventory/gunItem";
 export class Bullet {
     readonly is: CollisionFilter = {
         player: false,
@@ -36,23 +34,21 @@ export class Bullet {
 
     readonly body: Body;
 
-    readonly source: GunDefinition;
-    readonly sourceType: ObjectType;
+    readonly source: GunItem;
     readonly shooter: Player;
 
     get distanceSquared(): number {
         return distanceSquared(this.initialPosition, this.body.getPosition());
     }
 
-    constructor(game: Game, position: Vec2, rotation: number, source: GunDefinition, sourceType: ObjectType, shooter: Player) {
+    constructor(game: Game, position: Vec2, rotation: number, source: GunItem, shooter: Player) {
         this.id = game.nextBulletID;
         this._initialPosition = position;
         this.rotation = rotation;
         this.source = source;
-        this.sourceType = sourceType;
         this.shooter = shooter;
 
-        const definition = this.source.ballistics;
+        const definition = this.source.type.definition.ballistics;
 
         this.maxDistance = definition.maxDistance;
 

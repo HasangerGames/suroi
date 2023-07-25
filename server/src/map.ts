@@ -121,9 +121,10 @@ export class Map {
         const type = ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, idString);
 
         for (let i = 0; i < count; i++) {
-            const position = this.getRandomPositionFor(type);
+            const orientation = this.getRandomRotation("limited") as Orientation;
+            const position = this.getRandomPositionFor(type, 1, orientation);
 
-            this.generateBuilding(type, position);
+            this.generateBuilding(type, position, orientation);
         }
     }
 

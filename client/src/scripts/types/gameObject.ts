@@ -23,7 +23,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     readonly scene: GameScene;
 
     _position!: Vector;
-
+    get position(): Vector { return this._position; }
     set position(pos: Vector) {
         // Animate the position
         if (this.position === undefined || !localStorageInstance.config.movementSmoothing) {
@@ -37,10 +37,6 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
             });
         }
         this._position = pos;
-    }
-
-    get position(): Vector {
-        return this._position;
     }
 
     rotation!: number;

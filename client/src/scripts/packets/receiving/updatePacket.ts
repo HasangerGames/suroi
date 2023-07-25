@@ -25,6 +25,13 @@ import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 
+function adjustForLowValues(value: number): number {
+    // this looks more math-y and easier to read, so eslint can shove it
+    // eslint-disable-next-line yoda
+    if (0 < value && value <= 1) return 1;
+    return value;
+}
+
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.playerManager.game.activePlayer;
@@ -38,45 +45,56 @@ export class UpdatePacket extends ReceivingPacket {
         // Active player data
         //
 
+        // Max / min adrenaline and health
+        if (stream.readBoolean()) {
+            playerManager.maxHealth = stream.readFloat32();
+            playerManager.minAdrenaline = stream.readFloat32();
+            playerManager.maxAdrenaline = stream.readFloat32();
+        }
+
         // Health
         if (stream.readBoolean()) {
-            playerManager.health = stream.readFloat(0, 100, 8);
-            let roundedHealth = Math.round(playerManager.health);
+            playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
+            const absolute = playerManager.health;
+            const realPercentage = 100 * absolute / playerManager.maxHealth;
+            const percentage = adjustForLowValues(Math.round(realPercentage));
 
-            // This doesn't get set to the exact number because the stream has trouble reading it correctly.
-            if (playerManager.health < 1 && playerManager.health > 0) roundedHealth = 1;
-
-            const healthPercentage = `${roundedHealth}%`;
             const healthBar = $<HTMLDivElement>("#health-bar");
             const healthBarAmount = $<HTMLSpanElement>("#health-bar-percentage");
 
-            healthBar.width(healthPercentage);
-            $("#health-bar-animation").width(healthPercentage);
+            healthBar.width(`${realPercentage}%`);
+            $("#health-bar-animation").width(`${realPercentage}%`);
 
-            healthBarAmount.text(playerManager.health < 1 && playerManager.health > 0 ? "1" : roundedHealth);
+            healthBarAmount.text(adjustForLowValues(Math.round(absolute)));
 
-            if (playerManager.health < 60 && playerManager.health > 10) {
-                healthBar.css("background-color", `rgb(255, ${(playerManager.health - 10) * 4}, ${(playerManager.health - 10) * 4})`);
-            } else if (playerManager.health <= 10) {
-                healthBar.css("background-color", `rgb(${playerManager.health * 15 + 105}, 0, 0)`);
+            if (percentage === 100) {
+                healthBar.css("background-color", "#bdc7d0");
+            } else if (percentage < 60 && percentage > 10) {
+                healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
+            } else if (percentage <= 10) {
+                healthBar.css("background-color", `rgb(${percentage * 15 + 105}, 0, 0)`);
             } else {
                 healthBar.css("background-color", "#f8f9fa");
             }
 
-            healthBarAmount.css("color", playerManager.health <= 40 ? "#ffffff" : "#000000");
+            healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
         // Adrenaline
         if (stream.readBoolean()) {
-            playerManager.adrenaline = stream.readFloat(0, 100, 8);
-            $("#adrenaline-bar").width(`${playerManager.adrenaline}%`);
-            const adrenalineBarPercentage: JQuery<HTMLSpanElement> = $("#adrenaline-bar-percentage");
-            adrenalineBarPercentage.text(playerManager.adrenaline < 1 && playerManager.adrenaline > 0 ? "1" : Math.round(playerManager.adrenaline));
-            adrenalineBarPercentage.css("color", playerManager.adrenaline < 7 ? "#ffffff" : "#000000");
+            playerManager.adrenaline = stream.readFloat(playerManager.minAdrenaline, playerManager.maxAdrenaline, 10);
+
+            const absolute = playerManager.adrenaline;
+            const percentage = 100 * absolute / playerManager.maxAdrenaline;
+
+            $("#adrenaline-bar").width(`${percentage}%`);
+
+            const adrenalineBarPercentage = $<HTMLSpanElement>("#adrenaline-bar-percentage");
+            adrenalineBarPercentage.text(adjustForLowValues(Math.round(absolute)));
+            adrenalineBarPercentage.css("color", absolute < 7 ? "#ffffff" : "#000000");
         }
 
         // Zoom
-
         if (stream.readBoolean()) {
             playerManager.zoom = stream.readUint8();
             scene.resize(true);

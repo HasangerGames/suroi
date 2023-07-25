@@ -39,15 +39,13 @@ export class Building extends GameObject {
 
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
 
-        this.scopeHitbox = (this.type.definition as BuildingDefinition).scopeHitbox.transform(this.position, 1, orientation);
+        this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
     override damage(amount: number, source: GameObject): void {}
 
-    override serializePartial(stream: SuroiBitStream): void {
-
-    }
+    override serializePartial(stream: SuroiBitStream): void {}
 
     override serializeFull(stream: SuroiBitStream): void {
         stream.writePosition(this.position);

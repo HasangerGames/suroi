@@ -4,6 +4,8 @@ import { Player } from "../../objects/player";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
 import { type JoinKillFeedMessage, type KillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
+import { GunItem } from "../../inventory/gunItem";
+import { MeleeItem } from "../../inventory/meleeItem";
 
 export class KillFeedPacket extends SendingPacket {
     override readonly allocBytes = 1 << 6;
@@ -34,11 +36,21 @@ export class KillFeedPacket extends SendingPacket {
                     stream.writeObjectID(killedBy.id);
                 }
 
-                const usedWeapon = killMessage.weaponUsed !== undefined;
-                stream.writeBoolean(usedWeapon);
-                if (killMessage.weaponUsed !== undefined) stream.writeObjectType(killMessage.weaponUsed);
+                const weaponUsed = killMessage.weaponUsed;
+                const weaponWasUsed = weaponUsed !== undefined;
+                stream.writeBoolean(weaponWasUsed);
+                if (weaponWasUsed) {
+                    const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
+                    const shouldTrackStats = canTrackStats && weaponUsed.definition.killstreak === true;
 
-                stream.writeBoolean((killedBy === "gas"));
+                    stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
+                    stream.writeBoolean(shouldTrackStats);
+                    if (shouldTrackStats) {
+                        stream.writeUint8(weaponUsed.stats.kills);
+                    }
+                }
+
+                stream.writeBoolean(killedBy === "gas");
 
                 break;
             }

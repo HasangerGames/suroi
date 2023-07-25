@@ -1,5 +1,5 @@
 import { type Variation } from "../typings";
-import { type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
+import { type Hitbox, RectangleHitbox, ComplexHitbox, CircleHitbox } from "../utils/hitbox";
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
@@ -36,19 +36,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "house",
         name: "House",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(11, -11), v(52, 40)), // Garage
+            new RectangleHitbox(v(-50, -28), v(15, 40)), // Main House
+            new RectangleHitbox(v(-45, -40), v(-16, -23)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
             new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(-42, -37), v(-22, 34)), // Doorstep
+            new CircleHitbox(5, v(-1.5, -37)), // Living room window
+            new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
+            new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(10, -6), v(47, 36)), // Garage
+            new RectangleHitbox(v(-46, -19), v(12, 36)), // Main House
+            new RectangleHitbox(v(-40, -30), v(-22, -20)) // Doorstep
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -1.5),

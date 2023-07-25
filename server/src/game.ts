@@ -18,7 +18,6 @@ import { type GameObject } from "./types/gameObject";
 import { log } from "../../common/src/utils/misc";
 import { OBJECT_ID_BITS, ObjectCategory } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { type GunDefinition } from "../../common/src/definitions/guns";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
@@ -34,6 +33,7 @@ import { type ExplosionDefinition } from "../../common/src/definitions/explosion
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
 import { Building } from "./objects/building";
 
@@ -241,11 +241,11 @@ export class Game {
                 if (bullet.shooter.dead) continue;
 
                 // Do the damage
-                const definition = bullet.source.ballistics;
+                const definition = bullet.source.definition.ballistics;
                 if (damagedIsPlayer) {
-                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.sourceType);
+                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.source);
                 } else if (damagedIsObstacle) {
-                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.sourceType);
+                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.source.type);
                 }
             }
             this.damageRecords.clear();
@@ -276,17 +276,11 @@ export class Game {
                     if (player.movement.right) movement.x++;
                 }
 
-                // This is the same as checking if they're both non-zero, because if either of them is zero, the product will be zero
-                let speed = (movement.x * movement.y !== 0 ? Config.diagonalSpeed : Config.movementSpeed) * (1 + (player.adrenaline / 1000));
-
-                if (player.recoil.active) {
-                    if (player.recoil.time < this.now) {
-                        player.recoil.active = false;
-                    } else {
-                        speed *= player.recoil.multiplier;
-                    }
+                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+                    movement.x *= Math.SQRT1_2;
+                    movement.y *= Math.SQRT1_2;
                 }
-                if (player.action) speed *= player.action.speedMultiplier;
+
                 /*if (this.emotes.size > 0) {
                     player.fast = !player.fast;
                     if (player.fast) {
@@ -300,8 +294,8 @@ export class Game {
                     }
                 }
                 if (player.fast) speed *= 30;*/
-                speed *= player.activeItemDefinition.speedMultiplier;
 
+                const speed = player.calculateSpeed();
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
@@ -455,8 +449,7 @@ export class Game {
                 this.tickTimes = [];
             }
 
-            const newDelay = Math.max(0, 30 - tickTime);
-            this.tick(newDelay);
+            this.tick(Math.max(0, 30 - tickTime));
         }, delay);
     }
 
@@ -574,13 +567,14 @@ export class Game {
         this.removeObject(loot);
     }
 
-    addBullet(position: Vec2, rotation: number, source: GunDefinition, sourceType: ObjectType, shooter: Player): Bullet {
-        const bullet = new Bullet(this,
+    addBullet(position: Vec2, rotation: number, source: GunItem, shooter: Player): Bullet {
+        const bullet = new Bullet(
+            this,
             position,
             rotation,
             source,
-            sourceType,
-            shooter);
+            shooter
+        );
         this.bullets.add(bullet);
         this.newBullets.add(bullet);
 
