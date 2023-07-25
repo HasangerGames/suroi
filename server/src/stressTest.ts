@@ -1,94 +1,179 @@
-import { WebSocket } from "ws";
+import { WebSocket, type MessageEvent } from "ws";
 
-import { PacketType, InputActions, INPUT_ACTIONS_BITS } from "../../common/src/constants";
+import { PacketType, InputActions, INPUT_ACTIONS_BITS, ObjectCategory } from "../../common/src/constants";
 
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { ObjectType } from "../../common/src/utils/objectType";
+import { Skins } from "../../common/src/definitions/skins";
 
 const config = {
-    address: "ws://127.0.0.1:8000/play",
-    botCount: 79,
+    address: "127.0.0.1:8000",
+    botCount: 1,
     joinDelay: 50
 };
 
-for (let i = 1; i <= config.botCount; i++) {
-    setTimeout(() => {
-        let movingUp = false;
-        let movingDown = false;
-        let movingLeft = false;
-        let movingRight = false;
-        let shootStart = false;
-        let interact = false;
-        let angle = random(-Math.PI, Math.PI);
+const skins: string[] = [];
 
-        const ws = new WebSocket(`${config.address}?name=BOT_${i}`);
+for (const skin of Skins) {
+    if (!skin.notInLoadout && !skin.roleRequired) skins.push(skin.idString);
+}
 
-        ws.addEventListener("error", console.error);
-        ws.addEventListener("open", () => {
-            const stream = SuroiBitStream.alloc(4);
-            stream.writePacketType(PacketType.Join);
-            stream.writeBoolean(false);
-            ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
+const bots = new Set<Bot>();
 
-            setInterval(() => {
-                const stream = SuroiBitStream.alloc(128);
-                stream.writePacketType(PacketType.Input);
-                stream.writeBoolean(movingUp);
-                stream.writeBoolean(movingDown);
-                stream.writeBoolean(movingLeft);
-                stream.writeBoolean(movingRight);
+let allBotsJoined = false;
 
-                stream.writeBoolean(shootStart);
-                stream.writeBoolean(true); // rotating
-                stream.writeRotation(angle, 16);
-                angle += 0.1;
-                if (angle > Math.PI) angle = -Math.PI;
+let gameData: { success: boolean, address: string, gameID: number };
 
-                stream.writeBits(interact ? InputActions.Interact : InputActions.None, INPUT_ACTIONS_BITS);
-                ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
-            }, 30);
+class Bot {
+    movingUp = false;
+    movingDown = false;
+    movingLeft = false;
+    movingRight = false;
+    shootStart = false;
+    interact = false;
+    angle = random(-Math.PI, Math.PI);
+
+    connected = false;
+
+    disconnect = false;
+
+    ws: WebSocket;
+
+    constructor(id: number) {
+        this.ws = new WebSocket(`${gameData.address}/play?gameID=${gameData.gameID}&name=BOT_${id}`);
+
+        this.ws.addEventListener("error", console.error);
+
+        this.ws.addEventListener("open", this.join.bind(this));
+
+        this.ws.addEventListener("close", () => {
+            this.disconnect = true;
+            this.connected = false;
         });
 
-        setInterval(() => {
-            movingUp = false;
-            movingDown = false;
-            movingLeft = false;
-            movingRight = false;
+        this.ws.binaryType = "arraybuffer";
 
-            shootStart = randomBoolean();
-            interact = randomBoolean();
-
-            const direction: number = random(1, 8);
-            switch (direction) {
-                case 1:
-                    movingUp = true;
-                    break;
-                case 2:
-                    movingDown = true;
-                    break;
-                case 3:
-                    movingLeft = true;
-                    break;
-                case 4:
-                    movingRight = true;
-                    break;
-                case 5:
-                    movingUp = true;
-                    movingLeft = true;
-                    break;
-                case 6:
-                    movingUp = true;
-                    movingRight = true;
-                    break;
-                case 7:
-                    movingDown = true;
-                    movingLeft = true;
-                    break;
-                case 8:
-                    movingDown = true;
-                    movingRight = true;
-                    break;
+        this.ws.onmessage = (message: MessageEvent): void => {
+            const stream = new SuroiBitStream(message.data as ArrayBuffer);
+            switch (stream.readPacketType()) {
+                case PacketType.GameOver: {
+                    const won = stream.readBoolean();
+                    console.log(`Bot ${id} ${won ? "won" : "died"}`);
+                    this.disconnect = true;
+                    this.connected = false;
+                    this.ws.close();
+                }
             }
-        }, 2000);
-    }, config.joinDelay * i);
+        };
+    }
+
+    join(): void {
+        this.connected = true;
+        const stream = SuroiBitStream.alloc(8);
+        stream.writePacketType(PacketType.Join);
+        stream.writeBoolean(false); // is mobile
+        // loadout
+        const skin = skins[random(0, skins.length)];
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, skin));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "happy_face"));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "sad_face"));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_down"));
+        this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
+    }
+
+    sendInputs(): void {
+        if (!this.connected) return;
+
+        const stream = SuroiBitStream.alloc(128);
+        stream.writePacketType(PacketType.Input);
+        stream.writeBoolean(this.movingUp);
+        stream.writeBoolean(this.movingDown);
+        stream.writeBoolean(this.movingLeft);
+        stream.writeBoolean(this.movingRight);
+
+        stream.writeBoolean(this.shootStart);
+        stream.writeBoolean(true); // rotating
+        stream.writeRotation(this.angle, 16);
+        this.angle += 0.1;
+        if (this.angle > Math.PI) this.angle = -Math.PI;
+
+        stream.writeBits(this.interact ? InputActions.Interact : InputActions.None, INPUT_ACTIONS_BITS);
+        this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
+    }
+
+    updateInputs(): void {
+        this.movingUp = false;
+        this.movingDown = false;
+        this.movingLeft = false;
+        this.movingRight = false;
+
+        this.shootStart = randomBoolean();
+        this.interact = randomBoolean();
+
+        switch (random(1, 8)) {
+            case 1:
+                this.movingUp = true;
+                break;
+            case 2:
+                this.movingDown = true;
+                break;
+            case 3:
+                this.movingLeft = true;
+                break;
+            case 4:
+                this.movingRight = true;
+                break;
+            case 5:
+                this.movingUp = true;
+                this.movingLeft = true;
+                break;
+            case 6:
+                this.movingUp = true;
+                this.movingRight = true;
+                break;
+            case 7:
+                this.movingDown = true;
+                this.movingLeft = true;
+                break;
+            case 8:
+                this.movingDown = true;
+                this.movingRight = true;
+                break;
+        }
+    }
 }
+
+void (async() => {
+    gameData = await (await fetch(`http://${config.address}/api/getGame?region=dev`)).json();
+
+    if (!gameData.success) {
+        console.error("Failed to fetch game");
+        process.exit();
+    }
+
+    for (let i = 1; i <= config.botCount; i++) {
+        setTimeout(() => {
+            bots.add(new Bot(i));
+            if (i === config.botCount) allBotsJoined = true;
+        }, config.joinDelay);
+    }
+})();
+
+setInterval(() => {
+    for (const bot of bots) {
+        if (Math.random() < 0.02) bot.updateInputs();
+
+        bot.sendInputs();
+
+        if (bot.disconnect) {
+            bots.delete(bot);
+        }
+    }
+
+    if (bots.size === 0 && allBotsJoined) {
+        console.log("All bots died or disconnected, exiting.");
+        process.exit();
+    }
+}, 30);
