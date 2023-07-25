@@ -3,7 +3,6 @@ import { boxLine, circleLine } from "intersects";
 import {
     vClone,
     v,
-    vAdd,
     type Vector
 } from "./vector";
 import {

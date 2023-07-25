@@ -121,9 +121,10 @@ export class Map {
         const type = ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, idString);
 
         for (let i = 0; i < count; i++) {
-            const position = this.getRandomPositionFor(type);
+            const orientation = this.getRandomRotation("limited") as Orientation;
+            const position = this.getRandomPositionFor(type, 1, orientation);
 
-            this.generateBuilding(type, position);
+            this.generateBuilding(type, position, orientation);
         }
     }
 
@@ -247,6 +248,8 @@ export class Map {
         let position: Vector = v(0, 0);
         let attempts = 0;
         let initialHitbox: Hitbox | undefined;
+
+        if (type.category === ObjectCategory.Building) console.log(scale)
 
         // Set up the hitbox
         switch (type.category) {
