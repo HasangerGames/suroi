@@ -67,7 +67,7 @@ export class Player extends GameObject {
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
-        this.dirty.maxHealth = true;
+        this.dirty.maxMinStats = true;
         this.health = this._health;
     }
 
@@ -84,7 +84,7 @@ export class Player extends GameObject {
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
         this._maxAdrenaline = maxAdrenaline;
-        this.dirty.maxAdrenaline = true;
+        this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
 
@@ -92,7 +92,7 @@ export class Player extends GameObject {
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
         this._minAdrenaline = minAdrenaline;
-        this.dirty.minAdrenaline = true;
+        this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
 
@@ -179,10 +179,8 @@ export class Player extends GameObject {
      * updating
      */
     readonly dirty = {
-        maxHealth: true,
         health: true,
-        maxAdrenaline: true,
-        minAdrenaline: true,
+        maxMinStats: true,
         adrenaline: true,
         activeWeaponIndex: true,
         weapons: true,

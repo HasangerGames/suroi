@@ -43,9 +43,11 @@ export class UpdatePacket extends ReceivingPacket {
         // Active player data
         //
 
-        // Max health
+        // Max / min adrenaline and health
         if (stream.readBoolean()) {
             playerManager.maxHealth = stream.readFloat32();
+            playerManager.minAdrenaline = stream.readFloat32();
+            playerManager.maxAdrenaline = stream.readFloat32();
         }
 
         // Health
@@ -76,15 +78,7 @@ export class UpdatePacket extends ReceivingPacket {
             healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
-        // Max adrenaline
-        if (stream.readBoolean()) {
-            playerManager.maxAdrenaline = stream.readFloat32();
-        }
 
-        // Min adrenaline
-        if (stream.readBoolean()) {
-            playerManager.minAdrenaline = stream.readFloat32();
-        }
 
         // Adrenaline
         if (stream.readBoolean()) {
