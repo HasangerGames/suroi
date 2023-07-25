@@ -12,6 +12,7 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly offset: Vector
     readonly cooldown: number
     readonly speedMultiplier: number
+    readonly killstreak?: boolean
     readonly fists: {
         readonly animationDuration: number
         readonly randomFist: boolean

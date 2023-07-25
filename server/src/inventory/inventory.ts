@@ -116,6 +116,13 @@ export class Inventory {
         // (started)
         const item = this._weapons[slot];
         if (item !== undefined) {
+            const oldItem = this._weapons[old];
+            if (oldItem) {
+                oldItem.isActive = false;
+            }
+
+            item.isActive = true;
+
             const now = this.owner.game.now;
 
             this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
@@ -210,6 +217,7 @@ export class Inventory {
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
             [this._weapons[1], this._weapons[0]];
+
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
     }
@@ -379,6 +387,9 @@ export class Inventory {
             this.setActiveWeaponIndex(slot);
         }
 
+        item?.refreshModifiers();
+        this.owner.updateAndApplyModifiers();
+
         return old;
     }
 
@@ -390,14 +401,13 @@ export class Inventory {
 
         switch (definition.itemType) {
             case ItemType.Healing: {
-                if (
-                    (this.owner.action as HealingAction | undefined)?.item.idNumber === item.idNumber
-                ) return;
+                // Already consuming something else
+                if (this.owner.action instanceof HealingAction) return;
 
                 const definition = item.definition as HealingItemDefinition;
 
-                if (definition.healType === HealType.Health && this.owner.health >= 100) return;
-                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= 100) return;
+                if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
+                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
                 this.owner.executeAction(new HealingAction(this.owner, item));
                 break;
@@ -426,7 +436,7 @@ export class Inventory {
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
-                    stream.writeObjectTypeNoCategory(item.type);
+                    stream.writeObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(item.type);
                     if (item instanceof GunItem) {
                         // TODO: find a better place to send the ammo instead of sending it with the inventory guns
                         stream.writeUint8(item.ammo);

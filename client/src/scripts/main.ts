@@ -63,8 +63,8 @@ $(() => {
     }
 
     const lobbyClearing = params.get("lobbyClearing");
-    if (lobbyClearing !== undefined) {
-        localStorageInstance.update({ lobbyClearing: lobbyClearing !== null });
+    if (lobbyClearing) {
+        localStorageInstance.update({ lobbyClearing: lobbyClearing === "true" });
     }
 
     const devPassword = params.get("password");

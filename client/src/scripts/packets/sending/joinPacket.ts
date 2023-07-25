@@ -15,6 +15,7 @@ export class JoinPacket extends SendingPacket {
         const writeLoadoutItem = (propertyName: keyof Config["loadout"], category = ObjectCategory.Emote): void => {
             stream.writeObjectTypeNoCategory(ObjectType.fromString(category, localStorageInstance.config.loadout[propertyName]));
         };
+
         writeLoadoutItem("skin", ObjectCategory.Loot);
         writeLoadoutItem("topEmote");
         writeLoadoutItem("rightEmote");

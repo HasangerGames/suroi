@@ -9,33 +9,34 @@ import { randomPointInsideCircle } from "../../../common/src/utils/random";
 import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
-interface mapDefinition {
-
-    obstacles?: Record<string, number>
+interface MapDefinition {
+    readonly obstacles?: Record<string, number>
 
     // Obstacles with custom spawn logic
-    specialObstacles?: Record<string, {
-        spawnProbability?: number
-        radius?: number
-        squareRadius?: boolean
-    }
-    &
-    ({
-        count: number
-    } |
-    {
-        min: number
-        max: number
-    })
+    /* eslint-disable @typescript-eslint/indent */
+    readonly specialObstacles?: Record<
+        string,
+        {
+            readonly spawnProbability?: number
+            readonly radius?: number
+            readonly squareRadius?: boolean
+        } & (
+            {
+                readonly count: number
+            } | {
+                readonly min: number
+                readonly max: number
+            }
+        )
     >
 
-    loots?: Record<string, number>
+    readonly loots?: Record<string, number>
 
     // Custom callback to generate stuff
-    genCallback?: (map: Map) => void
+    readonly genCallback?: (map: Map) => void
 }
 
-export const Maps: Record<string, mapDefinition> = {
+export const Maps: Record<string, MapDefinition> = {
     main: {
         obstacles: {
             oil_tank: 6,
@@ -162,7 +163,7 @@ export const Maps: Record<string, mapDefinition> = {
             genLoots(vAdd(center, v(70, -70)), -8, 8);
 
             // Generate random obstacles around the center
-            const randomObstacles: mapDefinition["obstacles"] = {
+            const randomObstacles: MapDefinition["obstacles"] = {
                 oak_tree: 50,
                 rock: 50,
                 bush: 20,

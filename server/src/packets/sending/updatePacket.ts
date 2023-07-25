@@ -24,17 +24,38 @@ export class UpdatePacket extends SendingPacket {
         // Active player data
         //
 
+        // Max health
+        stream.writeBoolean(player.dirty.maxHealth);
+        if (player.dirty.maxHealth) {
+            stream.writeFloat32(player.maxHealth);
+            player.dirty.maxHealth = false;
+        }
+
         // Health
         stream.writeBoolean(player.dirty.health);
         if (player.dirty.health) {
-            stream.writeFloat(player.health, 0, 100, 8);
+            stream.writeFloat(player.health, 0, player.maxHealth, 12);
             player.dirty.health = false;
+        }
+
+        // Max adrenaline
+        stream.writeBoolean(player.dirty.maxAdrenaline);
+        if (player.dirty.maxAdrenaline) {
+            stream.writeFloat32(player.maxAdrenaline);
+            player.dirty.maxAdrenaline = false;
+        }
+
+        // Min adrenaline
+        stream.writeBoolean(player.dirty.minAdrenaline);
+        if (player.dirty.minAdrenaline) {
+            stream.writeFloat32(player.minAdrenaline);
+            player.dirty.minAdrenaline = false;
         }
 
         // Adrenaline
         stream.writeBoolean(player.dirty.adrenaline);
         if (player.dirty.adrenaline) {
-            stream.writeFloat(player.adrenaline, 0, 100, 8);
+            stream.writeFloat(player.adrenaline, player.minAdrenaline, player.maxAdrenaline, 10);
             player.dirty.adrenaline = false;
         }
 
@@ -121,7 +142,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
                 stream.writeUint8(bullet.id);
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.idString));
+                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.definition.idString));
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
             }

@@ -1,5 +1,7 @@
 import { KillFeedMessageType } from "../../../common/src/constants";
 import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type GunItem } from "../inventory/gunItem";
+import { type MeleeItem } from "../inventory/meleeItem";
 import { type Player } from "../objects/player";
 
 export abstract class KillFeedMessage {
@@ -22,9 +24,9 @@ export class KillKillFeedMessage extends KillFeedMessage {
     override readonly type = KillFeedMessageType.Kill;
     readonly killed: Player;
     readonly killedBy?: Player | "gas";
-    readonly weaponUsed?: ObjectType;
+    readonly weaponUsed?: GunItem | MeleeItem | ObjectType;
 
-    constructor(killed: Player, killedBy?: Player | "gas", weaponUsed?: ObjectType) {
+    constructor(killed: Player, killedBy?: Player | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType) {
         super();
         this.killed = killed;
         this.killedBy = killedBy;
