@@ -75,7 +75,7 @@ export class Building extends GameObject {
         } else {
             const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
             for (const hitbox of this.ceilingHitbox.hitBoxes) {
-                // i have no idea why but that makes it work correctly
+                // inverted Y axis moment?
                 let newOrientation = this.orientation;
                 if (this.orientation === 1) newOrientation = 3;
                 else if (this.orientation === 3) newOrientation = 1;

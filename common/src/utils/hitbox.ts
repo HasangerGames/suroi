@@ -13,7 +13,8 @@ import {
     distanceToRectangle,
     rectangleCollision,
     rectRectCollision,
-    rectangleDistanceToRectangle
+    rectangleDistanceToRectangle,
+    addAdjust
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -65,8 +66,8 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius, vClone(this.position));
     }
 
-    transform(position: Vector, scale = 1): CircleHitbox {
-        return new CircleHitbox(this.radius * scale, vAdd(this.position, position));
+    transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
+        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
     intersectsLine(a: Vector, b: Vector): boolean {
