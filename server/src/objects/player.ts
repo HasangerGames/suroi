@@ -320,7 +320,8 @@ export class Player extends GameObject {
             this.inventory.addOrReplaceWeapon(2, "kbar");
 
             this.inventory.items["2x_scope"] = 1;
-            this.inventory.setScope(ObjectType.fromString(ObjectCategory.Loot, "4x_scope"));
+            this.inventory.items["4x_scope"] = 1;
+            this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
         this.updateAndApplyModifiers();

@@ -40,7 +40,7 @@ $(() => {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
-                if (lobbyClearing) address += "&lobbyClearing";
+                if (lobbyClearing) address += "&lobbyClearing=true";
                 core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
