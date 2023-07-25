@@ -36,9 +36,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "house",
         name: "House",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(52, 40), v(11, -11)), // Garage
+            new RectangleHitbox(v(-50, 40), v(15, -28)), // Main House
+            new RectangleHitbox(v(-45, -40), v(-16, -23)), // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
