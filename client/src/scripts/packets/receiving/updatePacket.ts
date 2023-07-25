@@ -80,8 +80,6 @@ export class UpdatePacket extends ReceivingPacket {
             healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
-
-
         // Adrenaline
         if (stream.readBoolean()) {
             playerManager.adrenaline = stream.readFloat(playerManager.minAdrenaline, playerManager.maxAdrenaline, 10);

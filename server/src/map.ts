@@ -249,8 +249,6 @@ export class Map {
         let attempts = 0;
         let initialHitbox: Hitbox | undefined;
 
-        if (type.category === ObjectCategory.Building) console.log(scale)
-
         // Set up the hitbox
         switch (type.category) {
             case ObjectCategory.Obstacle: {
