@@ -290,6 +290,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-2, -2), v(2, 2)),
             rotationMode: "limited",
             variations: 3,
+            depth: 2,
             hasLoot: true
         },
         {

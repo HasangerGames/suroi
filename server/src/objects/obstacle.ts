@@ -7,7 +7,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { vClone, type Vector, vSub } from "../../../common/src/utils/vector";
+import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
 import { transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
@@ -50,12 +50,16 @@ export class Obstacle extends GameObject {
 
     definition: ObstacleDefinition;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, position: Vector, rotation: number, scale: number, variation: Variation = 0) {
+    lootSpawnOffset: Vector;
+
+    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, position: Vector, rotation: number, scale: number, variation: Variation = 0, lootSpawnOffset?: Vector) {
         super(game, type, position);
 
         this.rotation = rotation;
         this.scale = this.maxScale = scale;
         this.variation = variation;
+
+        this.lootSpawnOffset = lootSpawnOffset ?? v(0, 0);
 
         const definition = type.definition;
         this.definition = definition;
@@ -180,7 +184,8 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), vClone(this.position), item.count);
+                const position = vAdd(this.position, this.lootSpawnOffset);
+                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;

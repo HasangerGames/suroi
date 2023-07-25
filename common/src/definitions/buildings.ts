@@ -10,6 +10,7 @@ interface BuildingObstacle {
     rotation?: number
     variation?: Variation
     scale?: number
+    lootSpawnOffset?: Vector
 }
 
 interface LootSpawner {
@@ -20,6 +21,7 @@ interface LootSpawner {
 export interface BuildingDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     ceilingHitbox: Hitbox
+    scopeHitbox: Hitbox
     hideOnMap?: boolean
 
     obstacles: BuildingObstacle[]
@@ -39,6 +41,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
+            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
+            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+        ]),
+        scopeHitbox: new ComplexHitbox([
             new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
             new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
             new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
@@ -196,6 +203,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-20, -40), v(20, 40))
         ]),
+        scopeHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-20, -35), v(20, 35))
+        ]),
 
         floorImagePos: v(0, 0.31),
         ceilingImagePos: v(0, 0),
@@ -256,15 +266,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "box",
-                position: v(-15.7, 0)
+                position: v(-15.7, 0),
+                lootSpawnOffset: v(2.2, 0)
             },
             {
                 id: "box",
-                position: v(-15.8, 6.4)
+                position: v(-15.8, 6.4),
+                lootSpawnOffset: v(2.2, 0)
             },
             {
                 id: "box",
-                position: v(-15.7, -8)
+                position: v(-15.7, -8),
+                lootSpawnOffset: v(2.2, 0)
             },
             {
                 id: "metal_shelf",
@@ -273,15 +286,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "box",
-                position: v(15.8, 0)
+                position: v(15.8, 0),
+                lootSpawnOffset: v(-2.2, 0)
             },
             {
                 id: "box",
-                position: v(15.7, 6)
+                position: v(15.7, 6),
+                lootSpawnOffset: v(-2.2, 0)
             },
             {
                 id: "box",
-                position: v(15.6, -7)
+                position: v(15.6, -7),
+                lootSpawnOffset: v(-2.2, 0)
             }
         ],
 

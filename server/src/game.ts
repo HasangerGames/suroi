@@ -335,7 +335,7 @@ export class Game {
                 let isInsideBuilding = false;
                 for (const object of player.nearObjects) {
                     if (object instanceof Building) {
-                        if (object.ceilingHitbox.collidesWith(player.hitbox)) {
+                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
                             isInsideBuilding = true;
                             break;
                         }
