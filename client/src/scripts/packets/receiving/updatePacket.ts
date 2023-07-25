@@ -39,19 +39,35 @@ export class UpdatePacket extends ReceivingPacket {
         const playerManager = game.playerManager;
         const scene = player.scene;
 
+        const maxMinStatsDirty = stream.readBoolean();
+        const healthDirty = stream.readBoolean();
+        const adrenalineDirty = stream.readBoolean();
+        const zoomDirty = stream.readBoolean();
+        const actionDirty = stream.readBoolean();
+        const activePlayerIdDirty = stream.readBoolean();
+        const fullObjectsDirty = stream.readBoolean();
+        const partialObjectsDirty = stream.readBoolean();
+        const deletedObjectsDirty = stream.readBoolean();
+        const bulletsDirty = stream.readBoolean();
+        const deletedBulletsDirty = stream.readBoolean();
+        const explosionsDirty = stream.readBoolean();
+        const emotesDirty = stream.readBoolean();
+        const gasDirty = stream.readBoolean();
+        const gasPercentageDirty = stream.readBoolean();
+        const aliveCountDirty = stream.readBoolean();
         //
         // Active player data
         //
 
         // Max / min adrenaline and health
-        if (stream.readBoolean()) {
+        if (maxMinStatsDirty) {
             playerManager.maxHealth = stream.readFloat32();
             playerManager.minAdrenaline = stream.readFloat32();
             playerManager.maxAdrenaline = stream.readFloat32();
         }
 
         // Health
-        if (stream.readBoolean()) {
+        if (healthDirty) {
             playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
             const absolute = playerManager.health;
             const realPercentage = 100 * absolute / playerManager.maxHealth;
@@ -78,10 +94,8 @@ export class UpdatePacket extends ReceivingPacket {
             healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
-
-
         // Adrenaline
-        if (stream.readBoolean()) {
+        if (adrenalineDirty) {
             playerManager.adrenaline = stream.readFloat(playerManager.minAdrenaline, playerManager.maxAdrenaline, 10);
 
             const absolute = playerManager.adrenaline;
@@ -95,13 +109,13 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Zoom
-        if (stream.readBoolean()) {
+        if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
             scene.resize(true);
         }
 
         // Action
-        if (stream.readBoolean()) {
+        if (actionDirty) {
             const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
             let actionTime = 0;
             switch (action) {
@@ -137,7 +151,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Active player ID
-        if (stream.readBoolean()) {
+        if (activePlayerIdDirty) {
             const noID = game.activePlayer.id === -1;
             game.activePlayer.id = stream.readObjectID();
             if (noID) {
@@ -153,7 +167,7 @@ export class UpdatePacket extends ReceivingPacket {
         //
 
         // Full objects
-        if (stream.readBoolean()) {
+        if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
@@ -201,7 +215,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Partial objects
-        if (stream.readBoolean()) {
+        if (partialObjectsDirty) {
             const partialObjectCount = stream.readUint16();
             for (let i = 0; i < partialObjectCount; i++) {
                 const id = stream.readObjectID();
@@ -215,7 +229,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Deleted objects
-        if (stream.readBoolean()) {
+        if (deletedObjectsDirty) {
             const deletedObjectCount = stream.readUint16();
             for (let i = 0; i < deletedObjectCount; i++) {
                 const id = stream.readObjectID();
@@ -230,7 +244,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Bullets
-        if (stream.readBoolean()) {
+        if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
@@ -242,7 +256,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Deleted bullets
-        if (stream.readBoolean()) {
+        if (deletedBulletsDirty) {
             const destroyedBulletCount = stream.readUint8();
             for (let i = 0; i < destroyedBulletCount; i++) {
                 const bulletID = stream.readUint8();
@@ -257,7 +271,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Explosions
-        if (stream.readBoolean()) {
+        if (explosionsDirty) {
             const explosionCount = stream.readUint8();
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
@@ -270,7 +284,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Emotes
-        if (stream.readBoolean()) {
+        if (emotesDirty) {
             const emoteCount = stream.readBits(7);
             for (let i = 0; i < emoteCount; i++) {
                 const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
@@ -284,7 +298,7 @@ export class UpdatePacket extends ReceivingPacket {
         const minimap = scene.scene.get("minimap") as MinimapScene;
 
         // Gas
-        if (stream.readBoolean()) {
+        if (gasDirty) {
             game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
             game.gas.oldPosition = stream.readPosition();
@@ -343,7 +357,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Gas percentage
-        if (stream.readBoolean()) {
+        if (gasPercentageDirty) {
             const percentage = stream.readFloat(0, 1, 16);
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * percentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
@@ -368,7 +382,7 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Alive count
-        if (stream.readBoolean()) {
+        if (aliveCountDirty) {
             const aliveCount = stream.readBits(7);
             $("#ui-players-alive").text(aliveCount);
         }

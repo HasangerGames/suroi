@@ -26,6 +26,42 @@ export class UpdatePacket extends SendingPacket {
 
         // Max health
         stream.writeBoolean(player.dirty.maxMinStats);
+        stream.writeBoolean(player.dirty.health);
+        stream.writeBoolean(player.dirty.adrenaline);
+        stream.writeBoolean(player.dirty.zoom);
+        stream.writeBoolean(player.dirty.action);
+        stream.writeBoolean(player.dirty.activePlayerId);
+
+        const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
+        stream.writeBoolean(fullObjectsDirty);
+
+        const partialObjectsDirty = player.partialDirtyObjects.size !== 0;
+        stream.writeBoolean(partialObjectsDirty);
+
+        const deletedObjectsDirty = player.deletedObjects.size !== 0;
+        stream.writeBoolean(deletedObjectsDirty);
+
+        const bulletsDirty = game.newBullets.size !== 0;
+        stream.writeBoolean(bulletsDirty);
+
+        const deletedBulletsDirty = game.deletedBulletIDs.size !== 0;
+        stream.writeBoolean(deletedBulletsDirty);
+
+        const explosionsDirty = game.explosions.size !== 0;
+        stream.writeBoolean(explosionsDirty);
+
+        const emotesDirty = player.emotes.size !== 0;
+        stream.writeBoolean(emotesDirty);
+
+        const gasDirty = game.gas.dirty || player.fullUpdate;
+        stream.writeBoolean(gasDirty);
+
+        const gasPercentageDirty = game.gas.percentageDirty || player.fullUpdate;
+        stream.writeBoolean(gasPercentageDirty);
+
+        const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
+        stream.writeBoolean(aliveCountDirty);
+
         if (player.dirty.maxMinStats) {
             stream.writeFloat32(player.maxHealth);
             stream.writeFloat32(player.minAdrenaline);
@@ -34,28 +70,25 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Health
-        stream.writeBoolean(player.dirty.health);
+
         if (player.dirty.health) {
             stream.writeFloat(player.health, 0, player.maxHealth, 12);
             player.dirty.health = false;
         }
 
         // Adrenaline
-        stream.writeBoolean(player.dirty.adrenaline);
         if (player.dirty.adrenaline) {
             stream.writeFloat(player.adrenaline, player.minAdrenaline, player.maxAdrenaline, 10);
             player.dirty.adrenaline = false;
         }
 
         // Zoom
-        stream.writeBoolean(player.dirty.zoom);
         if (player.dirty.zoom) {
             stream.writeUint8(player.zoom);
             player.dirty.zoom = false;
         }
 
         // Action
-        stream.writeBoolean(player.dirty.action);
         if (player.dirty.action) {
             player.dirty.action = false;
             stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
@@ -66,7 +99,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Active player ID
-        stream.writeBoolean(player.dirty.activePlayerId);
         if (player.dirty.activePlayerId) {
             stream.writeObjectID(player.id);
             player.dirty.activePlayerId = false;
@@ -80,9 +112,6 @@ export class UpdatePacket extends SendingPacket {
         //
 
         // Full objects
-        const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
-        stream.writeBoolean(fullObjectsDirty);
-
         if (fullObjectsDirty) {
             stream.writeUint16(player.fullDirtyObjects.size);
 
@@ -96,9 +125,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Partial objects
-        const partialObjectsDirty = player.partialDirtyObjects.size !== 0;
-        stream.writeBoolean(partialObjectsDirty);
-
         if (partialObjectsDirty) {
             stream.writeUint16(player.partialDirtyObjects.size);
 
@@ -110,9 +136,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Deleted objects
-        const deletedObjectsDirty = player.deletedObjects.size !== 0;
-        stream.writeBoolean(deletedObjectsDirty);
-
         if (deletedObjectsDirty) {
             stream.writeUint16(player.deletedObjects.size);
 
@@ -124,8 +147,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Bullets
-        const bulletsDirty = game.newBullets.size !== 0;
-        stream.writeBoolean(bulletsDirty);
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
@@ -137,8 +158,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Deleted bullets
-        const deletedBulletsDirty = game.deletedBulletIDs.size !== 0;
-        stream.writeBoolean(deletedBulletsDirty);
         if (deletedBulletsDirty) {
             stream.writeUint8(game.deletedBulletIDs.size);
             for (const bulletID of game.deletedBulletIDs) {
@@ -147,8 +166,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Explosions
-        const explosionsDirty = game.explosions.size !== 0;
-        stream.writeBoolean(explosionsDirty);
         if (explosionsDirty) {
             stream.writeUint8(game.explosions.size);
             for (const explosion of game.explosions) {
@@ -157,9 +174,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Emotes
-        const emotesDirty = player.emotes.size !== 0;
-        stream.writeBoolean(emotesDirty);
-
         if (emotesDirty) {
             stream.writeBits(player.emotes.size, 7);
 
@@ -172,8 +186,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Gas
-        const gasDirty = game.gas.dirty || player.fullUpdate;
-        stream.writeBoolean(gasDirty);
         if (gasDirty) {
             stream.writeBits(game.gas.state, 2);
             stream.writeBits(game.gas.initialDuration, 7);
@@ -184,15 +196,11 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Gas percentage
-        const gasPercentageDirty = game.gas.percentageDirty || player.fullUpdate;
-        stream.writeBoolean(gasPercentageDirty);
         if (gasPercentageDirty) {
             stream.writeFloat(game.gas.percentage, 0, 1, 16);
         }
 
         // Alive count
-        const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
-        stream.writeBoolean(aliveCountDirty);
         if (aliveCountDirty) {
             stream.writeBits(game.aliveCount, 7);
         }
