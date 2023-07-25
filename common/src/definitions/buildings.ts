@@ -162,7 +162,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "bed",
-                position: v(-40.6, 27.5)
+                position: v(-40.6, 27.5),
+                rotation: 0
             },
             // Bedroom Bookshelf
             {
