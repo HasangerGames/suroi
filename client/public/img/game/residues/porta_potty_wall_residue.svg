@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="115.54527mm"
+   height="31.681541mm"
+   viewBox="0 0 115.54527 31.681541"
+   version="1.1"
+   id="svg2430"
+   sodipodi:docname="porta_potty_wall_residue.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <defs
+     id="defs2424">
+    <radialGradient
+       cx="398.7446"
+       cy="128.6519"
+       r="29.14535"
+       gradientUnits="userSpaceOnUse"
+       id="color-1-3">
+      <stop
+         offset="0"
+         stop-color="#373d73"
+         id="stop2182" />
+      <stop
+         offset="1"
+         stop-color="#161d31"
+         id="stop2184" />
+    </radialGradient>
+    <radialGradient
+       cx="109.62613"
+       cy="77.969383"
+       r="8.875"
+       gradientUnits="userSpaceOnUse"
+       id="color-1">
+      <stop
+         offset="0"
+         stop-color="#959eb0"
+         id="stop3495" />
+      <stop
+         offset="1"
+         stop-color="#ffffff"
+         id="stop3497" />
+    </radialGradient>
+    <radialGradient
+       cx="113.37613"
+       cy="80.469383"
+       r="8.875"
+       gradientUnits="userSpaceOnUse"
+       id="color-2">
+      <stop
+         offset="0"
+         stop-color="#6f7683"
+         id="stop3500" />
+      <stop
+         offset="1"
+         stop-color="#d2d2d2"
+         id="stop3502" />
+    </radialGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="157.66986"
+     inkscape:cy="-165.3823"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g3567"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1267"
+     inkscape:window-height="1198"
+     inkscape:window-x="2305"
+     inkscape:window-y="254"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata2427">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-43.709179,-94.294441)">
+    <g
+       data-paper-data="{&quot;isPaintingLayer&quot;:true}"
+       fill-rule="nonzero"
+       stroke-linecap="butt"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       stroke-dasharray="none"
+       stroke-dashoffset="0"
+       style="mix-blend-mode:normal"
+       id="g3567"
+       transform="matrix(0.56220298,0,0,0.56220298,-72.339679,-141.39025)">
+      <path
+         d=""
+         fill="#1c71d8"
+         stroke="#0d3565"
+         stroke-width="5"
+         id="path3511" />
+      <g
+         fill="#1c71d8"
+         stroke="#0d3565"
+         stroke-width="5"
+         id="g3529">
+        <g
+           id="g3649"
+           transform="translate(26.892507,92.779149)">
+          <path
+             d="m 313.03647,360.03324 -8.49491,4.16222 -8.60509,-9.36221 -5.9,5.2 -3.4,-8.4 3.4,-13.6 5.52348,2.45895 8.17652,-7.25894 9.3,4.8 7.00823,1.57592 -2.40823,13.82409 z"
+             id="path3521" />
+          <path
+             d="m 231.23647,353.93324 -7.33779,7.38479 -6.24847,-9.12558 -11.41374,7.54079 -20.4,-12.8 16.36916,-4.06592 7.03083,-9.33408 9.4,-4.4 12.6,4.4 12.2,10.6 z"
+             id="path3523" />
+          <path
+             d="m 280.96453,352.08511 -4.0917,8.48784 0.77404,7.29802 -11.50427,10.756 -9.80804,-0.89572 -11.32067,-10.90332 1.71664,-12.09848 4.16146,-6.24023 7.66362,-1.77903 1.28021,-6.42412 11.08023,-3.43343 -5.80982,13.28328 10.32442,-2.68326 z"
+             id="path3525" />
+          <path
+             d="m 377.38812,366.5869 -8.86244,1.65948 -9.9179,-4.46747 -4.47474,4.85766 -11.48296,11.46816 -9.71469,-1.68757 -6.30866,-8.15174 1.03648,-11.65871 7.67698,3.97786 6.52624,-3.10115 7.61918,-9.23902 22.63033,-3.46796 -6.70607,13.68498 z"
+             id="path3527" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

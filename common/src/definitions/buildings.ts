@@ -33,6 +33,53 @@ export interface BuildingDefinition extends ObjectDefinition {
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
+        idString: "porta_potty",
+        name: "Porta Potty",
+        spawnHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-10, -10), v(10, 10)),
+        ]),
+        ceilingHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-5, -7), v(5, 9)),
+        ]),
+        scopeHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-5, -7), v(5, 9)),
+        ]),
+        floorImagePos: v(0, 0),
+        ceilingImagePos: v(0, 0),
+        obstacles: [
+            {
+                id: "porta_potty_toilet",
+                position: v(0, 5),
+                rotation: 0
+            },
+            {
+                id: "porta_potty_back_wall",
+                position: v(0, 8.6),
+                rotation: 0
+            },
+            {
+                id: "porta_potty_sink_wall",
+                position: v(-5.65, -0.1),
+                rotation: 3
+            },
+            {
+                id: "porta_potty_toilet_paper_wall",
+                position: v(5.6, -0.1),
+                rotation: 3
+            },
+            {
+                id: "porta_potty_front_wall",
+                position: v(4.2, -8.8),
+                rotation: 2
+            },
+            {
+                id: "porta_potty_door",
+                position: v(0, -9),
+                rotation: 2
+            },
+        ]
+    },
+    {
         idString: "house",
         name: "House",
         spawnHitbox: new ComplexHitbox([

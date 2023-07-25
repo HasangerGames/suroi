@@ -560,6 +560,88 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
             rotationMode: "limited"
+        },
+        {
+            idString: "porta_potty_toilet",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            variations: 2,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-6.1, -1.5), v(6.1, 3.3)),
+            rotationMode: "limited",
+            frames: {
+              residue: "porta_potty_toilet_residue"
+            }
+        },
+        {
+            idString: "porta_potty_back_wall",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-6.1, -1.2), v(6.1, 1.5)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "porta_potty_door",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-4, -1.2), v(4, 1.4)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "porta_potty_front_wall",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-1.5, -1.2), v(1.7, 1.4)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "porta_potty_sink_wall",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-10, -2.4), v(10, -0.1)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "porta_potty_toilet_paper_wall",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-10, -0.1), v(10, 2.3)),
+            rotationMode: "limited"
         }
     ]
 );
