@@ -80,11 +80,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const hasVariations = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
 
-        let texture = definition.frames?.base ?? `${definition.idString}`;
-        if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
-        else if (hasVariations) texture += `_${this.variation + 1}`;
-        // Update the obstacle image
-        this.image.setFrame(`${texture}.svg`);
+        if (this.destroyed && definition.noResidue) {
+            this.image.setVisible(false);
+        } else {
+            let texture = definition.frames?.base ?? `${definition.idString}`;
+            if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+            else if (hasVariations) texture += `_${this.variation + 1}`;
+            // Update the obstacle image
+            this.image.setFrame(`${texture}.svg`);
+        }
 
         this.container.setRotation(this.rotation)
             .setDepth(this.destroyed ? 0 : definition.depth ?? 0);

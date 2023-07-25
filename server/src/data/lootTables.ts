@@ -90,7 +90,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_equipment", weight: 0.65 }
         ]
     },
-    drawer_large: {
+    large_drawer: {
         min: 1,
         max: 1,
         loot: [
@@ -98,7 +98,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "equipment", weight: 0.65 }
         ]
     },
-    drawer_small: {
+    small_drawer: {
         min: 1,
         max: 1,
         loot: [
@@ -129,6 +129,24 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "equipment", weight: 1 },
             { tier: "guns", weight: 0.5 }
+        ]
+    },
+    bookshelf: {
+        min: 1,
+        max: 3,
+        loot: [
+            { tier: "equipment_no_scopes", weight: 1.1 },
+            { tier: "guns", weight: 1 },
+            { tier: "healing_items", weight: 0.6 }
+        ]
+    },
+    toilet: {
+        min: 2,
+        max: 3,
+        loot: [
+            { tier: "healing_items", weight: 2 },
+            { tier: "equipment_no_scopes", weight: 1 },
+            { tier: "guns", weight: 0.75 }
         ]
     }
 };
@@ -173,6 +191,19 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "4x_scope", weight: 0.5 },
         { item: "8x_scope", weight: 0.1 },
         { item: "15x_scope", weight: 0.02 }
+    ],
+    equipment_no_scopes: [
+        { item: "hard_hat", weight: 1 },
+        { item: "m1_helmet", weight: 0.3 },
+        { item: "tactical_helmet", weight: 0.1 },
+
+        { item: "basic_vest", weight: 1 },
+        { item: "bulletproof_vest", weight: 0.3 },
+        { item: "tactical_vest", weight: 0.1 },
+
+        { item: "satchel", weight: 1 },
+        { item: "regular_backpack", weight: 0.3 },
+        { item: "tactical_backpack", weight: 0.1 }
     ],
     ammo: [
         { item: "12g", count: 10, weight: 0.75 },

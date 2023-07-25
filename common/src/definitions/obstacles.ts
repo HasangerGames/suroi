@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../ut
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -32,7 +32,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     }
 }
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain"];
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -40,7 +40,7 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
             idString,
             name,
             material: "crate",
-            health: 100,
+            health: 80,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -59,7 +59,7 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         idString,
         name,
         material: "crate",
-        health: 120,
+        health: 100,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -71,6 +71,26 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         frames: {
             particle: "regular_crate_particle",
             residue: "regular_crate_residue"
+        }
+    };
+}
+
+function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
+    return {
+        idString: `house_wall_${lengthNumber}`,
+        name: `House Wall ${lengthNumber}`,
+        material: "wood",
+        noResidue: true,
+        health: 120,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 0.95
+        },
+        hitbox,
+        rotationMode: "limited",
+        frames: {
+            particle: "wall_particle"
         }
     };
 }
@@ -232,7 +252,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             indestructible: true,
             hitbox: new RectangleHitbox(v(-13, -6.85), v(13, 6.85)),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "gold_rock",
@@ -308,117 +331,60 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
             rotationMode: "limited"
         },
-        {
-            idString: "house_wall_1",
-            name: "House Wall Small",
-            material: "wood",
-            health: 100,
-            noResidue: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "house_wall_1.5",
-            name: "House Wall Medium",
-            material: "wood",
-            health: 100,
-            noResidue: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "house_wall_2",
-            name: "House Wall Large",
-            material: "wood",
-            health: 100,
-            noResidue: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-5.8, -1), v(5.8, 1)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "house_wall_2.5",
-            name: "House Wall Extra Large",
-            material: "wood",
-            health: 100,
-            noResidue: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "house_wall_3",
-            name: "House Wall Extra Extra Large",
-            material: "wood",
-            noResidue: true,
-            health: 100,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-10.8, -1), v(10.8, 1)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "house_wall_4",
-            name: "House Wall Extra Extra Extra Large",
-            material: "wood",
-            noResidue: true,
-            health: 100,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.95
-            },
-            hitbox: new RectangleHitbox(v(-15.8, -1), v(15.8, 1)),
-            rotationMode: "limited"
-        },
+        makeHouseWall("1", new RectangleHitbox(v(-3.5, -1), v(3.5, 1))),
+        makeHouseWall("2", new RectangleHitbox(v(-5.8, -1), v(5.8, 1))),
+        makeHouseWall("3", new RectangleHitbox(v(-5.8, -1), v(5.8, 1))),
+        makeHouseWall("4", new RectangleHitbox(v(-10.8, -1), v(10.8, 1))),
         {
             idString: "fridge",
             name: "Fridge",
             material: "metal",
             health: 100,
-            variations: 3,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-4.3, -2.6), v(4.3, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            indestructible: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "stove",
             name: "Stove",
             material: "metal",
-            health: 100,
-            variations: 3,
+            health: 140,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-4.2, -2.7), v(4.2, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            explosion: "stove_explosion",
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "washing_machine",
+            name: "Washing Machine",
+            material: "metal",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-4.3, -2.6), v(4.3, 3)),
+            rotationMode: "limited",
+            indestructible: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "house_exterior",
@@ -451,7 +417,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "toilet",
             name: "Toilet",
-            material: "metal",
+            material: "porcelain",
             health: 100,
             scale: {
                 spawnMin: 1.0,
@@ -459,7 +425,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true
         },
         {
             idString: "debug_marker",
@@ -478,10 +445,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             depth: 10
         },
         {
-            idString: "drawer_large",
+            idString: "small_drawer",
+            name: "Small Drawer",
+            material: "wood",
+            health: 80,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
+            rotationMode: "limited",
+            hasLoot: true,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "large_drawer",
             name: "Large Drawer",
             material: "wood",
-            health: 100,
+            health: 80,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -489,7 +473,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-6.3, -2.5), v(6.3, 3)),
             rotationMode: "limited",
-            hasLoot: true
+            hasLoot: true,
+            frames: {
+                particle: "furniture_particle"
+            }
         },
         {
             idString: "couch",
@@ -502,7 +489,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.5, -7.5), v(3.4, 7.5)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "furniture_particle"
+            }
         },
         {
             idString: "tv",
@@ -515,7 +505,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-0.8, -7.5), v(0.3, 7.6)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            depth: 2,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "table",
@@ -528,21 +522,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.8, -5.6), v(3.8, 5.6)),
-            rotationMode: "limited"
-        },
-        {
-            idString: "drawer_small",
-            name: "Small Drawer",
-            material: "wood",
-            health: 100,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.9
-            },
-            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
             rotationMode: "limited",
-            hasLoot: true
+            frames: {
+                particle: "furniture_particle"
+            },
+            depth: 2
         },
         {
             idString: "chair",
@@ -555,13 +539,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "furniture_particle"
+            }
         },
         {
             idString: "bookshelf",
             name: "Bookshelf",
             material: "wood",
-            health: 100,
+            health: 80,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -569,7 +556,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             variations: 2,
             hitbox: new RectangleHitbox(v(-5.2, -2.2), v(5.3, 1.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true,
+            frames: {
+                particle: "furniture_particle"
+            }
         },
         {
             idString: "window",
@@ -596,7 +587,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "garage_door",
+            name: "Garage Door",
+            material: "wood",
+            health: 200,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
+            rotationMode: "limited",
+            frames: {
+                particle: "furniture_particle"
+            }
         }
     ]
 );

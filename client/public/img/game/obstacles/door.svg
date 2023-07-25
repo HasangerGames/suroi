@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="75"
-   height="75"
-   viewBox="0 0 19.84375 19.843751"
+   width="120"
+   height="20"
+   viewBox="0 0 31.749999 5.2916669"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="drawer_large_particle.svg"
+   sodipodi:docname="door.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,9 +24,9 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="12.414927"
-     inkscape:cx="45.348635"
-     inkscape:cy="38.502039"
+     inkscape:zoom="6.2074635"
+     inkscape:cx="89.4085"
+     inkscape:cy="8.2159162"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -39,9 +39,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <path
-       id="rect848"
-       style="fill:#785a2e;fill-opacity:1;stroke:#302412;stroke-width:0.661475;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 5.1945792,0.46773346 -0.357459,0.357459 2.202726,2.68937504 -1.513832,0.02922 0.664246,0.768329 -0.507203,0.599414 -0.994763,-0.850502 -0.131023,1.09885 -1.759438,-1.937482 0.99613,2.107313 -0.369325,0.617675 -1.202941,-0.989285 -0.292632,0.215017 -0.903462,-0.536414 -0.55786997,0.557871 14.18143777,14.1814405 0.314547,-0.314545 -1.588245,-3.023555 1.675897,0.352893 -0.606722,-1.086981 1.124419,-0.254284 -0.273915,-1.092916 2.61999,2.15342 0.345129,-0.345132 -1.073285,-1.506987 1.784092,0.796181 0.404938,-0.404938 z" />
+    <rect
+       style="fill:#a29e99;stroke:none;stroke-width:0.145555;stroke-linecap:square"
+       id="rect846"
+       width="31.75"
+       height="5.2916665"
+       x="0"
+       y="0" />
   </g>
 </svg>

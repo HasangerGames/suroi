@@ -51,6 +51,30 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             }
         },
         {
+            idString: "stove_explosion",
+            name: "Stove",
+            damage: 130,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 8,
+                max: 25
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 0.02
+            },
+            animation: {
+                duration: 1000,
+                frame: "barrel_explosion.svg",
+                scale: 1.5
+            },
+            particles: {
+                duration: 1500,
+                frame: "barrel_fire_particle.svg",
+                count: 10
+            }
+        },
+        {
             idString: "super_barrel_explosion",
             name: "Super Barrel",
             damage: 160,
