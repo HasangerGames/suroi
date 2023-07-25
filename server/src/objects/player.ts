@@ -34,6 +34,7 @@ import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -390,6 +391,16 @@ export class Player extends GameObject {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
 
+    isOnOtherSide(position: Vector, orientation: number): boolean {
+        switch (orientation) {
+            case 0: return this.position.x < position.x;
+            case 1: return this.position.y < position.y;
+            case 2: return this.position.x > position.x;
+            case 3: return this.position.y > position.y;
+        }
+        return false;
+    }
+
     disableInvulnerability(): void {
         if (this.invulnerable) {
             this.invulnerable = false;
@@ -503,6 +514,8 @@ export class Player extends GameObject {
 
         amount = this._clampDamageAmount(amount);
 
+        /* eslint-disable @typescript-eslint/restrict-plus-operands */
+
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const applyPlayerFX = (modifiers: ExtendedWearerAttributes): void => {
@@ -519,7 +532,7 @@ export class Player extends GameObject {
 
             if (canTrackStats && !this.dead) {
                 if ((weaponUsed.stats.damage += amount) <= ((attributes?.damageDealt ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
                     applyPlayerFX(attributes!.damageDealt!);
                 }
             }
@@ -539,7 +552,7 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             if (canTrackStats) {
                 if (weaponUsed.stats.kills++ <= ((attributes?.kill ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
                     applyPlayerFX(attributes!.kill!);
                 }
             }

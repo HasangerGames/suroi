@@ -99,7 +99,7 @@ export const Maps: Record<string, MapDefinition> = {
 
             for (const obstacle of Obstacles.definitions) {
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.genObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
+                    map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
@@ -124,7 +124,7 @@ export const Maps: Record<string, MapDefinition> = {
     },
     singleObstacle: {
         genCallback: (map: Map) => {
-            map.genObstacle("house_wall_1", v(512, 512), 0, 1, 0);
+            map.generateObstacle("door", v(512, 512), 0, 1, 0);
         }
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -175,10 +175,10 @@ export const Maps: Record<string, MapDefinition> = {
             const center = v(map.width / 2, map.height / 2);
 
             for (const obstacle of obstacles) {
-                map.genObstacle(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
-                map.genObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
-                map.genObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
-                map.genObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
             }
 
             genLoots(vAdd(center, v(-70, 70)), 8, 8);
@@ -207,7 +207,7 @@ export const Maps: Record<string, MapDefinition> = {
             for (const obstacle in randomObstacles) {
                 const obstacleType = ObjectType.fromString(ObjectCategory.Obstacle, obstacle);
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
-                    map.genObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
+                    map.generateObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
                 }
             }
         }

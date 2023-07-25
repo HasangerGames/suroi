@@ -1,6 +1,6 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
-import { v } from "../utils/vector";
+import { v, type Vector } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain"
@@ -23,6 +23,8 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
     readonly spawnWithLoot?: boolean
+    readonly isDoor?: boolean
+    readonly hingeOffset?: Vector
     readonly explosion?: string
 
     readonly frames?: {
@@ -413,6 +415,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-24.1, -35.13), v(-20.85, -32)) // Right post
             ]),
             rotationMode: "limited"
+        },
+        {
+            idString: "door",
+            name: "Door",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-4.55, -0.8), v(4.55, 0.8)),
+            rotationMode: "limited",
+            noResidue: true,
+            isDoor: true,
+            hingeOffset: v(-5.5, 0),
+            depth: 4,
+            frames: {
+                particle: "furniture_particle"
+            }
         },
         {
             idString: "toilet",

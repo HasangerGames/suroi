@@ -146,8 +146,15 @@ export class Map {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
-            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation,
-                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation));
+            this.generateObstacle(
+                obstacleType,
+                obstaclePos,
+                obstacleRotation,
+                obstacleData.scale ?? 1,
+                obstacleData.variation,
+                orientation,
+                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation)
+            );
         }
 
         if (definition.lootSpawners) {
@@ -166,7 +173,13 @@ export class Map {
         return building;
     }
 
-    generateObstacles(idString: string, count: number, spawnProbability?: number, radius?: number, squareRadius?: boolean): void {
+    generateObstacles(
+        idString: string,
+        count: number,
+        spawnProbability?: number,
+        radius?: number,
+        squareRadius?: boolean
+    ): void {
         const type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, idString);
 
         for (let i = 0; i < count; i++) {
@@ -188,16 +201,20 @@ export class Map {
                     position = this.getRandomPositionInRadiusFor(type, scale, orientation, radius, squareRadius);
                 }
 
-                this.genObstacle(type, position, undefined, scale, variation);
+                this.generateObstacle(type, position, undefined, scale, variation);
             }
         }
     }
 
-    genObstacle(type: string | ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+    generateObstacle(
+        type: string | ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
         position: Vector,
         rotation?: number,
         scale?: number,
-        variation?: Variation, lootSpawnOffset?: Vector): Obstacle {
+        variation?: Variation,
+        orientation?: Orientation,
+        lootSpawnOffset?: Vector
+    ): Obstacle {
         if (typeof type === "string") {
             type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, type);
         }
@@ -218,6 +235,7 @@ export class Map {
             rotation,
             scale,
             variation,
+            orientation,
             lootSpawnOffset
         );
         this.game.staticObjects.add(obstacle);

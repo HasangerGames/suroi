@@ -3,12 +3,12 @@ import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { type LootItem, getLootTableLoot } from "../utils/misc";
+import { type LootItem, getLootTableLoot, v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { transformRectangle } from "../../../common/src/utils/math";
+import { type Vector, vSub, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { addAdjust, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -18,6 +18,7 @@ import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
+import { type Player } from "./player";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -52,7 +53,29 @@ export class Obstacle extends GameObject {
 
     lootSpawnOffset: Vector;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, position: Vector, rotation: number, scale: number, variation: Variation = 0, lootSpawnOffset?: Vector) {
+    isDoor: boolean;
+    door?: {
+        open: boolean
+        closedPosition: Vector
+        closedHitbox: Hitbox
+        openHitbox: Hitbox
+        openAltHitbox: Hitbox
+        closedOrientation: Orientation
+        openOrientation: Orientation
+        openAltOrientation: Orientation
+        orientation: Orientation
+    };
+
+    constructor(
+        game: Game,
+        type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+        position: Vector,
+        rotation: number,
+        scale: number,
+        variation: Variation = 0,
+        orientation: Orientation = 0,
+        lootSpawnOffset?: Vector
+    ) {
         super(game, type, position);
 
         this.rotation = rotation;
@@ -110,6 +133,64 @@ export class Obstacle extends GameObject {
                     this.position,
                     item.count);
             }
+        }
+
+        this.isDoor = definition.isDoor ?? false;
+        if (this.isDoor) {
+            if (!(this.hitbox instanceof RectangleHitbox && definition.hitbox instanceof RectangleHitbox)) {
+                throw new Error("Door with non-rectangular hitbox");
+            }
+
+            let openOrientation: Orientation | undefined;
+            let openAltOrientation: Orientation | undefined;
+            switch (orientation) { // TODO Simplify this (wrapping function?)
+                case 0:
+                    openOrientation = 1;
+                    openAltOrientation = 3;
+                    break;
+                case 1:
+                    openOrientation = 2;
+                    openAltOrientation = 0;
+                    break;
+                case 2:
+                    openOrientation = 3;
+                    openAltOrientation = 1;
+                    break;
+                case 3:
+                    openOrientation = 0;
+                    openAltOrientation = 2;
+                    break;
+            }
+            if (openOrientation === undefined || openAltOrientation === undefined) {
+                throw new Error("Invalid door orientation");
+            }
+
+            const openRectangle = transformRectangle(
+                this.position,
+                definition.hitbox.min,
+                definition.hitbox.max,
+                1,
+                openOrientation
+            );
+            const openAltRectangle = transformRectangle(
+                this.position,
+                definition.hitbox.min,
+                definition.hitbox.max,
+                1,
+                openAltOrientation
+            );
+
+            this.door = {
+                open: false,
+                closedPosition: vClone(this.position),
+                closedHitbox: this.hitbox.clone(),
+                openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
+                openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max),
+                closedOrientation: orientation,
+                openOrientation,
+                openAltOrientation,
+                orientation
+            };
         }
     }
 
@@ -230,9 +311,88 @@ export class Obstacle extends GameObject {
         }
     }
 
+    interact(player: Player): void {
+        if (this.door === undefined) return;
+        if (!(this.hitbox instanceof RectangleHitbox)) {
+            throw new Error("Door with non-rectangular hitbox");
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        const hitbox = this.hitbox as RectangleHitbox;
+
+        this.door.open = !this.door.open;
+        if (this.door.open) {
+            if (player.isOnOtherSide(this.position, this.door.orientation)) {
+                this.door.orientation = this.door.openAltOrientation;
+                this.hitbox = this.door.openAltHitbox.clone();
+            } else {
+                this.door.orientation = this.door.openOrientation;
+                this.hitbox = this.door.openHitbox.clone();
+            }
+        } else {
+            this.door.orientation = this.door.closedOrientation;
+            this.hitbox = this.door.closedHitbox.clone();
+        }
+
+        // TODO Make the door push players out of the way when opened, not just when closed
+        // When pushing, ensure that they won't get stuck in anything.
+        // If they do, move them to the opposite side regardless of their current position.
+        if (player?.hitbox.collidesWith(hitbox)) {
+            const newPosition = player.position.clone();
+            if (player.isOnOtherSide(this.position, this.door.orientation)) {
+                switch (this.door.orientation) {
+                    case 0:
+                        newPosition.x = hitbox.min.x - player.scale;
+                        break;
+                    case 1:
+                        newPosition.y = hitbox.min.y - player.scale;
+                        break;
+                    case 2:
+                        newPosition.x = hitbox.max.x + player.scale;
+                        break;
+                    case 3:
+                        newPosition.y = hitbox.max.y + player.scale;
+                        break;
+                }
+            } else {
+                switch (this.door.orientation) {
+                    case 0:
+                        newPosition.x = hitbox.max.x + player.scale;
+                        break;
+                    case 1:
+                        newPosition.y = hitbox.max.y + player.scale;
+                        break;
+                    case 2:
+                        newPosition.x = hitbox.min.x - player.scale;
+                        break;
+                    case 3:
+                        newPosition.y = hitbox.min.y - player.scale;
+                        break;
+                }
+            }
+            player.body.setPosition(newPosition);
+        }
+
+        // Reposition the body
+        this.body?.setPosition(v2v(addAdjust(vClone(this.door.closedPosition), this.definition.hingeOffset ?? v(0, 0), this.door.orientation)));
+
+        // Destroy the old fixture
+        // eslint moment
+        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain,@typescript-eslint/no-non-null-assertion
+        if (this.body?.getFixtureList() !== null) this.body?.destroyFixture(this.body?.getFixtureList()!);
+
+        // Create a new fixture
+        this.createFixture(this.hitbox);
+
+        this.game.partialDirtyObjects.add(this);
+    }
+
     override serializePartial(stream: SuroiBitStream): void {
         stream.writeScale(this.scale);
         stream.writeBoolean(this.dead);
+        if (this.isDoor && this.door !== undefined) {
+            stream.writeBits(this.door.orientation, 2);
+        }
     }
 
     override serializeFull(stream: SuroiBitStream): void {

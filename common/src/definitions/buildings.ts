@@ -213,6 +213,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(30.18, -6.5),
                 rotation: 0
             },
+            // Front Door
+            {
+                id: "door",
+                position: v(-31.23, -20),
+                rotation: 0
+            },
             // Living Room Window
             {
                 id: "window",
