@@ -12,30 +12,32 @@ import { type Map } from "../map";
 
 interface MapDefinition {
 
-    buildings?: Record<string, number>
+    readonly buildings?: Record<string, number>
 
-    obstacles?: Record<string, number>
+    readonly obstacles?: Record<string, number>
 
     // Obstacles with custom spawn logic
-    specialObstacles?: Record<string, {
-        spawnProbability?: number
-        radius?: number
-        squareRadius?: boolean
-    }
-    &
-    ({
-        count: number
-    } |
-    {
-        min: number
-        max: number
-    })
+    /* eslint-disable @typescript-eslint/indent */
+    readonly specialObstacles?: Record<
+        string,
+        {
+            readonly spawnProbability?: number
+            readonly radius?: number
+            readonly squareRadius?: boolean
+        } & (
+            {
+                readonly count: number
+            } | {
+                readonly min: number
+                readonly max: number
+            }
+        )
     >
 
-    loots?: Record<string, number>
+    readonly loots?: Record<string, number>
 
     // Custom callback to generate stuff
-    genCallback?: (map: Map) => void
+    readonly genCallback?: (map: Map) => void
 }
 
 export const Maps: Record<string, MapDefinition> = {
@@ -143,7 +145,8 @@ export const Maps: Record<string, MapDefinition> = {
                     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
                     if (((def.itemType === ItemType.Melee || def.itemType === ItemType.Scope) && def.noDrop) ||
                         "ephemeral" in def ||
-                        (def.itemType === ItemType.Backpack && def.level === 0)) continue;
+                        (def.itemType === ItemType.Backpack && def.level === 0) ||
+                        def.itemType === ItemType.Skin) continue;
 
                     map.game.addLoot(itemType, itemPos, Infinity);
 

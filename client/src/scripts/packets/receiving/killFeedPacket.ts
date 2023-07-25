@@ -2,7 +2,7 @@ import $ from "jquery";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
 
-import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType } from "../../../../../common/src/constants";
+import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, type ObjectCategory } from "../../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { randomKillWord } from "../../utils/misc";
@@ -73,13 +73,17 @@ export class KillFeedPacket extends ReceivingPacket {
                 }
 
                 let weaponUsed: ItemDefinition | undefined;
-                if (stream.readBoolean()) {
-                    weaponUsed = stream.readObjectType().definition as ItemDefinition;
+                let killstreak: number | undefined;
+                if (stream.readBoolean()) { // used a weapon
+                    weaponUsed = stream.readObjectType<ObjectCategory.Loot, ItemDefinition>().definition;
+                    if (stream.readBoolean()) { // weapon tracks killstreaks
+                        killstreak = stream.readUint8();
+                    }
                 }
 
+                /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-non-null-assertion */
                 const gasKill = stream.readBoolean();
 
-                /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-non-null-assertion */
                 if (localStorageInstance.config.textKillFeed) {
                     const message = twoPartyInteraction
                         ? `${killedBy!.name} ${randomKillWord()} ${killed.name}`
@@ -87,13 +91,14 @@ export class KillFeedPacket extends ReceivingPacket {
                             ? `${killed.name} died to the gas`
                             : `${killed.name} committed suicide`;
 
-                    killFeedItem.html(`<img class="kill-icon" src="/img/misc/skull.svg" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
+                    killFeedItem.html(`${killstreak !== undefined && killstreak > 1 ? killstreak : ""}<img class="kill-icon" src="./img/misc/skull.svg" alt="Skull"> ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`);
                 } else {
                     const killerName = twoPartyInteraction ? killedBy!.name : "";
                     const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
                     const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : ` (${weaponUsed?.name})`;
+                    const killstreakText = killstreak !== undefined && killstreak > 1 ? ` <span style="font-size: 80%">(${killstreak} <img class="kill-icon" src="./img/misc/skull.svg" alt="Skull" height=12>)</span>` : "";
 
-                    killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}"> ${killed.name}`);
+                    killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">${killstreakText} ${killed.name}`);
                 }
 
                 break;
