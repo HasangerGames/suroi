@@ -121,7 +121,8 @@ export const Maps: Record<string, MapDefinition> = {
                     /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
                     if (((def.itemType === ItemType.Melee || def.itemType === ItemType.Scope) && def.noDrop) ||
                         "ephemeral" in def ||
-                        (def.itemType === ItemType.Backpack && def.level === 0)) continue;
+                        (def.itemType === ItemType.Backpack && def.level === 0) ||
+                        def.itemType === ItemType.Skin) continue;
 
                     map.game.addLoot(itemType, itemPos, Infinity);
 

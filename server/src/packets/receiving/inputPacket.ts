@@ -12,7 +12,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.player;
-        if (player.dead) return; // Ignore input packets from dead players
+        if (player.dead || !player.joined) return; // Ignore input packets from dead players
 
         player.movement.up = stream.readBoolean();
         player.movement.down = stream.readBoolean();
