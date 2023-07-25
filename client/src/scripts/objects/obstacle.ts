@@ -25,7 +25,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         super(game, scene, type, id);
 
         // the image and emitter key, position and other properties are set after the obstacle is deserialized
-        this.image = this.scene.add.image(0, 0, "main");
+        this.image = this.scene.add.image(0, 0, "main"); //.setAlpha(0.5);
         this.container.add(this.image);
         // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
         this.emitter = this.scene.add.particles(0, 0, "main");
@@ -57,7 +57,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             this.destroyed = true;
             if (!this.isNew) {
                 this.scene.playSound(`${definition.material}_destroyed`);
-                this.image.setTexture("main", `${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
+                if (definition.noResidue) {
+                    this.image.setVisible(false);
+                } else {
+                    this.image.setTexture("main", `${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
+                }
                 this.container.setRotation(this.rotation).setScale(this.scale).setDepth(0);
                 this.emitter.explode(10);
             }

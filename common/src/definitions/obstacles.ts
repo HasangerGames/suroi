@@ -7,6 +7,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
+    readonly noResidue?: boolean
     readonly hideOnMap?: boolean
     readonly scale: {
         readonly spawnMin: number
@@ -31,7 +32,7 @@ export interface ObstacleDefinition extends ObjectDefinition {
     }
 }
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass"];
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -258,7 +259,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
             rotationMode: "limited"
@@ -272,7 +273,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
             rotationMode: "limited"
@@ -282,49 +283,81 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "House Wall Small",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
+            },
+            hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "house_wall_1.5",
+            name: "House Wall Medium",
+            material: "wood",
+            health: 100,
+            noResidue: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
             rotationMode: "limited"
         },
         {
             idString: "house_wall_2",
-            name: "House Wall Medium",
+            name: "House Wall Large",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-5.8, -1), v(5.8, 1)),
             rotationMode: "limited"
         },
         {
-            idString: "house_wall_3",
-            name: "House Wall Large",
+            idString: "house_wall_2.5",
+            name: "House Wall Extra Large",
             material: "wood",
+            health: 100,
+            noResidue: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.95
+            },
+            hitbox: new RectangleHitbox(v(-3.5, -1), v(3.5, 1)),
+            rotationMode: "limited"
+        },
+        {
+            idString: "house_wall_3",
+            name: "House Wall Extra Extra Large",
+            material: "wood",
+            noResidue: true,
             health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-10.8, -1), v(10.8, 1)),
             rotationMode: "limited"
         },
         {
             idString: "house_wall_4",
-            name: "House Wall Extra Large",
+            name: "House Wall Extra Extra Extra Large",
             material: "wood",
+            noResidue: true,
             health: 100,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-15.8, -1), v(15.8, 1)),
             rotationMode: "limited"
@@ -363,6 +396,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "wood",
             health: 1000,
             indestructible: true,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -408,6 +442,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 1.0
             },
+            variations: 2,
             hitbox: new CircleHitbox(0),
             rotationMode: "limited",
             depth: 10
@@ -441,7 +476,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "tv",
             name: "TV",
-            material: "metal",
+            material: "glass",
             health: 100,
             scale: {
                 spawnMin: 1.0,
@@ -491,8 +526,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited"
         },
         {
-            idString: "small_table",
-            name: "Small Table",
+            idString: "bookshelf",
+            name: "Bookshelf",
             material: "wood",
             health: 100,
             scale: {
@@ -500,6 +535,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            variations: 2,
             hitbox: new RectangleHitbox(v(-5.2, -2.2), v(5.3, 1.8)),
             rotationMode: "limited"
         },
@@ -507,13 +543,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "window",
             name: "Window",
             material: "glass",
-            health: 100,
+            health: 40,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-0.9, -4.7), v(0.9, 4.7)),
+            depth: 2,
             rotationMode: "limited"
         },
         {

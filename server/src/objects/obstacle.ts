@@ -91,7 +91,7 @@ export class Obstacle extends GameObject {
                     userData: this,
                     isSensor: definition.noCollisions
                 });
-                game.staticObjects.add(new Obstacle(
+                /*game.staticObjects.add(new Obstacle(
                     game,
                     ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
                     Vec2(hitbox.min.x, hitbox.min.y),
@@ -111,7 +111,7 @@ export class Obstacle extends GameObject {
                     Vec2(hitbox.min.x + width, hitbox.min.y + height),
                     0,
                     1
-                ));
+                ));*/
             }
         };
         if (this.hitbox instanceof ComplexHitbox) {
