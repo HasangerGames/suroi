@@ -9,7 +9,7 @@ import { Skins } from "../../common/src/definitions/skins";
 
 const config = {
     address: "127.0.0.1:8000",
-    botCount: 1,
+    botCount: 50,
     joinDelay: 50
 };
 
