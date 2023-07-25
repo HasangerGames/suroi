@@ -6,15 +6,17 @@ import { v, vRotate } from "../../../common/src/utils/vector";
 import { Vec2 } from "planck";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode, AnimationType } from "../../../common/src/constants";
+import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 
 /**
  * A class representing a firearm
  */
 export class GunItem extends InventoryItem {
     declare readonly category: ItemType.Gun;
+    declare readonly type: ObjectType<ObjectCategory.Loot, GunDefinition>;
 
     readonly definition: GunDefinition;
 
@@ -40,7 +42,7 @@ export class GunItem extends InventoryItem {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
 
-        this.definition = this.type.definition as GunDefinition;
+        this.definition = this.type.definition;
     }
 
     /**
@@ -104,13 +106,11 @@ export class GunItem extends InventoryItem {
         }
 
         for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
-            const angle = normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2);
             this.owner.game.addBullet(
                 position,
-                angle,
-                definition,
-                this.type,
-                owner
+                normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2),
+                this,
+                this.owner
             );
         }
 

@@ -27,11 +27,14 @@ import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type GunItem } from "../inventory/gunItem";
+import { GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
+import { MeleeItem } from "../inventory/meleeItem";
 import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -56,17 +59,67 @@ export class Player extends GameObject {
 
     name: string;
 
-    loadout: {
+    readonly loadout: {
         skin: ObjectType<ObjectCategory.Loot, SkinDefinition>
-        emotes: Array<ObjectType<ObjectCategory.Emote, EmoteDefinition>>
+        readonly emotes: Array<ObjectType<ObjectCategory.Emote, EmoteDefinition>>
     };
 
     joined = false;
     disconnected = false;
 
-    private _health = 100;
+    static readonly DEFAULT_MAX_HEALTH = 100;
+    private _maxHealth = Player.DEFAULT_MAX_HEALTH;
+    get maxHealth(): number { return this._maxHealth; }
+    set maxHealth(maxHealth: number) {
+        this._maxHealth = maxHealth;
+        this.dirty.maxMinStats = true;
+        this.health = this._health;
+    }
 
-    private _adrenaline = 0;
+    private _health = this._maxHealth;
+    get health(): number { return this._health; }
+    set health(health: number) {
+        this._health = Math.min(health, this._maxHealth);
+
+        this.dirty.health = true;
+    }
+
+    static readonly DEFAULT_MAX_ADRENALINE = 100;
+    private _maxAdrenaline = Player.DEFAULT_MAX_ADRENALINE;
+    get maxAdrenaline(): number { return this._maxAdrenaline; }
+    set maxAdrenaline(maxAdrenaline: number) {
+        this._maxAdrenaline = maxAdrenaline;
+        this.dirty.maxMinStats = true;
+        this.adrenaline = this._adrenaline;
+    }
+
+    private _minAdrenaline = 0;
+    get minAdrenaline(): number { return this._minAdrenaline; }
+    set minAdrenaline(minAdrenaline: number) {
+        this._minAdrenaline = minAdrenaline;
+        this.dirty.maxMinStats = true;
+        this.adrenaline = this._adrenaline;
+    }
+
+    private _adrenaline = this._minAdrenaline;
+    get adrenaline(): number { return this._adrenaline; }
+    set adrenaline(adrenaline: number) {
+        this._adrenaline = Math.min(Math.max(adrenaline, this._minAdrenaline), this._maxAdrenaline);
+
+        this.dirty.adrenaline = true;
+    }
+
+    private _modifiers = {
+        // Multiplicative
+        maxHealth: 1,
+        maxAdrenaline: 1,
+        baseSpeed: 1,
+
+        // Additive
+        minAdrenaline: 0
+    };
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
+    get modifiers() { return this._modifiers; }
 
     killedBy?: Player;
 
@@ -132,6 +185,7 @@ export class Player extends GameObject {
      */
     readonly dirty = {
         health: true,
+        maxMinStats: true,
         adrenaline: true,
         activeWeaponIndex: true,
         weapons: true,
@@ -265,22 +319,40 @@ export class Player extends GameObject {
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
             (this.inventory.getWeapon(0) as GunItem).ammo = 1;
-            this.inventory.addOrReplaceWeapon(1, "deathray");
-            (this.inventory.getWeapon(1) as GunItem).ammo = 1;
+
+            this.inventory.addOrReplaceWeapon(1, "revitalizer");
+            (this.inventory.getWeapon(1) as GunItem).ammo = 5;
+            this.inventory.items["12gauge"] = 15;
+
             this.inventory.addOrReplaceWeapon(2, "kbar");
 
-            this.inventory.vest = ObjectType.fromString(ObjectCategory.Loot, "tactical_vest");
-            this.inventory.helmet = ObjectType.fromString(ObjectCategory.Loot, "tactical_helmet");
-            this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "tactical_backpack");
-
-            for (const item of Object.keys(this.inventory.items)) {
-                this.inventory.items[item] = this.inventory.backpack.definition.maxCapacity[item] ?? 1;
-            }
-
+            this.inventory.items["2x_scope"] = 1;
+            this.inventory.items["4x_scope"] = 1;
             this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
+        this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
+    }
+
+    calculateSpeed(): number {
+        let recoilMultiplier = 1;
+        if (this.recoil.active) {
+            if (this.recoil.time < this.game.now) {
+                this.recoil.active = false;
+            } else {
+                recoilMultiplier = this.recoil.multiplier;
+            }
+        }
+
+        // shove it
+        /* eslint-disable no-multi-spaces */
+        return Config.movementSpeed *                    // Base speed
+            recoilMultiplier *                           // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *        // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *             // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier *  // Active item speed modifier
+            this._modifiers.baseSpeed;                   // Current on-wearer modifier
     }
 
     setVelocity(xVelocity: number, yVelocity: number): void {
@@ -292,27 +364,6 @@ export class Player extends GameObject {
 
     get position(): Vec2 {
         return this.deathPosition ?? this.body.getPosition();
-    }
-
-    get health(): number {
-        return this._health;
-    }
-
-    set health(health: number) {
-        this._health = health;
-        if (this._health > 100) this._health = 100;
-        this.dirty.health = true;
-    }
-
-    get adrenaline(): number {
-        return this._adrenaline;
-    }
-
-    set adrenaline(adrenaline: number) {
-        this._adrenaline = adrenaline;
-        if (this._adrenaline < 0) this._adrenaline = 0;
-        if (this.adrenaline > 100) this._adrenaline = 100;
-        this.dirty.adrenaline = true;
     }
 
     get zoom(): number {
@@ -338,6 +389,16 @@ export class Player extends GameObject {
 
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+    }
+
+    isOnOtherSide(position: Vector, orientation: number): boolean {
+        switch (orientation) {
+            case 0: return this.position.x < position.x;
+            case 1: return this.position.y < position.y;
+            case 2: return this.position.x > position.x;
+            case 3: return this.position.y > position.y;
+        }
+        return false;
     }
 
     disableInvulnerability(): void {
@@ -419,8 +480,8 @@ export class Player extends GameObject {
     }
 
     private _clampDamageAmount(amount: number): number {
-        if (this.health - amount > 100) {
-            amount = -(100 - this.health);
+        if (this.health - amount > this.maxHealth) {
+            amount = -(this.maxHealth - this.health);
         }
 
         if (this.health - amount <= 0) {
@@ -432,10 +493,10 @@ export class Player extends GameObject {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
-        // Reduction are merged additively
+        // Reductions are merged additively
         amount *= 1 - (
             (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
         );
@@ -448,30 +509,85 @@ export class Player extends GameObject {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: ObjectType): void {
+    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
+
+        /* eslint-disable @typescript-eslint/restrict-plus-operands */
+
+        const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
+        const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
+        const applyPlayerFX = (modifiers: ExtendedWearerAttributes): void => {
+            if (source instanceof Player) {
+                source.health += modifiers.healthRestored ?? 0;
+                source.adrenaline += modifiers.adrenalineRestored ?? 0;
+            }
+        };
 
         // Decrease health; update damage done and damage taken
         this.health -= amount;
         if (amount > 0) {
             this.damageTaken += amount;
 
-            if (source instanceof Player) this.hitEffect = true;
-        }
-        if (source instanceof Player && source !== this) {
-            source.damageDone += amount;
+            if (canTrackStats && !this.dead) {
+                if ((weaponUsed.stats.damage += amount) <= ((attributes?.damageDealt ?? { limit: -Infinity }).limit ?? Infinity)) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
+                    applyPlayerFX(attributes!.damageDealt!);
+                }
+            }
+
+            if (source instanceof Player) {
+                this.hitEffect = true;
+
+                if (source !== this) {
+                    source.damageDone += amount;
+                }
+            }
         }
 
         this.partialDirtyObjects.add(this);
         this.game.partialDirtyObjects.add(this);
 
-        if (this.health <= 0) this.die(source, weaponUsed);
+        if (this.health <= 0 && !this.dead) {
+            if (canTrackStats) {
+                if (weaponUsed.stats.kills++ <= ((attributes?.kill ?? { limit: -Infinity }).limit ?? Infinity)) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
+                    applyPlayerFX(attributes!.kill!);
+                }
+            }
+
+            this.die(source, weaponUsed);
+        }
+    }
+
+    updateAndApplyModifiers(): void {
+        const newModifiers: this["modifiers"] = {
+            maxHealth: 1,
+            maxAdrenaline: 1,
+            baseSpeed: 1,
+            minAdrenaline: 0
+        };
+
+        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
+            const weapon = this.inventory.getWeapon(i);
+
+            if (weapon === undefined) continue;
+
+            newModifiers.maxAdrenaline *= weapon._modifiers.maxAdrenaline;
+            newModifiers.maxHealth *= weapon._modifiers.maxHealth;
+            newModifiers.baseSpeed *= weapon._modifiers.baseSpeed;
+            newModifiers.minAdrenaline += weapon._modifiers.minAdrenaline;
+        }
+
+        this._modifiers = newModifiers;
+        this.maxHealth = Player.DEFAULT_MAX_HEALTH * this._modifiers.maxHealth;
+        this.maxAdrenaline = Player.DEFAULT_MAX_ADRENALINE * this._modifiers.maxAdrenaline;
+        this.minAdrenaline = this.modifiers.minAdrenaline;
     }
 
     // dies of death
-    die(source?: GameObject | "gas", weaponUsed?: ObjectType): void {
+    die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 

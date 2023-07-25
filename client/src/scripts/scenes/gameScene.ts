@@ -63,7 +63,7 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(healingItem.idString, `healing/${healingItem.idString}`);
         }
 
-        const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing", "emote"];
+        const soundsToLoad: string[] = ["pickup", "ammo_pickup", "gun_click", "swing", "emote", "door_open", "door_close"];
         for (const sound of soundsToLoad) {
             this.loadSound(sound, sound);
         }

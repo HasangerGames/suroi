@@ -2,33 +2,57 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="41.312031mm"
-   height="11.805946mm"
-   viewBox="0 0 41.312031 11.805946"
+   width="143.92101"
+   height="41.129002"
+   viewBox="0 0 38.079101 10.882048"
    version="1.1"
    id="svg1"
+   sodipodi:docname="house_wall_1.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="6.0276635"
+     inkscape:cx="56.738403"
+     inkscape:cy="13.438043"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     units="px" />
   <defs
      id="defs1" />
   <g
-     id="layer1"
-     transform="translate(-121.55161,-197.96991)">
+     id="g824"
+     transform="scale(0.92174297)">
     <rect
-       style="display:inline;fill:#77654d;fill-opacity:1;stroke-width:0.349855"
+       style="display:inline;fill:#4a4134;fill-opacity:1;stroke-width:0.349855"
        id="rect18794-9-1-4-1"
        width="41.312031"
        height="11.805946"
-       x="121.55161"
-       y="197.96991"
+       x="2.8540039e-06"
+       y="-3.3203125e-07"
        ry="0" />
     <rect
        style="display:inline;fill:#afa08c;fill-opacity:1;stroke-width:0.242471"
        id="rect18794-7-90-1-7-7"
        width="35.569847"
        height="6.5863328"
-       x="124.23034"
-       y="200.54324"
+       x="2.8710918"
+       y="2.6098068"
        ry="1.9595702" />
   </g>
 </svg>

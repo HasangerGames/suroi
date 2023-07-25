@@ -2,19 +2,21 @@ import { InventoryItem } from "./inventoryItem";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type Player } from "../objects/player";
 import { vRotate } from "../../../common/src/utils/vector";
-import { AnimationType, FireMode } from "../../../common/src/constants";
+import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
 import { Vec2 } from "planck";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { type CollisionRecord } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { Obstacle } from "../objects/obstacle";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 
 /**
  * A class representing a melee weapon
  */
 export class MeleeItem extends InventoryItem {
     declare readonly category: ItemType.Melee;
+    declare readonly type: ObjectType<ObjectCategory.Loot, MeleeDefinition>;
 
     readonly definition: MeleeDefinition;
 
@@ -31,7 +33,7 @@ export class MeleeItem extends InventoryItem {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
         }
 
-        this.definition = this.type.definition as MeleeDefinition;
+        this.definition = this.type.definition;
     }
 
     /**

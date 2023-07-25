@@ -213,7 +213,7 @@ app.ws("/play", {
             role,
             isDev,
             nameColor: isDev ? color : "",
-            lobbyClearing: searchParams.get("lobbyClearing") !== null
+            lobbyClearing: searchParams.get("lobbyClearing") === "true"
         };
         res.upgrade(
             userData,

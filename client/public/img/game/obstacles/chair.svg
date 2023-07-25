@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="36.146301mm"
-   height="35.209538mm"
-   viewBox="0 0 36.146301 35.209538"
+   width="136.616"
+   height="133.60699"
+   viewBox="0 0 36.146317 35.350183"
    version="1.1"
    id="svg1408"
    sodipodi:docname="chair.svg"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs1402" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#505050"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.88"
-     inkscape:cx="98.62714"
-     inkscape:cy="122.78685"
-     inkscape:document-units="mm"
+     inkscape:zoom="7.52"
+     inkscape:cx="56.914894"
+     inkscape:cy="90.824468"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
@@ -34,11 +34,14 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1267"
-     inkscape:window-height="1198"
-     inkscape:window-x="1315"
-     inkscape:window-y="172"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="1"
+     units="px"
+     height="133.607px" />
   <metadata
      id="metadata1405">
     <rdf:RDF>
@@ -47,7 +50,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -57,41 +59,41 @@
      id="layer1"
      transform="translate(-79.738235,-87.67289)">
     <rect
-       style="display:inline;fill:#3e2311;fill-opacity:1;stroke-width:0.116395"
+       style="display:inline;fill:#302412;fill-opacity:1;stroke-width:0.116395"
        id="rect258-2-8-8"
        width="33.983067"
        height="25.737555"
-       x="80.807793"
-       y="87.53215"
-       rx="3.3192708"
-       ry="2.5716834" />
+       x="80.819855"
+       y="87.67289"
+       rx="3.3072917"
+       ry="3.3072917" />
     <rect
-       style="display:inline;fill:#886635;fill-opacity:1;stroke-width:0.154951"
+       style="display:inline;fill:#785a2e;fill-opacity:1;stroke-width:0.156102"
        id="rect567-2-8-9"
-       width="29.573353"
+       width="30.014334"
        height="20.802153"
-       x="83.024712"
-       y="89.380615"
-       rx="3.6835272"
-       ry="2.8660765" />
+       x="82.80423"
+       y="89.657265"
+       rx="1.3426431"
+       ry="1.3229166" />
     <rect
-       style="display:inline;fill:#3e2311;fill-opacity:1;stroke-width:0.0775303"
+       style="display:inline;fill:#302412;fill-opacity:1;stroke-width:0.0775303"
        id="rect258-2-8-5-7"
-       width="10.736058"
+       width="10.736"
        height="36.146301"
-       x="112.14637"
+       x="112.28711"
        y="-115.88454"
-       rx="1.3848251"
-       ry="0.71205157"
+       rx="3.3072917"
+       ry="3.3072917"
        transform="rotate(90)" />
     <rect
-       style="display:inline;fill:#946f39;fill-opacity:1;stroke-width:0.232784"
+       style="display:inline;fill:#785a2e;fill-opacity:1;stroke-width:0.232545"
        id="rect690-3-1-7"
-       width="32.243656"
+       width="32.177567"
        height="5.6046877"
-       x="81.830299"
-       y="114.43059"
-       rx="1.4198186"
-       ry="5.6046877" />
+       x="81.722603"
+       y="114.85277"
+       rx="1.3202051"
+       ry="1.3229166" />
   </g>
 </svg>

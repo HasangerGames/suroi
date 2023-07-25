@@ -105,7 +105,7 @@ export const defaultConfig: Config = {
         cancelAction: ["X", ""],
         toggleMap: ["G", "M"],
         toggleMiniMap: ["N", ""],
-        emoteWheel: ["Mouse1", ""]
+        emoteWheel: ["Mouse2", ""]
     },
     masterVolume: 1,
     musicVolume: 1,

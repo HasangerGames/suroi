@@ -6,7 +6,8 @@ import type { ObstacleDefinition } from "../../../../../common/src/definitions/o
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { vAdd, vMul } from "../../../../../common/src/utils/vector";
+import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
+import { type Orientation } from "../../../../../common/src/typings";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -63,15 +64,30 @@ export class MapPacket extends ReceivingPacket {
                     }
                     break;
                 }
-                case ObjectCategory.Building:
+                case ObjectCategory.Building: {
                     texture += "_ceiling";
-                    rotation = stream.readObstacleRotation("limited");
+                    rotation = stream.readObstacleRotation("limited") as Orientation;
 
-                    position = vAdd(position, vMul((type.definition as BuildingDefinition).ceilingImagePos, MINIMAP_SCALE));
+                    const definition = type.definition as BuildingDefinition;
+
+                    const floorPos = vAdd(position, vRotate(definition.floorImagePos, rotation));
+
+                    minimap.renderTexture.batchDraw(minimap.make.image({
+                        x: floorPos.x * MINIMAP_SCALE,
+                        y: floorPos.y * MINIMAP_SCALE,
+                        key: "main",
+                        frame: `${type.idString}_floor.svg`,
+                        add: false,
+                        scale: scale / (20 / MINIMAP_SCALE),
+                        rotation
+                    }));
+
+                    position = vAdd(position, vRotate(definition.ceilingImagePos, rotation));
                     break;
+                }
             }
 
-            // Create the obstacle image
+            // Create the object image
             minimap.renderTexture.batchDraw(minimap.make.image({
                 x: position.x * MINIMAP_SCALE,
                 y: position.y * MINIMAP_SCALE,

@@ -1,5 +1,5 @@
 import { type Variation } from "../typings";
-import { type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
+import { type Hitbox, RectangleHitbox, ComplexHitbox, CircleHitbox } from "../utils/hitbox";
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
@@ -83,95 +83,102 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "house",
         name: "House",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(11, -11), v(52, 40)), // Garage
+            new RectangleHitbox(v(-50, -28), v(15, 40)), // Main House
+            new RectangleHitbox(v(-45, -40), v(-16, -23)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
             new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(-42, -37), v(-22, 34)), // Doorstep
+            new CircleHitbox(5, v(-1.5, -37)), // Living room window
+            new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
+            new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 10)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+            new RectangleHitbox(v(10, -6), v(47, 36)), // Garage
+            new RectangleHitbox(v(-46, -19), v(12, 36)), // Main House
+            new RectangleHitbox(v(-40, -30), v(-22, -20)) // Doorstep
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -1.5),
         obstacles: [
             // Bathroom Left
             {
-                id: "house_wall_3",
-                position: v(-3.6, -8),
+                id: "house_wall_4",
+                position: v(-3.6, -8.5),
                 rotation: 1
             },
             // Bathroom Top
             {
-                id: "house_wall_2",
-                position: v(-1.5, 2.4),
+                id: "house_wall_3",
+                position: v(-1.5, 2.8),
                 rotation: 0
             },
             // Entrance Right
             {
-                id: "house_wall_3",
-                position: v(-25.2, -8),
+                id: "house_wall_4",
+                position: v(-25.2, -8.5),
                 rotation: 1
             },
             // Kitchen Top
             {
-                id: "house_wall_2",
-                position: v(-20.4, 2.4),
+                id: "house_wall_3",
+                position: v(-20.55, 2.8),
                 rotation: 0
             },
             // Living Room Bottom Right
             {
-                id: "house_wall_2",
-                position: v(6.1, 14.6),
+                id: "house_wall_3",
+                position: v(6.35, 14.5),
                 rotation: 0
             },
             // Living Room Left
             {
-                id: "house_wall_3",
-                position: v(-18.25, 25),
+                id: "house_wall_2",
+                position: v(-18.25, 25.6),
                 rotation: 1
             },
-            // Living Room Bottom Left
+            // Bedroom Bottom Left
             {
                 id: "house_wall_3",
-                position: v(-18, 14.4),
+                position: v(-41, 14.5),
                 rotation: 0
             },
+            // Bedroom Bottom Right/Living Room Bottom Left
             {
-                id: "house_wall_2",
-                position: v(-42, 14.4),
+                id: "house_wall_4",
+                position: v(-17, 14.5),
                 rotation: 0
             },
             {
                 id: "toilet",
                 position: v(7, -14.4),
-                rotation: 0
+                rotation: 2
             },
             {
                 id: "stove",
-                position: v(-9, -15.6),
+                position: v(-9.3, -15.3),
                 rotation: 2
             },
             {
                 id: "fridge",
-                position: v(-19.5, -15.6),
+                position: v(-19.5, -15.3),
                 rotation: 2
             },
+            // Living Room Couch
             {
                 id: "couch",
-                position: v(-13.5, 26),
+                position: v(-13.3, 26),
                 rotation: 0
             },
+            // Living Room Large Drawers
             {
-                id: "drawer_large",
-                position: v(8.5, 26),
+                id: "large_drawer",
+                position: v(8.2, 26),
                 rotation: 3
             },
+            // Living Room TV
             {
                 id: "tv",
                 position: v(11.5, 26),
@@ -186,59 +193,95 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Chair Bottom
             {
                 id: "chair",
-                position: v(-40, -10),
+                position: v(-41, -13),
                 rotation: 0
             },
             // Chair Top
             {
                 id: "chair",
-                position: v(-40, 0),
+                position: v(-41, -3),
                 rotation: 2
             },
             {
                 id: "table",
-                position: v(-40, -5),
-                rotation: 0
-            },
-            // Dining Room Drawer
-            {
-                id: "drawer_small",
-                position: v(-43, 10),
+                position: v(-41, -8),
                 rotation: 0
             },
             {
                 id: "bed",
-                position: v(-40.5, 28.5),
+                position: v(-40.6, 27.5),
                 rotation: 0
             },
-            // Bedroom Table
+            // Bedroom Bookshelf
             {
-                id: "small_table",
-                position: v(-29, 34),
-                rotation: 0
-            },
-            // Toilet Table
-            {
-                id: "small_table",
-                position: v(-0.5, -13),
+                id: "bookshelf",
+                position: v(-21.6, 29.25),
                 rotation: 1
+            },
+            // Bedroom Drawer
+            {
+                id: "small_drawer",
+                position: v(-23, 19.3),
+                rotation: 3
+            },
+            // Toilet Bookshelf
+            {
+                id: "bookshelf",
+                position: v(-0.2, -12.5),
+                rotation: 1
+            },
+            // Garage Washing Machine
+            {
+                id: "washing_machine",
+                position: v(18.7, 31.9),
+                rotation: 0
+            },
+            // Garage Crate
+            {
+                id: "regular_crate",
+                position: v(41.5, 30.9),
+                rotation: 0
+            },
+            // Garage Barrel
+            {
+                id: "barrel",
+                position: v(41.5, 20),
+                rotation: 0
+            },
+            // Garage Bookshelf
+            {
+                id: "bookshelf",
+                position: v(44.05, 1.55),
+                rotation: 1
+            },
+            // Garage Door
+            {
+                id: "garage_door",
+                position: v(30.18, -6.5),
+                rotation: 0
+            },
+            // Front Door
+            {
+                id: "door",
+                position: v(-31.23, -20),
+                rotation: 0
             },
             // Living Room Window
             {
                 id: "window",
-                position: v(-1.5, 37),
+                position: v(-1.4, 36.75),
                 rotation: 1
             },
             // Bedroom Window
             {
                 id: "window",
-                position: v(-28.5, 37),
+                position: v(-28.65, 36.75),
                 rotation: 1
             },
             // Dining Room Window
             {
                 id: "window",
-                position: v(-47.5, 8.5),
+                position: v(-47.35, 8.35),
                 rotation: 0
             }
         ]

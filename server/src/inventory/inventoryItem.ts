@@ -1,4 +1,4 @@
-import { type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type WearerAttributes, type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -21,6 +21,49 @@ export abstract class InventoryItem {
      * The player this item belongs to
      */
     readonly owner: Player;
+
+    readonly _modifiers = {
+        // Multiplicative
+        maxHealth: 1,
+        maxAdrenaline: 1,
+        baseSpeed: 1,
+
+        // Additive
+        minAdrenaline: 0
+    };
+
+    abstract readonly definition: ItemDefinition;
+
+    private _isActive = false;
+
+    get isActive(): boolean { return this._isActive; }
+    set isActive(isActive: boolean) {
+        this._isActive = isActive;
+        this.refreshModifiers();
+    }
+
+    private readonly _stats = (() => {
+        let kills = 0;
+        let damage = 0;
+        const refreshModifiers = this.refreshModifiers.bind(this);
+
+        return {
+            get kills() { return kills; },
+            set kills(_kills: number) {
+                kills = _kills;
+                refreshModifiers();
+            },
+
+            get damage() { return damage; },
+            set damage(_damage: number) {
+                damage = _damage;
+                refreshModifiers();
+            }
+        };
+    })();
+    // shut the up
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/lines-between-class-members
+    get stats() { return this._stats; }
 
     _lastUse = 0;
     get lastUse(): number { return this._lastUse; }
@@ -47,4 +90,48 @@ export abstract class InventoryItem {
      * @abstract
      */
     abstract useItem(): void;
+
+    refreshModifiers(): void {
+        const definition = this.definition;
+        if (!definition.wearerAttributes) return;
+
+        const { active, passive, on } = definition.wearerAttributes;
+        const newModifiers: this["_modifiers"] = {
+            maxHealth: 1,
+            maxAdrenaline: 1,
+            baseSpeed: 1,
+            minAdrenaline: 0
+        };
+        const applyModifiers = (modifiers: WearerAttributes): void => {
+            newModifiers.maxHealth *= modifiers.maxHealth ?? 1;
+            newModifiers.maxAdrenaline *= modifiers.maxAdrenaline ?? 1;
+            newModifiers.baseSpeed *= modifiers.speedBoost ?? 1;
+            newModifiers.minAdrenaline += modifiers.minAdrenaline ?? 0;
+        };
+
+        if (passive) applyModifiers(passive);
+        if (active && this.isActive) applyModifiers(active);
+
+        if (on) {
+            const { damageDealt, kill } = on;
+
+            if (kill) {
+                for (let i = 0; i < Math.min(this._stats.kills, kill.limit ?? Infinity); i++) {
+                    applyModifiers(kill);
+                }
+            }
+
+            if (damageDealt) {
+                for (let i = 0; i < Math.min(this._stats.damage, damageDealt.limit ?? Infinity); i++) {
+                    applyModifiers(damageDealt);
+                }
+            }
+        }
+
+        this._modifiers.maxHealth = newModifiers.maxHealth;
+        this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
+        this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
+        this._modifiers.baseSpeed = newModifiers.baseSpeed;
+        this.owner.updateAndApplyModifiers();
+    }
 }

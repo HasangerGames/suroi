@@ -8,11 +8,12 @@ import { type CollisionRecord, distanceSquared } from "../../../../common/src/ut
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { Obstacle } from "../../objects/obstacle";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.player;
-        if (player.dead) return; // Ignore input packets from dead players
+        if (player.dead || !player.joined) return; // Ignore input packets from dead players
 
         player.movement.up = stream.readBoolean();
         player.movement.down = stream.readBoolean();
@@ -51,13 +52,13 @@ export class InputPacket extends ReceivingPacket {
                 if (player.game.now - player.lastInteractionTime < 120) return;
                 player.lastInteractionTime = player.game.now;
 
-                const getClosestObject = (condition: (loot: Loot) => boolean): Loot | undefined => {
+                const getClosestObject = (condition: (object: Loot | Obstacle) => boolean): Loot | Obstacle | undefined => {
                     let minDist = Number.MAX_VALUE;
-                    let closestObject: Loot | undefined;
+                    let closestObject: Loot | Obstacle | undefined;
                     const detectionHitbox = new CircleHitbox(3, player.position);
 
                     for (const object of player.visibleObjects) {
-                        if (object instanceof Loot && condition(object)) {
+                        if ((object instanceof Loot || (object instanceof Obstacle && object.isDoor)) && condition(object)) {
                             const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
                             const dist = distanceSquared(object.position, player.position);
                             if (dist < minDist && record?.collided) {
@@ -70,15 +71,15 @@ export class InputPacket extends ReceivingPacket {
                     return closestObject;
                 };
 
-                const closestInteractableObject = getClosestObject(loot => loot.canInteract(player));
+                const closestInteractableObject = getClosestObject(object => !(object instanceof Loot) || object.canInteract(player));
                 if (closestInteractableObject) {
                     closestInteractableObject.interact(player);
                     player.canDespawn = false;
                     player.disableInvulnerability();
                 } else {
-                    const closestObject = getClosestObject(loot => {
-                        const definition = loot.type.definition;
-
+                    const closestObject = getClosestObject(object => {
+                        if (!(object instanceof Loot)) return false;
+                        const definition = object.type.definition;
                         return definition.itemType !== ItemType.Gun && definition.itemType !== ItemType.Melee;
                     });
 
