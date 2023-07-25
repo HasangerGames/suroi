@@ -89,6 +89,47 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_guns", weight: 1 },
             { tier: "special_equipment", weight: 0.65 }
         ]
+    },
+    drawer_large: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "guns", weight: 1 },
+            { tier: "equipment", weight: 0.65 }
+        ]
+    },
+    drawer_small: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 0.8 },
+            { tier: "ammo", weight: 1 }
+        ]
+    },
+    small_table: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "healing_items", weight: 1 },
+            { tier: "ammo", weight: 1 }
+        ]
+    },
+    fridge: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "cola", weight: 1 }
+        ]
+    },
+    box: {
+        min: 1,
+        max: 1,
+        loot: [
+            { tier: "ammo", weight: 1.2 },
+            { tier: "healing_items", weight: 1 },
+            { tier: "equipment", weight: 1 },
+            { tier: "guns", weight: 0.5 }
+        ]
     }
 };
 

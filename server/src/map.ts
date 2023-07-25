@@ -128,7 +128,7 @@ export class Map {
     }
 
     generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation?: Orientation): Building {
-        if (orientation === undefined) orientation = random(0, 3) as Orientation;
+        if (orientation === undefined) orientation = this.getRandomRotation("limited") as Orientation;
 
         const building = new Building(this.game, type, vClone(position), orientation);
 
@@ -139,13 +139,14 @@ export class Map {
 
             const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.id);
 
-            let obstacleRotation = obstacleData.rotation ?? 0;
+            let obstacleRotation = obstacleData.rotation ?? this.getRandomRotation(obstacleType.definition.rotationMode);
 
             if (obstacleType.definition.rotationMode === "limited") {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
-            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation);
+            this.genObstacle(obstacleType, obstaclePos, obstacleRotation, obstacleData.scale ?? 1, obstacleData.variation,
+                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation));
         }
 
         if (definition.lootSpawners) {
@@ -172,23 +173,8 @@ export class Map {
                 const definition: ObstacleDefinition = type.definition;
                 const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
                 const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-                let rotation: number;
 
-                switch (definition.rotationMode) {
-                    case "full":
-                        rotation = randomRotation();
-                        break;
-                    case "limited":
-                        rotation = random(0, 3);
-                        break;
-                    case "binary":
-                        rotation = random(0, 1);
-                        break;
-                    case "none":
-                    default:
-                        rotation = 0;
-                        break;
-                }
+                const rotation = this.getRandomRotation(definition.rotationMode);
 
                 let orientation: Orientation = 0;
 
@@ -201,19 +187,28 @@ export class Map {
                     position = this.getRandomPositionInRadiusFor(type, scale, orientation, radius, squareRadius);
                 }
 
-                this.genObstacle(type, position, rotation, scale, variation);
+                this.genObstacle(type, position, undefined, scale, variation);
             }
         }
     }
 
     genObstacle(type: string | ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
         position: Vector,
-        rotation: number,
-        scale: number,
-        variation?: Variation): Obstacle {
+        rotation?: number,
+        scale?: number,
+        variation?: Variation, lootSpawnOffset?: Vector): Obstacle {
         if (typeof type === "string") {
             type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, type);
         }
+
+        const definition: ObstacleDefinition = type.definition;
+
+        if (scale === undefined) scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+        if (variation === undefined && definition.variations) {
+            variation = random(0, definition.variations - 1) as Variation;
+        }
+
+        if (rotation === undefined) rotation = this.getRandomRotation(definition.rotationMode);
 
         const obstacle: Obstacle = new Obstacle(
             this.game,
@@ -221,7 +216,8 @@ export class Map {
             vClone(position),
             rotation,
             scale,
-            variation
+            variation,
+            lootSpawnOffset
         );
         this.game.staticObjects.add(obstacle);
         return obstacle;
@@ -333,6 +329,20 @@ export class Map {
         }
 
         return this.getRandomPositionFor(type, scale, orientation, getPosition);
+    }
+
+    getRandomRotation(mode: ObstacleDefinition["rotationMode"]): number {
+        switch (mode) {
+            case "full":
+                return randomRotation();
+            case "limited":
+                return random(0, 3);
+            case "binary":
+                return random(0, 1);
+            case "none":
+            default:
+                return 0;
+        }
     }
 
     private createWorldBoundary(x: number, y: number, width: number, height: number): void {

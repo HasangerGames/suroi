@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../ut
 import { v } from "../utils/vector";
 
 export interface ObstacleDefinition extends ObjectDefinition {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -279,6 +279,36 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited"
         },
         {
+            idString: "box",
+            name: "Box",
+            material: "cardboard",
+            health: 60,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new RectangleHitbox(v(-2, -2), v(2, 2)),
+            rotationMode: "limited",
+            variations: 3,
+            depth: 2,
+            hasLoot: true
+        },
+        {
+            idString: "metal_shelf",
+            name: "Metal Shelf",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.8
+            },
+            hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
+            rotationMode: "limited"
+        },
+        {
             idString: "house_wall_1",
             name: "House Wall Small",
             material: "wood",
@@ -458,7 +488,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-6.3, -2.5), v(6.3, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true
         },
         {
             idString: "couch",
@@ -510,7 +541,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            hasLoot: true
         },
         {
             idString: "chair",
