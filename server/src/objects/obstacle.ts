@@ -3,7 +3,7 @@ import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { type LootItem, getLootTableLoot, v2v } from "../utils/misc";
+import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -166,14 +166,16 @@ export class Obstacle extends GameObject {
             }
 
             const openRectangle = transformRectangle(
-                this.position,
+                /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+                addAdjust(this.position, vAdd(definition.hingeOffset!, v(0, this.hitbox.width / 2)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
                 openOrientation
             );
             const openAltRectangle = transformRectangle(
-                this.position,
+                /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+                addAdjust(this.position, vAdd(definition.hingeOffset!, v(0, -this.hitbox.width / 2)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
@@ -339,42 +341,40 @@ export class Obstacle extends GameObject {
         // If they do, move them to the opposite side regardless of their current position.
         if (player?.hitbox.collidesWith(hitbox)) {
             const newPosition = player.position.clone();
+            const radius = player.hitbox.radius;
             if (player.isOnOtherSide(this.position, this.door.orientation)) {
                 switch (this.door.orientation) {
                     case 0:
-                        newPosition.x = hitbox.min.x - player.scale;
+                        newPosition.x = hitbox.min.x - radius;
                         break;
                     case 1:
-                        newPosition.y = hitbox.min.y - player.scale;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                     case 2:
-                        newPosition.x = hitbox.max.x + player.scale;
+                        newPosition.x = hitbox.max.x + radius;
                         break;
                     case 3:
-                        newPosition.y = hitbox.max.y + player.scale;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                 }
             } else {
                 switch (this.door.orientation) {
                     case 0:
-                        newPosition.x = hitbox.max.x + player.scale;
+                        newPosition.x = hitbox.max.x + radius;
                         break;
                     case 1:
-                        newPosition.y = hitbox.max.y + player.scale;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                     case 2:
-                        newPosition.x = hitbox.min.x - player.scale;
+                        newPosition.x = hitbox.min.x - radius;
                         break;
                     case 3:
-                        newPosition.y = hitbox.min.y - player.scale;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                 }
             }
             player.body.setPosition(newPosition);
         }
-
-        // Reposition the body
-        this.body?.setPosition(v2v(addAdjust(vClone(this.door.closedPosition), this.definition.hingeOffset ?? v(0, 0), this.door.orientation)));
 
         // Destroy the old fixture
         // eslint moment
