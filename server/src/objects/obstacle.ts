@@ -183,7 +183,7 @@ export class Obstacle extends GameObject {
             this.door = {
                 open: false,
                 closedPosition: vClone(this.position),
-                closedHitbox: this.hitbox.clone(),
+                closedHitbox: this.hitbox.transform(v(definition.hitbox.height / 2, 0)),
                 openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
                 openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max),
                 closedOrientation: orientation,

@@ -316,7 +316,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-2, -2), v(2, 2)),
+            hitbox: new RectangleHitbox(v(-2.2, -2.2), v(2.2, 2.2)),
             rotationMode: "limited",
             variations: 3,
             depth: 2,
@@ -627,7 +627,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
+            hitbox: new RectangleHitbox(v(-10.8, -0.3), v(10.8, 1.2)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -643,7 +643,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-6.1, -1.5), v(6.1, 3.3)),
+            hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -660,7 +660,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-6.1, -1.5), v(6.1, 3.3)),
+            hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -672,12 +672,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-6.1, -1.2), v(6.1, 1.5)),
+            hitbox: new RectangleHitbox(v(-6.4, -0.8), v(6.4, 0.8)),
             rotationMode: "limited"
         },
         {
@@ -685,12 +686,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-4, -1.2), v(4, 1.4)),
+            hitbox: new RectangleHitbox(v(-4.5, -0.8), v(4.5, 0.8)),
             rotationMode: "limited",
             isDoor: true,
             hingeOffset: v(-5.5, 0)
@@ -700,12 +702,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-1.5, -1.2), v(1.7, 1.4)),
+            hitbox: new RectangleHitbox(v(-1.5, -0.8), v(1.5, 0.8)),
             rotationMode: "limited"
         },
         {
@@ -713,12 +716,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-10, -2.4), v(10, -0.1)),
+            hitbox: new RectangleHitbox(v(-9.6, -2.2), v(9.6, -0.3)),
             rotationMode: "limited"
         },
         {
@@ -726,12 +730,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
+            depth: 2,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-10, -0.1), v(10, 2.3)),
+            hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2)),
             rotationMode: "limited"
         }
     ]
