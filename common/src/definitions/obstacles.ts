@@ -8,6 +8,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
     readonly noResidue?: boolean
+    readonly invisible?: boolean
     readonly hideOnMap?: boolean
     readonly scale: {
         readonly spawnMin: number
@@ -398,6 +399,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             hideOnMap: true,
+            invisible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
