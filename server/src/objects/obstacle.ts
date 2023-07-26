@@ -136,7 +136,7 @@ export class Obstacle extends GameObject {
         }
 
         this.isDoor = definition.isDoor ?? false;
-        if (this.isDoor) {
+        if (definition.isDoor) {
             if (!(this.hitbox instanceof RectangleHitbox && definition.hitbox instanceof RectangleHitbox)) {
                 throw new Error("Door with non-rectangular hitbox");
             }
@@ -166,16 +166,14 @@ export class Obstacle extends GameObject {
             }
 
             const openRectangle = transformRectangle(
-                /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-                addAdjust(this.position, vAdd(definition.hingeOffset!, v(0, this.hitbox.width / 2)), this.rotation as Orientation),
+                addAdjust(this.position, vAdd(definition.hingeOffset, v(0, this.hitbox.width / 2)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
                 openOrientation
             );
             const openAltRectangle = transformRectangle(
-                /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-                addAdjust(this.position, vAdd(definition.hingeOffset!, v(0, -this.hitbox.width / 2)), this.rotation as Orientation),
+                addAdjust(this.position, vAdd(definition.hingeOffset, v(0, -this.hitbox.width / 2)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,

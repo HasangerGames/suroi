@@ -36,13 +36,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "porta_potty",
         name: "Porta Potty",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-10, -10), v(10, 10)),
+            new RectangleHitbox(v(-10, -10), v(10, 10))
         ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9)),
+            new RectangleHitbox(v(-5, -7), v(5, 9))
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9)),
+            new RectangleHitbox(v(-5, -7), v(5, 9))
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, 0),
@@ -76,7 +76,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "porta_potty_door",
                 position: v(0, -9),
                 rotation: 2
-            },
+            }
         ]
     },
     {
