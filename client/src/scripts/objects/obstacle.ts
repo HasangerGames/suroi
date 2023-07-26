@@ -39,6 +39,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             this.doorOrientation = 0;
             this.image.setOrigin(0, 0.5);
         }
+
+        if (this.type.definition.invisible) this.container.setVisible(false);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {

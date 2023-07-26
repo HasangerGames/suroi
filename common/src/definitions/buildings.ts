@@ -56,27 +56,27 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "porta_potty_back_wall",
-                position: v(0, 8.6),
+                position: v(0, 8.7),
                 rotation: 0
             },
             {
                 id: "porta_potty_sink_wall",
-                position: v(-5.65, -0.1),
+                position: v(-5.65, 0),
                 rotation: 3
             },
             {
                 id: "porta_potty_toilet_paper_wall",
-                position: v(5.6, -0.1),
+                position: v(5.7, 0),
                 rotation: 3
             },
             {
                 id: "porta_potty_door",
-                position: v(-2, -9.2),
+                position: v(-2.2, -9.2),
                 rotation: 2
             },
             {
                 id: "porta_potty_front_wall",
-                position: v(4.2, -8.8),
+                position: v(4.5, -8.7),
                 rotation: 2
             }
         ]
