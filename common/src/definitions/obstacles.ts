@@ -634,11 +634,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "porta_potty_toilet",
+            idString: "porta_potty_toilet_1",
             name: "Porta Potty Toilet",
             material: "wood",
             health: 100,
-            variations: 2,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -646,6 +645,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-6.1, -1.5), v(6.1, 3.3)),
             rotationMode: "limited",
+            hasLoot: true,
+            frames: {
+                residue: "porta_potty_toilet_residue"
+            }
+        },
+        {
+            idString: "porta_potty_toilet_2",
+            name: "Porta Potty Toilet",
+            material: "wood",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new RectangleHitbox(v(-6.1, -1.5), v(6.1, 3.3)),
+            rotationMode: "limited",
+            hasLoot: true,
             frames: {
                 residue: "porta_potty_toilet_residue"
             }
@@ -674,7 +691,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-4, -1.2), v(4, 1.4)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isDoor: true,
+            hingeOffset: v(-5.5, 0),
         },
         {
             idString: "porta_potty_front_wall",

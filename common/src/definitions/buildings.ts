@@ -3,6 +3,7 @@ import { type Hitbox, RectangleHitbox, ComplexHitbox, CircleHitbox } from "../ut
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
+import { getRndInteger } from "../utils/math"
 
 interface BuildingObstacle {
     id: string
@@ -36,19 +37,21 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "porta_potty",
         name: "Porta Potty",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-10, -10), v(10, 10))
+            new RectangleHitbox(v(-10, -10), v(10, 10)),
         ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9))
+            new RectangleHitbox(v(-5, -7), v(5, 9)),
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9))
+            new RectangleHitbox(v(-5, -7), v(5, 9)),
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, 0),
         obstacles: [
             {
-                id: "porta_potty_toilet",
+                get id() {
+                  return weightedRandom(["porta_potty_toilet_1", "porta_potty_toilet_2"], [0.7, 0.3])
+                },
                 position: v(0, 5),
                 rotation: 0
             },
@@ -68,15 +71,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 3
             },
             {
+                id: "porta_potty_door",
+                position: v(-2, -9.2),
+                rotation: 2
+            },
+            {
                 id: "porta_potty_front_wall",
                 position: v(4.2, -8.8),
                 rotation: 2
             },
-            {
-                id: "porta_potty_door",
-                position: v(0, -9),
-                rotation: 2
-            }
         ]
     },
     {
