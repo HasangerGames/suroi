@@ -294,6 +294,36 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "cz75a",
+        name: "CZ-75A",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 64,
+        fireDelay: 60,
+        switchDelay: 250,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.8,
+        recoilDuration: 90,
+        fireMode: FireMode.Auto,
+        shotSpread: 12,
+        moveSpread: 7,
+        length: 6,
+        fists: {
+            left: v(70, 4),
+            right: v(65, 0),
+            animationDuration: 100
+        },
+        image: { position: v(58, 0) },
+        capacity: 16,
+        reloadTime: 1.9,
+        ballistics: {
+            damage: 9,
+            obstacleMultiplier: 1,
+            speed: 0.22,
+            maxDistance: 120
+        }
+    },
+    {
         idString: "saf_200",
         name: "SAF-200",
         itemType: ItemType.Gun,
@@ -359,6 +389,36 @@ export const Guns: GunDefinition[] = [
         burstProperties: {
             shotsPerBurst: 3,
             burstCooldown: 400
+        }
+    },
+    {
+        idString: "aug",
+        name: "AUG",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 90,
+        fireDelay: 70,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 120,
+        fireMode: FireMode.Auto,
+        shotSpread: 4,
+        moveSpread: 7,
+        length: 9.5,
+        fists: {
+            left: v(70, 4),
+            right: v(65, 0),
+            animationDuration: 100
+        },
+        image: { position: v(103, 0) },
+        capacity: 30,
+        reloadTime: 2.25,
+        ballistics: {
+            damage: 11.25,
+            obstacleMultiplier: 1.5,
+            speed: 0.28,
+            maxDistance: 120
         }
     },
     {
