@@ -331,6 +331,14 @@ export class Player extends GameObject {
             this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
+        this.inventory.addOrReplaceWeapon(0, "cz75a");
+        (this.inventory.getWeapon(0) as GunItem).ammo = 16;
+        this.inventory.items["556mm"] = 90;
+
+        this.inventory.addOrReplaceWeapon(1, "aug");
+        (this.inventory.getWeapon(1) as GunItem).ammo = 30;
+        this.inventory.items["9mm"] = 90;
+
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
     }
@@ -511,6 +519,10 @@ export class Player extends GameObject {
      */
     piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
+
+        /* eslint-disable @typescript-eslint/restrict-plus-operands */
+        /* eslint-disable @typescript-eslint/no-non-null-assertion */
+        /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 
         amount = this._clampDamageAmount(amount);
 
