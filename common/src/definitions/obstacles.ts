@@ -693,7 +693,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-4, -1.2), v(4, 1.4)),
             rotationMode: "limited",
             isDoor: true,
-            hingeOffset: v(-5.5, 0),
+            hingeOffset: v(-5.5, 0)
         },
         {
             idString: "porta_potty_front_wall",
