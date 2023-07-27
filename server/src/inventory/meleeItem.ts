@@ -20,6 +20,8 @@ export class MeleeItem extends InventoryItem {
 
     readonly definition: MeleeDefinition;
 
+    private _autoUseTimeoutID: NodeJS.Timeout | undefined;
+
     /**
      * Constructs a new melee weapon
      * @param idString The `idString` of a `MeleeDefinition` in the item schema that this object is to base itself off of
@@ -91,7 +93,8 @@ export class MeleeItem extends InventoryItem {
                 }
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {
-                    setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
+                    clearTimeout(this._autoUseTimeoutID);
+                    this._autoUseTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
                 }
             }
         }, 50);

@@ -27,6 +27,9 @@ export class GunItem extends InventoryItem {
     private _reloadTimeoutID: NodeJS.Timeout | undefined;
 
     private _burstTimeoutID: NodeJS.Timeout | undefined;
+
+    private _autoFireTimeoutID: NodeJS.Timeout | undefined;
+
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
 
     /**
@@ -138,7 +141,8 @@ export class GunItem extends InventoryItem {
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
             this.owner.activeItem === this
         ) {
-            setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
+            clearTimeout(this._autoFireTimeoutID);
+            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
         }
     }
 
