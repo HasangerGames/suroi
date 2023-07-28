@@ -99,7 +99,7 @@ export class Inventory {
      */
     setActiveWeaponIndex(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
-        if (!this.hasWeapon(slot)) return false;
+        if (!this.hasWeapon(slot) || slot === this._activeWeaponIndex) return false;
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
