@@ -10,7 +10,7 @@ import { randomBoolean } from "../../../../common/src/utils/random";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation } from "../../../../common/src/typings";
 import { gsap } from "gsap";
-import { normalizeAngle } from "../../../../common/src/utils/math";
+import { orientationToRotation } from "../utils/misc";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -21,8 +21,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     image: Phaser.GameObjects.Image;
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
-    initialRotation?: number;
-    doorOrientation?: number;
+    initialOffset?: number;
+    currentOffset?: number;
 
     isNew = true;
 
@@ -36,7 +36,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.emitter = this.scene.add.particles(0, 0, "main");
 
         if (this.type.definition.isDoor) {
-            this.doorOrientation = 0;
+            this.currentOffset = 0;
             this.image.setOrigin(0, 0.5);
         }
 
@@ -51,15 +51,20 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const definition = this.type.definition;
 
         if (definition.isDoor) {
-            const doorOrientation = stream.readBits(2);
-            if (doorOrientation !== this.doorOrientation) {
-                this.doorOrientation = doorOrientation;
-                if (doorOrientation === 0) this.scene.playSound("door_close");
-                else this.scene.playSound("door_open");
-                gsap.to(this.image, {
-                    rotation: -normalizeAngle(doorOrientation * (Math.PI / 2)),
-                    duration: 0.2
-                });
+            const offset = stream.readBits(2);
+            if (offset !== this.currentOffset) {
+                this.currentOffset = offset;
+                if (!this.isNew) {
+                    if (offset === 0) this.scene.playSound("door_close");
+                    else this.scene.playSound("door_open");
+                    gsap.to(this.image, {
+                        rotation: orientationToRotation(offset),
+                        duration: 0.2
+                    });
+                } else {
+                    this.initialOffset = offset;
+                    this.image.setRotation(this.currentOffset);
+                }
             }
         }
 
@@ -111,7 +116,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 offsetX = offsetY = 0;
             }
             this.image.setPosition(this.image.x + offsetX, this.image.y + offsetY);
-            this.initialRotation = this.rotation;
+            this.initialOffset = this.rotation;
         }
 
         const hasVariations = definition.variations !== undefined;

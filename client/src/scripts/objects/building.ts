@@ -8,7 +8,7 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { ComplexHitbox, type RectangleHitbox, type Hitbox, type CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { normalizeAngle } from "../../../../common/src/utils/math";
+import { orientationToRotation } from "../utils/misc";
 
 export class Building extends GameObject {
     readonly images: {
@@ -65,7 +65,7 @@ export class Building extends GameObject {
 
         this.orientation = stream.readBits(2) as Orientation;
 
-        this.rotation = -normalizeAngle(this.orientation * (Math.PI / 2));
+        this.rotation = orientationToRotation(this.orientation);
 
         this.container.setRotation(this.rotation);
         this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);

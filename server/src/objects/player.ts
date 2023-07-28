@@ -34,7 +34,6 @@ import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
-import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -331,14 +330,6 @@ export class Player extends GameObject {
             this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
-        this.inventory.addOrReplaceWeapon(0, "cz75a");
-        (this.inventory.getWeapon(0) as GunItem).ammo = 16;
-        this.inventory.items["556mm"] = 90;
-
-        this.inventory.addOrReplaceWeapon(1, "aug");
-        (this.inventory.getWeapon(1) as GunItem).ammo = 30;
-        this.inventory.items["9mm"] = 90;
-
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
     }
@@ -397,16 +388,6 @@ export class Player extends GameObject {
 
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
-    }
-
-    isOnOtherSide(position: Vector, orientation: number): boolean {
-        switch (orientation) {
-            case 0: return this.position.x < position.x;
-            case 1: return this.position.y < position.y;
-            case 2: return this.position.x > position.x;
-            case 3: return this.position.y > position.y;
-        }
-        return false;
     }
 
     disableInvulnerability(): void {

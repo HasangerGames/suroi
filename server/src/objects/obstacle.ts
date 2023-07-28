@@ -7,7 +7,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector, vSub, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
 import { addAdjust, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
@@ -56,14 +56,10 @@ export class Obstacle extends GameObject {
     isDoor: boolean;
     door?: {
         open: boolean
-        closedPosition: Vector
         closedHitbox: Hitbox
         openHitbox: Hitbox
         openAltHitbox: Hitbox
-        closedOrientation: Orientation
-        openOrientation: Orientation
-        openAltOrientation: Orientation
-        orientation: Orientation
+        offset: number
     };
 
     constructor(
@@ -73,7 +69,6 @@ export class Obstacle extends GameObject {
         rotation: number,
         scale: number,
         variation: Variation = 0,
-        orientation: Orientation = 0,
         lootSpawnOffset?: Vector
     ) {
         super(game, type, position);
@@ -136,6 +131,7 @@ export class Obstacle extends GameObject {
         }
 
         this.isDoor = definition.isDoor ?? false;
+        // noinspection JSSuspiciousNameCombination
         if (definition.isDoor) {
             if (!(this.hitbox instanceof RectangleHitbox && definition.hitbox instanceof RectangleHitbox)) {
                 throw new Error("Door with non-rectangular hitbox");
@@ -143,7 +139,7 @@ export class Obstacle extends GameObject {
 
             let openOrientation: Orientation | undefined;
             let openAltOrientation: Orientation | undefined;
-            switch (orientation) { // TODO Simplify this (wrapping function?)
+            switch (this.rotation) { // TODO Simplify this (wrapping function?)
                 case 0:
                     openOrientation = 1;
                     openAltOrientation = 3;
@@ -166,14 +162,15 @@ export class Obstacle extends GameObject {
             }
 
             const openRectangle = transformRectangle(
-                addAdjust(this.position, vAdd(definition.hingeOffset, v(0, this.hitbox.width / 2)), this.rotation as Orientation),
+                addAdjust(this.position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
                 openOrientation
             );
+            // noinspection JSSuspiciousNameCombination
             const openAltRectangle = transformRectangle(
-                addAdjust(this.position, vAdd(definition.hingeOffset, v(0, -this.hitbox.width / 2)), this.rotation as Orientation),
+                addAdjust(this.position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
@@ -182,14 +179,10 @@ export class Obstacle extends GameObject {
 
             this.door = {
                 open: false,
-                closedPosition: vClone(this.position),
-                closedHitbox: this.hitbox.transform(v(definition.hitbox.height / 2, 0)),
+                closedHitbox: this.hitbox.clone(),
                 openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
                 openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max),
-                closedOrientation: orientation,
-                openOrientation,
-                openAltOrientation,
-                orientation
+                offset: 0
             };
         }
     }
@@ -317,57 +310,71 @@ export class Obstacle extends GameObject {
             throw new Error("Door with non-rectangular hitbox");
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        const hitbox = this.hitbox as RectangleHitbox;
+        let isOnOtherSide = false;
+        switch (this.rotation) {
+            case 0:
+                isOnOtherSide = player.position.y > this.position.y;
+                break;
+            case 1:
+                isOnOtherSide = player.position.x < this.position.x;
+                break;
+            case 2:
+                isOnOtherSide = player.position.y < this.position.y;
+                break;
+            case 3:
+                isOnOtherSide = player.position.x > this.position.x;
+                break;
+        }
 
         this.door.open = !this.door.open;
         if (this.door.open) {
-            if (player.isOnOtherSide(this.position, this.door.orientation)) {
-                this.door.orientation = this.door.openAltOrientation;
+            if (isOnOtherSide) {
+                this.door.offset = 3;
                 this.hitbox = this.door.openAltHitbox.clone();
             } else {
-                this.door.orientation = this.door.openOrientation;
+                this.door.offset = 1;
                 this.hitbox = this.door.openHitbox.clone();
             }
         } else {
-            this.door.orientation = this.door.closedOrientation;
+            this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
         }
 
-        // TODO Make the door push players out of the way when opened, not just when closed
-        // When pushing, ensure that they won't get stuck in anything.
+        // When pushing, ensure that they won't get stuck in the door.
         // If they do, move them to the opposite side regardless of their current position.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        const hitbox = this.hitbox as RectangleHitbox;
         if (player?.hitbox.collidesWith(hitbox)) {
             const newPosition = player.position.clone();
             const radius = player.hitbox.radius;
-            if (player.isOnOtherSide(this.position, this.door.orientation)) {
-                switch (this.door.orientation) {
+            if (isOnOtherSide) {
+                switch (this.rotation) {
                     case 0:
-                        newPosition.x = hitbox.min.x - radius;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                     case 1:
-                        newPosition.y = hitbox.min.y - radius;
+                        newPosition.x = hitbox.min.x - radius;
                         break;
                     case 2:
-                        newPosition.x = hitbox.max.x + radius;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                     case 3:
-                        newPosition.y = hitbox.max.y + radius;
+                        newPosition.x = hitbox.max.x + radius;
                         break;
                 }
             } else {
-                switch (this.door.orientation) {
+                switch (this.rotation) {
                     case 0:
-                        newPosition.x = hitbox.max.x + radius;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                     case 1:
-                        newPosition.y = hitbox.max.y + radius;
+                        newPosition.x = hitbox.max.x + radius;
                         break;
                     case 2:
-                        newPosition.x = hitbox.min.x - radius;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                     case 3:
-                        newPosition.y = hitbox.min.y - radius;
+                        newPosition.x = hitbox.min.x - radius;
                         break;
                 }
             }
@@ -389,7 +396,7 @@ export class Obstacle extends GameObject {
         stream.writeScale(this.scale);
         stream.writeBoolean(this.dead);
         if (this.isDoor && this.door !== undefined) {
-            stream.writeBits(this.door.orientation, 2);
+            stream.writeBits(this.door.offset, 2);
         }
     }
 
