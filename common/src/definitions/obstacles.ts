@@ -449,11 +449,39 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-3, -4), v(3, 4)),
+            hitbox: new CircleHitbox(2.5),
+            // TODO Figure out why this doesn't work
+            /*hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-3.18, 1.25), v(3.2, 4.05)),
+                new CircleHitbox(2.5)
+            ]),*/
             rotationMode: "limited",
             hasLoot: true
+        },
+        {
+            idString: "used_toilet",
+            name: "Used Toilet",
+            material: "porcelain",
+            health: 100,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.8
+            },
+            hitbox: new CircleHitbox(2.5),
+            // TODO Figure out why this doesn't work
+            /*hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-3.18, 1.25), v(3.2, 4.05)),
+                new CircleHitbox(2.5)
+            ]),*/
+            rotationMode: "limited",
+            hasLoot: true,
+            frames: {
+                particle: "toilet_particle.svg",
+                residue: "toilet_residue.svg"
+            }
         },
         {
             idString: "debug_marker",
@@ -479,9 +507,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
+            hitbox: new RectangleHitbox(v(-3.1, -2.5), v(3.1, 3.5)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -496,9 +524,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-6.3, -2.5), v(6.3, 3)),
+            hitbox: new RectangleHitbox(v(-6.25, -2.5), v(6.25, 3.55)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -579,10 +607,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
             variations: 2,
-            hitbox: new RectangleHitbox(v(-5.2, -2.2), v(5.3, 1.8)),
+            hitbox: new RectangleHitbox(v(-6.24, -2.12), v(6.25, 2.12)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {

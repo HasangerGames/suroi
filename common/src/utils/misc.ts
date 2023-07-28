@@ -10,6 +10,11 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
+// https://stackoverflow.com/a/17323608/5905216
+export function mod(n: number, m: number): number {
+    return ((n % m) + m) % m;
+}
+
 export function mergeDeep(target: unknown, ...sources: unknown[]): unknown {
     if (!sources.length) return target;
 

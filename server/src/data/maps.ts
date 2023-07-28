@@ -125,9 +125,7 @@ export const Maps: Record<string, MapDefinition> = {
     },
     singleObstacle: {
         genCallback: (map: Map) => {
-            for (let i = 0; i < 4; i++) {
-                map.generateObstacle("door", v(512 + i * 20, 512), i as Orientation);
-            }
+            map.generateObstacle("door", v(512, 512), 0);
         }
     },
     // Arena map to test guns with really bad custom generation code lol

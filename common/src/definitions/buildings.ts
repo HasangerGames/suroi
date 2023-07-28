@@ -71,12 +71,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "porta_potty_door",
-                position: v(-2.2, -9.2),
-                rotation: 2
+                position: v(2.2, -9),
+                rotation: 0
             },
             {
                 id: "porta_potty_front_wall",
-                position: v(4.5, -8.7),
+                position: v(-4.6, -8.7),
                 rotation: 2
             }
         ]
@@ -154,7 +154,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 0
             },
             {
-                id: "toilet",
+                get id() {
+                    return weightedRandom(["toilet", "used_toilet"], [0.7, 0.3]);
+                },
                 position: v(7, -14.4),
                 rotation: 2
             },

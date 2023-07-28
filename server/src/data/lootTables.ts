@@ -149,6 +149,16 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.75 }
         ]
     },
+    used_toilet: {
+        min: 2,
+        max: 3,
+        loot: [
+            { tier: "guns", weight: 1.25 },
+            { tier: "equipment_no_scopes", weight: 1 },
+            { tier: "special_guns", weight: 0.8 },
+            { tier: "healing_items", weight: 0.75 }
+        ]
+    },
     porta_potty_toilet_1: {
         min: 2,
         max: 3,

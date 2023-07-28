@@ -540,6 +540,8 @@ export class Game {
             }
         } else {
             player.rotation = 0;
+            player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
+            player.attacking = false;
             this.partialDirtyObjects.add(player);
         }
         if (this.aliveCount < 2) {

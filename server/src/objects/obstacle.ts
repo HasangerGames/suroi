@@ -8,7 +8,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { addAdjust, transformRectangle } from "../../../common/src/utils/math";
+import { addAdjust, mod, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -18,7 +18,7 @@ import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { type Player } from "./player";
+import { Player } from "./player";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -137,36 +137,12 @@ export class Obstacle extends GameObject {
                 throw new Error("Door with non-rectangular hitbox");
             }
 
-            let openOrientation: Orientation | undefined;
-            let openAltOrientation: Orientation | undefined;
-            switch (this.rotation) { // TODO Simplify this (wrapping function?)
-                case 0:
-                    openOrientation = 1;
-                    openAltOrientation = 3;
-                    break;
-                case 1:
-                    openOrientation = 2;
-                    openAltOrientation = 0;
-                    break;
-                case 2:
-                    openOrientation = 3;
-                    openAltOrientation = 1;
-                    break;
-                case 3:
-                    openOrientation = 0;
-                    openAltOrientation = 2;
-                    break;
-            }
-            if (openOrientation === undefined || openAltOrientation === undefined) {
-                throw new Error("Invalid door orientation");
-            }
-
             const openRectangle = transformRectangle(
                 addAdjust(this.position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), this.rotation as Orientation),
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
-                openOrientation
+                mod(this.rotation + 1, 4) as Orientation
             );
             // noinspection JSSuspiciousNameCombination
             const openAltRectangle = transformRectangle(
@@ -174,7 +150,7 @@ export class Obstacle extends GameObject {
                 definition.hitbox.min,
                 definition.hitbox.max,
                 1,
-                openAltOrientation
+                mod(this.rotation - 1, 4) as Orientation
             );
 
             this.door = {
@@ -300,12 +276,15 @@ export class Obstacle extends GameObject {
                 }
             }
 
+            // Punch doors to open
+            if (this.isDoor && source instanceof Player) this.interact(source);
+
             this.game.partialDirtyObjects.add(this);
         }
     }
 
     interact(player: Player): void {
-        if (this.door === undefined) return;
+        if (this.dead || this.door === undefined) return;
         if (!(this.hitbox instanceof RectangleHitbox)) {
             throw new Error("Door with non-rectangular hitbox");
         }
@@ -342,6 +321,7 @@ export class Obstacle extends GameObject {
 
         // When pushing, ensure that they won't get stuck in the door.
         // If they do, move them to the opposite side regardless of their current position.
+        // TODO Find a cleaner way to do this if possible
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const hitbox = this.hitbox as RectangleHitbox;
         if (player?.hitbox.collidesWith(hitbox)) {
