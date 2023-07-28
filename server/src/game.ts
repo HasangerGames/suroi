@@ -16,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -519,7 +519,9 @@ export class Game {
         // return an empty set if the position is out of bounds
         if (position.x < 0 || position.x > this.map.width ||
             position.y < 0 || position.y > this.map.height) return new Set();
-        return this.visibleObjects[zoom][Math.round(position.x / 10) * 10][Math.round(position.y / 10) * 10];
+        return this.visibleObjects[zoom]
+            [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
+            [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
     }
 
     removePlayer(player: Player): void {

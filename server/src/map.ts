@@ -14,7 +14,7 @@ import {
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Box, Vec2 } from "planck";
 import { Scopes } from "../../common/src/definitions/scopes";
@@ -91,14 +91,14 @@ export class Map {
             this.game.visibleObjects[zoomLevel] = {};
             const xCullDist = zoomLevel * 1.8; const yCullDist = zoomLevel * 1.35;
 
-            for (let x = 0; x <= this.width / 10; x++) {
-                this.game.visibleObjects[zoomLevel][x * 10] = {};
-                for (let y = 0; y <= this.height / 10; y++) {
+            for (let x = 0; x <= this.width; x += SERVER_GRID_SIZE) {
+                this.game.visibleObjects[zoomLevel][x] = {};
+                for (let y = 0; y <= this.height; y += SERVER_GRID_SIZE) {
                     const visibleObjects = new Set<GameObject>();
-                    const minX = (x * 10) - xCullDist;
-                    const minY = (y * 10) - yCullDist;
-                    const maxX = (x * 10) + xCullDist;
-                    const maxY = (y * 10) + yCullDist;
+                    const minX = x - xCullDist;
+                    const minY = y - yCullDist;
+                    const maxX = x + xCullDist;
+                    const maxY = y + yCullDist;
 
                     for (const object of this.game.staticObjects) {
                         if (object.position.x > minX &&
@@ -109,7 +109,7 @@ export class Map {
                         }
                     }
 
-                    this.game.visibleObjects[zoomLevel][x * 10][y * 10] = visibleObjects;
+                    this.game.visibleObjects[zoomLevel][x][y] = visibleObjects;
                 }
             }
         }
@@ -152,7 +152,6 @@ export class Map {
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
-                orientation,
                 addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation)
             );
         }
@@ -212,7 +211,6 @@ export class Map {
         rotation?: number,
         scale?: number,
         variation?: Variation,
-        orientation?: Orientation,
         lootSpawnOffset?: Vector
     ): Obstacle {
         if (typeof type === "string") {
