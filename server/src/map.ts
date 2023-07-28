@@ -152,7 +152,8 @@ export class Map {
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
-                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation)
+                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation),
+                building
             );
         }
 
@@ -211,7 +212,8 @@ export class Map {
         rotation?: number,
         scale?: number,
         variation?: Variation,
-        lootSpawnOffset?: Vector
+        lootSpawnOffset?: Vector,
+        parentBuilding?: Building
     ): Obstacle {
         if (typeof type === "string") {
             type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, type);
@@ -233,7 +235,8 @@ export class Map {
             rotation,
             scale,
             variation,
-            lootSpawnOffset
+            lootSpawnOffset,
+            parentBuilding
         );
         this.game.staticObjects.add(obstacle);
         return obstacle;

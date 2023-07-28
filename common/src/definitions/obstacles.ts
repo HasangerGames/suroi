@@ -31,6 +31,8 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
+
+    isWall?: boolean
 } & ({
     isDoor: true
     hingeOffset: Vector
@@ -677,7 +679,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             hasLoot: true,
             frames: {
-                residue: "porta_potty_toilet_residue"
+                residue: "porta_potty_toilet_residue",
+                particle: "porta_potty_toilet_particle"
             }
         },
         {
@@ -694,7 +697,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             hasLoot: true,
             frames: {
-                residue: "porta_potty_toilet_residue"
+                residue: "porta_potty_toilet_residue",
+                particle: "porta_potty_toilet_particle"
             }
         },
         {
@@ -709,7 +713,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-6.4, -0.8), v(6.4, 0.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isWall: true,
+            frames: {
+                particle: "porta_potty_wall_particle"
+            }
         },
         {
             idString: "porta_potty_door",
@@ -739,7 +747,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-1.5, -0.8), v(1.5, 0.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isWall: true,
+            frames: {
+                particle: "porta_potty_wall_particle"
+            }
         },
         {
             idString: "porta_potty_sink_wall",
@@ -753,7 +765,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-9.6, -2.2), v(9.6, -0.3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isWall: true,
+            frames: {
+                particle: "porta_potty_wall_particle"
+            }
         },
         {
             idString: "porta_potty_toilet_paper_wall",
@@ -768,7 +784,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isWall: true,
+            frames: {
+                particle: "porta_potty_wall_particle"
+            }
         }
     ]
 );

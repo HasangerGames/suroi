@@ -328,7 +328,7 @@ export class Game {
 
                 let isInsideBuilding = false;
                 for (const object of player.nearObjects) {
-                    if (object instanceof Building) {
+                    if (object instanceof Building && !object.dead) {
                         if (object.scopeHitbox.collidesWith(player.hitbox)) {
                             isInsideBuilding = true;
                             break;
@@ -519,6 +519,7 @@ export class Game {
         // return an empty set if the position is out of bounds
         if (position.x < 0 || position.x > this.map.width ||
             position.y < 0 || position.y > this.map.height) return new Set();
+        /* eslint-disable no-unexpected-multiline */
         return this.visibleObjects[zoom]
             [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
             [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
