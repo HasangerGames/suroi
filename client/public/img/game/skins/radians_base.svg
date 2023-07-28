@@ -24,8 +24,8 @@
      inkscape:pagecheckerboard="1"
      showgrid="false"
      inkscape:zoom="4.5364584"
-     inkscape:cx="16.422503"
-     inkscape:cy="81.892077"
+     inkscape:cx="10.140069"
+     inkscape:cy="77.262915"
      inkscape:window-width="1920"
      inkscape:window-height="1094"
      inkscape:window-x="-11"
@@ -57,7 +57,7 @@
        x2="25.400002"
        y2="11.90625"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-13.493751,4.9317302)" />
+       gradientTransform="translate(-13.493751,4.9317303)" />
   </defs>
   <circle
      style="fill:url(#linearGradient3566);fill-opacity:1;stroke-width:1.48828;stroke-linecap:round"
@@ -69,15 +69,15 @@
   <path
      id="path1"
      style="fill:#000000;fill-opacity:1;stroke:#252628;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none"
-     inkscape:transform-center-x="-2.2928721"
-     inkscape:transform-center-y="-0.32971056"
-     d="m 6.6749301,23.812347 -2.5335303,-9.295979 4.8021488,0.01179 z"
+     inkscape:transform-center-x="-0.32971058"
+     inkscape:transform-center-y="2.2928721"
+     d="M 1.5306135e-4,6.6749301 9.2961321,4.1413998 9.2843421,8.9435486 Z"
      sodipodi:nodetypes="cccc" />
   <path
      id="path1-0"
      style="fill:#000000;fill-opacity:1;stroke:#252628;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none"
-     inkscape:transform-center-x="-2.2928721"
-     inkscape:transform-center-y="-0.32971056"
-     d="m 17.271599,23.80579 -2.560194,-9.282865 4.828815,-0.0013 z"
+     inkscape:transform-center-x="-0.32971058"
+     inkscape:transform-center-y="2.2928721"
+     d="m 0.00671006,17.271599 9.28286504,-2.560194 0.0013,4.828815 z"
      sodipodi:nodetypes="cccc" />
 </svg>
