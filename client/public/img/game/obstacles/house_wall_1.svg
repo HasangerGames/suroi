@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="143.92101"
+   width="182.92101"
    height="41.129002"
-   viewBox="0 0 38.079101 10.882048"
+   viewBox="0 0 48.397851 10.882048"
    version="1.1"
    id="svg1"
    sodipodi:docname="house_wall_1.svg"
@@ -32,27 +32,24 @@
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg1"
-     units="px" />
+     units="px"
+     width="188.92101px" />
   <defs
      id="defs1" />
-  <g
-     id="g824"
-     transform="scale(0.92174297)">
-    <rect
-       style="display:inline;fill:#4a4134;fill-opacity:1;stroke-width:0.349855"
-       id="rect18794-9-1-4-1"
-       width="41.312031"
-       height="11.805946"
-       x="2.8540039e-06"
-       y="-3.3203125e-07"
-       ry="0" />
-    <rect
-       style="display:inline;fill:#afa08c;fill-opacity:1;stroke-width:0.242471"
-       id="rect18794-7-90-1-7-7"
-       width="35.569847"
-       height="6.5863328"
-       x="2.8710918"
-       y="2.6098068"
-       ry="1.9595702" />
-  </g>
+  <rect
+     style="display:inline;fill:#4a4134;fill-opacity:1;stroke-width:0.363553"
+     id="rect18794-9-1-4-1"
+     width="48.39785"
+     height="10.882048"
+     x="2.6306579e-06"
+     y="-3.0604747e-07"
+     ry="0" />
+  <rect
+     style="display:inline;fill:#afa08c;fill-opacity:1;stroke-width:0.256264"
+     id="rect18794-7-90-1-7-7"
+     width="43.105122"
+     height="6.0709062"
+     x="2.6464088"
+     y="2.405571"
+     ry="1.8062201" />
 </svg>

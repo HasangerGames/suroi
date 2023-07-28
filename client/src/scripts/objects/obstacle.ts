@@ -8,9 +8,11 @@ import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { randomBoolean } from "../../../../common/src/utils/random";
 
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import type { Variation } from "../../../../common/src/typings";
+import type { Variation, Orientation } from "../../../../common/src/typings";
 import { gsap } from "gsap";
 import { orientationToRotation } from "../utils/misc";
+import type { Hitbox } from "../../../../common/src/utils/hitbox";
+import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -21,8 +23,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     image: Phaser.GameObjects.Image;
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
-    initialOffset?: number;
-    currentOffset?: number;
+    isDoor?: boolean;
+    door?: {
+        closedHitbox?: Hitbox
+        openHitbox?: Hitbox
+        openAltHitbox?: Hitbox
+        hitbox?: Hitbox
+        offset: number
+    };
 
     isNew = true;
 
@@ -35,12 +43,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
         this.emitter = this.scene.add.particles(0, 0, "main");
 
-        if (this.type.definition.isDoor) {
-            this.currentOffset = 0;
+        const definition = this.type.definition;
+
+        this.isDoor = this.type.definition.isDoor;
+        if (this.isDoor) {
+            this.door = { offset: 0 };
             this.image.setOrigin(0, 0.5);
         }
 
-        if (this.type.definition.invisible) this.container.setVisible(false);
+        if (definition.invisible) this.container.setVisible(false);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -50,10 +61,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         const definition = this.type.definition;
 
-        if (definition.isDoor) {
+        if (definition.isDoor && this.door !== undefined) {
             const offset = stream.readBits(2);
-            if (offset !== this.currentOffset) {
-                this.currentOffset = offset;
+            if (offset !== this.door.offset) {
+                this.door.offset = offset;
                 if (!this.isNew) {
                     if (offset === 0) this.scene.playSound("door_close");
                     else this.scene.playSound("door_open");
@@ -62,8 +73,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                         duration: 0.2
                     });
                 } else {
-                    this.initialOffset = offset;
-                    this.image.setRotation(this.currentOffset);
+                    this.image.setRotation(this.door.offset);
+                }
+
+                if (this.door.offset === 1) {
+                    this.door.hitbox = this.door.openAltHitbox?.clone();
+                } else if (this.door.offset === 3) {
+                    this.door.hitbox = this.door.openHitbox?.clone();
+                } else {
+                    this.door.hitbox = this.door.closedHitbox?.clone();
                 }
             }
         }
@@ -105,8 +123,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.position = stream.readPosition();
 
         const definition = this.type.definition;
-        this.rotation = stream.readObstacleRotation(definition.rotationMode);
-        if (definition.isDoor) {
+        if (definition.isDoor && this.door !== undefined) {
             let offsetX: number;
             let offsetY: number;
             if (definition.hingeOffset !== undefined) {
@@ -116,7 +133,19 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 offsetX = offsetY = 0;
             }
             this.image.setPosition(this.image.x + offsetX, this.image.y + offsetY);
-            this.initialOffset = this.rotation;
+
+            let orientation = stream.readBits(2) as Orientation;
+
+            this.rotation = orientationToRotation(orientation);
+
+            // inverted Y axis moment
+            if (orientation === 1) orientation = 3;
+            else if (orientation === 3) orientation = 1;
+
+            this.door.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));
+        } else {
+            this.rotation = stream.readObstacleRotation(definition.rotationMode);
         }
 
         const hasVariations = definition.variations !== undefined;

@@ -49,7 +49,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             {
                 get id() {
-                    return weightedRandom(["porta_potty_toilet_1", "porta_potty_toilet_2"], [0.7, 0.3]);
+                    return weightedRandom(["porta_potty_toilet_open", "porta_potty_toilet_closed"], [0.7, 0.3]);
                 },
                 position: v(0, 5),
                 rotation: 0
@@ -71,7 +71,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "porta_potty_door",
-                position: v(2.2, -9),
+                position: v(2.2, -9.25),
                 rotation: 0
             },
             {
@@ -113,8 +113,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             // Bathroom Top
             {
-                id: "house_wall_3",
-                position: v(-1.5, 2.8),
+                id: "house_wall_1",
+                position: v(-2.6, 2.8),
                 rotation: 0
             },
             // Entrance Right
@@ -125,8 +125,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             // Kitchen Top
             {
-                id: "house_wall_3",
-                position: v(-20.55, 2.8),
+                id: "house_wall_1",
+                position: v(-21.65, 2.8),
                 rotation: 0
             },
             // Living Room Bottom Right
@@ -149,8 +149,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             // Bedroom Bottom Right/Living Room Bottom Left
             {
-                id: "house_wall_4",
-                position: v(-17, 14.5),
+                id: "house_wall_5",
+                position: v(-17.28, 14.5),
                 rotation: 0
             },
             {
@@ -267,8 +267,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Front Door
             {
                 id: "door",
-                position: v(-31.23, -20),
+                position: v(-30.85, -20),
                 rotation: 0
+            },
+            // Bedroom Door
+            {
+                id: "door",
+                position: v(-29.85, 14.5),
+                rotation: 0
+            },
+            // Living Room Door
+            {
+                id: "door",
+                position: v(-3.85, 14.5),
+                rotation: 0
+            },
+            // Kitchen Door
+            {
+                id: "door",
+                position: v(-12.6, 2.8),
+                rotation: 2
+            },
+            // Door to Garage
+            {
+                id: "door",
+                position: v(13, 8.1),
+                rotation: 3
+            },
+            // Bathroom Door
+            {
+                id: "door",
+                position: v(6.5, 2.8),
+                rotation: 2
             },
             // Living Room Window
             {

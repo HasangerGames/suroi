@@ -114,13 +114,6 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "ammo", weight: 1 }
         ]
     },
-    fridge: {
-        min: 1,
-        max: 1,
-        loot: [
-            { tier: "cola", weight: 1 }
-        ]
-    },
     box: {
         min: 1,
         max: 1,
@@ -133,7 +126,7 @@ export const LootTables: Record<string, LootTable> = {
     },
     bookshelf: {
         min: 1,
-        max: 3,
+        max: 2,
         loot: [
             { tier: "equipment_no_scopes", weight: 1.1 },
             { tier: "guns", weight: 1 },
@@ -159,19 +152,23 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 0.75 }
         ]
     },
-    porta_potty_toilet_1: {
+    porta_potty_toilet_open: {
         min: 2,
         max: 3,
         loot: [
-            { tier: "healing_items", weight: 1 }
+            { tier: "healing_items", weight: 3 },
+            { tier: "equipment_no_scopes", weight: 1 },
+            { tier: "guns", weight: 0.75 }
         ]
     },
-    porta_potty_toilet_2: {
+    porta_potty_toilet_closed: {
         min: 2,
         max: 3,
         loot: [
-            { tier: "guns", weight: 1 },
-            { tier: "ammo", weight: 1 }
+            { tier: "guns", weight: 1.25 },
+            { tier: "healing_items", weight: 1 },
+            { tier: "equipment_no_scopes", weight: 0.9 },
+            { tier: "special_guns", weight: 0.8 }
         ]
     }
 };

@@ -337,23 +337,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
             rotationMode: "limited"
         },
-        makeHouseWall("1", new RectangleHitbox(v(-3.5, -1), v(3.5, 1))),
-        makeHouseWall("2", new RectangleHitbox(v(-5.8, -1), v(5.8, 1))),
-        makeHouseWall("3", new RectangleHitbox(v(-5.8, -1), v(5.8, 1))),
-        makeHouseWall("4", new RectangleHitbox(v(-10.8, -1), v(10.8, 1))),
+        makeHouseWall("1", new RectangleHitbox(v(-4.55, -1), v(4.55, 1))),
+        makeHouseWall("2", new RectangleHitbox(v(-10.43, -1), v(10.43, 1))),
+        makeHouseWall("3", new RectangleHitbox(v(-5.7, -1), v(5.7, 1))),
+        makeHouseWall("4", new RectangleHitbox(v(-10.7, -1), v(10.7, 1))),
+        makeHouseWall("5", new RectangleHitbox(v(-8.02, -1), v(8.02, 1))),
         {
             idString: "fridge",
             name: "Fridge",
             material: "metal",
-            health: 100,
+            health: 1000,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-4.3, -2.6), v(4.3, 3)),
+            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
             rotationMode: "limited",
-            indestructible: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -368,7 +369,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-4.2, -2.7), v(4.2, 3)),
+            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
             rotationMode: "limited",
             explosion: "stove_explosion",
             frames: {
@@ -379,15 +380,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "washing_machine",
             name: "Washing Machine",
             material: "metal",
-            health: 100,
+            health: 1000,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-4.3, -2.6), v(4.3, 3)),
+            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
             rotationMode: "limited",
-            indestructible: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -543,7 +544,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3.5, -7.5), v(3.4, 7.5)),
+            hitbox: new RectangleHitbox(v(-3.7, -7.9), v(3.3, 7.9)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -576,7 +577,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3.8, -5.6), v(3.8, 5.6)),
+            hitbox: new RectangleHitbox(v(-4.15, -6.1), v(4.15, 6.1)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -593,7 +594,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-3.2, -3), v(2.5, 3)),
+            hitbox: new RectangleHitbox(v(-3.4, -3.35), v(3.4, 3.35)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -641,7 +642,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-5.5, -7), v(5.5, 7)),
+            hitbox: new RectangleHitbox(v(-5.6, -8), v(5.6, 8)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -657,15 +658,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-10.8, -0.3), v(10.8, 1.2)),
+            hitbox: new RectangleHitbox(v(-10.85, -0.35), v(10.85, 1.15)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
             }
         },
         {
-            idString: "porta_potty_toilet_1",
-            name: "Porta Potty Toilet",
+            idString: "porta_potty_toilet_open",
+            name: "Porta Potty Toilet Open",
             material: "wood",
             health: 100,
             scale: {
@@ -673,16 +674,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
+            hitbox: new RectangleHitbox(v(-6.05, -1), v(6.08, 3.2)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
+                particle: "porta_potty_toilet_particle",
                 residue: "porta_potty_toilet_residue"
             }
         },
         {
-            idString: "porta_potty_toilet_2",
-            name: "Porta Potty Toilet",
+            idString: "porta_potty_toilet_closed",
+            name: "Porta Potty Toilet Closed",
             material: "wood",
             health: 100,
             scale: {
@@ -694,12 +696,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             hasLoot: true,
             frames: {
+                particle: "porta_potty_toilet_particle",
                 residue: "porta_potty_toilet_residue"
             }
         },
         {
             idString: "porta_potty_back_wall",
-            name: "Porta Potty Toilet",
+            name: "Porta Potty Back Wall",
             material: "wood",
             health: 100,
             noResidue: true,
@@ -713,7 +716,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "porta_potty_door",
-            name: "Porta Potty Toilet",
+            name: "Porta Potty Door",
             material: "wood",
             health: 100,
             noResidue: true,
@@ -722,14 +725,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new RectangleHitbox(v(-5.4, -0.8), v(3.8, 0.8)),
+            hitbox: new RectangleHitbox(v(-5.4, -0.7), v(3.8, 0.7)),
             rotationMode: "limited",
             isDoor: true,
             hingeOffset: v(-5.5, 0)
         },
         {
             idString: "porta_potty_front_wall",
-            name: "Porta Potty Toilet",
+            name: "Porta Potty Front Wall",
             material: "wood",
             health: 100,
             noResidue: true,
@@ -743,7 +746,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "porta_potty_sink_wall",
-            name: "Porta Potty Toilet",
+            name: "Porta Potty Sink Wall",
             material: "wood",
             health: 100,
             noResidue: true,
@@ -757,7 +760,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "porta_potty_toilet_paper_wall",
-            name: "Porta Potty Toilet",
+            name: "Porta Potty Toilet Paper Wall",
             material: "wood",
             health: 100,
             depth: 2,

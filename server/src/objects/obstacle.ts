@@ -8,7 +8,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { addAdjust, mod, transformRectangle } from "../../../common/src/utils/math";
+import { calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -133,31 +133,12 @@ export class Obstacle extends GameObject {
         this.isDoor = definition.isDoor ?? false;
         // noinspection JSSuspiciousNameCombination
         if (definition.isDoor) {
-            if (!(this.hitbox instanceof RectangleHitbox && definition.hitbox instanceof RectangleHitbox)) {
-                throw new Error("Door with non-rectangular hitbox");
-            }
-
-            const openRectangle = transformRectangle(
-                addAdjust(this.position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), this.rotation as Orientation),
-                definition.hitbox.min,
-                definition.hitbox.max,
-                1,
-                mod(this.rotation + 1, 4) as Orientation
-            );
-            // noinspection JSSuspiciousNameCombination
-            const openAltRectangle = transformRectangle(
-                addAdjust(this.position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), this.rotation as Orientation),
-                definition.hitbox.min,
-                definition.hitbox.max,
-                1,
-                mod(this.rotation - 1, 4) as Orientation
-            );
-
+            const { openHitbox, openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
             this.door = {
                 open: false,
                 closedHitbox: this.hitbox.clone(),
-                openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
-                openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max),
+                openHitbox,
+                openAltHitbox,
                 offset: 0
             };
         }

@@ -18,12 +18,13 @@ import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { Loot } from "../objects/loot";
-import { circleCollision, distanceSquared } from "../../../../common/src/utils/math";
+import { circleCollision, type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { getIconFromInputName } from "../utils/inputManager";
 import { Building } from "../objects/building";
-
+import { Obstacle } from "../objects/obstacle";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
@@ -189,14 +190,15 @@ export class GameScene extends Phaser.Scene {
             - whether the user can interact with it
         */
         const cache: {
-            loot?: Loot
+            object?: Loot | Obstacle
+            offset?: number
             pickupBind?: string
             canInteract?: boolean
             readonly clear: () => void
             readonly pickupBindIsValid: () => boolean
         } = {
             clear() {
-                this.loot = this.pickupBind = undefined;
+                this.object = this.pickupBind = undefined;
             },
             pickupBindIsValid() {
                 return getPickupBind() === this.pickupBind;
@@ -223,15 +225,24 @@ export class GameScene extends Phaser.Scene {
 
             // Loop through all loot objects to check if the player is colliding with one to show the interact message
             let minDist = Number.MAX_VALUE;
-            let closestObject: Loot | undefined;
+            let closestObject: Loot | Obstacle | undefined;
             let canInteract: boolean | undefined;
             const player = this.player;
+            const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const o of this.activeGame.objects) {
                 const object = o[1];
-                if (object instanceof Loot) {
+                if (object instanceof Obstacle && object.isDoor && !object.destroyed) {
+                    const record: CollisionRecord | undefined = object.door?.hitbox?.distanceTo(doorDetectionHitbox);
                     const dist = distanceSquared(object.position, player.position);
-                    if (dist < minDist && circleCollision(player.position, player.radius, object.position, object.radius)) {
+                    if (dist < minDist && record?.collided) {
+                        minDist = dist;
+                        closestObject = object;
+                        canInteract = !object.dead;
+                    }
+                } else if (object instanceof Loot) {
+                    const dist = distanceSquared(object.position, player.position);
+                    if (dist < minDist && circleCollision(player.position, 3, object.position, object.radius)) {
                         minDist = dist;
                         closestObject = object;
                         canInteract = closestObject.canInteract(this.playerManager);
@@ -241,8 +252,11 @@ export class GameScene extends Phaser.Scene {
                 }
             }
 
+            const getOffset = (): number | undefined => closestObject instanceof Obstacle ? closestObject.door?.offset : undefined;
+
             const differences = {
-                loot: cache.loot?.id !== closestObject?.id,
+                object: cache.object?.id !== closestObject?.id,
+                offset: cache.offset !== getOffset(),
                 bind: !cache.pickupBindIsValid(),
                 canInteract: cache.canInteract !== canInteract
             };
@@ -250,13 +264,15 @@ export class GameScene extends Phaser.Scene {
             if (differences.bind) bindChangeAcknowledged = false;
 
             if (
-                differences.loot ||
+                differences.object ||
+                differences.offset ||
                 differences.bind ||
                 differences.canInteract
             ) {
                 // Cache miss, rerender
                 cache.clear();
-                cache.loot = closestObject;
+                cache.object = closestObject;
+                cache.offset = getOffset();
                 cache.pickupBind = getPickupBind();
                 cache.canInteract = canInteract;
 
@@ -266,11 +282,13 @@ export class GameScene extends Phaser.Scene {
                             closestObject === undefined ||
 
                             // If the loot object hasn't changed, we don't need to redo the text
-                            !differences.loot
+                            !(differences.object || differences.offset)
                         ) return;
 
-                        let interactText = closestObject.type.definition.name;
-                        if (closestObject.count > 1) interactText += ` (${closestObject.count})`;
+                        let interactText = "";
+                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                        interactText += closestObject.type.definition.name;
+                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
                     };
 
@@ -279,11 +297,15 @@ export class GameScene extends Phaser.Scene {
 
                         // Autoloot
                         if (
-                            (lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
-                            (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1]))
+                            closestObject instanceof Loot && "itemType" in lootDef &&
+                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
+                            (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
                             this.playerManager.interact();
-                        } else if (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee) {
+                        } else if (
+                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
+                            closestObject instanceof Obstacle
+                        ) {
                             prepareInteractText();
 
                             if (canInteract) {

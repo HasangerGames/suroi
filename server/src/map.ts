@@ -376,13 +376,13 @@ export class Map {
                     player: false,
                     obstacle: true,
                     bullet: false,
-                    loot: false
+                    object: false
                 },
                 collidesWith: {
                     player: true,
                     obstacle: false,
                     bullet: true,
-                    loot: true
+                    object: true
                 }
             }
         });

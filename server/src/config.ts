@@ -98,7 +98,7 @@ export const Config = {
         enable: false
     },
 
-    movementSpeed: 0.029,
+    movementSpeed: 0.028,
 
     spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
 

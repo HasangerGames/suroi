@@ -6,6 +6,8 @@ import {
 } from "./vector";
 
 import { type Orientation } from "../typings";
+import { type Hitbox, RectangleHitbox } from "./hitbox";
+import { type ObstacleDefinition } from "../definitions/obstacles";
 
 /**
  * Calculate the angle between two vectors.
@@ -217,5 +219,35 @@ export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale:
     return {
         min: addAdjust(pos, min, orientation),
         max: addAdjust(pos, max, orientation)
+    };
+}
+
+// https://stackoverflow.com/a/17323608/5905216
+const mod2 = (n: number, m: number): number => {
+    return ((n % m) + m) % m;
+};
+
+export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
+    if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
+        throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
+    }
+    const openRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        mod2(rotation + 1, 4) as Orientation
+    );
+    // noinspection JSSuspiciousNameCombination
+    const openAltRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        mod2(rotation - 1, 4) as Orientation
+    );
+    return {
+        openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
+        openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
     };
 }
