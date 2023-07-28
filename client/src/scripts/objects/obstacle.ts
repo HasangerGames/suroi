@@ -63,7 +63,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                     });
                 } else {
                     this.initialOffset = offset;
-                    this.image.setRotation(this.currentOffset);
+                    this.image.setRotation(orientationToRotation(this.currentOffset));
                 }
             }
         }
