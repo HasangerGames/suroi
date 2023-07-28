@@ -247,7 +247,7 @@ export class GameScene extends Phaser.Scene {
                         closestObject = object;
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
-                } else if (object instanceof Building) {
+                } else if (object instanceof Building && !object.dead) {
                     object.toggleCeiling(!object.ceilingHitbox.collidesWith(player.hitBox));
                 }
             }

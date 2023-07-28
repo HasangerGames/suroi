@@ -13,7 +13,8 @@ import {
     AnimationType,
     INVENTORY_MAX_WEAPONS,
     ObjectCategory,
-    PLAYER_RADIUS
+    PLAYER_RADIUS,
+    SERVER_GRID_SIZE
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
@@ -401,8 +402,8 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
 
-        const approximateX = Math.round(this.position.x / 10) * 10;
-        const approximateY = Math.round(this.position.y / 10) * 10;
+        const approximateX = Math.round(this.position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
+        const approximateY = Math.round(this.position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
         this.nearObjects = this.game.getVisibleObjects(this.position);
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
 

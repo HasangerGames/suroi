@@ -19,6 +19,7 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { Player } from "./player";
+import { type Building } from "./building";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -62,6 +63,8 @@ export class Obstacle extends GameObject {
         offset: number
     };
 
+    parentBuilding?: Building;
+
     constructor(
         game: Game,
         type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
@@ -69,7 +72,8 @@ export class Obstacle extends GameObject {
         rotation: number,
         scale: number,
         variation: Variation = 0,
-        lootSpawnOffset?: Vector
+        lootSpawnOffset?: Vector,
+        parentBuilding?: Building
     ) {
         super(game, type, position);
 
@@ -78,6 +82,8 @@ export class Obstacle extends GameObject {
         this.variation = variation;
 
         this.lootSpawnOffset = lootSpawnOffset ?? v(0, 0);
+
+        this.parentBuilding = parentBuilding;
 
         const definition = type.definition;
         this.definition = definition;
@@ -217,6 +223,10 @@ export class Obstacle extends GameObject {
             for (const item of this.loot) {
                 const position = vAdd(this.position, this.lootSpawnOffset);
                 this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
+            }
+
+            if (this.parentBuilding && this.definition.isWall) {
+                this.parentBuilding.damage();
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;

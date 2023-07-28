@@ -30,6 +30,8 @@ export class Building extends GameObject {
 
     readonly scopeHitbox: Hitbox;
 
+    private _wallsToDestroy?: number;
+
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, type, position);
 
@@ -37,15 +39,27 @@ export class Building extends GameObject {
 
         this.rotation = orientation;
 
+        this._wallsToDestroy = type.definition.wallsToDestroy;
+
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
 
         this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-    override damage(amount: number, source: GameObject): void {}
+    override damage(): void {
+        if (this._wallsToDestroy === undefined || this.dead) return;
 
-    override serializePartial(stream: SuroiBitStream): void {}
+        this._wallsToDestroy--;
+
+        if (this._wallsToDestroy <= 0) {
+            this.dead = true;
+            this.game.partialDirtyObjects.add(this);
+        }
+    }
+
+    override serializePartial(stream: SuroiBitStream): void {
+        stream.writeBoolean(this.dead);
+    }
 
     override serializeFull(stream: SuroiBitStream): void {
         stream.writePosition(this.position);

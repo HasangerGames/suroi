@@ -15,6 +15,7 @@ export class Building extends GameObject {
         floor: Phaser.GameObjects.Image
         ceilingContainer: Phaser.GameObjects.Container
         ceiling: Phaser.GameObjects.Image
+        emmiter: Phaser.GameObjects.Particles.ParticleEmitter
     };
 
     ceilingHitbox: Hitbox;
@@ -25,6 +26,8 @@ export class Building extends GameObject {
 
     ceilingVisible = true;
 
+    isNew = true;
+
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, scene, type, id);
 
@@ -32,7 +35,8 @@ export class Building extends GameObject {
         this.images = {
             floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "main", `${type.idString}_floor.svg`),
             ceilingContainer: scene.add.container(),
-            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "main", `${type.idString}_ceiling.svg`)
+            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "main", `${type.idString}_ceiling.svg`),
+            emmiter: scene.add.particles(0, 0, "main").setDepth(8)
         };
 
         this.container.add(this.images.floor).setDepth(-1);
@@ -48,7 +52,7 @@ export class Building extends GameObject {
         this.ceilingTween?.destroy();
 
         this.ceilingTween = this.scene.tweens.add({
-            targets: this.images.ceiling,
+            targets: this.images.ceilingContainer,
             alpha: visible ? 1 : 0,
             duration: 200,
             onended: () => {
@@ -58,7 +62,32 @@ export class Building extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    override deserializePartial(stream: SuroiBitStream): void { }
+    override deserializePartial(stream: SuroiBitStream): void {
+        const dead = stream.readBoolean();
+
+        if (dead) {
+            if (dead && !this.dead && !this.isNew) {
+                this.images.emmiter.setConfig({
+                    frame: `${this.type.idString}_particle.svg`,
+                    rotate: { min: -180, max: 180 },
+                    lifespan: 1000,
+                    speed: { min: 80, max: 150 },
+                    alpha: { start: 1, end: 0 },
+                    scale: { start: 1, end: 0.2 },
+                    emitting: false,
+                    // >:(
+                    emitZone: new Phaser.GameObjects.Particles.Zones.RandomZone(
+                        this.images.ceiling.getBounds() as Phaser.Types.GameObjects.Particles.RandomZoneSource)
+                }).explode(10);
+            }
+            this.images.ceilingContainer.setDepth(-0.1).setAlpha(1);
+            this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
+            this.ceilingTween?.destroy();
+        }
+        this.dead = dead;
+
+        this.isNew = false;
+    }
 
     override deserializeFull(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
@@ -91,5 +120,6 @@ export class Building extends GameObject {
         this.images.floor.destroy();
         this.images.ceilingContainer.destroy();
         this.images.ceiling.destroy();
+        this.images.emmiter.destroy();
     }
 }

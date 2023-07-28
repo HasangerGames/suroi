@@ -29,6 +29,9 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     floorImagePos: Vector
     ceilingImagePos: Vector
+
+    // How many walls need to be broken to destroy the ceiling
+    wallsToDestroy?: number
 }
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
@@ -46,6 +49,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, 0),
+        wallsToDestroy: 2,
         obstacles: [
             {
                 get id() {
