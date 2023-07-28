@@ -317,7 +317,7 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.inventory.items["12gauge"] = 15;
 
-            this.inventory.addOrReplaceWeapon(2, "kbar");
+            this.inventory.addOrReplaceWeapon(2, "lasersword");
 
             this.inventory.items["2x_scope"] = 1;
             this.inventory.items["4x_scope"] = 1;

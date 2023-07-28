@@ -122,6 +122,7 @@ export const Config = {
         leia: { password: "leia" },
         katie: { password: "katie" },
         eipi: { password: "eipi" },
-        "123op": { password: "123op" }
+        "123op": { password: "123op" },
+        radians: { password: "radians" }
     }
 } satisfies ConfigType as ConfigType;
