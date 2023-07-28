@@ -235,7 +235,6 @@ export class Map {
             rotation,
             scale,
             variation,
-            orientation,
             lootSpawnOffset
         );
         this.game.staticObjects.add(obstacle);
