@@ -61,7 +61,7 @@ export const Melees: MeleeDefinition[] = [
         radius: 4,
         offset: v(5.4, 1.2),
         cooldown: 450,
-        speedMultiplier: 0.95,
+        speedMultiplier: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
