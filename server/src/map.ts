@@ -12,7 +12,7 @@ import {
     randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
@@ -100,11 +100,15 @@ export class Map {
                     const maxX = x + xCullDist;
                     const maxY = y + yCullDist;
 
+                    const rectangle = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
+
                     for (const object of this.game.staticObjects) {
-                        if (object.position.x > minX &&
+                        if (object instanceof Obstacle && (object.position.x > minX &&
                             object.position.x < maxX &&
                             object.position.y > minY &&
-                            object.position.y < maxY) {
+                            object.position.y < maxY)) {
+                            visibleObjects.add(object);
+                        } else if (object instanceof Building && rectangle.collidesWith(object.spawnHitbox)) {
                             visibleObjects.add(object);
                         }
                     }
