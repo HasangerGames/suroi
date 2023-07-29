@@ -8,13 +8,6 @@ export enum ObjectCategory {
     Emote
 }
 
-export enum FloorType {
-    grass,
-    house,
-    porta_potty,
-    warehouse
-}
-
 export enum PacketType {
     Join,
     Joined,
