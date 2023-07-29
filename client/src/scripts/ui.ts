@@ -8,12 +8,13 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
-import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
+import { SpectatePacket } from "./packets/sending/spectatePacket";
 
 $((): void => {
     const dropdown = {
@@ -115,10 +116,11 @@ $((): void => {
     $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
     $("#btn-play-again").on("click", () => { core.game?.endGame(); });
     $("#btn-spectate").on("click", () => {
-        if (core.game !== undefined) {
+        const game = core.game;
+        if (game !== undefined) {
             $("#game-over-screen").hide();
-            core.game.playerManager.action = InputActions.BeginSpectating;
-            core.game.playerManager.dirty.inputs = true;
+            game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.BeginSpectating));
+            game.spectating = true;
         }
     });
 

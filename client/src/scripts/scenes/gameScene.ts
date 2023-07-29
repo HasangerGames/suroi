@@ -210,12 +210,12 @@ export class GameScene extends Phaser.Scene {
         let bindChangeAcknowledged = false;
 
         return (): void => {
+            if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
+
             if (this.playerManager.dirty.inputs) {
                 this.playerManager.dirty.inputs = false;
                 this.activeGame.sendPacket(new InputPacket(this.playerManager));
             }
-
-            if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
 
             this.skipLootCheck = !this.skipLootCheck;
             if (this.skipLootCheck) return;

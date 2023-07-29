@@ -18,7 +18,8 @@ export enum PacketType {
     KillFeed,
     Pickup,
     Ping,
-    Item
+    Item,
+    Spectate
 }
 
 export enum AnimationType {
@@ -56,7 +57,10 @@ export enum InputActions {
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
-    LeftEmoteSlot,
+    LeftEmoteSlot
+}
+
+export enum SpectateActions {
     BeginSpectating,
     SpectatePrevious,
     SpectateNext
@@ -82,6 +86,7 @@ export const OBJECT_ID_BITS = 11;
 export const VARIATION_BITS = 3;
 export const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
+export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 export const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 export const INVENTORY_MAX_WEAPONS = 3;

@@ -172,7 +172,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
+        if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) {
             if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
                 this.container.setRotation(this.rotation);
             } else {

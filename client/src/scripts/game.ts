@@ -34,6 +34,7 @@ export class Game {
 
     gameStarted = false;
     gameOver = false;
+    spectating = false;
     error = false;
 
     playerManager = new PlayerManager(this);
@@ -56,6 +57,7 @@ export class Game {
 
         this.gameStarted = true;
         this.gameOver = false;
+        this.spectating = false;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 

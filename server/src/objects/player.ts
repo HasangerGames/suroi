@@ -400,6 +400,7 @@ export class Player extends GameObject {
         for (const object of spectating.visibleObjects) {
             spectating.fullDirtyObjects.add(object);
         }
+        // TODO Add old visible objects to deletedObjects
         spectating.fullDirtyObjects.add(spectating);
         if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
         spectating.fullUpdate = true;
