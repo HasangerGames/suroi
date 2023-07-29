@@ -40,7 +40,7 @@ export const Skins: SkinDefinition[] = [
     },
     {
         idString: "dev",
-        name: "Developr Swag",
+        name: "Developer Swag",
         itemType: ItemType.Skin,
         roleRequired: "dev"
     },
@@ -132,6 +132,11 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "surviv_player",
+        name: "Surviv Player",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "swiss_cheese",
         name: "Swiss Cheese",
         itemType: ItemType.Skin
@@ -140,11 +145,6 @@ export const Skins: SkinDefinition[] = [
         idString: "target_practice",
         name: "Target Practice",
         itemType: ItemType.Skin
-    },
-    {
-        idString: "surviv_player",
-        name: "Surviv Player",
-        itemType: ItemType.Skin,
     },
     {
         idString: "zebra",
