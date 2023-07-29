@@ -152,7 +152,7 @@ export function distanceToRectangle(min: Vector, max: Vector, circlePos: Vector,
     const distY = Math.max(min.y, Math.min(max.y, circlePos.y)) - circlePos.y;
     const radSquared = circleRad * circleRad;
     const distSquared = (distX * distX + distY * distY);
-    return { collided: distSquared < radSquared, distance: radSquared - distSquared };
+    return { collided: distSquared < radSquared, distance: distSquared - radSquared };
 }
 
 export function rectangleDistanceToRectangle(min1: Vector, max1: Vector, min2: Vector, max2: Vector): CollisionRecord {

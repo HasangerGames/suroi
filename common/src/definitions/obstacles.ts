@@ -25,6 +25,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly hasLoot?: boolean
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
+    readonly noMeleeCollision?: boolean
 
     readonly frames?: {
         readonly base?: string
@@ -33,6 +34,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
 
     isWall?: boolean
+    readonly isWindow?: boolean
 } & ({
     isDoor: true
     hingeOffset: Vector
@@ -332,6 +334,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            noMeleeCollision: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -408,7 +411,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox([
                 // Comments assume the building is not rotated (rotation = 0)
-                new RectangleHitbox(v(-48.33, 33.2), v(48.33, 35.1)), // Topmost wall
+                new RectangleHitbox(v(-48.33, 33.2), v(-34, 35.1)), // First Topmost wall
+                new RectangleHitbox(v(-23.5, 33.2), v(-6.5, 35.1)), // Topmost wall after the first window
+                new RectangleHitbox(v(4, 33.2), v(48.33, 35.1)), // Topmost wall after the second window
                 new RectangleHitbox(v(11.9, 10.9), v(13.86, 33.2)), // Wall coming off of topmost wall
                 new RectangleHitbox(v(46.4, -9.48), v(48.33, 33.2)), // Rightmost wall
                 new RectangleHitbox(v(41.05, -9.48), v(46.43, -7.58)), // Short wall coming off of rightmost wall
@@ -416,8 +421,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(11.9, -21.5), v(13.86, 1.2)), // Wall coming off of the longer bottommost wall
                 new RectangleHitbox(v(-26.2, -23.5), v(13.86, -21.57)), // Longer bottommost wall
                 new RectangleHitbox(v(-48.33, -23.5), v(-36.25, -21.57)), // Shorter bottommost wall
-                new RectangleHitbox(v(-48.33, -23.5), v(-46.4, 33.2)), // Leftmost wall
-                new RectangleHitbox(v(-41.1, -35.13), v(-37.85, -32)), // Left post
+                new RectangleHitbox(v(-48.33, 11), v(-46.4, 33.2)), // Leftmost wall until left window
+                new RectangleHitbox(v(-48.33, -23.5), v(-46.4, 1)), // Leftmost wall after the window
+
+                new RectangleHitbox(v(-41.9, -35.13), v(-38.65, -32)), // Left post
                 new RectangleHitbox(v(-24.1, -35.13), v(-20.85, -32)) // Right post
             ]),
             rotationMode: "limited"
@@ -628,16 +635,17 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "window",
             name: "Window",
             material: "glass",
-            health: 40,
+            health: 35,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-0.9, -4.7), v(0.9, 4.7)),
             depth: 2,
-            rotationMode: "limited"
+            rotationMode: "limited",
+            isWindow: true
         },
         {
             idString: "bed",

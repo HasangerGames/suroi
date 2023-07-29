@@ -3,7 +3,7 @@ import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { type LootItem, getLootTableLoot } from "../utils/misc";
+import { type LootItem, getLootTableLoot, createDebugMarkersForHitbox } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -189,7 +189,6 @@ export class Obstacle extends GameObject {
 
             this.scale = definition.scale.spawnMin;
 
-            this.game.world.destroyBody(this.body);
             this.game.partialDirtyObjects.add(this);
 
             if (definition.explosion !== undefined) {
@@ -217,6 +216,12 @@ export class Obstacle extends GameObject {
                         object.damage(9999, source, weaponUsed);
                     }
                 }
+            }
+
+            if (this.definition.isWindow) {
+                this.collidesWith.bullet = false;
+            } else {
+                this.game.world.destroyBody(this.body);
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;

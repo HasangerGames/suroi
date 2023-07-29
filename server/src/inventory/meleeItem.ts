@@ -6,7 +6,6 @@ import { AnimationType, FireMode, type ObjectCategory } from "../../../common/sr
 import { Vec2 } from "planck";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
-import { type CollisionRecord } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { Obstacle } from "../objects/obstacle";
 import { type ObjectType } from "../../../common/src/utils/objectType";
@@ -66,21 +65,27 @@ export class MeleeItem extends InventoryItem {
                 const hitbox = new CircleHitbox(definition.radius, position);
 
                 // Damage the closest object
-                let minDist = Number.MAX_VALUE;
-                let closestObject: GameObject | undefined;
+
+                const damagedObjects: GameObject[] = [];
 
                 for (const object of this.owner.visibleObjects) {
                     if (!object.dead && object !== owner && object.damageable) {
-                        const record: CollisionRecord | undefined = object.hitbox?.distanceTo(hitbox);
-
-                        if (record?.collided && record.distance < minDist) {
-                            minDist = record.distance;
-                            closestObject = object;
-                        }
+                        if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
                     }
                 }
 
-                if (closestObject?.dead === false) {
+                damagedObjects.sort((a: GameObject, b: GameObject): number => {
+                    if (a instanceof Obstacle && a.definition.noMeleeCollision) return 99;
+                    if (b instanceof Obstacle && b.definition.noMeleeCollision) return -99;
+                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+                    const distanceA = a.hitbox!.distanceTo(this.owner.hitbox).distance; const distanceB = b.hitbox!.distanceTo(this.owner.hitbox).distance;
+
+                    return distanceA - distanceB;
+                });
+
+                const closestObject: GameObject | undefined = damagedObjects[0];
+
+                if (closestObject) {
                     let multiplier = 1;
 
                     if (closestObject instanceof Obstacle) {
