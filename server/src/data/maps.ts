@@ -128,7 +128,7 @@ export const Maps: Record<string, MapDefinition> = {
     },
     singleObstacle: {
         genCallback: (map: Map) => {
-            map.generateObstacle("couch", v(512, 512), 0);
+            map.generateObstacle("door", v(512, 512), 0);
         }
     },
     // Arena map to test guns with really bad custom generation code lol

@@ -73,7 +73,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                         duration: 0.2
                     });
                 } else {
-                    this.image.setRotation(this.door.offset);
+                    this.image.setRotation(orientationToRotation(this.door.offset));
                 }
 
                 if (this.door.offset === 1) {

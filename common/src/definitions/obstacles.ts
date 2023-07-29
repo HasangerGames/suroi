@@ -40,7 +40,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard"];
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -529,6 +529,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.25, -2.5), v(6.25, 3.55)),
             rotationMode: "limited",
             hasLoot: true,
@@ -546,6 +547,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-3.7, -7.9), v(3.3, 7.9)),
             rotationMode: "limited",
             frames: {
@@ -562,6 +564,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-0.8, -7.5), v(0.3, 7.6)),
             rotationMode: "limited",
             depth: 2,
@@ -579,6 +582,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-4.15, -6.1), v(4.15, 6.1)),
             rotationMode: "limited",
             frames: {
@@ -596,6 +600,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-3.4, -3.35), v(3.4, 3.35)),
             rotationMode: "limited",
             frames: {
@@ -612,6 +617,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
+            hideOnMap: true,
             variations: 2,
             hitbox: new RectangleHitbox(v(-6.24, -2.12), v(6.25, 2.12)),
             rotationMode: "limited",
@@ -630,6 +636,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-0.9, -4.7), v(0.9, 4.7)),
             depth: 2,
             rotationMode: "limited"
@@ -644,6 +651,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-5.6, -8), v(5.6, 8)),
             rotationMode: "limited",
             frames: {
@@ -660,6 +668,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-10.85, -0.35), v(10.85, 1.15)),
             rotationMode: "limited",
             frames: {
@@ -676,6 +685,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.05, -1), v(6.08, 3.2)),
             rotationMode: "limited",
             hasLoot: true,
@@ -694,6 +704,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
             rotationMode: "limited",
             hasLoot: true,
@@ -713,6 +724,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.4, -0.8), v(6.4, 0.8)),
             rotationMode: "limited",
             isWall: true,
@@ -731,6 +743,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-5.4, -0.7), v(3.8, 0.7)),
             rotationMode: "limited",
             isDoor: true,
@@ -747,6 +760,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-1.5, -0.8), v(1.5, 0.8)),
             rotationMode: "limited",
             isWall: true,
@@ -765,6 +779,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-9.6, -2.2), v(9.6, -0.3)),
             rotationMode: "limited",
             isWall: true,
@@ -784,6 +799,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hideOnMap: true,
             hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2)),
             rotationMode: "limited",
             isWall: true,
