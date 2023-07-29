@@ -40,7 +40,7 @@ export const Skins: SkinDefinition[] = [
     },
     {
         idString: "dev",
-        name: "Developr Swag",
+        name: "Developer Swag",
         itemType: ItemType.Skin,
         roleRequired: "dev"
     },
@@ -129,6 +129,11 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "full_moon",
         name: "Full Moon",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "surviv_player",
+        name: "Surviv Player",
         itemType: ItemType.Skin
     },
     {
