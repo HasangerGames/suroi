@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="23.8125mm"
-   height="23.812508mm"
-   viewBox="0 0 23.8125 23.812508"
+   width="90"
+   height="90"
+   viewBox="0 0 23.8125 23.8125"
    version="1.1"
    id="svg8"
-   sodipodi:docname="surviv_player_base.svg"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+   sodipodi:docname="basic_outfit_base.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs2">
     <linearGradient
@@ -87,27 +87,29 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#505050"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.08"
-     inkscape:cx="-259.77251"
-     inkscape:cy="-359.26983"
-     inkscape:document-units="mm"
+     inkscape:zoom="6.1094026"
+     inkscape:cx="-1.6368212"
+     inkscape:cy="49.759366"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
-     inkscape:window-width="1267"
-     inkscape:window-height="1198"
-     inkscape:window-x="286"
-     inkscape:window-y="286"
-     inkscape:window-maximized="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:pagecheckerboard="1"
+     units="px" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -116,7 +118,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -128,7 +129,7 @@
     <g
        id="g862"
        transform="matrix(0.26458333,0,0,0.26458333,84.253693,147.08173)"
-       style="fill:#fbc472;fill-opacity:1">
+       style="fill:#f8c574;fill-opacity:1">
       <path
          d=""
          fill="#000000"
@@ -137,7 +138,7 @@
          stroke-linecap="butt"
          stroke-miterlimit="10"
          id="path19"
-         style="mix-blend-mode:normal;fill:#fbc472;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
+         style="mix-blend-mode:normal;fill:#f8c574;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          d=""
          fill="#000000"
@@ -146,7 +147,7 @@
          stroke-linecap="butt"
          stroke-miterlimit="10"
          id="path21"
-         style="mix-blend-mode:normal;fill:#fbc472;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
+         style="mix-blend-mode:normal;fill:#f8c574;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
       <path
          d="M 0,45.00003 C 0,20.147228 20.147207,0 45,0 c 24.852803,0 45,20.147228 45,45.00003 0,24.852803 -20.147167,45 -45,45 -24.852803,0 -45,-20.147207 -45,-45 z"
          fill="url(#color-1)"
@@ -155,7 +156,7 @@
          stroke-linecap="butt"
          stroke-miterlimit="10"
          id="path23"
-         style="mix-blend-mode:normal;fill:#fbc472;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
+         style="mix-blend-mode:normal;fill:#f8c574;fill-opacity:1;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
     </g>
   </g>
 </svg>

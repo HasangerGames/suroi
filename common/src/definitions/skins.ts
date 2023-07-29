@@ -51,9 +51,25 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "artist"
     },
     {
+        idString: "forest_camo",
+        name: "Forest Camo",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "desert_camo",
+        name: "Desert Camo",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "arctic_camo",
+        name: "Arctic Camo",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "hazel_jumpsuit",
         name: "HAZEL Jumpsuit",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "tomato_skin",
@@ -68,22 +84,6 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "blue_blood",
         name: "Blue Blood",
-        itemType: ItemType.Skin
-    },
-    {
-        idString: "forest_camo",
-        name: "Forest Camo",
-        itemType: ItemType.Skin,
-        notInLoadout: true
-    },
-    {
-        idString: "desert_camo",
-        name: "Desert Camo",
-        itemType: ItemType.Skin
-    },
-    {
-        idString: "arctic_camo",
-        name: "Arctic Camo",
         itemType: ItemType.Skin
     },
     {
@@ -132,9 +132,10 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "surviv_player",
-        name: "Surviv Player",
-        itemType: ItemType.Skin
+        idString: "basic_outfit",
+        name: "Basic Outfit",
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "swiss_cheese",
@@ -154,7 +155,8 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "verified",
         name: "Verified",
-        itemType: ItemType.Skin
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "nokilpls",
