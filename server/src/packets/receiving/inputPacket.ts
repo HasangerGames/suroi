@@ -12,7 +12,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.player;
-        if (player.dead || !player.joined) return; // Ignore input packets from dead players
+        if (!player.joined) return; // Ignore input packets from players that haven't finished joining
 
         player.movement.up = stream.readBoolean();
         player.movement.down = stream.readBoolean();
@@ -107,6 +107,10 @@ export class InputPacket extends ReceivingPacket {
                 break;
             case InputActions.LeftEmoteSlot:
                 player.emote(3);
+                break;
+            case InputActions.BeginSpectating:
+                console.log("begin spectating");
+                player.spectate(player.killedBy ?? [...this.player.game.livingPlayers][0]);
                 break;
         }
     }

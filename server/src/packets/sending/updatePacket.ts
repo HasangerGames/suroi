@@ -25,12 +25,12 @@ export class UpdatePacket extends SendingPacket {
         //
 
         // Max health
-        stream.writeBoolean(player.dirty.maxMinStats);
-        stream.writeBoolean(player.dirty.health);
-        stream.writeBoolean(player.dirty.adrenaline);
-        stream.writeBoolean(player.dirty.zoom);
-        stream.writeBoolean(player.dirty.action);
-        stream.writeBoolean(player.dirty.activePlayerId);
+        stream.writeBoolean(player.dirty.maxMinStats || player.fullUpdate);
+        stream.writeBoolean(player.dirty.health || player.fullUpdate);
+        stream.writeBoolean(player.dirty.adrenaline || player.fullUpdate);
+        stream.writeBoolean(player.dirty.zoom || player.fullUpdate);
+        stream.writeBoolean(player.dirty.action || player.fullUpdate);
+        stream.writeBoolean(player.dirty.activePlayerID || player.fullUpdate);
 
         const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
         stream.writeBoolean(fullObjectsDirty);
@@ -62,7 +62,7 @@ export class UpdatePacket extends SendingPacket {
         const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
         stream.writeBoolean(aliveCountDirty);
 
-        if (player.dirty.maxMinStats) {
+        if (player.dirty.maxMinStats || player.fullUpdate) {
             stream.writeFloat32(player.maxHealth);
             stream.writeFloat32(player.minAdrenaline);
             stream.writeFloat32(player.maxAdrenaline);
@@ -71,25 +71,25 @@ export class UpdatePacket extends SendingPacket {
 
         // Health
 
-        if (player.dirty.health) {
+        if (player.dirty.health || player.fullUpdate) {
             stream.writeFloat(player.health, 0, player.maxHealth, 12);
             player.dirty.health = false;
         }
 
         // Adrenaline
-        if (player.dirty.adrenaline) {
+        if (player.dirty.adrenaline || player.fullUpdate) {
             stream.writeFloat(player.adrenaline, player.minAdrenaline, player.maxAdrenaline, 10);
             player.dirty.adrenaline = false;
         }
 
         // Zoom
-        if (player.dirty.zoom) {
+        if (player.dirty.zoom || player.fullUpdate) {
             stream.writeUint8(player.zoom);
             player.dirty.zoom = false;
         }
 
         // Action
-        if (player.dirty.action) {
+        if (player.dirty.action || player.fullUpdate) {
             player.dirty.action = false;
             stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
 
@@ -99,9 +99,9 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Active player ID
-        if (player.dirty.activePlayerId) {
+        if (player.dirty.activePlayerID || player.fullUpdate) {
             stream.writeObjectID(player.id);
-            player.dirty.activePlayerId = false;
+            player.dirty.activePlayerID = false;
         }
 
         // Inventory

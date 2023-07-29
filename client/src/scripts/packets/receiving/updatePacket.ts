@@ -44,7 +44,7 @@ export class UpdatePacket extends ReceivingPacket {
         const adrenalineDirty = stream.readBoolean();
         const zoomDirty = stream.readBoolean();
         const actionDirty = stream.readBoolean();
-        const activePlayerIdDirty = stream.readBoolean();
+        const activePlayerIDDirty = stream.readBoolean();
         const fullObjectsDirty = stream.readBoolean();
         const partialObjectsDirty = stream.readBoolean();
         const deletedObjectsDirty = stream.readBoolean();
@@ -151,11 +151,22 @@ export class UpdatePacket extends ReceivingPacket {
         }
 
         // Active player ID
-        if (activePlayerIdDirty) {
+        if (activePlayerIDDirty) {
+            const activePlayerID = stream.readObjectID();
             const noID = game.activePlayer.id === -1;
-            game.activePlayer.id = stream.readObjectID();
+            const idChanged = game.activePlayer.id !== -1 && game.activePlayer.id !== activePlayerID;
+            game.activePlayer.id = activePlayerID;
             if (noID) {
                 game.objects.set(game.activePlayer.id, game.activePlayer);
+            }
+            if (idChanged) {
+                const newActivePlayer = game.objects.get(activePlayerID);
+                if (newActivePlayer instanceof Player) {
+                    game.activePlayer.isActivePlayer = false; // Set isActivePlayer to false for the formerly active player
+                    game.activePlayer = newActivePlayer;
+                    game.activePlayer.isActivePlayer = true;
+                    scene.cameras.main.startFollow(game.activePlayer.container);
+                }
             }
         }
 

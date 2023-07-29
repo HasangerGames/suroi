@@ -114,6 +114,13 @@ $((): void => {
 
     $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
     $("#btn-play-again").on("click", () => { core.game?.endGame(); });
+    $("#btn-spectate").on("click", () => {
+        if (core.game !== undefined) {
+            $("#game-over-screen").hide();
+            core.game.playerManager.action = InputActions.BeginSpectating;
+            core.game.playerManager.dirty.inputs = true;
+        }
+    });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
     $("#btn-fullscreen").on("click", () => {

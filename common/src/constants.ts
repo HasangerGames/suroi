@@ -56,7 +56,10 @@ export enum InputActions {
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
-    LeftEmoteSlot
+    LeftEmoteSlot,
+    BeginSpectating,
+    SpectatePrevious,
+    SpectateNext
 }
 
 export enum PlayerActions {

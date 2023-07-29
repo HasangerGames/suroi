@@ -185,7 +185,7 @@ export class Player extends GameObject {
         activeWeaponIndex: true,
         weapons: true,
         inventory: true,
-        activePlayerId: true,
+        activePlayerID: true,
         zoom: true,
         action: false
     };
@@ -245,6 +245,9 @@ export class Player extends GameObject {
     body: Body;
 
     action: Action | undefined;
+
+    spectating?: Player;
+    spectators = new Set<Player>();
 
     role: string | undefined;
     isDev: boolean;
@@ -381,6 +384,25 @@ export class Player extends GameObject {
 
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+    }
+
+    spectate(spectating?: Player): void {
+        if (spectating === undefined) {
+            this.game.removePlayer(this);
+            return;
+        }
+        if (this.spectating !== undefined) {
+            this.spectating.spectators.delete(this);
+        }
+        this.spectating = spectating;
+        spectating.spectators.add(this);
+        spectating.updateVisibleObjects();
+        for (const object of spectating.visibleObjects) {
+            spectating.fullDirtyObjects.add(object);
+        }
+        spectating.fullDirtyObjects.add(spectating);
+        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
+        spectating.fullUpdate = true;
     }
 
     disableInvulnerability(): void {

@@ -360,7 +360,15 @@ export class Game {
                 }
 
                 for (const message of this.killFeedMessages) player.sendPacket(message);
-                player.sendPacket(new UpdatePacket(player));
+                if (player.spectating === undefined) {
+                    const updatePacket = new UpdatePacket(player);
+                    const updateStream = SuroiBitStream.alloc(updatePacket.allocBytes);
+                    updatePacket.serialize(updateStream);
+                    player.sendData(updateStream);
+                    for (const spectator of player.spectators) {
+                        spectator.sendData(updateStream);
+                    }
+                }
             }
 
             // Reset everything
@@ -517,7 +525,7 @@ export class Game {
         }
         try {
             player.socket.close();
-        } catch (e) { }
+        } catch (e) {}
     }
 
     addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
