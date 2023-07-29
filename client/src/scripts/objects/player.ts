@@ -33,6 +33,7 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { buildingType } from "../packets/receiving/updatePacket";
 
 const showMeleeDebugCircle = false;
 
@@ -136,7 +137,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
-                this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
+                switch(buildingType) {
+                    case 0: 
+                    this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
+                    break;
+                    case 1:
+                    this.scene.playSound(Math.random() < 0.5 ? "wood_step_1" : "wood_step_2");
+                    break;
+                    case 2:
+                    this.scene.playSound(Math.random() < 0.5 ? "wood_step_1" : "wood_step_2");
+                    break;
+                    case 3:
+                    this.scene.playSound(Math.random() < 0.5 ? "stone_step_1" : "stone_step_2");
+                    break;
+                }
                 this.distSinceLastFootstep = 0;
             }
         }

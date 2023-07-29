@@ -270,6 +270,7 @@ export class Player extends GameObject {
     effectiveSwitchDelay = 0;
 
     isInsideBuilding = false;
+    buildingType: number = 0;
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);

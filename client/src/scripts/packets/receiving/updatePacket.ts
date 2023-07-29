@@ -25,6 +25,8 @@ import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 
+export let buildingType: number = 0;
+
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
     // eslint-disable-next-line yoda
@@ -151,6 +153,8 @@ export class UpdatePacket extends ReceivingPacket {
                 });
             }
         }
+
+        buildingType = stream.readInt8();
 
         // Active player ID
         if (activePlayerIdDirty) {
