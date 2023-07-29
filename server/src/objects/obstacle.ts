@@ -165,27 +165,6 @@ export class Obstacle extends GameObject {
                 userData: this,
                 isSensor: this.definition.noCollisions
             });
-            /*this.game.dynamicObjects.add(new Obstacle(
-                this.game,
-                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                Vec2(hitbox.min.x, hitbox.min.y),
-                0,
-                1
-            ));
-            this.game.dynamicObjects.add(new Obstacle(
-                this.game,
-                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                Vec2(hitbox.max.x, hitbox.max.y),
-                0,
-                1
-            ));
-            this.game.dynamicObjects.add(new Obstacle(
-                this.game,
-                ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-                Vec2(hitbox.min.x + width, hitbox.min.y + height),
-                0,
-                1
-            ));*/
         }
     }
 

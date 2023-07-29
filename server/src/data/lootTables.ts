@@ -140,6 +140,14 @@ export const LootTables: Record<string, LootTable> = {
             { item: "cola", weight: 1 }
         ]
     },
+    washing_machine: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "hazel_jumpsuit", weight: 1 },
+            { item: "nokilpls", weight: 0.1 }
+        ]
+    },
     toilet: {
         min: 2,
         max: 3,

@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../ut
 import { v, type Vector } from "../utils/vector";
 
 export type ObstacleDefinition = ObjectDefinition & {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "fridge"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -40,7 +40,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "fridge"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance"];
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -347,12 +347,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "fridge",
             name: "Fridge",
-            material: "fridge",
+            material: "appliance",
             health: 140,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
             hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
@@ -369,7 +369,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
             rotationMode: "limited",
@@ -381,19 +381,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "washing_machine",
             name: "Washing Machine",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
+            material: "appliance",
+            health: 140,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.8
             },
+            hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
-            rotationMode: "limited",
-            frames: {
-                particle: "metal_particle"
-            }
+            rotationMode: "limited"
         },
         {
             idString: "house_exterior",

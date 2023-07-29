@@ -29,15 +29,18 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
         super(game, scene, type, id);
 
+        const definition = this.type.definition;
+
         this.images = {
             background: this.scene.add.image(0, 0, "main"),
-            item: this.scene.add.image(0, 0, "main", `${this.type.idString}.svg`)
+            item: this.scene.add.image(0, 0, "main", `${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
         };
+
+        if (definition.itemType === ItemType.Skin) this.images.item.setScale(0.75).setAngle(90);
 
         this.container.add([this.images.background, this.images.item]).setDepth(2);
 
         // Set the loot texture based on the type
-        const definition = this.type.definition;
         let backgroundTexture: string | undefined;
         switch (definition.itemType) {
             case ItemType.Gun: {
@@ -60,7 +63,8 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             }
             case ItemType.Armor:
             case ItemType.Backpack:
-            case ItemType.Scope: {
+            case ItemType.Scope:
+            case ItemType.Skin: {
                 backgroundTexture = "loot_background_equipment.svg";
                 break;
             }
@@ -127,7 +131,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
                 const idString = this.type.idString;
                 const currentCount = player.items[idString];
                 const maxCapacity = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
-                return (definition as AmmoDefinition).ephemeral === true || currentCount + 1 <= maxCapacity;
+                return (definition as AmmoDefinition).ephemeral ?? currentCount + 1 <= maxCapacity;
             }
             case ItemType.Armor: {
                 if (definition.armorType === ArmorType.Helmet) return definition.level > activePlayer.helmetLevel;
@@ -140,7 +144,9 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             case ItemType.Scope: {
                 return player.items[this.type.idString] === 0;
             }
+            case ItemType.Skin: {
+                return true;
+            }
         }
-        return false;
     }
 }

@@ -47,7 +47,7 @@ export class Inventory {
         );
 
     helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
-    vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined = ObjectType.fromString(ObjectCategory.Loot, "basic_vest");
+    vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
     backpack: ObjectType<ObjectCategory.Loot, BackpackDefinition> = ObjectType.fromString(ObjectCategory.Loot, "bag");
 
     private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;

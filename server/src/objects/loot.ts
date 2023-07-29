@@ -19,6 +19,7 @@ import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { type SkinDefinition } from "../../../common/src/definitions/skins";
 
 export class Loot extends GameObject {
     override readonly is: CollisionFilter = {
@@ -120,8 +121,10 @@ export class Loot extends GameObject {
             case ItemType.Scope: {
                 return inventory.items[this.type.idString] === 0;
             }
+            case ItemType.Skin: {
+                return true;
+            }
         }
-        return false;
     }
 
     interact(player: Player, noPickup = false): void {
@@ -204,6 +207,14 @@ export class Loot extends GameObject {
                     player.inventory.scope = scope;
                 }
 
+                break;
+            }
+            case ItemType.Skin: {
+                createNewItem(player.loadout.skin);
+                player.loadout.skin = this.type as ObjectType<ObjectCategory.Loot, SkinDefinition>;
+
+                player.fullDirtyObjects.add(player);
+                this.game.fullDirtyObjects.add(player);
                 break;
             }
         }

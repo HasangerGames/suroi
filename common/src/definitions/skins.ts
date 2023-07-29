@@ -40,7 +40,7 @@ export const Skins: SkinDefinition[] = [
     },
     {
         idString: "dev",
-        name: "Developer Swag",
+        name: "Developr Swag",
         itemType: ItemType.Skin,
         roleRequired: "dev"
     },
