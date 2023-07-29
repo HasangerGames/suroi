@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="84"
+   height="84"
+   viewBox="0 0 22.225 22.225001"
+   version="1.1"
+   id="svg1082"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="ez.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1084"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="8.7786791"
+     inkscape:cx="23.579857"
+     inkscape:cy="19.706837"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1079" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       aria-label="ez"
+       id="text46914"
+       style="font-size:19.7442px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#ffffff;stroke:#000000;stroke-width:1.00005">
+      <path
+         d="m 4.7450108,8.1508703 q -0.789768,0 -0.789768,0.789768 v 1.0859307 h 3.356514 V 8.9406383 q 0,-0.789768 -0.789768,-0.789768 z m 5.6270972,7.9964007 q -3.8106308,0.394884 -6.9104702,0.394884 -1.3426056,0 -2.1521178,-0.809512 Q 0.50000785,14.923131 0.50000785,13.580525 V 8.8419173 q 0,-1.480815 0.82925635,-2.3100714 0.8490006,-0.8490006 2.3298156,-0.8490006 h 3.94884 q 1.4808149,0 2.3100713,0.8490006 0.8490009,0.8292564 0.8490009,2.3100714 V 12.494594 H 3.9552428 v 0.789768 q 0,0.296163 0.197442,0.493605 0.197442,0.197442 0.493605,0.197442 1.9546758,0 5.7258182,-0.296163 z"
+         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
+         id="path57445" />
+      <path
+         d="m 21.724993,8.5457543 -5.429655,5.1334917 h 5.429655 v 2.665467 h -9.773379 v -2.665467 l 5.429655,-5.1334917 h -5.429655 v -2.665467 h 9.773379 z"
+         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
+         id="path57447" />
+    </g>
+  </g>
+</svg>

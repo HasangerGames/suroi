@@ -3,7 +3,7 @@ import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../ut
 import { v, type Vector } from "../utils/vector";
 
 export type ObstacleDefinition = ObjectDefinition & {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "fridge"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -40,7 +40,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "fridge"];
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -347,14 +347,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "fridge",
             name: "Fridge",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
+            material: "fridge",
+            health: 140,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
                 destroy: 0.9
             },
+            hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
             rotationMode: "limited",
             frames: {
