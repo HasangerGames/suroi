@@ -11,6 +11,7 @@ import { GameObject } from "../types/gameObject";
 import {
     ANIMATION_TYPE_BITS,
     AnimationType,
+    FloorType,
     GasState,
     ObjectCategory,
     PLAYER_RADIUS
@@ -138,16 +139,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 switch(buildingType) {
-                    case 0: 
+                    case FloorType.grass: 
                     this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
                     break;
-                    case 1:
+                    case FloorType.house:
                     this.scene.playSound(Math.random() < 0.5 ? "wood_step_1" : "wood_step_2");
                     break;
-                    case 2:
+                    case FloorType.porta_potty:
                     this.scene.playSound(Math.random() < 0.5 ? "wood_step_1" : "wood_step_2");
                     break;
-                    case 3:
+                    case FloorType.warehouse:
                     this.scene.playSound(Math.random() < 0.5 ? "stone_step_1" : "stone_step_2");
                     break;
                 }

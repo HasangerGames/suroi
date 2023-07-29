@@ -16,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { FloorType, OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -333,15 +333,15 @@ export class Game {
                             isInsideBuilding = true;
                             switch(object.type.idString) {
                                 case "house": {
-                                    player.buildingType = 1
+                                    player.buildingType = FloorType.house
                                     break;
                                 }
                                 case "porta_potty": {
-                                    player.buildingType = 2
+                                    player.buildingType = FloorType.porta_potty
                                     break;
                                 }
                                 case "warehouse": {
-                                    player.buildingType = 3
+                                    player.buildingType = FloorType.warehouse
                                     break;
                                 }
                             }
