@@ -20,6 +20,7 @@ import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectD
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { Player } from "./player";
 import { type Building } from "./building";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -204,8 +205,18 @@ export class Obstacle extends GameObject {
                 this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
             }
 
-            if (this.parentBuilding && this.definition.isWall) {
-                this.parentBuilding.damage();
+            if (this.definition.isWall) {
+                this.parentBuilding?.damage();
+
+                // a bit of a hack to break doors attached to walls :)
+                for (const object of this.game.getVisibleObjects(this.position)) {
+                    if (object instanceof Obstacle &&
+                        object.definition.isDoor &&
+                        object.door?.openHitbox &&
+                        this.hitbox?.collidesWith(object.door.openHitbox)) {
+                        object.damage(9999, source, weaponUsed);
+                    }
+                }
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
@@ -247,7 +258,10 @@ export class Obstacle extends GameObject {
             }
 
             // Punch doors to open
-            if (this.isDoor && source instanceof Player) this.interact(source);
+            if (this.isDoor &&
+                source instanceof Player &&
+                weaponUsed?.category === ObjectCategory.Loot &&
+                (weaponUsed.definition as LootDefinition).itemType === ItemType.Melee) this.interact(source);
 
             this.game.partialDirtyObjects.add(this);
         }

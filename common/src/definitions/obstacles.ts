@@ -99,7 +99,8 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
         rotationMode: "limited",
         frames: {
             particle: "wall_particle"
-        }
+        },
+        isWall: true
     };
 }
 
