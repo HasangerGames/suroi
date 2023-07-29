@@ -98,8 +98,6 @@ export class UpdatePacket extends SendingPacket {
             }
         }
 
-        stream.writeInt8(player.buildingType)
-
         // Active player ID
         if (player.dirty.activePlayerId) {
             stream.writeObjectID(player.id);

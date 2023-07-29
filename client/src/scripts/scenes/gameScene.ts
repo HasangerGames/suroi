@@ -82,10 +82,6 @@ export class GameScene extends Phaser.Scene {
         this.loadSound("player_hit_2", "hits/player_hit_2");
         this.loadSound("grass_step_1", "footsteps/grass_1");
         this.loadSound("grass_step_2", "footsteps/grass_2");
-        this.loadSound("wood_step_1", "footsteps/wood_1");
-        this.loadSound("wood_step_2", "footsteps/wood_2");
-        this.loadSound("stone_step_1", "footsteps/stone_1");
-        this.loadSound("stone_step_2", "footsteps/stone_2");
 
         this.scale.on("resize", this.resize.bind(this));
 

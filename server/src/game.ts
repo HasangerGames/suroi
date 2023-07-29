@@ -331,20 +331,6 @@ export class Game {
                     if (object instanceof Building && !object.dead) {
                         if (object.scopeHitbox.collidesWith(player.hitbox)) {
                             isInsideBuilding = true;
-                            switch(object.type.idString) {
-                                case "house": {
-                                    player.buildingType = 1
-                                    break;
-                                }
-                                case "porta_potty": {
-                                    player.buildingType = 2
-                                    break;
-                                }
-                                case "warehouse": {
-                                    player.buildingType = 3
-                                    break;
-                                }
-                            }
                             break;
                         }
                     }
@@ -353,7 +339,6 @@ export class Game {
                     player.zoom = 48;
                 } else if (!player.isInsideBuilding) {
                     player.zoom = player.inventory.scope.definition.zoomLevel;
-                    player.buildingType = 0
                 }
                 player.isInsideBuilding = isInsideBuilding;
 
