@@ -225,8 +225,18 @@ export class Obstacle extends GameObject {
                 this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
             }
 
-            if (this.parentBuilding && this.definition.isWall) {
-                this.parentBuilding.damage();
+            if (this.definition.isWall) {
+                this.parentBuilding?.damage();
+
+                // a bit of a hack to break doors attached to walls :)
+                for (const object of this.game.getVisibleObjects(this.position)) {
+                    if (object instanceof Obstacle &&
+                        object.definition.isDoor &&
+                        object.door?.openHitbox &&
+                        this.hitbox?.collidesWith(object.door.openHitbox)) {
+                        object.damage(9999, source, weaponUsed);
+                    }
+                }
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
