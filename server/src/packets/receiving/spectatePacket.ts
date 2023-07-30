@@ -4,10 +4,14 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { SPECTATE_ACTIONS_BITS, SpectateActions } from "../../../../common/src/constants";
 import { random } from "../../../../common/src/utils/random";
 import { type Player } from "../../objects/player";
+import * as fs from "fs";
+import { ReportPacket } from "../sending/reportPacket";
+import { randomUUID } from "node:crypto";
 
 export class SpectatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player = this.player;
+        if (!player.dead) return;
         const game = player.game;
         const action = stream.readBits(SPECTATE_ACTIONS_BITS);
         if (game.now - player.lastSpectateActionTime < 200) return;
@@ -42,6 +46,17 @@ export class SpectatePacket extends ReceivingPacket {
                     player.spectate(game.spectatablePlayers[index]);
                 }
                 break;
+            case SpectateActions.Report: {
+                if (!fs.existsSync("reports")) fs.mkdirSync("reports");
+                const reportID = randomUUID();
+                fs.writeFileSync(`reports/${reportID}.json`, JSON.stringify({
+                    ip: player.spectating?.ip,
+                    name: player.spectating?.name,
+                    time: player.game.now
+                }, null, 4));
+                player.sendPacket(new ReportPacket(player, player.spectating?.name ?? "", reportID));
+                break;
+            }
         }
     }
 }

@@ -59,6 +59,7 @@ export class Player extends GameObject {
     readonly damageable = true;
 
     name: string;
+    ip: string | undefined;
 
     readonly loadout: {
         skin: ObjectType<ObjectCategory.Loot, SkinDefinition>
@@ -282,6 +283,7 @@ export class Player extends GameObject {
         const userData = socket.getUserData();
         this.socket = socket;
         this.name = userData.name;
+        this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor;

@@ -23,6 +23,8 @@ import { v } from "../../../common/src/utils/vector";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
+import { UI_DEBUG_MODE } from "./utils/constants";
+import { ReportPacket } from "./packets/receiving/reportPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -66,7 +68,10 @@ export class Game {
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             $("#game-over-screen").hide();
-            $("#spectating-msg").hide();
+            if (!UI_DEBUG_MODE) {
+                $("#spectating-msg").hide();
+                $("#spectating-buttons-container").hide();
+            }
             this.sendPacket(new PingPacket(this.playerManager));
         };
 
@@ -100,6 +105,10 @@ export class Game {
                 }
                 case PacketType.Pickup: {
                     new PickupPacket(this.playerManager).deserialize(stream);
+                    break;
+                }
+                case PacketType.Report: {
+                    new ReportPacket(this.playerManager).deserialize(stream);
                     break;
                 }
                 // TODO: maybe disconnect players that haven't sent a ping in a while?

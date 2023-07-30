@@ -25,7 +25,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { MINIMAP_SCALE } from "../utils/constants";
+import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
@@ -139,6 +139,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
+                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 this.scene.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
                 this.distSinceLastFootstep = 0;
             }
@@ -302,7 +303,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
         this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
 
-        if (this.isActivePlayer) {
+        if (this.isActivePlayer && !UI_DEBUG_MODE) {
             $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
         }
 

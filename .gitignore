@@ -4,8 +4,7 @@ dist/
 # Node
 node_modules/
 
-package-lock.json
-yarn.lock
+server/reports
 
 # IDE garbage
 .idea

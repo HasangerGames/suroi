@@ -10,6 +10,30 @@ export interface NewsPost {
 
 export const news: NewsPost[] = [
     {
+        date: 1690748181000,
+        author: "HAZEL",
+        title: "Behind Closed Doors",
+        bannerImage: "/img/news/v0.9.0.png",
+        content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.`,
+        longContent: `<h2>Suroi v0.9.0</h2>
+
+<h3>New features & changes</h3>
+<ul>
+  <li>Buildings! Added 3 buildings: the house, the warehouse, and the porta potty.</li>
+  <li>Skins & emotes! Added 20 skins and 58 emotes. All skins and emotes will be unlocked until accounts are added.</li>
+  <li>More guns! Added 2 guns: the CZ-75A (a full auto pistol), and the AUG (an assault rifle). Also, the G19 is now semi-automatic.</li>
+  <li>Tweaked gun and scope stats.</li>
+  <li>Spectating! You can now spectate other players after you die. Also, a report system has been added, which will allow us to ban hackers.</li>
+  <li>Games are now longer.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed an issue with the game getting stuck on "Connecting..." on older iOS devices.</li>
+  <li>Fixed an issue causing the server to crash occasionally.</li>
+</ul>`
+    },
+    {
         date: 1689622834000,
         author: "HAZEL",
         title: "Untrodden Lands",

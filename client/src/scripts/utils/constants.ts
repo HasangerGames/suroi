@@ -1,6 +1,7 @@
 import { MAP_HEIGHT, MAP_WIDTH } from "../../../../common/src/constants";
 
 export const HIDE_DEV_REGION = false;
+export const UI_DEBUG_MODE = false;
 export const GRASS_COLOR = 0x49993e;
 export const GRASS_RGB = {
     r: 73,

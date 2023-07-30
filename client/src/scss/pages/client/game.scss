@@ -335,7 +335,7 @@
     }
 
     @media screen and (max-width: $screen_large) {
-        bottom: 65px;
+        bottom: 60px;
         left: calc(50% + (48px / 2));
         width: 120px;
     }
@@ -479,6 +479,25 @@
     }
 }
 
+#spectating-buttons-container {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+
+    @media screen and (max-width: $screen_large) {
+        top: 100px;
+
+        & > button {
+            height: fit-content;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+    }
+}
+
 #kill-msg {
     background: $transparent_bg;
     padding: 10px;
@@ -492,7 +511,7 @@
 
     @media screen and (max-width: $screen_large) {
         width: 220px;
-        bottom: 55px;
+        bottom: 60px;
         font-size: 12px;
     }
 
@@ -517,12 +536,12 @@
 #spectating-msg {
     text-align: center;
     position: absolute;
-    top: 100px;
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
 
     @media screen and (max-width: $screen_large) {
-        top: 100px;
+        top: 75px;
     }
 
     #spectating-msg-info {

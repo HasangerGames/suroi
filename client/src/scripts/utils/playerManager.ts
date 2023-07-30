@@ -15,7 +15,7 @@ import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions
 import { mod } from "../../../../common/src/utils/math";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { EmoteSlot } from "./constants";
+import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 import { v } from "../../../../common/src/utils/vector";
 
 /**
@@ -176,7 +176,7 @@ export class PlayerManager {
     }
 
     private updateActiveWeaponAmmoUi(): void {
-        if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun)) {
+        if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
             $("#weapon-ammo-container").hide();
             return;
         }
@@ -258,7 +258,7 @@ export class PlayerManager {
                 itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
                 itemSlot.toggleClass("has-item", num > 0);
 
-                if (item.includes("scope")) {
+                if (item.includes("scope") && !UI_DEBUG_MODE) {
                     itemSlot.toggle(num > 0).removeClass("active");
                 }
             }

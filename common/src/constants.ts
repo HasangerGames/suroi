@@ -20,7 +20,8 @@ export enum PacketType {
     Pickup,
     Ping,
     Item,
-    Spectate
+    Spectate,
+    Report
 }
 
 export enum AnimationType {
@@ -64,7 +65,8 @@ export enum InputActions {
 export enum SpectateActions {
     BeginSpectating,
     SpectatePrevious,
-    SpectateNext
+    SpectateNext,
+    Report
 }
 
 export enum PlayerActions {

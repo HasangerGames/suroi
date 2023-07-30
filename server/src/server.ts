@@ -133,6 +133,7 @@ export interface PlayerContainer {
     lobbyClearing: boolean
 }
 
+const decoder = new TextDecoder();
 app.ws("/play", {
     compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
@@ -145,7 +146,7 @@ app.ws("/play", {
         res.onAborted((): void => {});
 
         // Bot protection
-        const ip = req.getHeader("cf-connecting-ip") ?? res.getRemoteAddressAsText();
+        const ip = Config.cloudflare ? req.getHeader("cf-connecting-ip") : decoder.decode(res.getRemoteAddressAsText());
         if (Config.botProtection) {
             if (Config.bannedIPs.includes(ip) || bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
                 if (!bannedIPs.includes(ip)) bannedIPs.push(ip);

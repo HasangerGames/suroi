@@ -7,6 +7,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { randomKillWord } from "../../utils/misc";
 import { localStorageInstance } from "../../utils/localStorageHandler";
+import { UI_DEBUG_MODE } from "../../utils/constants";
 // import { lerp } from "../../../../../common/src/utils/math";
 
 /*
@@ -112,7 +113,7 @@ export class KillFeedPacket extends ReceivingPacket {
         }
 
         killFeed.prepend(killFeedItem);
-        if (killFeed.children().length > 5) {
+        if (killFeed.children().length > 5 && !UI_DEBUG_MODE) {
             killFeed.children().last().remove();
         }
         setTimeout(

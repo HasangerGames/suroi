@@ -20,7 +20,7 @@ import { type ObstacleDefinition } from "../../../../../common/src/definitions/o
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { MINIMAP_SCALE } from "../../utils/constants";
+import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
@@ -173,6 +173,7 @@ export class UpdatePacket extends ReceivingPacket {
                     $("#game-over-screen").fadeOut();
                     $("#spectating-msg-info").html(`<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">${name}</span>`);
                     $("#spectating-msg").show();
+                    $("#spectating-buttons-container").show();
                 }
             }
         }
@@ -366,7 +367,7 @@ export class UpdatePacket extends ReceivingPacket {
                 $("#gas-timer-image").attr("src", "/img/misc/gas-waiting-icon.svg");
             }
 
-            if (game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) {
+            if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE) {
                 $("#gas-msg-info").text(gasMessage ?? "");
                 $("#gas-msg").fadeIn();
                 if (game.gas.state === GasState.Inactive) {

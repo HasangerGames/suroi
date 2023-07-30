@@ -68,6 +68,7 @@ export interface ConfigType {
      */
     readonly botProtection: boolean
     readonly bannedIPs: string[]
+    readonly cloudflare: boolean
     readonly disableLobbyClearing: boolean
 
     /**
@@ -108,6 +109,7 @@ export const Config = {
 
     botProtection: false,
     bannedIPs: [],
+    cloudflare: false,
 
     playerLimit: 80,
 

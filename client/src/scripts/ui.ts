@@ -5,7 +5,7 @@ import core from "./core";
 import { type MenuScene } from "./scenes/menuScene";
 import { type GameScene } from "./scenes/gameScene";
 import { type Config, localStorageInstance } from "./utils/localStorageHandler";
-import { HIDE_DEV_REGION } from "./utils/constants";
+import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
@@ -17,6 +17,35 @@ import { Emotes } from "../../../common/src/definitions/emotes";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 
 $((): void => {
+    if (UI_DEBUG_MODE) {
+        // Kill message
+        $("#kill-msg-kills").text("Kills: 7");
+        $("#kill-msg-word").text("obliterated");
+        $("#kill-msg-player-name").html("Player");
+        $("#kill-msg-weapon-used").text(" with Mosin-Nagant (streak: 255)");
+        $("#kill-msg").show();
+
+        // Spectating message
+        $("#spectating-msg-info").html('<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">Player</span>');
+        $("#spectating-msg").show();
+
+        // Gas message
+        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone");
+        $("#gas-msg-info").css("color", "cyan");
+        $("#gas-msg").show();
+
+        $("#weapon-ammo-container").show();
+
+        // Kill feed messages
+        for (let i = 0; i < 5; i++) {
+            const killFeedItem = $("<div>");
+            killFeedItem.addClass("kill-feed-item");
+            // noinspection HtmlUnknownTarget
+            killFeedItem.html('<img class="kill-icon" src="./img/misc/skull.svg" alt="Skull"> Player killed Player with Mosin-Nagant');
+            $("#kill-feed").prepend(killFeedItem);
+        }
+    }
+
     const dropdown = {
         main: $("#splash-more .dropdown-content"),
         caret: $("#btn-dropdown-more i"),
@@ -115,14 +144,25 @@ $((): void => {
 
     $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
     $("#btn-play-again").on("click", () => { core.game?.endGame(); });
+
+    const sendSpectatePacket = (action: SpectateActions): void => core.game?.sendPacket(new SpectatePacket(core.game?.playerManager, action));
+
     $("#btn-spectate").on("click", () => {
         const game = core.game;
         if (game !== undefined) {
-            game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.BeginSpectating));
+            sendSpectatePacket(SpectateActions.BeginSpectating);
             game.spectating = true;
             (game.activePlayer.scene.scene.get("minimap") as MinimapScene).playerIndicator.setTexture("main", "player_indicator.svg");
         }
     });
+
+    $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });
+    $("#btn-report").on("click", () => {
+        if (confirm("Are you sure you want to report this player?")) {
+            sendSpectatePacket(SpectateActions.Report);
+        }
+    });
+    $("#btn-spectate-next").on("click", () => { sendSpectatePacket(SpectateActions.SpectateNext); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
     $("#btn-fullscreen").on("click", () => {
@@ -362,6 +402,9 @@ $((): void => {
                 e.stopPropagation();
             }
         });
+        if (UI_DEBUG_MODE) {
+            $(`#${scope.idString}-slot`).show();
+        }
     }
 
     for (const item of HealingItems) {
