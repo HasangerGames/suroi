@@ -3,7 +3,7 @@ import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { type LootItem, getLootTableLoot, createDebugMarkersForHitbox } from "../utils/misc";
+import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";

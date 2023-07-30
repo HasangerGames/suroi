@@ -18,7 +18,7 @@ import {
 
 import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { randomBoolean } from "../../../../common/src/utils/random";
+import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -33,6 +33,7 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { FloorType } from "../../../../common/src/definitions/buildings";
 
 const showMeleeDebugCircle = false;
 
@@ -81,6 +82,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     readonly radius = PLAYER_RADIUS;
 
     hitBox = new CircleHitbox(this.radius);
+
+    floorType = FloorType.Grass;
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
         super(game, scene, type, id);
@@ -136,7 +139,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
-                this.scene.playSound(Math.random() < 0.5 ? "grass_step_1" : "grass_step_2");
+                this.scene.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
                 this.distSinceLastFootstep = 0;
             }
         }

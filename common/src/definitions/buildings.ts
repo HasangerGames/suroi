@@ -4,6 +4,12 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
 
+export enum FloorType {
+    Grass,
+    Stone,
+    Wood
+}
+
 interface BuildingObstacle {
     id: string
     position: Vector
@@ -32,24 +38,29 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     // How many walls need to be broken to destroy the ceiling
     wallsToDestroy?: number
+
+    floors: Array<{
+        type: FloorType
+        hitbox: Hitbox
+    }>
 }
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
-        spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-10, -10), v(10, 10))
-        ]),
-        ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9))
-        ]),
-        scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-5, -7), v(5, 9))
-        ]),
+        spawnHitbox: new RectangleHitbox(v(-10, -10), v(10, 10)),
+        ceilingHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
+        scopeHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, 0),
         wallsToDestroy: 2,
+        floors: [
+            {
+                type: FloorType.Wood,
+                hitbox: new RectangleHitbox(v(-5, -7), v(5, 9))
+            }
+        ],
         obstacles: [
             {
                 get id() {
@@ -108,6 +119,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -1.5),
+        floors: [
+            {
+                type: FloorType.Stone,
+                hitbox: new ComplexHitbox([new RectangleHitbox(v(12, -33), v(42, 5.5))]) // Garage
+            },
+            {
+                type: FloorType.Wood,
+                hitbox: new ComplexHitbox([
+                    new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
+                    new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+                ])
+            }
+        ],
         obstacles: [
             // Bathroom Left
             {
@@ -328,15 +352,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "warehouse",
         name: "Warehouse",
         spawnHitbox: new RectangleHitbox(v(-30, -44), v(30, 44)),
-        ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-20, -40), v(20, 40))
-        ]),
-        scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-20, -35), v(20, 35))
-        ]),
+        ceilingHitbox: new RectangleHitbox(v(-20, -40), v(20, 40)),
+        scopeHitbox: new RectangleHitbox(v(-20, -35), v(20, 35)),
 
         floorImagePos: v(0, 0.31),
         ceilingImagePos: v(0, 0),
+        floors: [
+            {
+                type: FloorType.Stone,
+                hitbox: new RectangleHitbox(v(-20, -38), v(20, 38))
+            }
+        ],
         obstacles: [
             {
                 id: "warehouse_wall_1",

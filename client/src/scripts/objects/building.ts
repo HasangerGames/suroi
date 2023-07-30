@@ -5,8 +5,8 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { ComplexHitbox, type RectangleHitbox, type Hitbox, type CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
+import { type FloorType, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 
@@ -27,6 +27,8 @@ export class Building extends GameObject {
     ceilingVisible = true;
 
     isNew = true;
+
+    floors: Array<{ type: FloorType, hitbox: Hitbox }> = [];
 
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, scene, type, id);
@@ -100,19 +102,15 @@ export class Building extends GameObject {
         this.container.setRotation(this.rotation);
         this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
 
-        if (!(this.ceilingHitbox instanceof ComplexHitbox)) {
-            this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
-        } else {
-            const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
-            for (const hitbox of this.ceilingHitbox.hitBoxes) {
-                // inverted Y axis moment?
-                let newOrientation = this.orientation;
-                if (this.orientation === 1) newOrientation = 3;
-                else if (this.orientation === 3) newOrientation = 1;
+        this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
 
-                hitBoxes.push(hitbox.transform(this.position, 1, newOrientation));
-            }
-            this.ceilingHitbox = new ComplexHitbox(hitBoxes);
+        this.floors = [];
+
+        for (const floor of (this.type.definition as BuildingDefinition).floors) {
+            this.floors.push({
+                type: floor.type,
+                hitbox: floor.hitbox.transform(this.position, 1, this.orientation)
+            });
         }
     }
 

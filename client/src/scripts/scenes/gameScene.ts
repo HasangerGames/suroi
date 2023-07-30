@@ -25,6 +25,7 @@ import { getIconFromInputName } from "../utils/inputManager";
 import { Building } from "../objects/building";
 import { Obstacle } from "../objects/obstacle";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { FloorType } from "../../../../common/src/definitions/buildings";
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
@@ -64,6 +65,15 @@ export class GameScene extends Phaser.Scene {
             this.loadSound(healingItem.idString, `healing/${healingItem.idString}`);
         }
 
+        // funny hack to load sounds based on the strings of an enum :)
+        for (const floorType of Object.keys(FloorType)) {
+            if (floorType.length > 1) {
+                const floorName = floorType.toLowerCase();
+                this.loadSound(`${floorName}_step_1`, `footsteps/${floorName}_1`);
+                this.loadSound(`${floorName}_step_2`, `footsteps/${floorName}_2`);
+            }
+        }
+
         const soundsToLoad: string[] = [
             "pickup",
             "ammo_pickup",
@@ -80,8 +90,6 @@ export class GameScene extends Phaser.Scene {
 
         this.loadSound("player_hit_1", "hits/player_hit_1");
         this.loadSound("player_hit_2", "hits/player_hit_2");
-        this.loadSound("grass_step_1", "footsteps/grass_1");
-        this.loadSound("grass_step_2", "footsteps/grass_2");
 
         this.scale.on("resize", this.resize.bind(this));
 
@@ -239,6 +247,8 @@ export class GameScene extends Phaser.Scene {
             const player = this.player;
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
+            player.floorType = FloorType.Grass;
+
             for (const o of this.activeGame.objects) {
                 const object = o[1];
                 if (object instanceof Obstacle && object.isDoor && !object.destroyed) {
@@ -256,8 +266,15 @@ export class GameScene extends Phaser.Scene {
                         closestObject = object;
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
-                } else if (object instanceof Building && !object.dead) {
-                    object.toggleCeiling(!object.ceilingHitbox.collidesWith(player.hitBox));
+                } else if (object instanceof Building) {
+                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox.collidesWith(player.hitBox));
+
+                    for (const floor of object.floors) {
+                        if (floor.hitbox.collidesWith(player.hitBox)) {
+                            player.floorType = floor.type;
+                            break;
+                        }
+                    }
                 }
             }
 
