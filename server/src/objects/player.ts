@@ -35,6 +35,7 @@ import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { removeFrom } from "../utils/misc";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -190,7 +191,7 @@ export class Player extends GameObject {
         activeWeaponIndex: true,
         weapons: true,
         inventory: true,
-        activePlayerId: true,
+        activePlayerID: true,
         zoom: true,
         action: false
     };
@@ -250,6 +251,10 @@ export class Player extends GameObject {
     body: Body;
 
     action: Action | undefined;
+
+    spectating?: Player;
+    spectators = new Set<Player>();
+    lastSpectateActionTime = 0;
 
     role: string | undefined;
     isDev: boolean;
@@ -324,7 +329,7 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.inventory.items["12g"] = 15;
 
-            this.inventory.addOrReplaceWeapon(2, "kbar");
+            this.inventory.addOrReplaceWeapon(2, "lasersword");
 
             this.inventory.items["2x_scope"] = 1;
             this.inventory.items["4x_scope"] = 1;
@@ -389,6 +394,33 @@ export class Player extends GameObject {
 
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+    }
+
+    spectate(spectating?: Player): void {
+        if (spectating === undefined) {
+            this.game.removePlayer(this);
+            return;
+        }
+        if (this.spectating !== undefined) {
+            this.spectating.spectators.delete(this);
+        }
+        this.spectating = spectating;
+        spectating.spectators.add(this);
+        spectating.updateVisibleObjects();
+
+        // Add all visible objects to full dirty objects
+        for (const object of spectating.visibleObjects) {
+            spectating.fullDirtyObjects.add(object);
+        }
+
+        // Add objects that are no longer visible to deleted objects
+        for (const object of this.visibleObjects) {
+            if (!spectating.visibleObjects.has(object)) spectating.deletedObjects.add(object);
+        }
+
+        spectating.fullDirtyObjects.add(spectating);
+        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
+        spectating.fullUpdate = true;
     }
 
     disableInvulnerability(): void {
@@ -626,6 +658,7 @@ export class Player extends GameObject {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
+        removeFrom(this.game.spectatablePlayers, this);
         this.game.dynamicObjects.delete(this);
         this.game.removeObject(this);
 

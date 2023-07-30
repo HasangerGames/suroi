@@ -31,6 +31,7 @@ Mossy & cracked rocks: Hester, Leo, Henry Sanger
 Gold rock: Katloo
 
 K-bar: Radians
-Baseball Bat: Katloo
+Baseball Bat: Radians
+Maul: Radians
 
 Tap icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341

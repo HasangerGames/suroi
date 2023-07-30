@@ -150,7 +150,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
         const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
-        if (this.isActivePlayer && !this.game.gameOver) {
+        if (this.isActivePlayer && (!this.game.gameOver || this.game.spectating)) {
             gsap.to(minimap.playerIndicator, {
                 x: this.position.x * MINIMAP_SCALE,
                 y: this.position.y * MINIMAP_SCALE,
@@ -180,7 +180,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        if (!this.isActivePlayer || !localStorageInstance.config.clientSidePrediction) {
+        if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) {
             if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
                 this.container.setRotation(this.rotation);
             } else {
@@ -448,14 +448,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     destroy(): void {
-        super.destroy();
-        this.images.body.destroy(true);
-        this.images.leftFist.destroy(true);
-        this.images.rightFist.destroy(true);
-        this.images.weapon.destroy(true);
-        this.images.bloodEmitter.destroy(true);
-        this.emoteContainer.destroy(true);
-        this.images.emoteBackground.destroy(true);
-        this.images.emoteImage.destroy(true);
+        if (this.isActivePlayer) {
+            this.container.setVisible(false);
+        } else {
+            super.destroy();
+            this.images.body.destroy(true);
+            this.images.leftFist.destroy(true);
+            this.images.rightFist.destroy(true);
+            this.images.weapon.destroy(true);
+            this.images.bloodEmitter.destroy(true);
+            this.emoteContainer.destroy(true);
+            this.images.emoteBackground.destroy(true);
+            this.images.emoteImage.destroy(true);
+        }
     }
 }

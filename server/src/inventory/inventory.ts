@@ -420,8 +420,9 @@ export class Inventory {
      * @param stream The bit stream to write the inventory
     */
     serializeInventory(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.owner.dirty.weapons);
-        if (this.owner.dirty.weapons) {
+        const weaponsDirty = this.owner.dirty.weapons || this.owner.fullUpdate;
+        stream.writeBoolean(weaponsDirty);
+        if (weaponsDirty) {
             this.owner.dirty.weapons = false;
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
@@ -435,14 +436,16 @@ export class Inventory {
             }
         }
 
-        stream.writeBoolean(this.owner.dirty.activeWeaponIndex);
-        if (this.owner.dirty.activeWeaponIndex) {
+        const activeWeaponIndexDirty = this.owner.dirty.activeWeaponIndex || this.owner.fullUpdate;
+        stream.writeBoolean(activeWeaponIndexDirty);
+        if (activeWeaponIndexDirty) {
             this.owner.dirty.activeWeaponIndex = false;
             stream.writeBits(this.activeWeaponIndex, 2);
         }
 
-        stream.writeBoolean(this.owner.dirty.inventory);
-        if (this.owner.dirty.inventory) {
+        const inventoryDirty = this.owner.dirty.inventory || this.owner.fullUpdate;
+        stream.writeBoolean(inventoryDirty);
+        if (inventoryDirty) {
             this.owner.dirty.inventory = false;
             stream.writeBits(this.backpack.definition.level, 2);
             for (const count of Object.values(this.items)) {

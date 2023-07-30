@@ -39,6 +39,12 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "123op"
     },
     {
+        idString: "radians",
+        name: "Radians",
+        itemType: ItemType.Skin,
+        roleRequired: "Radians"
+    },
+    {
         idString: "dev",
         name: "Developer Swag",
         itemType: ItemType.Skin,

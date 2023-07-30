@@ -46,7 +46,7 @@ export class UpdatePacket extends ReceivingPacket {
         const adrenalineDirty = stream.readBoolean();
         const zoomDirty = stream.readBoolean();
         const actionDirty = stream.readBoolean();
-        const activePlayerIdDirty = stream.readBoolean();
+        const activePlayerDirty = stream.readBoolean();
         const fullObjectsDirty = stream.readBoolean();
         const partialObjectsDirty = stream.readBoolean();
         const deletedObjectsDirty = stream.readBoolean();
@@ -152,12 +152,25 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
-        // Active player ID
-        if (activePlayerIdDirty) {
-            const noID = game.activePlayer.id === -1;
-            game.activePlayer.id = stream.readObjectID();
-            if (noID) {
+        // Active player ID and name
+        if (activePlayerDirty) {
+            const activePlayerID = stream.readObjectID();
+            const idChanged = game.activePlayer.id !== activePlayerID;
+            if (idChanged) {
+                game.activePlayer.container.setVisible(true);
+                game.objects.delete(game.activePlayer.id);
+                game.activePlayer.id = activePlayerID;
+                game.activePlayer.emoteContainer.setVisible(false);
+                game.activePlayer.isNew = true;
                 game.objects.set(game.activePlayer.id, game.activePlayer);
+            }
+            // Name dirty
+            if (stream.readBoolean()) {
+                const name = stream.readPlayerNameWithColor();
+                if (game.spectating) {
+                    $("#spectating-msg-info").html(`<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">${name}</span>`);
+                    $("#spectating-msg").show();
+                }
             }
         }
 

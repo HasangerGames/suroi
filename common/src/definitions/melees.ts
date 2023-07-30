@@ -102,5 +102,59 @@ export const Melees: MeleeDefinition[] = [
             angle: 60,
             useAngle: 5
         }
+    },
+    {
+        idString: "maul",
+        name: "Maul",
+        itemType: ItemType.Melee,
+        damage: 40,
+        obstacleMultiplier: 2,
+        piercingMultiplier: 0.5,
+        radius: 2.5,
+        offset: v(7.6, 0.1),
+        cooldown: 450,
+        speedMultiplier: 0.9,
+        fists: {
+            animationDuration: 150,
+            randomFist: false,
+            left: v(75, 38),
+            right: v(38, 28),
+            useLeft: v(90, -5),
+            useRight: v(55, 15)
+        },
+        image: {
+            position: v(102, 42),
+            usePosition: v(120, -20),
+            angle: 50,
+            useAngle: 10,
+            lootScale: 0.6
+        }
+    },
+    {
+        idString: "lasersword",
+        name: "LAZER SWORD",
+        itemType: ItemType.Melee,
+        damage: 99,
+        obstacleMultiplier: 2.5,
+        piercingMultiplier: 0.5,
+        radius: 10,
+        offset: v(13, -5),
+        cooldown: 1000,
+        speedMultiplier: 1.1,
+        fists: {
+            animationDuration: 300,
+            randomFist: false,
+            left: v(38, 35),
+            right: v(38, -35),
+            useLeft: v(120, 20),
+            useRight: v(38, -35)
+        },
+        image: {
+            position: v(282, 48),
+            usePosition: v(230, -190),
+            angle: 50,
+            useAngle: -20,
+            lootScale: 0.6
+        }
     }
 ];
