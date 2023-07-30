@@ -235,6 +235,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
         {
             idString: "sighing_face",
             name: "Sighing Face"
-        }
+        },
+        {
+            idString: "chicken",
+            name: "Chicken"
+        },
     ]
 );
