@@ -1,7 +1,7 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
 import { angleBetween, distanceSquared, mod } from "../../../../common/src/utils/math";
-import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
 import { type Game } from "../game";
@@ -9,6 +9,7 @@ import { type MinimapScene } from "../scenes/minimapScene";
 import core from "../core";
 import { v } from "../../../../common/src/utils/vector";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import { SpectatePacket } from "../packets/sending/spectatePacket";
 
 class Action {
     readonly name: string;
@@ -42,6 +43,12 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
             () => {
                 game.playerManager.movement[direction] = true;
                 game.playerManager.dirty.inputs = true;
+                if (game.spectating) {
+                    let action: SpectateActions | undefined;
+                    if (direction === "left") action = SpectateActions.SpectatePrevious;
+                    else if (direction === "right") action = SpectateActions.SpectateNext;
+                    if (action !== undefined) game.sendPacket(new SpectatePacket(game.playerManager, action));
+                }
             },
             () => {
                 game.playerManager.movement[direction] = false;
@@ -182,6 +189,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         emoteWheel: new Action(
             "emoteWheel",
             () => {
+                if (game.gameOver) return;
                 $("#emote-wheel")
                     .css("left", `${game.playerManager.mouseX - 143}px`)
                     .css("top", `${game.playerManager.mouseY - 143}px`)

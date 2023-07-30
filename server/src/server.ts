@@ -23,6 +23,7 @@ import { PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
 import { ItemPacket } from "./packets/receiving/itemPacket";
+import { SpectatePacket } from "./packets/receiving/spectatePacket";
 
 /**
  * Apply CORS headers to a response.
@@ -262,6 +263,10 @@ app.ws("/play", {
                 }
                 case PacketType.Item: {
                     new ItemPacket(player).deserialize(stream);
+                    break;
+                }
+                case PacketType.Spectate: {
+                    new SpectatePacket(player).deserialize(stream);
                     break;
                 }
             }

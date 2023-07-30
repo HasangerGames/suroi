@@ -26,7 +26,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
         // Animate the position
-        if (this.position === undefined || !localStorageInstance.config.movementSmoothing) {
+        if (this.position === undefined || ("isNew" in this && this.isNew) || !localStorageInstance.config.movementSmoothing) {
             this.container.setPosition(pos.x * 20, pos.y * 20);
         } else {
             this.scene.tweens.add({
@@ -45,7 +45,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     readonly container: Phaser.GameObjects.Container;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<T, U>, id: number) {
+    protected constructor(game: Game, scene: GameScene, type: ObjectType<T, U>, id: number) {
         this.game = game;
         this.scene = scene;
         this.type = type;
