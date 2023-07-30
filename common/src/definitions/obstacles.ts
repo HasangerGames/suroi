@@ -490,8 +490,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             hasLoot: true,
             frames: {
-                particle: "toilet_particle.svg",
-                residue: "toilet_residue.svg"
+                particle: "toilet_particle",
+                residue: "toilet_residue"
             }
         },
         {
