@@ -298,10 +298,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.oldItem = this.activeItem.idNumber;
         this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
 
-        const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot);
-        this.images.body.setTexture("main", `${skinID.idString}_base.svg`);
-        this.images.leftFist.setTexture("main", `${skinID.idString}_fist.svg`);
-        this.images.rightFist.setTexture("main", `${skinID.idString}_fist.svg`);
+        const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot).idString;
+        this.images.body.setTexture("main", `${skinID}_base.svg`);
+        this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
+        this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
 
         if (this.isActivePlayer) {
             $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
