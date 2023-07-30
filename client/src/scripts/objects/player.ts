@@ -440,14 +440,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     destroy(): void {
-        super.destroy();
-        this.images.body.destroy(true);
-        this.images.leftFist.destroy(true);
-        this.images.rightFist.destroy(true);
-        this.images.weapon.destroy(true);
-        this.images.bloodEmitter.destroy(true);
-        this.emoteContainer.destroy(true);
-        this.images.emoteBackground.destroy(true);
-        this.images.emoteImage.destroy(true);
+        if (this.isActivePlayer) {
+            this.container.setVisible(false);
+        } else {
+            super.destroy();
+            this.images.body.destroy(true);
+            this.images.leftFist.destroy(true);
+            this.images.rightFist.destroy(true);
+            this.images.weapon.destroy(true);
+            this.images.bloodEmitter.destroy(true);
+            this.emoteContainer.destroy(true);
+            this.images.emoteBackground.destroy(true);
+            this.images.emoteImage.destroy(true);
+        }
     }
 }

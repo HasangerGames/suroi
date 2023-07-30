@@ -249,6 +249,7 @@ export class Player extends GameObject {
 
     spectating?: Player;
     spectators = new Set<Player>();
+    lastSpectateActionTime = 0;
 
     role: string | undefined;
     isDev: boolean;
@@ -398,10 +399,17 @@ export class Player extends GameObject {
         this.spectating = spectating;
         spectating.spectators.add(this);
         spectating.updateVisibleObjects();
+
+        // Add all visible objects to full dirty objects
         for (const object of spectating.visibleObjects) {
             spectating.fullDirtyObjects.add(object);
         }
-        // TODO Add old visible objects to deletedObjects
+
+        // Add objects that are no longer visible to deleted objects
+        for (const object of this.visibleObjects) {
+            if (!spectating.visibleObjects.has(object)) spectating.deletedObjects.add(object);
+        }
+
         spectating.fullDirtyObjects.add(spectating);
         if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
         spectating.fullUpdate = true;

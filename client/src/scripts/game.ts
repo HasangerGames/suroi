@@ -119,7 +119,7 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            if (!this.gameOver) {
+            if (this.spectating || !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
