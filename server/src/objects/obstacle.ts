@@ -315,7 +315,7 @@ export class Obstacle extends GameObject {
         const hitbox = this.hitbox as RectangleHitbox;
         if (player?.hitbox.collidesWith(hitbox)) {
             const newPosition = player.position.clone();
-            const radius = player.hitbox.radius;
+            const radius: number = player.hitbox.radius;
             if (isOnOtherSide) {
                 switch (this.rotation) {
                     case 0:

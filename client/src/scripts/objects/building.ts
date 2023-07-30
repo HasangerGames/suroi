@@ -18,7 +18,7 @@ export class Building extends GameObject {
         emitter: Phaser.GameObjects.Particles.ParticleEmitter
     };
 
-    ceilingHitbox: Hitbox;
+    ceilingHitbox?: Hitbox;
 
     orientation!: Orientation;
 
@@ -44,8 +44,6 @@ export class Building extends GameObject {
         this.container.add(this.images.floor).setDepth(-1);
 
         this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);
-
-        this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.clone();
     }
 
     toggleCeiling(visible: boolean): void {
@@ -102,7 +100,7 @@ export class Building extends GameObject {
         this.container.setRotation(this.rotation);
         this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
 
-        this.ceilingHitbox = this.ceilingHitbox.transform(this.position, 1, this.orientation);
+        this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, this.orientation);
 
         this.floors = [];
 

@@ -1,22 +1,29 @@
-import { WebSocket, type MessageEvent } from "ws";
+import { type MessageEvent, WebSocket } from "ws";
 
-import { PacketType, InputActions, INPUT_ACTIONS_BITS, ObjectCategory } from "../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
 
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Skins } from "../../common/src/definitions/skins";
+import { Emotes } from "../../common/src/definitions/emotes";
 
 const config = {
     address: "127.0.0.1:8000",
-    botCount: 50,
-    joinDelay: 50
+    botCount: 100,
+    joinDelay: 100
 };
 
 const skins: string[] = [];
 
 for (const skin of Skins) {
     if (!skin.notInLoadout && !skin.roleRequired) skins.push(skin.idString);
+}
+
+const emotes: string[] = [];
+
+for (const emote of Emotes.definitions) {
+    emotes.push(emote.idString);
 }
 
 const bots = new Set<Bot>();
@@ -32,6 +39,7 @@ class Bot {
     movingRight = false;
     shootStart = false;
     interact = false;
+    emote = false;
     angle = random(-Math.PI, Math.PI);
 
     connected = false;
@@ -75,11 +83,12 @@ class Bot {
         stream.writeBoolean(false); // is mobile
         // loadout
         const skin = skins[random(0, skins.length)];
+        const emote = (): string => emotes[random(0, emotes.length)];
         stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, skin));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "happy_face"));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "sad_face"));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, "thumbs_down"));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
+        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 
@@ -99,7 +108,27 @@ class Bot {
         this.angle += 0.1;
         if (this.angle > Math.PI) this.angle = -Math.PI;
 
-        stream.writeBits(this.interact ? InputActions.Interact : InputActions.None, INPUT_ACTIONS_BITS);
+        let action: InputActions | undefined;
+        if (this.emote) {
+            this.emote = false;
+            switch (random(1, 4)) {
+                case 0:
+                    action = InputActions.TopEmoteSlot;
+                    break;
+                case 1:
+                    action = InputActions.RightEmoteSlot;
+                    break;
+                case 2:
+                    action = InputActions.BottomEmoteSlot;
+                    break;
+                case 3:
+                    action = InputActions.LeftEmoteSlot;
+                    break;
+            }
+        } else if (this.interact) {
+            action = InputActions.Interact;
+        }
+        stream.writeBits(action ?? InputActions.None, INPUT_ACTIONS_BITS);
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 
@@ -111,6 +140,7 @@ class Bot {
 
         this.shootStart = randomBoolean();
         this.interact = randomBoolean();
+        this.emote = randomBoolean();
 
         switch (random(1, 8)) {
             case 1:

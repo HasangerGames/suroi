@@ -230,7 +230,7 @@ export class GameScene extends Phaser.Scene {
         let bindChangeAcknowledged = false;
 
         return (): void => {
-            if (!this.activeGame.gameStarted || this.activeGame.gameOver) return;
+            if (!this.activeGame.gameStarted || (this.activeGame.gameOver && !this.activeGame.spectating)) return;
 
             if (this.playerManager.dirty.inputs) {
                 this.playerManager.dirty.inputs = false;
@@ -267,7 +267,7 @@ export class GameScene extends Phaser.Scene {
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
                 } else if (object instanceof Building) {
-                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox.collidesWith(player.hitBox));
+                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitBox));
 
                     for (const floor of object.floors) {
                         if (floor.hitbox.collidesWith(player.hitBox)) {

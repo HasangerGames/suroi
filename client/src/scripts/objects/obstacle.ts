@@ -114,8 +114,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 this.emitter.explode(10);
             }
         }
-
-        this.isNew = false;
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
@@ -123,7 +121,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.position = stream.readPosition();
 
         const definition = this.type.definition;
-        if (definition.isDoor && this.door !== undefined) {
+        if (definition.isDoor && this.door !== undefined && this.isNew) {
             let offsetX: number;
             let offsetY: number;
             if (definition.hingeOffset !== undefined) {
@@ -185,6 +183,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             scale: { start: 1, end: 0 },
             emitting: false
         }).setDepth((definition.depth ?? 0) + 1).setPosition(this.container.x, this.container.y);
+
+        this.isNew = false;
     }
 
     destroy(): void {
