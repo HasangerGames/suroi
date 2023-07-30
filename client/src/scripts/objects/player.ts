@@ -34,6 +34,7 @@ import { type ArmorDefinition } from "../../../../common/src/definitions/armors"
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { FloorType } from "../../../../common/src/definitions/buildings";
+import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 
 const showMeleeDebugCircle = false;
 
@@ -253,7 +254,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     if (weaponDef.itemType === ItemType.Gun) {
                         this.updateFistsPosition(false);
-                        const recoilAmount = (20 * (1 - weaponDef.recoilMultiplier));
+                        const recoilAmount = 20 * (1 - weaponDef.recoilMultiplier);
                         this.weaponAnim = this.scene.tweens.add({
                             targets: this.images.weapon,
                             x: weaponDef.image.position.x - recoilAmount,
@@ -298,7 +299,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.oldItem = this.activeItem.idNumber;
         this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
 
-        const skinID = stream.readObjectTypeNoCategory(ObjectCategory.Loot).idString;
+        const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot).idString;
         this.images.body.setTexture("main", `${skinID}_base.svg`);
         this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
         this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
@@ -323,24 +324,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.weaponAnim?.destroy();
 
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const fists = weaponDef.fists;
         if (anim) {
             this.leftFistAnim = this.scene.tweens.add({
                 targets: this.images.leftFist,
-                x: weaponDef.fists.left.x,
-                y: weaponDef.fists.left.y,
-                duration: weaponDef.fists.animationDuration,
+                x: fists.left.x,
+                y: fists.left.y,
+                duration: fists.animationDuration,
                 ease: "Linear"
             });
             this.rightFistAnim = this.scene.tweens.add({
                 targets: this.images.rightFist,
-                x: weaponDef.fists.right.x,
-                y: weaponDef.fists.right.y,
-                duration: weaponDef.fists.animationDuration,
+                x: fists.right.x,
+                y: fists.right.y,
+                duration: fists.animationDuration,
                 ease: "Linear"
             });
         } else {
-            this.images.leftFist.setPosition(weaponDef.fists.left.x, weaponDef.fists.left.y);
-            this.images.rightFist.setPosition(weaponDef.fists.right.x, weaponDef.fists.right.y);
+            this.images.leftFist.setPosition(fists.left.x, fists.left.y);
+            this.images.rightFist.setPosition(fists.right.x, fists.right.y);
         }
 
         if (weaponDef.image) {

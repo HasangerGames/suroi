@@ -13,6 +13,7 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly cooldown: number
     readonly speedMultiplier: number
     readonly killstreak?: boolean
+    readonly maxTargets: number
     readonly fists: {
         readonly animationDuration: number
         readonly randomFist: boolean
@@ -43,6 +44,7 @@ export const Melees: MeleeDefinition[] = [
         cooldown: 250,
         noDrop: true,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 125,
             randomFist: true,
@@ -62,6 +64,7 @@ export const Melees: MeleeDefinition[] = [
         offset: v(3, 1.2),
         cooldown: 450,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
@@ -88,6 +91,7 @@ export const Melees: MeleeDefinition[] = [
         offset: v(3.1, 0.9),
         cooldown: 200,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 100,
             randomFist: false,
@@ -100,7 +104,8 @@ export const Melees: MeleeDefinition[] = [
             position: v(62, 42),
             usePosition: v(90, 8),
             angle: 60,
-            useAngle: 5
+            useAngle: 5,
+            lootScale: 0.8
         }
     },
     {
@@ -109,11 +114,12 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 40,
         obstacleMultiplier: 2,
-        piercingMultiplier: 0.5,
+        piercingMultiplier: 1,
         radius: 2.5,
         offset: v(7.6, 0.1),
         cooldown: 450,
-        speedMultiplier: 0.9,
+        speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
@@ -131,18 +137,20 @@ export const Melees: MeleeDefinition[] = [
         }
     },
     {
-        idString: "lasersword",
-        name: "LAZER SWORD",
+        idString: "heap_sword",
+        name: "HE-AP sword",
         itemType: ItemType.Melee,
-        damage: 99,
+        damage: 75,
         obstacleMultiplier: 2.5,
-        piercingMultiplier: 0.5,
-        radius: 10,
-        offset: v(13, -5),
-        cooldown: 1000,
-        speedMultiplier: 1.1,
+        piercingMultiplier: 1,
+        killstreak: true,
+        radius: 5,
+        offset: v(4, -5),
+        cooldown: 300,
+        speedMultiplier: 1,
+        maxTargets: Infinity,
         fists: {
-            animationDuration: 300,
+            animationDuration: 150,
             randomFist: false,
             left: v(38, 35),
             right: v(38, -35),
@@ -150,8 +158,8 @@ export const Melees: MeleeDefinition[] = [
             useRight: v(38, -35)
         },
         image: {
-            position: v(282, 48),
-            usePosition: v(230, -190),
+            position: v(102, 35),
+            usePosition: v(140, -30),
             angle: 50,
             useAngle: -20,
             lootScale: 0.6

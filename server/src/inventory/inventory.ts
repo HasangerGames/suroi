@@ -428,9 +428,15 @@ export class Inventory {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
                     stream.writeObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(item.type);
+                    // TODO: find a better place to send this stuff
                     if (item instanceof GunItem) {
-                        // TODO: find a better place to send the ammo instead of sending it with the inventory guns
                         stream.writeUint8(item.ammo);
+                    }
+
+                    const shouldTrackStats = item.definition.killstreak === true;
+                    stream.writeBoolean(shouldTrackStats);
+                    if (shouldTrackStats) {
+                        stream.writeUint8(item.stats.kills);
                     }
                 }
             }

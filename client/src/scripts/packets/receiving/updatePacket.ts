@@ -24,6 +24,7 @@ import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
+import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
 
 function adjustForLowValues(value: number): number {
@@ -33,9 +34,13 @@ function adjustForLowValues(value: number): number {
     return value;
 }
 
+function safeRound(value: number): number {
+    return adjustForLowValues(Math.round(value));
+}
+
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const player: Player = this.playerManager.game.activePlayer;
+        const player = this.playerManager.game.activePlayer;
         if (player === undefined) return;
 
         const game = player.game;
@@ -67,6 +72,24 @@ export class UpdatePacket extends ReceivingPacket {
             playerManager.maxHealth = stream.readFloat32();
             playerManager.minAdrenaline = stream.readFloat32();
             playerManager.maxAdrenaline = stream.readFloat32();
+
+            const minMaxAdren = $<HTMLSpanElement>("#adrenaline-bar-min-max");
+            const maxHealth = $<HTMLSpanElement>("#health-bar-max");
+
+            if (playerManager.maxHealth === PlayerManager.defaultMaxHealth) {
+                maxHealth.text("").hide();
+            } else {
+                maxHealth.text(safeRound(playerManager.maxHealth)).show();
+            }
+
+            if (
+                playerManager.maxAdrenaline === PlayerManager.defaultMaxAdrenaline &&
+                playerManager.minAdrenaline === PlayerManager.defaultMinAdrenaline
+            ) {
+                minMaxAdren.text("").hide();
+            } else {
+                minMaxAdren.text(`${playerManager.minAdrenaline === 0 ? "" : `${safeRound(playerManager.minAdrenaline)}/`}${safeRound(playerManager.maxAdrenaline)}`).show();
+            }
         }
 
         // Health
@@ -74,7 +97,7 @@ export class UpdatePacket extends ReceivingPacket {
             playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
             const absolute = playerManager.health;
             const realPercentage = 100 * absolute / playerManager.maxHealth;
-            const percentage = adjustForLowValues(Math.round(realPercentage));
+            const percentage = safeRound(realPercentage);
 
             const healthBar = $<HTMLDivElement>("#health-bar");
             const healthBarAmount = $<HTMLSpanElement>("#health-bar-percentage");
@@ -82,7 +105,7 @@ export class UpdatePacket extends ReceivingPacket {
             healthBar.width(`${realPercentage}%`);
             $("#health-bar-animation").width(`${realPercentage}%`);
 
-            healthBarAmount.text(adjustForLowValues(Math.round(absolute)));
+            healthBarAmount.text(safeRound(absolute));
 
             if (percentage === 100) {
                 healthBar.css("background-color", "#bdc7d0");
@@ -107,7 +130,7 @@ export class UpdatePacket extends ReceivingPacket {
             $("#adrenaline-bar").width(`${percentage}%`);
 
             const adrenalineBarPercentage = $<HTMLSpanElement>("#adrenaline-bar-percentage");
-            adrenalineBarPercentage.text(adjustForLowValues(Math.round(absolute)));
+            adrenalineBarPercentage.text(safeRound(absolute));
             adrenalineBarPercentage.css("color", absolute < 7 ? "#ffffff" : "#000000");
         }
 

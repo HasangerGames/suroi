@@ -12,11 +12,11 @@ import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { ItemPacket } from "../packets/sending/itemPacket";
 import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
-import { mod } from "../../../../common/src/utils/math";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 import { v } from "../../../../common/src/utils/vector";
+import { absMod } from "../../../../common/src/utils/math";
 
 /**
  * This class manages the active player data and inventory
@@ -26,11 +26,15 @@ export class PlayerManager {
 
     name!: string;
 
-    maxHealth = 100;
+    static readonly defaultMaxHealth = 100;
+    static readonly defaultMinAdrenaline = 0;
+    static readonly defaultMaxAdrenaline = 100;
+
+    maxHealth = PlayerManager.defaultMaxHealth;
     health = this.maxHealth;
 
-    maxAdrenaline = 100;
-    minAdrenaline = 0;
+    maxAdrenaline = PlayerManager.defaultMaxAdrenaline;
+    minAdrenaline = PlayerManager.defaultMinAdrenaline;
     adrenaline = 0;
 
     get isMobile(): boolean {
@@ -83,6 +87,8 @@ export class PlayerManager {
     turning = false;
 
     zoom = 48;
+
+    readonly itemKills: Array<number | undefined> = new Array(INVENTORY_MAX_WEAPONS).fill(undefined);
 
     // Shove it
     /* eslint-disable @typescript-eslint/indent */
@@ -162,12 +168,18 @@ export class PlayerManager {
     switchScope(direction: number): void {
         const scopeId = Scopes.indexOf(this.scope.definition);
         let scopeString = this.scope.idString;
-        for (let i = mod(scopeId + direction, Scopes.length); i < Scopes.length && i >= 0; i += direction) {
-            if (this.items[Scopes[i].idString]) {
-                scopeString = Scopes[i].idString;
+        let searchIndex = scopeId;
+
+        while (true) {
+            searchIndex = absMod(searchIndex + direction, Scopes.length);
+            const scopeCandidate = Scopes[searchIndex].idString;
+
+            if (this.items[scopeCandidate]) {
+                scopeString = scopeCandidate;
                 break;
             }
         }
+
         if (scopeString !== this.scope.idString) this.useItem(scopeString);
     }
 
@@ -175,33 +187,41 @@ export class PlayerManager {
         this.game = game;
     }
 
-    private updateActiveWeaponAmmoUi(): void {
+    private _updateActiveWeaponUi(): void {
         if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
             $("#weapon-ammo-container").hide();
-            return;
-        }
+        } else {
+            $("#weapon-ammo-container").show();
+            const ammo = this.weaponsAmmo[this.activeItemIndex];
+            $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
 
-        $("#weapon-ammo-container").show();
-        const ammo = this.weaponsAmmo[this.activeItemIndex];
-        $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
+            const ammoType = (this.weapons[this.activeItemIndex]?.definition as GunDefinition).ammoType;
+            let totalAmmo: number | string = this.items[ammoType];
 
-        const ammoType = (this.weapons[this.activeItemIndex]?.definition as GunDefinition).ammoType;
-        let totalAmmo: number | string = this.items[ammoType];
-
-        for (const ammo of Ammos) {
-            if (ammo.idString === ammoType && ammo.ephemeral) {
-                totalAmmo = "∞";
-                break;
+            for (const ammo of Ammos) {
+                if (ammo.idString === ammoType && ammo.ephemeral) {
+                    totalAmmo = "∞";
+                    break;
+                }
             }
+
+            $("#weapon-inventory-ammo").text(totalAmmo);
         }
 
-        $("#weapon-inventory-ammo").text(totalAmmo);
+        const kills = this.itemKills[this._activeItemIndex];
+        if (kills === undefined) { // killstreaks
+            $("#killstreak-indicator-container").hide();
+        } else {
+            $("#killstreak-indicator-container").show();
+            $("#killstreak-indicator-counter").text(`Streak: ${kills}`);
+        }
     }
 
     deserializeInventory(stream: SuroiBitStream): void {
         // TODO: clean up this mess lmfao
         // Weapons dirty
-        if (stream.readBoolean()) {
+        const weaponsDirty = stream.readBoolean();
+        if (weaponsDirty) {
             for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
                 const container = $(`#weapon-slot-${i + 1}`);
                 if (stream.readBoolean()) {
@@ -221,30 +241,30 @@ export class PlayerManager {
                         container.children(".item-ammo").text(ammo)
                             .css("color", ammo > 0 ? "inherit" : "red");
                     }
+
+                    this.itemKills[i] = stream.readBoolean() ? stream.readUint8() : undefined;
                 } else {
                     // empty slot
-                    this.weapons[i] = undefined;
+                    this.itemKills[i] = this.weapons[i] = undefined;
                     container.removeClass("has-item");
                     container.children(".item-name").text("");
                     container.children(".item-image").removeAttr("src").hide();
                     container.children(".item-ammo").text("");
                 }
             }
-            this.updateActiveWeaponAmmoUi();
         }
 
         // Active item index
-        if (stream.readBoolean()) {
+        const activeWeaponIndexDirty = stream.readBoolean();
+        if (activeWeaponIndexDirty) {
             this.activeItemIndex = stream.readBits(2);
             $("#weapons-container").children(".inventory-slot").removeClass("active");
-            const slotContainer = $(`#weapon-slot-${this.activeItemIndex + 1}`);
-            slotContainer.addClass("active");
-
-            this.updateActiveWeaponAmmoUi();
+            $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
         }
 
         // Inventory dirty
-        if (stream.readBoolean()) {
+        const inventoryDirty = stream.readBoolean();
+        if (inventoryDirty) {
             const backpackLevel = stream.readBits(2);
             const readInventoryCount = (): number => stream.readBoolean() ? stream.readBits(9) : 0;
 
@@ -265,8 +285,14 @@ export class PlayerManager {
 
             this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
             $(`#${this.scope.idString}-slot`).addClass("active");
+        }
 
-            this.updateActiveWeaponAmmoUi();
+        if (
+            weaponsDirty ||
+            activeWeaponIndexDirty ||
+            inventoryDirty
+        ) {
+            this._updateActiveWeaponUi();
         }
     }
 }

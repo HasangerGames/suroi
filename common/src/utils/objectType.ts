@@ -1,7 +1,7 @@
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
 
-import { type ObjectCategory } from "../constants";
+import { ObjectCategory } from "../constants";
 
 export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     category: T;
@@ -37,7 +37,7 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
 
         let definition = definitions.definitions[type.idNumber];
         if (definition === undefined) {
-            console.warn(`ID number out of range (ID = ${idNumber}, category = ${category})`);
+            console.warn(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
             definition = definitions.definitions[0];
         }
 
@@ -50,7 +50,7 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
-            throw new Error(`No definitions found for object category: ${category} (object ID = ${idString})`);
+            throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idString})`);
         }
 
         // TODO: Make this more efficient.

@@ -341,7 +341,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "metal_particle"
+            }
         },
         makeHouseWall("1", new RectangleHitbox(v(-4.55, -1), v(4.55, 1))),
         makeHouseWall("2", new RectangleHitbox(v(-10.43, -1), v(10.43, 1))),
@@ -399,7 +402,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "house_exterior",
             name: "House Exterior",
-            material: "wood",
+            material: "stone",
             health: 1000,
             indestructible: true,
             hideOnMap: true,
@@ -437,7 +440,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 1.0
             },
             hitbox: new RectangleHitbox(v(-5.52, -0.8), v(4.63, 0.8)),
             rotationMode: "limited",
@@ -487,8 +490,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             hasLoot: true,
             frames: {
-                particle: "toilet_particle.svg",
-                residue: "toilet_residue.svg"
+                particle: "toilet_particle",
+                residue: "toilet_residue"
             }
         },
         {
@@ -672,7 +675,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 0.95
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-10.85, -0.35), v(10.85, 1.15)),
@@ -684,7 +687,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "porta_potty_toilet_open",
             name: "Porta Potty Toilet Open",
-            material: "wood",
+            material: "porcelain",
             health: 100,
             scale: {
                 spawnMin: 1.0,
@@ -703,7 +706,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "porta_potty_toilet_closed",
             name: "Porta Potty Toilet Closed",
-            material: "wood",
+            material: "porcelain",
             health: 100,
             scale: {
                 spawnMin: 1.0,
@@ -747,7 +750,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.9
+                destroy: 1.0
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-5.4, -0.7), v(3.8, 0.7)),
