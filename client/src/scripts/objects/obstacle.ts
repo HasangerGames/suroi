@@ -34,6 +34,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     isNew = true;
 
+    hitEffect = 0;
+
     constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, scene, type, id);
 
@@ -55,11 +57,19 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
-        const oldScale = this.scale;
         this.scale = stream.readScale();
         const destroyed = stream.readBoolean();
 
         const definition = this.type.definition;
+
+        const hitEffect = stream.readBits(3);
+
+        if (this.hitEffect !== hitEffect && !this.isNew && !destroyed) {
+            this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
+
+            if (!definition.indestructible) this.emitter.emitParticle(1);
+        }
+        this.hitEffect = hitEffect;
 
         if (definition.isDoor && this.door !== undefined) {
             const offset = stream.readBits(2);
@@ -86,19 +96,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             }
         }
 
-        // Play a sound and emit a particle if the scale changes after the obstacle's creation and decreases
         this.image.setScale(this.destroyed ? 1 : this.scale);
-        if (oldScale !== this.scale && !this.isNew && !destroyed) {
-            this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
-            let numParticle = 1;
-            const destroyScale = definition.scale.destroy;
-            if ((oldScale - this.scale) * 2 > (1 - destroyScale)) {
-                numParticle = 3;
-            } else if ((oldScale - this.scale) * 4 > (1 - destroyScale)) {
-                numParticle = 2;
-            }
-            this.emitter.emitParticle(numParticle);
-        }
 
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.destroyed && destroyed) {
