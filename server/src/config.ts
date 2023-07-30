@@ -111,7 +111,7 @@ export const Config = {
 
     playerLimit: 80,
 
-    mapName: "main",
+    mapName: "arena",
 
     disableLobbyClearing: false,
 
