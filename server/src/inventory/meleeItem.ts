@@ -83,9 +83,9 @@ export class MeleeItem extends InventoryItem {
                     return distanceA - distanceB;
                 });
 
-                const closestObject: GameObject | undefined = damagedObjects[0];
-
-                if (closestObject) {
+                const targetLimit = Math.min(damagedObjects.length, definition.maxTargets);
+                for (let i = 0; i < targetLimit; i++) {
+                    const closestObject: GameObject = damagedObjects[i];
                     let multiplier = 1;
 
                     if (closestObject instanceof Obstacle) {

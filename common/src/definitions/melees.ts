@@ -13,6 +13,7 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly cooldown: number
     readonly speedMultiplier: number
     readonly killstreak?: boolean
+    readonly maxTargets: number
     readonly fists: {
         readonly animationDuration: number
         readonly randomFist: boolean
@@ -43,6 +44,7 @@ export const Melees: MeleeDefinition[] = [
         cooldown: 250,
         noDrop: true,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 125,
             randomFist: true,
@@ -62,6 +64,7 @@ export const Melees: MeleeDefinition[] = [
         offset: v(3, 1.2),
         cooldown: 450,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
@@ -88,6 +91,7 @@ export const Melees: MeleeDefinition[] = [
         offset: v(3.1, 0.9),
         cooldown: 200,
         speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 100,
             randomFist: false,
@@ -109,11 +113,12 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 40,
         obstacleMultiplier: 2,
-        piercingMultiplier: 0.5,
+        piercingMultiplier: 1,
         radius: 2.5,
         offset: v(7.6, 0.1),
         cooldown: 450,
-        speedMultiplier: 0.9,
+        speedMultiplier: 1,
+        maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
@@ -134,13 +139,14 @@ export const Melees: MeleeDefinition[] = [
         idString: "lasersword",
         name: "LAZER SWORD",
         itemType: ItemType.Melee,
-        damage: 99,
+        damage: 75,
         obstacleMultiplier: 2.5,
-        piercingMultiplier: 0.5,
+        piercingMultiplier: 1,
         radius: 10,
         offset: v(13, -5),
         cooldown: 1000,
         speedMultiplier: 1.1,
+        maxTargets: Infinity,
         fists: {
             animationDuration: 300,
             randomFist: false,
