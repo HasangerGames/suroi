@@ -67,7 +67,6 @@ export interface ConfigType {
      * Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 5 times in 5 seconds.
      */
     readonly botProtection: boolean
-    readonly bannedIPs: string[]
     readonly cloudflare: boolean
     readonly disableLobbyClearing: boolean
 
@@ -107,8 +106,7 @@ export const Config = {
 
     censorUsernames: true,
 
-    botProtection: false,
-    bannedIPs: [],
+    botProtection: true,
     cloudflare: false,
 
     playerLimit: 80,

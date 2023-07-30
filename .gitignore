@@ -5,6 +5,7 @@ dist/
 node_modules/
 
 server/reports
+server/bannedIPs.json
 
 # IDE garbage
 .idea

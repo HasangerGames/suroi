@@ -24,6 +24,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
 import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
+import * as fs from "fs";
 
 /**
  * Apply CORS headers to a response.
@@ -78,7 +79,7 @@ export function allowJoin(gameID: number): boolean {
 
 const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
-const bannedIPs: string[] = [];
+const bannedIPs = new Set<string>();
 
 app.get("/api/getGame", async(res, req) => {
     /* eslint-disable-next-line @typescript-eslint/no-empty-function */
@@ -148,8 +149,8 @@ app.ws("/play", {
         // Bot protection
         const ip = Config.cloudflare ? req.getHeader("cf-connecting-ip") : decoder.decode(res.getRemoteAddressAsText());
         if (Config.botProtection) {
-            if (Config.bannedIPs.includes(ip) || bannedIPs.includes(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
-                if (!bannedIPs.includes(ip)) bannedIPs.push(ip);
+            if (bannedIPs.has(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
+                if (!bannedIPs.has(ip)) bannedIPs.add(ip);
                 res.endWithoutBody(0, true);
                 log(`Connection blocked: ${ip}`);
                 return;
@@ -309,5 +310,15 @@ app.listen(Config.host, Config.port, (): void => {
         setInterval((): void => {
             connectionAttempts = {};
         }, 5000);
+        setInterval(() => {
+            fs.readFile("bannedIPs.json", "utf8", (error, data) => {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+                const bannedIPsFromJSON: string[] = JSON.parse(data);
+                for (const ip of bannedIPsFromJSON) bannedIPs.add(ip);
+            });
+        }, 60000);
     }
 });
