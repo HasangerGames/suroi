@@ -108,10 +108,6 @@ export class InputPacket extends ReceivingPacket {
             case InputActions.LeftEmoteSlot:
                 player.emote(3);
                 break;
-            case InputActions.BeginSpectating:
-                console.log("begin spectating");
-                player.spectate(player.killedBy ?? [...this.player.game.livingPlayers][0]);
-                break;
         }
     }
 }

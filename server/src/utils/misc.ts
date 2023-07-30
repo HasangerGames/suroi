@@ -113,3 +113,13 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
 
     return loot;
 }
+
+/**
+ * Find and remove an element from an array.
+ * @param array The array to iterate over.
+ * @param value The value to check for.
+ */
+export function removeFrom<T>(array: T[], value: T): void {
+    const index: number = array.indexOf(value);
+    if (index !== -1) array.splice(index, 1);
+}

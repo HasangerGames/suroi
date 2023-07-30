@@ -142,7 +142,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
         const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
-        if (this.isActivePlayer && !this.game.gameOver) {
+        if (this.isActivePlayer && (!this.game.gameOver || this.game.spectating)) {
             gsap.to(minimap.playerIndicator, {
                 x: this.position.x * MINIMAP_SCALE,
                 y: this.position.y * MINIMAP_SCALE,

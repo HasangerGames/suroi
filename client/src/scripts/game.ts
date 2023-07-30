@@ -66,6 +66,7 @@ export class Game {
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             $("#game-over-screen").hide();
+            $("#spectating-msg").hide();
             this.sendPacket(new PingPacket(this.playerManager));
         };
 
@@ -125,6 +126,7 @@ export class Game {
                     $("#splash-server-message").show();
                     enablePlayButton();
                 }
+                $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) this.endGame();
             }
         };

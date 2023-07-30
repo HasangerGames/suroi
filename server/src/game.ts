@@ -10,7 +10,7 @@ import { Gas } from "./gas";
 
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
-import { v2v } from "./utils/misc";
+import { removeFrom, v2v } from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
@@ -76,6 +76,7 @@ export class Game {
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
+    readonly spectatablePlayers: Player[] = [];
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
@@ -460,6 +461,7 @@ export class Game {
         const game = player.game;
 
         game.livingPlayers.add(player);
+        game.spectatablePlayers.push(player);
         game.connectedPlayers.add(player);
         game.dynamicObjects.add(player);
         game.fullDirtyObjects.add(player);
@@ -508,6 +510,7 @@ export class Game {
         this.connectedPlayers.delete(player);
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
+            removeFrom(this.spectatablePlayers, player);
             this.dynamicObjects.delete(player);
             this.removeObject(player);
             try {
@@ -518,6 +521,9 @@ export class Game {
         } else {
             player.rotation = 0;
             this.partialDirtyObjects.add(player);
+        }
+        if (player.spectating !== undefined) {
+            player.spectating.spectators.delete(player);
         }
         if (this.aliveCount < 2) {
             clearTimeout(this.startTimeoutID);

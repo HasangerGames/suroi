@@ -11,6 +11,7 @@
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
+    "dev:test": "cd server && pnpm dev:test",
     "lint": "pnpm -r lint",
     "lint:ci": "pnpm -r lint:ci",
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules && pnpm install"

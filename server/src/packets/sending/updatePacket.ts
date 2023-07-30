@@ -102,6 +102,11 @@ export class UpdatePacket extends SendingPacket {
         if (player.dirty.activePlayerID || player.fullUpdate) {
             stream.writeObjectID(player.id);
             player.dirty.activePlayerID = false;
+            const spectating = player.spectators.size > 0;
+            stream.writeBoolean(spectating);
+            if (spectating) {
+                stream.writePlayerNameWithColor(player);
+            }
         }
 
         // Inventory

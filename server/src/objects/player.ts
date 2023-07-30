@@ -34,6 +34,7 @@ import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { removeFrom } from "../utils/misc";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -639,6 +640,7 @@ export class Player extends GameObject {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
+        removeFrom(this.game.spectatablePlayers, this);
         this.game.dynamicObjects.delete(this);
         this.game.removeObject(this);
 

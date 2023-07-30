@@ -121,6 +121,7 @@ $((): void => {
             $("#game-over-screen").hide();
             game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.BeginSpectating));
             game.spectating = true;
+            (game.activePlayer.scene.scene.get("minimap") as MinimapScene).playerIndicator.setTexture("main", "player_indicator.svg");
         }
     });
 
