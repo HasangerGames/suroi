@@ -21,6 +21,8 @@ import { type ExplosionDefinition } from "../../../common/src/definitions/explos
 import { Player } from "./player";
 import { type Building } from "./building";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type GunItem } from "../inventory/gunItem";
+import { type MeleeItem } from "../inventory/meleeItem";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -65,6 +67,8 @@ export class Obstacle extends GameObject {
     };
 
     parentBuilding?: Building;
+
+    hitEffect = 0;
 
     constructor(
         game: Game,
@@ -169,11 +173,16 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem): void {
         const definition = this.definition;
+
+        this.hitEffect++;
+        this.hitEffect %= 8;
+        this.game.partialDirtyObjects.add(this);
+
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponDef = (weaponUsed?.definition as ItemDefinition);
+        const weaponDef = weaponUsed?.definition as ItemDefinition;
         if (
             definition.impenetrable &&
             !(weaponDef.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).piercingMultiplier)
@@ -188,8 +197,6 @@ export class Obstacle extends GameObject {
             this.dead = true;
 
             this.scale = definition.scale.spawnMin;
-
-            this.game.partialDirtyObjects.add(this);
 
             if (definition.explosion !== undefined) {
                 this.game.addExplosion(
@@ -267,8 +274,6 @@ export class Obstacle extends GameObject {
                 source instanceof Player &&
                 weaponUsed?.category === ObjectCategory.Loot &&
                 (weaponUsed.definition as LootDefinition).itemType === ItemType.Melee) this.interact(source);
-
-            this.game.partialDirtyObjects.add(this);
         }
     }
 
@@ -364,6 +369,7 @@ export class Obstacle extends GameObject {
     override serializePartial(stream: SuroiBitStream): void {
         stream.writeScale(this.scale);
         stream.writeBoolean(this.dead);
+        stream.writeBits(this.hitEffect, 3);
         if (this.isDoor && this.door !== undefined) {
             stream.writeBits(this.door.offset, 2);
         }

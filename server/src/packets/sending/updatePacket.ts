@@ -24,7 +24,6 @@ export class UpdatePacket extends SendingPacket {
         // Active player data
         //
 
-        // Max health
         stream.writeBoolean(player.dirty.maxMinStats || player.fullUpdate);
         stream.writeBoolean(player.dirty.health || player.fullUpdate);
         stream.writeBoolean(player.dirty.adrenaline || player.fullUpdate);
@@ -62,6 +61,7 @@ export class UpdatePacket extends SendingPacket {
         const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
         stream.writeBoolean(aliveCountDirty);
 
+        // Max health, min/max adren
         if (player.dirty.maxMinStats || player.fullUpdate) {
             stream.writeFloat32(player.maxHealth);
             stream.writeFloat32(player.minAdrenaline);
@@ -70,7 +70,6 @@ export class UpdatePacket extends SendingPacket {
         }
 
         // Health
-
         if (player.dirty.health || player.fullUpdate) {
             stream.writeFloat(player.health, 0, player.maxHealth, 12);
             player.dirty.health = false;

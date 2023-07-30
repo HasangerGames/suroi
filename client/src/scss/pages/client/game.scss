@@ -310,7 +310,7 @@
     margin-left: 3px;
 }
 
-#interact-key.active + #interact-text {
+#interact-key.active+#interact-text {
     position: relative;
     top: 3px;
 }
@@ -389,7 +389,7 @@
     }
 
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 
     #health-bar,
@@ -424,6 +424,17 @@
         z-index: 1;
         margin-left: 8px;
     }
+
+    #health-bar-max {
+        z-index: 1;
+        color: #888;
+        font-size: 15px;
+        margin-right: 8px;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 12px;
+        }
+    }
 }
 
 #adrenaline-bar-container {
@@ -443,7 +454,7 @@
     }
 
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
 
     #adrenaline-bar {
@@ -476,6 +487,36 @@
         margin-left: 16px;
         position: relative;
         top: -1px;
+    }
+
+    #adrenaline-bar-min-max {
+        z-index: 1;
+        color: #888;
+        font-size: 15px;
+        margin-right: 8px;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 10px;
+        }
+    }
+}
+
+#killstreak-indicator-container {
+    background: $transparent_bg;
+    margin-left: 10px;
+    border-radius: 4px;
+    position: absolute;
+    bottom: 10px;
+    height: 50px;
+    left: calc(50% + 160px);
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    #killstreak-indicator-counter {
+        z-index: 1;
+        font-size: 14px;
     }
 }
 
@@ -940,14 +981,15 @@
     }
 }
 
-#emote-wheel, #emote-customize-wheel {
+#emote-wheel,
+#emote-customize-wheel {
     position: absolute;
     width: 286px;
     height: 286px;
     //noinspection CssUnknownTarget
     background-image: url("../../../public/img/misc/emote_wheel.svg");
 
-    & > div {
+    &>div {
         width: 84px;
         height: 84px;
         position: absolute;
@@ -974,7 +1016,8 @@
     }
 }
 
-#emote-wheel-highlight, #emote-customize-wheel-highlight {
+#emote-wheel-highlight,
+#emote-customize-wheel-highlight {
     position: absolute;
     width: 286px;
     height: 286px;

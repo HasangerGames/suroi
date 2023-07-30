@@ -94,7 +94,7 @@ export class MeleeItem extends InventoryItem {
                             : definition.obstacleMultiplier;
                     }
 
-                    closestObject.damage(definition.damage * multiplier, owner, this.type);
+                    closestObject.damage(definition.damage * multiplier, owner, this);
                 }
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {

@@ -14,13 +14,17 @@ export class SpectatePacket extends ReceivingPacket {
         player.lastSpectateActionTime = game.now;
         switch (action) {
             case SpectateActions.BeginSpectating: {
-                let toSpectate: Player;
+                let toSpectate: Player | undefined;
                 if (player.killedBy !== undefined && !player.killedBy.dead) toSpectate = player.killedBy;
-                else toSpectate = game.spectatablePlayers[random(0, game.spectatablePlayers.length)];
-                player.spectate(toSpectate);
+                else if (game.spectatablePlayers.length > 1) toSpectate = game.spectatablePlayers[random(0, game.spectatablePlayers.length)];
+                if (toSpectate !== undefined) player.spectate(toSpectate);
                 break;
             }
             case SpectateActions.SpectatePrevious:
+                if (game.spectatablePlayers.length < 2) {
+                    game.removePlayer(player);
+                    break;
+                }
                 if (player.spectating !== undefined) {
                     let index: number = game.spectatablePlayers.indexOf(player.spectating) - 1;
                     if (index < 0) index = game.spectatablePlayers.length - 1;
@@ -28,6 +32,10 @@ export class SpectatePacket extends ReceivingPacket {
                 }
                 break;
             case SpectateActions.SpectateNext:
+                if (game.spectatablePlayers.length < 2) {
+                    game.removePlayer(player);
+                    break;
+                }
                 if (player.spectating !== undefined) {
                     let index: number = game.spectatablePlayers.indexOf(player.spectating) + 1;
                     if (index >= game.spectatablePlayers.length) index = 0;

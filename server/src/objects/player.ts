@@ -329,7 +329,7 @@ export class Player extends GameObject {
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
             this.inventory.items["12g"] = 15;
 
-            this.inventory.addOrReplaceWeapon(2, "lasersword");
+            this.inventory.addOrReplaceWeapon(2, "heap_sword");
 
             this.inventory.items["2x_scope"] = 1;
             this.inventory.items["4x_scope"] = 1;
@@ -690,7 +690,8 @@ export class Player extends GameObject {
         // Drop equipment
         if (this.inventory.helmet && this.inventory.helmet.definition.noDrop !== true) this.game.addLoot(this.inventory.helmet, this.position);
         if (this.inventory.vest && this.inventory.vest.definition.noDrop !== true) this.game.addLoot(this.inventory.vest, this.position);
-        if (this.inventory.backpack.definition.noDrop !== true) this.game.addLoot(this.inventory.backpack, this.position);
+        if (!this.inventory.backpack.definition.noDrop) this.game.addLoot(this.inventory.backpack, this.position);
+        if (this.loadout.skin.definition.notInLoadout) this.game.addLoot(this.loadout.skin, this.position);
 
         this.inventory.helmet = this.inventory.vest = undefined;
         this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
