@@ -3,7 +3,11 @@ import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { ObjectCategory } from "../../../../../common/src/constants";
 import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
+import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
+import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
+import { type Orientation } from "../../../../../common/src/typings";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -39,21 +43,51 @@ export class MapPacket extends ReceivingPacket {
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
 
-            const position = stream.readPosition();
-            const scale = stream.readScale();
+            let position = stream.readPosition();
 
-            const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-            const rotation = stream.readObstacleRotation(definition.rotationMode);
+            let rotation = 0;
+            let scale = 1;
 
-            const hasVariations = definition.variations !== undefined;
             let texture = type.idString;
-            let variation = 0;
-            if (hasVariations) {
-                variation = stream.readVariation();
-                texture += `_${variation + 1}`;
+
+            switch (type.category) {
+                case ObjectCategory.Obstacle: {
+                    scale = stream.readScale();
+                    const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+                    rotation = stream.readObstacleRotation(definition.rotationMode);
+
+                    const hasVariations = definition.variations !== undefined;
+                    let variation = 0;
+                    if (hasVariations) {
+                        variation = stream.readVariation();
+                        texture += `_${variation + 1}`;
+                    }
+                    break;
+                }
+                case ObjectCategory.Building: {
+                    texture += "_ceiling";
+                    rotation = stream.readObstacleRotation("limited") as Orientation;
+
+                    const definition = type.definition as BuildingDefinition;
+
+                    const floorPos = vAdd(position, vRotate(definition.floorImagePos, rotation));
+
+                    minimap.renderTexture.batchDraw(minimap.make.image({
+                        x: floorPos.x * MINIMAP_SCALE,
+                        y: floorPos.y * MINIMAP_SCALE,
+                        key: "main",
+                        frame: `${type.idString}_floor.svg`,
+                        add: false,
+                        scale: scale / (20 / MINIMAP_SCALE),
+                        rotation
+                    }));
+
+                    position = vAdd(position, vRotate(definition.ceilingImagePos, rotation));
+                    break;
+                }
             }
 
-            // Create the obstacle image
+            // Create the object image
             minimap.renderTexture.batchDraw(minimap.make.image({
                 x: position.x * MINIMAP_SCALE,
                 y: position.y * MINIMAP_SCALE,
@@ -61,8 +95,7 @@ export class MapPacket extends ReceivingPacket {
                 frame: `${texture}.svg`,
                 add: false,
                 scale: scale / (20 / MINIMAP_SCALE),
-                rotation,
-                depth: definition.depth ?? 1
+                rotation
             }));
         }
         minimap.renderTexture.endDraw();

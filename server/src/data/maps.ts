@@ -1,7 +1,8 @@
 import { ObjectCategory } from "../../../common/src/constants";
+import { Buildings } from "../../../common/src/definitions/buildings";
 import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
-import { type Variation } from "../../../common/src/typings";
+import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
@@ -10,6 +11,9 @@ import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface MapDefinition {
+
+    readonly buildings?: Record<string, number>
+
     readonly obstacles?: Record<string, number>
 
     // Obstacles with custom spawn logic
@@ -38,6 +42,11 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
+        buildings: {
+            warehouse: 4,
+            house: 4,
+            porta_potty: 10
+        },
         obstacles: {
             oil_tank: 6,
             regular_crate: 150,
@@ -75,12 +84,26 @@ export const Maps: Record<string, MapDefinition> = {
     },
     debug: {
         genCallback: (map: Map) => {
+            // Generate all Buildings
+
+            const buildingPos = v(map.width / 2, map.height / 2 + 50);
+            const buildingStartPos = vClone(buildingPos);
+
+            for (const building of Buildings.definitions.filter(definition => definition.idString !== "porta_potty")) {
+                for (let orientation = 0; orientation < 4; orientation++) {
+                    map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
+                    buildingPos.y += 100;
+                }
+                buildingPos.y = buildingStartPos.y;
+                buildingPos.x += 100;
+            }
+
             // Generate all Obstacles
             const obstaclePos = v(map.width / 2 - 140, map.height / 2);
 
             for (const obstacle of Obstacles.definitions) {
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-                    map.obstacleTest(obstacle.idString, obstaclePos, 0, 1, i as Variation);
+                    map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
@@ -101,6 +124,11 @@ export const Maps: Record<string, MapDefinition> = {
                     itemPos.y -= 10;
                 }
             }
+        }
+    },
+    singleObstacle: {
+        genCallback: (map: Map) => {
+            map.generateObstacle("door", v(512, 512), 0);
         }
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -151,10 +179,10 @@ export const Maps: Record<string, MapDefinition> = {
             const center = v(map.width / 2, map.height / 2);
 
             for (const obstacle of obstacles) {
-                map.obstacleTest(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
-                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1, 1);
-                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1, 1);
-                map.obstacleTest(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, obstacle.pos), 0, 1, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y)), 0, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x, obstacle.pos.y * -1)), 0, 1);
+                map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
             }
 
             genLoots(vAdd(center, v(-70, 70)), 8, 8);
@@ -183,7 +211,7 @@ export const Maps: Record<string, MapDefinition> = {
             for (const obstacle in randomObstacles) {
                 const obstacleType = ObjectType.fromString(ObjectCategory.Obstacle, obstacle);
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
-                    map.obstacleTest(obstacle, map.getRandomPositionFor(obstacleType, 1, getPos), 0, 1, 1);
+                    map.generateObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
                 }
             }
         }

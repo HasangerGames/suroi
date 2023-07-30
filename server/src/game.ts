@@ -16,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -35,6 +35,7 @@ import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
+import { Building } from "./objects/building";
 
 export class Game {
     readonly _id: number;
@@ -281,6 +282,20 @@ export class Game {
                     movement.y *= Math.SQRT1_2;
                 }
 
+                /*if (this.emotes.size > 0) {
+                    player.fast = !player.fast;
+                    if (player.fast) {
+                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
+                        player.fullDirtyObjects.add(player);
+                        this.fullDirtyObjects.add(player);
+                    } else {
+                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
+                        player.fullDirtyObjects.add(player);
+                        this.fullDirtyObjects.add(player);
+                    }
+                }
+                if (player.fast) speed *= 30;*/
+
                 const speed = player.calculateSpeed();
                 player.setVelocity(movement.x * speed, movement.y * speed);
 
@@ -311,6 +326,22 @@ export class Game {
                 if (this.gas.doDamage && this.gas.isInGas(player.position)) {
                     player.piercingDamage(this.gas.dps, "gas");
                 }
+
+                let isInsideBuilding = false;
+                for (const object of player.nearObjects) {
+                    if (object instanceof Building && !object.dead) {
+                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
+                            isInsideBuilding = true;
+                            break;
+                        }
+                    }
+                }
+                if (isInsideBuilding && !player.isInsideBuilding) {
+                    player.zoom = 48;
+                } else if (!player.isInsideBuilding) {
+                    player.zoom = player.inventory.scope.definition.zoomLevel;
+                }
+                player.isInsideBuilding = isInsideBuilding;
 
                 player.turning = false;
             }
@@ -498,7 +529,10 @@ export class Game {
         // return an empty set if the position is out of bounds
         if (position.x < 0 || position.x > this.map.width ||
             position.y < 0 || position.y > this.map.height) return new Set();
-        return this.visibleObjects[zoom][Math.round(position.x / 10) * 10][Math.round(position.y / 10) * 10];
+        /* eslint-disable no-unexpected-multiline */
+        return this.visibleObjects[zoom]
+            [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
+            [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
     }
 
     removePlayer(player: Player): void {
@@ -520,6 +554,8 @@ export class Game {
             }
         } else {
             player.rotation = 0;
+            player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
+            player.attacking = false;
             this.partialDirtyObjects.add(player);
         }
         if (player.spectating !== undefined) {

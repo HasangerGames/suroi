@@ -6,6 +6,8 @@ import {
 } from "./vector";
 
 import { type Orientation } from "../typings";
+import { type Hitbox, RectangleHitbox } from "./hitbox";
+import { type ObstacleDefinition } from "../definitions/obstacles";
 
 /**
  * Calculate the angle between two vectors.
@@ -150,7 +152,25 @@ export function distanceToRectangle(min: Vector, max: Vector, circlePos: Vector,
     const distY = Math.max(min.y, Math.min(max.y, circlePos.y)) - circlePos.y;
     const radSquared = circleRad * circleRad;
     const distSquared = (distX * distX + distY * distY);
-    return { collided: distSquared < radSquared, distance: radSquared - distSquared };
+    return { collided: distSquared < radSquared, distance: distSquared - radSquared };
+}
+
+export function rectangleDistanceToRectangle(min1: Vector, max1: Vector, min2: Vector, max2: Vector): CollisionRecord {
+    const distX = Math.max(min1.x, Math.min(max1.x, min2.x, max2.x)) - Math.min(min1.x, Math.max(max1.x, min2.x, max2.x));
+    const distY = Math.max(min1.y, Math.min(max1.y, min2.y, max2.y)) - Math.min(min1.y, Math.max(max1.y, min2.y, max2.y));
+
+    // If distX or distY is negative, the rectangles are overlapping in that dimension, and the distance is 0.
+    if (distX < 0 || distY < 0) {
+        return { collided: true, distance: 0 };
+    }
+
+    // Calculate the squared distance between the rectangles.
+    const distSquared = distX * distX + distY * distY;
+    return { collided: false, distance: distSquared };
+}
+
+export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
+    return (n1 + n2) % 4 as Orientation;
 }
 
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
@@ -199,5 +219,35 @@ export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale:
     return {
         min: addAdjust(pos, min, orientation),
         max: addAdjust(pos, max, orientation)
+    };
+}
+
+// https://stackoverflow.com/a/17323608/5905216
+const mod2 = (n: number, m: number): number => {
+    return ((n % m) + m) % m;
+};
+
+export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
+    if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
+        throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
+    }
+    const openRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        mod2(rotation + 1, 4) as Orientation
+    );
+    // noinspection JSSuspiciousNameCombination
+    const openAltRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        mod2(rotation - 1, 4) as Orientation
+    );
+    return {
+        openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
+        openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
     };
 }

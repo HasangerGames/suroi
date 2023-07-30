@@ -4,6 +4,12 @@ Most sound effects edited by Henry Sanger
 
 M3K switch - Dablux
 
+Window punch: https://freesound.org/people/peter1984/sounds/414444/
+Window break: https://freesound.org/people/m1a2t3z4/sounds/112213/
+Porcelain punch: https://freesound.org/people/Clearwavsound/sounds/540336/
+Porcelain break: https://freesound.org/people/Clearwavsound/sounds/540337/
+AUG reload & switch: Dablux
+
 M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios:
 https://www.fesliyanstudios.com/play-mp3/7548
 https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
@@ -49,5 +55,7 @@ Crate destroyed - "Crate Break 4.wav" by kevinkace (CC0 1.0, public domain): htt
 Stone hit - 123OP
 
 Stone destroyed - "Rocks - Effects - Source Recordings - 05" by GregorQuendel (CC BY 4.0): https://freesound.org/people/newlocknew/sounds/631485/
+
+Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
 
 All other sound effects - Katloo

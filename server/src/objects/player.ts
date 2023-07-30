@@ -13,7 +13,8 @@ import {
     AnimationType,
     INVENTORY_MAX_WEAPONS,
     ObjectCategory,
-    PLAYER_RADIUS
+    PLAYER_RADIUS,
+    SERVER_GRID_SIZE
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
@@ -50,6 +51,10 @@ export class Player extends GameObject {
         bullet: true,
         loot: false
     };
+
+    //fast = false;
+
+    hitbox: CircleHitbox;
 
     readonly damageable = true;
 
@@ -269,6 +274,8 @@ export class Player extends GameObject {
     lastSwitch = 0;
     effectiveSwitchDelay = 0;
 
+    isInsideBuilding = false;
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vec2) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
@@ -320,7 +327,7 @@ export class Player extends GameObject {
 
             this.inventory.addOrReplaceWeapon(1, "revitalizer");
             (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-            this.inventory.items["12gauge"] = 15;
+            this.inventory.items["12g"] = 15;
 
             this.inventory.addOrReplaceWeapon(2, "lasersword");
 
@@ -369,6 +376,7 @@ export class Player extends GameObject {
     }
 
     set zoom(zoom: number) {
+        if (this._zoom === zoom) return;
         this._zoom = zoom;
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
@@ -426,8 +434,8 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
 
-        const approximateX = Math.round(this.position.x / 10) * 10;
-        const approximateY = Math.round(this.position.y / 10) * 10;
+        const approximateX = Math.round(this.position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
+        const approximateY = Math.round(this.position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
         this.nearObjects = this.game.getVisibleObjects(this.position);
         const visibleAtZoom = this.game.visibleObjects[this.zoom];
 
@@ -532,6 +540,8 @@ export class Player extends GameObject {
 
         amount = this._clampDamageAmount(amount);
 
+        /* eslint-disable @typescript-eslint/restrict-plus-operands */
+
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const applyPlayerFX = (modifiers: ExtendedWearerAttributes): void => {
@@ -568,7 +578,7 @@ export class Player extends GameObject {
         if (this.health <= 0 && !this.dead) {
             if (canTrackStats) {
                 if (weaponUsed.stats.kills++ <= ((attributes?.kill ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
                     applyPlayerFX(attributes!.kill!);
                 }
             }

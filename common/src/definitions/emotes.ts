@@ -113,6 +113,26 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "Flint Logo"
         },
         {
+            idString: "gg",
+            name: "gg"
+        },
+        {
+            idString: "ez",
+            name: "ez"
+        },
+        {
+            idString: "question_mark",
+            name: "Question Mark"
+        },
+        {
+            idString: "troll_face",
+            name: "Troll Face"
+        },
+        {
+            idString: "clueless",
+            name: "Clueless"
+        },
+        {
             idString: "pog",
             name: "Pog"
         },

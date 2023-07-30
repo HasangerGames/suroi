@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="24.287827mm"
+   height="24.287832mm"
+   viewBox="0 0 24.287827 24.287832"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1">
+    <g
+       id="g2"
+       transform="matrix(1.5000025,0,0,1.5000025,-216.07345,-198.46254)"
+       style="stroke:#342418;stroke-opacity:1">
+      <rect
+         style="fill:#af7a53;fill-opacity:1;fill-rule:nonzero;stroke:#342418;stroke-width:0.926042;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect1546"
+         width="15.265816"
+         height="15.265816"
+         x="144.51175"
+         y="132.77116"
+         rx="0"
+         ry="0" />
+      <path
+         id="path1562-0"
+         d="m 152.14466,132.77116 v 15.26581"
+         style="fill:#af7a53;stroke:#342418;stroke-width:0.926042;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal;fill-opacity:1" />
+      <path
+         style="fill:#e2cec0;fill-opacity:1;fill-rule:nonzero;stroke:#342418;stroke-width:1.38906;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+         d="m 149.35431,141.31497 4.06404,-1.44882 0.0131,0.60617 0.37633,0.48628 -4.06403,1.44881 0.0577,-0.64345 z"
+         id="path1550" />
+      <path
+         id="path1552"
+         d="m 150.77224,137.99944 3.84726,1.95296 -0.43092,0.42652 -0.0941,0.60766 -3.84725,-1.95296 0.50668,-0.40079 z"
+         style="fill:#e2cec0;fill-opacity:1;fill-rule:nonzero;stroke:#342418;stroke-width:1.38906;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" />
+    </g>
+  </g>
+</svg>

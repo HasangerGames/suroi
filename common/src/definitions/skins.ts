@@ -72,7 +72,13 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "tomato",
+        idString: "hazel_jumpsuit",
+        name: "HAZEL Jumpsuit",
+        itemType: ItemType.Skin,
+        notInLoadout: true
+    },
+    {
+        idString: "tomato_skin",
         name: "Tomato",
         itemType: ItemType.Skin
     },
@@ -122,14 +128,20 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "beacon",
+        name: "Beacon",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "full_moon",
         name: "Full Moon",
         itemType: ItemType.Skin
     },
     {
-        idString: "beacon",
-        name: "Beacon",
-        itemType: ItemType.Skin
+        idString: "basic_outfit",
+        name: "Basic Outfit",
+        itemType: ItemType.Skin,
+        notInLoadout: true
     },
     {
         idString: "swiss_cheese",
@@ -147,9 +159,22 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "verified",
+        name: "Verified",
+        itemType: ItemType.Skin,
+        notInLoadout: true
+    },
+    {
         idString: "nokilpls",
         name: "no kil pls",
         itemType: ItemType.Skin,
+        notInLoadout: true
+    },
+    {
+        idString: "debug",
+        name: "Debug",
+        itemType: ItemType.Skin,
+        roleRequired: "dev",
         notInLoadout: true
     }
 ];

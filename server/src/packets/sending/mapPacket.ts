@@ -1,9 +1,10 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../../common/src/constants";
+import { PacketType, ObjectCategory } from "../../../../common/src/constants";
 import { Obstacle } from "../../objects/obstacle";
 import { type Game } from "../../game";
+import { Building } from "../../objects/building";
 
 export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -20,18 +21,29 @@ export class MapPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        const objects: Obstacle[] = [...this.game.staticObjects].filter(object => {
-            return object instanceof Obstacle && !object.definition.hideOnMap;
-        }) as Obstacle[];
+        const objects: Obstacle[] | Building[] = [...this.game.staticObjects].filter(object => {
+            return (object instanceof Obstacle || object instanceof Building) && !object.definition.hideOnMap;
+        }) as Obstacle[] | Building[];
+
         stream.writeBits(objects.length, 10);
+
         for (const object of objects) {
-            const definition = object.definition;
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
-            stream.writeScale(object.maxScale);
-            stream.writeObstacleRotation(object.rotation, definition.rotationMode);
-            if (definition.variations !== undefined) {
-                stream.writeVariation(object.variation);
+
+            switch (object.type.category) {
+                case ObjectCategory.Obstacle: {
+                    const obstacle = object as Obstacle;
+                    stream.writeScale(obstacle.maxScale);
+                    stream.writeObstacleRotation(object.rotation, obstacle.definition.rotationMode);
+                    if (obstacle.definition.variations !== undefined) {
+                        stream.writeVariation(obstacle.variation);
+                    }
+                    break;
+                }
+                case ObjectCategory.Building:
+                    stream.writeObstacleRotation(object.rotation, "limited");
+                    break;
             }
         }
     }

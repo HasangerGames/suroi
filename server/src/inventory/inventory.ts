@@ -1,7 +1,4 @@
-import {
-    INVENTORY_MAX_WEAPONS,
-    ObjectCategory
-} from "../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "./gunItem";
 import { MeleeItem } from "./meleeItem";
@@ -10,12 +7,12 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { type ScopeDefinition, Scopes } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import { type AmmoDefinition, Ammos } from "../../../common/src/definitions/ammos";
 
 /**
  * A class representing a player's inventory
@@ -61,7 +58,6 @@ export class Inventory {
 
     set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
         this._scope = scope;
-        this.owner.zoom = scope.definition.zoomLevel;
         this.owner.dirty.inventory = true;
     }
 
@@ -417,12 +413,6 @@ export class Inventory {
                 break;
             }
         }
-    }
-
-    setScope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>): void {
-        this.scope = scope;
-        this.owner.zoom = scope.definition.zoomLevel;
-        this.owner.dirty.zoom = true;
     }
 
     /**

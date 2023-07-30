@@ -58,8 +58,8 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 35,
         obstacleMultiplier: 1,
-        radius: 4,
-        offset: v(5.4, 1.2),
+        radius: 3,
+        offset: v(3, 1.2),
         cooldown: 450,
         speedMultiplier: 1,
         fists: {
