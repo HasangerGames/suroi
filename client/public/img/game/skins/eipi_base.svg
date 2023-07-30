@@ -1,67 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="90"
-   height="90"
-   viewBox="0 0 23.8125 23.8125"
-   version="1.1"
-   id="svg5"
-   sodipodi:docname="eipi_base.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview5"
-     pagecolor="#505050"
-     bordercolor="#ffffff"
-     borderopacity="1"
-     inkscape:pageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="1"
-     showgrid="false"
-     inkscape:zoom="4.5364584"
-     inkscape:cx="1.7634902"
-     inkscape:cy="33.506314"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg5" />
-  <defs
-     id="defs2">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient1258">
-      <stop
-         style="stop-color:#9b00ff;stop-opacity:1"
-         offset="0"
-         id="stop1254" />
-      <stop
-         style="stop-color:#ff00ff;stop-opacity:1"
-         offset="1"
-         id="stop1256" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient1258"
-       id="linearGradient1260"
-       x1="1.5875006"
-       y1="11.90625"
-       x2="25.400002"
-       y2="11.90625"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-13.49375,-28.74423)" />
-  </defs>
-  <circle
-     style="fill:url(#linearGradient1260);fill-opacity:1;stroke-width:1.48828;stroke-linecap:round"
-     id="circle1956"
-     cy="-16.83798"
-     cx="-2.1672804e-07"
-     transform="rotate(135)"
-     r="11.90625" />
+<svg width="91" height="91" viewBox="0 0 91 91" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13.6841 77.489C-3.88949 59.9154 -3.88949 31.423 13.6841 13.8494C31.2577 -3.72421 59.7501 -3.72421 77.3237 13.8494C94.8973 31.423 94.8973 59.9154 77.3237 77.489C59.7501 95.0626 31.2577 95.0626 13.6841 77.489Z" fill="url(#paint0_linear_538_9)"/>
+<defs>
+<linearGradient id="paint0_linear_538_9" x1="77.3237" y1="13.8494" x2="13.6841" y2="77.489" gradientUnits="userSpaceOnUse">
+<stop stop-color="#8040BF"/>
+<stop offset="1" stop-color="#BF40BF"/>
+</linearGradient>
+</defs>
 </svg>

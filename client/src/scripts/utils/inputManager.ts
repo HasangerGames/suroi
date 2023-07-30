@@ -1,6 +1,6 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
-import { angleBetween, distanceSquared, mod } from "../../../../common/src/utils/math";
+import { absMod, angleBetween, distanceSquared } from "../../../../common/src/utils/math";
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
@@ -64,6 +64,18 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         );
     }
 
+    function generateItemCycler(step: number) {
+        return () => {
+            let index = absMod((game.playerManager.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
+
+            while (!game.playerManager.weapons[index]) {
+                index = absMod((index + step), INVENTORY_MAX_WEAPONS);
+            }
+
+            game.playerManager.equipItem(index);
+        };
+    }
+
     return {
         moveUp: generateMovementAction("up"),
         moveDown: generateMovementAction("down"),
@@ -87,8 +99,9 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         equipOtherGun: new Action(
             "inventory::equipOtherGun",
             () => {
-                let index = game.playerManager.activeItemIndex + 1;
-                if (index > 1) index = 0;
+                let index = game.playerManager.activeItemIndex > 1
+                    ? 0
+                    : 1 - game.playerManager.activeItemIndex;
 
                 // fallback to melee if there's no weapon on the slot
                 if (game.playerManager.weapons[index] === undefined) index = 2;
@@ -101,19 +114,11 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         ),
         previousItem: new Action(
             "inventory::previousItem",
-            () => {
-                let index = mod(game.playerManager.activeItemIndex - 1, INVENTORY_MAX_WEAPONS);
-                if (!game.playerManager.weapons[index]) index = mod(index - 1, INVENTORY_MAX_WEAPONS);
-                game.playerManager.equipItem(index);
-            }
+            generateItemCycler(-1)
         ),
         nextItem: new Action(
             "inventory::nextItem",
-            () => {
-                let index = mod(game.playerManager.activeItemIndex + 1, INVENTORY_MAX_WEAPONS);
-                if (!game.playerManager.weapons[index]) index = mod(index + 1, INVENTORY_MAX_WEAPONS);
-                game.playerManager.equipItem(index);
-            }
+            generateItemCycler(1)
         ),
         useItem: new Action(
             "useItem",

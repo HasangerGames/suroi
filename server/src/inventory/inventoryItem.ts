@@ -45,19 +45,29 @@ export abstract class InventoryItem {
     private readonly _stats = (() => {
         let kills = 0;
         let damage = 0;
-        const refreshModifiers = this.refreshModifiers.bind(this);
+
+        /*
+            "Assigning a variable to this instead of properly using arrow lambdas
+            may be a symptom of pre-ES6 practices or not managing scope well."
+
+            Object literals are a thing btw
+        */
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const T = this;
 
         return {
             get kills() { return kills; },
             set kills(_kills: number) {
                 kills = _kills;
-                refreshModifiers();
+                T.owner.dirty.weapons = true;
+                T.refreshModifiers();
             },
 
             get damage() { return damage; },
             set damage(_damage: number) {
                 damage = _damage;
-                refreshModifiers();
+                T.owner.dirty.weapons = true;
+                T.refreshModifiers();
             }
         };
     })();

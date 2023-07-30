@@ -100,7 +100,8 @@ export const Melees: MeleeDefinition[] = [
             position: v(62, 42),
             usePosition: v(90, 8),
             angle: 60,
-            useAngle: 5
+            useAngle: 5,
+            lootScale: 0.8
         }
     },
     {
@@ -113,7 +114,7 @@ export const Melees: MeleeDefinition[] = [
         radius: 2.5,
         offset: v(7.6, 0.1),
         cooldown: 450,
-        speedMultiplier: 0.9,
+        speedMultiplier: 0.95,
         fists: {
             animationDuration: 150,
             randomFist: false,
@@ -131,18 +132,19 @@ export const Melees: MeleeDefinition[] = [
         }
     },
     {
-        idString: "lasersword",
-        name: "LAZER SWORD",
+        idString: "heap_sword",
+        name: "HE-AP sword",
         itemType: ItemType.Melee,
-        damage: 99,
+        damage: 100,
         obstacleMultiplier: 2.5,
         piercingMultiplier: 0.5,
-        radius: 10,
-        offset: v(13, -5),
-        cooldown: 1000,
-        speedMultiplier: 1.1,
+        killstreak: true,
+        radius: 5,
+        offset: v(4, -5),
+        cooldown: 300,
+        speedMultiplier: 1,
         fists: {
-            animationDuration: 300,
+            animationDuration: 150,
             randomFist: false,
             left: v(38, 35),
             right: v(38, -35),
@@ -150,8 +152,8 @@ export const Melees: MeleeDefinition[] = [
             useRight: v(38, -35)
         },
         image: {
-            position: v(282, 48),
-            usePosition: v(230, -190),
+            position: v(102, 35),
+            usePosition: v(140, -30),
             angle: 50,
             useAngle: -20,
             lootScale: 0.6

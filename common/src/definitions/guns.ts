@@ -584,7 +584,6 @@ export const Guns: GunDefinition[] = [
         name: "Death Ray",
         itemType: ItemType.Gun,
         ammoType: "power_cell",
-        noDrop: true,
         ammoSpawnAmount: 0,
         capacity: 1,
         reloadTime: 1.4,
