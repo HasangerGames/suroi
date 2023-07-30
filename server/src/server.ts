@@ -318,7 +318,10 @@ app.listen(Config.host, Config.port, (): void => {
                 }
                 const bannedIPsFromJSON: string[] = JSON.parse(data);
                 for (const ip of bannedIPsFromJSON) bannedIPs.add(ip);
+                for (const ip of bannedIPs) {
+                    if (!bannedIPsFromJSON.includes(ip)) bannedIPs.delete(ip);
+                }
             });
-        }, 60000);
+        }, 120000);
     }
 });

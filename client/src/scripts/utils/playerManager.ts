@@ -13,7 +13,6 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { ItemPacket } from "../packets/sending/itemPacket";
 import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
 import { Ammos } from "../../../../common/src/definitions/ammos";
-import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 import { v } from "../../../../common/src/utils/vector";
 import { absMod } from "../../../../common/src/utils/math";
@@ -92,26 +91,22 @@ export class PlayerManager {
 
     // Shove it
     /* eslint-disable @typescript-eslint/indent */
-    readonly items: Record<string, number> = [HealingItems, Ammos, Scopes]
-        .flat()
-        .reduce<Record<string, number>>(
-            (acc, cur) => {
-                let amount = 0;
-
-                if (cur.itemType === ItemType.Ammo && cur.ephemeral) {
-                    amount = Infinity;
-                }
-
-                if (cur.itemType === ItemType.Scope && cur.giveByDefault) {
-                    amount = 1;
-                }
-
-                acc[cur.idString] = amount;
-
-                return acc;
-            },
-            {}
-        );
+    readonly items: Record<string, number> = {
+        gauze: 0,
+        medikit: 0,
+        cola: 0,
+        tablets: 0,
+        "12g": 0,
+        "556mm": 0,
+        "762mm": 0,
+        "9mm": 0,
+        power_cell: 0,
+        "1x_scope": 1,
+        "2x_scope": 0,
+        "4x_scope": 0,
+        "8x_scope": 0,
+        "15x_scope": 0
+    };
 
     scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
