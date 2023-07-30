@@ -21,7 +21,7 @@ import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
-import { randomPointInsideCircle } from "../../common/src/utils/random";
+import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
@@ -542,9 +542,11 @@ export class Game {
             this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, false)));
         }
         this.connectedPlayers.delete(player);
+        // TODO Make it possible to spectate disconnected players
+        // (currently not possible because update packets aren't sent to disconnected players)
+        removeFrom(this.spectatablePlayers, player);
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
-            removeFrom(this.spectatablePlayers, player);
             this.dynamicObjects.delete(player);
             this.removeObject(player);
             try {
@@ -557,6 +559,15 @@ export class Game {
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
             player.attacking = false;
             this.partialDirtyObjects.add(player);
+        }
+        if (this.aliveCount > 0 && player.spectators.size > 0) {
+            if (this.spectatablePlayers.length > 1) {
+                const randomPlayer = this.spectatablePlayers[random(0, this.spectatablePlayers.length - 1)];
+                for (const spectator of player.spectators) {
+                    spectator.spectate(randomPlayer);
+                }
+            }
+            player.spectators = new Set<Player>();
         }
         if (player.spectating !== undefined) {
             player.spectating.spectators.delete(player);

@@ -24,6 +24,7 @@ import { MINIMAP_SCALE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
+import $ from "jquery";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -161,6 +162,7 @@ export class UpdatePacket extends ReceivingPacket {
                 game.objects.delete(game.activePlayer.id);
                 game.activePlayer.id = activePlayerID;
                 game.activePlayer.emoteContainer.setVisible(false);
+                game.activePlayer.distSinceLastFootstep = 0;
                 game.activePlayer.isNew = true;
                 game.objects.set(game.activePlayer.id, game.activePlayer);
             }
@@ -168,6 +170,7 @@ export class UpdatePacket extends ReceivingPacket {
             if (stream.readBoolean()) {
                 const name = stream.readPlayerNameWithColor();
                 if (game.spectating) {
+                    $("#game-over-screen").fadeOut();
                     $("#spectating-msg-info").html(`<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">${name}</span>`);
                     $("#spectating-msg").show();
                 }
