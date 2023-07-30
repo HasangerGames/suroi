@@ -10,10 +10,10 @@ import { type Hitbox, RectangleHitbox } from "./hitbox";
 import { type ObstacleDefinition } from "../definitions/obstacles";
 
 /**
- * Calculate the angle between two vectors.
- * @param a The first vector.
- * @param b The second vector.
- * @returns The angle, in radians, between the two vectors.
+ * Calculate the angle between two vectors
+ * @param a The first vector
+ * @param b The second vector
+ * @returns The angle, in radians, between the two vectors
  */
 export function angleBetween(a: Vector, b: Vector): number {
     const dy = a.y - b.y;
@@ -22,26 +22,29 @@ export function angleBetween(a: Vector, b: Vector): number {
 }
 
 /**
- * Signed modulo operator.
- * @param a The dividend.
- * @param n The divisor.
+ * Works like regular modulo, but negative numbers cycle back around: hence,
+ * `-1 % 4` gives `3` and not `-1`
+ * @param a The dividend
+ * @param n The divisor
  */
-export const mod = (a: number, n: number): number => a - Math.floor(a / n) * n;
+export function absMod(a: number, n: number): number {
+    return a >= 0 ? a % n : (a % n + n) % n;
+}
 
 /**
- * Normalize an angle to a value between -π and π.
- * @param radians The angle, in radians.
+ * Normalize an angle to a value between -π and π
+ * @param radians The angle, in radians
  */
-export const normalizeAngle = (radians: number): number => {
+export function normalizeAngle(radians: number): number {
     return Math.atan2(Math.sin(radians), Math.cos(radians));
-};
+}
 
 /**
- * Find the smallest angle between two vertices.
- * @param start The initial vertex, in radians.
- * @param end The final vertex, in radians.
+ * Find the smallest angle between two vertices
+ * @param start The initial vertex, in radians
+ * @param end The final vertex, in radians
  */
-export const minimizeAngle = (start: number, end: number): number => {
+export function minimizeAngle(start: number, end: number): number {
     start = normalizeAngle(start);
     end = normalizeAngle(end);
 
@@ -49,35 +52,43 @@ export const minimizeAngle = (start: number, end: number): number => {
     const CCW = -((Math.PI * 2) - CW);
 
     return Math.abs(CW) < Math.abs(CCW) ? CW : CCW;
-};
+}
 
 /**
- * Converts degrees to radians.
- * @param degrees An angle in degrees.
- * @return The angle in radians.
+ * Converts degrees to radians
+ * @param degrees An angle in degrees
+ * @return The angle in radians
  */
-export const degreesToRadians = (degrees: number): number => degrees * (Math.PI / 180);
+export function degreesToRadians(degrees: number): number {
+    return degrees * (Math.PI / 180);
+}
 
 /**
- * Converts radians to degrees.
- * @param radians An angle in radians.
- * @return The angle in degrees.
+ * Converts radians to degrees
+ * @param radians An angle in radians
+ * @return The angle in degrees
  */
-export const radiansToDegrees = (radians: number): number => (radians / Math.PI) * 180;
+export function radiansToDegrees(radians: number): number {
+    return (radians / Math.PI) * 180;
+}
 
 /**
- * Get the distance between two points.
- * @param a The first point.
- * @param b The second point.
- */
-export const distance = (a: Vector, b: Vector): number => Math.sqrt(((b.x - a.x) ** 2) + ((b.y - a.y) ** 2));
-
-/**
- * Get the distance between two points squared.
+ * Get the distance between two points
  * @param a The first point
  * @param b The second point
  */
-export const distanceSquared = (a: Vector, b: Vector): number => ((b.x - a.x) ** 2) + ((b.y - a.y) ** 2);
+export function distance(a: Vector, b: Vector): number {
+    return Math.sqrt(distanceSquared(a, b));
+}
+
+/**
+ * Get the distance between two points squared
+ * @param a The first point
+ * @param b The second point
+ */
+export function distanceSquared(a: Vector, b: Vector): number {
+    return ((b.x - a.x) ** 2) + ((b.y - a.y) ** 2);
+}
 
 export function lerp(start: number, end: number, interpFactor: number): number {
     return start * (1 - interpFactor) + end * interpFactor;
@@ -88,11 +99,11 @@ export function vecLerp(start: Vector, end: Vector, interpFactor: number): Vecto
 }
 
 /**
- * Check whether two circles collide.
- * @param pos1 The center of the first circle.
- * @param r1 The radius of the first circle.
- * @param pos2 The center of the second circle.
- * @param r2 The radius of the second circle.
+ * Check whether two circles collide
+ * @param pos1 The center of the first circle
+ * @param r1 The radius of the first circle
+ * @param pos2 The center of the second circle
+ * @param r2 The radius of the second circle
  */
 export function circleCollision(pos1: Vector, r1: number, pos2: Vector, r2: number): boolean {
     const a = r1 + r2;
@@ -115,12 +126,12 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
 }
 
 /**
- * Conform a number to specified bounds.
- * @param a The number to conform.
- * @param min The minimum value the number can hold.
- * @param max The maximum value the number can hold.
+ * Conform a number to specified bounds
+ * @param a The number to conform
+ * @param min The minimum value the number can hold
+ * @param max The maximum value the number can hold
  */
-function clamp(a: number, min: number, max: number): number {
+export function clamp(a: number, min: number, max: number): number {
     return a < max ? a > min ? a : min : max;
 }
 
@@ -131,12 +142,12 @@ export function rectRectCollision(min1: Vector, max1: Vector, min2: Vector, max2
 export interface CollisionRecord { collided: boolean, distance: number }
 
 /**
- * Determine the distance between two circles.
- * @param pos1 The center of the first circle.
- * @param r1 The radius of the first circle.
- * @param pos2 The center of the second circle.
- * @param r2 The radius of the second circle.
- * @returns An object representation of whether the circles collide and the distance between their closest vertices.
+ * Determine the distance between two circles
+ * @param pos1 The center of the first circle
+ * @param r1 The radius of the first circle
+ * @param pos2 The center of the second circle
+ * @param r2 The radius of the second circle
+ * @returns An object representation of whether the circles collide and the distance between their closest vertices
  */
 export function distanceToCircle(pos1: Vector, r1: number, pos2: Vector, r2: number): CollisionRecord {
     const a = r1 + r2;
@@ -159,12 +170,12 @@ export function rectangleDistanceToRectangle(min1: Vector, max1: Vector, min2: V
     const distX = Math.max(min1.x, Math.min(max1.x, min2.x, max2.x)) - Math.min(min1.x, Math.max(max1.x, min2.x, max2.x));
     const distY = Math.max(min1.y, Math.min(max1.y, min2.y, max2.y)) - Math.min(min1.y, Math.max(max1.y, min2.y, max2.y));
 
-    // If distX or distY is negative, the rectangles are overlapping in that dimension, and the distance is 0.
+    // If distX or distY is negative, the rectangles are overlapping in that dimension, and the distance is 0
     if (distX < 0 || distY < 0) {
         return { collided: true, distance: 0 };
     }
 
-    // Calculate the squared distance between the rectangles.
+    // Calculate the squared distance between the rectangles
     const distSquared = distX * distX + distY * distY;
     return { collided: false, distance: distSquared };
 }
@@ -222,11 +233,6 @@ export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale:
     };
 }
 
-// https://stackoverflow.com/a/17323608/5905216
-const mod2 = (n: number, m: number): number => {
-    return ((n % m) + m) % m;
-};
-
 export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
     if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
@@ -236,7 +242,7 @@ export function calculateDoorHitboxes(definition: ObstacleDefinition, position: 
         definition.hitbox.min,
         definition.hitbox.max,
         1,
-        mod2(rotation + 1, 4) as Orientation
+        absMod(rotation + 1, 4) as Orientation
     );
     // noinspection JSSuspiciousNameCombination
     const openAltRectangle = transformRectangle(
@@ -244,7 +250,7 @@ export function calculateDoorHitboxes(definition: ObstacleDefinition, position: 
         definition.hitbox.min,
         definition.hitbox.max,
         1,
-        mod2(rotation - 1, 4) as Orientation
+        absMod(rotation - 1, 4) as Orientation
     );
     return {
         openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),

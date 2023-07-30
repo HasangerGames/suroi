@@ -21,6 +21,8 @@ import { type ExplosionDefinition } from "../../../common/src/definitions/explos
 import { Player } from "./player";
 import { type Building } from "./building";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type GunItem } from "../inventory/gunItem";
+import { type MeleeItem } from "../inventory/meleeItem";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -171,7 +173,7 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType): void {
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem): void {
         const definition = this.definition;
 
         this.hitEffect++;
@@ -180,7 +182,7 @@ export class Obstacle extends GameObject {
 
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponDef = (weaponUsed?.definition as ItemDefinition);
+        const weaponDef = weaponUsed?.definition as ItemDefinition;
         if (
             definition.impenetrable &&
             !(weaponDef.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).piercingMultiplier)
