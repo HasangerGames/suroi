@@ -14,13 +14,17 @@ export const news: NewsPost[] = [
         author: "HAZEL",
         title: "Behind Closed Doors",
         bannerImage: "/img/news/v0.9.0.png",
-        content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.`,
+        content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.
+
+There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.
+
+Surians can now customize their skins, and express themselves with emotes too! Everything is unlocked until accounts are added.`,
         longContent: `<h2>Suroi v0.9.0</h2>
 
 <h3>New features & changes</h3>
 <ul>
   <li>Buildings! Added 3 buildings: the house, the warehouse, and the porta potty.</li>
-  <li>Skins & emotes! Added 20 skins and 58 emotes. All skins and emotes will be unlocked until accounts are added.</li>
+  <li>Skins & emotes! Added 22 skins and 59 emotes. All skins and emotes will be unlocked until accounts are added.</li>
   <li>More guns! Added 2 guns: the CZ-75A (a full auto pistol), and the AUG (an assault rifle). Also, the G19 is now semi-automatic.</li>
   <li>Tweaked gun and scope stats.</li>
   <li>Spectating! You can now spectate other players after you die. Also, a report system has been added, which will allow us to ban hackers.</li>

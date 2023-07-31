@@ -42,7 +42,7 @@ export const Skins: SkinDefinition[] = [
         idString: "radians",
         name: "Radians",
         itemType: ItemType.Skin,
-        roleRequired: "Radians"
+        roleRequired: "radians"
     },
     {
         idString: "dev",

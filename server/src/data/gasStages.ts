@@ -43,7 +43,8 @@ export const GasStages: GasStage[] = [
         duration: 15,
         oldRadius: 420,
         newRadius: 250,
-        dps: 1.5
+        dps: 1.5,
+        preventJoin: true
     },
     {
         state: GasState.Waiting,
@@ -64,8 +65,7 @@ export const GasStages: GasStage[] = [
         duration: 30,
         oldRadius: 128,
         newRadius: 64,
-        dps: 3.5,
-        preventJoin: true
+        dps: 3.5
     },
     {
         state: GasState.Advancing,
