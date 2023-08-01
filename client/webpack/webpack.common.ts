@@ -22,7 +22,8 @@ const config: Configuration = {
         app: path.resolve(__dirname, "../src/index.ts"),
         changelog: path.resolve(__dirname, "../src/changelog.ts"),
         leaderboard: path.resolve(__dirname, "../src/leaderboard.ts"),
-        news: path.resolve(__dirname, "../src/news.ts")
+        news: path.resolve(__dirname, "../src/news.ts"),
+        rules: path.resolve(__dirname, "../src/rules.ts")
     },
 
     devtool: "source-map",
@@ -161,6 +162,25 @@ const config: Configuration = {
             template: path.resolve(__dirname, "../src/pages/news.html"),
             chunks: ["news"],
             filename: "./news/index.html",
+
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeRedundantAttributes: true,
+                useShortDoctype: true,
+                removeEmptyAttributes: true,
+                removeStyleLinkTypeAttributes: true,
+                keepClosingSlash: true,
+                minifyJS: true,
+                minifyCSS: true,
+                minifyURLs: true
+            }
+        }),
+        new HTMLWebpackPlugin({
+            inject: true,
+            template: path.resolve(__dirname, "../src/pages/rules.html"),
+            chunks: ["rules"],
+            filename: "./rules/index.html",
 
             minify: {
                 removeComments: true,
