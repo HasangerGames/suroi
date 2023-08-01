@@ -95,7 +95,7 @@ export class GunItem extends InventoryItem {
 
         this._lastUse = owner.game.now;
 
-        const spread = degreesToRadians(definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0));
+        const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
         let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
