@@ -12,7 +12,7 @@ export class MenuScene extends Phaser.Scene {
     }
 
     preload(): void {
-        for (const atlas of ["main"]) {
+        for (const atlas of ["main", "buildings"]) {
             const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
             console.log(`Loading atlas: ${location.toString()}${path}.png`);
             this.load.atlas(atlas, `/${path}.png`, `/${path}.json`);
