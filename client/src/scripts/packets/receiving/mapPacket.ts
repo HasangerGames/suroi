@@ -50,6 +50,8 @@ export class MapPacket extends ReceivingPacket {
 
             let texture = type.idString;
 
+            let atlas = "main";
+
             switch (type.category) {
                 case ObjectCategory.Obstacle: {
                     scale = stream.readScale();
@@ -72,10 +74,12 @@ export class MapPacket extends ReceivingPacket {
 
                     const floorPos = vAdd(position, vRotate(definition.floorImagePos, rotation));
 
+                    atlas = "buildings";
+
                     minimap.renderTexture.batchDraw(minimap.make.image({
                         x: floorPos.x * MINIMAP_SCALE,
                         y: floorPos.y * MINIMAP_SCALE,
-                        key: "main",
+                        key: atlas,
                         frame: `${type.idString}_floor.svg`,
                         add: false,
                         scale: scale / (20 / MINIMAP_SCALE),
@@ -91,7 +95,7 @@ export class MapPacket extends ReceivingPacket {
             minimap.renderTexture.batchDraw(minimap.make.image({
                 x: position.x * MINIMAP_SCALE,
                 y: position.y * MINIMAP_SCALE,
-                key: "main",
+                key: atlas,
                 frame: `${texture}.svg`,
                 add: false,
                 scale: scale / (20 / MINIMAP_SCALE),
