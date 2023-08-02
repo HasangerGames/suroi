@@ -14,7 +14,7 @@ export const rules: RulesPost[] = [
         author: "Katloo",
         title: "Rules",
         content: `By playing Suroi, you agree to abide to the following rules. If you do not follow these rules, you may be banned for breaking them.`,
-        longContent: 
+        longContent:
 `<ul>
   <li>No hacking. The use of scripts, plugins, extenstions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.</li>
   <li>No teaming in solo. Allying with other solo players for extended periods of time is against the rules.</li>
