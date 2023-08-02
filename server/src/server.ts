@@ -311,6 +311,7 @@ app.listen(Config.host, Config.port, (): void => {
             connectionAttempts = {};
         }, 5000);
         setInterval(() => {
+            if (!fs.existsSync("bannedIPs.json")) fs.writeFileSync("bannedIPs.json", "[]");
             fs.readFile("bannedIPs.json", "utf8", (error, data) => {
                 if (error) {
                     console.error(error);
