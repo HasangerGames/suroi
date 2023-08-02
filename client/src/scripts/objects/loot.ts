@@ -1,8 +1,6 @@
-import type Phaser from "phaser";
 import gsap from "gsap";
 
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
@@ -15,10 +13,10 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
-    readonly images: {
-        readonly background: Phaser.GameObjects.Image
-        readonly item: Phaser.GameObjects.Image
-    };
+    // readonly images: {
+    //     readonly background: Phaser.GameObjects.Image
+    //     readonly item: Phaser.GameObjects.Image
+    // };
 
     created = false;
 
@@ -26,26 +24,26 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     radius: number;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
-        super(game, scene, type, id);
+    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
+        super(game, type, id);
 
         const definition = this.type.definition;
 
-        this.images = {
-            background: this.scene.add.image(0, 0, "main"),
-            item: this.scene.add.image(0, 0, "main", `${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
-        };
+        // this.images = {
+        //     background: this.scene.add.image(0, 0, "main"),
+        //     item: this.scene.add.image(0, 0, "main", `${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
+        // };
 
-        if (definition.itemType === ItemType.Skin) this.images.item.setScale(0.75).setAngle(90);
+        // if (definition.itemType === ItemType.Skin) this.images.item.setScale(0.75).setAngle(90);
 
-        this.container.add([this.images.background, this.images.item]).setDepth(2);
+        // this.container.add([this.images.background, this.images.item]).setDepth(2);
 
         // Set the loot texture based on the type
         let backgroundTexture: string | undefined;
         switch (definition.itemType) {
             case ItemType.Gun: {
                 backgroundTexture = `loot_background_gun_${definition.ammoType}.svg`;
-                this.images.item.setScale(0.85);
+                // this.images.item.setScale(0.85);
                 break;
             }
             //
@@ -54,7 +52,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
                 const imageScale = definition.image?.lootScale;
-                if (imageScale !== undefined) this.images.item.setScale(imageScale);
+                // if (imageScale !== undefined) this.images.item.setScale(imageScale);
                 break;
             }
             case ItemType.Healing: {
@@ -70,9 +68,9 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             }
         }
         if (backgroundTexture !== undefined) {
-            this.images.background.setTexture("main", backgroundTexture);
+            // this.images.background.setTexture("main", backgroundTexture);
         } else {
-            this.images.background.setVisible(false);
+            // this.images.background.setVisible(false);
             // fixme Figure out why destroy doesn't work
             // I think you can't destroy a container child without destroying the container first
             // - Leo
@@ -96,7 +94,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
         // Play an animation if this is new loot
         if (isNew) {
-            this.container.setScale(0.5);
+            this.container.scale.set(0.5);
             gsap.to(this.container, {
                 scale: 1,
                 ease: "elastic.out(1.01, 0.3)",
@@ -109,8 +107,8 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     destroy(): void {
         super.destroy();
-        this.images.item.destroy(true);
-        this.images.background.destroy(true);
+        // this.images.item.destroy(true);
+        // this.images.background.destroy(true);
     }
 
     canInteract(player: PlayerManager): boolean {

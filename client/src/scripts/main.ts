@@ -1,13 +1,7 @@
 import $ from "jquery";
-import Phaser from "phaser";
 
 import core from "./core";
 import { Game } from "./game";
-
-import { GameScene } from "./scenes/gameScene";
-import { MenuScene } from "./scenes/menuScene";
-import { MinimapScene } from "./scenes/minimapScene";
-import { GRASS_COLOR } from "./utils/constants";
 
 import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
@@ -82,18 +76,5 @@ $(() => {
     // Initialize the game object
     core.game = new Game();
 
-    // Create the Phaser Game
-    // const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
-    core.phaser = new Phaser.Game({
-        // type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
-        type: Phaser.WEBGL,
-        scene: [MenuScene, GameScene, MinimapScene],
-        backgroundColor: GRASS_COLOR,
-        scale: {
-            mode: Phaser.Scale.RESIZE,
-            autoCenter: Phaser.Scale.CENTER_BOTH,
-            parent: $("#game-ui")[0]
-        }
-    });
     setupInputs(core.game);
 });

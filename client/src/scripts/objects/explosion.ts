@@ -12,7 +12,7 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 /**
  * Custom particle class that adds friction to its velocity.
  */
-class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
+/*class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
     friction = 0.95;
 
     update(delta: number, step: number, processors: Phaser.GameObjects.Particles.ParticleProcessor[]): boolean {
@@ -23,13 +23,13 @@ class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
 
         return updated;
     }
-}
+}*/
 
-export function explosion(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
+export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
     const phaserPos = vMul(position, 20);
 
-    const image = scene.add.image(phaserPos.x, phaserPos.y, "main", definition.animation.frame).setScale(0);
+    /*const image = scene.add.image(phaserPos.x, phaserPos.y, "main", definition.animation.frame).setScale(0);
     const emitter = scene.add.particles(phaserPos.x, phaserPos.y, "main", {
         frame: definition.particles.frame,
         lifespan: definition.particles.duration,
@@ -72,5 +72,5 @@ export function explosion(game: Game, scene: GameScene, type: ObjectType<ObjectC
         }
 
         if (definition.sound !== undefined) scene.playSound(definition.sound);
-    }
+    }*/
 }

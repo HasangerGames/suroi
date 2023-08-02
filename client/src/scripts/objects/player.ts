@@ -1,4 +1,3 @@
-import Phaser from "phaser";
 import gsap from "gsap";
 
 import type { Game } from "../game";
@@ -10,7 +9,7 @@ import { GameObject } from "../types/gameObject";
 
 import {
     ANIMATION_TYPE_BITS,
-    AnimationType,
+    type AnimationType,
     GasState,
     ObjectCategory,
     PLAYER_RADIUS
@@ -53,26 +52,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     animationSeq!: boolean;
 
-    readonly images: {
-        readonly vest: Phaser.GameObjects.Image
-        readonly body: Phaser.GameObjects.Image
-        readonly leftFist: Phaser.GameObjects.Image
-        readonly rightFist: Phaser.GameObjects.Image
-        readonly backpack: Phaser.GameObjects.Image
-        readonly helmet: Phaser.GameObjects.Image
-        readonly weapon: Phaser.GameObjects.Image
-        readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
-        readonly emoteBackground: Phaser.GameObjects.Image
-        readonly emoteImage: Phaser.GameObjects.Image
-    };
+    // readonly images: {
+    //     readonly vest: Phaser.GameObjects.Image
+    //     readonly body: Phaser.GameObjects.Image
+    //     readonly leftFist: Phaser.GameObjects.Image
+    //     readonly rightFist: Phaser.GameObjects.Image
+    //     readonly backpack: Phaser.GameObjects.Image
+    //     readonly helmet: Phaser.GameObjects.Image
+    //     readonly weapon: Phaser.GameObjects.Image
+    //     readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
+    //     readonly emoteBackground: Phaser.GameObjects.Image
+    //     readonly emoteImage: Phaser.GameObjects.Image
+    // };
+    //
+    // readonly emoteContainer: Phaser.GameObjects.Container;
+    // _emoteTween?: Phaser.Tweens.Tween;
+    //
+    // leftFistAnim!: Phaser.Tweens.Tween;
+    // rightFistAnim!: Phaser.Tweens.Tween;
+    // weaponAnim!: Phaser.Tweens.Tween;
 
-    readonly emoteContainer: Phaser.GameObjects.Container;
-    _emoteTween?: Phaser.Tweens.Tween;
     _emoteHideTimeoutID?: NodeJS.Timeout;
-
-    leftFistAnim!: Phaser.Tweens.Tween;
-    rightFistAnim!: Phaser.Tweens.Tween;
-    weaponAnim!: Phaser.Tweens.Tween;
 
     distSinceLastFootstep = 0;
 
@@ -86,45 +86,45 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     floorType = FloorType.Grass;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
-        super(game, scene, type, id);
+    constructor(game: Game, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
+        super(game, type, id);
         this.isActivePlayer = isActivePlayer;
 
-        this.images = {
-            vest: this.scene.add.image(0, 0, "main").setVisible(false),
-            body: this.scene.add.image(0, 0, "main"),
-            leftFist: this.scene.add.image(0, 0, "main"),
-            rightFist: this.scene.add.image(0, 0, "main"),
-            backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
-            helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
-            weapon: this.scene.add.image(0, 0, "main"),
-            emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
-            emoteImage: this.scene.add.image(0, 0, "main"),
-            bloodEmitter: this.scene.add.particles(0, 0, "main", {
-                frame: "blood_particle.svg",
-                quantity: 1,
-                lifespan: 1000,
-                speed: { min: 20, max: 30 },
-                scale: { start: 0.75, end: 1 },
-                alpha: { start: 1, end: 0 },
-                emitting: false
-            })
-        };
-        this.container.add([
-            this.images.vest,
-            this.images.body,
-            this.images.leftFist,
-            this.images.rightFist,
-            this.images.weapon,
-            this.images.backpack,
-            this.images.helmet,
-            this.images.bloodEmitter
-        ]).setDepth(3);
-        this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage])
-            .setDepth(10)
-            .setScale(0)
-            .setAlpha(0)
-            .setVisible(false);
+        // this.images = {
+        //     vest: this.scene.add.image(0, 0, "main").setVisible(false),
+        //     body: this.scene.add.image(0, 0, "main"),
+        //     leftFist: this.scene.add.image(0, 0, "main"),
+        //     rightFist: this.scene.add.image(0, 0, "main"),
+        //     backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
+        //     helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
+        //     weapon: this.scene.add.image(0, 0, "main"),
+        //     emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
+        //     emoteImage: this.scene.add.image(0, 0, "main"),
+        //     bloodEmitter: this.scene.add.particles(0, 0, "main", {
+        //         frame: "blood_particle.svg",
+        //         quantity: 1,
+        //         lifespan: 1000,
+        //         speed: { min: 20, max: 30 },
+        //         scale: { start: 0.75, end: 1 },
+        //         alpha: { start: 1, end: 0 },
+        //         emitting: false
+        //     })
+        // };
+        // this.container.add([
+        //     this.images.vest,
+        //     this.images.body,
+        //     this.images.leftFist,
+        //     this.images.rightFist,
+        //     this.images.weapon,
+        //     this.images.backpack,
+        //     this.images.helmet,
+        //     this.images.bloodEmitter
+        // ]).setDepth(3);
+        // this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage])
+        //     .setDepth(10)
+        //     .setScale(0)
+        //     .setAlpha(0)
+        //     .setVisible(false);
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = stream.readRotation(16);
 
-        const oldAngle = this.container.angle;
+        /*const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
         const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
         const minimap = this.scene.scene.get("minimap") as MinimapScene;
@@ -192,12 +192,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     duration: 0.03
                 });
             }
-        }
+        }*/
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
         const animationSeq = stream.readBoolean();
-        if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
+
+        /*if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
             switch (animation) {
                 case AnimationType.Melee: {
                     this.updateFistsPosition(false);
@@ -283,13 +284,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     break;
                 }
             }
-        }
+        }*/
         this.animationSeq = animationSeq;
 
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
-            this.images.bloodEmitter.emitParticle(1);
-            this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
+            // this.images.bloodEmitter.emitParticle(1);
+            // this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
     }
 
@@ -300,9 +301,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
 
         const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot).idString;
-        this.images.body.setTexture("main", `${skinID}_base.svg`);
-        this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
-        this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
+        // this.images.body.setTexture("main", `${skinID}_base.svg`);
+        // this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
+        // this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
 
         if (this.isActivePlayer && !UI_DEBUG_MODE) {
             $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
@@ -319,7 +320,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(anim: boolean): void {
-        this.leftFistAnim?.destroy();
+        /*this.leftFistAnim?.destroy();
         this.rightFistAnim?.destroy();
         this.weaponAnim?.destroy();
 
@@ -348,11 +349,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (weaponDef.image) {
             this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
-        }
+        }*/
     }
 
     updateWeapon(): void {
-        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        /*const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
@@ -384,7 +385,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             alpha: 1,
             scale: 1,
             duration: 500
-        });
+        });*/
     }
 
     updateEquipment(): void {
@@ -401,12 +402,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     updateEquipmentWorldImage(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
         const level = this[`${equipmentType}Level`];
-        const image = this.images[equipmentType];
+        /*const image = this.images[equipmentType];
         if (level > 0) {
             image.setTexture("main", `${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
         } else {
             image.setVisible(false);
-        }
+        }*/
     }
 
     updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
@@ -427,7 +428,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
-        this._emoteTween?.destroy();
+        /*this._emoteTween?.destroy();
         clearTimeout(this._emoteHideTimeoutID);
         this.scene.playSound("emote");
         this.images.emoteImage.setTexture("main", `${type.idString}.svg`);
@@ -447,11 +448,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 duration: 200,
                 onComplete: () => this.emoteContainer.setVisible(false)
             });
-        }, 4000);
+        }, 4000);*/
     }
 
     destroy(): void {
-        if (this.isActivePlayer) {
+        /*if (this.isActivePlayer) {
             this.container.setVisible(false);
         } else {
             super.destroy();
@@ -463,6 +464,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.emoteContainer.destroy(true);
             this.images.emoteBackground.destroy(true);
             this.images.emoteImage.destroy(true);
-        }
+        }*/
     }
 }

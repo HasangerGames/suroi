@@ -1,12 +1,12 @@
 import { type Game } from "../game";
-import { type GameScene } from "../scenes/gameScene";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory } from "../../../../common/src/constants";
-import { localStorageInstance } from "../utils/localStorageHandler";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { Container } from "pixi.js";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 /*
     Since this class seems to only ever be instantiated
@@ -20,17 +20,15 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     type: ObjectType<T, U>;
 
     readonly game: Game;
-    readonly scene: GameScene;
 
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
         // Animate the position
         if (this.position === undefined || ("isNew" in this && this.isNew) || !localStorageInstance.config.movementSmoothing) {
-            this.container.setPosition(pos.x * 20, pos.y * 20);
+            this.container.position.set(pos.x * 20, pos.y * 20);
         } else {
-            this.scene.tweens.add({
-                targets: this.container,
+            gsap.to(this.container, {
                 x: pos.x * 20,
                 y: pos.y * 20,
                 duration: 30
@@ -43,15 +41,14 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     dead = false;
 
-    readonly container: Phaser.GameObjects.Container;
+    readonly container: Container;
 
-    protected constructor(game: Game, scene: GameScene, type: ObjectType<T, U>, id: number) {
+    protected constructor(game: Game, type: ObjectType<T, U>, id: number) {
         this.game = game;
-        this.scene = scene;
         this.type = type;
         this.id = id;
 
-        this.container = scene.add.container();
+        this.container = new Container();
     }
 
     destroy(): void {

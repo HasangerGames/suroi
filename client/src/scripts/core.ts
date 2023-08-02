@@ -1,9 +1,6 @@
-import type { Game as PhaserGame } from "phaser";
-
 import type { Game } from "./game";
 
 interface Core {
-    phaser?: PhaserGame
     game?: Game
 }
 

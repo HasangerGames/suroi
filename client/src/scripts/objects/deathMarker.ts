@@ -14,21 +14,21 @@ export class DeathMarker extends GameObject {
     playerName!: string;
     nameColor = "#dcdcdc";
 
-    image: Phaser.GameObjects.Image;
-    playerNameText: Phaser.GameObjects.Text;
+    // image: Phaser.GameObjects.Image;
+    // playerNameText: Phaser.GameObjects.Text;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
-        super(game, scene, type, id);
+    constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
+        super(game, type, id);
 
-        this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
-        this.playerNameText = this.scene.add.text(0, 95, "",
-            {
-                fontSize: 36,
-                fontFamily: "Inter"
-            })
-            .setOrigin(0.5, 0.5)
-            .setShadow(2, 2, "#000", 2, true, true);
-        this.container.add([this.image, this.playerNameText]).setDepth(1);
+        // this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
+        // this.playerNameText = this.scene.add.text(0, 95, "",
+        //     {
+        //         fontSize: 36,
+        //         fontFamily: "Inter"
+        //     })
+        //     .setOrigin(0.5, 0.5)
+        //     .setShadow(2, 2, "#000", 2, true, true);
+        // this.container.add([this.image, this.playerNameText]).setDepth(1);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -41,11 +41,12 @@ export class DeathMarker extends GameObject {
         if (stream.readBoolean()) {
             this.nameColor = stream.readUTF8String(10);
         }
-        this.playerNameText.setText(this.playerName).setColor(this.nameColor);
+        // this.playerNameText.setText(this.playerName).setColor(this.nameColor);
 
         // Play an animation if this is a new death marker.
         if (stream.readBoolean()) {
-            this.container.setScale(0.5).setAlpha(0);
+            this.container.scale.set(0.5);
+            this.container.alpha = 0;
             gsap.to(this.container, {
                 scale: 1,
                 alpha: 1,
@@ -56,7 +57,7 @@ export class DeathMarker extends GameObject {
 
     destroy(): void {
         super.destroy();
-        this.image.destroy(true);
-        this.playerNameText.destroy(true);
+        // this.image.destroy(true);
+        // this.playerNameText.destroy(true);
     }
 }

@@ -64,6 +64,6 @@
     "intersects": "^2.7.2",
     "jquery": "^3.7.0",
     "nipplejs": "^0.10.1",
-    "phaser": "^3.60.0"
+    "pixi.js": "^7.2.4"
   }
 }

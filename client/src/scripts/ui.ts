@@ -2,8 +2,6 @@ import $ from "jquery";
 
 import core from "./core";
 
-import { type MenuScene } from "./scenes/menuScene";
-import { type GameScene } from "./scenes/gameScene";
 import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
 import { type MinimapScene } from "./scenes/minimapScene";
@@ -313,19 +311,19 @@ $((): void => {
     // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
         const volume = value * localStorageInstance.config.masterVolume;
-        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
+        // core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
     });
 
     // SFX volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
-        (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
+        // (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
     });
 
     // Master volume
     addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
         const volume = value * localStorageInstance.config.masterVolume;
-        (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
-        core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
+        // (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
+        // core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
     });
 
     // Camera shake
@@ -362,15 +360,15 @@ $((): void => {
 
     // Minimap stuff
     addSliderListener("#slider-minimap-transparency", "minimapTransparency", () => {
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
+        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
     });
 
     addSliderListener("#slider-big-map-transparency", "bigMapTransparency", () => {
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
+        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
     });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
-        (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap(true);
+        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap(true);
     });
 
     // Leave warning

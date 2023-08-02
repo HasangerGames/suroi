@@ -1,5 +1,4 @@
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import { type ObjectCategory } from "../../../../common/src/constants";
@@ -11,18 +10,18 @@ import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 
 export class Building extends GameObject {
-    readonly images: {
-        floor: Phaser.GameObjects.Image
-        ceilingContainer: Phaser.GameObjects.Container
-        ceiling: Phaser.GameObjects.Image
-        emitter: Phaser.GameObjects.Particles.ParticleEmitter
-    };
+    // readonly images: {
+    //     floor: Phaser.GameObjects.Image
+    //     ceilingContainer: Phaser.GameObjects.Container
+    //     ceiling: Phaser.GameObjects.Image
+    //     emitter: Phaser.GameObjects.Particles.ParticleEmitter
+    // };
 
     ceilingHitbox?: Hitbox;
 
     orientation!: Orientation;
 
-    ceilingTween?: Phaser.Tweens.Tween;
+    // ceilingTween?: Phaser.Tweens.Tween;
 
     ceilingVisible = true;
 
@@ -30,11 +29,11 @@ export class Building extends GameObject {
 
     floors: Array<{ type: FloorType, hitbox: Hitbox }> = [];
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
-        super(game, scene, type, id);
+    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
+        super(game, type, id);
 
         const definition = type.definition;
-        this.images = {
+        /*this.images = {
             floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "buildings", `${type.idString}_floor.svg`),
             ceilingContainer: scene.add.container(),
             ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "buildings", `${type.idString}_ceiling.svg`),
@@ -43,11 +42,11 @@ export class Building extends GameObject {
 
         this.container.add(this.images.floor).setDepth(-1);
 
-        this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);
+        this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);*/
     }
 
     toggleCeiling(visible: boolean): void {
-        if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
+        /*if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
 
         this.ceilingTween?.destroy();
 
@@ -58,14 +57,14 @@ export class Building extends GameObject {
             onended: () => {
                 this.ceilingVisible = visible;
             }
-        });
+        });*/
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
     override deserializePartial(stream: SuroiBitStream): void {
         const dead = stream.readBoolean();
 
-        if (dead) {
+        /*if (dead) {
             if (dead && !this.dead && !this.isNew) {
                 this.images.emitter.setConfig({
                     frame: `${this.type.idString}_particle.svg`,
@@ -85,7 +84,7 @@ export class Building extends GameObject {
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
             this.ceilingTween?.destroy();
         }
-        this.dead = dead;
+        this.dead = dead;*/
 
         this.isNew = false;
     }
@@ -97,8 +96,8 @@ export class Building extends GameObject {
 
         this.rotation = orientationToRotation(this.orientation);
 
-        this.container.setRotation(this.rotation);
-        this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
+        /*this.container.setRotation(this.rotation);
+        this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);*/
 
         this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, this.orientation);
 
@@ -114,9 +113,9 @@ export class Building extends GameObject {
 
     destroy(): void {
         super.destroy();
-        this.images.floor.destroy();
+        /*this.images.floor.destroy();
         this.images.ceilingContainer.destroy();
         this.images.ceiling.destroy();
-        this.images.emitter.destroy();
+        this.images.emitter.destroy();*/
     }
 }

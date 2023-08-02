@@ -1,5 +1,3 @@
-import type { MinimapScene } from "../../scenes/minimapScene";
-
 import { DeathMarker } from "../../objects/deathMarker";
 import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
@@ -45,7 +43,6 @@ export class UpdatePacket extends ReceivingPacket {
 
         const game = player.game;
         const playerManager = game.playerManager;
-        const scene = player.scene;
 
         const maxMinStatsDirty = stream.readBoolean();
         const healthDirty = stream.readBoolean();
@@ -148,16 +145,16 @@ export class UpdatePacket extends ReceivingPacket {
                 case PlayerActions.None:
                     $("#action-container").hide().stop();
                     // TODO Only stop the sound that's playing
-                    scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
-                    scene.sounds.get("gauze")?.stop();
-                    scene.sounds.get("medikit")?.stop();
-                    scene.sounds.get("cola")?.stop();
-                    scene.sounds.get("tablets")?.stop();
+                    // scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
+                    // scene.sounds.get("gauze")?.stop();
+                    // scene.sounds.get("medikit")?.stop();
+                    // scene.sounds.get("cola")?.stop();
+                    // scene.sounds.get("tablets")?.stop();
                     break;
                 case PlayerActions.Reload: {
                     $("#action-container").show();
                     $("#action-name").text("Reloading...");
-                    scene.playSound(`${player.activeItem.idString}_reload`);
+                    // scene.playSound(`${player.activeItem.idString}_reload`);
                     actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
                     break;
                 }
@@ -166,7 +163,7 @@ export class UpdatePacket extends ReceivingPacket {
                     const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
                     $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
                     actionTime = itemDef.useTime;
-                    scene.playSound(itemDef.idString);
+                    // scene.playSound(itemDef.idString);
                 }
             }
             if (actionTime > 0) {
@@ -219,23 +216,23 @@ export class UpdatePacket extends ReceivingPacket {
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            object = new Player(game, scene, type as ObjectType<ObjectCategory.Player>, id);
+                            object = new Player(game, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }
                         case ObjectCategory.Obstacle: {
-                            object = new Obstacle(game, scene, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
+                            object = new Obstacle(game, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
                             break;
                         }
                         case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(game, scene, type as ObjectType<ObjectCategory.DeathMarker>, id);
+                            object = new DeathMarker(game, type as ObjectType<ObjectCategory.DeathMarker>, id);
                             break;
                         }
                         case ObjectCategory.Loot: {
-                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                            object = new Loot(game, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
                             break;
                         }
                         case ObjectCategory.Building: {
-                            object = new Building(game, scene, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
+                            object = new Building(game, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
                             break;
                         }
                     }
@@ -295,7 +292,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
 
-                const bullet = new Bullet(game, scene, stream);
+                const bullet = new Bullet(game, stream);
 
                 game.bullets.set(id, bullet);
             }
@@ -322,7 +319,6 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    game.activePlayer.scene,
                     stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
                     stream.readPosition()
                 );
@@ -341,8 +337,6 @@ export class UpdatePacket extends ReceivingPacket {
             }
         }
 
-        const minimap = scene.scene.get("minimap") as MinimapScene;
-
         // Gas
         if (gasDirty) {
             game.gas.state = stream.readBits(2);
@@ -352,35 +346,35 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
             let gasMessage: string | undefined;
-            // TODO Clean up code
-            if (game.gas.state === GasState.Waiting) {
-                gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
-                scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
-                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                if (game.gas.oldRadius === 0) {
-                    minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
-                } else {
-                    minimap.gasToCenterLine.setTo(
-                        game.gas.newPosition.x * MINIMAP_SCALE,
-                        game.gas.newPosition.y * MINIMAP_SCALE,
-                        minimap.playerIndicator.x,
-                        minimap.playerIndicator.y
-                    );
-                }
-            } else if (game.gas.state === GasState.Advancing) {
-                gasMessage = "Toxic gas is advancing! Move to the safe zone";
-                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                minimap.gasToCenterLine.setTo(
-                    game.gas.newPosition.x * MINIMAP_SCALE,
-                    game.gas.newPosition.y * MINIMAP_SCALE,
-                    minimap.playerIndicator.x,
-                    minimap.playerIndicator.y
-                );
-            } else if (game.gas.state === GasState.Inactive) {
-                gasMessage = "Waiting for players...";
-                minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
-            }
+            // // TODO Clean up code
+            // if (game.gas.state === GasState.Waiting) {
+            //     gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
+            //     scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
+            //     minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
+            //     minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
+            //     if (game.gas.oldRadius === 0) {
+            //         minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
+            //     } else {
+            //         minimap.gasToCenterLine.setTo(
+            //             game.gas.newPosition.x * MINIMAP_SCALE,
+            //             game.gas.newPosition.y * MINIMAP_SCALE,
+            //             minimap.playerIndicator.x,
+            //             minimap.playerIndicator.y
+            //         );
+            //     }
+            // } else if (game.gas.state === GasState.Advancing) {
+            //     gasMessage = "Toxic gas is advancing! Move to the safe zone";
+            //     minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
+            //     minimap.gasToCenterLine.setTo(
+            //         game.gas.newPosition.x * MINIMAP_SCALE,
+            //         game.gas.newPosition.y * MINIMAP_SCALE,
+            //         minimap.playerIndicator.x,
+            //         minimap.playerIndicator.y
+            //     );
+            // } else if (game.gas.state === GasState.Inactive) {
+            //     gasMessage = "Waiting for players...";
+            //     minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
+            // }
 
             if (game.gas.state === GasState.Advancing) {
                 $("#gas-timer").addClass("advancing");
@@ -408,22 +402,22 @@ export class UpdatePacket extends ReceivingPacket {
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * percentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
             if (game.gas.state === GasState.Advancing) {
-                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
-                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
-                scene.tweens.add({
-                    targets: scene.gasCircle,
-                    x: currentPosition.x * 20,
-                    y: currentPosition.y * 20,
-                    radius: currentRadius * 20,
-                    duration: 30
-                });
-                scene.tweens.add({
-                    targets: minimap.gasCircle,
-                    x: currentPosition.x * MINIMAP_SCALE,
-                    y: currentPosition.y * MINIMAP_SCALE,
-                    radius: currentRadius * MINIMAP_SCALE,
-                    duration: 30
-                });
+                // const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
+                // const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
+                // scene.tweens.add({
+                //     targets: scene.gasCircle,
+                //     x: currentPosition.x * 20,
+                //     y: currentPosition.y * 20,
+                //     radius: currentRadius * 20,
+                //     duration: 30
+                // });
+                // scene.tweens.add({
+                //     targets: minimap.gasCircle,
+                //     x: currentPosition.x * MINIMAP_SCALE,
+                //     y: currentPosition.y * MINIMAP_SCALE,
+                //     radius: currentRadius * MINIMAP_SCALE,
+                //     duration: 30
+                // });
             }
         }
 
