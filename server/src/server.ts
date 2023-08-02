@@ -147,7 +147,7 @@ app.ws("/play", {
         res.onAborted((): void => {});
 
         // Bot protection
-        const ip = Config.cloudflare ? req.getHeader("cf-connecting-ip") : decoder.decode(res.getRemoteAddressAsText());
+        const ip = Config.cloudflare ? req.getHeader("cf-connecting-ip") : req.getHeader("x-forwarded-for") || decoder.decode(res.getRemoteAddressAsText());
         if (Config.botProtection) {
             if (bannedIPs.has(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
                 if (!bannedIPs.has(ip)) bannedIPs.add(ip);
