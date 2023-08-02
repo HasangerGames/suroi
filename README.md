@@ -59,3 +59,6 @@ pnpm start
 ```
 
 Production builds are served using [NGINX](https://nginx.org). A sample configuration file can be found [here](nginx.conf).
+
+## Self-hosting
+Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.
