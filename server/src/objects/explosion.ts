@@ -60,7 +60,7 @@ export class Explosion {
             const dist = distance(loot.position, this.position);
             if (dist < definition.radius.max) {
                 const angle = angleBetween(loot.position, this.position);
-                loot.push(-angle, ((definition.radius.max - dist) * 0.006));
+                loot.push(angle, ((definition.radius.max - dist) * 0.006));
             }
         }
     }

@@ -2,8 +2,7 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
 import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
-import { v, vRotate } from "../../../common/src/utils/vector";
-import { Vec2 } from "planck";
+import { v, vAdd, vRotate } from "../../../common/src/utils/vector";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
@@ -98,12 +97,12 @@ export class GunItem extends InventoryItem {
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
         let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
-        let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+        let position = vAdd(owner.position, rotated);
 
         for (const object of this.owner.nearObjects) {
             if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
                 rotated = vRotate(v(2.50001, 0), owner.rotation);
-                position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+                position = vAdd(owner.position, rotated);
                 break;
             }
         }

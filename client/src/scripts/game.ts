@@ -24,7 +24,6 @@ import { PickupPacket } from "./packets/receiving/pickupPacket";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { Obstacle } from "./objects/obstacle";
 import { Loot } from "./objects/loot";
@@ -205,11 +204,10 @@ export class Game {
         }
     }
 
-    skipLootCheck = true;
-    // why is this here
-
     tick = (() => {
         const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
+
+        let skipLootCheck = true;
         /*
             Context: rerendering ui elements needlessly is bad, so we
             determine the information that should trigger a re-render if
@@ -252,8 +250,8 @@ export class Game {
                 this.sendPacket(new InputPacket(this.playerManager));
             }
 
-            this.skipLootCheck = !this.skipLootCheck;
-            if (this.skipLootCheck) return;
+            skipLootCheck = !skipLootCheck;
+            if (skipLootCheck) return;
 
             // Loop through all loot objects to check if the player is colliding with one to show the interact message
             let minDist = Number.MAX_VALUE;

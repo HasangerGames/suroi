@@ -15,8 +15,7 @@ import {
     type PacketType,
     VARIATION_BITS,
     PLAYER_NAME_MAX_LENGTH,
-    OBJECT_ID_BITS,
-    MAP_HEIGHT
+    OBJECT_ID_BITS
 } from "../constants";
 import { type Variation } from "../typings";
 import { normalizeAngle } from "./math";
@@ -183,8 +182,6 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a position Vector to the stream with the game default max and minimum X and Y.
-     * This is used to write positions from the server to the client.
-     * And the Y position is subtracted from the map height because phaser Y axis is inverted.
      * @param vector The Vector to write.
      */
     writePosition(vector: Vector): void {
@@ -193,13 +190,11 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a position Vector to the stream with the game default max and minimum X and Y.
-     * This is used to write positions from the server to the client.
-     * And the Y position is subtracted from the map height because phaser Y axis is inverted.
      * @param x The x-coordinate of the vector to write
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, MAP_HEIGHT - y, 0, 0, 1024, 1024, 16);
+        this.writeVector2(x, y, 0, 0, 1024, 1024, 16);
     }
 
     /**

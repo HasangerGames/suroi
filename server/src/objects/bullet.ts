@@ -4,6 +4,7 @@ import { type Player } from "./player";
 import { type Game } from "../game";
 import { distanceSquared } from "../../../common/src/utils/math";
 import { type GunItem } from "../inventory/gunItem";
+import { type Vector, v, vAdd } from "../../../common/src/utils/vector";
 export class Bullet {
     readonly is: CollisionFilter = {
         player: false,
@@ -21,10 +22,10 @@ export class Bullet {
 
     id: number;
 
-    readonly _initialPosition: Vec2;
-    get initialPosition(): Vec2 { return this._initialPosition; }
+    readonly _initialPosition: Vector;
+    get initialPosition(): Vector { return this._initialPosition; }
 
-    readonly finalPosition: Vec2;
+    readonly finalPosition: Vector;
     rotation: number;
 
     readonly maxDistance: number;
@@ -41,7 +42,7 @@ export class Bullet {
         return distanceSquared(this.initialPosition, this.body.getPosition());
     }
 
-    constructor(game: Game, position: Vec2, rotation: number, source: GunItem, shooter: Player) {
+    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player) {
         this.id = game.nextBulletID;
         this._initialPosition = position;
         this.rotation = rotation;
@@ -55,7 +56,7 @@ export class Bullet {
         // Init body
         this.body = game.world.createBody({
             type: "dynamic",
-            position,
+            position: Vec2(position),
             fixedRotation: true,
             bullet: true
         });
@@ -74,8 +75,8 @@ export class Bullet {
             mass: 0.0
         });
 
-        const velocity = Vec2(Math.sin(rotation), Math.cos(rotation)).mul(definition.speed);
-        this.finalPosition = this.initialPosition.clone().add(Vec2(this.maxDistance * Math.sin(rotation), this.maxDistance * Math.cos(rotation)));
+        const velocity = Vec2(Math.sin(rotation), -Math.cos(rotation)).mul(definition.speed);
+        this.finalPosition = vAdd(this.initialPosition, v(this.maxDistance * Math.sin(rotation), this.maxDistance * -Math.cos(rotation)));
         this.body.setLinearVelocity(velocity);
     }
 }

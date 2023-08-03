@@ -1,11 +1,9 @@
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import type { ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
-import { randomBoolean } from "../../../../common/src/utils/random";
 
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation, Orientation } from "../../../../common/src/typings";
@@ -89,9 +87,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 }
 
                 if (this.door.offset === 1) {
-                    this.door.hitbox = this.door.openAltHitbox?.clone();
-                } else if (this.door.offset === 3) {
                     this.door.hitbox = this.door.openHitbox?.clone();
+                } else if (this.door.offset === 3) {
+                    this.door.hitbox = this.door.openAltHitbox?.clone();
                 } else {
                     this.door.hitbox = this.door.closedHitbox?.clone();
                 }
@@ -134,13 +132,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             }
             this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
 
-            let orientation = stream.readBits(2) as Orientation;
+            const orientation = stream.readBits(2) as Orientation;
 
             this.rotation = orientationToRotation(orientation);
-
-            // inverted Y axis moment
-            if (orientation === 1) orientation = 3;
-            else if (orientation === 3) orientation = 1;
 
             this.door.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
             ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));

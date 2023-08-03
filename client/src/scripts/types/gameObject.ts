@@ -22,6 +22,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     readonly game: Game;
 
+    private moveAnim?: gsap.core.Tween;
+
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
@@ -30,7 +32,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
             this.container.x = pos.x * 20;
             this.container.y = pos.y * 20;
         } else {
-            gsap.to(this.container, {
+            this.moveAnim = gsap.to(this.container, {
                 x: pos.x * 20,
                 y: pos.y * 20,
                 duration: 0.03
@@ -56,6 +58,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     }
 
     destroy(): void {
+        this.moveAnim?.kill();
         this.container.destroy();
     }
 

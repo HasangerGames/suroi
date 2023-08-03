@@ -269,10 +269,10 @@ export class Game {
 
                 if (player.isMobile && player.movement.moving) {
                     movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = -Math.sin(player.movement.angle) * 1.45;
+                    movement.y = Math.sin(player.movement.angle) * 1.45;
                 } else {
-                    if (player.movement.up) movement.y++;
-                    if (player.movement.down) movement.y--;
+                    if (player.movement.up) movement.y--;
+                    if (player.movement.down) movement.y++;
                     if (player.movement.left) movement.x--;
                     if (player.movement.right) movement.x++;
                 }
@@ -597,7 +597,7 @@ export class Game {
         this.removeObject(loot);
     }
 
-    addBullet(position: Vec2, rotation: number, source: GunItem, shooter: Player): Bullet {
+    addBullet(position: Vector, rotation: number, source: GunItem, shooter: Player): Bullet {
         const bullet = new Bullet(
             this,
             position,

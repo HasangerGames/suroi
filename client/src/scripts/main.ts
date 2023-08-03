@@ -6,7 +6,7 @@ import { Game } from "./game";
 import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { Application } from "pixi.js";
-import { SuroiSprite, loadAtlases } from "./utils/pixi";
+import { loadAtlases } from "./utils/pixi";
 import { GRASS_COLOR } from "./utils/constants";
 
 declare const API_URL: string;
@@ -19,7 +19,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(async() => {
+$(async () => {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -80,7 +80,8 @@ $(async() => {
 
     const app = new Application({
         resizeTo: window,
-        background: GRASS_COLOR
+        background: GRASS_COLOR,
+        antialias: true
     });
 
     core.pixi = app;

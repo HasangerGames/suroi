@@ -417,21 +417,21 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox([
                 // Comments assume the building is not rotated (rotation = 0)
-                new RectangleHitbox(v(-48.33, 33.2), v(-34, 35.1)), // First Topmost wall
-                new RectangleHitbox(v(-23.5, 33.2), v(-6.5, 35.1)), // Topmost wall after the first window
-                new RectangleHitbox(v(4, 33.2), v(48.33, 35.1)), // Topmost wall after the second window
-                new RectangleHitbox(v(11.9, 10.9), v(13.86, 33.2)), // Wall coming off of topmost wall
-                new RectangleHitbox(v(46.4, -9.48), v(48.33, 33.2)), // Rightmost wall
-                new RectangleHitbox(v(41.05, -9.48), v(46.43, -7.58)), // Short wall coming off of rightmost wall
-                new RectangleHitbox(v(13.86, -9.48), v(19.37, -7.61)), // Short wall to the left of the previous one
-                new RectangleHitbox(v(11.9, -21.5), v(13.86, 1.2)), // Wall coming off of the longer bottommost wall
-                new RectangleHitbox(v(-26.2, -23.5), v(13.86, -21.57)), // Longer bottommost wall
-                new RectangleHitbox(v(-48.33, -23.5), v(-36.25, -21.57)), // Shorter bottommost wall
-                new RectangleHitbox(v(-48.33, 11), v(-46.4, 33.2)), // Leftmost wall until left window
-                new RectangleHitbox(v(-48.33, -23.5), v(-46.4, 1)), // Leftmost wall after the window
+                new RectangleHitbox(v(-48.33, -35.1), v(-34, -33.2)), // First Topmost wall
+                new RectangleHitbox(v(-23.5, -35.1), v(-6.5, -33.2)), // Topmost wall after the first window
+                new RectangleHitbox(v(4, -35.1), v(48.33, -33.2)), // Topmost wall after the second window
+                new RectangleHitbox(v(11.9, -33.2), v(13.86, -10.9)), // Wall coming off of topmost wall
+                new RectangleHitbox(v(46.4, -33.2), v(48.33, 9.48)), // Rightmost wall
+                new RectangleHitbox(v(41.05, 7.58), v(46.43, 9.48)), // Short wall coming off of rightmost wall
+                new RectangleHitbox(v(13.86, 7.61), v(19.37, 9.48)), // Short wall to the left of the previous one
+                new RectangleHitbox(v(11.9, -1.2), v(13.86, 21.5)), // Wall coming off of the longer bottommost wall
+                new RectangleHitbox(v(-26.2, 21.57), v(13.86, 23.5)), // Longer bottommost wall
+                new RectangleHitbox(v(-48.33, 21.57), v(-36.25, 23.5)), // Shorter bottommost wall
+                new RectangleHitbox(v(-48.33, -33.2), v(-46.4, -11)), // Leftmost wall until left window
+                new RectangleHitbox(v(-48.33, 1), v(-46.4, 23.5)), // Leftmost wall after the window
 
-                new RectangleHitbox(v(-41.9, -35.13), v(-38.65, -32)), // Left post
-                new RectangleHitbox(v(-24.1, -35.13), v(-20.85, -32)) // Right post
+                new RectangleHitbox(v(-41.9, 32), v(-38.65, 35.13)), // Left post
+                new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post
             ]),
             rotationMode: "limited"
         },

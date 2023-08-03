@@ -286,13 +286,13 @@ export class Obstacle extends GameObject {
         let isOnOtherSide = false;
         switch (this.rotation) {
             case 0:
-                isOnOtherSide = player.position.y > this.position.y;
+                isOnOtherSide = player.position.y < this.position.y;
                 break;
             case 1:
                 isOnOtherSide = player.position.x < this.position.x;
                 break;
             case 2:
-                isOnOtherSide = player.position.y < this.position.y;
+                isOnOtherSide = player.position.y > this.position.y;
                 break;
             case 3:
                 isOnOtherSide = player.position.x > this.position.x;
@@ -324,13 +324,13 @@ export class Obstacle extends GameObject {
             if (isOnOtherSide) {
                 switch (this.rotation) {
                     case 0:
-                        newPosition.y = hitbox.max.y + radius;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                     case 1:
                         newPosition.x = hitbox.min.x - radius;
                         break;
                     case 2:
-                        newPosition.y = hitbox.min.y - radius;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                     case 3:
                         newPosition.x = hitbox.max.x + radius;
@@ -339,13 +339,13 @@ export class Obstacle extends GameObject {
             } else {
                 switch (this.rotation) {
                     case 0:
-                        newPosition.y = hitbox.min.y - radius;
+                        newPosition.y = hitbox.max.y + radius;
                         break;
                     case 1:
                         newPosition.x = hitbox.max.x + radius;
                         break;
                     case 2:
-                        newPosition.y = hitbox.max.y + radius;
+                        newPosition.y = hitbox.min.y - radius;
                         break;
                     case 3:
                         newPosition.x = hitbox.min.x - radius;

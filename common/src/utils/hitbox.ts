@@ -66,13 +66,7 @@ export class CircleHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
-        // inverted Y axis on the client moment
-        let newOrientation = orientation;
-        if (typeof window !== "undefined") {
-            if (orientation === 1) newOrientation = 3;
-            else if (orientation === 3) newOrientation = 1;
-        }
-        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, newOrientation));
+        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
     intersectsLine(a: Vector, b: Vector): boolean {
@@ -124,13 +118,7 @@ export class RectangleHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
-        // inverted Y axis on the client moment
-        let newOrientation = orientation;
-        if (typeof window !== "undefined") {
-            if (orientation === 1) newOrientation = 3;
-            else if (orientation === 3) newOrientation = 1;
-        }
-        const rect = transformRectangle(position, this.min, this.max, scale, newOrientation);
+        const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
     }

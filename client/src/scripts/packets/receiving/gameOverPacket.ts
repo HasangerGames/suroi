@@ -1,5 +1,4 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
-import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
@@ -16,8 +15,6 @@ export class GameOverPacket extends ReceivingPacket {
             gameOverScreen.removeClass("chicken-dinner");
             $("#btn-spectate").show();
             $("#btn-spectate").removeClass("btn-disabled");
-            const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
-            minimap.playerIndicator.setTexture("main", "player_indicator_dead.svg").setAngle(0);
         } else {
             gameOverScreen.addClass("chicken-dinner");
             $("#btn-spectate").hide();

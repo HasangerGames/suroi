@@ -1,9 +1,8 @@
 import { InventoryItem } from "./inventoryItem";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type Player } from "../objects/player";
-import { vRotate } from "../../../common/src/utils/vector";
+import { vAdd, vRotate } from "../../../common/src/utils/vector";
 import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
-import { Vec2 } from "planck";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -61,7 +60,7 @@ export class MeleeItem extends InventoryItem {
                 !owner.disconnected
             ) {
                 const rotated = vRotate(definition.offset, owner.rotation);
-                const position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+                const position = vAdd(owner.position, rotated);
                 const hitbox = new CircleHitbox(definition.radius, position);
 
                 // Damage the closest object

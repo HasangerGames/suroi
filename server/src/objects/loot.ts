@@ -246,7 +246,7 @@ export class Loot extends GameObject {
 
     push(angle: number, velocity: number): void {
         const vel = this.body.getLinearVelocity();
-        this.body.setLinearVelocity(vel.add(Vec2(Math.cos(angle), -Math.sin(angle)).mul(velocity)));
+        this.body.setLinearVelocity(vel.add(Vec2(Math.cos(angle), Math.sin(angle)).mul(velocity)));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

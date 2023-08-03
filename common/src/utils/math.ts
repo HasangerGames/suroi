@@ -189,18 +189,18 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
     let xOffset: number, yOffset: number;
     switch (orientation) {
         case 1:
-            xOffset = -position2.y;
             // noinspection JSSuspiciousNameCombination
-            yOffset = position2.x;
+            xOffset = position2.y;
+            yOffset = -position2.x;
             break;
         case 2:
             xOffset = -position2.x;
             yOffset = -position2.y;
             break;
         case 3:
+            xOffset = -position2.y;
             // noinspection JSSuspiciousNameCombination
-            xOffset = position2.y;
-            yOffset = -position2.x;
+            yOffset = position2.x;
             break;
     }
     return vAdd(position1, v(xOffset, yOffset));
@@ -214,16 +214,16 @@ export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale:
         const maxX = max.x; const maxY = max.y;
         switch (orientation) {
             case 1:
-                min = v(minX, maxY);
-                max = v(maxX, minY);
+                min = v(maxX, minY);
+                max = v(minX, maxY);
                 break;
             case 2:
                 min = v(maxX, maxY);
                 max = v(minX, minY);
                 break;
             case 3:
-                min = v(maxX, minY);
-                max = v(minX, maxY);
+                min = v(minX, maxY);
+                max = v(maxX, minY);
                 break;
         }
     }
@@ -238,19 +238,19 @@ export function calculateDoorHitboxes(definition: ObstacleDefinition, position: 
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
     const openRectangle = transformRectangle(
-        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
-        definition.hitbox.min,
-        definition.hitbox.max,
-        1,
-        absMod(rotation + 1, 4) as Orientation
-    );
-    // noinspection JSSuspiciousNameCombination
-    const openAltRectangle = transformRectangle(
         addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
         definition.hitbox.min,
         definition.hitbox.max,
         1,
         absMod(rotation - 1, 4) as Orientation
+    );
+    // noinspection JSSuspiciousNameCombination
+    const openAltRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        absMod(rotation + 1, 4) as Orientation
     );
     return {
         openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),

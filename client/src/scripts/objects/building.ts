@@ -10,11 +10,15 @@ import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { gsap } from "gsap";
+import { Container } from "pixi.js";
 
 export class Building extends GameObject {
+    override type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+
     readonly images: {
         floor: SuroiSprite
         ceiling: SuroiSprite
+        ceilingContainer: Container
         // emitter
     };
 
@@ -32,18 +36,22 @@ export class Building extends GameObject {
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, type, id);
+        this.type = type;
 
         const definition = type.definition;
         this.images = {
             floor: new SuroiSprite(`${type.idString}_floor.svg`).setPos(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20),
-            ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20).setDepth(8)
+            ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20),
+            ceilingContainer: new Container()
             // emitter: scene.add.particles(0, 0, "main").setDepth(8)
         };
 
         this.container.addChild(this.images.floor);
         this.container.zIndex = -1;
 
-        this.game.pixi.stage.addChild(this.images.ceiling);
+        this.game.pixi.stage.addChild(this.images.ceilingContainer);
+        this.images.ceilingContainer.addChild(this.images.ceiling);
+        this.images.ceilingContainer.zIndex = 8;
     }
 
     toggleCeiling(visible: boolean): void {
@@ -51,7 +59,7 @@ export class Building extends GameObject {
 
         this.ceilingTween?.kill();
 
-        this.ceilingTween = gsap.to(this.images.ceiling, {
+        this.ceilingTween = gsap.to(this.images.ceilingContainer, {
             alpha: visible ? 1 : 0,
             duration: 0.2,
             onComplete: () => {
@@ -80,9 +88,9 @@ export class Building extends GameObject {
                 }).explode(10);
                 this.scene.playSound("ceiling_collapse");
             }*/
+            this.ceilingTween?.kill();
             this.images.ceiling.setDepth(-0.1).setAlpha(1);
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
-            this.ceilingTween?.kill();
         }
         this.dead = dead;
 
@@ -97,13 +105,15 @@ export class Building extends GameObject {
         this.rotation = orientationToRotation(this.orientation);
 
         this.container.rotation = this.rotation;
-        this.images.ceiling.setPos(this.container.x, this.container.y).setRotation(this.rotation);
 
-        this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, this.orientation);
+        this.images.ceilingContainer.position.set(this.container.x, this.container.y);
+        this.images.ceilingContainer.rotation = this.rotation;
+
+        this.ceilingHitbox = (this.type.definition).ceilingHitbox.transform(this.position, 1, this.orientation);
 
         this.floors = [];
 
-        for (const floor of (this.type.definition as BuildingDefinition).floors) {
+        for (const floor of (this.type.definition).floors) {
             this.floors.push({
                 type: floor.type,
                 hitbox: floor.hitbox.transform(this.position, 1, this.orientation)
@@ -114,5 +124,6 @@ export class Building extends GameObject {
     destroy(): void {
         this.ceilingTween?.kill();
         super.destroy();
+        this.images.ceilingContainer.destroy();
     }
 }

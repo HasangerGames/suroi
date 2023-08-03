@@ -86,13 +86,13 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback: (map: Map) => {
             // Generate all Buildings
 
-            const buildingPos = v(map.width / 2, map.height / 2 + 50);
+            const buildingPos = v(map.width / 2, map.height / 2 - 50);
             const buildingStartPos = vClone(buildingPos);
 
             for (const building of Buildings.definitions.filter(definition => definition.idString !== "porta_potty")) {
                 for (let orientation = 0; orientation < 4; orientation++) {
                     map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
-                    buildingPos.y += 100;
+                    buildingPos.y -= 100;
                 }
                 buildingPos.y = buildingStartPos.y;
                 buildingPos.x += 100;
@@ -108,7 +108,7 @@ export const Maps: Record<string, MapDefinition> = {
                     obstaclePos.x += 20;
                     if (obstaclePos.x > map.width / 2 - 20) {
                         obstaclePos.x = map.width / 2 - 140;
-                        obstaclePos.y -= 20;
+                        obstaclePos.y += 20;
                     }
                 }
             }
@@ -121,7 +121,7 @@ export const Maps: Record<string, MapDefinition> = {
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
                     itemPos.x = map.width / 2;
-                    itemPos.y -= 10;
+                    itemPos.y += 10;
                 }
             }
         }

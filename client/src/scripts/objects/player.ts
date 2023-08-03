@@ -1,8 +1,6 @@
 import gsap, { Cubic } from "gsap";
 
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
-import type { MinimapScene } from "../scenes/minimapScene";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { GameObject } from "../types/gameObject";
