@@ -7,6 +7,7 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
 import { localStorageInstance } from "../utils/localStorageHandler";
+import { gsap } from "gsap";
 
 /*
     Since this class seems to only ever be instantiated
@@ -26,12 +27,13 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     set position(pos: Vector) {
         // Animate the position
         if (this.position === undefined || ("isNew" in this && this.isNew) || !localStorageInstance.config.movementSmoothing) {
-            this.container.position.set(pos.x * 20, pos.y * 20);
+            this.container.x = pos.x * 20;
+            this.container.y = pos.y * 20;
         } else {
             gsap.to(this.container, {
                 x: pos.x * 20,
                 y: pos.y * 20,
-                duration: 30
+                duration: 0.03
             });
         }
         this._position = pos;
@@ -49,6 +51,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.id = id;
 
         this.container = new Container();
+
+        this.game.pixi.stage.addChild(this.container);
     }
 
     destroy(): void {

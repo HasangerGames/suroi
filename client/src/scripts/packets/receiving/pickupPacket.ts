@@ -19,6 +19,6 @@ export class PickupPacket extends ReceivingPacket {
                 break;
         }
 
-        this.playerManager.game.activePlayer.scene.playSound(soundID);
+        // this.playerManager.game.activePlayer.scene.playSound(soundID);
     }
 }

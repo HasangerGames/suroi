@@ -11,7 +11,7 @@ import { type Orientation } from "../../../../../common/src/typings";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
+        /*const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
 
         // Draw the grid
         const CELL_SIZE = 16 * MINIMAP_SCALE;
@@ -26,7 +26,7 @@ export class MapPacket extends ReceivingPacket {
 
         // Draw the grid
         // This method isn't used because it makes the grid look really bad on mobile
-        /*const graphics = minimap.make.graphics();
+        const graphics = minimap.make.graphics();
         graphics.fillStyle(0x000000, 0.35);
 
         const CELL_SIZE = 16 * MINIMAP_SCALE;
@@ -36,7 +36,7 @@ export class MapPacket extends ReceivingPacket {
         for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
             graphics.fillRect(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE);
         }
-        minimap.renderTexture.batchDraw(graphics, 0, 0);*/
+        minimap.renderTexture.batchDraw(graphics, 0, 0);
 
         const numObstacles = stream.readBits(10);
 
@@ -102,6 +102,6 @@ export class MapPacket extends ReceivingPacket {
                 rotation
             }));
         }
-        minimap.renderTexture.endDraw();
+        minimap.renderTexture.endDraw();*/
     }
 }

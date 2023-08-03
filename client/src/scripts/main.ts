@@ -5,6 +5,9 @@ import { Game } from "./game";
 
 import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
+import { Application } from "pixi.js";
+import { SuroiSprite, loadAtlases } from "./utils/pixi";
+import { GRASS_COLOR } from "./utils/constants";
 
 declare const API_URL: string;
 
@@ -16,7 +19,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(() => {
+$(async() => {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -74,7 +77,19 @@ $(() => {
     }
 
     // Initialize the game object
-    core.game = new Game();
+
+    const app = new Application({
+        resizeTo: window,
+        background: GRASS_COLOR
+    });
+
+    core.pixi = app;
+
+    await loadAtlases();
+
+    $("#game-ui").append(app.view as HTMLCanvasElement);
+
+    core.game = new Game(app);
 
     setupInputs(core.game);
 });

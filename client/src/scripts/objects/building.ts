@@ -8,20 +8,21 @@ import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type FloorType, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
+import { SuroiSprite } from "../utils/pixi";
+import { gsap } from "gsap";
 
 export class Building extends GameObject {
-    // readonly images: {
-    //     floor: Phaser.GameObjects.Image
-    //     ceilingContainer: Phaser.GameObjects.Container
-    //     ceiling: Phaser.GameObjects.Image
-    //     emitter: Phaser.GameObjects.Particles.ParticleEmitter
-    // };
+    readonly images: {
+        floor: SuroiSprite
+        ceiling: SuroiSprite
+        // emitter
+    };
 
     ceilingHitbox?: Hitbox;
 
     orientation!: Orientation;
 
-    // ceilingTween?: Phaser.Tweens.Tween;
+    ceilingTween?: gsap.core.Tween;
 
     ceilingVisible = true;
 
@@ -33,39 +34,38 @@ export class Building extends GameObject {
         super(game, type, id);
 
         const definition = type.definition;
-        /*this.images = {
-            floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "buildings", `${type.idString}_floor.svg`),
-            ceilingContainer: scene.add.container(),
-            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "buildings", `${type.idString}_ceiling.svg`),
-            emitter: scene.add.particles(0, 0, "main").setDepth(8)
+        this.images = {
+            floor: new SuroiSprite(`${type.idString}_floor.svg`).setPos(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20),
+            ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20).setDepth(8)
+            // emitter: scene.add.particles(0, 0, "main").setDepth(8)
         };
 
-        this.container.add(this.images.floor).setDepth(-1);
+        this.container.addChild(this.images.floor);
+        this.container.zIndex = -1;
 
-        this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);*/
+        this.game.pixi.stage.addChild(this.images.ceiling);
     }
 
     toggleCeiling(visible: boolean): void {
-        /*if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
+        if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
 
-        this.ceilingTween?.destroy();
+        this.ceilingTween?.kill();
 
-        this.ceilingTween = this.scene.tweens.add({
-            targets: this.images.ceilingContainer,
+        this.ceilingTween = gsap.to(this.images.ceiling, {
             alpha: visible ? 1 : 0,
-            duration: 200,
-            onended: () => {
+            duration: 0.2,
+            onComplete: () => {
                 this.ceilingVisible = visible;
             }
-        });*/
+        });
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
     override deserializePartial(stream: SuroiBitStream): void {
         const dead = stream.readBoolean();
 
-        /*if (dead) {
-            if (dead && !this.dead && !this.isNew) {
+        if (dead) {
+            /*if (dead && !this.dead && !this.isNew) {
                 this.images.emitter.setConfig({
                     frame: `${this.type.idString}_particle.svg`,
                     rotate: { min: -180, max: 180 },
@@ -79,12 +79,12 @@ export class Building extends GameObject {
                         this.images.ceiling.getBounds() as Phaser.Types.GameObjects.Particles.RandomZoneSource)
                 }).explode(10);
                 this.scene.playSound("ceiling_collapse");
-            }
-            this.images.ceilingContainer.setDepth(-0.1).setAlpha(1);
+            }*/
+            this.images.ceiling.setDepth(-0.1).setAlpha(1);
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
-            this.ceilingTween?.destroy();
+            this.ceilingTween?.kill();
         }
-        this.dead = dead;*/
+        this.dead = dead;
 
         this.isNew = false;
     }
@@ -96,8 +96,8 @@ export class Building extends GameObject {
 
         this.rotation = orientationToRotation(this.orientation);
 
-        /*this.container.setRotation(this.rotation);
-        this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);*/
+        this.container.rotation = this.rotation;
+        this.images.ceiling.setPos(this.container.x, this.container.y).setRotation(this.rotation);
 
         this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, this.orientation);
 
@@ -112,10 +112,7 @@ export class Building extends GameObject {
     }
 
     destroy(): void {
+        this.ceilingTween?.kill();
         super.destroy();
-        /*this.images.floor.destroy();
-        this.images.ceilingContainer.destroy();
-        this.images.ceiling.destroy();
-        this.images.emitter.destroy();*/
     }
 }

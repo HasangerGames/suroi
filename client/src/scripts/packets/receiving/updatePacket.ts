@@ -39,10 +39,10 @@ function safeRound(value: number): number {
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player = this.playerManager.game.activePlayer;
-        if (player === undefined) return;
+        // if (player === undefined) return;
 
-        const game = player.game;
-        const playerManager = game.playerManager;
+        const game = this.playerManager.game;
+        const playerManager = this.playerManager;
 
         const maxMinStatsDirty = stream.readBoolean();
         const healthDirty = stream.readBoolean();
@@ -134,7 +134,7 @@ export class UpdatePacket extends ReceivingPacket {
         // Zoom
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
-            scene.resize(true);
+            // scene.resize(true);
         }
 
         // Action
@@ -178,10 +178,10 @@ export class UpdatePacket extends ReceivingPacket {
             const activePlayerID = stream.readObjectID();
             const idChanged = game.activePlayer.id !== activePlayerID;
             if (idChanged) {
-                game.activePlayer.container.setVisible(true);
+                game.activePlayer.container.visible = true;
                 game.objects.delete(game.activePlayer.id);
                 game.activePlayer.id = activePlayerID;
-                game.activePlayer.emoteContainer.setVisible(false);
+                // game.activePlayer.emoteContainer.setVisible(false);
                 game.activePlayer.distSinceLastFootstep = 0;
                 game.activePlayer.isNew = true;
                 game.objects.set(game.activePlayer.id, game.activePlayer);
@@ -216,7 +216,7 @@ export class UpdatePacket extends ReceivingPacket {
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            object = new Player(game, type as ObjectType<ObjectCategory.Player>, id);
+                            object = new Player(game, id);
                             break;
                         }
                         case ObjectCategory.Obstacle: {

@@ -1,12 +1,14 @@
 import gsap from "gsap";
 
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import { ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
+import { SuroiSprite } from "../utils/pixi";
+
+import { Text } from "pixi.js";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
@@ -14,21 +16,27 @@ export class DeathMarker extends GameObject {
     playerName!: string;
     nameColor = "#dcdcdc";
 
-    // image: Phaser.GameObjects.Image;
-    // playerNameText: Phaser.GameObjects.Text;
+    image: SuroiSprite;
+    playerNameText: Text;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, type, id);
 
-        // this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
-        // this.playerNameText = this.scene.add.text(0, 95, "",
-        //     {
-        //         fontSize: 36,
-        //         fontFamily: "Inter"
-        //     })
-        //     .setOrigin(0.5, 0.5)
-        //     .setShadow(2, 2, "#000", 2, true, true);
-        // this.container.add([this.image, this.playerNameText]).setDepth(1);
+        this.image = new SuroiSprite("death_marker.svg");
+        this.playerNameText = new Text("",
+            {
+                fontSize: 36,
+                fontFamily: "Inter",
+                dropShadow: true,
+                dropShadowBlur: 2,
+                dropShadowDistance: 2,
+                dropShadowColor: 0
+            });
+        this.playerNameText.y = 95;
+        this.playerNameText.anchor.set(0.5);
+        this.container.addChild(this.image, this.playerNameText);
+
+        this.container.zIndex = 0;
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -41,7 +49,9 @@ export class DeathMarker extends GameObject {
         if (stream.readBoolean()) {
             this.nameColor = stream.readUTF8String(10);
         }
-        // this.playerNameText.setText(this.playerName).setColor(this.nameColor);
+        this.playerNameText.text = this.playerName;
+
+        this.playerNameText.style.fill = this.nameColor;
 
         // Play an animation if this is a new death marker.
         if (stream.readBoolean()) {
@@ -57,7 +67,5 @@ export class DeathMarker extends GameObject {
 
     destroy(): void {
         super.destroy();
-        // this.image.destroy(true);
-        // this.playerNameText.destroy(true);
     }
 }

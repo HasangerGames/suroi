@@ -13,6 +13,7 @@ import { gsap } from "gsap";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
+import { SuroiSprite } from "../utils/pixi";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -20,7 +21,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     variation!: Variation;
 
-    // image: Phaser.GameObjects.Image;
+    image: SuroiSprite;
     // emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     isDoor?: boolean;
@@ -40,8 +41,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         super(game, type, id);
 
         // the image and emitter key, position and other properties are set after the obstacle is deserialized
-        // this.image = this.scene.add.image(0, 0, "main"); //.setAlpha(0.5);
-        // this.container.add(this.image);
+        this.image = new SuroiSprite(); //.setAlpha(0.5);
+        this.container.addChild(this.image);
         // // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
         // this.emitter = this.scene.add.particles(0, 0, "main");
 
@@ -50,7 +51,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.isDoor = this.type.definition.isDoor;
         if (this.isDoor) {
             this.door = { offset: 0 };
-            // this.image.setOrigin(0, 0.5);
+            this.image.anchor.set(0, 0.5);
         }
 
         if (definition.invisible) this.container.visible = false;
@@ -76,16 +77,16 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
-                /*if (!this.isNew) {
-                    if (offset === 0) this.scene.playSound("door_close");
-                    else this.scene.playSound("door_open");
+                if (!this.isNew) {
+                    // if (offset === 0) this.scene.playSound("door_close");
+                    // else this.scene.playSound("door_open");
                     gsap.to(this.image, {
                         rotation: orientationToRotation(offset),
                         duration: 0.2
                     });
                 } else {
                     this.image.setRotation(orientationToRotation(this.door.offset));
-                }*/
+                }
 
                 if (this.door.offset === 1) {
                     this.door.hitbox = this.door.openAltHitbox?.clone();
@@ -97,22 +98,24 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             }
         }
 
-        /*this.image.setScale(this.destroyed ? 1 : this.scale);
+        this.image.scale.set(this.destroyed ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (!this.isNew) {
-                this.scene.playSound(`${definition.material}_destroyed`);
+                // this.scene.playSound(`${definition.material}_destroyed`);
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setTexture("main", `${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
+                    this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
                 }
-                this.container.setRotation(this.rotation).setScale(this.scale).setDepth(0);
-                this.emitter.explode(10);
+                this.container.rotation = this.rotation;
+                this.container.scale.set(this.scale);
+                // this.emitter.explode(10);
             }
-        }*/
+        }
+        this.container.zIndex = this.destroyed ? 0 : definition.depth ?? 0;
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
@@ -129,7 +132,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             } else {
                 offsetX = offsetY = 0;
             }
-            // this.image.setPosition(this.image.x + offsetX, this.image.y + offsetY);
+            this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
 
             let orientation = stream.readBits(2) as Orientation;
 
@@ -149,17 +152,18 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         if (hasVariations) this.variation = stream.readVariation();
 
         if (this.destroyed && definition.noResidue) {
-            // this.image.setVisible(false);
+            this.image.setVisible(false);
         } else {
             let texture = definition.frames?.base ?? `${definition.idString}`;
             if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
             else if (hasVariations) texture += `_${this.variation + 1}`;
             // Update the obstacle image
-            // this.image.setFrame(`${texture}.svg`);
+            this.image.setFrame(`${texture}.svg`);
         }
 
-        // this.container.setRotation(this.rotation)
-        // .setDepth(this.destroyed ? 0 : definition.depth ?? 0);
+        this.container.rotation = this.rotation;
+
+        this.container.zIndex = this.destroyed ? 0 : definition.depth ?? 0;
 
         // If there are multiple particle variations, generate a list of variation image names
         const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
@@ -188,7 +192,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     destroy(): void {
         super.destroy();
-        // this.image.destroy(true);
+        this.image.destroy();
         // this.emitter.destroy(true);
     }
 }

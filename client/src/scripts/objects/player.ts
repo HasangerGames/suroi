@@ -1,4 +1,4 @@
-import gsap from "gsap";
+import gsap, { Cubic } from "gsap";
 
 import type { Game } from "../game";
 import type { GameScene } from "../scenes/gameScene";
@@ -8,8 +8,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import { GameObject } from "../types/gameObject";
 
 import {
-    ANIMATION_TYPE_BITS,
-    type AnimationType,
+    ANIMATION_TYPE_BITS, AnimationType,
     GasState,
     ObjectCategory,
     PLAYER_RADIUS
@@ -18,7 +17,7 @@ import {
 import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
-import { distanceSquared } from "../../../../common/src/utils/math";
+import { degreesToRadians, distanceSquared } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
 
@@ -34,6 +33,8 @@ import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
+import { SuroiSprite } from "../utils/pixi";
+import { Container } from "pixi.js";
 
 const showMeleeDebugCircle = false;
 
@@ -52,25 +53,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     animationSeq!: boolean;
 
-    // readonly images: {
-    //     readonly vest: Phaser.GameObjects.Image
-    //     readonly body: Phaser.GameObjects.Image
-    //     readonly leftFist: Phaser.GameObjects.Image
-    //     readonly rightFist: Phaser.GameObjects.Image
-    //     readonly backpack: Phaser.GameObjects.Image
-    //     readonly helmet: Phaser.GameObjects.Image
-    //     readonly weapon: Phaser.GameObjects.Image
-    //     readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
-    //     readonly emoteBackground: Phaser.GameObjects.Image
-    //     readonly emoteImage: Phaser.GameObjects.Image
-    // };
-    //
-    // readonly emoteContainer: Phaser.GameObjects.Container;
-    // _emoteTween?: Phaser.Tweens.Tween;
-    //
-    // leftFistAnim!: Phaser.Tweens.Tween;
-    // rightFistAnim!: Phaser.Tweens.Tween;
-    // weaponAnim!: Phaser.Tweens.Tween;
+    readonly images: {
+        readonly vest: SuroiSprite
+        readonly body: SuroiSprite
+        readonly leftFist: SuroiSprite
+        readonly rightFist: SuroiSprite
+        readonly backpack: SuroiSprite
+        readonly helmet: SuroiSprite
+        readonly weapon: SuroiSprite
+        // readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
+        readonly emoteBackground: SuroiSprite
+        readonly emoteImage: SuroiSprite
+    };
+
+    readonly emoteContainer: Container;
+
+    emoteAnim?: gsap.core.Tween;
+
+    leftFistAnim?: gsap.core.Tween;
+    rightFistAnim?: gsap.core.Tween;
+    weaponAnim?: gsap.core.Tween;
 
     _emoteHideTimeoutID?: NodeJS.Timeout;
 
@@ -86,45 +88,49 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     floorType = FloorType.Grass;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Player>, id: number, isActivePlayer = false) {
-        super(game, type, id);
+    constructor(game: Game, id: number, isActivePlayer = false) {
+        super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
         this.isActivePlayer = isActivePlayer;
 
-        // this.images = {
-        //     vest: this.scene.add.image(0, 0, "main").setVisible(false),
-        //     body: this.scene.add.image(0, 0, "main"),
-        //     leftFist: this.scene.add.image(0, 0, "main"),
-        //     rightFist: this.scene.add.image(0, 0, "main"),
-        //     backpack: this.scene.add.image(0, 0, "main").setPosition(-55, 0).setVisible(false),
-        //     helmet: this.scene.add.image(0, 0, "main").setPosition(-5, 0).setVisible(false),
-        //     weapon: this.scene.add.image(0, 0, "main"),
-        //     emoteBackground: this.scene.add.image(0, 0, "main", "emote_background.svg"),
-        //     emoteImage: this.scene.add.image(0, 0, "main"),
-        //     bloodEmitter: this.scene.add.particles(0, 0, "main", {
-        //         frame: "blood_particle.svg",
-        //         quantity: 1,
-        //         lifespan: 1000,
-        //         speed: { min: 20, max: 30 },
-        //         scale: { start: 0.75, end: 1 },
-        //         alpha: { start: 1, end: 0 },
-        //         emitting: false
-        //     })
-        // };
-        // this.container.add([
-        //     this.images.vest,
-        //     this.images.body,
-        //     this.images.leftFist,
-        //     this.images.rightFist,
-        //     this.images.weapon,
-        //     this.images.backpack,
-        //     this.images.helmet,
-        //     this.images.bloodEmitter
-        // ]).setDepth(3);
-        // this.emoteContainer = this.scene.add.container(0, 0, [this.images.emoteBackground, this.images.emoteImage])
-        //     .setDepth(10)
-        //     .setScale(0)
-        //     .setAlpha(0)
-        //     .setVisible(false);
+        this.images = {
+            vest: new SuroiSprite().setVisible(false),
+            body: new SuroiSprite("leia_base.svg"),
+            leftFist: new SuroiSprite(),
+            rightFist: new SuroiSprite(),
+            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false),
+            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false),
+            weapon: new SuroiSprite(),
+            emoteBackground: new SuroiSprite("emote_background.svg"),
+            emoteImage: new SuroiSprite()
+            /*bloodEmitter: this.scene.add.particles(0, 0, "main", {
+                frame: "blood_particle.svg",
+                quantity: 1,
+                lifespan: 1000,
+                speed: { min: 20, max: 30 },
+                scale: { start: 0.75, end: 1 },
+                alpha: { start: 1, end: 0 },
+                emitting: false
+            })*/
+        };
+
+        this.container.addChild(
+            this.images.vest,
+            this.images.body,
+            this.images.leftFist,
+            this.images.rightFist,
+            this.images.weapon,
+            this.images.backpack,
+            this.images.helmet
+            // this.images.bloodEmitter
+        );
+
+        this.container.zIndex = 3;
+
+        this.emoteContainer = new Container();
+        this.game.pixi.stage.addChild(this.emoteContainer);
+        this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
+        this.emoteContainer.visible = true;
+        this.emoteContainer.zIndex = 10;
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -141,12 +147,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.scene.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
+                // this.scene.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
                 this.distSinceLastFootstep = 0;
             }
         }
 
         this.rotation = stream.readRotation(16);
+
+        if (this.isActivePlayer) {
+            const pixi = this.game.pixi;
+
+            gsap.to(pixi.stage, {
+                x: -(this.position.x * 20) + pixi.screen.width / 2,
+                y: -(this.position.y * 20) + pixi.screen.height / 2,
+                ease: "none",
+                duration: 0.03
+            });
+        }
 
         /*const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
@@ -171,17 +188,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        if (!localStorageInstance.config.movementSmoothing) {
-            this.emoteContainer.setPosition(this.position.x * 20, (this.position.y * 20) - 175);
-        } else {
-            this.scene.tweens.add({
-                targets: this.emoteContainer,
-                x: this.position.x * 20,
-                y: (this.position.y * 20) - 175,
-                duration: 30
-            });
-        }
-
         if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) {
             if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
                 this.container.setRotation(this.rotation);
@@ -194,97 +200,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
+        if (!localStorageInstance.config.movementSmoothing) {
+            this.emoteContainer.position.set(this.position.x * 20, (this.position.y * 20) - 175);
+        } else {
+            gsap.to(this.emoteContainer, {
+                x: this.position.x * 20,
+                y: (this.position.y * 20) - 175,
+                duration: 30
+            });
+        }
+
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
         const animationSeq = stream.readBoolean();
-
-        /*if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
-            switch (animation) {
-                case AnimationType.Melee: {
-                    this.updateFistsPosition(false);
-                    const weaponDef = this.activeItem.definition as MeleeDefinition;
-                    if (weaponDef.fists.useLeft === undefined) break;
-
-                    let altFist = Math.random() < 0.5;
-                    if (!weaponDef.fists.randomFist) altFist = true;
-
-                    if (!weaponDef.fists.randomFist || !altFist) {
-                        this.leftFistAnim = this.scene.tweens.add({
-                            targets: this.images.leftFist,
-                            x: weaponDef.fists.useLeft.x,
-                            y: weaponDef.fists.useLeft.y,
-                            duration: weaponDef.fists.animationDuration,
-                            yoyo: true,
-                            ease: Phaser.Math.Easing.Cubic.Out
-                        });
-                    }
-                    if (altFist) {
-                        this.rightFistAnim = this.scene.tweens.add({
-                            targets: this.images.rightFist,
-                            x: weaponDef.fists.useRight.x,
-                            y: weaponDef.fists.useRight.y,
-                            duration: weaponDef.fists.animationDuration,
-                            yoyo: true,
-                            ease: Phaser.Math.Easing.Cubic.Out
-                        });
-                    }
-                    if (weaponDef.image !== undefined) {
-                        this.weaponAnim = this.scene.tweens.add({
-                            targets: this.images.weapon,
-                            x: weaponDef.image.usePosition.x,
-                            y: weaponDef.image.usePosition.y,
-                            duration: weaponDef.fists.animationDuration,
-                            angle: weaponDef.image.useAngle,
-                            yoyo: true,
-                            ease: Phaser.Math.Easing.Cubic.Out
-                        });
-                    }
-
-                    if (showMeleeDebugCircle) {
-                        const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
-                        this.container.add(meleeDebugCircle);
-                        setTimeout(() => this.container.remove(meleeDebugCircle, true), 500);
-                    }
-
-                    this.scene.playSound("swing");
-                    break;
-                }
-                case AnimationType.Gun: {
-                    const weaponDef = this.activeItem.definition as GunDefinition;
-                    this.scene.playSound(`${weaponDef.idString}_fire`);
-
-                    if (weaponDef.itemType === ItemType.Gun) {
-                        this.updateFistsPosition(false);
-                        const recoilAmount = 20 * (1 - weaponDef.recoilMultiplier);
-                        this.weaponAnim = this.scene.tweens.add({
-                            targets: this.images.weapon,
-                            x: weaponDef.image.position.x - recoilAmount,
-                            duration: 50,
-                            yoyo: true
-                        });
-
-                        this.leftFistAnim = this.scene.tweens.add({
-                            targets: this.images.leftFist,
-                            x: weaponDef.fists.left.x - recoilAmount,
-                            duration: 50,
-                            yoyo: true
-                        });
-
-                        this.rightFistAnim = this.scene.tweens.add({
-                            targets: this.images.rightFist,
-                            x: weaponDef.fists.right.x - recoilAmount,
-                            duration: 50,
-                            yoyo: true
-                        });
-                    }
-                    break;
-                }
-                case AnimationType.GunClick: {
-                    this.scene.playSound("gun_click");
-                    break;
-                }
-            }
-        }*/
+        if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
+            this.playAnimation(animation);
+        }
         this.animationSeq = animationSeq;
 
         // Hit effect
@@ -295,15 +226,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
-        this.container.setAlpha(stream.readBoolean() ? 0.5 : 1); // Invulnerability
+        this.container.alpha = stream.readBoolean() ? 0.5 : 1; // Invulnerability
 
         this.oldItem = this.activeItem.idNumber;
         this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
 
         const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot).idString;
-        // this.images.body.setTexture("main", `${skinID}_base.svg`);
-        // this.images.leftFist.setTexture("main", `${skinID}_fist.svg`);
-        // this.images.rightFist.setTexture("main", `${skinID}_fist.svg`);
+        this.images.body.setFrame(`${skinID}_base.svg`);
+        this.images.leftFist.setFrame(`${skinID}_fist.svg`);
+        this.images.rightFist.setFrame(`${skinID}_fist.svg`);
 
         if (this.isActivePlayer && !UI_DEBUG_MODE) {
             $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
@@ -320,40 +251,38 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateFistsPosition(anim: boolean): void {
-        /*this.leftFistAnim?.destroy();
-        this.rightFistAnim?.destroy();
-        this.weaponAnim?.destroy();
+        this.leftFistAnim?.kill();
+        this.rightFistAnim?.kill();
+        this.weaponAnim?.kill();
 
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
         if (anim) {
-            this.leftFistAnim = this.scene.tweens.add({
-                targets: this.images.leftFist,
+            this.leftFistAnim = gsap.to(this.images.leftFist, {
                 x: fists.left.x,
                 y: fists.left.y,
-                duration: fists.animationDuration,
-                ease: "Linear"
+                duration: fists.animationDuration / 1000,
+                ease: "None"
             });
-            this.rightFistAnim = this.scene.tweens.add({
-                targets: this.images.rightFist,
+            this.rightFistAnim = gsap.to(this.images.rightFist, {
                 x: fists.right.x,
                 y: fists.right.y,
-                duration: fists.animationDuration,
-                ease: "Linear"
+                duration: fists.animationDuration / 1000,
+                ease: "None"
             });
         } else {
-            this.images.leftFist.setPosition(fists.left.x, fists.left.y);
-            this.images.rightFist.setPosition(fists.right.x, fists.right.y);
+            this.images.leftFist.setPos(fists.left.x, fists.left.y);
+            this.images.rightFist.setPos(fists.right.x, fists.right.y);
         }
 
         if (weaponDef.image) {
-            this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
-        }*/
+        }
     }
 
     updateWeapon(): void {
-        /*const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
@@ -361,31 +290,30 @@ export class Player extends GameObject<ObjectCategory.Player> {
             } else if (weaponDef.itemType === ItemType.Gun) {
                 this.images.weapon.setFrame(`${weaponDef.idString}_world.svg`);
             }
-            this.images.weapon.setPosition(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
 
             if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
-                this.scene.playSound(`${this.activeItem.idString}_switch`);
+                // this.scene.playSound(`${this.activeItem.idString}_switch`);
             }
         }
+
         if (weaponDef.itemType === ItemType.Gun) {
-            this.container.bringToTop(this.images.weapon);
-            this.container.bringToTop(this.images.body);
-            this.container.bringToTop(this.images.backpack);
-            this.container.bringToTop(this.images.helmet);
+            this.container.setChildIndex(this.images.leftFist, 2);
+            this.container.setChildIndex(this.images.rightFist, 3);
+            this.container.setChildIndex(this.images.weapon, 4);
+            this.container.setChildIndex(this.images.body, 5);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.container.sendToBack(this.images.helmet);
-            this.container.sendToBack(this.images.backpack);
-            this.container.sendToBack(this.images.body);
-            this.container.sendToBack(this.images.vest);
-            this.container.sendToBack(this.images.weapon);
+            this.container.setChildIndex(this.images.weapon, 2);
+            this.container.setChildIndex(this.images.body, 3);
+            this.container.setChildIndex(this.images.leftFist, 4);
+            this.container.setChildIndex(this.images.rightFist, 5);
         }
-        this.container.bringToTop(this.images.bloodEmitter);
         gsap.to([this.images.emoteBackground, this.images.emoteImage], {
             alpha: 1,
             scale: 1,
             duration: 500
-        });*/
+        });
     }
 
     updateEquipment(): void {
@@ -402,12 +330,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     updateEquipmentWorldImage(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
         const level = this[`${equipmentType}Level`];
-        /*const image = this.images[equipmentType];
+        const image = this.images[equipmentType];
         if (level > 0) {
-            image.setTexture("main", `${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
+            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
         } else {
             image.setVisible(false);
-        }*/
+        }
     }
 
     updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
@@ -428,42 +356,132 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
-        /*this._emoteTween?.destroy();
+        this.emoteAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        this.scene.playSound("emote");
-        this.images.emoteImage.setTexture("main", `${type.idString}.svg`);
-        this.emoteContainer.setVisible(true).setScale(0).setAlpha(0);
-        this._emoteTween = this.scene.tweens.add({
-            targets: this.emoteContainer,
-            scale: 1,
+        // this.scene.playSound("emote");
+        this.images.emoteImage.setFrame(`${type.idString}.svg`);
+
+        this.emoteContainer.visible = true;
+        this.emoteContainer.scale.set(1);
+        this.emoteContainer.alpha = 0;
+
+        this.emoteAnim = gsap.to(this.emoteContainer, {
             alpha: 1,
             ease: "Back.out",
-            duration: 250
+            duration: 0.25,
+            onUpdate: () => {
+                this.emoteContainer.scale.set(this.emoteContainer.alpha);
+            }
         });
+
         this._emoteHideTimeoutID = setTimeout(() => {
-            this.scene.tweens.add({
-                targets: this.emoteContainer,
-                scale: 0,
+            gsap.to(this.emoteContainer, {
                 alpha: 0,
-                duration: 200,
-                onComplete: () => this.emoteContainer.setVisible(false)
+                duration: 0.2,
+                onUpdate: () => {
+                    this.emoteContainer.scale.set(this.emoteContainer.alpha);
+                },
+                onComplete: () => { this.emoteContainer.visible = false; }
             });
-        }, 4000);*/
+        }, 4000);
+    }
+
+    playAnimation(anim: AnimationType) {
+        switch (anim) {
+            case AnimationType.Melee: {
+                this.updateFistsPosition(false);
+                const weaponDef = this.activeItem.definition as MeleeDefinition;
+                if (weaponDef.fists.useLeft === undefined) break;
+
+                let altFist = Math.random() < 0.5;
+                if (!weaponDef.fists.randomFist) altFist = true;
+
+                const duration = weaponDef.fists.animationDuration / 1000;
+
+                if (!weaponDef.fists.randomFist || !altFist) {
+                    this.leftFistAnim = gsap.to(this.images.leftFist, {
+                        x: weaponDef.fists.useLeft.x,
+                        y: weaponDef.fists.useLeft.y,
+                        duration,
+                        yoyo: true,
+                        repeat: 1,
+                        ease: Cubic.easeOut
+                    });
+                }
+                if (altFist) {
+                    this.rightFistAnim = gsap.to(this.images.rightFist, {
+                        x: weaponDef.fists.useRight.x,
+                        y: weaponDef.fists.useRight.y,
+                        duration,
+                        yoyo: true,
+                        repeat: 1,
+                        ease: Cubic.easeOut
+                    });
+                }
+
+                if (weaponDef.image !== undefined) {
+                    this.weaponAnim = gsap.to(this.images.weapon, {
+                        x: weaponDef.image.usePosition.x,
+                        y: weaponDef.image.usePosition.y,
+                        duration,
+                        angle: weaponDef.image.useAngle,
+                        yoyo: true,
+                        repeat: 1,
+                        ease: Cubic.easeOut
+                    });
+                }
+
+                /*if (showMeleeDebugCircle) {
+                    const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
+                    this.container.add(meleeDebugCircle);
+                    setTimeout(() => this.container.remove(meleeDebugCircle, true), 500);
+                }
+
+                this.scene.playSound("swing");*/
+                break;
+            }
+            case AnimationType.Gun: {
+                const weaponDef = this.activeItem.definition as GunDefinition;
+                // this.scene.playSound(`${weaponDef.idString}_fire`);
+
+                if (weaponDef.itemType === ItemType.Gun) {
+                    this.updateFistsPosition(false);
+                    const recoilAmount = 20 * (1 - weaponDef.recoilMultiplier);
+                    this.weaponAnim = gsap.to(this.images.weapon, {
+                        x: weaponDef.image.position.x - recoilAmount,
+                        duration: 0.05,
+                        yoyo: true,
+                        repeat: 1
+                    });
+
+                    this.leftFistAnim = gsap.to(this.images.leftFist, {
+                        x: weaponDef.fists.left.x - recoilAmount,
+                        duration: 0.05,
+                        yoyo: true,
+                        repeat: 1
+                    });
+
+                    this.rightFistAnim = gsap.to(this.images.rightFist, {
+                        x: weaponDef.fists.right.x - recoilAmount,
+                        duration: 0.05,
+                        yoyo: true,
+                        repeat: 1
+                    });
+                }
+                break;
+            }
+            case AnimationType.GunClick: {
+                // this.scene.playSound("gun_click");
+                break;
+            }
+        }
     }
 
     destroy(): void {
-        /*if (this.isActivePlayer) {
-            this.container.setVisible(false);
-        } else {
-            super.destroy();
-            this.images.body.destroy(true);
-            this.images.leftFist.destroy(true);
-            this.images.rightFist.destroy(true);
-            this.images.weapon.destroy(true);
-            this.images.bloodEmitter.destroy(true);
-            this.emoteContainer.destroy(true);
-            this.images.emoteBackground.destroy(true);
-            this.images.emoteImage.destroy(true);
-        }*/
+        super.destroy();
+
+        this.leftFistAnim?.kill();
+        this.rightFistAnim?.kill();
+        this.weaponAnim?.kill();
     }
 }
