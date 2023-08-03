@@ -5,17 +5,20 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type Vector, vAdd, v } from "../../../../common/src/utils/vector";
+import { SuroiSprite } from "../utils/pixi";
+import { angleBetween } from "../../../../common/src/utils/math";
+import { gsap } from "gsap";
 
 export class Bullet {
     game: Game;
-    // image: Phaser.GameObjects.Image;
+    image: SuroiSprite;
 
     source: ObjectType<ObjectCategory.Loot, GunDefinition>;
 
     initialPosition: Vector;
 
-    // moveTween: Phaser.Tweens.Tween;
-    // scaleTween: Phaser.Tweens.Tween;
+    moveTween: gsap.core.Tween;
+    scaleTween: gsap.core.Tween;
 
     constructor(game: Game, stream: SuroiBitStream) {
         this.game = game;
@@ -28,49 +31,44 @@ export class Bullet {
         const maxDist = ballistics.maxDistance;
         const finalPosition = vAdd(this.initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
 
-        // Spawn bullet
-        // this.image = scene.add.image(
-        //     this.initialPosition.x * 20,
-        //     this.initialPosition.y * 20,
-        //     "main",
-        //     `${this.source.definition.ammoType}_trail.svg`
-        // ).setRotation(Phaser.Math.Angle.BetweenPoints(this.initialPosition, finalPosition))
-        //     .setDepth(3)
-        //     .setOrigin(1, 0.5)
-        //     .setScale(0, ballistics.tracerWidth ?? 1);
-        //
-        // this.moveTween = scene.tweens.add({
-        //     targets: this.image,
-        //     x: finalPosition.x * 20,
-        //     y: finalPosition.y * 20,
-        //     alpha: {
-        //         getStart: () => ballistics.tracerOpacity?.start ?? 1,
-        //         getEnd: () => ballistics.tracerOpacity?.end ?? 0.3
-        //     },
-        //     duration: maxDist / ballistics.speed,
-        //     onComplete: (): void => {
-        //         this.destroy();
-        //     }
-        // });
-        //
-        // this.scaleTween = scene.tweens.add({
-        //     targets: this.image,
-        //     scaleX: ballistics.tracerLength ?? 1,
-        //     duration: ballistics.speed * 500
-        // });
+        this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
+        .setRotation(angleBetween(this.initialPosition, finalPosition)).setDepth(3)
+        .setPos(this.initialPosition.x * 20, this.initialPosition.y * 20);
+
+        this.image.scale.set(0, ballistics.tracerWidth ?? 1);
+
+        this.image.anchor.set(1, 0.5);
+
+        this.image.alpha = ballistics.tracerOpacity?.start ?? 1;
+
+        this.moveTween = gsap.to(this.image, {
+            x: finalPosition.x * 20,
+            y: finalPosition.y * 20,
+            alpha: ballistics.tracerOpacity?.end ?? 0.3,
+            duration: maxDist / ballistics.speed / 1000,
+            onComplete: (): void => {
+                this.destroy();
+            }
+        });
+
+        this.scaleTween = gsap.to(this.image.scale, {
+            x: ballistics.tracerLength ?? 1,
+            duration: ballistics.speed * 500 / 1000
+        });
+
+        this.game.pixi.stage.addChild(this.image);
     }
 
     destroy(): void {
-        // this.moveTween.stop().destroy();
-        // this.scaleTween.stop().destroy();
-        // const ballistics = this.source.definition.ballistics;
-        // this.scene.tweens.add({
-        //     targets: this.image,
-        //     scaleX: 0,
-        //     duration: ballistics.speed * 500 * (ballistics.tracerLength ?? 1),
-        //     onComplete: () => {
-        //         this.image.destroy(true);
-        //     }
-        // });
+        this.moveTween.kill();
+        this.scaleTween.kill();
+        const ballistics = this.source.definition.ballistics;
+        gsap.to(this.image.scale, {
+            x: 0,
+            duration: ballistics.speed * 500 * (ballistics.tracerLength ?? 1) / 1000,
+            onComplete: () => {
+                this.image.destroy();
+            }
+        });
     }
 }
