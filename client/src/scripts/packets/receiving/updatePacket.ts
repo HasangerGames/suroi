@@ -24,6 +24,7 @@ import { type BuildingDefinition } from "../../../../../common/src/definitions/b
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
+import { SoundManager } from "../../main";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -154,7 +155,7 @@ export class UpdatePacket extends ReceivingPacket {
                 case PlayerActions.Reload: {
                     $("#action-container").show();
                     $("#action-name").text("Reloading...");
-                    // scene.playSound(`${player.activeItem.idString}_reload`);
+                    SoundManager.play(`${player.activeItem.idString}_reload`)
                     actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
                     break;
                 }
@@ -163,7 +164,7 @@ export class UpdatePacket extends ReceivingPacket {
                     const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
                     $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
                     actionTime = itemDef.useTime;
-                    // scene.playSound(itemDef.idString);
+                    SoundManager.play(itemDef.idString)
                 }
             }
             if (actionTime > 0) {

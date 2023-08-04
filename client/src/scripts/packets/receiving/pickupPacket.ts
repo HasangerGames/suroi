@@ -4,7 +4,6 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../../common/src/utils/objectDefinitions";
-import {Howl, Howler} from 'howler';
 import { SoundManager } from "../../main";
 
 export class PickupPacket extends ReceivingPacket {
@@ -21,7 +20,7 @@ export class PickupPacket extends ReceivingPacket {
                 break;
         }
 
-        SoundManager.load(`${soundID}`, `/audio/sfx/${soundID}.mp3`)
+        SoundManager.load(`${soundID}`, `audio/sfx/${soundID}.mp3`)
         SoundManager.play(`${soundID}`);
 
         console.log("Object Picked Up")

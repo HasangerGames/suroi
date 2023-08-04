@@ -76,8 +76,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
                 if (!this.isNew) {
-                    // if (offset === 0) this.scene.playSound("door_close");
-                    // else this.scene.playSound("door_open");
+                    if (offset === 0) SoundManager.play("door_close");
+                    else SoundManager.play("door_open");
                     gsap.to(this.image, {
                         rotation: orientationToRotation(offset),
                         duration: 0.2
@@ -102,7 +102,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         if (!this.destroyed && destroyed) {
             this.destroyed = true;
             if (!this.isNew) {
-                // this.scene.playSound(`${definition.material}_destroyed`);
+                SoundManager.play(`${definition.material}_destroyed`);
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
