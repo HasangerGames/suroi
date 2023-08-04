@@ -49,7 +49,7 @@ export class Building extends GameObject {
         this.container.addChild(this.images.floor);
         this.container.zIndex = -1;
 
-        this.game.pixi.stage.addChild(this.images.ceilingContainer);
+        this.game.camera.container.addChild(this.images.ceilingContainer);
         this.images.ceilingContainer.addChild(this.images.ceiling);
         this.images.ceilingContainer.zIndex = 8;
     }

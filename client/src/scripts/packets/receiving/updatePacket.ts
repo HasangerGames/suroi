@@ -134,7 +134,7 @@ export class UpdatePacket extends ReceivingPacket {
         // Zoom
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
-            // scene.resize(true);
+            game.camera.setZoom(playerManager.zoom);
         }
 
         // Action

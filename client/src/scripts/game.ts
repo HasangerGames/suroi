@@ -35,6 +35,7 @@ import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
 import { Container, type Application } from "pixi.js";
+import { Camera } from "./utils/camera";
 
 export class Game {
     socket!: WebSocket;
@@ -66,8 +67,22 @@ export class Game {
 
     pixi: Application;
 
+    camera: Camera;
+
     constructor(pixi: Application) {
         this.pixi = pixi;
+
+        this.pixi.ticker.add((delta: number) => {
+            for (const bulletId of this.bullets) {
+                const bullet = bulletId[1];
+
+                bullet.update(delta);
+            }
+        });
+
+        this.camera = new Camera(this.pixi);
+
+        window.addEventListener("resize", this.resize.bind(this));
     }
 
     connect(address: string): void {
@@ -80,10 +95,6 @@ export class Game {
         this.spectating = false;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
-
-        this.pixi.stage.destroy();
-        this.pixi.stage = new Container();
-        this.pixi.stage.sortableChildren = true;
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
@@ -181,6 +192,7 @@ export class Game {
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
+        this.camera.container.removeChildren();
 
         this.playerManager = new PlayerManager(this);
     }
@@ -202,6 +214,10 @@ export class Game {
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
+    }
+
+    resize(): void {
+        this.camera.resize();
     }
 
     tick = (() => {

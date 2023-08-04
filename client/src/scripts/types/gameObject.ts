@@ -54,7 +54,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
         this.container = new Container();
 
-        this.game.pixi.stage.addChild(this.container);
+        this.game.camera.container.addChild(this.container);
     }
 
     destroy(): void {

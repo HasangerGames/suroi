@@ -19,7 +19,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(async () => {
+$(async() => {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -81,7 +81,9 @@ $(async () => {
     const app = new Application({
         resizeTo: window,
         background: GRASS_COLOR,
-        antialias: true
+        antialias: true,
+        autoDensity: true,
+        resolution: window.devicePixelRatio || 1
     });
 
     core.pixi = app;

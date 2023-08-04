@@ -12,7 +12,7 @@ import {
     PLAYER_RADIUS
 } from "../../../../common/src/constants";
 
-import { vClone, type Vector } from "../../../../common/src/utils/vector";
+import { v, vClone, vMul, type Vector, vAdd } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { degreesToRadians, distanceSquared } from "../../../../common/src/utils/math";
@@ -153,14 +153,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.rotation = stream.readRotation(16);
 
         if (this.isActivePlayer) {
-            const pixi = this.game.pixi;
-
-            gsap.to(pixi.stage, {
-                x: -(this.position.x * 20) + pixi.screen.width / 2,
-                y: -(this.position.y * 20) + pixi.screen.height / 2,
-                ease: "none",
-                duration: 0.03
-            });
+            this.game.camera.setPosition(this.position);
         }
 
         /*const oldAngle = this.container.angle;
