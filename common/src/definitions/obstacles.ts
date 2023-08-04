@@ -115,10 +115,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 180,
             scale: {
                 spawnMin: 0.9,
-                spawnMax: 1.1,
+                spawnMax: 1,
                 destroy: 0.75
             },
-            hitbox: new CircleHitbox(3),
+            hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
             variations: 3,
@@ -146,10 +146,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 240,
             scale: {
                 spawnMin: 0.9,
-                spawnMax: 1.1,
+                spawnMax: 1,
                 destroy: 0.75
             },
-            hitbox: new CircleHitbox(3),
+            hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: "full",
             depth: 5
