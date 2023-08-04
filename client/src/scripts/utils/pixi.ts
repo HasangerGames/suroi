@@ -17,15 +17,21 @@ export async function loadAtlases() {
         await spriteSheet.parse();
 
         for (const frame in spriteSheet.textures) {
+            if (textures[frame]) console.warn(`Duplicated atlas frame key: ${frame}`);
+
             textures[frame] = spriteSheet.textures[frame];
         }
     }
 }
 
 export class SuroiSprite extends Sprite {
-    constructor(key?: string) {
+    constructor(frame?: string) {
         let texture: Texture | undefined;
-        if (key) texture = textures[key];
+
+        if (frame) {
+            if (!textures[frame]) frame = "_missing_texture.svg";
+            texture = textures[frame];
+        }
         super(texture);
 
         this.anchor.set(0.5);
@@ -33,6 +39,7 @@ export class SuroiSprite extends Sprite {
     }
 
     setFrame(frame: string): SuroiSprite {
+        if (!textures[frame]) frame = "_missing_texture.svg";
         this.texture = textures[frame];
         return this;
     }
