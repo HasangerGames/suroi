@@ -164,8 +164,8 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "falling_leaves",
-        name: "Falling Leaves",
+        idString: "mango",
+        name: "Mango",
         itemType: ItemType.Skin
     },
     {
