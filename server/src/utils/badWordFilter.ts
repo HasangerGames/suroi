@@ -4,6 +4,7 @@ const badWords: string[] = [
     "n1gg3r",
     "n!gger",
     "n!gg3r",
+    "ni99er",
 
     "nigga",
     "n1gga",
