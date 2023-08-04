@@ -12,6 +12,8 @@ import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
+import { randomBoolean } from "../../../../common/src/utils/random";
+import { Howl } from "howler";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -64,6 +66,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const hitEffect = stream.readBits(3);
 
         if (this.hitEffect !== hitEffect && !this.isNew && !destroyed) {
+            var sound = new Howl({
+              src: [`/audio/sfx/hits/${definition.material}_hit_${randomBoolean() ? "1" : "2"}.mp3`]
+            });
+
+           sound.play();
             // this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
 
             // if (!definition.indestructible) this.emitter.emitParticle(1);
