@@ -20,7 +20,7 @@ export class PickupPacket extends ReceivingPacket {
                 break;
         }
 
-        SoundManager.load(`${soundID}`, `audio/sfx/${soundID}.mp3`)
+        SoundManager.load(`${soundID}`, `audio/sfx/${soundID}.mp3`);
         SoundManager.play(`${soundID}`);
 
         console.log("Object Picked Up")

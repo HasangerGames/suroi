@@ -155,7 +155,7 @@ export class UpdatePacket extends ReceivingPacket {
                 case PlayerActions.Reload: {
                     $("#action-container").show();
                     $("#action-name").text("Reloading...");
-                    SoundManager.play(`${player.activeItem.idString}_reload`)
+                    SoundManager.play(`${player.activeItem.idString}_reload`);
                     actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
                     break;
                 }
@@ -164,7 +164,7 @@ export class UpdatePacket extends ReceivingPacket {
                     const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
                     $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
                     actionTime = itemDef.useTime;
-                    SoundManager.play(itemDef.idString)
+                    SoundManager.play(itemDef.idString);
                 }
             }
             if (actionTime > 0) {

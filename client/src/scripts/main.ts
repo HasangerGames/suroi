@@ -13,7 +13,7 @@ import loadSounds, { SoundManagerClass } from "./utils/howler";
 import { Materials } from "../../../common/src/definitions/obstacles";
 import { FloorType } from "../../../common/src/definitions/buildings";
 
-export let SoundManager =  new SoundManagerClass();
+export const SoundManager = new SoundManagerClass();
 loadSounds(SoundManager);
 
 declare const API_URL: string;
