@@ -4,7 +4,6 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { enablePlayButton } from "../../main";
 import core from "../../core";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { Howl } from "howler";
 
 export class JoinedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -16,12 +15,7 @@ export class JoinedPacket extends ReceivingPacket {
             }
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
-            var sound = new Howl({
-             src: ['/audio/sfx/pickup.mp3']
-        });
-
-        sound.play();
-        console.log("Joined")
+            console.log("Joined")
 
         }
     }

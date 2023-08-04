@@ -9,6 +9,16 @@ import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
 import { GRASS_COLOR } from "./utils/constants";
 
+import { SoundManagerClass } from "./utils/howler";
+import { Materials } from "../../../common/src/definitions/obstacles";
+export let SoundManager =  new SoundManagerClass();
+
+for (const material of Materials) {
+            SoundManager.load(`${material}_hit_1`, `audio/sfx/hits/${material}_hit_1`);
+            SoundManager.load(`${material}_hit_2`, `audio/sfx/hits/${material}_hit_2`);
+            SoundManager.load(`${material}_destroyed`, `audio/sfx/hits/${material}_destroyed`);
+}
+
 declare const API_URL: string;
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
