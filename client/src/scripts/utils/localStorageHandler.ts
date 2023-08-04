@@ -117,7 +117,7 @@ export const defaultConfig: Config = {
     showFPS: false,
     showPing: false,
     clientSidePrediction: true,
-    textKillFeed: false,
+    textKillFeed: true,
     rotationSmoothing: true,
     movementSmoothing: true,
     mobileControls: true,

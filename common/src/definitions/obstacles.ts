@@ -290,6 +290,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -304,6 +305,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -335,6 +337,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 1000,
             indestructible: true,
             noMeleeCollision: true,
+            hideOnMap: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,

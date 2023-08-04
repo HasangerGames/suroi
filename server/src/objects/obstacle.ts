@@ -20,9 +20,8 @@ import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectD
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { Player } from "./player";
 import { type Building } from "./building";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type GunItem } from "../inventory/gunItem";
-import { type MeleeItem } from "../inventory/meleeItem";
+import { MeleeItem } from "../inventory/meleeItem";
 
 export class Obstacle extends GameObject {
     override readonly is: CollisionFilter = {
@@ -270,10 +269,7 @@ export class Obstacle extends GameObject {
             }
 
             // Punch doors to open
-            if (this.isDoor &&
-                source instanceof Player &&
-                weaponUsed?.category === ObjectCategory.Loot &&
-                (weaponUsed.definition as LootDefinition).itemType === ItemType.Melee) this.interact(source);
+            if (this.isDoor && source instanceof Player && weaponUsed instanceof MeleeItem) this.interact(source);
         }
     }
 

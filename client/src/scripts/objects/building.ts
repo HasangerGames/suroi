@@ -35,9 +35,9 @@ export class Building extends GameObject {
 
         const definition = type.definition;
         this.images = {
-            floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "main", `${type.idString}_floor.svg`),
+            floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "buildings", `${type.idString}_floor.svg`),
             ceilingContainer: scene.add.container(),
-            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "main", `${type.idString}_ceiling.svg`),
+            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "buildings", `${type.idString}_ceiling.svg`),
             emitter: scene.add.particles(0, 0, "main").setDepth(8)
         };
 
