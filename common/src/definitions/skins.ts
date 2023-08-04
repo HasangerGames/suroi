@@ -159,6 +159,36 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "cold_defender",
+        name: "Cold Defender",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "falling_leaves",
+        name: "Falling Leaves",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "shapes",
+        name: "Shapes",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "sunset",
+        name: "Sunset",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "torn",
+        name: "Torn",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "hazmat",
+        name: "Hazmat",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "verified",
         name: "Verified",
         itemType: ItemType.Skin,
