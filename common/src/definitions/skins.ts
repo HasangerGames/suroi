@@ -184,11 +184,6 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
-        idString: "hazmat",
-        name: "Hazmat",
-        itemType: ItemType.Skin
-    },
-    {
         idString: "verified",
         name: "Verified",
         itemType: ItemType.Skin,
