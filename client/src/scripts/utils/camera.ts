@@ -1,14 +1,13 @@
-import { Application, Container } from "pixi.js";
-import { Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Application, Container } from "pixi.js";
+import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
 import { gsap } from "gsap";
 import { localStorageInstance } from "./localStorageHandler";
 
 export class Camera {
-
     pixi: Application;
     container: Container;
 
-    zoom = 1;
+    zoom = 48;
 
     position = v(0, 0);
 
@@ -20,6 +19,8 @@ export class Camera {
         this.container = new Container();
         this.container.sortableChildren = true;
         pixi.stage.addChild(this.container);
+
+        this.resize();
     }
 
     resize(animation = false): void {
@@ -35,8 +36,8 @@ export class Camera {
                 x: scale,
                 y: scale,
                 duration: 0.8,
-                onUpdate: () => this.updatePosition()
-            })
+                onUpdate: () => { this.updatePosition(); }
+            });
         } else {
             this.container.scale.set(scale);
             this.updatePosition();
@@ -51,7 +52,7 @@ export class Camera {
     updatePosition(anim = false) {
         const cameraPos = vAdd(
             vMul(vMul(this.position, 20), this.container.scale.x),
-                               v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
+            v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
 
         this.positionTween?.kill();
         if (anim && localStorageInstance.config.movementSmoothing) {
@@ -63,7 +64,6 @@ export class Camera {
         } else {
             this.container.position.set(-cameraPos.x, -cameraPos.y);
         }
-
     }
 
     setZoom(zoom: number): void {

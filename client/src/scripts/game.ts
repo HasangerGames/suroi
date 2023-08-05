@@ -72,15 +72,22 @@ export class Game {
     constructor(pixi: Application) {
         this.pixi = pixi;
 
-        this.pixi.ticker.add((delta: number) => {
+        this.pixi.ticker.add(() => {
+            const delta = this.pixi.ticker.deltaMS;
+
             for (const bulletId of this.bullets) {
                 const bullet = bulletId[1];
-
                 bullet.update(delta);
             }
         });
 
         this.camera = new Camera(this.pixi);
+
+        setInterval(() => {
+            if (localStorageInstance.config.showFPS) {
+                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+            }
+        }, 500);
 
         window.addEventListener("resize", this.resize.bind(this));
     }

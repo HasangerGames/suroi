@@ -1,13 +1,11 @@
 import type { Game } from "../game";
 
-import { ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { type Vector, vAdd, v } from "../../../../common/src/utils/vector";
+import { type Vector, vAdd, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
-import { angleBetween } from "../../../../common/src/utils/math";
-import { gsap } from "gsap";
+import { distance } from "../../../../common/src/utils/math";
 
 export class Bullet {
     game: Game;
@@ -16,24 +14,46 @@ export class Bullet {
     source: ObjectType<ObjectCategory.Loot, GunDefinition>;
 
     initialPosition: Vector;
+    position: Vector;
+    finalPosition: Vector;
 
-    moveTween: gsap.core.Tween;
-    scaleTween: gsap.core.Tween;
+    maxLength: number;
 
-    constructor(game: Game, stream: SuroiBitStream) {
+    tracerLength: number;
+
+    speed: Vector;
+
+    id: number;
+
+    dead = false;
+
+    trailTicks = 0;
+
+    constructor(game: Game, id: number, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number) {
         this.game = game;
 
-        this.source = stream.readObjectTypeNoCategory<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot);
+        this.id = id;
+
+        this.source = source;
         const ballistics = this.source.definition.ballistics;
 
-        this.initialPosition = stream.readPosition();
-        const rotation = stream.readRotation(16);
+        this.initialPosition = position;
+
+        this.position = vClone(this.initialPosition);
+
+        this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), ballistics.speed);
+
         const maxDist = ballistics.maxDistance;
-        const finalPosition = vAdd(this.initialPosition, v(maxDist * Math.sin(rotation), -(maxDist * Math.cos(rotation))));
+
+        this.finalPosition = vAdd(this.initialPosition, vMul(this.speed, maxDist));
 
         this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
-        .setRotation(angleBetween(this.initialPosition, finalPosition)).setDepth(3)
-        .setPos(this.initialPosition.x * 20, this.initialPosition.y * 20);
+            .setRotation(rotation - Math.PI / 2).setDepth(3)
+            .setPos(this.initialPosition.x * 20, this.initialPosition.y * 20);
+
+        this.tracerLength = this.source.definition.ballistics.tracerLength ?? 1;
+
+        this.maxLength = this.image.width * (this.tracerLength);
 
         this.image.scale.set(0, ballistics.tracerWidth ?? 1);
 
@@ -41,34 +61,39 @@ export class Bullet {
 
         this.image.alpha = ballistics.tracerOpacity?.start ?? 1;
 
-        this.moveTween = gsap.to(this.image, {
-            x: finalPosition.x * 20,
-            y: finalPosition.y * 20,
-            alpha: ballistics.tracerOpacity?.end ?? 0.3,
-            duration: maxDist / ballistics.speed / 1000,
-            onComplete: (): void => {
-                this.destroy();
-            }
-        });
+        this.game.camera.container.addChild(this.image);
+    }
 
-        this.scaleTween = gsap.to(this.image.scale, {
-            x: ballistics.tracerLength ?? 1,
-            duration: ballistics.speed * 500 / 1000
-        });
+    update(delta: number): void {
+        if (this.dead) this.trailTicks -= delta;
+        else {
+            this.trailTicks += delta;
+            this.position = vAdd(this.position, vMul(this.speed, delta));
+        }
 
-        this.game.pixi.stage.addChild(this.image);
+        const fadeDist = distance(this.initialPosition, vAdd(this.initialPosition, vMul(this.speed, this.trailTicks)));
+
+        const length = Math.min(fadeDist * 20 * this.tracerLength, this.maxLength);
+
+        const scale = length / this.maxLength;
+
+        this.image.scale.x = scale;
+
+        this.image.setPos(this.position.x * 20, this.position.y * 20);
+
+        const dist = distance(this.initialPosition, this.position);
+
+        if (dist > this.source.definition.ballistics.maxDistance) {
+            this.dead = true;
+        }
+
+        if (this.trailTicks <= 0 && this.dead) {
+            this.destroy();
+        }
     }
 
     destroy(): void {
-        this.moveTween.kill();
-        this.scaleTween.kill();
-        const ballistics = this.source.definition.ballistics;
-        gsap.to(this.image.scale, {
-            x: 0,
-            duration: ballistics.speed * 500 * (ballistics.tracerLength ?? 1) / 1000,
-            onComplete: () => {
-                this.image.destroy();
-            }
-        });
+        this.image.destroy();
+        this.game.bullets.delete(this.id);
     }
 }

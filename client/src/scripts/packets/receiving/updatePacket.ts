@@ -291,8 +291,11 @@ export class UpdatePacket extends ReceivingPacket {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 const id = stream.readUint8();
+                const source = stream.readObjectTypeNoCategory<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot);
+                const position = stream.readPosition();
+                const rotation = stream.readRotation(16);
 
-                const bullet = new Bullet(game, stream);
+                const bullet = new Bullet(game, id, source, position, rotation);
 
                 game.bullets.set(id, bullet);
             }
@@ -308,8 +311,7 @@ export class UpdatePacket extends ReceivingPacket {
                     console.warn(`Could not find bullet with ID ${bulletID}`);
                     continue;
                 }
-                bullet.destroy();
-                game.bullets.delete(bulletID);
+                bullet.dead = true;
             }
         }
 
