@@ -15,6 +15,8 @@ export class JoinedPacket extends ReceivingPacket {
             }
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
+            console.log("Joined")
+
         }
     }
 }

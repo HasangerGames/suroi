@@ -33,6 +33,7 @@ import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite } from "../utils/pixi";
 import { Container } from "pixi.js";
+import { SoundManager } from "../main";
 
 const showMeleeDebugCircle = false;
 
@@ -145,7 +146,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                // this.scene.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
+                SoundManager.play(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
                 this.distSinceLastFootstep = 0;
             }
         }
@@ -212,7 +213,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
             // this.images.bloodEmitter.emitParticle(1);
-            // this.scene.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2");
+            SoundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2");
         }
     }
 
@@ -285,7 +286,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setAngle(weaponDef.image.angle);
 
             if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
-                // this.scene.playSound(`${this.activeItem.idString}_switch`);
+                SoundManager.play(`${this.activeItem.idString}_switch`);
             }
         }
 
@@ -349,7 +350,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
         this.emoteAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        // this.scene.playSound("emote");
+        SoundManager.play("emote");
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
@@ -427,13 +428,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     this.container.add(meleeDebugCircle);
                     setTimeout(() => this.container.remove(meleeDebugCircle, true), 500);
                 }
-
-                this.scene.playSound("swing");*/
+                */
+                SoundManager.play("swing");
                 break;
             }
             case AnimationType.Gun: {
                 const weaponDef = this.activeItem.definition as GunDefinition;
-                // this.scene.playSound(`${weaponDef.idString}_fire`);
+                SoundManager.play(`${weaponDef.idString}_fire`);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
@@ -462,7 +463,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.GunClick: {
-                // this.scene.playSound("gun_click");
+                SoundManager.play("gun_click");
                 break;
             }
         }

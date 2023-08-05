@@ -22,6 +22,10 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
+    "@types/howler": "^2.2.7",
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "howler": "^2.2.3"
   }
 }
