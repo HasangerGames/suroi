@@ -238,7 +238,7 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
         },
         {
             idString: "chicken",
-            name: "Chicken"
+            name: "Chicken Dinner"
         }
     ]
 );

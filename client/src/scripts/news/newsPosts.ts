@@ -1,12 +1,5 @@
 /* eslint-disable quotes,@typescript-eslint/quotes */
-export interface NewsPost {
-    date: number
-    author: string
-    title: string
-    bannerImage?: string
-    content: string
-    longContent?: string
-}
+import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
