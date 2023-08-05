@@ -49,7 +49,8 @@ export class Game {
         oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         oldRadius: 2048,
-        newRadius: 2048
+        newRadius: 2048,
+        firstPercentageReceived: false
     };
 
     connect(address: string): void {
@@ -60,6 +61,8 @@ export class Game {
         this.gameStarted = true;
         this.gameOver = false;
         this.spectating = false;
+        this.gas.firstPercentageReceived = false;
+
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
@@ -128,7 +131,7 @@ export class Game {
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            if (this.spectating || !this.gameOver) {
+            if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
