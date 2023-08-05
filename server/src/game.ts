@@ -463,7 +463,7 @@ export class Game {
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        let spawnPosition = Vec2(0, 0);
+        let spawnPosition = v(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
                 let foundPosition = false;

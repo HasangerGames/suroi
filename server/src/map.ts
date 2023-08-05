@@ -46,7 +46,6 @@ export class Map {
         this.createWorldBoundary(this.width / 2, this.height, this.width / 2, 0);
         this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
 
-
         if (mapDefinition === undefined) {
             throw new Error(`Unknown map: ${mapName}`);
         }

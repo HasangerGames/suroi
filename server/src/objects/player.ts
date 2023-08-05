@@ -36,6 +36,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
+import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -277,7 +278,7 @@ export class Player extends GameObject {
 
     isInsideBuilding = false;
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vec2) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
         const userData = socket.getUserData();
@@ -305,7 +306,7 @@ export class Player extends GameObject {
         // Init body
         this.body = game.world.createBody({
             type: "dynamic",
-            position,
+            position: Vec2(position),
             fixedRotation: true
         });
 
