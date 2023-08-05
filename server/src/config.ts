@@ -102,11 +102,11 @@ export const Config = {
 
     spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
 
-    gas: { mode: GasMode.Disabled },
+    gas: { mode: GasMode.Normal },
 
     censorUsernames: true,
 
-    botProtection: true,
+    botProtection: false,
     cloudflare: false,
 
     playerLimit: 80,

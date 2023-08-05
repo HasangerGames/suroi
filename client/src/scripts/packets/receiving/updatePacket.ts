@@ -47,6 +47,7 @@ export class UpdatePacket extends ReceivingPacket {
         const playerManager = game.playerManager;
         const scene = player.scene;
 
+        // Dirty values
         const maxMinStatsDirty = stream.readBoolean();
         const healthDirty = stream.readBoolean();
         const adrenalineDirty = stream.readBoolean();
@@ -63,6 +64,7 @@ export class UpdatePacket extends ReceivingPacket {
         const gasDirty = stream.readBoolean();
         const gasPercentageDirty = stream.readBoolean();
         const aliveCountDirty = stream.readBoolean();
+
         //
         // Active player data
         //
@@ -181,6 +183,14 @@ export class UpdatePacket extends ReceivingPacket {
             const activePlayerID = stream.readObjectID();
             const idChanged = game.activePlayer.id !== activePlayerID;
             if (idChanged) {
+                // Destroy the old object representing the active player
+                const activePlayer = game.objects.get(activePlayerID);
+                if (activePlayer !== undefined) {
+                    activePlayer.destroy();
+                    game.objects.delete(activePlayerID);
+                }
+
+                // Reset the active player
                 game.activePlayer.container.setVisible(true);
                 game.objects.delete(game.activePlayer.id);
                 game.activePlayer.id = activePlayerID;
@@ -219,6 +229,7 @@ export class UpdatePacket extends ReceivingPacket {
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
+                            console.log(`new player created with id ${id}, active player id = ${game.activePlayer.id}`);
                             object = new Player(game, scene, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }
