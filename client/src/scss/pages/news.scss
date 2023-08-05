@@ -3,12 +3,13 @@
 
 body {
     background: $bg;
+    overflow-x: hidden;
 }
 
 #news-page {
     background: #16161680;
-    width: 80%;
-    max-width: 1200px;
+    width: 95%;
+    max-width: 1000px;
     margin: auto auto 50px;
     border-radius: 15px;
 
@@ -20,13 +21,13 @@ body {
     }
 
     article {
-        width: 80%;
+        width: 95%;
         background-color: #08122b80;
         margin: auto;
         margin-top: 20px;
         margin-bottom: 20px;
         padding: 25px;
-        border-radius: 5px;
+        border-radius: 10px;
 
         .news-date {
             color: gray;

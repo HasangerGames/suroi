@@ -1,9 +1,10 @@
 import $ from "jquery";
 
 import "./scss/pages/client.scss";
-import "./scss/pages/rules.scss";
+import "./scss/pages/news.scss";
 
-import "./scripts/rules/ruleGenerator";
+import { rules } from "./scripts/news/rulePosts";
+import { processPost } from "./scripts/news/newsHelper";
 
 $(() => {
     const body = $(document.body);
@@ -35,4 +36,6 @@ $(() => {
     });
 
     body.on("click", () => { dropdown.hide(); });
+
+    $("#news-articles").html(rules.map(processPost).join(""));
 });

@@ -34,6 +34,7 @@ export interface Config {
     // this needs to be updated every time the config changes, because old configs need to be invalidated/ported
     configVersion: string
     playerName: string
+    rulesAcknowledged: boolean
     loadout: {
         skin: string
         topEmote: string
@@ -72,6 +73,7 @@ export interface Config {
 export const defaultConfig: Config = {
     configVersion: "13",
     playerName: "",
+    rulesAcknowledged: false,
     loadout: {
         skin: "forest_camo",
         topEmote: "happy_face",
@@ -117,7 +119,7 @@ export const defaultConfig: Config = {
     showFPS: false,
     showPing: false,
     clientSidePrediction: true,
-    textKillFeed: false,
+    textKillFeed: true,
     rotationSmoothing: true,
     movementSmoothing: true,
     mobileControls: true,

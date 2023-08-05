@@ -123,6 +123,36 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "sunrise",
+        name: "Sunrise",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "sunset",
+        name: "Sunset",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "stratosphere",
+        name: "Stratosphere",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "mango",
+        name: "Mango",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "snow_cone",
+        name: "Snow Cone",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "sunny",
+        name: "Sunny",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "solar_flare",
         name: "Solar Flare",
         itemType: ItemType.Skin
@@ -130,6 +160,16 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "beacon",
         name: "Beacon",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "wave_jumpsuit",
+        name: "Wave Jumpsuit",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "toadstool",
+        name: "Toadstool",
         itemType: ItemType.Skin
     },
     {
@@ -156,6 +196,11 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "zebra",
         name: "Zebra",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "printer",
+        name: "Printer",
         itemType: ItemType.Skin
     },
     {

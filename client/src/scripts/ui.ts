@@ -68,7 +68,7 @@ $((): void => {
     const body = $(document.body);
     const usernameField = $("#username-input");
 
-    const Youtubers = [
+    const youtubers = [
         {
             name: "Summit",
             link: "https://www.youtube.com/@SummitNewsNetwork"
@@ -87,18 +87,18 @@ $((): void => {
         }
     ];
 
-    const youtuber = Youtubers[Math.floor(Math.random() * Youtubers.length)];
-    $("#youtube-feature-name").text(youtuber.name);
+    const youtuber = youtubers[Math.floor(Math.random() * youtubers.length)];
+    $("#youtube-featured-name").text(youtuber.name);
     $("#youtube-featured-content").attr("href", youtuber.link);
 
-    const TwitchStreamers = [
+    const streamers = [
         {
             name: "iMoRTaL_Mafia",
-            link: "https://www.twitch.tv/videos/1854751139"
+            link: "https://www.twitch.tv/imortal_mafia"
         }
     ];
-    const streamer = TwitchStreamers[Math.floor(Math.random() * TwitchStreamers.length)];
 
+    const streamer = streamers[Math.floor(Math.random() * streamers.length)];
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
 
@@ -131,6 +131,19 @@ $((): void => {
         $('option[value="dev"]').show();
         serverSelect.val("dev");
     }
+
+    const rulesBtn = $("#btn-rules");
+
+    // Highlight rules & tutorial button for new players
+    if (!localStorageInstance.config.rulesAcknowledged) {
+        rulesBtn.removeClass("btn-secondary").addClass("highlighted");
+    }
+
+    // Event listener for rules button
+    rulesBtn.on("click", () => {
+        localStorageInstance.update({ rulesAcknowledged: true });
+        location.href = "/rules";
+    });
 
     // todo find a better way to do these two handlers
     $("#btn-dropdown-more").on("click", ev => {

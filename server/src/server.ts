@@ -89,7 +89,7 @@ app.get("/api/getGame", async(res, req) => {
 
     let response: { success: boolean, address?: string, gameID?: number };
 
-    const searchParams = new URLSearchParams(req.getQuery());
+    const searchParams = new URLSearchParams(String(req.getQuery()));
 
     const region = searchParams.get("region") ?? Config.defaultRegion;
 
@@ -105,7 +105,7 @@ app.get("/api/getGame", async(res, req) => {
         if (gameID !== undefined) {
             response = { success: true, address: Config.regions[region], gameID };
         }
-    } else if (Config.regions[region] !== undefined && region !== Config.thisRegion) {
+    } else if (typeof Config.regions[region] === "string" && region !== Config.thisRegion) {
         // Fetch the find game api for the region and return that.
         const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
         try {

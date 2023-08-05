@@ -27,7 +27,7 @@
     "@babel/preset-env": "^7.22.9",
     "@types/intersects": "^2.5.0",
     "@types/jquery": "^3.5.16",
-    "@types/node": "^20.4.5",
+    "@types/node": "^20.4.7",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.4.14",
