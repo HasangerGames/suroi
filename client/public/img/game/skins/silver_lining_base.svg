@@ -5,7 +5,7 @@
    height="90"
    viewBox="0 0 89.999997 89.999998"
    id="svg33"
-   sodipodi:docname="pure_silver_base.svg"
+   sodipodi:docname="silver_lining_base.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -38,7 +38,7 @@
        y2="178.52193"
        gradientUnits="userSpaceOnUse"
        id="color-1"
-       gradientTransform="matrix(1.0148413,0,0,1.0148413,-198.56192,-136.17142)">
+       gradientTransform="matrix(-0.71760117,0.71760116,-0.71760116,-0.71760117,345.33184,0.8832903)">
       <stop
          offset="0"
          stop-color="#aaaaaa"
@@ -102,7 +102,7 @@
      id="path21"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
-     d="M 0,45.00003 C 0,20.147228 20.147207,0 45,0 c 24.852803,0 45,20.147228 45,45.00003 0,24.852803 -20.147167,45 -45,45 -24.852803,0 -45,-20.147207 -45,-45 z"
+     d="m 76.819793,13.1802 c 17.573585,17.573585 17.5736,46.066053 2.1e-5,63.639632 -17.573586,17.573585 -46.066047,17.573564 -63.639632,-2.2e-5 -17.5735855,-17.573585 -17.5736064,-46.066003 0,-63.63961 17.573586,-17.5735854 46.066032,-17.5735783 63.639611,0 z"
      fill="url(#color-1)"
      stroke="none"
      stroke-width="0"

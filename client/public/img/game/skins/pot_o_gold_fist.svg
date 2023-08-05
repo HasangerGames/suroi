@@ -5,7 +5,7 @@
    height="34"
    viewBox="0 0 33.999999 33.999999"
    id="svg33"
-   sodipodi:docname="pure_gold_fist.svg"
+   sodipodi:docname="pot_o_gold_fist.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -20,9 +20,9 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="18.803974"
-     inkscape:cx="7.2325137"
-     inkscape:cy="18.347186"
+     inkscape:zoom="6.6482088"
+     inkscape:cx="-26.32288"
+     inkscape:cy="10.228319"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -55,7 +55,7 @@
        y2="211.03935"
        gradientUnits="userSpaceOnUse"
        id="color-2"
-       gradientTransform="matrix(1.0148381,0,0,1.0148381,-260.56104,-197.17079)">
+       gradientTransform="matrix(0,-1.0148381,1.0148381,0,-197.17079,294.56105)">
       <stop
          offset="0"
          stop-color="#ffe693"
@@ -102,12 +102,12 @@
      id="path21"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
-     d="m 2.0000451,16.999992 c 0,-8.2842859 6.7157118,-14.9999469 14.9999669,-14.9999469 8.284287,0 14.999948,6.7157118 14.999948,14.9999469 0,8.284286 -6.715712,14.999968 -14.999948,14.999968 -8.2842857,0 -14.9999669,-6.715712 -14.9999669,-14.999968 z"
+     d="m 16.999992,31.99996 c -8.2842859,0 -14.9999469,-6.715712 -14.9999469,-14.999967 0,-8.2842869 6.7157118,-14.9999479 14.9999469,-14.9999479 8.284286,0 14.999968,6.715712 14.999968,14.9999479 0,8.284286 -6.715712,14.999967 -14.999968,14.999967 z"
      fill="url(#color-2)"
      stroke="#2e2a20"
      stroke-width="2"
      stroke-linecap="round"
      stroke-miterlimit="4"
      id="path25"
-     style="mix-blend-mode:normal;fill:url(#color-2);fill-rule:nonzero;stroke-width:4.00009;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke:#342800;stroke-opacity:1" />
+     style="mix-blend-mode:normal;fill:url(#color-2);fill-rule:nonzero;stroke:#342800;stroke-width:4.00009;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
 </svg>
