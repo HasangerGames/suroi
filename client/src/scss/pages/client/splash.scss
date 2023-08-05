@@ -52,8 +52,13 @@
 
     font-size: 20px;
 
-    @media screen and (max-width: $screen_medium) {
+    @media screen and (max-width: $screen_large) {
+        flex-direction: column;
+        align-items: center;
+        flex-wrap: nowrap;
         gap: 1rem;
+        max-height: unset;
+        margin-bottom: 1rem;
 
         #splash-options {
             order: 1;
@@ -63,11 +68,11 @@
             order: 2;
         }
 
-        #splash-customize {
+        #splash-featured-people {
             order: 3;
         }
 
-        #splash-featured-people {
+        #splash-customize {
             order: 4;
         }
     }
@@ -338,17 +343,16 @@
     left: 16px;
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 16px;
 
-    @media screen and (max-width: 1300px) {
-        flex-direction: row;
+    @media screen and (max-width: $screen_large) {
+        flex-direction: column;
     }
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 800px) {
         position: static;
-        flex-direction: column;
-        margin-right: 1.5rem;
+        flex-direction: row;
     }
 
     .featured-container {
