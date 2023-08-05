@@ -67,6 +67,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     readonly emoteContainer: Container;
 
     emoteAnim?: gsap.core.Tween;
+    emoteHideAnim?: gsap.core.Tween;
 
     leftFistAnim?: gsap.core.Tween;
     rightFistAnim?: gsap.core.Tween;
@@ -98,8 +99,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false),
             weapon: new SuroiSprite(),
-            emoteBackground: new SuroiSprite("emote_background.svg"),
-            emoteImage: new SuroiSprite()
+            emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
+            emoteImage: new SuroiSprite().setPos(0, 0)
             /*bloodEmitter: this.scene.add.particles(0, 0, "main", {
                 frame: "blood_particle.svg",
                 quantity: 1,
@@ -125,10 +126,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.container.zIndex = 3;
 
         this.emoteContainer = new Container();
-        this.game.pixi.stage.addChild(this.emoteContainer);
+        this.game.camera.container.addChild(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
-        this.emoteContainer.visible = true;
         this.emoteContainer.zIndex = 10;
+        this.emoteContainer.visible = false;
 
         this.updateFistsPosition(false);
         this.updateWeapon();
@@ -191,13 +192,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
-        if (!localStorageInstance.config.movementSmoothing) {
+        if (!localStorageInstance.config.movementSmoothing || this.isNew) {
             this.emoteContainer.position.set(this.position.x * 20, (this.position.y * 20) - 175);
         } else {
             gsap.to(this.emoteContainer, {
                 x: this.position.x * 20,
                 y: (this.position.y * 20) - 175,
-                duration: 30
+                duration: 0.03
             });
         }
 
@@ -252,14 +253,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.leftFistAnim = gsap.to(this.images.leftFist, {
                 x: fists.left.x,
                 y: fists.left.y,
-                duration: fists.animationDuration / 1000,
-                ease: "None"
+                duration: fists.animationDuration / 1000
             });
             this.rightFistAnim = gsap.to(this.images.rightFist, {
                 x: fists.right.x,
                 y: fists.right.y,
-                duration: fists.animationDuration / 1000,
-                ease: "None"
+                duration: fists.animationDuration / 1000
             });
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
@@ -300,11 +299,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.container.setChildIndex(this.images.leftFist, 4);
             this.container.setChildIndex(this.images.rightFist, 5);
         }
-        gsap.to([this.images.emoteBackground, this.images.emoteImage], {
-            alpha: 1,
-            scale: 1,
-            duration: 500
-        });
     }
 
     updateEquipment(): void {
@@ -348,12 +342,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
         this.emoteAnim?.kill();
+        this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.game.soundManager.play("emote");
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
-        this.emoteContainer.scale.set(1);
+        this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
         this.emoteAnim = gsap.to(this.emoteContainer, {
@@ -366,7 +361,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         });
 
         this._emoteHideTimeoutID = setTimeout(() => {
-            gsap.to(this.emoteContainer, {
+            this.emoteHideAnim = gsap.to(this.emoteContainer, {
                 alpha: 0,
                 duration: 0.2,
                 onUpdate: () => {

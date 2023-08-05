@@ -22,7 +22,6 @@ export class SoundManager {
         let id: number;
         if (sound) {
             id = sound.play();
-            console.log(sound);
         } else {
             console.warn(`Sound with soundId "${soundId}" not found.`);
             id = -1;
