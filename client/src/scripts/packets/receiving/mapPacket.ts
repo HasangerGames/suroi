@@ -1,5 +1,4 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
-import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
@@ -8,13 +7,44 @@ import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../ut
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
 import { type Orientation } from "../../../../../common/src/typings";
+import { Graphics, Rectangle } from "pixi.js";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        /*const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
+        const game = this.playerManager.game;
+
+        game.width = stream.readUint16();
+        game.height = stream.readUint16();
+
+        const GRID_WIDTH = game.width * 20;
+        const GRID_HEIGHT = game.height * 20;
+        const CELL_SIZE = 320;
+
+        const graphics = new Graphics();
+
+        graphics.beginFill();
+        graphics.lineStyle({
+            color: 0x000000,
+            alpha: 0.25,
+            width: 2
+        });
+        graphics.zIndex = -10;
+
+        for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
+            graphics.moveTo(x, 0);
+            graphics.lineTo(x, GRID_HEIGHT);
+        }
+        for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
+            graphics.moveTo(0, y);
+            graphics.lineTo(GRID_WIDTH, y);
+        }
+
+        graphics.endFill();
+
+        game.camera.container.addChild(graphics);
 
         // Draw the grid
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
+        /*const CELL_SIZE = 16 * MINIMAP_SCALE;
         for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
             minimap.add.rectangle(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
         }

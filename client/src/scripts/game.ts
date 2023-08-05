@@ -57,6 +57,9 @@ export class Game {
 
     tickTimeoutID: number | undefined;
 
+    width = 0;
+    height = 0;
+
     readonly gas = {
         state: GasState.Inactive,
         initialDuration: 0,

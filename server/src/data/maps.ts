@@ -12,6 +12,9 @@ import { type Map } from "../map";
 
 interface MapDefinition {
 
+    readonly width: number
+    readonly height: number
+
     readonly buildings?: Record<string, number>
 
     readonly obstacles?: Record<string, number>
@@ -42,6 +45,8 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
+        width: 1024,
+        height: 1024,
         buildings: {
             warehouse: 4,
             house: 4,
@@ -83,6 +88,8 @@ export const Maps: Record<string, MapDefinition> = {
         }
     },
     debug: {
+        width: 512,
+        height: 512,
         genCallback: (map: Map) => {
             // Generate all Buildings
 
@@ -126,13 +133,10 @@ export const Maps: Record<string, MapDefinition> = {
             }
         }
     },
-    singleObstacle: {
-        genCallback: (map: Map) => {
-            map.generateObstacle("door", v(512, 512), 0);
-        }
-    },
     // Arena map to test guns with really bad custom generation code lol
     arena: {
+        width: 512,
+        height: 512,
         genCallback: (map: Map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {

@@ -14,7 +14,7 @@ import {
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { Box, Vec2 } from "planck";
 import { Scopes } from "../../common/src/definitions/scopes";
@@ -28,12 +28,17 @@ import { addAdjust, addOrientations } from "../../common/src/utils/math";
 export class Map {
     game: Game;
 
-    readonly width = MAP_WIDTH;
-    readonly height = MAP_HEIGHT;
+    readonly width: number;
+    readonly height: number;
 
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
         this.game = game;
+
+        const mapDefinition = Maps[mapName];
+
+        this.width = mapDefinition.width;
+        this.height = mapDefinition.height;
 
         // Create world boundaries
         this.createWorldBoundary(this.width / 2, 0, this.width / 2, 0);
@@ -41,7 +46,6 @@ export class Map {
         this.createWorldBoundary(this.width / 2, this.height, this.width / 2, 0);
         this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
 
-        const mapDefinition = Maps[mapName];
 
         if (mapDefinition === undefined) {
             throw new Error(`Unknown map: ${mapName}`);

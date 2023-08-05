@@ -21,6 +21,10 @@ export class MapPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
+        stream.writeUint16(this.game.map.width);
+        stream.writeUint16(this.game.map.height);
+
         const objects: Obstacle[] | Building[] = [...this.game.staticObjects].filter(object => {
             return (object instanceof Obstacle || object instanceof Building) && !object.definition.hideOnMap;
         }) as Obstacle[] | Building[];

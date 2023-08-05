@@ -617,8 +617,7 @@ export const Guns: GunDefinition[] = [
             tracerOpacity: {
                 start: 1,
                 end: 0.5
-            },
-            tracerLength: 2
+            }
         }
     },
     {
