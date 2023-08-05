@@ -34,8 +34,9 @@ import { type CollisionRecord, circleCollision, distanceSquared } from "../../..
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
-import { Container, type Application } from "pixi.js";
+import { type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
+import { SoundManager } from "./utils/howler";
 
 export class Game {
     socket!: WebSocket;
@@ -66,6 +67,8 @@ export class Game {
     };
 
     pixi: Application;
+
+    soundManager = new SoundManager();
 
     camera: Camera;
 

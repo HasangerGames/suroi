@@ -9,12 +9,7 @@ import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
 import { GRASS_COLOR } from "./utils/constants";
 
-import loadSounds, { SoundManagerClass } from "./utils/howler";
-import { Materials } from "../../../common/src/definitions/obstacles";
-import { FloorType } from "../../../common/src/definitions/buildings";
-
-export const SoundManager = new SoundManagerClass();
-loadSounds(SoundManager);
+import loadSounds from "./utils/howler";
 
 declare const API_URL: string;
 
@@ -100,6 +95,8 @@ $(async() => {
     $("#game-ui").append(app.view as HTMLCanvasElement);
 
     core.game = new Game(app);
+
+    loadSounds(core.game.soundManager);
 
     setupInputs(core.game);
 });

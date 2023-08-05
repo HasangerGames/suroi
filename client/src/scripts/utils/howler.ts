@@ -4,50 +4,52 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 
-export interface SoundDefinition {
-    soundId: string
-    soundPath: string
-}
-
-export class SoundManagerClass {
-    sounds: Record<string, SoundDefinition>;
+export class SoundManager {
+    sounds: Record<string, Howl>;
 
     constructor() {
         this.sounds = {};
     }
 
     load(soundId: string, soundPath: string): void {
-        this.sounds[soundId] = { soundId, soundPath };
+        const sound = new Howl({ src: `${soundPath}.mp3` });
+        sound.load();
+        this.sounds[soundId] = sound;
     }
 
-    play(soundId: string): void {
+    play(soundId: string): number {
         const sound = this.sounds[soundId];
+        let id: number;
         if (sound) {
-            const soundObject = new Howl({
-                src: [`${sound.soundPath}.mp3`]
-            });
-            soundObject.play();
+            id = sound.play();
+            console.log(sound);
         } else {
-            console.error(`Sound with soundId "${soundId}" not found.`);
+            console.warn(`Sound with soundId "${soundId}" not found.`);
+            id = -1;
         }
+        return id;
+    }
+
+    get(soundId: string): Howl {
+        return this.sounds[soundId];
     }
 }
 
-export default function loadSounds(SoundManager: SoundManagerClass): void {
+export default function loadSounds(soundManager: SoundManager): void {
     for (const material of Materials) {
-        SoundManager.load(`${material}_hit_1`, `audio/sfx/hits/${material}_hit_1`);
-        SoundManager.load(`${material}_hit_2`, `audio/sfx/hits/${material}_hit_2`);
-        SoundManager.load(`${material}_destroyed`, `audio/sfx/hits/${material}_destroyed`);
+        soundManager.load(`${material}_hit_1`, `audio/sfx/hits/${material}_hit_1`);
+        soundManager.load(`${material}_hit_2`, `audio/sfx/hits/${material}_hit_2`);
+        soundManager.load(`${material}_destroyed`, `audio/sfx/hits/${material}_destroyed`);
     }
 
     for (const gun of Guns) {
-        SoundManager.load(`${gun.idString}_fire`, `audio/sfx/weapons/${gun.idString}_fire`);
-        SoundManager.load(`${gun.idString}_switch`, `audio/sfx/weapons/${gun.idString}_switch`);
-        SoundManager.load(`${gun.idString}_reload`, `audio/sfx/weapons/${gun.idString}_reload`);
+        soundManager.load(`${gun.idString}_fire`, `audio/sfx/weapons/${gun.idString}_fire`);
+        soundManager.load(`${gun.idString}_switch`, `audio/sfx/weapons/${gun.idString}_switch`);
+        soundManager.load(`${gun.idString}_reload`, `audio/sfx/weapons/${gun.idString}_reload`);
     }
 
     for (const healingItem of HealingItems) {
-        SoundManager.load(healingItem.idString, `audio/sfx/healing/${healingItem.idString}`);
+        soundManager.load(healingItem.idString, `audio/sfx/healing/${healingItem.idString}`);
     }
 
     // funny hack to load sounds based on the strings of an enum :)
@@ -55,8 +57,8 @@ export default function loadSounds(SoundManager: SoundManagerClass): void {
         if (floorType.length > 1) {
             const floorName = floorType.toLowerCase();
 
-            SoundManager.load(`${floorName}_step_1`, `audio/sfx/footsteps/${floorName}_1`);
-            SoundManager.load(`${floorName}_step_2`, `audio/sfx/footsteps/${floorName}_2`);
+            soundManager.load(`${floorName}_step_1`, `audio/sfx/footsteps/${floorName}_1`);
+            soundManager.load(`${floorName}_step_2`, `audio/sfx/footsteps/${floorName}_2`);
         }
     }
 
@@ -88,13 +90,26 @@ export default function loadSounds(SoundManager: SoundManagerClass): void {
         [
             "audio/sfx/ceiling_collapse",
             "ceiling_collapse"
+        ],
+        [
+            "audio/sfx/hits/player_hit_1",
+            "player_hit_1"
+        ],
+        [
+            "audio/sfx/hits/player_hit_2",
+            "player_hit_2"
+        ],
+        [
+            "audio/sfx/pickup",
+            "pickup"
+        ],
+        [
+            "audio/sfx/ammo_pickup",
+            "ammo_pickup"
         ]
     ];
 
     for (const sound of soundsToLoad) {
-        SoundManager.load(sound[1], sound[0]);
+        soundManager.load(sound[1], sound[0]);
     }
-
-    SoundManager.load("player_hit_1", "audio/sfx/hits/player_hit_1");
-    SoundManager.load("player_hit_2", "audio/sfx/hits/player_hit_2");
 }

@@ -4,7 +4,7 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../../common/src/utils/objectDefinitions";
-import { SoundManager } from "../../main";
+import core from "../../core";
 
 export class PickupPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -20,11 +20,6 @@ export class PickupPacket extends ReceivingPacket {
                 break;
         }
 
-        SoundManager.load(`${soundID}`, `audio/sfx/${soundID}.mp3`);
-        SoundManager.play(`${soundID}`);
-
-        console.log("Object Picked Up")
-
-        // this.playerManager.game.activePlayer.scene.playSound(soundID);
+        core.game?.soundManager.play(`${soundID}`);
     }
 }

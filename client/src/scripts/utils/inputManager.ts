@@ -5,7 +5,6 @@ import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../.
 import { type PlayerManager } from "./playerManager";
 import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
 import { type Game } from "../game";
-import core from "../core";
 import { v } from "../../../../common/src/utils/vector";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
