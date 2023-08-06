@@ -4,7 +4,7 @@ import core from "./core";
 
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { GameOverPacket } from "./packets/receiving/gameOverPacket";
+import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
@@ -70,8 +70,10 @@ export class Game {
 
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
-            $("#game-over-screen").hide();
             if (!UI_DEBUG_MODE) {
+                $("#game-over-screen").hide();
+                $("#kill-msg").hide();
+                $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
             }
@@ -132,6 +134,7 @@ export class Game {
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
             enablePlayButton();
+            clearTimeout(gameOverScreenTimeout);
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();

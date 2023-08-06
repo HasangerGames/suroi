@@ -4,6 +4,8 @@ import type { MinimapScene } from "../../scenes/minimapScene";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
 
+export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
+
 export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         $("#interact-message").hide();
@@ -36,6 +38,6 @@ export class GameOverPacket extends ReceivingPacket {
         timeString += `${timeAlive.getSeconds()}s`;
 
         $("#game-over-time").text(timeString);
-        setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
+        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
     }
 }
