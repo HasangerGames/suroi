@@ -71,6 +71,7 @@ export class Game {
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             if (!UI_DEBUG_MODE) {
+                clearTimeout(gameOverScreenTimeout);
                 $("#game-over-screen").hide();
                 $("#kill-msg").hide();
                 $("#kill-feed").html("");
@@ -134,7 +135,6 @@ export class Game {
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
             enablePlayButton();
-            clearTimeout(gameOverScreenTimeout);
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();

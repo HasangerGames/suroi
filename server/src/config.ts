@@ -9,17 +9,24 @@ export interface ConfigType {
     readonly port: number
     readonly regions: Record<string, string>
     readonly defaultRegion: string
+
     /**
      * The websocket region this server is running.
      * Used for the find game api.
      */
     readonly thisRegion: string
+
+    /**
+     * HTTPS/SSL options. Not necessary in most cases.
+     */
     readonly ssl: {
+        readonly enable: boolean
         readonly keyFile: string
         readonly certFile: string
-        readonly enable: boolean
     }
+
     readonly movementSpeed: number
+
     /**
      * There are 3 spawn modes: SpawnMode.Random, SpawnMode.Radius, and SpawnMode.Fixed.
      * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
@@ -36,6 +43,12 @@ export interface ConfigType {
         readonly position: Vec2
         readonly radius: number
     }
+
+    /**
+     * The maximum number of players allowed to join a game.
+     */
+    readonly playerLimit: number
+
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
      * GasMode.Normal: Default gas behavior. overrideDuration is ignored.
@@ -50,12 +63,11 @@ export interface ConfigType {
         readonly mode: GasMode.Debug
         readonly overrideDuration: number
     }
+
     /**
      * A basic filter that censors only the most extreme swearing.
      */
     readonly censorUsernames: boolean
-
-    readonly playerLimit: number
 
     /**
      * The map name, must be a valid value from the server maps definitions
@@ -67,15 +79,27 @@ export interface ConfigType {
      * Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 5 times in 5 seconds.
      */
     readonly botProtection: boolean
+
+    readonly ipBanListURL: string
+    readonly ipBanListPassword: string
+
+    /**
+     * If set to true, the CF-Connecting-IP header is used to determine IP addresses.
+     */
     readonly cloudflare: boolean
-    readonly disableLobbyClearing: boolean
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
      * If noPrivileges is set to true for a role, cheats will be disabled for that role.
-     * To use roles, add `?password=PASSWORD` on the website url, example: `127.0.0.1:3000/?password=fooBar`.
+     * To use roles, add `?password=PASSWORD&role=ROLE` to the URL, for example: `http://127.0.0.1:3000/?password=dev&role=dev`
+     * Dev cheats can be enabled using the `lobbyClearing` option: `http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`
      */
     readonly roles: Record<string, { password: string, noPrivileges?: boolean }>
+
+    /**
+     * Disables the lobbyClearing option if set to true
+     */
+    readonly disableLobbyClearing: boolean
 }
 
 export const Config = {
@@ -93,27 +117,28 @@ export const Config = {
     thisRegion: "dev",
 
     ssl: {
+        enable: false,
         keyFile: "",
-        certFile: "",
-        enable: false
+        certFile: ""
     },
 
     movementSpeed: 0.028,
 
     spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
 
+    playerLimit: 80,
+
     gas: { mode: GasMode.Normal },
 
     censorUsernames: true,
 
     botProtection: false,
+    ipBanListURL: "https://suroi.io/api/bannedIPs",
+    ipBanListPassword: "password",
+
     cloudflare: false,
 
-    playerLimit: 80,
-
     mapName: "main",
-
-    disableLobbyClearing: false,
 
     roles: {
         dev: { password: "dev" },
@@ -124,5 +149,6 @@ export const Config = {
         eipi: { password: "eipi" },
         "123op": { password: "123op" },
         radians: { password: "radians" }
-    }
+    },
+    disableLobbyClearing: false
 } satisfies ConfigType as ConfigType;

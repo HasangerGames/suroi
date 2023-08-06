@@ -26,6 +26,7 @@ import { Building } from "../objects/building";
 import { Obstacle } from "../objects/obstacle";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorType } from "../../../../common/src/definitions/buildings";
+
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
@@ -324,12 +325,12 @@ export class GameScene extends Phaser.Scene {
                         // Autoloot
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
-                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
+                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee && lootDef.itemType !== ItemType.Skin) ||
                             (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
                             this.playerManager.interact();
                         } else if (
-                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
+                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee || lootDef.itemType === ItemType.Skin)) ||
                             closestObject instanceof Obstacle
                         ) {
                             prepareInteractText();
