@@ -58,16 +58,16 @@ export class Game {
 
         if (this.gameStarted) return;
 
-        this.gameStarted = true;
-        this.gameOver = false;
-        this.spectating = false;
-        this.gas.firstPercentageReceived = false;
-
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            this.gameStarted = true;
+            this.gameOver = false;
+            this.spectating = false;
+            this.gas.firstPercentageReceived = false;
+
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
             $("#game-over-screen").hide();
@@ -124,19 +124,19 @@ export class Game {
 
         this.socket.onerror = (): void => {
             this.error = true;
-
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
+            enablePlayButton();
         };
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
+            enablePlayButton();
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
-                    enablePlayButton();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) this.endGame();
