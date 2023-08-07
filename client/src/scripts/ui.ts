@@ -171,7 +171,7 @@ $((): void => {
 
     $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });
     $("#btn-report").on("click", () => {
-        if (confirm("Are you sure you want to report this player?")) {
+        if (confirm("Are you sure you want to report this player?\nPlayers should only be reported for teaming or hacking.")) {
             sendSpectatePacket(SpectateActions.Report);
         }
     });
@@ -206,13 +206,19 @@ $((): void => {
     });
 
     const customizeMenu = $("#customize-menu");
+    $("#btn-customize").on("click", () => customizeMenu.fadeToggle(250));
+    $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
-    $("#btn-customize").on("click", () => {
-        customizeMenu.fadeToggle(250);
-    });
+    $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
-    $("#close-customize").on("click", () => {
-        customizeMenu.fadeOut(250);
+    $("#btn-copy-report-id").on("click", () => {
+        navigator.clipboard.writeText($("#report-id-input").val() as string)
+            .then(() => {
+                $("#btn-copy-report-id").html('<i class="fa-solid fa-check"></i> Copied');
+            })
+            .catch(() => {
+                alert("Unable to copy report ID. Please copy it manually.");
+            });
     });
 
     // Load skins

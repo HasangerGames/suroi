@@ -1,8 +1,16 @@
 import { readFileSync, writeFileSync } from "fs";
 
 interface BanRecord { ip: string, expires?: number }
-const banRecords: BanRecord[] = JSON.parse(readFileSync("bannedIPs.json", "utf8"));
+const initialBanRecords: BanRecord[] = JSON.parse(readFileSync("bannedIPs.json", "utf8"));
+const now = Date.now();
 
+// Clean up expired bans
+const banRecords: BanRecord[] = [];
+for (const record of initialBanRecords) {
+    if (record.expires === undefined || record.expires < now) banRecords.push(record);
+}
+
+// Process the given command
 const option = process.argv[2];
 const ip = process.argv[3];
 
@@ -16,7 +24,7 @@ if (option === "ban") {
     const permanent = process.argv[4] === "perm";
     banRecords.push({
         ip,
-        expires: permanent ? undefined : Date.now() + 3600000
+        expires: permanent ? undefined : now + 3600000
     });
     console.log(`${ip} banned ${permanent ? "permanently" : "temporarily"}`);
 } else if (option === "unban") {
@@ -24,4 +32,5 @@ if (option === "ban") {
     console.log(`${ip} unbanned`);
 }
 
+// Write the updated ban list
 writeFileSync("bannedIPs.json", JSON.stringify(banRecords));
