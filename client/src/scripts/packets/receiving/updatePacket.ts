@@ -229,7 +229,6 @@ export class UpdatePacket extends ReceivingPacket {
                 if (!game.objects.has(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
-                            console.log(`new player created with id ${id}, active player id = ${game.activePlayer.id}`);
                             object = new Player(game, scene, type as ObjectType<ObjectCategory.Player>, id);
                             break;
                         }

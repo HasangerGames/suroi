@@ -30,8 +30,7 @@ $((): void => {
         $("#spectating-msg").show();
 
         // Gas message
-        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone");
-        $("#gas-msg-info").css("color", "cyan");
+        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone").css("color", "cyan");
         $("#gas-msg").show();
 
         $("#weapon-ammo-container").show();
