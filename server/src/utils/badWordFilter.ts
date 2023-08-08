@@ -18,6 +18,13 @@ const badWords: string[] = [
     "n!gga",
     "n!gg@",
 
+    "niga",
+    "n1ga",
+    "nig@",
+    "n1g@",
+    "n!ga",
+    "n!g@",
+
     "faggot",
     "fagg0t",
     "f@ggot",
