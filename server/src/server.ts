@@ -372,6 +372,6 @@ app.listen(Config.host, Config.port, (): void => {
                     }
                 })();
             }
-        }, 1000);
+        }, 120000);
     }
 });
