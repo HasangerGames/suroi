@@ -7,14 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
-      howler:
-        specifier: ^2.2.3
-        version: 2.2.3
     devDependencies:
-      '@types/howler':
-        specifier: ^2.2.7
-        version: 2.2.7
       typescript:
         specifier: ^5.1.6
         version: 5.1.6
@@ -27,6 +20,9 @@ importers:
       gsap:
         specifier: ^3.12.2
         version: 3.12.2
+      howler:
+        specifier: ^2.2.3
+        version: 2.2.3
       intersects:
         specifier: ^2.7.2
         version: 2.7.2
@@ -52,6 +48,9 @@ importers:
       '@babel/preset-env':
         specifier: ^7.22.9
         version: 7.22.9(@babel/core@7.22.9)
+      '@types/howler':
+        specifier: ^2.2.7
+        version: 2.2.7
       '@types/intersects':
         specifier: ^2.5.0
         version: 2.5.0
