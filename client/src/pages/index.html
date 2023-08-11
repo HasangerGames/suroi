@@ -312,10 +312,31 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="settings-menu" style="display: none">
-    <div id="settings-header">
+  <div class="modal dialog" id="report-modal" style="display: none">
+    <div class="dialog-header">
+      <h3><span style="font-weight: 600">Reporting</span><span id="reporting-name"></span></h3>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
+    </div>
+    <div id="report-modal-content">
+      <div id="report-id-container">
+        <span>Report ID:</span>
+        <input type="text" name="report-id-input" id="report-id-input" readonly>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-copy-report-id"></button>
+      </div>
+      <p>Please follow the instructions below! If you don't, your report will be ignored.</p>
+      <h4>How to Submit a Report</h4>
+      <ol>
+        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
+        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports channel.</a></li>
+        <li>Read the report guidelines in the pinned post.</li>
+        <li>Submit your report as a post.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="modal dialog" id="settings-menu" style="display: none">
+    <div class="dialog-header">
       <h3>Settings</h3>
-      <span class="fa-solid fa-xmark" id="close-settings"></span>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
     </div>
     <div id="settings-tabs-container">
       <div class="tab-bar" id="settings-tab-bar">
@@ -452,10 +473,10 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="customize-menu" style="display: none">
-    <div id="customize-header">
+  <div class="modal dialog" id="customize-menu" style="display: none">
+    <div class="dialog-header">
       <h3>Customize</h3>
-      <span class="fa-solid fa-xmark" id="close-customize"></span>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">

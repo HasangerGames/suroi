@@ -26,6 +26,7 @@ import { Building } from "../objects/building";
 import { Obstacle } from "../objects/obstacle";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorType } from "../../../../common/src/definitions/buildings";
+
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
     sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();

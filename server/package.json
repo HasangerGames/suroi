@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server/src/server.js",
+    "moderation": "node dist/server/src/moderation.js",
     "dev": "ts-node-dev --respawn --rs --transpile-only src/server.ts",
     "lint": "eslint . --fix --ext .ts",
     "lint:ci": "eslint . --ext .ts",
@@ -18,7 +19,7 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/intersects": "^2.5.0",
-    "@types/node": "^20.4.7",
+    "@types/node": "^20.4.9",
     "@types/sanitize-html": "^2.9.0",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^5.62.0",

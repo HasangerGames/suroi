@@ -32,7 +32,7 @@ export class Gas {
     doDamage = false;
 
     game: Game;
-    timeoutId: NodeJS.Timeout | undefined;
+    timeoutID: NodeJS.Timeout | undefined;
 
     constructor(game: Game) {
         this.game = game;
@@ -98,7 +98,7 @@ export class Gas {
 
         // Start the next stage
         if (duration !== 0) {
-            this.timeoutId = setTimeout(() => this.advanceGas(), duration * 1000);
+            this.timeoutID = setTimeout(() => this.advanceGas(), duration * 1000);
         }
     }
 

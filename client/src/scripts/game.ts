@@ -2,7 +2,7 @@ import $ from "jquery";
 
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { GameOverPacket } from "./packets/receiving/gameOverPacket";
+import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
@@ -14,7 +14,7 @@ import { type GameObject } from "./types/gameObject";
 import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { GasState, MAP_HEIGHT, MAP_WIDTH, PacketType } from "../../../common/src/constants";
+import { GasState, PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { v } from "../../../common/src/utils/vector";
@@ -63,10 +63,11 @@ export class Game {
     readonly gas = {
         state: GasState.Inactive,
         initialDuration: 0,
-        oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
-        newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
+        oldPosition: v(0, 0),
+        newPosition: v(0, 0),
         oldRadius: 2048,
-        newRadius: 2048
+        newRadius: 2048,
+        firstPercentageReceived: false
     };
 
     pixi: Application;
@@ -103,16 +104,22 @@ export class Game {
 
         if (this.gameStarted) return;
 
-        this.gameStarted = true;
-        this.gameOver = false;
-        this.spectating = false;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
-            $("#game-over-screen").hide();
+
+            this.gameStarted = true;
+            this.gameOver = false;
+            this.spectating = false;
+            this.gas.firstPercentageReceived = false;
+
             if (!UI_DEBUG_MODE) {
+                clearTimeout(gameOverScreenTimeout);
+                $("#game-over-screen").hide();
+                $("#kill-msg").hide();
+                $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
             }
@@ -172,19 +179,19 @@ export class Game {
 
         this.socket.onerror = (): void => {
             this.error = true;
-
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
+            enablePlayButton();
         };
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            if (this.spectating || !this.gameOver) {
+            enablePlayButton();
+            if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
-                    enablePlayButton();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) this.endGame();

@@ -46,6 +46,13 @@ export class SpectatePacket extends ReceivingPacket {
                     player.spectate(game.spectatablePlayers[index]);
                 }
                 break;
+            case SpectateActions.SpectateSpecific: {
+                const playerID = stream.readObjectID();
+                if (playerID > 0 && playerID < game.spectatablePlayers.length) {
+                    player.spectate(game.spectatablePlayers[playerID]);
+                }
+                break;
+            }
             case SpectateActions.Report: {
                 if (!fs.existsSync("reports")) fs.mkdirSync("reports");
                 const reportID = randomUUID();

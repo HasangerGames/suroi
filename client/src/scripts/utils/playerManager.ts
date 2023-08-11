@@ -200,7 +200,7 @@ export class PlayerManager {
                 }
             }
 
-            $("#weapon-inventory-ammo").text(totalAmmo);
+            $("#weapon-inventory-ammo").text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
         }
 
         const kills = this.itemKills[this._activeItemIndex];

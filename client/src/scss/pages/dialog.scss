@@ -1,9 +1,51 @@
 @import "../utils/tabs.scss";
 @import "../palette.scss";
 
-#settings-menu {
+#settings-menu, #report-modal {
     background-color: $bg;
     max-width: 450px;
+}
+
+#reporting-name {
+    margin-left: 5px;
+}
+
+#report-modal-content {
+    padding: 1rem;
+
+    p {
+        margin-top: 13px;
+        margin-bottom: -5px;
+    }
+
+    h4 {
+        margin-bottom: 10px;
+    }
+
+    ol {
+        margin-top: 0;
+    }
+}
+
+#report-id-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#report-id-input {
+    color: black;
+    font-size: 16px;
+    width: 235px;
+    padding: 5px 8px;
+    border-radius: 8px;
+}
+
+#btn-copy-report-id {
+    display: inline-block;
+    font-size: 16px;
+    height: auto;
+    padding: 6px 12px;
 }
 
 #customize-menu {
@@ -12,15 +54,15 @@
 }
 
 // TODO Refactor this, make classes
-#settings-menu, #customize-menu {
+.dialog {
     user-select: none;
     box-shadow: 0 0 10px #000000c8;
-    padding: 0;
-    border-radius: 10px;
+    padding: 0 !important;
+    border-radius: 10px !important;
     overflow: hidden;
     z-index: 101;
 
-    #settings-header, #customize-header {
+    .dialog-header {
         $headerHeight: 45px;
         display: flex;
         height: $headerHeight;
@@ -29,8 +71,9 @@
         h3 {
             margin-left: 15px;
             display: flex;
+            @include text-shadow;
         }
-        #close-settings, #close-customize {
+        .dialog-close-btn {
             margin-left: auto;
             text-align: center;
             line-height: $headerHeight;
@@ -38,10 +81,6 @@
             height: $headerHeight;
             cursor: pointer;
         }
-    }
-
-    #customize-header {
-        @include text-shadow;
     }
 
     #settings-tabs-container, #customize-tabs-container {
