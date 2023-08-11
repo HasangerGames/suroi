@@ -96,13 +96,15 @@ export class GunItem extends InventoryItem {
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
-        let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+        const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
         for (const object of this.owner.nearObjects) {
-            if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
-                rotated = vRotate(v(2.50001, 0), owner.rotation);
-                position = vAdd(owner.position, rotated);
+            if (!object.dead && (object.hitbox != null)) {
+                const intersection = object.hitbox.intersectsLine(this.owner.position, position);
+                if (intersection === null) continue;
+
+                position = intersection;
                 break;
             }
         }

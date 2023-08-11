@@ -47,6 +47,16 @@ export function vMul(a: Vector, n: number): Vector {
 }
 
 /**
+ * Divides a Vector by a scalar
+ * @param a - The Vector to be divided
+ * @param n - The scalar value to divide the Vector by
+ * @returns A new Vector resulting from the division of vector a and scalar n
+ */
+export function vDiv(a: Vector, n: number): Vector {
+    return v(a.x / n, a.y / n);
+}
+
+/**
  * Clones a Vector
  * @param vector - The Vector to be cloned
  * @returns A new Vector with the same coordinates as the input Vector
@@ -65,4 +75,16 @@ export function vRotate(vector: Vector, angle: number): Vector {
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
     return v(vector.x * cos - vector.y * sin, vector.x * sin + vector.y * cos);
+}
+
+export function vLengthSqr(a: Vector): number {
+    return a.x * a.x + a.y * a.y;
+}
+
+export function vLength(a: Vector): number {
+    return Math.sqrt(vLengthSqr(a));
+}
+
+export function vDot(a: Vector, b: Vector): number {
+    return a.x * b.x + a.y * b.y;
 }

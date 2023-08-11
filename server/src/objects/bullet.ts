@@ -20,8 +20,6 @@ export class Bullet {
         loot: false
     };
 
-    id: number;
-
     readonly _initialPosition: Vector;
     get initialPosition(): Vector { return this._initialPosition; }
 
@@ -43,7 +41,6 @@ export class Bullet {
     }
 
     constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player) {
-        this.id = game.nextBulletID;
         this._initialPosition = position;
         this.rotation = rotation;
         this.source = source;

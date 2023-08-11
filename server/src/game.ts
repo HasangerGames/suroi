@@ -90,7 +90,6 @@ export class Game {
      * All bullets created this tick
      */
     readonly newBullets = new Set<Bullet>();
-    readonly deletedBulletIDs = new Set<number>();
     /**
      * All records of damage by bullets this tick
      */
@@ -234,7 +233,6 @@ export class Game {
                 // ) {
                 if (damageRecord.deleteBullet) {
                     this.removeBullet(bullet);
-                    this.deletedBulletIDs.add(bullet.id);
                 }
                 // }
 
@@ -408,7 +406,6 @@ export class Game {
             this.partialDirtyObjects.clear();
             this.deletedObjects.clear();
             this.newBullets.clear();
-            this.deletedBulletIDs.clear();
             this.explosions.clear();
             this.emotes.clear();
             this.killFeedMessages.clear();
@@ -616,7 +613,6 @@ export class Game {
      * @param bullet The bullet to delete
      */
     removeBullet(bullet: Bullet): void {
-        this.bulletIDAllocator.give(bullet.id);
         this.world.destroyBody(bullet.body);
         this.bullets.delete(bullet);
     }
@@ -644,11 +640,5 @@ export class Game {
 
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
-    }
-
-    bulletIDAllocator = new IDAllocator(8);
-
-    get nextBulletID(): number {
-        return this.bulletIDAllocator.takeNext();
     }
 }

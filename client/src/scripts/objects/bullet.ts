@@ -6,6 +6,8 @@ import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type Vector, vAdd, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
 import { distance } from "../../../../common/src/utils/math";
+import { Obstacle } from "./obstacle";
+import { Player } from "./player";
 
 export class Bullet {
     game: Game;
@@ -23,16 +25,12 @@ export class Bullet {
 
     speed: Vector;
 
-    id: number;
-
     dead = false;
 
     trailTicks = 0;
 
-    constructor(game: Game, id: number, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number) {
+    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number) {
         this.game = game;
-
-        this.id = id;
 
         this.source = source;
         const ballistics = this.source.definition.ballistics;
@@ -65,10 +63,31 @@ export class Bullet {
     }
 
     update(delta: number): void {
+        const oldPosition = vClone(this.position);
+
         if (this.dead) this.trailTicks -= delta;
         else {
             this.trailTicks += delta;
             this.position = vAdd(this.position, vMul(this.speed, delta));
+        }
+
+        if (!this.dead) {
+            for (const o of this.game.objects) {
+                const object = o[1];
+
+                if ((object instanceof Obstacle || object instanceof Player) && !object.dead) {
+                    if (object instanceof Obstacle && object.type.definition.noCollisions) continue;
+
+                    const intersection = object.hitbox.intersectsLine(oldPosition, this.position);
+                    if (!intersection) continue;
+
+                    console.log(object.type.idString);
+                    this.dead = true;
+                    this.position = intersection;
+
+                    break;
+                }
+            }
         }
 
         const fadeDist = distance(this.initialPosition, vAdd(this.initialPosition, vMul(this.speed, this.trailTicks)));
@@ -94,6 +113,6 @@ export class Bullet {
 
     destroy(): void {
         this.image.destroy();
-        this.game.bullets.delete(this.id);
+        this.game.bullets.delete(this);
     }
 }

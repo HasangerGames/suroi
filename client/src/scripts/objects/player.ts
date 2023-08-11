@@ -83,7 +83,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     readonly radius = PLAYER_RADIUS;
 
-    hitBox = new CircleHitbox(this.radius);
+    hitbox = new CircleHitbox(this.radius);
 
     floorType = FloorType.Grass;
 
@@ -140,7 +140,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = stream.readPosition();
 
-        this.hitBox.position = this.position;
+        this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
             this.game.camera.setPosition(this.position);

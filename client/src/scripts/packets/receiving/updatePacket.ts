@@ -55,7 +55,6 @@ export class UpdatePacket extends ReceivingPacket {
         const partialObjectsDirty = stream.readBoolean();
         const deletedObjectsDirty = stream.readBoolean();
         const bulletsDirty = stream.readBoolean();
-        const deletedBulletsDirty = stream.readBoolean();
         const explosionsDirty = stream.readBoolean();
         const emotesDirty = stream.readBoolean();
         const gasDirty = stream.readBoolean();
@@ -302,28 +301,13 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const id = stream.readUint8();
                 const source = stream.readObjectTypeNoCategory<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot);
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
 
-                const bullet = new Bullet(game, id, source, position, rotation);
+                const bullet = new Bullet(game, source, position, rotation);
 
-                game.bullets.set(id, bullet);
-            }
-        }
-
-        // Deleted bullets
-        if (deletedBulletsDirty) {
-            const destroyedBulletCount = stream.readUint8();
-            for (let i = 0; i < destroyedBulletCount; i++) {
-                const bulletID = stream.readUint8();
-                const bullet = game.bullets.get(bulletID);
-                if (bullet === undefined) {
-                    console.warn(`Could not find bullet with ID ${bulletID}`);
-                    continue;
-                }
-                bullet.dead = true;
+                game.bullets.add(bullet);
             }
         }
 

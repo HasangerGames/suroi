@@ -8,15 +8,15 @@ import type { ObjectType } from "../../../../common/src/utils/objectType";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation, Orientation } from "../../../../common/src/typings";
 import { gsap } from "gsap";
-import { orientationToRotation } from "../utils/misc";
+import { orientationToRotation, rotationToOrientation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
+import { v } from "../../../../common/src/utils/vector";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
-    destroyed!: boolean;
 
     variation!: Variation;
 
@@ -28,13 +28,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         closedHitbox?: Hitbox
         openHitbox?: Hitbox
         openAltHitbox?: Hitbox
-        hitbox?: Hitbox
         offset: number
     };
 
     isNew = true;
 
     hitEffect = 0;
+
+    hitbox!: Hitbox;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
@@ -86,20 +87,20 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 }
 
                 if (this.door.offset === 1) {
-                    this.door.hitbox = this.door.openHitbox?.clone();
+                    this.hitbox = this.door.openHitbox!.clone();
                 } else if (this.door.offset === 3) {
-                    this.door.hitbox = this.door.openAltHitbox?.clone();
+                    this.hitbox = this.door.openAltHitbox!.clone();
                 } else {
-                    this.door.hitbox = this.door.closedHitbox?.clone();
+                    this.hitbox = this.door.closedHitbox!.clone();
                 }
             }
         }
 
-        this.image.scale.set(this.destroyed ? 1 : this.scale);
+        this.image.scale.set(this.dead ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        if (!this.destroyed && destroyed) {
-            this.destroyed = true;
+        if (!this.dead && destroyed) {
+            this.dead = true;
             if (!this.isNew) {
                 this.game.soundManager.play(`${definition.material}_destroyed`);
                 if (definition.noResidue) {
@@ -112,7 +113,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 // this.emitter.explode(10);
             }
         }
-        this.container.zIndex = this.destroyed ? 0 : definition.depth ?? 0;
+        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
+
+        if (!this.isNew && !this.isDoor) {
+            const orientation = definition.rotationMode === "limited" ? rotationToOrientation(this.rotation) : 0;
+            this.hitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+        }
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
@@ -120,6 +126,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.position = stream.readPosition();
 
         const definition = this.type.definition;
+
         if (definition.isDoor && this.door !== undefined && this.isNew) {
             let offsetX: number;
             let offsetY: number;
@@ -135,7 +142,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
             this.rotation = orientationToRotation(orientation);
 
-            this.door.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+            this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
             ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));
         } else {
             this.rotation = stream.readObstacleRotation(definition.rotationMode);
@@ -144,11 +151,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const hasVariations = definition.variations !== undefined;
         if (hasVariations) this.variation = stream.readVariation();
 
-        if (this.destroyed && definition.noResidue) {
+        if (this.dead && definition.noResidue) {
             this.image.setVisible(false);
         } else {
             let texture = definition.frames?.base ?? `${definition.idString}`;
-            if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+            if (this.dead) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
             else if (hasVariations) texture += `_${this.variation + 1}`;
             // Update the obstacle image
             this.image.setFrame(`${texture}.svg`);
@@ -156,7 +163,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         this.container.rotation = this.rotation;
 
-        this.container.zIndex = this.destroyed ? 0 : definition.depth ?? 0;
+        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
         // If there are multiple particle variations, generate a list of variation image names
         const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
@@ -181,6 +188,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }).setDepth((definition.depth ?? 0) + 1).setPosition(this.container.x, this.container.y);*/
 
         this.isNew = false;
+
+        if (!this.isDoor) {
+            const orientation = definition.rotationMode === "limited" ? rotationToOrientation(this.rotation) : 0;
+            this.hitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+        }
     }
 
     destroy(): void {

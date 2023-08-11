@@ -23,9 +23,6 @@ importers:
       howler:
         specifier: ^2.2.3
         version: 2.2.3
-      intersects:
-        specifier: ^2.7.2
-        version: 2.7.2
       jquery:
         specifier: ^3.7.0
         version: 3.7.0
@@ -153,9 +150,6 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.0
         version: 1.0.0
-      intersects:
-        specifier: ^2.7.2
-        version: 2.7.2
       uWebSockets.js:
         specifier: github:uNetworking/uWebSockets.js#v20.31.0
         version: github.com/uNetworking/uWebSockets.js/809b99d2d7d12e2cbf89b7135041e9b41ff84084
@@ -193,9 +187,6 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.0
         version: 1.0.0
-      intersects:
-        specifier: ^2.7.2
-        version: 2.7.2
       planck:
         specifier: 1.0.0-alpha.4
         version: 1.0.0-alpha.4
@@ -5064,10 +5055,6 @@ packages:
     resolution: {integrity: sha512-6xwYfHbajpoF0xLW+iwLkhwgvLoZDfjYfoFNu8ftMoXINzwuymNLd9u/KmwtdT2GbR+/Cz66otEGEVVUHX9QLQ==}
     engines: {node: '>=10.13.0'}
     dev: true
-
-  /intersects@2.7.2:
-    resolution: {integrity: sha512-/LtLDq40iFtvnjhouev9p2R+jP+raVONPiD1t8Mcj879pkrLiav99BTRPBkfMPwSYr5vTNws3USGoW+8usS45A==}
-    dev: false
 
   /ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}

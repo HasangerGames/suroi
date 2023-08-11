@@ -34,7 +34,6 @@
   },
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.0",
-    "intersects": "^2.7.2",
     "planck": "1.0.0-alpha.4",
     "sanitize-html": "^2.11.0",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.31.0",

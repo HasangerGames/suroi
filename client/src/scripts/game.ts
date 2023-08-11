@@ -43,7 +43,7 @@ export class Game {
 
     objects: Map<number, GameObject> = new Map<number, GameObject>();
     players: Set<Player> = new Set<Player>();
-    bullets: Map<number, Bullet> = new Map<number, Bullet>();
+    bullets: Set<Bullet> = new Set<Bullet>();
     activePlayer!: Player;
 
     gameStarted = false;
@@ -82,8 +82,7 @@ export class Game {
         this.pixi.ticker.add(() => {
             const delta = this.pixi.ticker.deltaMS;
 
-            for (const bulletId of this.bullets) {
-                const bullet = bulletId[1];
+            for (const bullet of this.bullets) {
                 bullet.update(delta);
             }
         });
@@ -109,7 +108,6 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
-
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -300,8 +298,8 @@ export class Game {
 
             for (const o of this.objects) {
                 const object = o[1];
-                if (object instanceof Obstacle && object.isDoor && !object.destroyed) {
-                    const record: CollisionRecord | undefined = object.door?.hitbox?.distanceTo(doorDetectionHitbox);
+                if (object instanceof Obstacle && object.isDoor && !object.dead) {
+                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
                     const dist = distanceSquared(object.position, player.position);
                     if (dist < minDist && record?.collided) {
                         minDist = dist;
@@ -316,11 +314,11 @@ export class Game {
                         canInteract = closestObject.canInteract(this.playerManager);
                     }
                 } else if (object instanceof Building) {
-                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitBox));
+                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
 
                     for (const player of this.players) {
                         for (const floor of object.floors) {
-                            if (floor.hitbox.collidesWith(player.hitBox)) {
+                            if (floor.hitbox.collidesWith(player.hitbox)) {
                                 player.floorType = floor.type;
                                 break;
                             }

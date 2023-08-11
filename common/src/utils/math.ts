@@ -2,7 +2,11 @@ import {
     v,
     vAdd,
     type Vector,
-    vMul
+    vMul,
+    vSub,
+    vLength,
+    vDiv,
+    vDot
 } from "./vector";
 
 import { type Orientation } from "../typings";
@@ -231,6 +235,115 @@ export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale:
         min: addAdjust(pos, min, orientation),
         max: addAdjust(pos, max, orientation)
     };
+}
+
+export function signedAreaTri(a: Vector, b: Vector, c: Vector): number {
+    return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
+}
+
+export function intersectSegmentSegment(a0: Vector, a1: Vector, b0: Vector, b1: Vector): Vector | null {
+    const x1 = signedAreaTri(a0, a1, b1);
+    const x2 = signedAreaTri(a0, a1, b0);
+    if (x1 !== 0.0 && x2 !== 0.0 && x1 * x2 < 0.0) {
+        const x3 = signedAreaTri(b0, b1, a0);
+        const x4 = x3 + x2 - x1;
+        if (x3 * x4 < 0.0) {
+            const t = x3 / (x3 - x4);
+            return vAdd(a0, vMul(vSub(a1, a0), t));
+        }
+    }
+    return null;
+}
+
+export type intersectionResponse = { point: Vector, normal: Vector } | null;
+
+export function intersectSegmentCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): Vector | null {
+    let d = vSub(s1, s0);
+    const len = Math.max(vLength(d), 0.000001);
+    d = vDiv(d, len);
+    const m = vSub(s0, pos);
+    const b = vDot(m, d);
+    const c = vDot(m, m) - rad * rad;
+    if (c > 0.0 && b > 0.0) {
+        return null;
+    }
+    const discSq = b * b - c;
+    if (discSq < 0.0) {
+        return null;
+    }
+    const disc = Math.sqrt(discSq);
+    let t = -b - disc;
+    if (t < 0.0) {
+        t = -b + disc;
+    }
+    if (t <= len) {
+        const point = vAdd(s0, vMul(d, t));
+        return point;
+    }
+    return null;
+}
+
+export function intersectSegmentAabb(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
+    let tmin = 0;
+    let tmax = Number.MAX_VALUE;
+    const eps = 0.00001;
+    const r = s0;
+    let d = vSub(s1, s0);
+    const dist = vLength(d);
+    d = dist > eps ? vDiv(d, dist) : v(1.0, 0.0);
+
+    let absDx = Math.abs(d.x);
+    let absDy = Math.abs(d.y);
+
+    // @HACK: fix this function
+    if (absDx < eps) {
+        d.x = eps * 2.0;
+        absDx = d.x;
+    }
+    if (absDy < eps) {
+        d.y = eps * 2.0;
+        absDy = d.y;
+    }
+
+    if (absDx > eps) {
+        const tx1 = (min.x - r.x) / d.x;
+        const tx2 = (max.x - r.x) / d.x;
+        tmin = Math.max(tmin, Math.min(tx1, tx2));
+        tmax = Math.min(tmax, Math.max(tx1, tx2));
+        if (tmin > tmax) {
+            return null;
+        }
+    }
+    if (absDy > eps) {
+        const ty1 = (min.y - r.y) / d.y;
+        const ty2 = (max.y - r.y) / d.y;
+        tmin = Math.max(tmin, Math.min(ty1, ty2));
+        tmax = Math.min(tmax, Math.max(ty1, ty2));
+        if (tmin > tmax) {
+            return null;
+        }
+    }
+    if (tmin > dist) {
+        return null;
+    }
+    // Hit
+    const p = vAdd(s0, vMul(d, tmin));
+
+    return p;
+}
+
+export function intersectSegmentAabb2(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
+    // Returns proper intersection point if the segment
+    // begins inside of the aabb
+    const segments = [{ a: v(min.x, min.y), b: v(max.x, min.y) }, { a: v(max.x, min.y), b: v(max.x, max.y) }, { a: v(max.x, max.y), b: v(min.x, max.y) }, { a: v(min.x, max.y), b: v(min.x, min.y) }];
+    for (let i = 0; i < segments.length; i++) {
+        const seg = segments[i];
+        const res = intersectSegmentSegment(s0, s1, seg.a, seg.b);
+        if (res) {
+            return res;
+        }
+    }
+    return null;
 }
 
 export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {

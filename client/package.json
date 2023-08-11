@@ -63,7 +63,6 @@
     "axios": "^1.4.0",
     "gsap": "^3.12.2",
     "howler": "^2.2.3",
-    "intersects": "^2.7.2",
     "jquery": "^3.7.0",
     "nipplejs": "^0.10.1",
     "pixi.js": "^7.2.4"

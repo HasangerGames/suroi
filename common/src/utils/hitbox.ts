@@ -1,5 +1,3 @@
-import { boxLine, circleLine } from "intersects";
-
 import {
     vClone,
     v,
@@ -13,7 +11,9 @@ import {
     rectangleCollision,
     rectRectCollision,
     rectangleDistanceToRectangle,
-    addAdjust
+    addAdjust,
+    intersectSegmentCircle,
+    intersectSegmentAabb
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -25,7 +25,7 @@ export abstract class Hitbox {
     abstract distanceTo(that: Hitbox): CollisionRecord;
     abstract clone(): Hitbox;
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
-    abstract intersectsLine(a: Vector, b: Vector): boolean;
+    abstract intersectsLine(a: Vector, b: Vector): Vector | null;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -69,8 +69,8 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
-        return circleLine(this.position.x, this.position.y, this.radius, a.x, a.y, b.x, b.y);
+    intersectsLine(a: Vector, b: Vector): Vector | null {
+        return intersectSegmentCircle(a, b, this.position, this.radius);
     }
 }
 
@@ -123,8 +123,8 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(rect.min, rect.max);
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
-        return boxLine(this.min.x, this.min.y, this.width, this.height, a.x, a.y, b.x, b.y);
+    intersectsLine(a: Vector, b: Vector): Vector | null {
+        return intersectSegmentAabb(a, b, this.min, this.max);
     }
 }
 
@@ -187,10 +187,11 @@ export class ComplexHitbox extends Hitbox {
         return new ComplexHitbox(hitBoxes);
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
+    intersectsLine(a: Vector, b: Vector): Vector | null {
         for (const hitbox of this.hitBoxes) {
-            if (hitbox.intersectsLine(a, b)) return true;
+            const intersection = hitbox.intersectsLine(a, b);
+            if (intersection) return intersection;
         }
-        return false;
+        return null;
     }
 }
