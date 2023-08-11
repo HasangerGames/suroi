@@ -217,6 +217,7 @@ export class UpdatePacket extends ReceivingPacket {
                     switch (type.category) {
                         case ObjectCategory.Player: {
                             object = new Player(game, id);
+                            game.players.add(object as Player);
                             break;
                         }
                         case ObjectCategory.Obstacle: {
@@ -283,6 +284,9 @@ export class UpdatePacket extends ReceivingPacket {
                 }
                 object.destroy();
                 game.objects.delete(id);
+                if (object instanceof Player) {
+                    game.players.delete(object);
+                }
             }
         }
 

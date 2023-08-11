@@ -142,20 +142,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.hitBox.position = this.position;
 
+        if (this.isActivePlayer) {
+            this.game.camera.setPosition(this.position);
+
+            Howler.pos(this.position.x, this.position.y);
+        }
+
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.game.soundManager.play(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`);
+                this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0);
                 this.distSinceLastFootstep = 0;
+                this.floorType = FloorType.Grass;
             }
         }
 
         this.rotation = stream.readRotation(16);
-
-        if (this.isActivePlayer) {
-            this.game.camera.setPosition(this.position);
-        }
 
         /*const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);

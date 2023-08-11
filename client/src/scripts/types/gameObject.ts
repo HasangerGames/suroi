@@ -62,6 +62,19 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container.destroy();
     }
 
+    playSound(key: string, fallOff: number): number {
+        return this.game.soundManager.get(key).pos(this.position.x, this.position.y).pannerAttr({
+            coneInnerAngle: 360,
+            coneOuterAngle: 360,
+            coneOuterGain: 0,
+            distanceModel: "inverse",
+            maxDistance: 1000,
+            refDistance: 5,
+            rolloffFactor: 1,
+            panningModel: "HRTF"
+        }).play();
+    }
+
     abstract deserializePartial(stream: SuroiBitStream): void;
     abstract deserializeFull(stream: SuroiBitStream): void;
 }

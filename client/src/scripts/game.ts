@@ -121,6 +121,8 @@ export class Game {
 
             this.activePlayer = new Player(this, -1, true);
 
+            this.players.add(this.activePlayer);
+
             this.tickTimeoutID = window.setInterval(this.tick.bind(this), 30);
         };
 
@@ -289,8 +291,6 @@ export class Game {
             const player = this.activePlayer;
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
-            player.floorType = FloorType.Grass;
-
             for (const o of this.objects) {
                 const object = o[1];
                 if (object instanceof Obstacle && object.isDoor && !object.destroyed) {
@@ -311,10 +311,12 @@ export class Game {
                 } else if (object instanceof Building) {
                     if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitBox));
 
-                    for (const floor of object.floors) {
-                        if (floor.hitbox.collidesWith(player.hitBox)) {
-                            player.floorType = floor.type;
-                            break;
+                    for (const player of this.players) {
+                        for (const floor of object.floors) {
+                            if (floor.hitbox.collidesWith(player.hitBox)) {
+                                player.floorType = floor.type;
+                                break;
+                            }
                         }
                     }
                 }
