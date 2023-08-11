@@ -28,6 +28,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         closedHitbox?: Hitbox
         openHitbox?: Hitbox
         openAltHitbox?: Hitbox
+        hitbox?: Hitbox
         offset: number
     };
 
@@ -87,11 +88,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 }
 
                 if (this.door.offset === 1) {
-                    this.hitbox = this.door.openHitbox!.clone();
+                    this.door.hitbox = this.door.openHitbox?.clone();
                 } else if (this.door.offset === 3) {
-                    this.hitbox = this.door.openAltHitbox!.clone();
+                    this.door.hitbox = this.door.openAltHitbox?.clone();
                 } else {
-                    this.hitbox = this.door.closedHitbox!.clone();
+                    this.door.hitbox = this.door.closedHitbox?.clone();
                 }
             }
         }
@@ -115,7 +116,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
-        if (!this.isNew && !this.isDoor) {
+        if (!this.isNew && !this.door?.hitbox) {
             const orientation = definition.rotationMode === "limited" ? rotationToOrientation(this.rotation) : 0;
             this.hitbox = definition.hitbox.transform(this.position, this.scale, orientation);
         }

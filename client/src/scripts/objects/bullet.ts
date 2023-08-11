@@ -27,6 +27,8 @@ export class Bullet {
 
     dead = false;
 
+    trailReachedMaxLength = false;
+
     trailTicks = 0;
 
     constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number) {
@@ -67,7 +69,7 @@ export class Bullet {
 
         if (this.dead) this.trailTicks -= delta;
         else {
-            this.trailTicks += delta;
+            if (!this.trailReachedMaxLength) this.trailTicks += delta;
             this.position = vAdd(this.position, vMul(this.speed, delta));
         }
 
@@ -81,7 +83,6 @@ export class Bullet {
                     const intersection = object.hitbox.intersectsLine(oldPosition, this.position);
                     if (!intersection) continue;
 
-                    console.log(object.type.idString);
                     this.dead = true;
                     this.position = intersection;
 
@@ -90,9 +91,11 @@ export class Bullet {
             }
         }
 
-        const fadeDist = distance(this.initialPosition, vAdd(this.initialPosition, vMul(this.speed, this.trailTicks)));
+        const fadeDist = this.source.definition.ballistics.speed * this.trailTicks;
 
         const length = Math.min(fadeDist * 20 * this.tracerLength, this.maxLength);
+
+        if (length === this.maxLength) this.trailReachedMaxLength = true;
 
         const scale = length / this.maxLength;
 
