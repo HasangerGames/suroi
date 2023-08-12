@@ -598,7 +598,7 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         killstreak: true,
         bulletCount: 1,
-        length: 11,
+        length: 10,
         fists: {
             left: v(135, -6),
             right: v(75, 0),
@@ -639,7 +639,7 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         killstreak: true,
         bulletCount: 10,
-        length: 8,
+        length: 10,
         fists: {
             left: v(155, -6),
             right: v(75, 0),
