@@ -324,6 +324,7 @@ export class GameScene extends Phaser.Scene {
 
                         // Autoloot
                         if (
+                            canInteract &&
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee && lootDef.itemType !== ItemType.Skin) ||
                             (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
