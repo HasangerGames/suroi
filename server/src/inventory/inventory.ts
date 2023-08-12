@@ -120,8 +120,8 @@ export class Inventory {
             const now = this.owner.game.now;
 
             this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
-                //now - this.owner.lastSwitch >= 1000 &&
-                //now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
+                now - this.owner.lastSwitch >= 1000 &&
+                now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
                 item.definition.canQuickswitch === true
             )
                 ? 250
