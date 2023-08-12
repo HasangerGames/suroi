@@ -338,7 +338,7 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
     const segments = [{ a: v(min.x, min.y), b: v(max.x, min.y) }, { a: v(max.x, min.y), b: v(max.x, max.y) }, { a: v(max.x, max.y), b: v(min.x, max.y) }, { a: v(min.x, max.y), b: v(min.x, min.y) }];
     for (let i = 0; i < segments.length; i++) {
         const seg = segments[i];
-        const res = intersectSegmentSegment(s0, s1, seg.a, seg.b);
+        const res = lineIntersectsLine(s0, s1, seg.a, seg.b);
         if (res) {
             return res;
         }
