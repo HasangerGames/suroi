@@ -18,7 +18,7 @@ import { type GameObject } from "./types/gameObject";
 import { log } from "../../common/src/utils/misc";
 import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet, DamageRecord } from "./objects/bullet";
+import { Bullet } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
@@ -28,7 +28,6 @@ import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
-import { Obstacle } from "./objects/obstacle";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
@@ -90,10 +89,6 @@ export class Game {
      * All bullets created this tick
      */
     readonly newBullets = new Set<Bullet>();
-    /**
-     * All records of damage by bullets this tick
-     */
-    readonly damageRecords = new Set<DamageRecord>();
 
     /**
      * All kill feed messages this tick
@@ -145,42 +140,6 @@ export class Game {
             else Settings.maxLinearCorrection = 0;
         });
 
-        // this return type is technically not true, but it gets typescript to shut up
-        const isValidBullet = (object: unknown): object is Bullet => object instanceof Bullet && object.distanceSquared <= object.maxDistanceSquared && !object.dead;
-
-        // Handle bullet collisions
-        this.world.on("begin-contact", contact => {
-            const objectA = contact.getFixtureA().getUserData();
-            const objectB = contact.getFixtureB().getUserData();
-
-            let bullet: Bullet | undefined;
-            let target: GameObject | undefined;
-
-            if (isValidBullet(objectA)) [bullet, target] = [objectA, objectB as GameObject];
-            if (isValidBullet(objectB)) [bullet, target] = [objectB, objectA as GameObject];
-
-            if (bullet && target) {
-                /*
-                    fixme This is broken right now, and it's not clear why
-                */
-                // const penetration = bullet.source.ballistics.penetration;
-                // if (
-                //     !(penetration?.players === true && target instanceof Player) &&
-                //     !(penetration?.obstacles === true && target instanceof Obstacle)
-                // ) {
-                // Delete the bullet
-                let deleteBullet = true;
-                // }
-
-                // Obstacles with noCollisions like bushes
-                if (target instanceof Obstacle && target.definition.noCollisions) deleteBullet = false;
-
-                bullet.dead = deleteBullet;
-
-                this.damageRecords.add(new DamageRecord(target, bullet.shooter, bullet, deleteBullet));
-            }
-        });
-
         // Generate map
         this.map = new Map(this, Config.mapName);
 
@@ -212,42 +171,10 @@ export class Game {
 
             // Update bullets
             for (const bullet of this.bullets) {
-                if (bullet.distanceSquared >= bullet.maxDistanceSquared) {
-                    if (!bullet.dead) this.removeBullet(bullet);
-                    // Note: Bullets that pass their maximum distance are automatically deleted by the client,
-                    // so there's no need to add them to the list of deleted bullets
-                }
+                bullet.update();
+
+                if (bullet.dead) this.bullets.delete(bullet);
             }
-
-            // Do damage to objects hit by bullets
-            for (const damageRecord of this.damageRecords) {
-                const bullet = damageRecord.bullet;
-                const [damagedIsPlayer, damagedIsObstacle] = [damageRecord.damaged instanceof Player, damageRecord.damaged instanceof Obstacle];
-
-                // Delete the bullet
-                // fixme broken rn
-                // const penetration = bullet.source.ballistics.penetration;
-                // if (
-                //     !(penetration?.players === true && damagedIsPlayer) &&
-                //     !(penetration?.obstacles === true && damagedIsObstacle)
-                // ) {
-                if (damageRecord.deleteBullet) {
-                    this.removeBullet(bullet);
-                }
-                // }
-
-                // Bullets from dead players should not deal damage
-                if (bullet.shooter.dead) continue;
-
-                // Do the damage
-                const definition = bullet.source.definition.ballistics;
-                if (damagedIsPlayer) {
-                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.source);
-                } else if (damagedIsObstacle) {
-                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.source.type);
-                }
-            }
-            this.damageRecords.clear();
 
             // Handle explosions
             for (const explosion of this.explosions) {
@@ -606,15 +533,6 @@ export class Game {
         this.newBullets.add(bullet);
 
         return bullet;
-    }
-
-    /**
-     * Delete a bullet and give the id back to the allocator
-     * @param bullet The bullet to delete
-     */
-    removeBullet(bullet: Bullet): void {
-        this.world.destroyBody(bullet.body);
-        this.bullets.delete(bullet);
     }
 
     addExplosion(type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector, source: GameObject): Explosion {

@@ -1,7 +1,7 @@
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
-import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
+import { degreesToRadians, distance, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
 import { v, vAdd, vRotate } from "../../../common/src/utils/vector";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -9,6 +9,7 @@ import { FireMode, AnimationType, type ObjectCategory } from "../../../common/sr
 import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
 import { type ObjectType } from "../../../common/src/utils/objectType";
+import { Obstacle } from "../objects/obstacle";
 
 /**
  * A class representing a firearm
@@ -100,12 +101,13 @@ export class GunItem extends InventoryItem {
         let position = vAdd(owner.position, rotated);
 
         for (const object of this.owner.nearObjects) {
-            if (!object.dead && (object.hitbox != null)) {
+            if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
                 const intersection = object.hitbox.intersectsLine(this.owner.position, position);
                 if (intersection === null) continue;
 
-                position = intersection;
-                break;
+                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection)) {
+                    position = intersection;
+                }
             }
         }
 

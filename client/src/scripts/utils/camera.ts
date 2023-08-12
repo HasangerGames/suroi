@@ -44,12 +44,12 @@ export class Camera {
         }
     }
 
-    setPosition(pos: Vector) {
+    setPosition(pos: Vector): void {
         this.position = pos;
         this.updatePosition(true);
     }
 
-    updatePosition(anim = false) {
+    updatePosition(anim = false): void {
         const cameraPos = vAdd(
             vMul(vMul(this.position, 20), this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));

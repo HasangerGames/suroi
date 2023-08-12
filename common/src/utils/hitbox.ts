@@ -12,8 +12,8 @@ import {
     rectRectCollision,
     rectangleDistanceToRectangle,
     addAdjust,
-    intersectSegmentCircle,
-    intersectSegmentAabb
+    lineIntersectsRect,
+    lineIntersectsCircle
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -70,7 +70,7 @@ export class CircleHitbox extends Hitbox {
     }
 
     intersectsLine(a: Vector, b: Vector): Vector | null {
-        return intersectSegmentCircle(a, b, this.position, this.radius);
+        return lineIntersectsCircle(a, b, this.position, this.radius);
     }
 }
 
@@ -124,7 +124,7 @@ export class RectangleHitbox extends Hitbox {
     }
 
     intersectsLine(a: Vector, b: Vector): Vector | null {
-        return intersectSegmentAabb(a, b, this.min, this.max);
+        return lineIntersectsRect(a, b, this.min, this.max);
     }
 }
 

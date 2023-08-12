@@ -241,7 +241,7 @@ export function signedAreaTri(a: Vector, b: Vector, c: Vector): number {
     return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
 }
 
-export function intersectSegmentSegment(a0: Vector, a1: Vector, b0: Vector, b1: Vector): Vector | null {
+export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vector): Vector | null {
     const x1 = signedAreaTri(a0, a1, b1);
     const x2 = signedAreaTri(a0, a1, b0);
     if (x1 !== 0.0 && x2 !== 0.0 && x1 * x2 < 0.0) {
@@ -257,7 +257,7 @@ export function intersectSegmentSegment(a0: Vector, a1: Vector, b0: Vector, b1: 
 
 export type intersectionResponse = { point: Vector, normal: Vector } | null;
 
-export function intersectSegmentCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): Vector | null {
+export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): Vector | null {
     let d = vSub(s1, s0);
     const len = Math.max(vLength(d), 0.000001);
     d = vDiv(d, len);
@@ -283,7 +283,7 @@ export function intersectSegmentCircle(s0: Vector, s1: Vector, pos: Vector, rad:
     return null;
 }
 
-export function intersectSegmentAabb(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
+export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
     let tmin = 0;
     let tmax = Number.MAX_VALUE;
     const eps = 0.00001;
@@ -332,7 +332,7 @@ export function intersectSegmentAabb(s0: Vector, s1: Vector, min: Vector, max: V
     return p;
 }
 
-export function intersectSegmentAabb2(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
+export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
     // Returns proper intersection point if the segment
     // begins inside of the aabb
     const segments = [{ a: v(min.x, min.y), b: v(max.x, min.y) }, { a: v(max.x, min.y), b: v(max.x, max.y) }, { a: v(max.x, max.y), b: v(min.x, max.y) }, { a: v(min.x, max.y), b: v(min.x, min.y) }];

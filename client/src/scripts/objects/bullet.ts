@@ -5,15 +5,18 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type Vector, vAdd, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
-import { distance } from "../../../../common/src/utils/math";
+import { distance, distanceSquared } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { type GameObject } from "../types/gameObject";
 
 export class Bullet {
     game: Game;
     image: SuroiSprite;
 
     source: ObjectType<ObjectCategory.Loot, GunDefinition>;
+
+    definition: GunDefinition["ballistics"];
 
     initialPosition: Vector;
     position: Vector;
@@ -35,15 +38,15 @@ export class Bullet {
         this.game = game;
 
         this.source = source;
-        const ballistics = this.source.definition.ballistics;
+        this.definition = this.source.definition.ballistics;
 
         this.initialPosition = position;
 
         this.position = vClone(this.initialPosition);
 
-        this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), ballistics.speed);
+        this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
 
-        const maxDist = ballistics.maxDistance;
+        const maxDist = this.definition.maxDistance;
 
         this.finalPosition = vAdd(this.initialPosition, vMul(this.speed, maxDist));
 
@@ -55,11 +58,11 @@ export class Bullet {
 
         this.maxLength = this.image.width * (this.tracerLength);
 
-        this.image.scale.set(0, ballistics.tracerWidth ?? 1);
+        this.image.scale.set(0, this.definition.tracerWidth ?? 1);
 
         this.image.anchor.set(1, 0.5);
 
-        this.image.alpha = ballistics.tracerOpacity?.start ?? 1;
+        this.image.alpha = this.definition.tracerOpacity?.start ?? 1;
 
         this.game.camera.container.addChild(this.image);
     }
@@ -73,25 +76,35 @@ export class Bullet {
             this.position = vAdd(this.position, vMul(this.speed, delta));
         }
 
+        const collisions: Array<{ pos: Vector, object: GameObject }> = [];
+
         if (!this.dead) {
             for (const o of this.game.objects) {
                 const object = o[1];
 
                 if ((object instanceof Obstacle || object instanceof Player) && !object.dead) {
-                    if (object instanceof Obstacle && object.type.definition.noCollisions) continue;
-
                     const intersection = object.hitbox.intersectsLine(oldPosition, this.position);
                     if (!intersection) continue;
 
-                    this.dead = true;
-                    this.position = intersection;
-
-                    break;
+                    collisions.push({ pos: intersection, object });
                 }
+            }
+
+            collisions.sort((a, b) => {
+                return distanceSquared(a.pos, this.initialPosition) - distanceSquared(b.pos, this.initialPosition);
+            });
+
+            for (const collision of collisions) {
+                const object = collision.object;
+                if (object instanceof Obstacle && (object.type.definition.noCollisions)) continue;
+
+                this.dead = true;
+                this.position = collision.pos;
+                break;
             }
         }
 
-        const fadeDist = this.source.definition.ballistics.speed * this.trailTicks;
+        const fadeDist = this.definition.speed * this.trailTicks;
 
         const length = Math.min(fadeDist * 20 * this.tracerLength, this.maxLength);
 
@@ -105,7 +118,7 @@ export class Bullet {
 
         const dist = distance(this.initialPosition, this.position);
 
-        if (dist > this.source.definition.ballistics.maxDistance) {
+        if (dist > this.definition.maxDistance) {
             this.dead = true;
         }
 

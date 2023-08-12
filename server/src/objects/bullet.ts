@@ -1,93 +1,98 @@
-import { type Body, Circle, Vec2 } from "planck";
-import { type CollisionFilter, type GameObject } from "../types/gameObject";
-import { type Player } from "./player";
+import { Player } from "./player";
 import { type Game } from "../game";
 import { distanceSquared } from "../../../common/src/utils/math";
 import { type GunItem } from "../inventory/gunItem";
-import { type Vector, v, vAdd } from "../../../common/src/utils/vector";
+import { type Vector, v, vAdd, vMul, vClone } from "../../../common/src/utils/vector";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { Obstacle } from "./obstacle";
+import { type GameObject } from "../types/gameObject";
+
 export class Bullet {
-    readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: true,
-        loot: false
-    };
+    readonly game: Game;
 
-    readonly collidesWith: CollisionFilter = {
-        player: true,
-        obstacle: true,
-        bullet: false,
-        loot: false
-    };
+    readonly initialPosition: Vector;
 
-    readonly _initialPosition: Vector;
-    get initialPosition(): Vector { return this._initialPosition; }
+    position: Vector;
 
-    readonly finalPosition: Vector;
     rotation: number;
 
-    readonly maxDistance: number;
-    get maxDistanceSquared(): number { return this.maxDistance ** 2; }
+    readonly maxDistanceSquared: number;
 
     dead = false;
-
-    readonly body: Body;
 
     readonly source: GunItem;
     readonly shooter: Player;
 
-    get distanceSquared(): number {
-        return distanceSquared(this.initialPosition, this.body.getPosition());
-    }
+    readonly velocity: Vector;
+
+    definition: GunDefinition["ballistics"];
 
     constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player) {
-        this._initialPosition = position;
+        this.game = game;
+        this.initialPosition = vClone(position);
+        this.position = position;
         this.rotation = rotation;
         this.source = source;
         this.shooter = shooter;
 
-        const definition = this.source.type.definition.ballistics;
+        this.definition = this.source.type.definition.ballistics;
 
-        this.maxDistance = definition.maxDistance;
+        this.maxDistanceSquared = this.definition.maxDistance ** 2;
 
-        // Init body
-        this.body = game.world.createBody({
-            type: "dynamic",
-            position: Vec2(position),
-            fixedRotation: true,
-            bullet: true
-        });
-
-        this.body.createFixture({
-            shape: Circle(0),
-            friction: 0.0,
-            density: 0.0,
-            restitution: 0.0,
-            userData: this
-        });
-
-        this.body.setMassData({
-            I: 0,
-            center: Vec2(0, 0),
-            mass: 0.0
-        });
-
-        const velocity = Vec2(Math.sin(rotation), -Math.cos(rotation)).mul(definition.speed);
-        this.finalPosition = vAdd(this.initialPosition, v(this.maxDistance * Math.sin(rotation), this.maxDistance * -Math.cos(rotation)));
-        this.body.setLinearVelocity(velocity);
+        this.velocity = vMul(vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed), 30);
     }
-}
 
-export class DamageRecord {
-    damaged: GameObject;
-    damager: Player;
-    bullet: Bullet;
-    deleteBullet: boolean;
+    update(): void {
+        const oldPosition = vClone(this.position);
 
-    constructor(damaged: GameObject, damager: Player, bullet: Bullet, deleteBullet: boolean) {
-        this.damaged = damaged;
-        this.damager = damager;
-        this.bullet = bullet;
-        this.deleteBullet = deleteBullet;
+        this.position = vAdd(this.position, this.velocity);
+
+        // Bullets from dead players should not deal damage
+        if (this.shooter.dead || distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
+            this.dead = true;
+            return;
+        }
+
+        const objects = new Set([...this.game.getVisibleObjects(this.position), ...this.game.livingPlayers]);
+
+        const collisions: Array<{ pos: Vector, object: GameObject }> = [];
+
+        for (const object of objects) {
+            if (object.damageable && !object.dead && (object instanceof Obstacle || object instanceof Player)) {
+                const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
+
+                if (collision) {
+                    collisions.push({
+                        pos: collision,
+                        object
+                    });
+                }
+            }
+        }
+
+        // Sort by closest to initial position
+        collisions.sort((a, b) => {
+            return distanceSquared(a.pos, this.initialPosition) - distanceSquared(b.pos, this.initialPosition);
+        });
+
+        for (const collision of collisions) {
+            const object = collision.object;
+
+            this.position = collision.pos;
+
+            if (object instanceof Player) {
+                object.damage(this.definition.damage, this.shooter, this.source.type);
+                this.dead = true;
+                break;
+            } else if (object instanceof Obstacle) {
+                object.damage?.(this.definition.damage * this.definition.obstacleMultiplier, this.shooter, this.source.type);
+
+                // Obstacles with noCollisions like bushes
+                if (!object.definition.noCollisions) {
+                    this.dead = true;
+                    break;
+                }
+            }
+        }
     }
 }
