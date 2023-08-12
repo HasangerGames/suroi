@@ -33,7 +33,7 @@ import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
 
-const showMeleeDebugCircle = true;
+const showMeleeDebugCircle = false;
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;

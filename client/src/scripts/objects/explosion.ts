@@ -1,13 +1,11 @@
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 
-import { localStorageInstance } from "../utils/localStorageHandler";
-
-import { distanceSquared } from "../../../../common/src/utils/math";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { type ObjectCategory } from "../../../../common/src/constants";
+import { SuroiSprite } from "../utils/pixi";
+import { gsap } from "gsap";
 
 /**
  * Custom particle class that adds friction to its velocity.
@@ -27,10 +25,16 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 
 export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
-    const phaserPos = vMul(position, 20);
+    position = vMul(position, 20);
 
-    /*const image = scene.add.image(phaserPos.x, phaserPos.y, "main", definition.animation.frame).setScale(0);
-    const emitter = scene.add.particles(phaserPos.x, phaserPos.y, "main", {
+    const image = new SuroiSprite(definition.animation.frame);
+
+    image.scale.set(0);
+    image.setPos(position.x, position.y);
+
+    game.camera.container.addChild(image);
+
+    /*const emitter = scene.add.particles(phaserPos.x, phaserPos.y, "main", {
         frame: definition.particles.frame,
         lifespan: definition.particles.duration,
         speed: { min: 0, max: definition.radius.max * 60 },
@@ -48,25 +52,25 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
     emitter.explode(definition.particles.count);
 
     // Destroy particle emitter.
-    setTimeout(() => { emitter.destroy(); }, definition.particles.duration);
+    setTimeout(() => { emitter.destroy(); }, definition.particles.duration);*/
 
-    scene.tweens.add({
-        targets: image,
-        scale: definition.animation.scale,
-        duration: definition.animation.duration,
+    gsap.to(image.scale, {
+        x: definition.animation.scale,
+        y: definition.animation.scale,
+        duration: definition.animation.duration / 1000,
         ease: "Expo.Out"
     });
 
-    scene.tweens.add({
-        targets: image,
+    gsap.to(image, {
         alpha: 0,
-        duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
-        ease: "Expo.Out"
-    }).on("complete", (): void => {
-        image.destroy();
+        duration: definition.animation.duration * 1.5 / 1000, // the alpha animation is a bit longer so it looks nicer
+        ease: "Expo.Out",
+        onComplete: () => {
+            image.destroy();
+        }
     });
 
-    if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
+    /*if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
         if (localStorageInstance.config.cameraShake) {
             scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
         }
