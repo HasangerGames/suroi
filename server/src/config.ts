@@ -102,7 +102,7 @@ export interface ConfigType {
     readonly disableLobbyClearing: boolean
 }
 
-export const Config = {
+export const Config: ConfigType = {
     host: "127.0.0.1",
     port: 8000,
 
@@ -151,4 +151,4 @@ export const Config = {
         radians: { password: "radians" }
     },
     disableLobbyClearing: false
-} satisfies ConfigType as ConfigType;
+};

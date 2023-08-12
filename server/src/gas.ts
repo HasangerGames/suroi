@@ -24,7 +24,7 @@ export class Gas {
 
     currentRadius = GasStages[0].oldRadius;
     dps = 0;
-    ticksSinceLastDamage = 0;
+    lastDamageMs = Date.now();
 
     dirty = false;
     percentageDirty = false;
@@ -42,16 +42,15 @@ export class Gas {
         this.currentPosition = vClone(this.oldPosition);
     }
 
-    tick(): void {
+    tick(now: number, fwdMs: number): void {
         if (this.state !== GasState.Inactive) {
             this.percentage = (this.game.now - this.countdownStart) / (1000 * this.initialDuration);
             this.percentageDirty = true;
         }
 
-        this.ticksSinceLastDamage++;
         this.doDamage = false;
-        if (this.ticksSinceLastDamage >= 30) {
-            this.ticksSinceLastDamage = 0;
+        if ((now - this.lastDamageMs) > 1000) {
+            this.lastDamageMs = now;
             this.doDamage = true;
             if (this.state === GasState.Advancing) {
                 this.currentPosition = vecLerp(this.oldPosition, this.newPosition, this.percentage);

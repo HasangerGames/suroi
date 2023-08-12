@@ -56,6 +56,7 @@ export class Game {
      * The value of `Date.now()`, as of the start of the tick.
      */
     _now = Date.now();
+    set now(value: number) { this._now = value; }
     get now(): number { return this._now; }
 
     /**
@@ -194,272 +195,299 @@ export class Game {
         this.allowJoin = true;
 
         // Start the tick loop
-        this.tick(30);
+        this.tickDynamically(3);
+    }
+
+    singleTick(now: number, fwdMs: number): void {
+        // `fwdMs` is the time this tick needs to step the game forwards
+
+        // Update loot positions
+        for (const loot of this.loot) {
+            if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
+                this.partialDirtyObjects.add(loot);
+            }
+            loot.oldPosition = vClone(loot.position);
+        }
+
+        // Update bullets
+        for (const bullet of this.bullets) {
+            if (bullet.distanceSquared >= bullet.maxDistanceSquared) {
+                if (!bullet.dead) this.removeBullet(bullet);
+                // Note: Bullets that pass their maximum distance are automatically deleted by the client,
+                // so there's no need to add them to the list of deleted bullets
+            }
+        }
+
+        // Do damage to objects hit by bullets
+        for (const damageRecord of this.damageRecords) {
+            const bullet = damageRecord.bullet;
+            const [damagedIsPlayer, damagedIsObstacle] = [damageRecord.damaged instanceof Player, damageRecord.damaged instanceof Obstacle];
+
+            // Delete the bullet
+            // fixme broken rn
+            // const penetration = bullet.source.ballistics.penetration;
+            // if (
+            //     !(penetration?.players === true && damagedIsPlayer) &&
+            //     !(penetration?.obstacles === true && damagedIsObstacle)
+            // ) {
+            if (damageRecord.deleteBullet) {
+                this.removeBullet(bullet);
+                this.deletedBulletIDs.add(bullet.id);
+            }
+            // }
+
+            // Bullets from dead players should not deal damage
+            if (bullet.shooter.dead) continue;
+
+            // Do the damage
+            const definition = bullet.source.definition.ballistics;
+            if (damagedIsPlayer) {
+                (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.source);
+            } else if (damagedIsObstacle) {
+                (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.source.type);
+            }
+        }
+        this.damageRecords.clear();
+
+        // Handle explosions
+        for (const explosion of this.explosions) explosion.explode();
+
+        // Update gas
+        this.gas.tick(now, fwdMs);
+
+        // Update physics
+        this.world.step(fwdMs);
+
+        // First loop over players: Movement, animations, & actions
+        for (const player of this.livingPlayers) {
+            // This system allows opposite movement keys to cancel each other out.
+            const movement = v(0, 0);
+
+            if (player.isMobile && player.movement.moving) {
+                movement.x = Math.cos(player.movement.angle) * 1.45;
+                movement.y = -Math.sin(player.movement.angle) * 1.45;
+            } else {
+                if (player.movement.up) movement.y++;
+                if (player.movement.down) movement.y--;
+                if (player.movement.left) movement.x--;
+                if (player.movement.right) movement.x++;
+            }
+
+            if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+                movement.x *= Math.SQRT1_2;
+                movement.y *= Math.SQRT1_2;
+            }
+
+            /*if (this.emotes.size > 0) {
+                player.fast = !player.fast;
+                if (player.fast) {
+                    player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
+                    player.fullDirtyObjects.add(player);
+                    this.fullDirtyObjects.add(player);
+                } else {
+                    player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
+                    player.fullDirtyObjects.add(player);
+                    this.fullDirtyObjects.add(player);
+                }
+            }
+            if (player.fast) speed *= 30;*/
+
+            const speed = player.calculateSpeed();
+            player.setVelocity(movement.x * speed, movement.y * speed);
+
+            if (player.isMoving || player.turning) {
+                player.disableInvulnerability();
+                this.partialDirtyObjects.add(player);
+            }
+
+            // Drain adrenaline
+            if (player.adrenaline > 0) player.adrenaline -= 0.015;
+
+            // Regenerate health
+            if (player.adrenaline >= 87.5) player.health += 0.082 * (fwdMs / 30); // 2.75 / 33.3
+            else if (player.adrenaline >= 50) player.health += 0.0638 * (fwdMs / 30); // 2.125 / 33.3
+            else if (player.adrenaline >= 25) player.health += 0.0337 * (fwdMs / 30); // 1.125 / 33.3
+            else if (player.adrenaline > 0) player.health += 0.0187 * (fwdMs / 30); // 0.625 / 33.3
+
+            // Shoot gun/use melee
+            if (player.startedAttacking) {
+                player.startedAttacking = false;
+                player.disableInvulnerability();
+                player.activeItem?.useItem(now);
+            }
+
+            // Gas damage
+            if (this.gas.doDamage && this.gas.isInGas(player.position)) player.piercingDamage(this.gas.dps, "gas");
+
+            let isInsideBuilding = false;
+            for (const object of player.nearObjects) {
+                if (object instanceof Building && !object.dead) {
+                    if (object.scopeHitbox.collidesWith(player.hitbox)) {
+                        isInsideBuilding = true;
+                        break;
+                    }
+                }
+            }
+            if (isInsideBuilding && !player.isInsideBuilding) {
+                player.zoom = 48;
+            } else if (!player.isInsideBuilding) {
+                player.zoom = player.inventory.scope.definition.zoomLevel;
+            }
+            player.isInsideBuilding = isInsideBuilding;
+
+            player.turning = false;
+        }
+
+        // Second loop over players: calculate visible objects & send updates
+        for (const player of this.connectedPlayers) {
+            if (!player.joined) continue;
+
+            // Calculate visible objects
+            if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
+                player.updateVisibleObjects();
+            }
+
+            // Full objects
+            if (this.fullDirtyObjects.size !== 0) {
+                for (const object of this.fullDirtyObjects) {
+                    if (player.visibleObjects.has(object)) {
+                        player.fullDirtyObjects.add(object);
+                    }
+                }
+            }
+
+            // Partial objects
+            if (this.partialDirtyObjects.size !== 0) {
+                for (const object of this.partialDirtyObjects) {
+                    if (player.visibleObjects.has(object) && !player.fullDirtyObjects.has(object)) {
+                        player.partialDirtyObjects.add(object);
+                    }
+                }
+            }
+
+            // Deleted objects
+            if (this.deletedObjects.size !== 0) {
+                for (const object of this.deletedObjects) {
+                    if (player.visibleObjects.has(object) && object !== player) {
+                        player.deletedObjects.add(object);
+                    }
+                }
+            }
+
+            // Emotes
+            if (this.emotes.size !== 0) {
+                for (const emote of this.emotes) {
+                    if (player.visibleObjects.has(emote.player)) {
+                        player.emotes.add(emote);
+                    }
+                }
+            }
+
+            for (const message of this.killFeedMessages) player.sendPacket(message);
+            if (player.spectating === undefined) {
+                const updatePacket = new UpdatePacket(player);
+                const updateStream = SuroiBitStream.alloc(updatePacket.allocBytes);
+                updatePacket.serialize(updateStream);
+                player.sendData(updateStream);
+                for (const spectator of player.spectators) {
+                    spectator.sendData(updateStream);
+                }
+            }
+        }
+
+        // Reset everything
+        this.fullDirtyObjects.clear();
+        this.partialDirtyObjects.clear();
+        this.deletedObjects.clear();
+        this.newBullets.clear();
+        this.deletedBulletIDs.clear();
+        this.explosions.clear();
+        this.emotes.clear();
+        this.killFeedMessages.clear();
+        this.aliveCountDirty = false;
+        this.gas.dirty = false;
+        this.gas.percentageDirty = false;
+        this.updateObjects = false;
+
+        for (const player of this.livingPlayers) player.hitEffect = false;
+
+        // Winning logic
+        if (this._started && this.aliveCount < 2 && !this._over) {
+            // Send game over packet to the last man standing
+            if (this.aliveCount === 1) {
+                const lastManStanding = [...this.livingPlayers][0];
+                lastManStanding.movement.up = false;
+                lastManStanding.movement.down = false;
+                lastManStanding.movement.left = false;
+                lastManStanding.movement.right = false;
+                lastManStanding.attacking = false;
+                lastManStanding.sendPacket(new GameOverPacket(lastManStanding, true));
+            }
+
+            // End the game in 1 second
+            this.allowJoin = false;
+            this._over = true;
+            setTimeout(() => {
+                endGame(this._id); // End this game
+                const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
+                if (!allowJoin(otherID)) createNewGame(this._id); // Create a new game if the other game isn't allowing players to join
+            }, 1000);
+        }
+    }
+
+    registerTickPerformance(tickElapsedMs: number): void {
+        this.tickTimes.push(tickElapsedMs);
+
+        if (this.tickTimes.length >= 200) {
+            const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
+            this.tickTimes = [];
+
+            log(`Game #${this._id} average ms/tick: ${mspt}`, true);
+            log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
+        }
     }
 
     tick(delay: number): void {
         setTimeout((): void => {
             this._now = Date.now();
-
             if (this.stopped) return;
 
-            // Update loot positions
-            for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
-                    this.partialDirtyObjects.add(loot);
-                }
-                loot.oldPosition = vClone(loot.position);
-            }
-
-            // Update bullets
-            for (const bullet of this.bullets) {
-                if (bullet.distanceSquared >= bullet.maxDistanceSquared) {
-                    if (!bullet.dead) this.removeBullet(bullet);
-                    // Note: Bullets that pass their maximum distance are automatically deleted by the client,
-                    // so there's no need to add them to the list of deleted bullets
-                }
-            }
-
-            // Do damage to objects hit by bullets
-            for (const damageRecord of this.damageRecords) {
-                const bullet = damageRecord.bullet;
-                const [damagedIsPlayer, damagedIsObstacle] = [damageRecord.damaged instanceof Player, damageRecord.damaged instanceof Obstacle];
-
-                // Delete the bullet
-                // fixme broken rn
-                // const penetration = bullet.source.ballistics.penetration;
-                // if (
-                //     !(penetration?.players === true && damagedIsPlayer) &&
-                //     !(penetration?.obstacles === true && damagedIsObstacle)
-                // ) {
-                if (damageRecord.deleteBullet) {
-                    this.removeBullet(bullet);
-                    this.deletedBulletIDs.add(bullet.id);
-                }
-                // }
-
-                // Bullets from dead players should not deal damage
-                if (bullet.shooter.dead) continue;
-
-                // Do the damage
-                const definition = bullet.source.definition.ballistics;
-                if (damagedIsPlayer) {
-                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.source);
-                } else if (damagedIsObstacle) {
-                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.source.type);
-                }
-            }
-            this.damageRecords.clear();
-
-            // Handle explosions
-            for (const explosion of this.explosions) {
-                explosion.explode();
-            }
-
-            // Update gas
-            this.gas.tick();
-
-            // Update physics
-            this.world.step(30);
-
-            // First loop over players: Movement, animations, & actions
-            for (const player of this.livingPlayers) {
-                // This system allows opposite movement keys to cancel each other out.
-                const movement = v(0, 0);
-
-                if (player.isMobile && player.movement.moving) {
-                    movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = -Math.sin(player.movement.angle) * 1.45;
-                } else {
-                    if (player.movement.up) movement.y++;
-                    if (player.movement.down) movement.y--;
-                    if (player.movement.left) movement.x--;
-                    if (player.movement.right) movement.x++;
-                }
-
-                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-                    movement.x *= Math.SQRT1_2;
-                    movement.y *= Math.SQRT1_2;
-                }
-
-                /*if (this.emotes.size > 0) {
-                    player.fast = !player.fast;
-                    if (player.fast) {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
-                    } else {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
-                    }
-                }
-                if (player.fast) speed *= 30;*/
-
-                const speed = player.calculateSpeed();
-                player.setVelocity(movement.x * speed, movement.y * speed);
-
-                if (player.isMoving || player.turning) {
-                    player.disableInvulnerability();
-                    this.partialDirtyObjects.add(player);
-                }
-
-                // Drain adrenaline
-                if (player.adrenaline > 0) {
-                    player.adrenaline -= 0.015;
-                }
-
-                // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 0.082; // 2.75 / 33.3
-                else if (player.adrenaline >= 50) player.health += 0.0638; // 2.125 / 33.3
-                else if (player.adrenaline >= 25) player.health += 0.0337; // 1.125 / 33.3
-                else if (player.adrenaline > 0) player.health += 0.0187; // 0.625 / 33.3
-
-                // Shoot gun/use melee
-                if (player.startedAttacking) {
-                    player.startedAttacking = false;
-                    player.disableInvulnerability();
-                    player.activeItem?.useItem();
-                }
-
-                // Gas damage
-                if (this.gas.doDamage && this.gas.isInGas(player.position)) {
-                    player.piercingDamage(this.gas.dps, "gas");
-                }
-
-                let isInsideBuilding = false;
-                for (const object of player.nearObjects) {
-                    if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
-                            isInsideBuilding = true;
-                            break;
-                        }
-                    }
-                }
-                if (isInsideBuilding && !player.isInsideBuilding) {
-                    player.zoom = 48;
-                } else if (!player.isInsideBuilding) {
-                    player.zoom = player.inventory.scope.definition.zoomLevel;
-                }
-                player.isInsideBuilding = isInsideBuilding;
-
-                player.turning = false;
-            }
-
-            // Second loop over players: calculate visible objects & send updates
-            for (const player of this.connectedPlayers) {
-                if (!player.joined) continue;
-
-                // Calculate visible objects
-                if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
-                    player.updateVisibleObjects();
-                }
-
-                // Full objects
-                if (this.fullDirtyObjects.size !== 0) {
-                    for (const object of this.fullDirtyObjects) {
-                        if (player.visibleObjects.has(object)) {
-                            player.fullDirtyObjects.add(object);
-                        }
-                    }
-                }
-
-                // Partial objects
-                if (this.partialDirtyObjects.size !== 0) {
-                    for (const object of this.partialDirtyObjects) {
-                        if (player.visibleObjects.has(object) && !player.fullDirtyObjects.has(object)) {
-                            player.partialDirtyObjects.add(object);
-                        }
-                    }
-                }
-
-                // Deleted objects
-                if (this.deletedObjects.size !== 0) {
-                    for (const object of this.deletedObjects) {
-                        if (player.visibleObjects.has(object) && object !== player) {
-                            player.deletedObjects.add(object);
-                        }
-                    }
-                }
-
-                // Emotes
-                if (this.emotes.size !== 0) {
-                    for (const emote of this.emotes) {
-                        if (player.visibleObjects.has(emote.player)) {
-                            player.emotes.add(emote);
-                        }
-                    }
-                }
-
-                for (const message of this.killFeedMessages) player.sendPacket(message);
-                if (player.spectating === undefined) {
-                    const updatePacket = new UpdatePacket(player);
-                    const updateStream = SuroiBitStream.alloc(updatePacket.allocBytes);
-                    updatePacket.serialize(updateStream);
-                    player.sendData(updateStream);
-                    for (const spectator of player.spectators) {
-                        spectator.sendData(updateStream);
-                    }
-                }
-            }
-
-            // Reset everything
-            this.fullDirtyObjects.clear();
-            this.partialDirtyObjects.clear();
-            this.deletedObjects.clear();
-            this.newBullets.clear();
-            this.deletedBulletIDs.clear();
-            this.explosions.clear();
-            this.emotes.clear();
-            this.killFeedMessages.clear();
-            this.aliveCountDirty = false;
-            this.gas.dirty = false;
-            this.gas.percentageDirty = false;
-            this.updateObjects = false;
-
-            for (const player of this.livingPlayers) {
-                player.hitEffect = false;
-            }
-
-            // Winning logic
-            if (this._started && this.aliveCount < 2 && !this._over) {
-                // Send game over packet to the last man standing
-                if (this.aliveCount === 1) {
-                    const lastManStanding = [...this.livingPlayers][0];
-                    lastManStanding.movement.up = false;
-                    lastManStanding.movement.down = false;
-                    lastManStanding.movement.left = false;
-                    lastManStanding.movement.right = false;
-                    lastManStanding.attacking = false;
-                    lastManStanding.sendPacket(new GameOverPacket(lastManStanding, true));
-                }
-
-                // End the game in 1 second
-                this.allowJoin = false;
-                this._over = true;
-                setTimeout(() => {
-                    endGame(this._id); // End this game
-                    const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
-                    if (!allowJoin(otherID)) createNewGame(this._id); // Create a new game if the other game isn't allowing players to join
-                }, 1000);
-            }
+            // Perform the tick
+            this.singleTick(this._now, delay);
 
             // Record performance and start the next tick
             // THIS TICK COUNTER IS WORKING CORRECTLY!
             // It measures the time it takes to calculate a tick, not the time between ticks.
-            const tickTime = Date.now() - this.now;
-            this.tickTimes.push(tickTime);
+            const tickElapsedMs = Date.now() - this.now;
+            this.registerTickPerformance(tickElapsedMs);
 
-            if (this.tickTimes.length >= 200) {
-                const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
-
-                log(`Game #${this._id} average ms/tick: ${mspt}`, true);
-                log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
-                this.tickTimes = [];
-            }
-
-            this.tick(Math.max(0, 30 - tickTime));
+            this.tick(Math.max(0, 30 - tickElapsedMs));
         }, delay);
+    }
+
+    tickDynamically(msToBreathe: number): { abort: () => void } {
+        // `msToBreathe` controls how many ms to wait between ticks; if this value were 0 it would
+        // result in an almost-completely-blocking loop
+
+        const signal = { running: true, abort: () => { signal.running = false; } };
+
+        (async() => {
+            let lastTickEndedMs = Date.now();
+            while (signal.running) {
+                const ms = this.now = Date.now();
+
+                this.singleTick(ms, ms - lastTickEndedMs);
+
+                lastTickEndedMs = Date.now();
+                const elapsedMs = lastTickEndedMs - ms;
+                this.registerTickPerformance(elapsedMs);
+
+                await new Promise(resolve => setTimeout(resolve, msToBreathe));
+            }
+        })()
+            .catch(err => { log("Error in game loop!"); throw err; });
+
+        return signal;
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
