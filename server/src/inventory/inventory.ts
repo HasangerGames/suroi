@@ -113,24 +113,21 @@ export class Inventory {
         const item = this._weapons[slot];
         if (item !== undefined) {
             const oldItem = this._weapons[old];
-            if (oldItem) {
-                oldItem.isActive = false;
-            }
+            if (oldItem) oldItem.isActive = false;
 
             item.isActive = true;
 
             const now = this.owner.game.now;
 
             this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
-                now - this.owner.lastSwitch >= 1000 &&
-                now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
+                //now - this.owner.lastSwitch >= 1000 &&
+                //now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
                 item.definition.canQuickswitch === true
             )
                 ? 250
                 : item.definition.switchDelay;
 
-            this.owner.lastSwitch = this.owner.game.now;
-            item._switchDate = this.owner.game.now;
+            this.owner.lastSwitch = item._switchDate = now;
 
             if (item instanceof GunItem && item.ammo <= 0) {
                 this._reloadTimeoutID = setTimeout(() => { item.reload(); }, this.owner.effectiveSwitchDelay);
