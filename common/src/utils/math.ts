@@ -351,19 +351,19 @@ export function calculateDoorHitboxes(definition: ObstacleDefinition, position: 
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
     const openRectangle = transformRectangle(
-        addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
-        definition.hitbox.min,
-        definition.hitbox.max,
-        1,
-        absMod(rotation - 1, 4) as Orientation
-    );
-    // noinspection JSSuspiciousNameCombination
-    const openAltRectangle = transformRectangle(
-        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
+        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
         definition.hitbox.min,
         definition.hitbox.max,
         1,
         absMod(rotation + 1, 4) as Orientation
+    );
+    // noinspection JSSuspiciousNameCombination
+    const openAltRectangle = transformRectangle(
+        addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
+        definition.hitbox.min,
+        definition.hitbox.max,
+        1,
+        absMod(rotation - 1, 4) as Orientation
     );
     return {
         openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),

@@ -13,7 +13,6 @@ import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
-import { v } from "../../../../common/src/utils/vector";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;

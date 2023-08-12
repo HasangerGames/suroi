@@ -365,7 +365,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
@@ -381,7 +381,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
             rotationMode: "limited",
             explosion: "stove_explosion",
             frames: {
@@ -399,7 +399,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
             rotationMode: "limited"
         },
         {
@@ -523,7 +523,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-3.1, -2.5), v(3.1, 3.5)),
+            hitbox: new RectangleHitbox(v(-3.1, -3.5), v(3.1, 2.5)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -541,7 +541,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6.25, -2.5), v(6.25, 3.55)),
+            hitbox: new RectangleHitbox(v(-6.25, -3.5), v(6.25, 2.5)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -576,7 +576,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-0.8, -7.5), v(0.3, 7.6)),
+            hitbox: new RectangleHitbox(v(-0.8, -7.6), v(0.3, 7.5)),
             rotationMode: "limited",
             depth: 2,
             frames: {
@@ -681,7 +681,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-10.85, -0.35), v(10.85, 1.15)),
+            hitbox: new RectangleHitbox(v(-10.85, -1.15), v(10.85, 0.35)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -698,7 +698,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6.05, -1), v(6.08, 3.2)),
+            hitbox: new RectangleHitbox(v(-6.05, -3.2), v(6.08, 1.1)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -717,7 +717,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
+            hitbox: new RectangleHitbox(v(-6, -3.2), v(6, 1.1)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -792,7 +792,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-9.6, -2.2), v(9.6, -0.3)),
+            hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2.2)),
             rotationMode: "limited",
             isWall: true,
             frames: {
@@ -812,7 +812,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2)),
+            hitbox: new RectangleHitbox(v(-9.6, -2), v(9.6, -0.3)),
             rotationMode: "limited",
             isWall: true,
             frames: {

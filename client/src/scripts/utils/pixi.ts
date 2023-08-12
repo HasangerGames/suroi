@@ -4,7 +4,7 @@ declare const ATLAS_HASH: string;
 
 const textures: Record<string, Texture> = {};
 
-export async function loadAtlases() {
+export async function loadAtlases(): Promise<void> {
     for (const atlas of ["main", "buildings"]) {
         const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
 

@@ -66,7 +66,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 get id() {
                     return weightedRandom(["porta_potty_toilet_open", "porta_potty_toilet_closed"], [0.7, 0.3]);
                 },
-                position: v(0, 5),
+                position: v(0, -5),
                 rotation: 0
             },
             {

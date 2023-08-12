@@ -21,7 +21,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(async() => {
+$(() => {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -94,7 +94,7 @@ $(async() => {
 
     core.pixi = app;
 
-    await loadAtlases();
+    void loadAtlases();
 
     $("#game-ui").append(app.view as HTMLCanvasElement);
 

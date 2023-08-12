@@ -1,7 +1,7 @@
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
-import { degreesToRadians, distance, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
 import { v, vAdd, vRotate } from "../../../common/src/utils/vector";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";

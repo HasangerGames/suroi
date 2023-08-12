@@ -29,7 +29,6 @@ import { Obstacle } from "./objects/obstacle";
 import { Loot } from "./objects/loot";
 import { InputPacket } from "./packets/sending/inputPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { FloorType } from "../../../common/src/definitions/buildings";
 import { type CollisionRecord, circleCollision, distanceSquared } from "../../../common/src/utils/math";
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";

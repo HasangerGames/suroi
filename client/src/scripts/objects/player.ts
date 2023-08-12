@@ -7,21 +7,20 @@ import { GameObject } from "../types/gameObject";
 
 import {
     ANIMATION_TYPE_BITS, AnimationType,
-    GasState,
     ObjectCategory,
     PLAYER_RADIUS
 } from "../../../../common/src/constants";
 
-import { v, vClone, vMul, type Vector, vAdd } from "../../../../common/src/utils/vector";
+import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
-import { degreesToRadians, distanceSquared } from "../../../../common/src/utils/math";
+import { distanceSquared } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { UI_DEBUG_MODE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
@@ -32,9 +31,9 @@ import { type EmoteDefinition } from "../../../../common/src/definitions/emotes"
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite } from "../utils/pixi";
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 
-const showMeleeDebugCircle = false;
+const showMeleeDebugCircle = true;
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -375,7 +374,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }, 4000);
     }
 
-    playAnimation(anim: AnimationType) {
+    playAnimation(anim: AnimationType): void {
         switch (anim) {
             case AnimationType.Melee: {
                 this.updateFistsPosition(false);
@@ -420,12 +419,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
 
-                /*if (showMeleeDebugCircle) {
-                    const meleeDebugCircle = this.scene.add.circle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20, 0xff0000, 90);
-                    this.container.add(meleeDebugCircle);
-                    setTimeout(() => this.container.remove(meleeDebugCircle, true), 500);
+                if (showMeleeDebugCircle) {
+                    const graphics = new Graphics();
+                    graphics.beginFill();
+                    graphics.fill.color = 0xff0000;
+                    graphics.fill.alpha = 0.9;
+                    graphics.drawCircle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20);
+                    graphics.endFill();
+                    this.container.addChild(graphics);
+                    setTimeout(() => this.container.removeChild(graphics), 500);
                 }
-                */
+
                 this.game.soundManager.play("swing");
                 break;
             }
