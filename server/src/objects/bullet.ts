@@ -48,9 +48,14 @@ export class Bullet {
         this.position = vAdd(this.position, this.velocity);
 
         // Bullets from dead players should not deal damage
-        if (this.shooter.dead || distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
+        if (this.shooter.dead) {
             this.dead = true;
             return;
+        }
+
+        if (distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
+            this.dead = true;
+            this.position = vAdd(this.initialPosition, (vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.maxDistance)));
         }
 
         const objects = new Set([...this.game.getVisibleObjects(this.position), ...this.game.livingPlayers]);

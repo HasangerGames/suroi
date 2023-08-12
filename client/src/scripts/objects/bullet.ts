@@ -20,11 +20,12 @@ export class Bullet {
 
     initialPosition: Vector;
     position: Vector;
-    finalPosition: Vector;
 
     maxLength: number;
 
     tracerLength: number;
+
+    rotation: number;
 
     speed: Vector;
 
@@ -44,11 +45,9 @@ export class Bullet {
 
         this.position = vClone(this.initialPosition);
 
+        this.rotation = rotation;
+
         this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
-
-        const maxDist = this.definition.maxDistance;
-
-        this.finalPosition = vAdd(this.initialPosition, vMul(this.speed, maxDist));
 
         this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
             .setRotation(rotation - Math.PI / 2).setDepth(3)
@@ -104,6 +103,13 @@ export class Bullet {
             }
         }
 
+        const dist = distance(this.initialPosition, this.position);
+
+        if (dist > this.definition.maxDistance) {
+            this.position = vAdd(this.initialPosition, (vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.maxDistance)));
+            this.dead = true;
+        }
+
         const fadeDist = this.definition.speed * this.trailTicks;
 
         const length = Math.min(fadeDist * 20 * this.tracerLength, this.maxLength);
@@ -115,12 +121,6 @@ export class Bullet {
         this.image.scale.x = scale;
 
         this.image.setPos(this.position.x * 20, this.position.y * 20);
-
-        const dist = distance(this.initialPosition, this.position);
-
-        if (dist > this.definition.maxDistance) {
-            this.dead = true;
-        }
 
         if (this.trailTicks <= 0 && this.dead) {
             this.destroy();
