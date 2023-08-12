@@ -89,7 +89,8 @@ export class Building extends GameObject {
                 this.scene.playSound("ceiling_collapse");
             }*/
             this.ceilingTween?.kill();
-            this.images.ceiling.setDepth(-0.1).setAlpha(1);
+            this.images.ceilingContainer.zIndex = -0.1;
+            this.images.ceilingContainer.alpha = 1;
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
         }
         this.dead = dead;
