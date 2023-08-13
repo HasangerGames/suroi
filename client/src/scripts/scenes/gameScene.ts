@@ -5,31 +5,21 @@ import type { Game } from "../game";
 import type { MenuScene } from "./menuScene";
 import { Player } from "../objects/player";
 
-import { InputPacket } from "../packets/sending/inputPacket";
 import { JoinPacket } from "../packets/sending/joinPacket";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
 import type { PlayerManager } from "../utils/playerManager";
 import { GAS_ALPHA, GAS_COLOR } from "../utils/constants";
 
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory } from "../../../../common/src/constants";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { Loot } from "../objects/loot";
-import { circleCollision, type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { getIconFromInputName } from "../utils/inputManager";
-import { Building } from "../objects/building";
-import { Obstacle } from "../objects/obstacle";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 
 export class GameScene extends Phaser.Scene {
     activeGame!: Game;
-    sounds: Map<string, Phaser.Sound.BaseSound> = new Map<string, Phaser.Sound.BaseSound>();
     soundsToLoad: Set<string> = new Set<string>();
     volume = localStorageInstance.config.sfxVolume * localStorageInstance.config.masterVolume;
     playerManager!: PlayerManager;
@@ -76,8 +66,6 @@ export class GameScene extends Phaser.Scene {
         }
 
         const soundsToLoad: string[] = [
-            "pickup",
-            "ammo_pickup",
             "gun_click",
             "swing",
             "emote",
@@ -87,6 +75,18 @@ export class GameScene extends Phaser.Scene {
         ];
         for (const sound of soundsToLoad) {
             this.loadSound(sound, sound);
+        }
+
+        const pickupSounds: string[] = [
+            "pickup",
+            "gauze_pickup",
+            "medikit_pickup",
+            "cola_pickup",
+            "tablets_pickup",
+            "ammo_pickup"
+        ];
+        for (const sound of pickupSounds) {
+            this.loadSound(sound, `pickup/${sound}`);
         }
 
         this.loadSound("player_hit_1", "hits/player_hit_1");

@@ -226,9 +226,7 @@ export class Loot extends GameObject {
         this.dead = true;
 
         // Send pickup packet
-        if (definition.itemType !== ItemType.Gun) {
-            player.sendPacket(new PickupPacket(player, this.type));
-        }
+        player.sendPacket(new PickupPacket(player, this.type));
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) createNewItem();

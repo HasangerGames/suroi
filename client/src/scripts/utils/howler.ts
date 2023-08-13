@@ -105,6 +105,26 @@ export default function loadSounds(soundManager: SoundManager): void {
         [
             "audio/sfx/ammo_pickup",
             "ammo_pickup"
+        ],
+        [
+            "audio/sfx/gauze_pickup",
+            "gauze_pickup"
+        ],
+        [
+            "audio/sfx/medikit_pickup",
+            "medikit_pickup"
+        ],
+        [
+            "audio/sfx/cola_pickup",
+            "cola_pickup"
+        ],
+        [
+            "audio/sfx/tablets_pickup",
+            "tablets_pickup"
+        ],
+        [
+            "audio/sfx/ammo_pickup",
+            "ammo_pickup"
         ]
     ];
 

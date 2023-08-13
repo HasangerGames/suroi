@@ -383,10 +383,11 @@ export function setupInputs(game: Game): void {
 
     // Mobile joysticks
     if (game.playerManager.isMobile) {
+        const config = localStorageInstance.config;
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
-            size: localStorageInstance.config.joystickSize,
-            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
+            size: config.joystickSize,
+            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -401,8 +402,8 @@ export function setupInputs(game: Game): void {
 
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
-            size: localStorageInstance.config.joystickSize,
-            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
+            size: config.joystickSize,
+            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -411,7 +412,7 @@ export function setupInputs(game: Game): void {
                 game.activePlayer.container.rotation = game.playerManager.rotation;
             }
             game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > 50;
+            game.playerManager.attacking = data.distance > config.joystickSize / 3;
         });
         rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
@@ -488,16 +489,16 @@ const actionsNames = {
     moveLeft: "Move Left",
     moveRight: "Move Right",
     interact: "Interact",
-    slot1: "Slot 1",
-    slot2: "Slot 2",
-    slot3: "Slot 3",
-    lastEquippedItem: "Equip Last Item",
+    slot1: "Equip Primary",
+    slot2: "Equip Secondary",
+    slot3: "Equip Melee",
+    lastEquippedItem: "Equip Last Weapon",
     equipOtherGun: "Equip Other Gun",
     swapGunSlots: "Swap Gun Slots",
-    previousItem: "Equip Previous Item",
-    nextItem: "Equip Next Item",
-    useItem: "Use Item",
-    dropActiveItem: "Drop Active Item",
+    previousItem: "Equip Previous Weapon",
+    nextItem: "Equip Next Weapon",
+    useItem: "Use Weapon",
+    dropActiveItem: "Drop Active Weapon",
     reload: "Reload",
     previousScope: "Previous Scope",
     nextScope: "Next Scope",
