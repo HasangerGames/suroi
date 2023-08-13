@@ -4,7 +4,6 @@ import core from "./core";
 
 import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
-import { type MinimapScene } from "./scenes/minimapScene";
 import { requestFullscreen } from "./utils/misc";
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
@@ -162,7 +161,7 @@ $((): void => {
         if (game !== undefined) {
             sendSpectatePacket(SpectateActions.BeginSpectating);
             game.spectating = true;
-            (game.activePlayer.scene.scene.get("minimap") as MinimapScene).playerIndicator.setTexture("main", "player_indicator.svg");
+            // (game.activePlayer.scene.scene.get("minimap") as MinimapScene).playerIndicator.setTexture("main", "player_indicator.svg");
         }
     });
 

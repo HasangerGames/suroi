@@ -34,7 +34,7 @@ export class SoundManager {
     }
 }
 
-export default function loadSounds(soundManager: SoundManager): void {
+export function loadSounds(soundManager: SoundManager): void {
     for (const material of Materials) {
         soundManager.load(`${material}_hit_1`, `audio/sfx/hits/${material}_hit_1`);
         soundManager.load(`${material}_hit_2`, `audio/sfx/hits/${material}_hit_2`);
