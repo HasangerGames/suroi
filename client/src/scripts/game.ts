@@ -35,7 +35,7 @@ import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
 import { type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
-import { SoundManager } from "./utils/howler";
+import { SoundManager } from "./utils/soundManager";
 
 export class Game {
     socket!: WebSocket;

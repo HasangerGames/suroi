@@ -37,11 +37,7 @@ export class PlayerManager {
     adrenaline = 0;
 
     get isMobile(): boolean {
-        return this.isActuallyMobile && localStorageInstance.config.mobileControls;
-    }
-
-    get isActuallyMobile(): boolean {
-        return core.phaser !== undefined && !core.phaser.device.os.desktop;
+        return core.isMobile && localStorageInstance.config.mobileControls;
     }
 
     readonly movement = {

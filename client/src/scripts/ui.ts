@@ -454,7 +454,7 @@ $((): void => {
     }
 
     // Hide mobile settings on desktop
-    $("#tab-mobile").toggle(core.game?.playerManager.isActuallyMobile);
+    $("#tab-mobile").toggle(core.isMobile);
 
     // Mobile event listeners
     if (core.game?.playerManager.isMobile) {
