@@ -76,8 +76,6 @@ export class GameScene extends Phaser.Scene {
         }
 
         const soundsToLoad: string[] = [
-            "pickup",
-            "ammo_pickup",
             "gun_click",
             "swing",
             "emote",
@@ -87,6 +85,18 @@ export class GameScene extends Phaser.Scene {
         ];
         for (const sound of soundsToLoad) {
             this.loadSound(sound, sound);
+        }
+
+        const pickupSounds: string[] = [
+            "pickup",
+            "gauze_pickup",
+            "medikit_pickup",
+            //"cola_pickup",
+            "tablets_pickup",
+            "ammo_pickup"
+        ];
+        for (const sound of pickupSounds) {
+            this.loadSound(sound, `pickup/${sound}`);
         }
 
         this.loadSound("player_hit_1", "hits/player_hit_1");

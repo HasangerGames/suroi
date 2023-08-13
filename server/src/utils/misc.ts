@@ -77,13 +77,7 @@ export function createDebugMarkersForHitbox(hitbox: RectangleHitbox, game: Game)
     createDebugMarker(v(hitbox.min.x + hitbox.width, hitbox.min.y));
     createDebugMarker(v(hitbox.min.x, hitbox.min.y + hitbox.height));
     createDebugMarker(v(hitbox.min.x, hitbox.min.y + hitbox.height));
-    game.dynamicObjects.add(new Obstacle(
-        game,
-        ObjectType.fromString(ObjectCategory.Obstacle, "debug_marker"),
-        Vec2(hitbox.min.x + hitbox.width / 2, hitbox.min.y + hitbox.height / 2),
-        0,
-        1
-    ));
+    createDebugMarker(v(hitbox.min.x + hitbox.width / 2, hitbox.min.y + hitbox.height / 2));
 }
 
 /**
