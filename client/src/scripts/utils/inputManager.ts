@@ -385,10 +385,11 @@ export function setupInputs(game: Game): void {
 
     // Mobile joysticks
     if (game.playerManager.isMobile) {
+        const config = localStorageInstance.config;
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
-            size: localStorageInstance.config.joystickSize,
-            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
+            size: config.joystickSize,
+            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -403,8 +404,8 @@ export function setupInputs(game: Game): void {
 
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
-            size: localStorageInstance.config.joystickSize,
-            color: `rgba(255, 255, 255, ${localStorageInstance.config.joystickTransparency})`
+            size: config.joystickSize,
+            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -413,7 +414,7 @@ export function setupInputs(game: Game): void {
                 game.activePlayer.container.setRotation(game.playerManager.rotation);
             }
             game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > 50;
+            game.playerManager.attacking = data.distance > config.joystickSize / 3;
         });
         rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
