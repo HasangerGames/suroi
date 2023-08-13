@@ -91,7 +91,7 @@ export class GameScene extends Phaser.Scene {
             "pickup",
             "gauze_pickup",
             "medikit_pickup",
-            //"cola_pickup",
+            "cola_pickup",
             "tablets_pickup",
             "ammo_pickup"
         ];
