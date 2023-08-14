@@ -9,7 +9,7 @@ import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
 import { GRASS_COLOR } from "./utils/constants";
 
-import loadSounds from "./utils/soundManager";
+import { loadSounds } from "./utils/soundManager";
 
 declare const API_URL: string;
 
