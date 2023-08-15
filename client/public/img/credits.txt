@@ -1,6 +1,6 @@
 Skins:
   Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultura, ScaredPenguin, Pirelli, Slapdap, EndermanKing
+  Loadout & game skins: Asultra, ScaredPenguin, Pirelli, Slapdap, EndermanKing
 Loot:
   Armor/Equipment: Slapdap
   Pills: jc
