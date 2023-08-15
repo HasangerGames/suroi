@@ -1,10 +1,12 @@
 Skins:
   Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-  Loadout & game skins: Asultura, ScaredPenguin, Pirelli, Slapdap
-
+  Loadout & game skins: Asultura, ScaredPenguin, Pirelli, Slapdap, EndermanKing
+Loot:
+  Armor/Equipment: Slapdap
+  Pills: jc
 Weapons: 
-  Gun icons: eiπ, jchen, Megashark25098
-  Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384
+  Gun icons: eiπ, hester, jchen, vp, Scared Penguin, DogEnjoyer, yeet120, Megashark25098
+  Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
   Melee weapons: Radians
 
 Obstacles: 
@@ -14,16 +16,17 @@ Obstacles:
   Bush: Glek
   Bush particles: Asultra, Radians
   Bush residue: Henry Sanger, Asultra, Radians
+  Blueberry bush: Katloo
 
   Regular crate: Henry Sanger, 123OP
   Health crate: Henry Sanger, Radians
 
-  Barrel explosion: Leo
+  Barrel explosion: Leia
   Barrel explosion particles: Radians
 
   Soviet crate: Henry Sanger, DogEnjoyer, 123OP
 
-  Rocks: Leo
+  Rocks: Leia
   Rock particles: Radians
   Rock residue: Henry Sanger, Radians
   Mossy & cracked rocks: Hester, Leo, Henry Sanger
@@ -36,9 +39,18 @@ Obstacles:
   Pine tree residue: Radians, Henry Sanger
   Birch tree, particles, & residue: Hester
 
+  Bed, drawers, couch, chair, table, fridge, walls, ceramic toilet, garage, washing machine: plantonthek
+  Stove: 1092384
+
+Building designs:
+  House: plantonthek
+  Warehouse: Leia, 1092384
+  Porta-potty: Katloo, Slapdap, 1092384
+
 Other:
   Death marker & skull: Henry Sanger
   Emotes: EndermanKing, Slapdap, Tofi38
   Main logo: Henry Sanger
   Small/square logo: Glek
+  Aegis/Flint logos: Katloo
   Tap icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
