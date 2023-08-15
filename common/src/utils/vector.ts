@@ -88,3 +88,22 @@ export function vLength(a: Vector): number {
 export function vDot(a: Vector, b: Vector): number {
     return a.x * b.x + a.y * b.y;
 }
+
+export function vNormalizeSafe(a: Vector, b?: Vector): Vector {
+    b = b ?? v(1.0, 0.0);
+    const eps = 0.000001;
+    const len = vLength(a);
+    return {
+        x: len > eps ? a.x / len : b.x,
+        y: len > eps ? a.y / len : b.y
+    };
+}
+
+export function vNormalize(a: Vector): Vector {
+    const eps = 0.000001;
+    const len = vLength(a);
+    return {
+        x: len > eps ? a.x / len : a.x,
+        y: len > eps ? a.y / len : a.y
+    };
+}

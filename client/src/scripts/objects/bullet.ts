@@ -35,7 +35,13 @@ export class Bullet {
 
     trailTicks = 0;
 
-    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number) {
+    reflectCount: number;
+
+    reflectedFromID: number;
+
+    maxDistance: number;
+
+    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, reflectCount: number, reflectedFromID = -1) {
         this.game = game;
 
         this.source = source;
@@ -46,6 +52,12 @@ export class Bullet {
         this.position = vClone(this.initialPosition);
 
         this.rotation = rotation;
+
+        this.reflectCount = reflectCount;
+
+        this.reflectedFromID = reflectedFromID;
+
+        this.maxDistance = this.definition.maxDistance / (reflectCount + 1);
 
         this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
 
@@ -61,7 +73,7 @@ export class Bullet {
 
         this.image.anchor.set(1, 0.5);
 
-        this.image.alpha = this.definition.tracerOpacity?.start ?? 1;
+        this.image.alpha = (this.definition.tracerOpacity?.start ?? 1) / (reflectCount + 1);
 
         this.game.camera.container.addChild(this.image);
     }
@@ -81,11 +93,11 @@ export class Bullet {
             for (const o of this.game.objects) {
                 const object = o[1];
 
-                if ((object instanceof Obstacle || object instanceof Player) && !object.dead) {
+                if ((object instanceof Obstacle || object instanceof Player) && !object.dead && object.id !== this.reflectedFromID) {
                     const intersection = object.hitbox.intersectsLine(oldPosition, this.position);
                     if (!intersection) continue;
 
-                    collisions.push({ pos: intersection, object });
+                    collisions.push({ pos: intersection.point, object });
                 }
             }
 
@@ -105,8 +117,8 @@ export class Bullet {
 
         const dist = distance(this.initialPosition, this.position);
 
-        if (dist > this.definition.maxDistance) {
-            this.position = vAdd(this.initialPosition, (vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.maxDistance)));
+        if (dist > this.maxDistance) {
+            this.position = vAdd(this.initialPosition, (vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.maxDistance)));
             this.dead = true;
         }
 

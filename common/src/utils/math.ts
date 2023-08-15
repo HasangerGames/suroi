@@ -6,7 +6,9 @@ import {
     vSub,
     vLength,
     vDiv,
-    vDot
+    vDot,
+    vNormalizeSafe,
+    vNormalize
 } from "./vector";
 
 import { type Orientation } from "../typings";
@@ -257,7 +259,7 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
 
 export type intersectionResponse = { point: Vector, normal: Vector } | null;
 
-export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): Vector | null {
+export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): intersectionResponse {
     let d = vSub(s1, s0);
     const len = Math.max(vLength(d), 0.000001);
     d = vDiv(d, len);
@@ -278,12 +280,15 @@ export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: n
     }
     if (t <= len) {
         const point = vAdd(s0, vMul(d, t));
-        return point;
+        return {
+            point,
+            normal: vNormalize(vSub(point, pos))
+        };
     }
     return null;
 }
 
-export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
+export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): intersectionResponse {
     let tmin = 0;
     let tmax = Number.MAX_VALUE;
     const eps = 0.00001;
@@ -328,8 +333,18 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     }
     // Hit
     const p = vAdd(s0, vMul(d, tmin));
+    // Intersection normal
+    const c = vAdd(min, vMul(vSub(max, min), 0.5));
+    const p0 = vSub(p, c);
+    const d0 = vMul(vSub(min, max), 0.5);
 
-    return p;
+    const x = p0.x / Math.abs(d0.x) * 1.001;
+    const y = p0.y / Math.abs(d0.y) * 1.001;
+    const n = vNormalizeSafe(v(x < 0.0 ? Math.ceil(x) : Math.floor(x), y < 0.0 ? Math.ceil(y) : Math.floor(y)), v(1.0, 0.0));
+    return {
+        point: p,
+        normal: n
+    };
 }
 
 export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {

@@ -107,8 +107,8 @@ export class GunItem extends InventoryItem {
                 const intersection = object.hitbox.intersectsLine(lineStartPosition, position);
                 if (intersection === null) continue;
 
-                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection)) {
-                    position = intersection;
+                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
+                    position = intersection.point;
                 }
             }
         }
