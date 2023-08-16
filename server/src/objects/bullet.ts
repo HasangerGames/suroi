@@ -121,6 +121,6 @@ export class Bullet {
 
         const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
 
-        this.game.addBullet(this.position, rotation, this.source, this.shooter, this.reflectionCount, objectId);
+        this.game.addBullet(this.position, rotation, this.source, this.shooter, this.reflectionCount + 1, objectId);
     }
 }

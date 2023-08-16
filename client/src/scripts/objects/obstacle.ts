@@ -8,7 +8,7 @@ import type { ObjectType } from "../../../../common/src/utils/objectType";
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation, Orientation } from "../../../../common/src/typings";
 import { gsap } from "gsap";
-import { orientationToRotation, rotationToOrientation } from "../utils/misc";
+import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
@@ -36,6 +36,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     hitEffect = 0;
 
     hitbox!: Hitbox;
+
+    orientation!: number;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
@@ -116,8 +118,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
         if (!this.isNew && !this.door?.hitbox) {
-            const orientation = definition.rotationMode === "limited" ? rotationToOrientation(this.rotation) : 0;
-            this.hitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+            this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
     }
 
@@ -145,7 +146,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
             ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));
         } else {
-            this.rotation = stream.readObstacleRotation(definition.rotationMode);
+            const obstacleRotation = stream.readObstacleRotation(definition.rotationMode);
+            this.rotation = obstacleRotation.rotation;
+            this.orientation = obstacleRotation.orientation;
         }
 
         const hasVariations = definition.variations !== undefined;
@@ -190,8 +193,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.isNew = false;
 
         if (!this.isDoor) {
-            const orientation = definition.rotationMode === "limited" ? rotationToOrientation(this.rotation) : 0;
-            this.hitbox = definition.hitbox.transform(this.position, this.scale, orientation);
+            this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
     }
 

@@ -17,7 +17,7 @@ import {
     PLAYER_NAME_MAX_LENGTH,
     OBJECT_ID_BITS
 } from "../constants";
-import { type Variation } from "../typings";
+import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
 
 export class SuroiBitStream extends BitStream {
@@ -247,17 +247,28 @@ export class SuroiBitStream extends BitStream {
      * @param mode The rotation mode (full, limited, binary, or none)
      * @return The rotation in radians.
      */
-    readObstacleRotation(mode: string): number {
+    readObstacleRotation(mode: string): { rotation: number, orientation: Orientation } {
+        let orientation: Orientation = 0;
+        let rotation = 0;
         switch (mode) {
             case "full":
-                return this.readRotation(4);
+                rotation = this.readRotation(4);
+                break;
             case "limited": // 4 possible orientations
-                return -normalizeAngle(this.readBits(2) * (Math.PI / 2));
+                orientation = this.readBits(2) as Orientation;
+                rotation = -normalizeAngle(orientation) * (Math.PI / 2);
+                break;
             case "binary": // 2 possible orientations
-                if (this.readBoolean()) return Math.PI / 2;
-                else return 0;
+                if (this.readBoolean()) {
+                    rotation = Math.PI / 2;
+                    orientation = 1;
+                }
+                break;
         }
-        return 0;
+        return {
+            rotation,
+            orientation
+        };
     }
 
     /**

@@ -86,7 +86,7 @@ export class MapPacket extends ReceivingPacket {
                 case ObjectCategory.Obstacle: {
                     scale = stream.readScale();
                     const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-                    rotation = stream.readObstacleRotation(definition.rotationMode);
+                    rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                     const hasVariations = definition.variations !== undefined;
                     let variation = 0;
@@ -98,7 +98,7 @@ export class MapPacket extends ReceivingPacket {
                 }
                 case ObjectCategory.Building: {
                     texture += "_ceiling";
-                    rotation = stream.readObstacleRotation("limited") as Orientation;
+                    rotation = stream.readObstacleRotation("limited").rotation;
 
                     const definition = type.definition as BuildingDefinition;
 
