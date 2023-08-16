@@ -3,7 +3,9 @@ Skins:
   Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing
 Loot:
   Armor/Equipment: Slapdap
-  Pills: jc
+  Scopes: Slapdap
+  Pills: jchen
+  Medkit, Soda: Asultra
 Weapons: 
   Gun icons: eiπ, hester, jchen, vp, ScaredPenguinXXL, DogEnjoyer, yeet120, Megashark25098
   Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
@@ -39,8 +41,9 @@ Obstacles:
   Pine tree residue: Radians, Henry Sanger
   Birch tree, particles, & residue: Hester
 
-  Bed, drawers, couch, chair, table, fridge, walls, ceramic toilet, garage, washing machine: plantonthek
+  Bed, drawers, couch, chair, table, fridge, walls, door, window, ceramic toilet, garage, washing machine: plantonthek, Henry Sanger
   Stove: 1092384
+  Residues for above obstacles: plantonthek
 
 Building designs:
   House: plantonthek
@@ -49,6 +52,7 @@ Building designs:
 
 Other:
   Death marker & skull: Henry Sanger
+  Bullet trails: Henry Sanger
   Emotes: EndermanKing, Slapdap, Tofi38
   Main logo: Henry Sanger
   Small/square logo: Glek
