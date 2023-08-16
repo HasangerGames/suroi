@@ -1,37 +1,56 @@
-Most images edited by Henry Sanger
-Gun icons: eiπ, jchen, Megashark25098
-Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098
-Emotes: EndermanKing, Slapdap, Tofi38
+Skins:
+  Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
+  Loadout & game skins: Asultra, ScaredPenguinXXL, Pirelli, Slapdap, EndermanKing
+Loot:
+  Armor/Equipment: Slapdap
+  Pills: jc
+Weapons: 
+  Gun icons: eiπ, hester, jchen, vp, ScaredPenguinXXL, DogEnjoyer, yeet120, Megashark25098
+  Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
+  Melee weapons: Radians
 
-Main logo: Henry Sanger
-Small/square logo: Glek
-Default skin body: Image by flatart on Freepik: https://www.freepik.com/free-vector/army-camouflage-vector-seamless-pattern-texture-military-camouflage-repeats-seamless-army-design-vector-background_34294124.htm
-Barrel: 123OP, Asultra, Henry Sanger
-Barrel residue: Dachselt, Leo, Henry Sanger
-Bush: Glek
-Bush particles: Asultra, Radians
-Bush residue: Henry Sanger, Asultra, Radians
-Regular crate: Henry Sanger, 123OP
-Health crate: Henry Sanger, Radians
-Barrel explosion: Leo
-Barrel explosion particles: Radians
-Soviet crate: Henry Sanger, DogEnjoyer, 123OP
-Death marker & skull: Henry Sanger
-Rocks: Leo
-Rock particles: Radians
-Rock residue: Henry Sanger, Radians
-Oak trees: Asultra
-Oak tree particles & residue: Radians
-Pine tree: SquareCube
-Pine tree particles: Radians
-Pine tree residue: Radians, Henry Sanger
-Birch tree, particles, & residue: Hester
+Obstacles: 
+  Barrel: 123OP, Asultra, Henry Sanger
+  Barrel residue: Dachselt, Leo, Henry Sanger
 
-Mossy & cracked rocks: Hester, Leo, Henry Sanger
-Gold rock: Katloo
+  Bush: Glek
+  Bush particles: Asultra, Radians
+  Bush residue: Henry Sanger, Asultra, Radians
+  Blueberry bush: Katloo
 
-K-bar: Radians
-Baseball Bat: Radians
-Maul: Radians
+  Regular crate: Henry Sanger, 123OP
+  Health crate: Henry Sanger, Radians
 
-Tap icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
+  Barrel explosion: Leia
+  Barrel explosion particles: Radians
+
+  Soviet crate: Henry Sanger, DogEnjoyer, 123OP
+
+  Rocks: Leia
+  Rock particles: Radians
+  Rock residue: Henry Sanger, Radians
+  Mossy & cracked rocks: Hester, Leo, Henry Sanger
+  Gold rock: Katloo
+
+  Oak trees: Asultra
+  Oak tree particles & residue: Radians
+  Pine tree: SquareCube
+  Pine tree particles: Radians
+  Pine tree residue: Radians, Henry Sanger
+  Birch tree, particles, & residue: Hester
+
+  Bed, drawers, couch, chair, table, fridge, walls, ceramic toilet, garage, washing machine: plantonthek
+  Stove: 1092384
+
+Building designs:
+  House: plantonthek
+  Warehouse: Leia, 1092384
+  Porta-potty: Katloo, Slapdap, 1092384
+
+Other:
+  Death marker & skull: Henry Sanger
+  Emotes: EndermanKing, Slapdap, Tofi38
+  Main logo: Henry Sanger
+  Small/square logo: Glek
+  Aegis/Flint logos: Katloo
+  Tap icon - "One Finger Tap Gesture Of Outlined Hand Symbol" from OnlineWebFonts: https://www.onlinewebfonts.com/icon/57341
