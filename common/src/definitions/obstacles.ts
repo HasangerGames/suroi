@@ -26,6 +26,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
+    readonly reflectBullets?: boolean
 
     readonly frames?: {
         readonly base?: string
@@ -234,7 +235,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
-            explosion: "barrel_explosion"
+            explosion: "barrel_explosion",
+            reflectBullets: true
         },
         {
             idString: "super_barrel",
@@ -248,7 +250,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
-            explosion: "super_barrel_explosion"
+            explosion: "super_barrel_explosion",
+            reflectBullets: true
         },
         {
             idString: "oil_tank",
@@ -266,7 +269,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "gold_rock",
@@ -297,7 +301,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            reflectBullets: true
         },
         {
             idString: "warehouse_wall_2",
@@ -312,7 +317,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            reflectBullets: true
         },
         {
             idString: "box",
@@ -347,7 +353,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         makeHouseWall("1", new RectangleHitbox(v(-4.55, -1), v(4.55, 1))),
         makeHouseWall("2", new RectangleHitbox(v(-10.43, -1), v(10.43, 1))),
@@ -369,7 +376,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "stove",
@@ -386,7 +394,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             explosion: "stove_explosion",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "washing_machine",
@@ -400,7 +409,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            reflectBullets: true
         },
         {
             idString: "house_exterior",

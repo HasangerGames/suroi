@@ -1,8 +1,8 @@
 import { Player } from "./player";
 import { type Game } from "../game";
-import { angleBetween, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
 import { type GunItem } from "../inventory/gunItem";
-import { type Vector, v, vAdd, vMul, vClone, vNormalize } from "../../../common/src/utils/vector";
+import { type Vector, v, vAdd, vMul, vClone } from "../../../common/src/utils/vector";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
@@ -95,23 +95,18 @@ export class Bullet {
             if (object instanceof Player) {
                 this.position = collision.intersection.point;
 
-                object.damage(this.definition.damage, this.shooter, this.source.type);
+                object.damage(this.definition.damage / (this.reflectionCount + 1), this.shooter, this.source.type);
                 this.dead = true;
                 break;
             } else if (object instanceof Obstacle) {
-                object.damage(this.definition.damage * this.definition.obstacleMultiplier, this.shooter, this.source.type);
+                object.damage(this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier, this.shooter, this.source.type);
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {
                     this.position = collision.intersection.point;
 
-                    if (this.reflectionCount < 3) {
-                        // TODO: idk what i'm doing so the angle is wrong
-                        const normalPos = vNormalize(this.position);
-
-                        const rotation = normalizeAngle(this.rotation + (angleBetween(normalPos, collision.intersection.normal)));
-
-                        this.game.addBullet(this.position, rotation, this.source, this.shooter, this.reflectionCount + 1, object.id);
+                    if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                        this.reflect(collision.intersection.normal, object.id);
                     }
 
                     this.dead = true;
@@ -119,5 +114,13 @@ export class Bullet {
                 }
             }
         }
+    }
+
+    reflect(normal: Vector, objectId: number): void {
+        const normalAngle = Math.atan2(normal.y, normal.x);
+
+        const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
+
+        this.game.addBullet(this.position, rotation, this.source, this.shooter, this.reflectionCount, objectId);
     }
 }
