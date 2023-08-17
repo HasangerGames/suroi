@@ -42,7 +42,6 @@ let actionSoundName = "";
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player = this.playerManager.game.activePlayer;
-        // if (player === undefined) return;
 
         const game = this.playerManager.game;
         const playerManager = this.playerManager;

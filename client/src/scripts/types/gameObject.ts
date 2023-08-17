@@ -6,8 +6,6 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
-import { localStorageInstance } from "../utils/localStorageHandler";
-import { gsap } from "gsap";
 import { toPixiCords } from "../utils/pixi";
 
 /*
@@ -28,17 +26,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
-        // Animate the position
-        const pixiPos = toPixiCords(pos);
-        if (this.position === undefined || ("isNew" in this && this.isNew) || !localStorageInstance.config.movementSmoothing) {
-            this.container.position.copyFrom(pixiPos);
-        } else {
-            this.moveAnim = gsap.to(this.container, {
-                x: pixiPos.x,
-                y: pixiPos.y,
-                duration: 0.03
-            });
-        }
+        this.container.position.copyFrom(toPixiCords(pos));
         this._position = pos;
     }
 

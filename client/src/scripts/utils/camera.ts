@@ -12,7 +12,6 @@ export class Camera {
     position = v(0, 0);
 
     zoomTween?: gsap.core.Tween;
-    positionTween?: gsap.core.Tween;
 
     constructor(pixi: Application) {
         this.pixi = pixi;

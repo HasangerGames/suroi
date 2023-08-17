@@ -31,7 +31,7 @@ import { type EmoteDefinition } from "../../../../common/src/definitions/emotes"
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite, toPixiCords } from "../utils/pixi";
-import { Container, Graphics, Ticker } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 
 const showMeleeDebugCircle = false;
 
@@ -141,12 +141,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.hitbox.position = this.position;
 
-        if (this.isActivePlayer) {
-            this.game.camera.setPosition(this.position);
-
-            Howler.pos(this.position.x, this.position.y);
-        }
-
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
@@ -195,6 +189,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 });
             }
         }*/
+
+        if (this.isActivePlayer) {
+            this.game.camera.setPosition(this.position);
+            Howler.pos(this.position.x, this.position.y);
+        }
 
         this.emoteContainer.position.copyFrom(vAdd(toPixiCords(this.position), v(0, -175)));
 
@@ -466,7 +465,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
-
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();
