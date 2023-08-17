@@ -36,6 +36,9 @@ function safeRound(value: number): number {
     return adjustForLowValues(Math.round(value));
 }
 
+let actionSoundID = 0;
+let actionSoundName = "";
+
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player = this.playerManager.game.activePlayer;
@@ -145,17 +148,13 @@ export class UpdatePacket extends ReceivingPacket {
             switch (action) {
                 case PlayerActions.None:
                     $("#action-container").hide().stop();
-                    // TODO Only stop the sound that's playing
-                    // scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
-                    // scene.sounds.get("gauze")?.stop();
-                    // scene.sounds.get("medikit")?.stop();
-                    // scene.sounds.get("cola")?.stop();
-                    // scene.sounds.get("tablets")?.stop();
+                    if (actionSoundName) game.soundManager.get(actionSoundName).stop(actionSoundID);
                     break;
                 case PlayerActions.Reload: {
                     $("#action-container").show();
                     $("#action-name").text("Reloading...");
-                    game.soundManager.play(`${player.activeItem.idString}_reload`);
+                    actionSoundName = `${player.activeItem.idString}_reload`;
+                    actionSoundID = game.soundManager.play(actionSoundName);
                     actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
                     break;
                 }
@@ -164,7 +163,8 @@ export class UpdatePacket extends ReceivingPacket {
                     const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
                     $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
                     actionTime = itemDef.useTime;
-                    game.soundManager.play(itemDef.idString);
+                    actionSoundName = itemDef.idString;
+                    actionSoundID = game.soundManager.play(actionSoundName);
                 }
             }
             if (actionTime > 0) {
