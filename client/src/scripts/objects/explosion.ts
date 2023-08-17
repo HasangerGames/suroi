@@ -4,7 +4,7 @@ import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { type ObjectCategory } from "../../../../common/src/constants";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { gsap } from "gsap";
 
 /**
@@ -25,12 +25,12 @@ import { gsap } from "gsap";
 
 export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
-    position = vMul(position, 20);
+    position = toPixiCords(position);
 
     const image = new SuroiSprite(definition.animation.frame);
 
     image.scale.set(0);
-    image.setPos(position.x, position.y);
+    image.setVPos(position);
 
     game.camera.container.addChild(image);
 

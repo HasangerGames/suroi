@@ -8,6 +8,7 @@ import { type ObjectDefinition } from "../../../../common/src/utils/objectDefini
 import { Container } from "pixi.js";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { gsap } from "gsap";
+import { toPixiCords } from "../utils/pixi";
 
 /*
     Since this class seems to only ever be instantiated
@@ -28,13 +29,13 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
         // Animate the position
+        const pixiPos = toPixiCords(pos);
         if (this.position === undefined || ("isNew" in this && this.isNew) || !localStorageInstance.config.movementSmoothing) {
-            this.container.x = pos.x * 20;
-            this.container.y = pos.y * 20;
+            this.container.position.copyFrom(pixiPos);
         } else {
             this.moveAnim = gsap.to(this.container, {
-                x: pos.x * 20,
-                y: pos.y * 20,
+                x: pixiPos.x,
+                y: pixiPos.y,
                 duration: 0.03
             });
         }

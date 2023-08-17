@@ -3,7 +3,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
+import { GRASS_COLOR, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
 import { type Orientation } from "../../../../../common/src/typings";
@@ -16,13 +16,17 @@ export class MapPacket extends ReceivingPacket {
         game.width = stream.readUint16();
         game.height = stream.readUint16();
 
-        const GRID_WIDTH = game.width * 20;
-        const GRID_HEIGHT = game.height * 20;
+        const GRID_WIDTH = game.width * PIXI_SCALE;
+        const GRID_HEIGHT = game.height * PIXI_SCALE;
         const CELL_SIZE = 320;
 
         const graphics = new Graphics();
 
         graphics.beginFill();
+        graphics.fill.color = 0xb99c61;
+        graphics.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
+        graphics.fill.color = GRASS_COLOR;
+        graphics.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
         graphics.lineStyle({
             color: 0x000000,
             alpha: 0.25,

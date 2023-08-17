@@ -86,7 +86,7 @@ $(() => {
 
     const app = new Application({
         resizeTo: window,
-        background: GRASS_COLOR,
+        background: 0x2768ad,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1

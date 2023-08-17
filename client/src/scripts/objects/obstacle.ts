@@ -13,6 +13,7 @@ import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
+import { PIXI_SCALE } from "../utils/constants";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -37,7 +38,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     hitbox!: Hitbox;
 
-    orientation!: number;
+    orientation!: Orientation;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
@@ -132,8 +133,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             let offsetX: number;
             let offsetY: number;
             if (definition.hingeOffset !== undefined) {
-                offsetX = definition.hingeOffset.x * 20;
-                offsetY = definition.hingeOffset.y * 20;
+                offsetX = definition.hingeOffset.x * PIXI_SCALE;
+                offsetY = definition.hingeOffset.y * PIXI_SCALE;
             } else {
                 offsetX = offsetY = 0;
             }

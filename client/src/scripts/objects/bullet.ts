@@ -4,11 +4,12 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type Vector, vAdd, v, vClone, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { distance, distanceSquared } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { type GameObject } from "../types/gameObject";
+import { PIXI_SCALE } from "../utils/constants";
 
 export class Bullet {
     game: Game;
@@ -63,7 +64,7 @@ export class Bullet {
 
         this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
             .setRotation(rotation - Math.PI / 2).setDepth(3)
-            .setPos(this.initialPosition.x * 20, this.initialPosition.y * 20);
+            .setVPos(toPixiCords(this.position));
 
         this.tracerLength = this.source.definition.ballistics.tracerLength ?? 1;
 
@@ -73,7 +74,7 @@ export class Bullet {
 
         this.image.anchor.set(1, 0.5);
 
-        this.image.alpha = (this.definition.tracerOpacity?.start ?? 1) / (reflectCount + 1);
+        this.image.alpha = (this.definition.tracerOpacity ?? 1) / (reflectCount + 1);
 
         this.game.camera.container.addChild(this.image);
     }
@@ -124,7 +125,7 @@ export class Bullet {
 
         const fadeDist = this.definition.speed * this.trailTicks;
 
-        const length = Math.min(fadeDist * 20 * this.tracerLength, this.maxLength);
+        const length = Math.min(fadeDist * PIXI_SCALE * this.tracerLength, this.maxLength);
 
         if (length === this.maxLength) this.trailReachedMaxLength = true;
 
@@ -132,7 +133,7 @@ export class Bullet {
 
         this.image.scale.x = scale;
 
-        this.image.setPos(this.position.x * 20, this.position.y * 20);
+        this.image.setVPos(toPixiCords(this.position));
 
         if (this.trailTicks <= 0 && this.dead) {
             this.destroy();

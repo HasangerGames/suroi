@@ -1,4 +1,6 @@
 import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture } from "pixi.js";
+import { type Vector, vMul } from "../../../../common/src/utils/vector";
+import { PIXI_SCALE } from "./constants";
 
 declare const ATLAS_HASH: string;
 
@@ -49,6 +51,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setVPos(pos: Vector): SuroiSprite {
+        this.position.set(pos.x, pos.y);
+        return this;
+    }
+
     setVisible(visible: boolean): SuroiSprite {
         this.visible = visible;
         return this;
@@ -73,4 +80,8 @@ export class SuroiSprite extends Sprite {
         this.alpha = alpha;
         return this;
     }
+}
+
+export function toPixiCords(pos: Vector): Vector {
+    return vMul(pos, PIXI_SCALE);
 }

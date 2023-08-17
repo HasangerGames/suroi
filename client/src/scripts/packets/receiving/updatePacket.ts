@@ -18,7 +18,7 @@ import { type ObstacleDefinition } from "../../../../../common/src/definitions/o
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../../utils/constants";
+import { UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";

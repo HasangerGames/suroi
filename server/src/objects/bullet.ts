@@ -44,7 +44,7 @@ export class Bullet {
 
         this.definition = this.source.type.definition.ballistics;
 
-        this.maxDistance = (this.definition.maxDistance / (reflectionCount + 1));
+        this.maxDistance = this.definition.maxDistance / (reflectionCount + 1);
 
         this.maxDistanceSquared = this.maxDistance ** 2;
 
