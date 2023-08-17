@@ -56,8 +56,11 @@ export class Bullet {
 
         this.position = vAdd(this.position, this.velocity);
 
-        // Bullets from dead players should not deal damage
-        if (this.shooter.dead) {
+        // Bullets from dead players should not deal damage so delete them
+        // Also delete bullets out of map bounds
+        if (this.shooter.dead ||
+            this.position.x < 0 || this.position.x > this.game.map.width ||
+            this.position.y < 0 || this.position.y > this.game.map.height) {
             this.dead = true;
             return;
         }
