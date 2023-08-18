@@ -33,7 +33,7 @@ import { type CollisionRecord, circleCollision, distanceSquared } from "../../..
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
-import { type Application } from "pixi.js";
+import { Container, type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
 import { SoundManager } from "./utils/soundManager";
 
@@ -75,6 +75,11 @@ export class Game {
 
     camera: Camera;
 
+    // Since all players and bullets have the same depth
+    // Add all to a container so pixi has to do less sorting of zIndexes
+    playersContainer = new Container();
+    bulletsContainer = new Container();
+
     constructor(pixi: Application) {
         this.pixi = pixi;
 
@@ -87,6 +92,10 @@ export class Game {
         });
 
         this.camera = new Camera(this.pixi);
+
+        this.playersContainer.zIndex = 3;
+        this.bulletsContainer.zIndex = 3;
+        this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
         setInterval(() => {
             if (localStorageInstance.config.showFPS) {

@@ -121,8 +121,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.helmet
             // this.images.bloodEmitter
         );
-
-        this.container.zIndex = 3;
+        this.game.camera.container.removeChild(this.container);
+        this.game.playersContainer.addChild(this.container);
 
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);

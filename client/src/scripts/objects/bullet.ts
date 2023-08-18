@@ -63,7 +63,7 @@ export class Bullet {
         this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
 
         this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
-            .setRotation(rotation - Math.PI / 2).setDepth(3)
+            .setRotation(rotation - Math.PI / 2)
             .setVPos(toPixiCords(this.position));
 
         this.tracerLength = this.source.definition.ballistics.tracerLength ?? 1;
@@ -76,7 +76,7 @@ export class Bullet {
 
         this.image.alpha = (this.definition.tracerOpacity ?? 1) / (reflectCount + 1);
 
-        this.game.camera.container.addChild(this.image);
+        this.game.bulletsContainer.addChild(this.image);
     }
 
     update(delta: number): void {
