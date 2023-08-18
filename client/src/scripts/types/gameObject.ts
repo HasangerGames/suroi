@@ -21,7 +21,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     readonly game: Game;
 
-    private moveAnim?: gsap.core.Tween;
+    private readonly moveAnim?: gsap.core.Tween;
 
     _position!: Vector;
     get position(): Vector { return this._position; }

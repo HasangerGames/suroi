@@ -1,7 +1,7 @@
 import { type Application, Container } from "pixi.js";
 import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
 import { gsap } from "gsap";
-import { localStorageInstance } from "./localStorageHandler";
+import { toPixiCords } from "./pixi";
 
 export class Camera {
     pixi: Application;
@@ -45,24 +45,14 @@ export class Camera {
 
     setPosition(pos: Vector): void {
         this.position = pos;
-        this.updatePosition(true);
     }
 
-    updatePosition(anim = false): void {
+    updatePosition(): void {
         const cameraPos = vAdd(
-            vMul(vMul(this.position, 20), this.container.scale.x),
+            vMul(toPixiCords(this.position), this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
 
-        this.positionTween?.kill();
-        if (anim && localStorageInstance.config.movementSmoothing) {
-            this.positionTween = gsap.to(this.container, {
-                x: -cameraPos.x,
-                y: -cameraPos.y,
-                duration: 0.03
-            });
-        } else {
-            this.container.position.set(-cameraPos.x, -cameraPos.y);
-        }
+        this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
     setZoom(zoom: number): void {

@@ -24,6 +24,7 @@ import { type BuildingDefinition } from "../../../../../common/src/definitions/b
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
+import { gsap } from "gsap";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -421,20 +422,15 @@ export class UpdatePacket extends ReceivingPacket {
             if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                // scene.tweens.add({
-                //     targets: scene.gasCircle,
-                //     x: currentPosition.x * 20,
-                //     y: currentPosition.y * 20,
-                //     radius: currentRadius * 20,
-                //     duration: 30
-                // });
-                // scene.tweens.add({
-                //     targets: minimap.gasCircle,
-                //     x: currentPosition.x * MINIMAP_SCALE,
-                //     y: currentPosition.y * MINIMAP_SCALE,
-                //     radius: currentRadius * MINIMAP_SCALE,
-                //     duration: 30
-                // });
+                gsap.to(game.gas, {
+                    radius: currentRadius,
+                    duration: 0.03
+                });
+                gsap.to(game.gas.position, {
+                    x: currentPosition.x,
+                    y: currentPosition.y,
+                    duration: 0.03
+                });
             }
         }
 

@@ -1,6 +1,7 @@
 export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
 export const GRASS_COLOR = 0x49993e;
+export const WATER_COLOR = 0x2768ad;
 export const GRASS_RGB = {
     r: 73,
     g: 153,

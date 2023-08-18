@@ -7,7 +7,7 @@ import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
-import { GRASS_COLOR } from "./utils/constants";
+import { WATER_COLOR } from "./utils/constants";
 
 import { loadSounds } from "./utils/soundManager";
 
@@ -86,7 +86,7 @@ $(() => {
 
     const app = new Application({
         resizeTo: window,
-        background: 0x2768ad,
+        background: WATER_COLOR,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1
