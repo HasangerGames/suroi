@@ -300,7 +300,6 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     let absDx = Math.abs(d.x);
     let absDy = Math.abs(d.y);
 
-    // @HACK: fix this function
     if (absDx < eps) {
         d.x = eps * 2.0;
         absDx = d.x;
@@ -347,19 +346,6 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     };
 }
 
-export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Vector): Vector | null {
-    // Returns proper intersection point if the segment
-    // begins inside of the aabb
-    const segments = [{ a: v(min.x, min.y), b: v(max.x, min.y) }, { a: v(max.x, min.y), b: v(max.x, max.y) }, { a: v(max.x, max.y), b: v(min.x, max.y) }, { a: v(min.x, max.y), b: v(min.x, min.y) }];
-    for (let i = 0; i < segments.length; i++) {
-        const seg = segments[i];
-        const res = lineIntersectsLine(s0, s1, seg.a, seg.b);
-        if (res) {
-            return res;
-        }
-    }
-    return null;
-}
 
 export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
     if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
