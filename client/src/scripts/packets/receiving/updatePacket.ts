@@ -16,7 +16,6 @@ import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
-import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
@@ -283,7 +282,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
+                    stream.readObjectTypeNoCategory(ObjectCategory.Explosion),
                     stream.readPosition()
                 );
             }
