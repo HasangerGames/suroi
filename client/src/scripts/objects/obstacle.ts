@@ -96,6 +96,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 } else {
                     this.door.hitbox = this.door.closedHitbox?.clone();
                 }
+                if (this.door.hitbox) this.hitbox = this.door.hitbox;
             }
         }
 

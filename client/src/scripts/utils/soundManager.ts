@@ -4,6 +4,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { type Vector } from "../../../../common/src/utils/vector";
+import { localStorageInstance } from "./localStorageHandler";
 
 export interface Sound {
     name: string
@@ -13,7 +14,7 @@ export interface Sound {
 export class SoundManager {
     sounds: Record<string, Howl>;
 
-    volume = 1;
+    volume = localStorageInstance.config.sfxVolume;
 
     constructor() {
         this.sounds = {};

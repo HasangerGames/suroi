@@ -231,7 +231,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
             // this.images.bloodEmitter.emitParticle(1);
-            this.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2", 0.85);
+            this.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2", 0.5);
         }
     }
 
