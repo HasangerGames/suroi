@@ -1,13 +1,8 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { ObjectCategory } from "../../../../../common/src/constants";
-import { GRASS_COLOR, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
-import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
-import { type Orientation } from "../../../../../common/src/typings";
-import { Graphics, Rectangle } from "pixi.js";
+import { GRASS_COLOR, PIXI_SCALE } from "../../utils/constants";
+import { Graphics } from "pixi.js";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

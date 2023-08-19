@@ -8,7 +8,7 @@ import { Bullet } from "../../objects/bullet";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -17,7 +17,6 @@ import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
@@ -37,13 +36,8 @@ function safeRound(value: number): number {
     return adjustForLowValues(Math.round(value));
 }
 
-let actionSoundID = 0;
-let actionSoundName = "";
-
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const player = this.playerManager.game.activePlayer;
-
         const game = this.playerManager.game;
         const playerManager = this.playerManager;
 
@@ -52,7 +46,6 @@ export class UpdatePacket extends ReceivingPacket {
         const healthDirty = stream.readBoolean();
         const adrenalineDirty = stream.readBoolean();
         const zoomDirty = stream.readBoolean();
-        const actionDirty = stream.readBoolean();
         const activePlayerDirty = stream.readBoolean();
         const fullObjectsDirty = stream.readBoolean();
         const partialObjectsDirty = stream.readBoolean();
@@ -139,39 +132,6 @@ export class UpdatePacket extends ReceivingPacket {
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
             game.camera.setZoom(playerManager.zoom);
-        }
-
-        // Action
-        if (actionDirty) {
-            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
-            let actionTime = 0;
-            switch (action) {
-                case PlayerActions.None:
-                    $("#action-container").hide().stop();
-                    if (actionSoundName) game.soundManager.get(actionSoundName).stop(actionSoundID);
-                    break;
-                case PlayerActions.Reload: {
-                    $("#action-container").show();
-                    $("#action-name").text("Reloading...");
-                    actionSoundName = `${player.activeItem.idString}_reload`;
-                    actionSoundID = game.soundManager.play(actionSoundName);
-                    actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
-                    break;
-                }
-                case PlayerActions.UseItem: {
-                    $("#action-container").show();
-                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
-                    $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
-                    actionTime = itemDef.useTime;
-                    actionSoundName = itemDef.idString;
-                    actionSoundID = game.soundManager.play(actionSoundName);
-                }
-            }
-            if (actionTime > 0) {
-                $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
-                    $("#action-container").hide();
-                });
-            }
         }
 
         // Active player ID and name
@@ -386,7 +346,7 @@ export class UpdatePacket extends ReceivingPacket {
                     //     minimap.playerIndicator.y
                     // );
                 } else if (game.gas.state === GasState.Inactive) {
-                    gasMessage = "Waiting for players...";
+                    // gasMessage = "Waiting for players...";
                     // minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
                 }
 

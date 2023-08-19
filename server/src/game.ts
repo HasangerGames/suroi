@@ -343,6 +343,7 @@ export class Game {
 
             for (const player of this.livingPlayers) {
                 player.hitEffect = false;
+                player.dirty.action = false;
             }
 
             // Winning logic

@@ -327,20 +327,17 @@ $((): void => {
 
     // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
-        const volume = value * localStorageInstance.config.masterVolume;
-        // core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(volume);
+        core.music.volume(value);
     });
 
     // SFX volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
-        // (core.phaser?.scene.getScene("game") as GameScene).volume = value * localStorageInstance.config.masterVolume;
+        if (core.game) core.game.soundManager.volume = value;
     });
 
     // Master volume
     addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
-        const volume = value * localStorageInstance.config.masterVolume;
-        // (core.phaser?.scene.getScene("game") as GameScene).volume = localStorageInstance.config.sfxVolume * volume;
-        // core.phaser?.scene.getScene<MenuScene>("menu").setMusicVolume(localStorageInstance.config.musicVolume * volume);
+        Howler.volume(value);
     });
 
     // Camera shake

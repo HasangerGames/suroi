@@ -36,6 +36,7 @@ import { Container, type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./utils/gas";
+import core from "./core";
 
 export class Game {
     socket!: WebSocket;
@@ -84,7 +85,7 @@ export class Game {
                 bullet.update(delta);
             }
 
-            this.camera.update(delta);
+            // this.camera.update(delta);
 
             this.gas.render();
         });
@@ -113,6 +114,7 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            core.music.stop();
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -224,6 +226,9 @@ export class Game {
         this.bulletsContainer.removeChildren();
 
         this.playerManager = new PlayerManager(this);
+
+        core.music.stop().play();
+        core.music.volume(localStorageInstance.config.musicVolume);
     }
 
     sendPacket(packet: SendingPacket): void {

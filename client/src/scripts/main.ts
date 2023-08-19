@@ -21,7 +21,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(() => {
+async function main(): Promise<void> {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -94,7 +94,7 @@ $(() => {
 
     core.pixi = app;
 
-    void loadAtlases();
+    await loadAtlases();
 
     $("#game-ui").append(app.view as HTMLCanvasElement);
 
@@ -103,4 +103,10 @@ $(() => {
     loadSounds(core.game.soundManager);
 
     setupInputs(core.game);
+
+    core.music.play();
+    core.music.volume(localStorageInstance.config.musicVolume);
+}
+$(() => {
+    void main();
 });

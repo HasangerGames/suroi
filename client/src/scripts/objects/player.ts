@@ -8,7 +8,9 @@ import { GameObject } from "../types/gameObject";
 import {
     ANIMATION_TYPE_BITS, AnimationType,
     ObjectCategory,
-    PLAYER_RADIUS
+    PLAYER_ACTIONS_BITS,
+    PLAYER_RADIUS,
+    PlayerActions
 } from "../../../../common/src/constants";
 
 import { vClone, vSub, type Vector, vDiv, vAdd, v } from "../../../../common/src/utils/vector";
@@ -32,6 +34,8 @@ import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
+import { type Sound } from "../utils/soundManager";
+import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 
 const showMeleeDebugCircle = false;
 
@@ -49,6 +53,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     isActivePlayer: boolean;
 
     animationSeq!: boolean;
+
+    footstepSound?: Sound;
+    actionSound?: Sound;
 
     readonly images: {
         readonly vest: SuroiSprite
@@ -134,6 +141,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.updateWeapon();
     }
 
+    update(delta: number): void {
+        if (this.position === undefined) return;
+
+        if (localStorageInstance.config.movementSmoothing && this.oldPosition !== undefined) {
+            const posToAdd = vDiv(vSub(this.oldPosition, this.position), delta);
+
+            const position = vAdd(this.position, posToAdd);
+
+            this.container.position.copyFrom(toPixiCords(position));
+        } else {
+            this.container.position.copyFrom(toPixiCords(this.position));
+        }
+        if (this.isActivePlayer) this.game.camera.setPosition(this.position);
+        Howler.pos(this.position.x, this.position.y);
+    }
+
     override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -145,7 +168,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0);
+                this.footstepSound = this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0.5);
                 this.distSinceLastFootstep = 0;
                 this.floorType = FloorType.Grass;
             }
@@ -208,7 +231,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
             // this.images.bloodEmitter.emitParticle(1);
-            this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2");
+            this.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2", 0.85);
         }
     }
 
@@ -230,6 +253,46 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.helmetLevel = stream.readBits(2);
         this.vestLevel = stream.readBits(2);
         this.backpackLevel = stream.readBits(2);
+
+        // Action
+        if (stream.readBoolean()) {
+            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
+            let actionTime = 0;
+            let actionName = "";
+            let actionSoundName = "";
+            switch (action) {
+                case PlayerActions.None:
+                    if (this.isActivePlayer) $("#action-container").hide().stop();
+                    if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+                    break;
+                case PlayerActions.Reload: {
+                    actionName = "Reloading...";
+                    actionSoundName = `${this.activeItem.idString}_reload`;
+                    actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
+                    break;
+                }
+                case PlayerActions.UseItem: {
+                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
+                    actionName = `${itemDef.useText} ${itemDef.name}`;
+                    actionTime = itemDef.useTime;
+                    actionSoundName = itemDef.idString;
+                    break;
+                }
+            }
+            if (this.isActivePlayer) {
+                if (actionName) {
+                    $("#action-name").text(actionName);
+                    $("#action-container").show();
+                }
+                if (actionTime > 0) {
+                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
+                        $("#action-container").hide();
+                    });
+                }
+            }
+            if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.9);
+        }
+
         this.updateEquipment();
 
         this.updateFistsPosition(true);
@@ -279,7 +342,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setAngle(weaponDef.image.angle);
 
             if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
-                this.game.soundManager.play(`${this.activeItem.idString}_switch`);
+                this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
         }
 
@@ -339,7 +402,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteAnim?.kill();
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        this.game.soundManager.play("emote");
+        this.playSound("emote", 0.6);
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
@@ -423,12 +486,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     setTimeout(() => this.container.removeChild(graphics), 500);
                 }
 
-                this.game.soundManager.play("swing");
+                this.playSound("swing", 0.8);
                 break;
             }
             case AnimationType.Gun: {
                 const weaponDef = this.activeItem.definition as GunDefinition;
-                this.game.soundManager.play(`${weaponDef.idString}_fire`);
+                this.playSound(`${weaponDef.idString}_fire`, 0.3);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
@@ -457,7 +520,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.GunClick: {
-                this.game.soundManager.play("gun_click");
+                this.playSound("gun_click", 0.6);
                 break;
             }
         }

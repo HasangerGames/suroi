@@ -6,6 +6,7 @@ import type { ExplosionDefinition } from "../../../../common/src/definitions/exp
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { gsap } from "gsap";
+import { distanceSquared } from "../../../../common/src/utils/math";
 
 /**
  * Custom particle class that adds friction to its velocity.
@@ -25,12 +26,12 @@ import { gsap } from "gsap";
 
 export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
-    position = toPixiCords(position);
+    const pixiPos = toPixiCords(position);
 
     const image = new SuroiSprite(definition.animation.frame);
 
     image.scale.set(0);
-    image.setVPos(position);
+    image.setVPos(pixiPos);
 
     game.camera.container.addChild(image);
 
@@ -70,11 +71,10 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
         }
     });
 
-    /*if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
-        if (localStorageInstance.config.cameraShake) {
+    if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
+        /*if (localStorageInstance.config.cameraShake) {
             scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
-        }
-
-        if (definition.sound !== undefined) scene.playSound(definition.sound);
-    }*/
+        }*/
+        if (definition.sound !== undefined) game.soundManager.play(definition.sound, position, 0.4);
+    }
 }

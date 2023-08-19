@@ -13,7 +13,9 @@ import {
     AnimationType,
     INVENTORY_MAX_WEAPONS,
     ObjectCategory,
+    PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
+    PlayerActions,
     SERVER_GRID_SIZE
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
@@ -26,7 +28,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
-import { type Action } from "../inventory/action";
+import { type HealingAction, type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
@@ -738,5 +740,14 @@ export class Player extends GameObject {
         stream.writeBits(this.inventory.helmet?.definition.level ?? 0, 2);
         stream.writeBits(this.inventory.vest?.definition.level ?? 0, 2);
         stream.writeBits(this.inventory.backpack.definition.level, 2);
+
+        stream.writeBoolean(this.dirty.action);
+        if (this.dirty.action) {
+            stream.writeBits(this.action ? this.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
+
+            if (this.action?.type === PlayerActions.UseItem) {
+                stream.writeObjectTypeNoCategory((this.action as HealingAction).item);
+            }
+        }
     }
 }

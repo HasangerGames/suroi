@@ -7,6 +7,7 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
 import { toPixiCords } from "../utils/pixi";
+import { type Sound } from "../utils/soundManager";
 
 /*
     Since this class seems to only ever be instantiated
@@ -23,11 +24,18 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     private readonly moveAnim?: gsap.core.Tween;
 
+    private readonly sounds = new Set<Sound>();
+
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
         this.container.position.copyFrom(toPixiCords(pos));
         this._position = pos;
+
+        // Update the position of all sounds
+        for (const sound of this.sounds) {
+            this.game.soundManager.sounds[sound.name].pos(this.position.x, this.position.y, undefined, sound.id);
+        }
     }
 
     rotation!: number;
@@ -51,17 +59,17 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container.destroy();
     }
 
-    playSound(key: string, fallOff: number): number {
-        return this.game.soundManager.get(key).pos(this.position.x, this.position.y).pannerAttr({
-            coneInnerAngle: 360,
-            coneOuterAngle: 360,
-            coneOuterGain: 0,
-            distanceModel: "inverse",
-            maxDistance: 1000,
-            refDistance: 5,
-            rolloffFactor: 1,
-            panningModel: "HRTF"
-        }).play();
+    playSound(key: string, fallOff: number): Sound {
+        const sound = this.game.soundManager.play(key, this.position, fallOff);
+
+        if (sound.id !== -1) {
+            this.sounds.add(sound);
+            this.game.soundManager.get(key).on("end", () => {
+                this.sounds.delete(sound);
+            }, sound.id);
+        }
+
+        return sound;
     }
 
     abstract deserializePartial(stream: SuroiBitStream): void;
