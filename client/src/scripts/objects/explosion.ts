@@ -75,6 +75,6 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
         /*if (localStorageInstance.config.cameraShake) {
             scene.cameras.main.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
         }*/
-        if (definition.sound !== undefined) game.soundManager.play(definition.sound, position, 0.4);
+        if (definition.sound !== undefined) game.soundManager.play(definition.sound, position, 0.1);
     }
 }

@@ -402,7 +402,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteAnim?.kill();
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        this.playSound("emote", 0.6);
+        this.playSound("emote", 0.4);
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
