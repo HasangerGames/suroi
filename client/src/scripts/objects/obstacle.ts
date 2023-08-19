@@ -119,7 +119,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
-        if (!this.isNew && !this.door?.hitbox) {
+        if (!this.isNew && !this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
     }
