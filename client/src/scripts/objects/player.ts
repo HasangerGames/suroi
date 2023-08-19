@@ -99,7 +99,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images = {
             vest: new SuroiSprite().setVisible(false),
-            body: new SuroiSprite("leia_base.svg"),
+            body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false),
