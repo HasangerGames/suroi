@@ -24,8 +24,6 @@ export class Bullet {
 
     maxLength: number;
 
-    tracerLength: number;
-
     rotation: number;
 
     speed: Vector;
@@ -66,9 +64,7 @@ export class Bullet {
             .setRotation(rotation - Math.PI / 2)
             .setVPos(toPixiCords(this.position));
 
-        this.tracerLength = this.source.definition.ballistics.tracerLength ?? 1;
-
-        this.maxLength = this.image.width * (this.tracerLength);
+        this.maxLength = this.image.width;
 
         this.image.scale.set(0, this.definition.tracerWidth ?? 1);
 
@@ -125,7 +121,7 @@ export class Bullet {
 
         const fadeDist = this.definition.speed * this.trailTicks;
 
-        const length = Math.min(fadeDist * PIXI_SCALE * this.tracerLength, this.maxLength);
+        const length = Math.min(Math.min(fadeDist, dist) * PIXI_SCALE, this.maxLength);
 
         if (length === this.maxLength) this.trailReachedMaxLength = true;
 
