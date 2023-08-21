@@ -68,10 +68,6 @@ export class SoundManager {
 export function loadSounds(soundManager: SoundManager): void {
     const soundsToLoad = [
         [
-            "pickup",
-            "audio/sfx/pickup"
-        ],
-        [
             "gun_click",
             "audio/sfx/gun_click"
         ],

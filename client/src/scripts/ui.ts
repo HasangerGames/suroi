@@ -161,7 +161,7 @@ $((): void => {
         if (game !== undefined) {
             sendSpectatePacket(SpectateActions.BeginSpectating);
             game.spectating = true;
-            // (game.activePlayer.scene.scene.get("minimap") as MinimapScene).playerIndicator.setTexture("main", "player_indicator.svg");
+            core.game?.map.indicator.setFrame("player_indicator.svg");
         }
     });
 
@@ -374,15 +374,15 @@ $((): void => {
 
     // Minimap stuff
     addSliderListener("#slider-minimap-transparency", "minimapTransparency", () => {
-        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
+        core.game?.map.updateTransparency();
     });
 
     addSliderListener("#slider-big-map-transparency", "bigMapTransparency", () => {
-        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.updateTransparency();
+        core.game?.map.updateTransparency();
     });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
-        // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap(true);
+        core.game?.map.toggleMiniMap(true);
     });
 
     // Leave warning

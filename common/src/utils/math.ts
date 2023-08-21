@@ -346,7 +346,6 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     };
 }
 
-
 export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
     if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");

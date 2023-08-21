@@ -1,71 +1,75 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { GRASS_COLOR, PIXI_SCALE } from "../../utils/constants";
+import { GRASS_COLOR, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
 import { Graphics } from "pixi.js";
+import { ObjectCategory } from "../../../../../common/src/constants";
+import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
+import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
+import { SuroiSprite, toPixiCords } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const game = this.playerManager.game;
 
-        game.width = stream.readUint16();
-        game.height = stream.readUint16();
+        const width = game.map.width = stream.readUint16();
+        const height = game.map.height = stream.readUint16();
 
-        const GRID_WIDTH = game.width * PIXI_SCALE;
-        const GRID_HEIGHT = game.height * PIXI_SCALE;
+        const GRID_WIDTH = width * PIXI_SCALE;
+        const GRID_HEIGHT = height * PIXI_SCALE;
         const CELL_SIZE = 320;
 
         const graphics = new Graphics();
+        const minimapTexture = new Graphics();
 
         graphics.beginFill();
         graphics.fill.color = 0xb99c61;
         graphics.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
         graphics.fill.color = GRASS_COLOR;
         graphics.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
+        graphics.zIndex = -10;
+
+        minimapTexture.beginFill();
+        minimapTexture.fill.color = 0xb99c61;
+        minimapTexture.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
+        minimapTexture.fill.color = GRASS_COLOR;
+        minimapTexture.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
+
         graphics.lineStyle({
             color: 0x000000,
             alpha: 0.25,
             width: 2
         });
-        graphics.zIndex = -10;
+        minimapTexture.lineStyle({
+            color: 0x000000,
+            alpha: 0.5,
+            width: 16
+        });
 
         for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
             graphics.moveTo(x, 0);
             graphics.lineTo(x, GRID_HEIGHT);
+
+            minimapTexture.moveTo(x, 0);
+            minimapTexture.lineTo(x, GRID_HEIGHT);
         }
         for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
             graphics.moveTo(0, y);
             graphics.lineTo(GRID_WIDTH, y);
+
+            minimapTexture.moveTo(0, y);
+            minimapTexture.lineTo(GRID_WIDTH, y);
         }
 
         graphics.endFill();
 
         game.camera.container.addChild(graphics);
 
-        // Draw the grid
-        /*const CELL_SIZE = 16 * MINIMAP_SCALE;
-        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
-            minimap.add.rectangle(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
-        }
-        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
-            minimap.add.rectangle(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
-        }
+        minimapTexture.scale.set(MINIMAP_SCALE / PIXI_SCALE);
 
-        minimap.renderTexture.beginDraw();
-
-        // Draw the grid
-        // This method isn't used because it makes the grid look really bad on mobile
-        const graphics = minimap.make.graphics();
-        graphics.fillStyle(0x000000, 0.35);
-
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
-        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
-            graphics.fillRect(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT);
-        }
-        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
-            graphics.fillRect(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE);
-        }
-        minimap.renderTexture.batchDraw(graphics, 0, 0);
+        game.map.objectsContainer.removeChildren();
+        game.map.objectsContainer.addChild(minimapTexture);
 
         const numObstacles = stream.readBits(10);
 
@@ -79,12 +83,10 @@ export class MapPacket extends ReceivingPacket {
 
             let texture = type.idString;
 
-            let atlas = "main";
-
             switch (type.category) {
                 case ObjectCategory.Obstacle: {
                     scale = stream.readScale();
-                    const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
+                    const definition = type.definition as ObstacleDefinition;
                     rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                     const hasVariations = definition.variations !== undefined;
@@ -103,17 +105,11 @@ export class MapPacket extends ReceivingPacket {
 
                     const floorPos = vAdd(position, vRotate(definition.floorImagePos, rotation));
 
-                    atlas = "buildings";
+                    const floorImage = new SuroiSprite(`${type.idString}_floor.svg`);
 
-                    minimap.renderTexture.batchDraw(minimap.make.image({
-                        x: floorPos.x * MINIMAP_SCALE,
-                        y: floorPos.y * MINIMAP_SCALE,
-                        key: atlas,
-                        frame: `${type.idString}_floor.svg`,
-                        add: false,
-                        scale: scale / (20 / MINIMAP_SCALE),
-                        rotation
-                    }));
+                    floorImage.setVPos(toPixiCords(floorPos)).setRotation(rotation);
+
+                    minimapTexture.addChild(floorImage);
 
                     position = vAdd(position, vRotate(definition.ceilingImagePos, rotation));
                     break;
@@ -121,16 +117,13 @@ export class MapPacket extends ReceivingPacket {
             }
 
             // Create the object image
-            minimap.renderTexture.batchDraw(minimap.make.image({
-                x: position.x * MINIMAP_SCALE,
-                y: position.y * MINIMAP_SCALE,
-                key: atlas,
-                frame: `${texture}.svg`,
-                add: false,
-                scale: scale / (20 / MINIMAP_SCALE),
-                rotation
-            }));
+            const image = new SuroiSprite(`${texture}.svg`);
+            image.setVPos(toPixiCords(position)).setRotation(rotation);
+            image.scale.set(scale);
+
+            minimapTexture.addChild(image);
+
+            game.map.objectsContainer.addChild(game.map.indicator);
         }
-        minimap.renderTexture.endDraw();*/
     }
 }

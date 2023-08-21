@@ -37,6 +37,7 @@ import { Camera } from "./utils/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./utils/gas";
 import core from "./core";
+import { Minimap } from "./utils/map";
 
 export class Game {
     socket!: WebSocket;
@@ -57,14 +58,13 @@ export class Game {
 
     tickTimeoutID: number | undefined;
 
-    width = 0;
-    height = 0;
-
     gas!: Gas;
 
     pixi: Application;
 
     soundManager = new SoundManager();
+
+    map: Minimap;
 
     camera: Camera;
 
@@ -91,6 +91,8 @@ export class Game {
         });
 
         this.camera = new Camera(this.pixi);
+
+        this.map = new Minimap(this);
 
         this.playersContainer.zIndex = 3;
         this.bulletsContainer.zIndex = 3;

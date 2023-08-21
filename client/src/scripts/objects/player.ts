@@ -216,6 +216,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.isActivePlayer) {
             this.game.camera.setPosition(this.position);
             Howler.pos(this.position.x, this.position.y);
+            this.game.map.setPosition(this.position);
+            this.game.map.indicator.setRotation(this.rotation);
         }
 
         this.emoteContainer.position.copyFrom(vAdd(toPixiCords(this.position), v(0, -175)));
