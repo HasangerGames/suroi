@@ -37,6 +37,7 @@ export class Minimap {
         this.container.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
+
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
@@ -48,8 +49,6 @@ export class Minimap {
     resize(): void {
         if (this.expanded) this.resizeBigMap();
         else this.resizeSmallMap();
-
-        this.resizeMask();
     }
 
     resizeMask(): void {
@@ -57,6 +56,7 @@ export class Minimap {
             .beginFill(0)
             .drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight)
             .endFill();
+        this.updatePosition();
     }
 
     resizeSmallMap(): void {
@@ -71,6 +71,7 @@ export class Minimap {
             this.minimapHeight = 125;
             this.margins = v(10, 10);
         }
+        this.resizeMask();
     }
 
     resizeBigMap(): void {
@@ -81,7 +82,7 @@ export class Minimap {
         this.minimapWidth = screenHeight;
         this.minimapHeight = screenHeight;
         this.margins = v(screenWidth / 2 - screenHeight / 2, 0);
-        this.objectsContainer.position.set(this.minimapWidth / 2 * MINIMAP_SCALE, (this.minimapHeight * 1.1) / 2 * MINIMAP_SCALE);
+        this.resizeMask();
     }
 
     toggle(): void {
@@ -90,10 +91,17 @@ export class Minimap {
     }
 
     setPosition(pos: Vector): void {
-        pos = vClone(pos);
-
+        this.position = vClone(pos);
         this.indicator.setVPos(vMul(pos, MINIMAP_SCALE));
+        this.updatePosition();
+    }
 
+    updatePosition(): void {
+        if (this.expanded) {
+            this.objectsContainer.position.set(this.minimapWidth / 2 * MINIMAP_SCALE, 0);
+            return;
+        }
+        const pos = vClone(this.position);
         pos.x -= this.minimapWidth / 2 + this.margins.x * 2;
         pos.y -= this.minimapHeight / 2 + this.margins.y * 2;
 
@@ -111,7 +119,7 @@ export class Minimap {
     switchToSmallMap(): void {
         this.expanded = false;
         this.resizeSmallMap();
-        $("#minimap-border").toggle(this.visible);
+        $("#minimap-border").toggle(!this.expanded);
         $("#scopes-container").toggle(!this.expanded);
         $("#gas-msg-info").toggle(!this.expanded);
     }
