@@ -100,7 +100,7 @@ export class GunItem extends InventoryItem {
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
-        const lineStartPosition = vAdd(owner.position, vRotate(v(owner.hitbox.radius, 0), owner.rotation));
+        const lineStartPosition = vAdd(owner.position, vRotate(v(owner.hitbox.radius + 0.2, 0), owner.rotation));
 
         for (const object of this.owner.nearObjects) {
             if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
