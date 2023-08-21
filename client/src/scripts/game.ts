@@ -4,7 +4,7 @@ import core from "./core";
 
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { GameOverPacket } from "./packets/receiving/gameOverPacket";
+import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
@@ -49,7 +49,8 @@ export class Game {
         oldPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         newPosition: v(MAP_WIDTH / 2, MAP_HEIGHT / 2),
         oldRadius: 2048,
-        newRadius: 2048
+        newRadius: 2048,
+        firstPercentageReceived: false
     };
 
     connect(address: string): void {
@@ -57,18 +58,23 @@ export class Game {
 
         if (this.gameStarted) return;
 
-        this.gameStarted = true;
-        this.gameOver = false;
-        this.spectating = false;
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            this.gameStarted = true;
+            this.gameOver = false;
+            this.spectating = false;
+            this.gas.firstPercentageReceived = false;
+
             core.phaser?.scene.start("minimap");
             core.phaser?.scene.start("game");
-            $("#game-over-screen").hide();
             if (!UI_DEBUG_MODE) {
+                clearTimeout(gameOverScreenTimeout);
+                $("#game-over-screen").hide();
+                $("#kill-msg").hide();
+                $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
             }
@@ -121,19 +127,19 @@ export class Game {
 
         this.socket.onerror = (): void => {
             this.error = true;
-
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
+            enablePlayButton();
         };
 
         // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
-            if (this.spectating || !this.gameOver) {
+            enablePlayButton();
+            if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
                     $("#splash-server-message").show();
-                    enablePlayButton();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
                 if (!this.error) this.endGame();

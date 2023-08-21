@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="90"
+   height="90"
+   viewBox="0 0 90 90"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="toadstool_base.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="8"
+     inkscape:cx="12"
+     inkscape:cy="41.5"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <clipPath
+       id="a">
+      <g
+         id="g29">
+        <circle
+           cx="61.548"
+           cy="30.263"
+           r="11.906"
+           fill="#97866b"
+           id="circle27" />
+      </g>
+    </clipPath>
+    <clipPath
+       id="b">
+      <g
+         id="g24">
+        <circle
+           cx="61.548"
+           cy="30.263"
+           r="11.906"
+           fill="#97866b"
+           id="circle22" />
+      </g>
+    </clipPath>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:#ff2a2a;fill-opacity:1;stroke:none;stroke-width:11.0922;stroke-linecap:square;stroke-linejoin:bevel"
+       id="path1444"
+       cx="45"
+       cy="45"
+       r="45" />
+    <path
+       id="circle40"
+       clip-path="none"
+       style="fill:#ffe5e5;stroke-width:3.77961"
+       d="M 45,74.965024 A 15.092348,15.092343 0 0 0 30.138672,87.47479 44.999992,44.999992 0 0 0 59.869141,87.472836 15.092348,15.092343 0 0 0 45,74.965024 Z" />
+    <path
+       id="circle42"
+       clip-path="none"
+       style="fill:#ffe5e5;stroke-width:3.77961"
+       d="M 87.472445,30.130859 A 15.092348,15.092343 0 0 0 74.91971,45 a 15.092348,15.092343 0 0 0 12.552735,14.869141 44.999992,44.999992 0 0 0 0,-29.738282 z" />
+    <path
+       id="circle44"
+       clip-path="none"
+       style="fill:#ffe5e5;stroke-width:3.77961"
+       d="M 2.527164,30.130859 A 44.999992,44.999992 0 0 0 2.5252109,59.861328 15.092348,15.092343 0 0 0 15.034976,45 15.092348,15.092343 0 0 0 2.527164,30.130859 Z" />
+    <circle
+       style="fill:#ffe5e5;fill-opacity:1;stroke:none;stroke-width:5.49065;stroke-linecap:square;stroke-linejoin:bevel"
+       id="path1128"
+       cx="45"
+       cy="45"
+       r="16.728001" />
+    <path
+       id="circle42-3"
+       clip-path="none"
+       style="fill:#ffe5e5;stroke-width:3.77961"
+       d="M 30.13086,2.5275542 A 15.092343,15.092348 0 0 0 45.000001,15.080285 15.092343,15.092348 0 0 0 59.869139,2.5275542 a 44.999992,44.999992 0 0 0 -29.738279,0 z" />
+  </g>
+</svg>

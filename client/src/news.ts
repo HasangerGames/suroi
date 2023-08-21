@@ -3,7 +3,8 @@ import $ from "jquery";
 import "./scss/pages/client.scss";
 import "./scss/pages/news.scss";
 
-import "./scripts/news/newsGenerator";
+import { news } from "./scripts/news/newsPosts";
+import { processPost } from "./scripts/news/newsHelper";
 
 $(() => {
     const body = $(document.body);
@@ -35,4 +36,6 @@ $(() => {
     });
 
     body.on("click", () => { dropdown.hide(); });
+
+    $("#news-articles").html(news.map(processPost).join(""));
 });

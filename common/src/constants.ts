@@ -66,6 +66,7 @@ export enum SpectateActions {
     BeginSpectating,
     SpectatePrevious,
     SpectateNext,
+    SpectateSpecific,
     Report
 }
 

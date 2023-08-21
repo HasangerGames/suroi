@@ -55,7 +55,7 @@ export class UpdatePacket extends SendingPacket {
         const gasDirty = game.gas.dirty || player.fullUpdate;
         stream.writeBoolean(gasDirty);
 
-        const gasPercentageDirty = game.gas.percentageDirty || player.fullUpdate;
+        const gasPercentageDirty = game.gas.percentageDirty && !game.gas.dirty;
         stream.writeBoolean(gasPercentageDirty);
 
         const aliveCountDirty = game.aliveCountDirty || player.fullUpdate;
@@ -197,6 +197,11 @@ export class UpdatePacket extends SendingPacket {
             stream.writePosition(game.gas.newPosition);
             stream.writeFloat(game.gas.oldRadius, 0, 2048, 16);
             stream.writeFloat(game.gas.newRadius, 0, 2048, 16);
+
+            // Percentage needs to be sent early when the player is joining,
+            // so the duration in gas messages is correct
+            stream.writeBoolean(player.fullUpdate);
+            if (player.fullUpdate) stream.writeFloat(game.gas.percentage, 0, 1, 16);
         }
 
         // Gas percentage

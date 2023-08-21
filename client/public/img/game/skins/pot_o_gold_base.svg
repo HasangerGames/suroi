@@ -5,7 +5,7 @@
    height="90"
    viewBox="0 0 89.999997 89.999998"
    id="svg33"
-   sodipodi:docname="pure_gold_base.svg"
+   sodipodi:docname="pot_o_gold_base.svg"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -20,9 +20,9 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="4.7009935"
-     inkscape:cx="26.802845"
-     inkscape:cy="25.73924"
+     inkscape:zoom="9.401987"
+     inkscape:cx="44.671408"
+     inkscape:cy="47.011339"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -38,7 +38,7 @@
        y2="178.52193"
        gradientUnits="userSpaceOnUse"
        id="color-1"
-       gradientTransform="matrix(1.0148413,0,0,1.0148413,-198.56192,-136.17142)">
+       gradientTransform="matrix(-0.71760117,0.71760117,-0.71760117,-0.71760117,345.33184,0.88327997)">
       <stop
          offset="0"
          stop-color="#dd9b0a"
@@ -102,7 +102,7 @@
      id="path21"
      style="mix-blend-mode:normal;fill-rule:nonzero;stroke-linejoin:miter;stroke-dasharray:none;stroke-dashoffset:0" />
   <path
-     d="M 0,45.00003 C 0,20.147228 20.147207,0 45,0 c 24.852803,0 45,20.147228 45,45.00003 0,24.852803 -20.147167,45 -45,45 -24.852803,0 -45,-20.147207 -45,-45 z"
+     d="m 76.819795,13.180199 c 17.573584,17.573585 17.573599,46.066053 2.1e-5,63.639632 -17.573586,17.573585 -46.066047,17.573563 -63.639632,-2.1e-5 -17.5735853,-17.573586 -17.5736065,-46.066004 0,-63.639611 17.573586,-17.5735853 46.066032,-17.5735782 63.639611,0 z"
      fill="url(#color-1)"
      stroke="none"
      stroke-width="0"

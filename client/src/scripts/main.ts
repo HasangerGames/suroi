@@ -28,7 +28,7 @@ $(() => {
         playSoloBtn.addClass("btn-disabled");
         playSoloBtn.prop("disabled", true);
         playSoloBtn.html('<span style="position: relative; bottom: 1px;"><div class="spin"></div> Connecting...</span>');
-        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, address: string, gameID: number }) => {
+        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;
@@ -44,7 +44,11 @@ $(() => {
                 core.game?.connect(address);
                 $("#splash-server-message").hide();
             } else {
-                $("#splash-server-message-text").html("Error joining game.<br>Please try again in 30 seconds.");
+                let message: string | undefined;
+                if (data.message !== undefined) {
+                    message = data.message === "tempBanned" ? "You have been banned for 1 day. Reason: Teaming" : "<strong>You have been permanently banned!</strong><br>Reason: Hacking";
+                }
+                $("#splash-server-message-text").html(message ?? "Error joining game.<br>Please try again in 30 seconds.");
                 $("#splash-server-message").show();
                 enablePlayButton();
             }

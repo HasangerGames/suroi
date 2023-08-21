@@ -47,6 +47,7 @@ export class UpdatePacket extends ReceivingPacket {
         const playerManager = game.playerManager;
         const scene = player.scene;
 
+        // Dirty values
         const maxMinStatsDirty = stream.readBoolean();
         const healthDirty = stream.readBoolean();
         const adrenalineDirty = stream.readBoolean();
@@ -63,6 +64,7 @@ export class UpdatePacket extends ReceivingPacket {
         const gasDirty = stream.readBoolean();
         const gasPercentageDirty = stream.readBoolean();
         const aliveCountDirty = stream.readBoolean();
+
         //
         // Active player data
         //
@@ -181,6 +183,14 @@ export class UpdatePacket extends ReceivingPacket {
             const activePlayerID = stream.readObjectID();
             const idChanged = game.activePlayer.id !== activePlayerID;
             if (idChanged) {
+                // Destroy the old object representing the active player
+                const activePlayer = game.objects.get(activePlayerID);
+                if (activePlayer !== undefined) {
+                    activePlayer.destroy();
+                    game.objects.delete(activePlayerID);
+                }
+
+                // Reset the active player
                 game.activePlayer.container.setVisible(true);
                 game.objects.delete(game.activePlayer.id);
                 game.activePlayer.id = activePlayerID;
@@ -344,6 +354,7 @@ export class UpdatePacket extends ReceivingPacket {
         const minimap = scene.scene.get("minimap") as MinimapScene;
 
         // Gas
+        let gasPercentage: number | undefined;
         if (gasDirty) {
             game.gas.state = stream.readBits(2);
             game.gas.initialDuration = stream.readBits(7);
@@ -351,65 +362,78 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
-            let gasMessage: string | undefined;
-            // TODO Clean up code
-            if (game.gas.state === GasState.Waiting) {
-                gasMessage = `Toxic gas advances in ${game.gas.initialDuration}s`;
-                scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
-                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                if (game.gas.oldRadius === 0) {
-                    minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
-                } else {
+            let currentDuration: number | undefined;
+            const percentageDirty = stream.readBoolean();
+            if (percentageDirty) { // Percentage dirty
+                gasPercentage = stream.readFloat(0, 1, 16);
+                currentDuration = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
+            } else {
+                currentDuration = game.gas.initialDuration;
+            }
+            if (!(percentageDirty && game.gas.firstPercentageReceived)) { // Ensures that gas messages aren't displayed when switching between players when spectating
+                let gasMessage: string | undefined;
+                // TODO Clean up code
+                if (game.gas.state === GasState.Waiting) {
+                    gasMessage = `Toxic gas advances in ${currentDuration}s`;
+                    scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
+                    minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
+                    minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
+                    if (game.gas.oldRadius === 0) {
+                        minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
+                    } else {
+                        minimap.gasToCenterLine.setTo(
+                            game.gas.newPosition.x * MINIMAP_SCALE,
+                            game.gas.newPosition.y * MINIMAP_SCALE,
+                            minimap.playerIndicator.x,
+                            minimap.playerIndicator.y
+                        );
+                    }
+                } else if (game.gas.state === GasState.Advancing) {
+                    gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                    minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
                     minimap.gasToCenterLine.setTo(
                         game.gas.newPosition.x * MINIMAP_SCALE,
                         game.gas.newPosition.y * MINIMAP_SCALE,
                         minimap.playerIndicator.x,
                         minimap.playerIndicator.y
                     );
+                } else if (game.gas.state === GasState.Inactive) {
+                    gasMessage = "Waiting for players...";
+                    minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
                 }
-            } else if (game.gas.state === GasState.Advancing) {
-                gasMessage = "Toxic gas is advancing! Move to the safe zone";
-                minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                minimap.gasToCenterLine.setTo(
-                    game.gas.newPosition.x * MINIMAP_SCALE,
-                    game.gas.newPosition.y * MINIMAP_SCALE,
-                    minimap.playerIndicator.x,
-                    minimap.playerIndicator.y
-                );
-            } else if (game.gas.state === GasState.Inactive) {
-                gasMessage = "Waiting for players...";
-                minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
-            }
 
-            if (game.gas.state === GasState.Advancing) {
-                $("#gas-timer").addClass("advancing");
-                $("#gas-timer-image").attr("src", "/img/misc/gas-advancing-icon.svg");
-            } else {
-                $("#gas-timer").removeClass("advancing");
-                $("#gas-timer-image").attr("src", "/img/misc/gas-waiting-icon.svg");
-            }
-
-            if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE) {
-                $("#gas-msg-info").text(gasMessage ?? "");
-                $("#gas-msg").fadeIn();
-                if (game.gas.state === GasState.Inactive) {
-                    $("#gas-msg-info").css("color", "white");
+                if (game.gas.state === GasState.Advancing) {
+                    $("#gas-timer").addClass("advancing");
+                    $("#gas-timer-image").attr("src", "/img/misc/gas-advancing-icon.svg");
                 } else {
-                    $("#gas-msg-info").css("color", "cyan");
-                    setTimeout(() => $("#gas-msg").fadeOut(1000), 5000);
+                    $("#gas-timer").removeClass("advancing");
+                    $("#gas-timer-image").attr("src", "/img/misc/gas-waiting-icon.svg");
+                }
+
+                if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE) {
+                    $("#gas-msg-info").text(gasMessage ?? "");
+                    $("#gas-msg").fadeIn();
+                    if (game.gas.state === GasState.Inactive) {
+                        $("#gas-msg-info").css("color", "white");
+                    } else {
+                        $("#gas-msg-info").css("color", "cyan");
+                        setTimeout(() => $("#gas-msg").fadeOut(1000), 5000);
+                    }
                 }
             }
+            game.gas.firstPercentageReceived = true;
         }
 
         // Gas percentage
         if (gasPercentageDirty) {
-            const percentage = stream.readFloat(0, 1, 16);
-            const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * percentage);
+            gasPercentage = stream.readFloat(0, 1, 16);
+        }
+        if (gasPercentage !== undefined) {
+            const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
             if (game.gas.state === GasState.Advancing) {
-                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, percentage);
-                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, percentage);
+                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
+                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
                 scene.tweens.add({
                     targets: scene.gasCircle,
                     x: currentPosition.x * 20,

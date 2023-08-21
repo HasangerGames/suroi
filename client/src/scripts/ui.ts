@@ -30,8 +30,7 @@ $((): void => {
         $("#spectating-msg").show();
 
         // Gas message
-        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone");
-        $("#gas-msg-info").css("color", "cyan");
+        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone").css("color", "cyan");
         $("#gas-msg").show();
 
         $("#weapon-ammo-container").show();
@@ -70,7 +69,7 @@ $((): void => {
     const body = $(document.body);
     const usernameField = $("#username-input");
 
-    const Youtubers = [
+    const youtubers = [
         {
             name: "Summit",
             link: "https://www.youtube.com/@SummitNewsNetwork"
@@ -89,18 +88,18 @@ $((): void => {
         }
     ];
 
-    const youtuber = Youtubers[Math.floor(Math.random() * Youtubers.length)];
-    $("#youtube-feature-name").text(youtuber.name);
+    const youtuber = youtubers[Math.floor(Math.random() * youtubers.length)];
+    $("#youtube-featured-name").text(youtuber.name);
     $("#youtube-featured-content").attr("href", youtuber.link);
 
-    const TwitchStreamers = [
+    const streamers = [
         {
             name: "iMoRTaL_Mafia",
-            link: "https://www.twitch.tv/videos/1854751139"
+            link: "https://www.twitch.tv/imortal_mafia"
         }
     ];
-    const streamer = TwitchStreamers[Math.floor(Math.random() * TwitchStreamers.length)];
 
+    const streamer = streamers[Math.floor(Math.random() * streamers.length)];
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
 
@@ -134,6 +133,19 @@ $((): void => {
         serverSelect.val("dev");
     }
 
+    const rulesBtn = $("#btn-rules");
+
+    // Highlight rules & tutorial button for new players
+    if (!localStorageInstance.config.rulesAcknowledged) {
+        rulesBtn.removeClass("btn-secondary").addClass("highlighted");
+    }
+
+    // Event listener for rules button
+    rulesBtn.on("click", () => {
+        localStorageInstance.update({ rulesAcknowledged: true });
+        location.href = "/rules";
+    });
+
     // todo find a better way to do these two handlers
     $("#btn-dropdown-more").on("click", ev => {
         dropdown.toggle();
@@ -158,7 +170,7 @@ $((): void => {
 
     $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });
     $("#btn-report").on("click", () => {
-        if (confirm("Are you sure you want to report this player?")) {
+        if (confirm("Are you sure you want to report this player?\nPlayers should only be reported for teaming or hacking.")) {
             sendSpectatePacket(SpectateActions.Report);
         }
     });
@@ -193,13 +205,19 @@ $((): void => {
     });
 
     const customizeMenu = $("#customize-menu");
+    $("#btn-customize").on("click", () => customizeMenu.fadeToggle(250));
+    $("#close-customize").on("click", () => customizeMenu.fadeOut(250));
 
-    $("#btn-customize").on("click", () => {
-        customizeMenu.fadeToggle(250);
-    });
+    $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
-    $("#close-customize").on("click", () => {
-        customizeMenu.fadeOut(250);
+    $("#btn-copy-report-id").on("click", () => {
+        navigator.clipboard.writeText($("#report-id-input").val() as string)
+            .then(() => {
+                $("#btn-copy-report-id").html('<i class="fa-solid fa-check"></i> Copied');
+            })
+            .catch(() => {
+                alert("Unable to copy report ID. Please copy it manually.");
+            });
     });
 
     // Load skins

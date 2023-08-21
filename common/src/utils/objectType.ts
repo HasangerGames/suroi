@@ -53,11 +53,7 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
             throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idString})`);
         }
 
-        // TODO: Make this more efficient.
-        for (let i = 0; i < definitions.definitions.length; i++) {
-            if (definitions.definitions[i].idString === idString) type.idNumber = i;
-        }
-
+        type.idNumber = definitions.definitions.findIndex(def => def.idString === idString);
         return type;
     }
 }

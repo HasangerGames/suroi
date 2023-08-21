@@ -64,7 +64,10 @@
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-            <a class="btn btn-lg btn-darken btn-alert" id="btn-rules" href="/rules">Rules & Tutorial</a>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
+              <div class="pulsating-circle" style="display: none"></div>
+              <span>Rules & Tutorial</span>
+            </button>
           </div>
           <div id="splash-socials">
             <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -92,7 +95,7 @@
             <p class="featured-heading">Featured YouTubr</p>
             <a class="featured-content" id="youtube-featured-content" href="" target="_blank">
               <img class="featured-logo" src="/img/misc/youtube-icon.svg" alt="YouTube icon">
-              <span class="featured-name" id="youtube-feature-name"></span>
+              <span class="featured-name" id="youtube-featured-name"></span>
             </a>
           </div>
           <div class="featured-container">
@@ -309,10 +312,31 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="settings-menu" style="display: none">
-    <div id="settings-header">
+  <div class="modal dialog" id="report-modal" style="display: none">
+    <div class="dialog-header">
+      <h3><span style="font-weight: 600">Reporting</span><span id="reporting-name"></span></h3>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-report"></span>
+    </div>
+    <div id="report-modal-content">
+      <div id="report-id-container">
+        <span>Report ID:</span>
+        <input type="text" name="report-id-input" id="report-id-input" readonly>
+        <button class="btn btn-lg btn-darken btn-primary" id="btn-copy-report-id"></button>
+      </div>
+      <p>Please follow the instructions below! If you don't, your report will be ignored.</p>
+      <h4>How to Submit a Report</h4>
+      <ol>
+        <li>Join the <a href="https://discord.suroi.io">Discord server.</a></li>
+        <li>Go to the <a href="https://discord.com/channels/1077043833621184563/1135288369526607973">#cheater-reports channel.</a></li>
+        <li>Read the report guidelines in the pinned post.</li>
+        <li>Submit your report as a post.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="modal dialog" id="settings-menu" style="display: none">
+    <div class="dialog-header">
       <h3>Settings</h3>
-      <span class="fa-solid fa-xmark" id="close-settings"></span>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-settings"></span>
     </div>
     <div id="settings-tabs-container">
       <div class="tab-bar" id="settings-tab-bar">
@@ -351,12 +375,6 @@
         <div class="tab-content" id="tab-graphics-content" style="display: none;">
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Camera shake</span>
-              <input type="checkbox" id="toggle-camera-shake">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
               <span class="setting-title">Rotation smoothing</span>
               <input type="checkbox" id="toggle-rotation-smoothing">
             </label>
@@ -365,6 +383,18 @@
             <label>
               <span class="setting-title">Movement smoothing</span>
               <input type="checkbox" id="toggle-movement-smoothing">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Client-side prediction</span>
+              <input type="checkbox" id="toggle-client-side-prediction">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Camera shake</span>
+              <input type="checkbox" id="toggle-camera-shake">
             </label>
           </div>
         </div>
@@ -409,12 +439,6 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Client-side prediction</span>
-              <input type="checkbox" id="toggle-client-side-prediction">
-            </label>
-          </div>
-          <div class="modal-item checkbox-setting">
-            <label>
               <span class="setting-title">Text-based kill feed</span>
               <input type="checkbox" id="toggle-text-kill-feed">
             </label>
@@ -449,10 +473,10 @@
       </div>
     </div>
   </div>
-  <div class="modal" id="customize-menu" style="display: none">
-    <div id="customize-header">
+  <div class="modal dialog" id="customize-menu" style="display: none">
+    <div class="dialog-header">
       <h3>Customize</h3>
-      <span class="fa-solid fa-xmark" id="close-customize"></span>
+      <span class="dialog-close-btn fa-solid fa-xmark" id="close-customize"></span>
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">

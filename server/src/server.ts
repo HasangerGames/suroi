@@ -6,7 +6,8 @@ import {
     DEDICATED_COMPRESSOR_256KB,
     type HttpResponse,
     SSLApp,
-    type WebSocket
+    type WebSocket,
+    type HttpRequest
 } from "uWebSockets.js";
 import sanitizeHtml from "sanitize-html";
 
@@ -24,7 +25,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
 import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
-import * as fs from "fs";
+import { existsSync, readFile, writeFileSync } from "fs";
 
 /**
  * Apply CORS headers to a response.
@@ -61,7 +62,7 @@ export function endGame(id: number): void {
     game.allowJoin = false;
     game.stopped = true;
     clearTimeout(game.startTimeoutID);
-    clearTimeout(game.gas.timeoutId);
+    clearTimeout(game.gas.timeoutID);
     for (const player of game.connectedPlayers) {
         player.socket.close();
     }
@@ -77,49 +78,75 @@ export function allowJoin(gameID: number): boolean {
     return false;
 }
 
+function getIP(res: HttpResponse, req: HttpRequest): string {
+    return Config.cloudflare ? req.getHeader("cf-connecting-ip") : req.getHeader("x-forwarded-for") || decoder.decode(res.getRemoteAddressAsText());
+}
+
 const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
 const bannedIPs = new Set<string>();
+const tempBannedIPs = new Set<string>();
+interface BanRecord { ip: string, expires?: number }
+let rawBanRecords: BanRecord[] = [];
 
 app.get("/api/getGame", async(res, req) => {
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     let aborted = false;
     res.onAborted(() => { aborted = true; });
     cors(res);
 
-    let response: { success: boolean, address?: string, gameID?: number };
+    let response: {
+        success: boolean
+        message?: "tempBanned" | "permaBanned"
+        address?: string
+        gameID?: number
+    };
 
-    const searchParams = new URLSearchParams(req.getQuery());
+    const ip = getIP(res, req);
+    if (bannedIPs.has(ip)) {
+        response = { success: false, message: tempBannedIPs.has(ip) ? "tempBanned" : "permaBanned" };
+    } else {
+        const searchParams = new URLSearchParams(String(req.getQuery()));
 
-    const region = searchParams.get("region") ?? Config.defaultRegion;
+        const region = searchParams.get("region") ?? Config.defaultRegion;
 
-    if (region === Config.thisRegion) {
-        let gameID: number | undefined;
-        if (allowJoin(0)) {
-            gameID = 0;
-        } else if (allowJoin(1)) {
-            gameID = 1;
+        if (region === Config.thisRegion) {
+            let gameID: number | undefined;
+            if (allowJoin(0)) {
+                gameID = 0;
+            } else if (allowJoin(1)) {
+                gameID = 1;
+            } else {
+                response = { success: false };
+            }
+            if (gameID !== undefined) {
+                response = { success: true, address: Config.regions[region], gameID };
+            }
+        } else if (typeof Config.regions[region] === "string" && region !== Config.thisRegion) {
+            // Fetch the find game api for the region and return that.
+            const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
+            try {
+                response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
+            } catch (e) {
+                response = { success: false };
+            }
         } else {
             response = { success: false };
         }
-        if (gameID !== undefined) {
-            response = { success: true, address: Config.regions[region], gameID };
-        }
-    } else if (Config.regions[region] !== undefined && region !== Config.thisRegion) {
-        // Fetch the find game api for the region and return that.
-        const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
-        try {
-            response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
-        } catch (e) {
-            response = { success: false };
-        }
-    } else {
-        response = { success: false };
     }
+
     if (!aborted) {
         res.cork(() => {
             res.writeHeader("Content-Type", "application/json").end(JSON.stringify(response));
         });
+    }
+});
+
+app.get("/api/bannedIPs", (res, req) => {
+    cors(res);
+    if (req.getHeader("password") === Config.ipBanListPassword) {
+        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(rawBanRecords));
+    } else {
+        res.writeStatus("403 Forbidden").end("403 Forbidden");
     }
 });
 
@@ -147,11 +174,11 @@ app.ws("/play", {
         res.onAborted((): void => {});
 
         // Bot protection
-        const ip = Config.cloudflare ? req.getHeader("cf-connecting-ip") : req.getHeader("x-forwarded-for") || decoder.decode(res.getRemoteAddressAsText());
+        const ip = getIP(res, req);
         if (Config.botProtection) {
             if (bannedIPs.has(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
                 if (!bannedIPs.has(ip)) bannedIPs.add(ip);
-                res.endWithoutBody(0, true);
+                res.writeStatus("403 Forbidden").endWithoutBody(0, true);
                 log(`Connection blocked: ${ip}`);
                 return;
             } else {
@@ -170,7 +197,7 @@ app.ws("/play", {
         const game = games[gameID];
 
         if (game === undefined || !allowJoin(gameID)) {
-            res.endWithoutBody(0, true);
+            res.writeStatus("403 Forbidden").endWithoutBody(0, true);
             return;
         }
 
@@ -202,8 +229,8 @@ app.ws("/play", {
         }
 
         // Name color
-        let color = searchParams.get("nameColor") ?? "";
-        if (color.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
+        let color = searchParams.get("nameColor");
+        if (color?.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
             color = `#${color}`;
         }
 
@@ -215,7 +242,7 @@ app.ws("/play", {
             ip,
             role,
             isDev,
-            nameColor: isDev ? color : "",
+            nameColor: isDev ? (color ?? "") : "",
             lobbyClearing: searchParams.get("lobbyClearing") === "true"
         };
         res.upgrade(
@@ -311,18 +338,40 @@ app.listen(Config.host, Config.port, (): void => {
             connectionAttempts = {};
         }, 5000);
         setInterval(() => {
-            if (!fs.existsSync("bannedIPs.json")) fs.writeFileSync("bannedIPs.json", "[]");
-            fs.readFile("bannedIPs.json", "utf8", (error, data) => {
-                if (error) {
-                    console.error(error);
-                    return;
+            const processBanRecords = (records: BanRecord[]): void => {
+                bannedIPs.clear();
+                tempBannedIPs.clear();
+                const now = Date.now();
+                for (const record of records) {
+                    if (record.expires === undefined) {
+                        bannedIPs.add(record.ip);
+                    } else if (record.expires > now) {
+                        tempBannedIPs.add(record.ip);
+                        bannedIPs.add(record.ip);
+                    }
                 }
-                const bannedIPsFromJSON: string[] = JSON.parse(data);
-                for (const ip of bannedIPsFromJSON) bannedIPs.add(ip);
-                for (const ip of bannedIPs) {
-                    if (!bannedIPsFromJSON.includes(ip)) bannedIPs.delete(ip);
-                }
-            });
+            };
+            if (Config.thisRegion === Config.defaultRegion) {
+                if (!existsSync("bannedIPs.json")) writeFileSync("bannedIPs.json", "[]");
+                readFile("bannedIPs.json", "utf8", (error, data) => {
+                    if (error) {
+                        console.error(error);
+                        return;
+                    }
+                    rawBanRecords = JSON.parse(data);
+                    processBanRecords(rawBanRecords);
+                });
+            } else {
+                void (async() => {
+                    try {
+                        const response = await fetch(Config.ipBanListURL, { headers: { Password: Config.ipBanListPassword } });
+                        if (response.ok) processBanRecords(await response.json());
+                        else console.error("Error: Unable to fetch list of banned IPs.");
+                    } catch (e) {
+                        console.error("Error: Unable to fetch list of banned IPs. Details:", e);
+                    }
+                })();
+            }
         }, 120000);
     }
 });
