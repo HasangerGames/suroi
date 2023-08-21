@@ -28,7 +28,6 @@ import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
-import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
@@ -538,8 +537,8 @@ export class Game {
         return bullet;
     }
 
-    addExplosion(type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
-        const explosion = new Explosion(this, type, position, source);
+    addExplosion(type: string, position: Vector, source: GameObject): Explosion {
+        const explosion = new Explosion(this, ObjectType.fromString(ObjectCategory.Explosion, type), position, source);
         this.explosions.add(explosion);
         return explosion;
     }
