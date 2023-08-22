@@ -521,13 +521,14 @@ export class Game {
         this.removeObject(loot);
     }
 
-    addBullet(position: Vector, rotation: number, source: GunItem, shooter: Player, reflectCount?: number, reflectedFromID?: number): Bullet {
+    addBullet(position: Vector, rotation: number, source: GunItem, shooter: Player, maxDistance: number, reflectCount?: number, reflectedFromID?: number): Bullet {
         const bullet = new Bullet(
             this,
             position,
             rotation,
             source,
             shooter,
+            maxDistance,
             reflectCount,
             reflectedFromID
         );

@@ -1,6 +1,6 @@
 import { Player } from "./player";
 import { type Game } from "../game";
-import { distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { distance, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
 import { type GunItem } from "../inventory/gunItem";
 import { type Vector, v, vAdd, vMul, vClone } from "../../../common/src/utils/vector";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -18,7 +18,7 @@ export class Bullet {
 
     readonly maxDistanceSquared: number;
 
-    readonly maxDistance: number;
+    maxDistance: number;
 
     dead = false;
 
@@ -32,7 +32,7 @@ export class Bullet {
 
     definition: GunDefinition["ballistics"];
 
-    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player, reflectionCount = 0, reflectedFromID = -1) {
+    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player, maxDistance = 0, reflectionCount = 0, reflectedFromID = -1) {
         this.game = game;
         this.initialPosition = vClone(position);
         this.position = position;
@@ -44,7 +44,7 @@ export class Bullet {
 
         this.definition = this.source.type.definition.ballistics;
 
-        this.maxDistance = (this.definition.maxDistance / (reflectionCount + 1));
+        this.maxDistance = (maxDistance === 0) ? this.definition.maxDistance : maxDistance;
 
         this.maxDistanceSquared = this.maxDistance ** 2;
 
@@ -105,7 +105,7 @@ export class Bullet {
                 if (!object.definition.noCollisions) {
                     this.position = collision.intersection.point;
 
-                    if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                    if (object.definition.reflectBullets && this.reflectionCount < 4) {
                         this.reflect(collision.intersection.normal, object.id);
                     }
 
@@ -121,6 +121,10 @@ export class Bullet {
 
         const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
 
-        this.game.addBullet(this.position, rotation, this.source, this.shooter, this.reflectionCount + 1, objectId);
+        this.game.addBullet(this.position, rotation, this.source, this.shooter, makeMaxDistance(this.maxDistance - distance(this.position, this.initialPosition), this.reflectionCount), this.reflectionCount + 1, objectId);
     }
+}
+function makeMaxDistance(leftDistance: number, reflectionCount: number): number {
+    //If you want bullets to be the 'same' they were before then just return leftDistance
+    return leftDistance * (1 - reflectionCount / 10);
 }
