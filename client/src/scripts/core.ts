@@ -1,4 +1,4 @@
-import { type Application } from "pixi.js";
+import { isMobile, type Application } from "pixi.js";
 import type { Game } from "./game";
 import { Howl } from "howler";
 
@@ -13,7 +13,7 @@ interface Core {
  * The master client controller.
  */
 const core: Core = {
-    isMobile: "maxTouchPoints" in navigator && navigator.maxTouchPoints > 0,
+    isMobile: isMobile.any,
     music: new Howl({ src: "./audio/music/menu_music.mp3" })
 };
 
