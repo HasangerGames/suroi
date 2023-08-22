@@ -47,10 +47,7 @@ export type GunDefinition = ItemDefinition & {
             readonly players?: boolean
             readonly obstacles?: boolean
         }
-        readonly tracerOpacity?: {
-            readonly start?: number
-            readonly end?: number
-        }
+        readonly tracerOpacity?: number
         readonly tracerWidth?: number
         readonly tracerLength?: number
     }
@@ -573,10 +570,7 @@ export const Guns: GunDefinition[] = [
             speed: 0.22,
             maxDistance: 160,
             tracerLength: 1.3,
-            tracerOpacity: {
-                start: 0.5,
-                end: 0.2
-            }
+            tracerOpacity: 0.5
         }
     },
     {
@@ -613,10 +607,6 @@ export const Guns: GunDefinition[] = [
             penetration: {
                 players: true,
                 obstacles: true
-            },
-            tracerOpacity: {
-                start: 1,
-                end: 0.5
             }
         }
     },

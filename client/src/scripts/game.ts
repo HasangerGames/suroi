@@ -14,14 +14,13 @@ import { type GameObject } from "./types/gameObject";
 import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { GasState, PacketType } from "../../../common/src/constants";
+import { PacketType } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
-import { v } from "../../../common/src/utils/vector";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { UI_DEBUG_MODE } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
 import { localStorageInstance } from "./utils/localStorageHandler";
@@ -33,9 +32,12 @@ import { type CollisionRecord, circleCollision, distanceSquared } from "../../..
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
-import { type Application } from "pixi.js";
+import { Container, type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
 import { SoundManager } from "./utils/soundManager";
+import { Gas } from "./utils/gas";
+import core from "./core";
+import { Minimap } from "./utils/map";
 
 export class Game {
     socket!: WebSocket;
@@ -56,37 +58,44 @@ export class Game {
 
     tickTimeoutID: number | undefined;
 
-    width = 0;
-    height = 0;
-
-    readonly gas = {
-        state: GasState.Inactive,
-        initialDuration: 0,
-        oldPosition: v(0, 0),
-        newPosition: v(0, 0),
-        oldRadius: 2048,
-        newRadius: 2048,
-        firstPercentageReceived: false
-    };
+    gas!: Gas;
 
     pixi: Application;
 
     soundManager = new SoundManager();
 
+    map: Minimap;
+
     camera: Camera;
+
+    // Since all players and bullets have the same depth
+    // Add all to a container so pixi has to do less sorting of zIndexes
+    playersContainer = new Container();
+    bulletsContainer = new Container();
 
     constructor(pixi: Application) {
         this.pixi = pixi;
 
         this.pixi.ticker.add(() => {
+            if (!this.gameStarted) return;
+
             const delta = this.pixi.ticker.deltaMS;
 
             for (const bullet of this.bullets) {
                 bullet.update(delta);
             }
+
+            // this.camera.update(delta);
+
+            this.gas.render();
         });
 
         this.camera = new Camera(this.pixi);
+
+        this.map = new Minimap(this);
+
+        this.playersContainer.zIndex = 3;
+        this.bulletsContainer.zIndex = 3;
 
         setInterval(() => {
             if (localStorageInstance.config.showFPS) {
@@ -107,10 +116,10 @@ export class Game {
 
         // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
+            core.music.stop();
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
-            this.gas.firstPercentageReceived = false;
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(gameOverScreenTimeout);
@@ -126,6 +135,9 @@ export class Game {
             this.activePlayer = new Player(this, -1, true);
 
             this.players.add(this.activePlayer);
+
+            this.gas = new Gas(this, PIXI_SCALE, this.camera.container);
+            this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
             this.tickTimeoutID = window.setInterval(this.tick.bind(this), 30);
         };
@@ -212,8 +224,13 @@ export class Game {
         this.players.clear();
         this.bullets.clear();
         this.camera.container.removeChildren();
+        this.playersContainer.removeChildren();
+        this.bulletsContainer.removeChildren();
 
         this.playerManager = new PlayerManager(this);
+
+        core.music.stop().play();
+        core.music.volume(localStorageInstance.config.musicVolume);
     }
 
     sendPacket(packet: SendingPacket): void {

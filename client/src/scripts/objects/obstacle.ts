@@ -13,6 +13,7 @@ import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
+import { PIXI_SCALE } from "../utils/constants";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -37,7 +38,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     hitbox!: Hitbox;
 
-    orientation!: number;
+    orientation!: Orientation;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
@@ -68,7 +69,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const hitEffect = stream.readBits(3);
 
         if (this.hitEffect !== hitEffect && !this.isNew && !destroyed) {
-            this.game.soundManager.play(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
+            this.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`, 0.2);
         }
         this.hitEffect = hitEffect;
 
@@ -78,8 +79,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
                 if (!this.isNew) {
-                    if (offset === 0) this.game.soundManager.play("door_close");
-                    else this.game.soundManager.play("door_open");
+                    if (offset === 0) this.playSound("door_close", 0.3);
+                    else this.playSound("door_open", 0.3);
                     gsap.to(this.image, {
                         rotation: orientationToRotation(offset),
                         duration: 0.2
@@ -95,6 +96,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 } else {
                     this.door.hitbox = this.door.closedHitbox?.clone();
                 }
+                if (this.door.hitbox) this.hitbox = this.door.hitbox;
             }
         }
 
@@ -104,7 +106,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         if (!this.dead && destroyed) {
             this.dead = true;
             if (!this.isNew) {
-                this.game.soundManager.play(`${definition.material}_destroyed`);
+                this.playSound(`${definition.material}_destroyed`, 0.2);
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
@@ -117,7 +119,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
-        if (!this.isNew && !this.door?.hitbox) {
+        if (!this.isNew && !this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
     }
@@ -132,8 +134,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             let offsetX: number;
             let offsetY: number;
             if (definition.hingeOffset !== undefined) {
-                offsetX = definition.hingeOffset.x * 20;
-                offsetY = definition.hingeOffset.y * 20;
+                offsetX = definition.hingeOffset.x * PIXI_SCALE;
+                offsetY = definition.hingeOffset.y * PIXI_SCALE;
             } else {
                 offsetX = offsetY = 0;
             }

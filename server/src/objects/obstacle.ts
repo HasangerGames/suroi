@@ -17,7 +17,6 @@ import { LootTables } from "../data/lootTables";
 import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { Player } from "./player";
 import { type Building } from "./building";
 import { type GunItem } from "../inventory/gunItem";
@@ -198,11 +197,7 @@ export class Obstacle extends GameObject {
             this.scale = definition.scale.spawnMin;
 
             if (definition.explosion !== undefined) {
-                this.game.addExplosion(
-                    ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, definition.explosion),
-                    this.position,
-                    source
-                );
+                this.game.addExplosion(definition.explosion, this.position, source);
             }
 
             for (const item of this.loot) {

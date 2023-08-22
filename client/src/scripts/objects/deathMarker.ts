@@ -19,6 +19,9 @@ export class DeathMarker extends GameObject {
     image: SuroiSprite;
     playerNameText: Text;
 
+    scaleAnim?: gsap.core.Tween;
+    alphaAnim?: gsap.core.Tween;
+
     constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, type, id);
 
@@ -57,8 +60,12 @@ export class DeathMarker extends GameObject {
         if (stream.readBoolean()) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            gsap.to(this.container, {
-                scale: 1,
+            this.scaleAnim = gsap.to(this.container.scale, {
+                x: 1,
+                y: 1,
+                duration: 0.4
+            });
+            this.alphaAnim = gsap.to(this.container, {
                 alpha: 1,
                 duration: 0.4
             });
@@ -67,5 +74,7 @@ export class DeathMarker extends GameObject {
 
     destroy(): void {
         super.destroy();
+        this.scaleAnim?.kill();
+        this.alphaAnim?.kill();
     }
 }

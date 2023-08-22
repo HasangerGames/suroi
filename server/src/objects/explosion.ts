@@ -66,7 +66,7 @@ export class Explosion {
     }
 
     serialize(stream: SuroiBitStream): void {
-        stream.writeObjectType(this.type);
+        stream.writeObjectTypeNoCategory(this.type);
         stream.writePosition(this.position);
     }
 }

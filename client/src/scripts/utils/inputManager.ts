@@ -8,6 +8,7 @@ import { type Game } from "../game";
 import { v } from "../../../../common/src/utils/vector";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
+import core from "../core";
 
 class Action {
     readonly name: string;
@@ -180,13 +181,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         toggleMap: new Action(
             "toggleMap",
             () => {
-                // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggle();
+                core.game?.map.toggle();
             }
         ),
         toggleMiniMap: new Action(
             "toggleMiniMap",
             () => {
-                // (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
+                core.game?.map.toggleMiniMap();
             }
         ),
         emoteWheel: new Action(

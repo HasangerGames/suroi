@@ -2,13 +2,10 @@ import { SendingPacket } from "../../types/sendingPacket";
 
 import {
     ObjectCategory,
-    PLAYER_ACTIONS_BITS,
-    PacketType,
-    PlayerActions
+    PacketType
 } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type HealingAction } from "../../inventory/action";
 
 export class UpdatePacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -28,7 +25,6 @@ export class UpdatePacket extends SendingPacket {
         stream.writeBoolean(player.dirty.health || player.fullUpdate);
         stream.writeBoolean(player.dirty.adrenaline || player.fullUpdate);
         stream.writeBoolean(player.dirty.zoom || player.fullUpdate);
-        stream.writeBoolean(player.dirty.action || player.fullUpdate);
         stream.writeBoolean(player.dirty.activePlayerID || player.fullUpdate);
 
         const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
@@ -82,16 +78,6 @@ export class UpdatePacket extends SendingPacket {
         if (player.dirty.zoom || player.fullUpdate) {
             stream.writeUint8(player.zoom);
             player.dirty.zoom = false;
-        }
-
-        // Action
-        if (player.dirty.action || player.fullUpdate) {
-            player.dirty.action = false;
-            stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
-
-            if (player.action?.type === PlayerActions.UseItem) {
-                stream.writeObjectTypeNoCategory((player.action as HealingAction).item);
-            }
         }
 
         // Active player ID

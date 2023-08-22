@@ -8,10 +8,12 @@ import { GameObject } from "../types/gameObject";
 import {
     ANIMATION_TYPE_BITS, AnimationType,
     ObjectCategory,
-    PLAYER_RADIUS
+    PLAYER_ACTIONS_BITS,
+    PLAYER_RADIUS,
+    PlayerActions
 } from "../../../../common/src/constants";
 
-import { vClone, type Vector } from "../../../../common/src/utils/vector";
+import { vClone, vSub, type Vector, vDiv, vAdd, v } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -20,7 +22,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { UI_DEBUG_MODE } from "../utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
@@ -30,8 +32,10 @@ import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
+import { type Sound } from "../utils/soundManager";
+import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 
 const showMeleeDebugCircle = false;
 
@@ -49,6 +53,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     isActivePlayer: boolean;
 
     animationSeq!: boolean;
+
+    footstepSound?: Sound;
+    actionSound?: Sound;
 
     readonly images: {
         readonly vest: SuroiSprite
@@ -92,7 +99,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.images = {
             vest: new SuroiSprite().setVisible(false),
-            body: new SuroiSprite("leia_base.svg"),
+            body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false),
@@ -121,8 +128,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.helmet
             // this.images.bloodEmitter
         );
-
-        this.container.zIndex = 3;
+        this.game.camera.container.removeChild(this.container);
+        this.game.playersContainer.addChild(this.container);
 
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);
@@ -134,6 +141,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.updateWeapon();
     }
 
+    update(delta: number): void {
+        if (this.position === undefined) return;
+
+        if (localStorageInstance.config.movementSmoothing && this.oldPosition !== undefined) {
+            const posToAdd = vDiv(vSub(this.oldPosition, this.position), delta);
+
+            const position = vAdd(this.position, posToAdd);
+
+            this.container.position.copyFrom(toPixiCords(position));
+        } else {
+            this.container.position.copyFrom(toPixiCords(this.position));
+        }
+        if (this.isActivePlayer) this.game.camera.setPosition(this.position);
+        Howler.pos(this.position.x, this.position.y);
+    }
+
     override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -141,23 +164,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.hitbox.position = this.position;
 
-        if (this.isActivePlayer) {
-            this.game.camera.setPosition(this.position);
-
-            Howler.pos(this.position.x, this.position.y);
-        }
-
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0);
+                this.footstepSound = this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0.5);
                 this.distSinceLastFootstep = 0;
                 this.floorType = FloorType.Grass;
             }
         }
 
         this.rotation = stream.readRotation(16);
+
+        if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) this.container.rotation = this.rotation;
 
         /*const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
@@ -194,15 +213,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
-        if (!localStorageInstance.config.movementSmoothing || this.isNew) {
-            this.emoteContainer.position.set(this.position.x * 20, (this.position.y * 20) - 175);
-        } else {
-            gsap.to(this.emoteContainer, {
-                x: this.position.x * 20,
-                y: (this.position.y * 20) - 175,
-                duration: 0.03
-            });
+        if (this.isActivePlayer) {
+            this.game.camera.setPosition(this.position);
+            Howler.pos(this.position.x, this.position.y);
+            this.game.map.setPosition(this.position);
+            this.game.map.indicator.setRotation(this.rotation);
         }
+
+        this.emoteContainer.position.copyFrom(vAdd(toPixiCords(this.position), v(0, -175)));
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
@@ -215,7 +233,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Hit effect
         if (stream.readBoolean() && !this.isNew) {
             // this.images.bloodEmitter.emitParticle(1);
-            this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2");
+            this.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2", 0.5);
         }
     }
 
@@ -237,6 +255,46 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.helmetLevel = stream.readBits(2);
         this.vestLevel = stream.readBits(2);
         this.backpackLevel = stream.readBits(2);
+
+        // Action
+        if (stream.readBoolean()) {
+            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
+            let actionTime = 0;
+            let actionName = "";
+            let actionSoundName = "";
+            switch (action) {
+                case PlayerActions.None:
+                    if (this.isActivePlayer) $("#action-container").hide().stop();
+                    if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+                    break;
+                case PlayerActions.Reload: {
+                    actionName = "Reloading...";
+                    actionSoundName = `${this.activeItem.idString}_reload`;
+                    actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
+                    break;
+                }
+                case PlayerActions.UseItem: {
+                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
+                    actionName = `${itemDef.useText} ${itemDef.name}`;
+                    actionTime = itemDef.useTime;
+                    actionSoundName = itemDef.idString;
+                    break;
+                }
+            }
+            if (this.isActivePlayer) {
+                if (actionName) {
+                    $("#action-name").text(actionName);
+                    $("#action-container").show();
+                }
+                if (actionTime > 0) {
+                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
+                        $("#action-container").hide();
+                    });
+                }
+            }
+            if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.9);
+        }
+
         this.updateEquipment();
 
         this.updateFistsPosition(true);
@@ -286,7 +344,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setAngle(weaponDef.image.angle);
 
             if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
-                this.game.soundManager.play(`${this.activeItem.idString}_switch`);
+                this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
         }
 
@@ -346,7 +404,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteAnim?.kill();
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        this.game.soundManager.play("emote");
+        this.playSound("emote", 0.4);
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
@@ -424,22 +482,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     graphics.beginFill();
                     graphics.fill.color = 0xff0000;
                     graphics.fill.alpha = 0.9;
-                    graphics.drawCircle(weaponDef.offset.x * 20, weaponDef.offset.y * 20, weaponDef.radius * 20);
+                    graphics.drawCircle(weaponDef.offset.x * PIXI_SCALE, weaponDef.offset.y * PIXI_SCALE, weaponDef.radius * PIXI_SCALE);
                     graphics.endFill();
                     this.container.addChild(graphics);
                     setTimeout(() => this.container.removeChild(graphics), 500);
                 }
 
-                this.game.soundManager.play("swing");
+                this.playSound("swing", 0.8);
                 break;
             }
             case AnimationType.Gun: {
                 const weaponDef = this.activeItem.definition as GunDefinition;
-                this.game.soundManager.play(`${weaponDef.idString}_fire`);
+                this.playSound(`${weaponDef.idString}_fire`, 0.3);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
-                    const recoilAmount = 20 * (1 - weaponDef.recoilMultiplier);
+                    const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
                     this.weaponAnim = gsap.to(this.images.weapon, {
                         x: weaponDef.image.position.x - recoilAmount,
                         duration: 0.05,
@@ -464,7 +522,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.GunClick: {
-                this.game.soundManager.play("gun_click");
+                this.playSound("gun_click", 0.6);
                 break;
             }
         }
@@ -472,7 +530,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
-
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();

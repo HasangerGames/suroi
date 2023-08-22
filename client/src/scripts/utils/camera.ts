@@ -1,7 +1,7 @@
 import { type Application, Container } from "pixi.js";
-import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Vector, v, vAdd, vMul, vSub, vDiv, vClone } from "../../../../common/src/utils/vector";
 import { gsap } from "gsap";
-import { localStorageInstance } from "./localStorageHandler";
+import { toPixiCords } from "./pixi";
 
 export class Camera {
     pixi: Application;
@@ -11,8 +11,9 @@ export class Camera {
 
     position = v(0, 0);
 
+    oldPosition = v(0, 0);
+
     zoomTween?: gsap.core.Tween;
-    positionTween?: gsap.core.Tween;
 
     constructor(pixi: Application) {
         this.pixi = pixi;
@@ -45,29 +46,32 @@ export class Camera {
     }
 
     setPosition(pos: Vector): void {
+        this.oldPosition = vClone(this.position);
         this.position = pos;
-        this.updatePosition(true);
+        this.updatePosition();
     }
 
-    updatePosition(anim = false): void {
+    updatePosition(): void {
         const cameraPos = vAdd(
-            vMul(vMul(this.position, 20), this.container.scale.x),
+            vMul(toPixiCords(this.position), this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
 
-        this.positionTween?.kill();
-        if (anim && localStorageInstance.config.movementSmoothing) {
-            this.positionTween = gsap.to(this.container, {
-                x: -cameraPos.x,
-                y: -cameraPos.y,
-                duration: 0.03
-            });
-        } else {
-            this.container.position.set(-cameraPos.x, -cameraPos.y);
-        }
+        this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
     setZoom(zoom: number): void {
         this.zoom = zoom;
         this.resize(true);
+    }
+
+    update(delta: number): void {
+        const posToAdd = vDiv(vSub(this.oldPosition, this.position), delta);
+        const position = vAdd(this.oldPosition, posToAdd);
+
+        const cameraPos = vMul(vAdd(
+            vMul(toPixiCords(position), this.container.scale.x),
+            v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2)), -1);
+
+        this.container.position.set(cameraPos.x, cameraPos.y);
     }
 }

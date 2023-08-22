@@ -304,7 +304,7 @@ export class Map {
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
             (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                let offset = 12;
+                let offset = 20;
                 if (type.category === ObjectCategory.Building) offset = 50;
 
                 getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);

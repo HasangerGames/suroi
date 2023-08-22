@@ -67,7 +67,7 @@ export class MeleeItem extends InventoryItem {
 
                 const damagedObjects: GameObject[] = [];
 
-                for (const object of this.owner.visibleObjects) {
+                for (const object of new Set([...this.owner.nearObjects, ...this.owner.game.livingPlayers])) {
                     if (!object.dead && object !== owner && object.damageable) {
                         if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
                     }

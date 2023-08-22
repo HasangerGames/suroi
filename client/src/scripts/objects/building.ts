@@ -73,8 +73,8 @@ export class Building extends GameObject {
         const dead = stream.readBoolean();
 
         if (dead) {
-            /*if (dead && !this.dead && !this.isNew) {
-                this.images.emitter.setConfig({
+            if (dead && !this.dead && !this.isNew) {
+                /*this.images.emitter.setConfig({
                     frame: `${this.type.idString}_particle.svg`,
                     rotate: { min: -180, max: 180 },
                     lifespan: 1000,
@@ -85,9 +85,9 @@ export class Building extends GameObject {
                     // >:(
                     emitZone: new Phaser.GameObjects.Particles.Zones.RandomZone(
                         this.images.ceiling.getBounds() as Phaser.Types.GameObjects.Particles.RandomZoneSource)
-                }).explode(10);
-                this.scene.playSound("ceiling_collapse");
-            }*/
+                }).explode(10);*/
+                this.playSound("ceiling_collapse", 0.6);
+            }
             this.ceilingTween?.kill();
             this.images.ceilingContainer.zIndex = -0.1;
             this.images.ceilingContainer.alpha = 1;

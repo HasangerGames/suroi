@@ -7,7 +7,7 @@ import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
-import { GRASS_COLOR } from "./utils/constants";
+import { WATER_COLOR } from "./utils/constants";
 
 import { loadSounds } from "./utils/soundManager";
 
@@ -21,7 +21,7 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(() => {
+async function main(): Promise<void> {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         playSoloBtn.addClass("btn-disabled");
@@ -86,7 +86,7 @@ $(() => {
 
     const app = new Application({
         resizeTo: window,
-        background: GRASS_COLOR,
+        background: WATER_COLOR,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1
@@ -94,7 +94,7 @@ $(() => {
 
     core.pixi = app;
 
-    void loadAtlases();
+    await loadAtlases();
 
     $("#game-ui").append(app.view as HTMLCanvasElement);
 
@@ -103,4 +103,10 @@ $(() => {
     loadSounds(core.game.soundManager);
 
     setupInputs(core.game);
+
+    core.music.play();
+    core.music.volume(localStorageInstance.config.musicVolume);
+}
+$(() => {
+    void main();
 });

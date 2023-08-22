@@ -8,7 +8,7 @@ import { Bullet } from "../../objects/bullet";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -16,14 +16,13 @@ import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
-import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../../utils/constants";
+import { UI_DEBUG_MODE } from "../../utils/constants";
 import { Building } from "../../objects/building";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
+import { gsap } from "gsap";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -38,9 +37,6 @@ function safeRound(value: number): number {
 
 export class UpdatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const player = this.playerManager.game.activePlayer;
-        // if (player === undefined) return;
-
         const game = this.playerManager.game;
         const playerManager = this.playerManager;
 
@@ -49,7 +45,6 @@ export class UpdatePacket extends ReceivingPacket {
         const healthDirty = stream.readBoolean();
         const adrenalineDirty = stream.readBoolean();
         const zoomDirty = stream.readBoolean();
-        const actionDirty = stream.readBoolean();
         const activePlayerDirty = stream.readBoolean();
         const fullObjectsDirty = stream.readBoolean();
         const partialObjectsDirty = stream.readBoolean();
@@ -136,42 +131,6 @@ export class UpdatePacket extends ReceivingPacket {
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
             game.camera.setZoom(playerManager.zoom);
-        }
-
-        // Action
-        if (actionDirty) {
-            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
-            let actionTime = 0;
-            switch (action) {
-                case PlayerActions.None:
-                    $("#action-container").hide().stop();
-                    // TODO Only stop the sound that's playing
-                    // scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
-                    // scene.sounds.get("gauze")?.stop();
-                    // scene.sounds.get("medikit")?.stop();
-                    // scene.sounds.get("cola")?.stop();
-                    // scene.sounds.get("tablets")?.stop();
-                    break;
-                case PlayerActions.Reload: {
-                    $("#action-container").show();
-                    $("#action-name").text("Reloading...");
-                    game.soundManager.play(`${player.activeItem.idString}_reload`);
-                    actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
-                    break;
-                }
-                case PlayerActions.UseItem: {
-                    $("#action-container").show();
-                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
-                    $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
-                    actionTime = itemDef.useTime;
-                    game.soundManager.play(itemDef.idString);
-                }
-            }
-            if (actionTime > 0) {
-                $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
-                    $("#action-container").hide();
-                });
-            }
         }
 
         // Active player ID and name
@@ -324,7 +283,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
+                    stream.readObjectTypeNoCategory(ObjectCategory.Explosion),
                     stream.readPosition()
                 );
             }
@@ -387,7 +346,7 @@ export class UpdatePacket extends ReceivingPacket {
                     //     minimap.playerIndicator.y
                     // );
                 } else if (game.gas.state === GasState.Inactive) {
-                    gasMessage = "Waiting for players...";
+                    // gasMessage = "Waiting for players...";
                     // minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
                 }
 
@@ -423,20 +382,15 @@ export class UpdatePacket extends ReceivingPacket {
             if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                // scene.tweens.add({
-                //     targets: scene.gasCircle,
-                //     x: currentPosition.x * 20,
-                //     y: currentPosition.y * 20,
-                //     radius: currentRadius * 20,
-                //     duration: 30
-                // });
-                // scene.tweens.add({
-                //     targets: minimap.gasCircle,
-                //     x: currentPosition.x * MINIMAP_SCALE,
-                //     y: currentPosition.y * MINIMAP_SCALE,
-                //     radius: currentRadius * MINIMAP_SCALE,
-                //     duration: 30
-                // });
+                gsap.to(game.gas, {
+                    radius: currentRadius,
+                    duration: 0.03
+                });
+                gsap.to(game.gas.position, {
+                    x: currentPosition.x,
+                    y: currentPosition.y,
+                    duration: 0.03
+                });
             }
         }
 
