@@ -191,8 +191,8 @@ importers:
         specifier: ^2.7.2
         version: 2.7.2
       planck:
-        specifier: 1.0.0-alpha.4
-        version: 1.0.0-alpha.4
+        specifier: 1.0.0-beta.10
+        version: 1.0.0-beta.10
       sanitize-html:
         specifier: ^2.11.0
         version: 2.11.0
@@ -5549,10 +5549,11 @@ packages:
       find-up: 6.3.0
     dev: true
 
-  /planck@1.0.0-alpha.4:
-    resolution: {integrity: sha512-DOqIPDDWc2MIkYTwyi6q4Z8VIX3sYMr4YZXuUFdUwZUslQVzcUJCMrg9WHIYfyNnQP8U8EzbAmlnKa72+WwExA==}
+  /planck@1.0.0-beta.10:
+    resolution: {integrity: sha512-XyOJsWZLrZvW5ZxdRnv6DTdqI0HtZlOcLnQBkEoYcI1BwV/3oHueRcGyfGu8zMtj8cGJcjoO31W6AUNndVkEUw==}
+    engines: {node: '>=14.0'}
     dependencies:
-      stage-js: 0.9.5
+      stage-js: github.com/piqnt/stage.js/f23b48b7e1a3a71babd33744af10fc100b5c8d75
     dev: false
 
   /postcss-attribute-case-insensitive@6.0.2(postcss@8.4.28):
@@ -6796,10 +6797,6 @@ packages:
       - supports-color
     dev: true
 
-  /stage-js@0.9.5:
-    resolution: {integrity: sha512-pSu6U+e7+CPUi9jB56RVy7ni7JQQZGVzwcdel5RZhG0Rjzv3uWkhDHSm6Uk9DI4B1Yrfva7uylFq41Pbb1BfUA==}
-    dev: false
-
   /statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
     engines: {node: '>= 0.6'}
@@ -7544,6 +7541,12 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  github.com/piqnt/stage.js/f23b48b7e1a3a71babd33744af10fc100b5c8d75:
+    resolution: {tarball: https://codeload.github.com/piqnt/stage.js/tar.gz/f23b48b7e1a3a71babd33744af10fc100b5c8d75}
+    name: stage-js
+    version: 1.0.0-alpha.1
+    dev: false
 
   github.com/uNetworking/uWebSockets.js/809b99d2d7d12e2cbf89b7135041e9b41ff84084:
     resolution: {tarball: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/809b99d2d7d12e2cbf89b7135041e9b41ff84084}
