@@ -264,14 +264,13 @@ export class UpdatePacket extends ReceivingPacket {
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
                 const reflectionCount = stream.readBits(2);
-                const maxDistance = stream.readBits(9);
 
                 let reflectedFromID: number | undefined;
                 if (reflectionCount > 0) {
                     reflectedFromID = stream.readObjectID();
                 }
 
-                const bullet = new Bullet(game, source, position, rotation, maxDistance, reflectionCount, reflectedFromID);
+                const bullet = new Bullet(game, source, position, rotation, reflectionCount, reflectedFromID);
 
                 game.bullets.add(bullet);
             }

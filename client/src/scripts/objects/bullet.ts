@@ -34,13 +34,13 @@ export class Bullet {
 
     trailTicks = 0;
 
-    maxDistance: number;
-
     reflectCount: number;
 
     reflectedFromID: number;
 
-    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, maxDistance: number, reflectCount: number, reflectedFromID = -1) {
+    maxDistance: number;
+
+    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, reflectCount: number, reflectedFromID = -1) {
         this.game = game;
 
         this.source = source;
@@ -56,7 +56,7 @@ export class Bullet {
 
         this.reflectedFromID = reflectedFromID;
 
-        this.maxDistance = maxDistance;
+        this.maxDistance = this.definition.maxDistance / (reflectCount + 1);
 
         this.speed = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
 
