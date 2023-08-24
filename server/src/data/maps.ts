@@ -63,8 +63,6 @@ export const Maps: Record<string, MapDefinition> = {
             blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
-            gauze_crate: 1,
-            cola_crate: 1,
             melee_crate: 1,
             gold_rock: 1
         },
