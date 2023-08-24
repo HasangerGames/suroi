@@ -188,8 +188,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       planck:
-        specifier: 1.0.0-beta.10
-        version: 1.0.0-beta.10
+        specifier: 1.0.0-beta.13
+        version: 1.0.0-beta.13
       sanitize-html:
         specifier: ^2.11.0
         version: 2.11.0
@@ -5939,8 +5939,8 @@ packages:
       find-up: 6.3.0
     dev: true
 
-  /planck@1.0.0-beta.10:
-    resolution: {integrity: sha512-XyOJsWZLrZvW5ZxdRnv6DTdqI0HtZlOcLnQBkEoYcI1BwV/3oHueRcGyfGu8zMtj8cGJcjoO31W6AUNndVkEUw==}
+  /planck@1.0.0-beta.13:
+    resolution: {integrity: sha512-CsbE1YMnch2vk3hL8t6Yu93hFnR6J5afOfqSPZfVo+F+uNTeN8efJL2+BmeKnjxUT14jw3pN0tCRs28IBZa/3Q==}
     engines: {node: '>=14.0'}
     dependencies:
       stage-js: github.com/piqnt/stage.js/f23b48b7e1a3a71babd33744af10fc100b5c8d75
