@@ -57,6 +57,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     footstepSound?: Sound;
     actionSound?: Sound;
 
+    damageable = true;
+
     readonly images: {
         readonly vest: SuroiSprite
         readonly body: SuroiSprite

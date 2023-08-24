@@ -210,6 +210,7 @@ export class UpdatePacket extends ReceivingPacket {
                     }
 
                     game.objects.set(object.id, object);
+                    game.objectsSet.add(object);
                 } else {
                     const objectFromSet: GameObject | undefined = game.objects.get(id);
                     if (objectFromSet === undefined) {
@@ -250,6 +251,7 @@ export class UpdatePacket extends ReceivingPacket {
                 }
                 object.destroy();
                 game.objects.delete(id);
+                game.objectsSet.delete(object);
                 if (object instanceof Player) {
                     game.players.delete(object);
                 }

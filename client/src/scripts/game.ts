@@ -43,6 +43,7 @@ export class Game {
     socket!: WebSocket;
 
     objects: Map<number, GameObject> = new Map<number, GameObject>();
+    objectsSet: Set<GameObject> = new Set<GameObject>();
     players: Set<Player> = new Set<Player>();
     bullets: Set<Bullet> = new Set<Bullet>();
     activePlayer!: Player;
@@ -223,6 +224,7 @@ export class Game {
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
+        this.objectsSet.clear();
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();

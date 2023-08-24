@@ -22,6 +22,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     readonly game: Game;
 
+    damageable = false;
+
     private readonly moveAnim?: gsap.core.Tween;
 
     private readonly sounds = new Set<Sound>();

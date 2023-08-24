@@ -23,6 +23,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     image: SuroiSprite;
     // emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
+    damageable = true;
+
     isDoor?: boolean;
     door?: {
         closedHitbox?: Hitbox
