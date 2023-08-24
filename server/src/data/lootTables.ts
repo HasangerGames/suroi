@@ -47,22 +47,6 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "special_scopes", weight: 0.5 }
         ]
     },
-    cola_crate: {
-        min: 2,
-        max: 3,
-        loot: [
-            { item: "cola", weight: 1 },
-            { item: "tablets", weight: 0.25 }
-        ]
-    },
-    gauze_crate: {
-        min: 2,
-        max: 3,
-        loot: [
-            { item: "gauze", weight: 1, count: 5 },
-            { item: "medikit", weight: 0.25, count: 1 }
-        ]
-    },
     melee_crate: {
         min: 2,
         max: 2,
