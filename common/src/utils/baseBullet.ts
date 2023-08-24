@@ -59,7 +59,6 @@ export class BaseBullet {
      * @param delta The delta time between ticks
      * @param objects A set containing objects to check for collision
      * @returns An array containing the objects that the bullet collided and the intersection data
-     *
      */
     updateAndGetCollisions(delta: number, objects: Set<GameObject>): Collision[] {
         const oldPosition = vClone(this.position);
