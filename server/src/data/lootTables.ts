@@ -9,7 +9,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "equipment", weight: 1 },
-            { tier: "scopes", weight 1 },
+            { tier: "scopes", weight: 1 },
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 1 },
             { tier: "guns", weight: 0.9 }
@@ -21,7 +21,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "guns", weight: 1.25 },
             { tier: "equipment", weight: 1 },
-            { tier: "scopes", weight: 1},
+            { tier: "scopes", weight: 1 },
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
             { tier: "melee", weight: 0.04 }
@@ -84,7 +84,7 @@ export const LootTables: Record<string, LootTable> = {
         loot: [
             { tier: "equipment", weight: 1 },
             { tier: "healing_items", weight: 1 },
-            { tier: "scopes", weight: 1}
+            { tier: "scopes", weight: 1 }
         ]
     },
     warehouse: {
@@ -128,7 +128,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "equipment", weight: 1 },
             { tier: "guns", weight: 0.5 },
-            { tier: "scopes", weight: 1}
+            { tier: "scopes", weight: 1 }
         ]
     },
     bookshelf: {
@@ -184,7 +184,7 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "healing_items", weight: 1 },
             { tier: "equipment", weight: 0.9 },
             { tier: "special_guns", weight: 0.8 },
-            { tier: "special_scopes", weight 0.75 }
+            { tier: "special_scopes", weight: 0.75 }
         ]
     },
     porta_potty_toilet_closed: {
@@ -289,7 +289,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
 
         { item: "satchel", weight: 1 },
         { item: "regular_backpack", weight: 0.5 },
-        { item: "tactical_backpack", weight: 0.15 },
+        { item: "tactical_backpack", weight: 0.15 }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },
