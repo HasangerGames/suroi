@@ -128,6 +128,7 @@ export class Loot extends GameObject {
     }
 
     interact(player: Player, noPickup = false): void {
+        if (this.dead) return;
         const createNewItem = (type = this.type): void => {
             const angle = player.rotation;
             this.game.addLoot(type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
@@ -223,7 +224,6 @@ export class Loot extends GameObject {
 
         // Destroy the old loot
         this.game.removeLoot(this);
-        this.dead = true;
 
         // Send pickup packet
         player.sendPacket(new PickupPacket(player, this.type));
