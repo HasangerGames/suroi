@@ -22,7 +22,7 @@ export class Bullet extends BaseBullet {
 
     update(): void {
         const objects = new Set([...this.game.livingPlayers, ...this.game.staticObjects]);
-        const collisions = this.updateAndGetCollisions(30, objects);
+        const collisions = this.updateAndGetCollisions(this.game.tickDelta, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds

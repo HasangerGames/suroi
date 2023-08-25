@@ -8,7 +8,7 @@ import { Bullet } from "../../objects/bullet";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory, TICK_SPEED } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -364,12 +364,12 @@ export class UpdatePacket extends ReceivingPacket {
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
                 gsap.to(game.gas, {
                     radius: currentRadius,
-                    duration: 0.03
+                    duration: TICK_SPEED / 1000
                 });
                 gsap.to(game.gas.position, {
                     x: currentPosition.x,
                     y: currentPosition.y,
-                    duration: 0.03
+                    duration: TICK_SPEED / 1000
                 });
             }
         }

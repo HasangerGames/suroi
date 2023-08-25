@@ -14,7 +14,7 @@ import { type GameObject } from "./types/gameObject";
 import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../../common/src/constants";
+import { PacketType, TICK_SPEED } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
@@ -140,7 +140,7 @@ export class Game {
             this.gas = new Gas(this, PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
-            this.tickTimeoutID = window.setInterval(this.tick.bind(this), 30);
+            this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);
         };
 
         // Handle incoming messages

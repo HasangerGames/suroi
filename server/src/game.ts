@@ -16,7 +16,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -105,6 +105,8 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    tickDelta = 1000 / TICK_SPEED;
+
     constructor(id: number) {
         this._id = id;
 
@@ -151,7 +153,7 @@ export class Game {
         this.allowJoin = true;
 
         // Start the tick loop
-        this.tick(30);
+        this.tick(TICK_SPEED);
     }
 
     tick(delay: number): void {
@@ -184,7 +186,7 @@ export class Game {
             this.gas.tick();
 
             // Update physics
-            this.world.step(30);
+            this.world.step(this.tickDelta);
 
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
@@ -234,10 +236,10 @@ export class Game {
                 }
 
                 // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 0.082; // 2.75 / 33.3
-                else if (player.adrenaline >= 50) player.health += 0.0638; // 2.125 / 33.3
-                else if (player.adrenaline >= 25) player.health += 0.0337; // 1.125 / 33.3
-                else if (player.adrenaline > 0) player.health += 0.0187; // 0.625 / 33.3
+                if (player.adrenaline >= 87.5) player.health += 2.75 / this.tickDelta;
+                else if (player.adrenaline >= 50) player.health += 2.125 / this.tickDelta;
+                else if (player.adrenaline >= 25) player.health += 1.125 / this.tickDelta;
+                else if (player.adrenaline > 0) player.health += 0.625 / this.tickDelta;
 
                 // Shoot gun/use melee
                 if (player.startedAttacking) {
@@ -378,11 +380,11 @@ export class Game {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
                 log(`Game #${this._id} average ms/tick: ${mspt}`, true);
-                log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
+                log(`Load: ${((mspt / TICK_SPEED) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, 30 - tickTime));
+            this.tick(Math.max(0, TICK_SPEED - tickTime));
         }, delay);
     }
 
