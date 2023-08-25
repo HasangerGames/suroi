@@ -76,6 +76,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { tier: "special_guns", weight: 1 },
+            { tier: "special_scopes", weight: 0.65 },
             { tier: "special_equipment", weight: 0.65 }
         ]
     },
@@ -120,6 +121,7 @@ export const LootTables: Record<string, LootTable> = {
         max: 2,
         loot: [
             { tier: "equipment", weight: 1.1 },
+            { tier: "scopes", weight: 1.1 },
             { tier: "guns", weight: 1 },
             { tier: "healing_items", weight: 0.6 }
         ]
@@ -145,9 +147,9 @@ export const LootTables: Record<string, LootTable> = {
         min: 2,
         max: 3,
         loot: [
-            { tier: "healing_items", weight: 2 },
-            { tier: "equipment_no_scopes", weight: 1 },
-            { tier: "guns", weight: 0.75 }
+            { tier: "healing_items", weight: 3 },
+            { tier: "scopes", weight: 0.1 },
+            { tier: "guns", weight: 0.05 }
         ]
     },
     used_toilet: {
@@ -155,7 +157,8 @@ export const LootTables: Record<string, LootTable> = {
         max: 3,
         loot: [
             { tier: "guns", weight: 1.25 },
-            { tier: "equipment_no_scopes", weight: 1 },
+            { tier: "equipment", weight: 1 },
+            { tier: "scopes", weight: 1 },
             { tier: "special_guns", weight: 0.8 },
             { tier: "healing_items", weight: 0.75 }
         ]

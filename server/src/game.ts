@@ -525,6 +525,7 @@ export class Game {
     }
 
     removeLoot(loot: Loot): void {
+        loot.dead = true;
         this.loot.delete(loot);
         this.dynamicObjects.delete(loot);
         this.world.destroyBody(loot.body);
