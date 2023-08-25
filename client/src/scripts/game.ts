@@ -136,6 +136,7 @@ export class Game {
             this.activePlayer = new Player(this, -1, true);
 
             this.players.add(this.activePlayer);
+            this.objectsSet.add(this.activePlayer);
 
             this.gas = new Gas(this, PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
@@ -314,8 +315,7 @@ export class Game {
             const player = this.activePlayer;
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
-            for (const o of this.objects) {
-                const object = o[1];
+            for (const object of this.objectsSet) {
                 if (object instanceof Obstacle && object.isDoor && !object.dead) {
                     const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
                     const dist = distanceSquared(object.position, player.position);
