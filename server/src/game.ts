@@ -18,7 +18,7 @@ import { type GameObject } from "./types/gameObject";
 import { log } from "../../common/src/utils/misc";
 import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet } from "./objects/bullet";
+import { Bullet, type DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
@@ -171,10 +171,18 @@ export class Game {
             }
 
             // Update bullets
+            let records: DamageRecord[] = [];
             for (const bullet of this.bullets) {
-                bullet.update();
+                records = records.concat(bullet.update());
 
                 if (bullet.dead) this.bullets.delete(bullet);
+            }
+            // Do the damage after updating all bullets
+            // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
+            // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
+            // while on the server, without this, some bullets won't because the first bullets will kill the crate
+            for (const record of records) {
+                record.object.damage(record.damage, record.source, record.weapon);
             }
 
             // Handle explosions

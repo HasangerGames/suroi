@@ -5,6 +5,14 @@ import { type GunItem } from "../inventory/gunItem";
 import { type Vector } from "../../../common/src/utils/vector";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
+import { type GameObject } from "../types/gameObject";
+
+export interface DamageRecord {
+    object: Obstacle | Player
+    damage: number
+    weapon: GunItem
+    source: GameObject
+}
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -20,7 +28,7 @@ export class Bullet extends BaseBullet {
         this.shooter = shooter;
     }
 
-    update(): void {
+    update(): DamageRecord[] {
         const objects = new Set([...this.game.livingPlayers, ...this.game.staticObjects]);
         const collisions = this.updateAndGetCollisions(this.game.tickDelta, objects);
 
@@ -30,8 +38,10 @@ export class Bullet extends BaseBullet {
             this.position.x < 0 || this.position.x > this.game.map.width ||
             this.position.y < 0 || this.position.y > this.game.map.height) {
             this.dead = true;
-            return;
+            return [];
         }
+
+        const records: DamageRecord[] = [];
 
         for (const collision of collisions) {
             const object = collision.object;
@@ -39,11 +49,21 @@ export class Bullet extends BaseBullet {
             if (object instanceof Player) {
                 this.position = collision.intersection.point;
 
-                object.damage(this.definition.damage / (this.reflectionCount + 1), this.shooter, this.sourceGun);
+                records.push({
+                    object,
+                    damage: this.definition.damage / (this.reflectionCount + 1),
+                    weapon: this.sourceGun,
+                    source: this.shooter
+                });
                 this.dead = true;
                 break;
             } else if (object instanceof Obstacle) {
-                object.damage(this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier, this.shooter, this.sourceGun);
+                records.push({
+                    object,
+                    damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
+                    weapon: this.sourceGun,
+                    source: this.shooter
+                });
 
                 // skip killing the bullet for obstacles with noCollisions like bushes
                 if (!object.definition.noCollisions) {
@@ -58,6 +78,7 @@ export class Bullet extends BaseBullet {
                 }
             }
         }
+        return records;
     }
 
     reflect(normal: Vector, objectId: number): void {
