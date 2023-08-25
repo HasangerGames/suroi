@@ -87,6 +87,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Health
         if (healthDirty) {
+            const oldHealth = playerManager.health;
             playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
             const absolute = playerManager.health;
             const realPercentage = 100 * absolute / playerManager.maxHealth;
@@ -96,7 +97,8 @@ export class UpdatePacket extends ReceivingPacket {
             const healthBarAmount = $<HTMLSpanElement>("#health-bar-percentage");
 
             healthBar.width(`${realPercentage}%`);
-            $("#health-bar-animation").width(`${realPercentage}%`);
+
+            if (oldHealth > playerManager.health) $("#health-bar-animation").width(`${realPercentage}%`);
 
             healthBarAmount.text(safeRound(absolute));
 
