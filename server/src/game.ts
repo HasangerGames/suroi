@@ -194,7 +194,7 @@ export class Game {
             this.gas.tick();
 
             // Update physics
-            this.world.step(this.tickDelta);
+            this.world.step(TICK_SPEED);
 
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {

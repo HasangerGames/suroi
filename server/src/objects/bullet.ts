@@ -6,6 +6,7 @@ import { type Vector } from "../../../common/src/utils/vector";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
+import { TICK_SPEED } from "../../../common/src/constants";
 
 export interface DamageRecord {
     object: Obstacle | Player
@@ -30,7 +31,7 @@ export class Bullet extends BaseBullet {
 
     update(): DamageRecord[] {
         const objects = new Set([...this.game.livingPlayers, ...this.game.staticObjects]);
-        const collisions = this.updateAndGetCollisions(this.game.tickDelta, objects);
+        const collisions = this.updateAndGetCollisions(TICK_SPEED, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds
