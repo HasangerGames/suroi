@@ -297,8 +297,7 @@ export class UpdatePacket extends ReceivingPacket {
                 const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
                 const playerID = stream.readObjectID();
                 const player = this.playerManager.game.objects.get(playerID);
-                if (player === undefined || !(player instanceof Player)) return;
-                player.emote(emoteType);
+                if (player instanceof Player) player.emote(emoteType);
             }
         }
 
@@ -321,34 +320,12 @@ export class UpdatePacket extends ReceivingPacket {
             }
             if (!(percentageDirty && game.gas.firstPercentageReceived)) { // Ensures that gas messages aren't displayed when switching between players when spectating
                 let gasMessage: string | undefined;
-                // TODO Clean up code
                 if (game.gas.state === GasState.Waiting) {
                     gasMessage = `Toxic gas advances in ${currentDuration}s`;
-                    // scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                    // minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
-                    // minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                    // if (game.gas.oldRadius === 0) {
-                    //     minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
-                    // } else {
-                    //     minimap.gasToCenterLine.setTo(
-                    //         game.gas.newPosition.x * MINIMAP_SCALE,
-                    //         game.gas.newPosition.y * MINIMAP_SCALE,
-                    //         minimap.playerIndicator.x,
-                    //         minimap.playerIndicator.y
-                    //     );
-                    // }
                 } else if (game.gas.state === GasState.Advancing) {
                     gasMessage = "Toxic gas is advancing! Move to the safe zone";
-                    // minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                    // minimap.gasToCenterLine.setTo(
-                    //     game.gas.newPosition.x * MINIMAP_SCALE,
-                    //     game.gas.newPosition.y * MINIMAP_SCALE,
-                    //     minimap.playerIndicator.x,
-                    //     minimap.playerIndicator.y
-                    // );
                 } else if (game.gas.state === GasState.Inactive) {
-                    // gasMessage = "Waiting for players...";
-                    // minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
+                    gasMessage = "Waiting for players...";
                 }
 
                 if (game.gas.state === GasState.Advancing) {
