@@ -14,7 +14,7 @@ import {
     addAdjust,
     lineIntersectsRect,
     lineIntersectsCircle,
-    type intersectionResponse
+    type IntersectionResponse
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -23,10 +23,11 @@ import { type Orientation } from "../typings";
 
 export abstract class Hitbox {
     abstract collidesWith(that: Hitbox): boolean;
+    abstract resolveCollision(that: Hitbox): void;
     abstract distanceTo(that: Hitbox): CollisionRecord;
     abstract clone(): Hitbox;
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
-    abstract intersectsLine(a: Vector, b: Vector): intersectionResponse;
+    abstract intersectsLine(a: Vector, b: Vector): IntersectionResponse;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -52,6 +53,8 @@ export class CircleHitbox extends Hitbox {
         throw new Error("Invalid hitbox object");
     }
 
+    resolveCollision(that: Hitbox): void {}
+
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToCircle(that.position, that.radius, this.position, this.radius);
@@ -70,7 +73,7 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
-    intersectsLine(a: Vector, b: Vector): intersectionResponse {
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsCircle(a, b, this.position, this.radius);
     }
 }
@@ -104,6 +107,8 @@ export class RectangleHitbox extends Hitbox {
         return false;
     }
 
+    resolveCollision(that: Hitbox): void {}
+
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToRectangle(this.min, this.max, that.position, that.radius);
@@ -124,7 +129,7 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(rect.min, rect.max);
     }
 
-    intersectsLine(a: Vector, b: Vector): intersectionResponse {
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsRect(a, b, this.min, this.max);
     }
 }
@@ -144,6 +149,8 @@ export class ComplexHitbox extends Hitbox {
         }
         return false;
     }
+
+    resolveCollision(that: Hitbox): void {}
 
     distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
         let distance = Number.MAX_VALUE;
@@ -188,7 +195,7 @@ export class ComplexHitbox extends Hitbox {
         return new ComplexHitbox(hitBoxes);
     }
 
-    intersectsLine(a: Vector, b: Vector): intersectionResponse {
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         for (const hitbox of this.hitBoxes) {
             const intersection = hitbox.intersectsLine(a, b);
             if (intersection) return intersection;

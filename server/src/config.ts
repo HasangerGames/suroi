@@ -122,7 +122,7 @@ export const Config = {
         certFile: ""
     },
 
-    movementSpeed: 0.028,
+    movementSpeed: 0.75,
 
     spawn: {
         mode: SpawnMode.Fixed,

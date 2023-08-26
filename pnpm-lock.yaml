@@ -190,9 +190,6 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.0
         version: 1.0.0
-      planck:
-        specifier: 1.0.0-beta.13
-        version: 1.0.0-beta.13
       sanitize-html:
         specifier: ^2.11.0
         version: 2.11.0
@@ -6085,13 +6082,6 @@ packages:
       find-up: 6.3.0
     dev: true
 
-  /planck@1.0.0-beta.13:
-    resolution: {integrity: sha512-CsbE1YMnch2vk3hL8t6Yu93hFnR6J5afOfqSPZfVo+F+uNTeN8efJL2+BmeKnjxUT14jw3pN0tCRs28IBZa/3Q==}
-    engines: {node: '>=14.0'}
-    dependencies:
-      stage-js: github.com/piqnt/stage.js/f23b48b7e1a3a71babd33744af10fc100b5c8d75
-    dev: false
-
   /postcss-attribute-case-insensitive@6.0.2(postcss@8.4.28):
     resolution: {integrity: sha512-IRuCwwAAQbgaLhxQdQcIIK0dCVXg3XDUnzgKD8iwdiYdwU4rMWRWyl/W9/0nA4ihVpq5pyALiHB2veBJ0292pw==}
     engines: {node: ^14 || ^16 || >=18}
@@ -8109,12 +8099,6 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
-
-  github.com/piqnt/stage.js/f23b48b7e1a3a71babd33744af10fc100b5c8d75:
-    resolution: {tarball: https://codeload.github.com/piqnt/stage.js/tar.gz/f23b48b7e1a3a71babd33744af10fc100b5c8d75}
-    name: stage-js
-    version: 1.0.0-alpha.1
-    dev: false
 
   github.com/uNetworking/uWebSockets.js/809b99d2d7d12e2cbf89b7135041e9b41ff84084:
     resolution: {tarball: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/809b99d2d7d12e2cbf89b7135041e9b41ff84084}

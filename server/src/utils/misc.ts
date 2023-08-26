@@ -3,14 +3,9 @@ import { LootTiers, type WeightedItem } from "../data/lootTables";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../common/src/constants";
 import { weightedRandom } from "../../../common/src/utils/random";
-import { Vec2 } from "planck";
 import { type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "../objects/obstacle";
 import { type Game } from "../game";
-
-export function v2v(v: Vector): Vec2 {
-    return Vec2(v.x, v.y);
-}
 
 export class LootItem {
     idString: string;

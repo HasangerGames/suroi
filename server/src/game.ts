@@ -1,7 +1,6 @@
 // noinspection ES6PreferShortImport
 import { Config, SpawnMode } from "./config";
 
-import { Fixture, Settings, Vec2, World } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
@@ -10,7 +9,7 @@ import { Gas } from "./gas";
 
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
-import { removeFrom, v2v } from "./utils/misc";
+import { removeFrom } from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
@@ -34,6 +33,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
 import { Building } from "./objects/building";
+import { type DynamicBody } from "./physics/dynamicBody";
 
 export class Game {
     readonly _id: number;
@@ -46,9 +46,6 @@ export class Game {
      * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
      */
     private readonly mapPacketStream: SuroiBitStream;
-
-    readonly _world: World;
-    get world(): World { return this._world; }
 
     /**
      * The value of `Date.now()`, as of the start of the tick.
@@ -89,6 +86,8 @@ export class Game {
      */
     readonly newBullets = new Set<Bullet>();
 
+    readonly dynamicBodies = new Set<DynamicBody>();
+
     /**
      * All kill feed messages this tick
      */
@@ -109,37 +108,6 @@ export class Game {
 
     constructor(id: number) {
         this._id = id;
-
-        this._world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
-        Settings.maxLinearCorrection = 0; // Prevents collision jitter
-        Settings.maxTranslation = 12.5; // Allows bullets to travel fast
-
-        // Collision filtering code:
-        // - Players should collide with obstacles, but not with each other or with loot.
-        // - Bullets should collide with players and obstacles, but not with each other or with loot.
-        // - Loot should only collide with obstacles and other loot.
-        Fixture.prototype.shouldCollide = function(that: Fixture): boolean {
-            // Get the objects
-            const thisObject = this.getUserData() as GameObject;
-            const thatObject = that.getUserData() as GameObject;
-
-            // Check if they should collide
-            if (thisObject.is.player) return thatObject.collidesWith.player;
-            else if (thisObject.is.obstacle) return thatObject.collidesWith.obstacle;
-            else if (thisObject.is.bullet) return thatObject.collidesWith.bullet;
-            else if (thisObject.is.loot) return thatObject.collidesWith.loot;
-            else return false;
-        };
-
-        // If maxLinearCorrection is set to 0, player collisions work perfectly, but loot doesn't spread out.
-        // If maxLinearCorrection is greater than 0, loot spreads out, but player collisions are jittery.
-        // This code solves the dilemma by setting maxLinearCorrection to the appropriate value for the object.
-        this.world.on("pre-solve", contact => {
-            const objectA = contact.getFixtureA().getUserData() as GameObject;
-            const objectB = contact.getFixtureB().getUserData() as GameObject;
-            if (objectA.is.loot || objectB.is.loot) Settings.maxLinearCorrection = 0.06;
-            else Settings.maxLinearCorrection = 0;
-        });
 
         // Generate map
         this.map = new Map(this, Config.mapName);
@@ -162,6 +130,9 @@ export class Game {
 
             if (this.stopped) return;
 
+            // Update physics
+            for (const body of this.dynamicBodies) body.tick();
+
             // Update loot positions
             for (const loot of this.loot) {
                 if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
@@ -177,6 +148,7 @@ export class Game {
 
                 if (bullet.dead) this.bullets.delete(bullet);
             }
+
             // Do the damage after updating all bullets
             // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
             // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
@@ -192,9 +164,6 @@ export class Game {
 
             // Update gas
             this.gas.tick();
-
-            // Update physics
-            this.world.step(TICK_SPEED);
 
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
@@ -231,7 +200,7 @@ export class Game {
                 if (player.fast) speed *= 30;*/
 
                 const speed = player.calculateSpeed();
-                player.setVelocity(movement.x * speed, movement.y * speed);
+                player.body.velocity = v(movement.x * speed, movement.y * speed);
 
                 if (player.isMoving || player.turning) {
                     player.disableInvulnerability();
@@ -264,7 +233,7 @@ export class Game {
                 let isInsideBuilding = false;
                 for (const object of player.nearObjects) {
                     if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
+                        if (object.scopeHitbox.collidesWith(player.body.hitbox)) {
                             isInsideBuilding = true;
                             break;
                         }
@@ -402,7 +371,7 @@ export class Game {
             case SpawnMode.Random: {
                 let foundPosition = false;
                 while (!foundPosition) {
-                    spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+                    spawnPosition = this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player));
                     if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) foundPosition = true;
                 }
                 break;
@@ -412,7 +381,7 @@ export class Game {
                 break;
             }
             case SpawnMode.Radius: {
-                spawnPosition = v2v(randomPointInsideCircle(Config.spawn.position, Config.spawn.radius));
+                spawnPosition = randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
                 break;
             }
         }
@@ -483,11 +452,6 @@ export class Game {
             this.livingPlayers.delete(player);
             this.dynamicObjects.delete(player);
             this.removeObject(player);
-            try {
-                this.world.destroyBody(player.body);
-            } catch (e) {
-                console.error("Error destroying player body. Details: ", e);
-            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
@@ -528,7 +492,6 @@ export class Game {
         loot.dead = true;
         this.loot.delete(loot);
         this.dynamicObjects.delete(loot);
-        this.world.destroyBody(loot.body);
         this.removeObject(loot);
     }
 

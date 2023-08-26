@@ -1,4 +1,3 @@
-import { type Body, Circle, Vec2 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
@@ -38,7 +37,8 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { type Vector } from "../../../common/src/utils/vector";
+import { v, type Vector } from "../../../common/src/utils/vector";
+import { DynamicBody } from "../physics/dynamicBody";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -57,7 +57,7 @@ export class Player extends GameObject {
 
     //fast = false;
 
-    hitbox: CircleHitbox;
+    body: DynamicBody;
 
     readonly damageable = true;
 
@@ -179,11 +179,6 @@ export class Player extends GameObject {
     turning = false;
 
     /**
-     * The position this player died at, if applicable
-     */
-    deathPosition?: Vec2;
-
-    /**
      * Keeps track of various fields which are "dirty"
      * and therefore need to be sent to the client for
      * updating
@@ -252,8 +247,6 @@ export class Player extends GameObject {
 
     fullUpdate = true;
 
-    body: Body;
-
     action: Action | undefined;
 
     spectating?: Player;
@@ -305,22 +298,8 @@ export class Player extends GameObject {
 
         this.joinTime = game.now;
 
-        // Init body
-        this.body = game.world.createBody({
-            type: "dynamic",
-            position: Vec2(position),
-            fixedRotation: true
-        });
-
-        this.body.createFixture({
-            shape: Circle(PLAYER_RADIUS),
-            friction: 0.0,
-            density: 1000.0,
-            restitution: 0.0,
-            userData: this
-        });
-
-        this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
+        this.body = new DynamicBody(this.game, this.position, new CircleHitbox(PLAYER_RADIUS, this.position));
+        this.game.dynamicBodies.add(this.body);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
@@ -353,6 +332,10 @@ export class Player extends GameObject {
         this.dirty.activeWeaponIndex = true;
     }
 
+    get position(): Vector {
+        return this.body?.position ?? v(0, 0);
+    }
+
     calculateSpeed(): number {
         let recoilMultiplier = 1;
         if (this.recoil.active) {
@@ -371,17 +354,6 @@ export class Player extends GameObject {
             (1 + (this.adrenaline / 1000)) *             // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *  // Active item speed modifier
             this._modifiers.baseSpeed;                   // Current on-wearer modifier
-    }
-
-    setVelocity(xVelocity: number, yVelocity: number): void {
-        this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
-        if (xVelocity !== 0 || yVelocity !== 0) {
-            this.movesSinceLastUpdate++;
-        }
-    }
-
-    get position(): Vec2 {
-        return this.deathPosition ?? this.body.getPosition();
     }
 
     get zoom(): number {
@@ -659,12 +631,6 @@ export class Player extends GameObject {
         this.movement.left = false;
         this.movement.right = false;
         this.attacking = false;
-        this.deathPosition = this.position.clone();
-        try {
-            this.game.world.destroyBody(this.body);
-        } catch (e) {
-            console.error("Error destroying player body. Details: ", e);
-        }
         this.game.aliveCountDirty = true;
         this.adrenaline = 0;
         this.dirty.inventory = true;

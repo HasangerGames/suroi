@@ -257,9 +257,9 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
     return null;
 }
 
-export type intersectionResponse = { point: Vector, normal: Vector } | null;
+export type IntersectionResponse = { point: Vector, normal: Vector } | null;
 
-export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): intersectionResponse {
+export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
     let d = vSub(s1, s0);
     const len = Math.max(vLength(d), 0.000001);
     d = vDiv(d, len);
@@ -288,7 +288,7 @@ export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: n
     return null;
 }
 
-export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): intersectionResponse {
+export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): IntersectionResponse {
     let tmin = 0;
     let tmax = Number.MAX_VALUE;
     const eps = 0.00001;
@@ -350,6 +350,7 @@ export function calculateDoorHitboxes(definition: ObstacleDefinition, position: 
     if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
+    // noinspection JSSuspiciousNameCombination
     const openRectangle = transformRectangle(
         addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
         definition.hitbox.min,

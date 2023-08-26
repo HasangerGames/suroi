@@ -1,20 +1,15 @@
-import { type Body, Circle, Vec2 } from "planck";
-
 import { type Game } from "../game";
 
 import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { v2v } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
-import { randomRotation } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
@@ -38,8 +33,6 @@ export class Loot extends GameObject {
 
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
 
-    body: Body;
-
     oldPosition: Vector;
 
     count = 1;
@@ -52,39 +45,7 @@ export class Loot extends GameObject {
         this.oldPosition = position;
         if (count !== undefined) this.count = count;
 
-        // Create the body and hitbox
-        this.body = game.world.createBody({
-            type: "dynamic",
-            position: v2v(position),
-            linearDamping: 0.003,
-            angularDamping: 0,
-            fixedRotation: true
-        });
-
-        const radius = LootRadius[this.type.definition.itemType];
-
-        this.body.createFixture({
-            shape: Circle(radius),
-            restitution: 0,
-            density: 1.0,
-            friction: 0.0,
-            userData: this
-        });
-        this.hitbox = new CircleHitbox(radius, this.position);
-
-        // Push the loot in a random direction
-        this.push(randomRotation(), 0.005);
-
         setTimeout((): void => { this.isNew = false; }, 100);
-    }
-
-    get position(): Vector {
-        return this.body.getPosition();
-    }
-
-    get rotation(): number {
-        const angle = this.body.getAngle();
-        return Math.atan2(Math.cos(angle), Math.sin(angle));
     }
 
     canInteract(player: Player): boolean {
@@ -240,11 +201,6 @@ export class Loot extends GameObject {
         ) {
             activeWeapon.reload();
         }
-    }
-
-    push(angle: number, velocity: number): void {
-        const vel = this.body.getLinearVelocity();
-        this.body.setLinearVelocity(vel.add(Vec2(Math.cos(angle), Math.sin(angle)).mul(velocity)));
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

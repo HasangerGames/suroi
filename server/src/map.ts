@@ -16,7 +16,6 @@ import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/uti
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
-import { Box, Vec2 } from "planck";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
@@ -39,16 +38,6 @@ export class Map {
 
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;
-
-        // Create world boundaries
-        this.createWorldBoundary(this.width / 2, 0, this.width / 2, 0);
-        this.createWorldBoundary(0, this.height / 2, 0, this.height / 2);
-        this.createWorldBoundary(this.width / 2, this.height, this.width / 2, 0);
-        this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
-
-        if (mapDefinition === undefined) {
-            throw new Error(`Unknown map: ${mapName}`);
-        }
 
         // Generate buildings
 
@@ -309,7 +298,7 @@ export class Map {
 
                 getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
-                const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
+                const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vector, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
             } else {
                 getPosition = (): Vector => v(0, 0);
@@ -351,7 +340,7 @@ export class Map {
         if (squareRadius) {
             getPosition = (): Vector => randomVector(this.width / 2 - radius, this.width / 2 + radius, this.height / 2 - radius, this.height / 2 + radius);
         } else {
-            getPosition = (): Vector => randomPointInsideCircle(new Vec2(this.width / 2, this.height / 2), radius);
+            getPosition = (): Vector => randomPointInsideCircle(v(this.width / 2, this.height / 2), radius);
         }
 
         return this.getRandomPositionFor(type, scale, orientation, getPosition);
@@ -369,30 +358,5 @@ export class Map {
             default:
                 return 0;
         }
-    }
-
-    private createWorldBoundary(x: number, y: number, width: number, height: number): void {
-        const boundary = this.game.world.createBody({
-            type: "static",
-            position: Vec2(x, y)
-        });
-
-        boundary.createFixture({
-            shape: Box(width, height),
-            userData: {
-                is: {
-                    player: false,
-                    obstacle: true,
-                    bullet: false,
-                    object: false
-                },
-                collidesWith: {
-                    player: true,
-                    obstacle: false,
-                    bullet: true,
-                    object: true
-                }
-            }
-        });
     }
 }
