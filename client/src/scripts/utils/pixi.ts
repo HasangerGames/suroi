@@ -82,6 +82,6 @@ export class SuroiSprite extends Sprite {
     }
 }
 
-export function toPixiCords(pos: Vector): Vector {
+export function toPixiCoords(pos: Vector): Vector {
     return vMul(pos, PIXI_SCALE);
 }

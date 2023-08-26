@@ -33,7 +33,7 @@ import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
-import { SuroiSprite, toPixiCords } from "../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
@@ -203,7 +203,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
-        const pos = toPixiCords(this.position);
+        const pos = toPixiCoords(this.position);
         const emotePos = vAdd(pos, v(0, -175));
 
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {

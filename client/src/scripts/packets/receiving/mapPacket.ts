@@ -7,7 +7,7 @@ import { ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
-import { SuroiSprite, toPixiCords } from "../../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -107,7 +107,7 @@ export class MapPacket extends ReceivingPacket {
 
                     const floorImage = new SuroiSprite(`${type.idString}_floor.svg`);
 
-                    floorImage.setVPos(toPixiCords(floorPos)).setRotation(rotation);
+                    floorImage.setVPos(toPixiCoords(floorPos)).setRotation(rotation);
 
                     minimapTexture.addChild(floorImage);
 
@@ -118,7 +118,7 @@ export class MapPacket extends ReceivingPacket {
 
             // Create the object image
             const image = new SuroiSprite(`${texture}.svg`);
-            image.setVPos(toPixiCords(position)).setRotation(rotation);
+            image.setVPos(toPixiCoords(position)).setRotation(rotation);
             image.scale.set(scale);
 
             minimapTexture.addChild(image);

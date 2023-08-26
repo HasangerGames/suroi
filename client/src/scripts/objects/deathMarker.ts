@@ -6,7 +6,7 @@ import { GameObject } from "../types/gameObject";
 import { ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
-import { SuroiSprite, toPixiCords } from "../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 import { Text } from "pixi.js";
 
@@ -45,7 +45,7 @@ export class DeathMarker extends GameObject {
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
 
-        const pos = toPixiCords(this.position);
+        const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
     }
 

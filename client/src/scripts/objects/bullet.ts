@@ -4,7 +4,7 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { type Vector } from "../../../../common/src/utils/vector";
-import { SuroiSprite, toPixiCords } from "../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { distance } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { PIXI_SCALE } from "../utils/constants";
@@ -24,7 +24,7 @@ export class Bullet extends BaseBullet {
 
         this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
             .setRotation(rotation - Math.PI / 2)
-            .setVPos(toPixiCords(this.position));
+            .setVPos(toPixiCoords(this.position));
 
         this.maxLength = this.image.width;
 
@@ -63,11 +63,9 @@ export class Bullet extends BaseBullet {
 
         if (length === this.maxLength) this.trailReachedMaxLength = true;
 
-        const scale = length / this.maxLength;
+        this.image.scale.x = length / this.maxLength;
 
-        this.image.scale.x = scale;
-
-        this.image.setVPos(toPixiCords(this.position));
+        this.image.setVPos(toPixiCoords(this.position));
 
         if (this.trailTicks <= 0 && this.dead) {
             this.destroy();

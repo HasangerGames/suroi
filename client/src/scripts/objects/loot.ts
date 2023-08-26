@@ -11,7 +11,7 @@ import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type PlayerManager } from "../utils/playerManager";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import { SuroiSprite, toPixiCords } from "../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -87,7 +87,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     override deserializePartial(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
 
-        const pos = toPixiCords(this.position);
+        const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
     }
 

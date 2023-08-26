@@ -4,7 +4,7 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { type ObjectCategory } from "../../../../common/src/constants";
-import { SuroiSprite, toPixiCords } from "../utils/pixi";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { gsap } from "gsap";
 import { distanceSquared } from "../../../../common/src/utils/math";
 
@@ -26,7 +26,7 @@ import { distanceSquared } from "../../../../common/src/utils/math";
 
 export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
-    const pixiPos = toPixiCords(position);
+    const pixiPos = toPixiCoords(position);
 
     const image = new SuroiSprite(definition.animation.frame);
 

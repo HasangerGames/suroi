@@ -1,7 +1,7 @@
 import { type Application, Container } from "pixi.js";
 import { type Vector, v, vAdd, vMul, vClone } from "../../../../common/src/utils/vector";
 import { gsap } from "gsap";
-import { toPixiCords } from "./pixi";
+import { toPixiCoords } from "./pixi";
 import { localStorageInstance } from "./localStorageHandler";
 import { TICK_SPEED } from "../../../../common/src/constants";
 
@@ -58,7 +58,7 @@ export class Camera {
 
     updatePosition(anim = true): void {
         const cameraPos = vAdd(
-            vMul(toPixiCords(this.position), this.container.scale.x),
+            vMul(toPixiCoords(this.position), this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
 
         this.moveTween?.kill();
