@@ -60,6 +60,7 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
+    "@pixi/compressed-textures": "^7.2.4",
     "axios": "^1.4.0",
     "gsap": "^3.12.2",
     "howler": "^2.2.3",
