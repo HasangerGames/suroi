@@ -8,7 +8,7 @@ import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type FloorType, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { gsap } from "gsap";
 import { Container } from "pixi.js";
 
@@ -101,13 +101,16 @@ export class Building extends GameObject {
     override deserializeFull(stream: SuroiBitStream): void {
         this.position = stream.readPosition();
 
+        const pos = toPixiCords(this.position);
+        this.container.position.copyFrom(pos);
+        this.images.ceilingContainer.position.copyFrom(pos);
+
         this.orientation = stream.readBits(2) as Orientation;
 
         this.rotation = orientationToRotation(this.orientation);
 
         this.container.rotation = this.rotation;
 
-        this.images.ceilingContainer.position.set(this.container.x, this.container.y);
         this.images.ceilingContainer.rotation = this.rotation;
 
         this.ceilingHitbox = (this.type.definition).ceilingHitbox.transform(this.position, 1, this.orientation);

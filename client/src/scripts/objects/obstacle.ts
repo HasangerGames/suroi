@@ -11,7 +11,7 @@ import { gsap } from "gsap";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, toPixiCords } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { PIXI_SCALE } from "../utils/constants";
 
@@ -129,6 +129,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     override deserializeFull(stream: SuroiBitStream): void {
         // Get position, rotation, and variations
         this.position = stream.readPosition();
+
+        const pos = toPixiCords(this.position);
+        this.container.position.copyFrom(pos);
 
         const definition = this.type.definition;
 

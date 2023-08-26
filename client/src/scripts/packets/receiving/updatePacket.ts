@@ -23,6 +23,7 @@ import { type EmoteDefinition } from "../../../../../common/src/definitions/emot
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
 import { gsap } from "gsap";
+import { localStorageInstance } from "../../utils/localStorageHandler";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -312,6 +313,7 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
+
             let currentDuration: number | undefined;
             const percentageDirty = stream.readBoolean();
             if (percentageDirty) { // Percentage dirty
@@ -362,15 +364,21 @@ export class UpdatePacket extends ReceivingPacket {
             if (game.gas.state === GasState.Advancing) {
                 const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                gsap.to(game.gas, {
-                    radius: currentRadius,
-                    duration: TICK_SPEED / 1000
-                });
-                gsap.to(game.gas.position, {
-                    x: currentPosition.x,
-                    y: currentPosition.y,
-                    duration: TICK_SPEED / 1000
-                });
+
+                if (localStorageInstance.config.movementSmoothing) {
+                    gsap.to(game.gas, {
+                        radius: currentRadius,
+                        duration: TICK_SPEED / 1000
+                    });
+                    gsap.to(game.gas.position, {
+                        x: currentPosition.x,
+                        y: currentPosition.y,
+                        duration: TICK_SPEED / 1000
+                    });
+                } else {
+                    game.gas.radius = currentRadius;
+                    game.gas.position = currentPosition;
+                }
             }
         }
 

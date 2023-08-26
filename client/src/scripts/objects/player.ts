@@ -10,10 +10,11 @@ import {
     ObjectCategory,
     PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
-    PlayerActions
+    PlayerActions,
+    TICK_SPEED
 } from "../../../../common/src/constants";
 
-import { vClone, vSub, type Vector, vDiv, vAdd, v } from "../../../../common/src/utils/vector";
+import { vClone, type Vector, vAdd, v } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -81,6 +82,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     rightFistAnim?: gsap.core.Tween;
     weaponAnim?: gsap.core.Tween;
 
+    moveAnim?: gsap.core.Tween;
+    emoteMoveAnim?: gsap.core.Tween;
+
     _emoteHideTimeoutID?: NodeJS.Timeout;
 
     distSinceLastFootstep = 0;
@@ -143,22 +147,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.updateWeapon();
     }
 
-    update(delta: number): void {
-        if (this.position === undefined) return;
-
-        if (localStorageInstance.config.movementSmoothing && this.oldPosition !== undefined) {
-            const posToAdd = vDiv(vSub(this.oldPosition, this.position), delta);
-
-            const position = vAdd(this.position, posToAdd);
-
-            this.container.position.copyFrom(toPixiCords(position));
-        } else {
-            this.container.position.copyFrom(toPixiCords(this.position));
-        }
-        if (this.isActivePlayer) this.game.camera.setPosition(this.position);
-        Howler.pos(this.position.x, this.position.y);
-    }
-
     override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -215,14 +203,33 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
+        const pos = toPixiCords(this.position);
+        const emotePos = vAdd(pos, v(0, -175));
+
+        if (this.isNew || !localStorageInstance.config.movementSmoothing) {
+            this.container.position.copyFrom(pos);
+            this.emoteContainer.position.copyFrom(emotePos);
+        } else {
+            this.emoteMoveAnim?.kill();
+            this.moveAnim?.kill();
+            this.moveAnim = gsap.to(this.container.position, {
+                x: pos.x,
+                y: pos.y,
+                duration: TICK_SPEED / 1000
+            });
+            this.emoteMoveAnim = gsap.to(this.emoteContainer.position, {
+                x: emotePos.x,
+                y: emotePos.y,
+                duration: TICK_SPEED / 1000
+            });
+        }
+
         if (this.isActivePlayer) {
             this.game.camera.setPosition(this.position);
             Howler.pos(this.position.x, this.position.y);
             this.game.map.setPosition(this.position);
             this.game.map.indicator.setRotation(this.rotation);
         }
-
-        this.emoteContainer.position.copyFrom(vAdd(toPixiCords(this.position), v(0, -175)));
 
         // Animation
         const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
@@ -532,6 +539,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
+        this.emoteMoveAnim?.kill();
+        this.moveAnim?.kill();
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();

@@ -86,8 +86,6 @@ export class Game {
                 bullet.update(delta);
             }
 
-            // this.camera.update(delta);
-
             this.gas.render();
         });
 

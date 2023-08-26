@@ -6,16 +6,8 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
-import { toPixiCords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
 
-/*
-    Since this class seems to only ever be instantiated
-    when some sort of stream is involved, it could be worth
-    to refactor this constructor to take a stream object so
-    that it can manage its own deserialization, allowing us
-    to remove all these definite assignment assertions
-*/
 export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     id: number;
     type: ObjectType<T, U>;
@@ -24,14 +16,11 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     damageable = false;
 
-    private readonly moveAnim?: gsap.core.Tween;
-
     private readonly sounds = new Set<Sound>();
 
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
-        this.container.position.copyFrom(toPixiCords(pos));
         this._position = pos;
 
         // Update the position of all sounds
@@ -57,7 +46,6 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     }
 
     destroy(): void {
-        this.moveAnim?.kill();
         this.container.destroy();
     }
 
