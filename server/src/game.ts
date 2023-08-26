@@ -185,6 +185,10 @@ export class Game {
                     movement.y *= Math.SQRT1_2;
                 }
 
+                if (movement.x !== 0 || movement.y !== 0) {
+                    player.movesSinceLastUpdate++;
+                }
+
                 /*if (this.emotes.size > 0) {
                     player.fast = !player.fast;
                     if (player.fast) {

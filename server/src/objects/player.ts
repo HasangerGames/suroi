@@ -336,6 +336,10 @@ export class Player extends GameObject {
         return this.body?.position ?? v(0, 0);
     }
 
+    set position(position: Vector) {
+        this.body.position = position;
+    }
+
     calculateSpeed(): number {
         let recoilMultiplier = 1;
         if (this.recoil.active) {

@@ -258,9 +258,9 @@ export class Obstacle extends GameObject {
         // TODO Find a cleaner way to do this if possible
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const hitbox = this.hitbox as RectangleHitbox;
-        if (player?.hitbox.collidesWith(hitbox)) {
+        if (player?.body.hitbox.collidesWith(hitbox)) {
             const newPosition = vClone(player.position);
-            const radius: number = player.hitbox.radius;
+            const radius: number = (player.body.hitbox as CircleHitbox).radius;
             if (isOnOtherSide) {
                 switch (this.rotation) {
                     case 0:

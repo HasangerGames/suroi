@@ -9,7 +9,6 @@ export class DynamicBody extends Body {
         this.oldPosition = vClone(this.position);
         this.position = vAdd(this.position, this.velocity);
         this.hitbox = this.initialHitbox.transform(this.position);
-        console.log("tick");
 
         // Find and resolve collisions
         for (const potential of this.game.getVisibleObjects(this.position)) {
