@@ -113,7 +113,6 @@ export class Game {
         this.socket = new WebSocket(address);
         this.socket.binaryType = "arraybuffer";
 
-        // Start the Phaser scene when the socket connects
         this.socket.onopen = (): void => {
             core.music.stop();
             this.gameStarted = true;
@@ -193,7 +192,6 @@ export class Game {
             enablePlayButton();
         };
 
-        // Shut down the Phaser scene when the socket closes
         this.socket.onclose = (): void => {
             enablePlayButton();
             if (!this.spectating && !this.gameOver) {

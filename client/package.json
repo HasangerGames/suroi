@@ -17,7 +17,7 @@
   "keywords": [
     "nodejs",
     "typescript",
-    "phaser"
+    "pixi"
   ],
   "license": "GPL-3.0",
   "devDependencies": {
