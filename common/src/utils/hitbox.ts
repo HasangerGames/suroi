@@ -60,6 +60,22 @@ export class CircleHitbox extends Hitbox {
             const intersectionLength = this.radius + that.radius - lengthConnectingCenters;
             const intersectionVector = vMul(vectorConnectingCenters, intersectionLength / lengthConnectingCenters);
             this.position = vAdd(this.position, vInvert(intersectionVector));
+        } else if (that instanceof RectangleHitbox) {
+            const e = vMul(vSub(that.max, that.min), 0.5);
+            const c = vAdd(that.min, e);
+            const p = vSub(this.position, c);
+            const xp = Math.abs(p.x) - e.x - this.radius;
+            const yp = Math.abs(p.y) - e.y - this.radius;
+            let direction: Vector;
+            let intersectionVector: Vector;
+            if (xp > yp) {
+                direction = v(p.x > 0.0 ? 1.0 : -1.0, 0.0);
+                intersectionVector = vMul(direction, xp / vLength(direction));
+            } else {
+                direction = v(0.0, p.y > 0.0 ? 1.0 : -1.0);
+                intersectionVector = vMul(direction, yp / vLength(direction));
+            }
+            this.position = vAdd(this.position, vInvert(intersectionVector));
         }
     }
 
@@ -115,7 +131,9 @@ export class RectangleHitbox extends Hitbox {
         return false;
     }
 
-    resolveCollision(that: Hitbox): void {}
+    resolveCollision(that: Hitbox): void {
+
+    }
 
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
