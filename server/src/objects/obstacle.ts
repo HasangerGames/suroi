@@ -5,7 +5,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector, vSub, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
 import { calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
@@ -35,12 +35,13 @@ export class Obstacle extends GameObject {
         loot: true
     };
 
-    readonly damageable = true;
-
     health: number;
     maxHealth: number;
     maxScale: number;
     healthFraction = 1;
+
+    readonly damageable = true;
+    collidable: boolean;
 
     variation: Variation;
 
@@ -100,6 +101,8 @@ export class Obstacle extends GameObject {
 
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
 
+        this.collidable = !definition.noCollisions;
+
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];
             const count = random(lootTable.min, lootTable.max);
@@ -157,6 +160,7 @@ export class Obstacle extends GameObject {
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
+            this.collidable = false;
 
             this.scale = definition.scale.spawnMin;
 
@@ -174,10 +178,12 @@ export class Obstacle extends GameObject {
 
                 // a bit of a hack to break doors attached to walls :)
                 for (const object of this.game.getVisibleObjects(this.position)) {
-                    if (object instanceof Obstacle &&
+                    if (
+                        object instanceof Obstacle &&
                         object.definition.isDoor &&
                         object.door?.openHitbox &&
-                        this.hitbox?.collidesWith(object.door.openHitbox)) {
+                        this.hitbox?.collidesWith(object.door.openHitbox)
+                    ) {
                         object.damage(9999, source, weaponUsed);
                     }
                 }
@@ -223,24 +229,23 @@ export class Obstacle extends GameObject {
             throw new Error("Door with non-rectangular hitbox");
         }
 
-        let isOnOtherSide = false;
-        switch (this.rotation) {
-            case 0:
-                isOnOtherSide = player.position.y < this.position.y;
-                break;
-            case 1:
-                isOnOtherSide = player.position.x < this.position.x;
-                break;
-            case 2:
-                isOnOtherSide = player.position.y > this.position.y;
-                break;
-            case 3:
-                isOnOtherSide = player.position.x > this.position.x;
-                break;
-        }
-
         this.door.open = !this.door.open;
         if (this.door.open) {
+            let isOnOtherSide = false;
+            switch (this.rotation) {
+                case 0:
+                    isOnOtherSide = player.position.y < this.position.y;
+                    break;
+                case 1:
+                    isOnOtherSide = player.position.x < this.position.x;
+                    break;
+                case 2:
+                    isOnOtherSide = player.position.y > this.position.y;
+                    break;
+                case 3:
+                    isOnOtherSide = player.position.x > this.position.x;
+                    break;
+            }
             if (isOnOtherSide) {
                 this.door.offset = 3;
                 this.hitbox = this.door.openAltHitbox.clone();
@@ -251,48 +256,6 @@ export class Obstacle extends GameObject {
         } else {
             this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
-        }
-
-        // When pushing, ensure that they won't get stuck in the door.
-        // If they do, move them to the opposite side regardless of their current position.
-        // TODO Find a cleaner way to do this if possible
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        const hitbox = this.hitbox as RectangleHitbox;
-        if (player?.body.hitbox.collidesWith(hitbox)) {
-            const newPosition = vClone(player.position);
-            const radius: number = (player.body.hitbox as CircleHitbox).radius;
-            if (isOnOtherSide) {
-                switch (this.rotation) {
-                    case 0:
-                        newPosition.y = hitbox.min.y - radius;
-                        break;
-                    case 1:
-                        newPosition.x = hitbox.min.x - radius;
-                        break;
-                    case 2:
-                        newPosition.y = hitbox.max.y + radius;
-                        break;
-                    case 3:
-                        newPosition.x = hitbox.max.x + radius;
-                        break;
-                }
-            } else {
-                switch (this.rotation) {
-                    case 0:
-                        newPosition.y = hitbox.max.y + radius;
-                        break;
-                    case 1:
-                        newPosition.x = hitbox.max.x + radius;
-                        break;
-                    case 2:
-                        newPosition.y = hitbox.min.y - radius;
-                        break;
-                    case 3:
-                        newPosition.x = hitbox.min.x - radius;
-                        break;
-                }
-            }
-            player.position = newPosition;
         }
 
         this.game.partialDirtyObjects.add(this);

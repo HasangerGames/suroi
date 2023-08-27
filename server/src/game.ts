@@ -22,7 +22,7 @@ import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
@@ -33,7 +33,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
 import { Building } from "./objects/building";
-import { type DynamicBody } from "./physics/dynamicBody";
+import { Obstacle } from "./objects/obstacle";
 
 export class Game {
     readonly _id: number;
@@ -86,8 +86,6 @@ export class Game {
      */
     readonly newBullets = new Set<Bullet>();
 
-    readonly dynamicBodies = new Set<DynamicBody>();
-
     /**
      * All kill feed messages this tick
      */
@@ -129,9 +127,6 @@ export class Game {
             this._now = Date.now();
 
             if (this.stopped) return;
-
-            // Update physics
-            for (const body of this.dynamicBodies) body.tick();
 
             // Update loot positions
             for (const loot of this.loot) {
@@ -189,23 +184,32 @@ export class Game {
                     player.movesSinceLastUpdate++;
                 }
 
-                /*if (this.emotes.size > 0) {
-                    player.fast = !player.fast;
-                    if (player.fast) {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
+                // Calculate speed
+                let recoilMultiplier = 1;
+                if (player.recoil.active) {
+                    if (player.recoil.time < this.now) {
+                        player.recoil.active = false;
                     } else {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
+                        recoilMultiplier = player.recoil.multiplier;
                     }
                 }
-                if (player.fast) speed *= 30;*/
+                /* eslint-disable no-multi-spaces */
+                const speed = Config.movementSpeed *     // Base speed
+                    recoilMultiplier *                            // Recoil from items
+                    (player.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
+                    (1 + (player.adrenaline / 1000)) *            // Linear speed boost from adrenaline
+                    player.activeItemDefinition.speedMultiplier * // Active item speed modifier
+                    player.modifiers.baseSpeed;                   // Current on-wearer modifier
+                player.position = vAdd(player.position, v(movement.x * speed, movement.y * speed));
 
-                const speed = player.calculateSpeed();
-                player.body.velocity = v(movement.x * speed, movement.y * speed);
+                // Find and resolve collisions
+                for (const potential of this.getVisibleObjects(player.position)) {
+                    if (potential instanceof Obstacle && potential.collidable && potential.hitbox !== undefined && player.hitbox.collidesWith(potential.hitbox)) { // TODO Make an array of collidable objects
+                        player.hitbox.resolveCollision(potential.hitbox);
+                    }
+                }
 
+                // Disable invulnerability if the player moves or turns
                 if (player.isMoving || player.turning) {
                     player.disableInvulnerability();
                     this.partialDirtyObjects.add(player);
@@ -237,7 +241,7 @@ export class Game {
                 let isInsideBuilding = false;
                 for (const object of player.nearObjects) {
                     if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.body.hitbox)) {
+                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
                             isInsideBuilding = true;
                             break;
                         }

@@ -62,20 +62,15 @@ export class CircleHitbox extends Hitbox {
             this.position = vAdd(this.position, vInvert(intersectionVector));
         } else if (that instanceof RectangleHitbox) {
             const e = vMul(vSub(that.max, that.min), 0.5);
-            const c = vAdd(that.min, e);
-            const p = vSub(this.position, c);
+            const p = vSub(this.position, vAdd(that.min, e));
             const xp = Math.abs(p.x) - e.x - this.radius;
             const yp = Math.abs(p.y) - e.y - this.radius;
-            let direction: Vector;
-            let intersectionVector: Vector;
-            if (xp > yp) {
-                direction = v(p.x > 0.0 ? 1.0 : -1.0, 0.0);
-                intersectionVector = vMul(direction, xp / vLength(direction));
-            } else {
-                direction = v(0.0, p.y > 0.0 ? 1.0 : -1.0);
-                intersectionVector = vMul(direction, yp / vLength(direction));
-            }
-            this.position = vAdd(this.position, vInvert(intersectionVector));
+            this.position = vAdd(
+                this.position,
+                xp > yp
+                    ? v(-Math.sign(p.x) * xp, 0)
+                    : v(0, -Math.sign(p.y) * yp)
+            );
         }
     }
 

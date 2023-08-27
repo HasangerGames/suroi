@@ -279,7 +279,7 @@ export class Inventory {
         if (item === undefined || item.definition.noDrop) return undefined;
 
         const loot = this.owner.game.addLoot(item.type, this.owner.position);
-        loot.push(this.owner.rotation, pushForce);
+        //loot.push(this.owner.rotation, pushForce);
 
         if (item instanceof GunItem && item.ammo > 0) {
             // Put the ammo in the gun back in the inventory
@@ -308,7 +308,7 @@ export class Inventory {
                 splitUpLoot(this.owner, ammoType, overAmount);*/
                 this.items[ammoType] -= overAmount;
                 const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
-                loot.push(this.owner.rotation, pushForce);
+                //loot.push(this.owner.rotation, pushForce);
             }
 
             this.owner.dirty.inventory = true;

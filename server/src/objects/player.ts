@@ -37,8 +37,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { v, type Vector } from "../../../common/src/utils/vector";
-import { DynamicBody } from "../physics/dynamicBody";
+import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     override readonly is: CollisionFilter = {
@@ -55,9 +54,7 @@ export class Player extends GameObject {
         loot: false
     };
 
-    //fast = false;
-
-    body: DynamicBody;
+    hitbox: CircleHitbox;
 
     readonly damageable = true;
 
@@ -298,8 +295,7 @@ export class Player extends GameObject {
 
         this.joinTime = game.now;
 
-        this.body = new DynamicBody(this.game, this.position, new CircleHitbox(PLAYER_RADIUS, this.position));
-        this.game.dynamicBodies.add(this.body);
+        this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
@@ -333,31 +329,11 @@ export class Player extends GameObject {
     }
 
     get position(): Vector {
-        return this.body?.position ?? v(0, 0);
+        return this.hitbox.position;
     }
 
     set position(position: Vector) {
-        this.body.position = position;
-    }
-
-    calculateSpeed(): number {
-        let recoilMultiplier = 1;
-        if (this.recoil.active) {
-            if (this.recoil.time < this.game.now) {
-                this.recoil.active = false;
-            } else {
-                recoilMultiplier = this.recoil.multiplier;
-            }
-        }
-
-        // shove it
-        /* eslint-disable no-multi-spaces */
-        return Config.movementSpeed *                    // Base speed
-            recoilMultiplier *                           // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *        // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *             // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier *  // Active item speed modifier
-            this._modifiers.baseSpeed;                   // Current on-wearer modifier
+        this.hitbox.position = position;
     }
 
     get zoom(): number {
