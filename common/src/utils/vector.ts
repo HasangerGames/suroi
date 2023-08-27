@@ -107,3 +107,7 @@ export function vNormalize(a: Vector): Vector {
         y: len > eps ? a.y / len : a.y
     };
 }
+
+export function vInvert(a: Vector): Vector {
+    return v(-a.x, -a.y);
+}

@@ -1,7 +1,7 @@
 import {
     vClone,
     v,
-    type Vector
+    type Vector, vSub, vLength, vInvert, vAdd, vMul
 } from "./vector";
 import {
     circleCollision,
@@ -53,7 +53,15 @@ export class CircleHitbox extends Hitbox {
         throw new Error("Invalid hitbox object");
     }
 
-    resolveCollision(that: Hitbox): void {}
+    resolveCollision(that: Hitbox): void {
+        if (that instanceof CircleHitbox) {
+            const vectorConnectingCenters = vSub(that.position, this.position);
+            const lengthConnectingCenters = vLength(vectorConnectingCenters);
+            const intersectionLength = this.radius + that.radius - lengthConnectingCenters;
+            const intersectionVector = vMul(vectorConnectingCenters, intersectionLength / lengthConnectingCenters);
+            this.position = vAdd(this.position, vInvert(intersectionVector));
+        }
+    }
 
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
