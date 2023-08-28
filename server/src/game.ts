@@ -209,6 +209,12 @@ export class Game {
                     }
                 }
 
+                // World boundaries
+                if (player.position.x < 0) player.position.x = 0;
+                if (player.position.x > this.map.width) player.position.x = this.map.width;
+                if (player.position.y < 0) player.position.y = 0;
+                if (player.position.y > this.map.height) player.position.y = this.map.height;
+
                 // Disable invulnerability if the player moves or turns
                 if (player.isMoving || player.turning) {
                     player.disableInvulnerability();

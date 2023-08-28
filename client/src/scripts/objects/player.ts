@@ -422,7 +422,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.emoteAnim = gsap.to(this.emoteContainer, {
             alpha: 1,
-            ease: "Back.out",
+            ease: "back.out",
             duration: 0.25,
             onUpdate: () => {
                 this.emoteContainer.scale.set(this.emoteContainer.alpha);
