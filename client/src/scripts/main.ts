@@ -7,7 +7,7 @@ import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
 import { Application } from "pixi.js";
 import { loadAtlases } from "./utils/pixi";
-import { WATER_COLOR } from "./utils/constants";
+import { COLORS } from "./utils/constants";
 
 import { loadSounds } from "./utils/soundManager";
 
@@ -86,7 +86,7 @@ async function main(): Promise<void> {
 
     const app = new Application({
         resizeTo: window,
-        background: WATER_COLOR,
+        background: COLORS.water,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1

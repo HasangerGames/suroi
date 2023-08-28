@@ -1,7 +1,7 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { GRASS_COLOR, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
+import { COLORS, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
 import { Graphics } from "pixi.js";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
@@ -24,16 +24,16 @@ export class MapPacket extends ReceivingPacket {
         const minimapTexture = new Graphics();
 
         graphics.beginFill();
-        graphics.fill.color = 0xb99c61;
+        graphics.fill.color = COLORS.beach.toNumber();
         graphics.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
-        graphics.fill.color = GRASS_COLOR;
+        graphics.fill.color = COLORS.grass.toNumber();
         graphics.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
         graphics.zIndex = -10;
 
         minimapTexture.beginFill();
-        minimapTexture.fill.color = 0xb99c61;
+        minimapTexture.fill.color = COLORS.beach.toNumber();
         minimapTexture.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
-        minimapTexture.fill.color = GRASS_COLOR;
+        minimapTexture.fill.color = COLORS.grass.toNumber();
         minimapTexture.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
 
         graphics.lineStyle({

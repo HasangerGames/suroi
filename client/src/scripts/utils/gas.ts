@@ -1,8 +1,8 @@
 import { type Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { v, vMul } from "../../../../common/src/utils/vector";
-import { GAS_ALPHA, GAS_COLOR } from "./constants";
 import { GasState } from "../../../../common/src/constants";
+import { COLORS } from "./constants";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;
@@ -35,7 +35,7 @@ export class Gas {
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay
         this.graphics.clear()
-            .beginFill(GAS_COLOR, GAS_ALPHA)
+            .beginFill(COLORS.gas)
             .moveTo(-kOverdraw, -kOverdraw)
             .lineTo(kOverdraw, -kOverdraw)
             .lineTo(kOverdraw, kOverdraw)

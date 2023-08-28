@@ -1,14 +1,14 @@
+import { Color } from "pixi.js";
+
 export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
-export const GRASS_COLOR = 0x49993e;
-export const WATER_COLOR = 0x2768ad;
-export const GRASS_RGB = {
-    r: 73,
-    g: 153,
-    b: 62
+
+export const COLORS = {
+    grass: new Color("hsl(113, 42%, 42%)"),
+    water: new Color("hsl(211, 63%, 42%)"),
+    gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
+    beach: new Color("hsl(40, 39%, 55%)")
 };
-export const GAS_COLOR = 0xff4800;
-export const GAS_ALPHA = 0.55;
 
 export const MINIMAP_SCALE = 2;
 
