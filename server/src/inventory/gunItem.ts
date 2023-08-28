@@ -108,10 +108,20 @@ export class GunItem extends InventoryItem {
             }
         }
 
-        for (let i = 0; i < (definition.bulletCount ?? 1); i++) {
+        const limit = definition.bulletCount ?? 1;
+        const step = spread / limit;
+
+        for (let i = 0; i < limit; i++) {
             this.owner.game.addBullet(
                 position,
-                normalizeAngle(owner.rotation + randomFloat(-spread, spread) + Math.PI / 2),
+                normalizeAngle(
+                    owner.rotation + Math.PI / 2 +
+                    (
+                        definition.consistentPatterning === true
+                            ? i * step - spread / 2
+                            : randomFloat(-spread, spread)
+                    )
+                ),
                 this,
                 this.owner
             );
