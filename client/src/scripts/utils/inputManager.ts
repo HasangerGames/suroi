@@ -270,7 +270,7 @@ export function setupInputs(game: Game): void {
     }
 
     let mWheelStopTimer: number | undefined;
-    function handleInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): void {
+    function handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
         if (!$("canvas").hasClass("active")) return;
 
         // Disable pointer events on mobile if mobile controls are enabled
@@ -292,17 +292,22 @@ export function setupInputs(game: Game): void {
 
         if (event instanceof KeyboardEvent) {
             let modifierCount = 0;
-            switch (true) {
-                case event.altKey: modifierCount++; break;
-                case event.metaKey: modifierCount++; break;
-                case event.ctrlKey: modifierCount++; break;
-                case event.shiftKey: modifierCount++; break;
-            }
+            (
+                [
+                    "altKey",
+                    "metaKey",
+                    "ctrlKey",
+                    "shiftKey"
+                ] as Array<keyof KeyboardEvent>
+            ).forEach(modifier => (event[modifier] && modifierCount++));
 
             // As stated before, more than one modifier or a modifier alongside another key should invalidate an input
             if (
-                modifierCount > 1 ||
-                (modifierCount === 1 && !["Shift", "Control", "Alt", "Meta"].includes(event.key))
+                (
+                    modifierCount > 1 ||
+                    (modifierCount === 1 && !["Shift", "Control", "Alt", "Meta"].includes(event.key))
+                ) && down
+                // …but it only invalidates pressing a key, not releasing it
             ) return;
         }
 
@@ -336,11 +341,11 @@ export function setupInputs(game: Game): void {
     const gameUi = $("#game-ui")[0];
 
     // different event targets… why?
-    window.addEventListener("keydown", handleInputEvent);
-    window.addEventListener("keyup", handleInputEvent);
-    gameUi.addEventListener("pointerdown", handleInputEvent);
-    gameUi.addEventListener("pointerup", handleInputEvent);
-    gameUi.addEventListener("wheel", handleInputEvent);
+    window.addEventListener("keydown", handleInputEvent.bind(null, true));
+    window.addEventListener("keyup", handleInputEvent.bind(null, false));
+    gameUi.addEventListener("pointerdown", handleInputEvent.bind(null, true));
+    gameUi.addEventListener("pointerup", handleInputEvent.bind(null, false));
+    gameUi.addEventListener("wheel", handleInputEvent.bind(null, true));
 
     gameUi.addEventListener("pointermove", (e: MouseEvent) => {
         if (game.playerManager === undefined || game.playerManager.isMobile) return;
