@@ -71,7 +71,7 @@ export const Guns: GunDefinition[] = [
         idString: "ak47",
         name: "AK-47",
         itemType: ItemType.Gun,
-        ammoType: "7622mm",
+        ammoType: "762mm",
         ammoSpawnAmount: 90,
         capacity: 30,
         reloadTime: 2.5,
