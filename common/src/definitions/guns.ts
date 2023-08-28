@@ -20,6 +20,7 @@ export type GunDefinition = ItemDefinition & {
     readonly recoilDuration: number
     readonly shotSpread: number
     readonly moveSpread: number // Added to shotSpread if the player is moving
+    readonly consistentPatterning?: boolean
 
     readonly canQuickswitch?: boolean
     readonly bulletCount?: number
@@ -628,6 +629,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 3,
         canQuickswitch: true,
         killstreak: true,
+        consistentPatterning: true,
         bulletCount: 10,
         length: 10,
         fists: {
