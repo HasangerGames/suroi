@@ -84,7 +84,7 @@ $((): void => {
         },
         {
             name: "TEAMFIGHTER 27",
-            link: "https://www.youtube.com/@teamfighter279"
+            link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
         }
     ];
 
