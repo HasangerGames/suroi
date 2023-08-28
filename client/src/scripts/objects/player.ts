@@ -419,7 +419,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             let itemTooltip = definition.name;
             if (equipmentType === "helmet" || equipmentType === "vest") {
-                itemTooltip += `<br>Reduces ${(definition as ArmorDefinition).damageReductionPercentage * 100}% damage`;
+                itemTooltip += `<br>Reduces ${(definition as ArmorDefinition).damageReduction * 100}% damage`;
             }
             container.children(".item-tooltip").html(itemTooltip);
         }

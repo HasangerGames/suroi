@@ -9,7 +9,7 @@ export const Helmets: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 1,
-        damageReductionPercentage: 0.1
+        damageReduction: 0.1
     },
     {
         idString: "m1_helmet",
@@ -17,7 +17,7 @@ export const Helmets: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 2,
-        damageReductionPercentage: 0.15
+        damageReduction: 0.15
     },
     {
         idString: "tactical_helmet",
@@ -25,6 +25,6 @@ export const Helmets: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 3,
-        damageReductionPercentage: 0.2
+        damageReduction: 0.2
     }
 ];

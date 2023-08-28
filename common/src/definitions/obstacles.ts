@@ -1,6 +1,7 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
 import { v, type Vector } from "../utils/vector";
+import { type Variation } from "../typings";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance"
@@ -19,7 +20,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnHitbox?: Hitbox
     readonly noCollisions?: boolean
     readonly rotationMode: "full" | "limited" | "binary" | "none"
-    readonly variations?: number
+    readonly variations?: Variation
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
     readonly hasLoot?: boolean
@@ -33,13 +34,13 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly residue?: string
     }
 
-    isWall?: boolean
+    readonly isWall?: boolean
     readonly isWindow?: boolean
 } & ({
-    isDoor: true
-    hingeOffset: Vector
+    readonly isDoor: true
+    readonly hingeOffset: Vector
 } | {
-    isDoor?: false
+    readonly isDoor?: false
 });
 
 export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance"];
