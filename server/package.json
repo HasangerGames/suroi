@@ -18,7 +18,6 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/intersects": "^2.5.0",
     "@types/node": "^20.5.1",
     "@types/sanitize-html": "^2.9.0",
     "@types/ws": "^8.5.5",
