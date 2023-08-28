@@ -9,7 +9,7 @@ export const Vests: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 1,
-        damageReductionPercentage: 0.2
+        damageReduction: 0.2
     },
     {
         idString: "bulletproof_vest",
@@ -17,7 +17,7 @@ export const Vests: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 2,
-        damageReductionPercentage: 0.35
+        damageReduction: 0.35
     },
     {
         idString: "tactical_vest",
@@ -25,6 +25,6 @@ export const Vests: ArmorDefinition[] = [
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 3,
-        damageReductionPercentage: 0.45
+        damageReduction: 0.45
     }
 ];
