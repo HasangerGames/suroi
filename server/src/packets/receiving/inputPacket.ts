@@ -4,7 +4,7 @@ import { GunItem } from "../../inventory/gunItem";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { Loot } from "../../objects/loot";
-import { type CollisionRecord, distanceSquared } from "../../../../common/src/utils/math";
+import { distanceSquared } from "../../../../common/src/utils/math";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -58,10 +58,9 @@ export class InputPacket extends ReceivingPacket {
                     const detectionHitbox = new CircleHitbox(3, player.position);
 
                     for (const object of player.visibleObjects) {
-                        if ((object instanceof Loot || (object instanceof Obstacle && object.isDoor)) && condition(object)) {
-                            const record: CollisionRecord | undefined = object.hitbox?.distanceTo(detectionHitbox);
+                        if ((object instanceof Loot || (object instanceof Obstacle && object.isDoor)) && object.hitbox !== undefined && condition(object)) {
                             const dist = distanceSquared(object.position, player.position);
-                            if (dist < minDist && record?.collided) {
+                            if (dist < minDist && object.hitbox.collidesWith(detectionHitbox)) {
                                 minDist = dist;
                                 closestObject = object;
                             }
@@ -79,8 +78,8 @@ export class InputPacket extends ReceivingPacket {
                 } else {
                     const closestObject = getClosestObject(object => {
                         if (!(object instanceof Loot)) return false;
-                        const definition = object.type.definition;
-                        return definition.itemType !== ItemType.Gun && definition.itemType !== ItemType.Melee;
+                        const itemType = object.type.definition.itemType;
+                        return itemType !== ItemType.Gun && itemType !== ItemType.Melee;
                     });
 
                     if (closestObject) {

@@ -71,6 +71,10 @@ export class CircleHitbox extends Hitbox {
                     ? v(-Math.sign(p.x) * xp, 0)
                     : v(0, -Math.sign(p.y) * yp)
             );
+        } else if (that instanceof ComplexHitbox) {
+            for (const hitbox of that.hitBoxes) {
+                if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+            }
         }
     }
 
@@ -183,13 +187,13 @@ export class ComplexHitbox extends Hitbox {
             if (hitbox instanceof CircleHitbox) {
                 if (that instanceof CircleHitbox) {
                     newRecord = distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
-                } else if (that instanceof RectangleHitbox) {
+                } else { // if (that instanceof RectangleHitbox) {
                     newRecord = distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
                 }
-            } else if (hitbox instanceof RectangleHitbox) {
+            } else { // if (hitbox instanceof RectangleHitbox) {
                 if (that instanceof CircleHitbox) {
                     newRecord = distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
-                } else if (that instanceof RectangleHitbox) {
+                } else { // if (that instanceof RectangleHitbox) {
                     newRecord = rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max);
                 }
             }

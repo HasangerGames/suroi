@@ -1,4 +1,4 @@
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectCategory } from "../../../common/src/constants";
@@ -10,20 +10,6 @@ import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
 
 export class Building extends GameObject {
-    readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
-    readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
     readonly definition: BuildingDefinition;
 
     readonly spawnHitbox: Hitbox;

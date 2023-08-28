@@ -1,6 +1,6 @@
 import { type Game } from "../game";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
@@ -9,28 +9,15 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 
 export class Loot extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: true
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: false,
-        loot: true
-    };
-
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
 
     oldPosition: Vector;
@@ -41,6 +28,8 @@ export class Loot extends GameObject {
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
+
+        this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], position);
 
         this.oldPosition = position;
         if (count !== undefined) this.count = count;

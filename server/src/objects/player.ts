@@ -1,6 +1,6 @@
 import type { WebSocket } from "uWebSockets.js";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
@@ -40,20 +40,6 @@ import { removeFrom } from "../utils/misc";
 import { type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: true,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: true,
-        loot: false
-    };
-
     hitbox: CircleHitbox;
 
     readonly damageable = true;

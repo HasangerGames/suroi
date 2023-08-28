@@ -1,6 +1,6 @@
 import { type Game } from "../game";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -21,20 +21,6 @@ import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
 
 export class Obstacle extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: false,
-        loot: false
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: true,
-        obstacle: false,
-        bullet: true,
-        loot: true
-    };
-
     health: number;
     maxHealth: number;
     maxScale: number;
@@ -187,10 +173,6 @@ export class Obstacle extends GameObject {
                         object.damage(9999, source, weaponUsed);
                     }
                 }
-            }
-
-            if (this.definition.isWindow) {
-                this.collidesWith.bullet = false;
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
