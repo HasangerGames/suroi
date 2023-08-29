@@ -1224,18 +1224,8 @@ logger.indent("Validating guns", () => {
                     const errorPath3 = tester.createPath(errorPath2, "tracer opacity");
 
                     tester.assertInBounds({
-                        obj: ballistics.tracerOpacity,
-                        field: "start",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath3
-                    });
-
-                    tester.assertInBounds({
-                        obj: ballistics.tracerOpacity,
-                        field: "end",
+                        obj: ballistics,
+                        field: "tracerOpacity",
                         min: 0,
                         max: 1,
                         includeMin: true,
