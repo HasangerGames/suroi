@@ -11,3 +11,7 @@ server/bannedIPs.json
 .idea
 .DS_Store
 .vscode
+
+# try to prevent chpster moments from happening
+*.desktop
+*.css
