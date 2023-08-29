@@ -138,7 +138,7 @@ export const Config = {
 
     cloudflare: false,
 
-    mapName: "main",
+    mapName: "debug",
 
     roles: {
         dev: { password: "dev" },
