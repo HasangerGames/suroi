@@ -7,7 +7,7 @@ export interface ArmorDefinition extends ItemDefinition {
     readonly itemType: ItemType.Armor
     readonly armorType: ArmorType
     readonly level: number
-    readonly damageReductionPercentage: number
+    readonly damageReduction: number
 }
 
 export const Armors: ArmorDefinition[] = Array.prototype.concat(Helmets, Vests);

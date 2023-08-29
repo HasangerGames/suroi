@@ -601,7 +601,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 0) },
         ballistics: {
-            damage: Infinity,
+            damage: 800,
             obstacleMultiplier: 2,
             speed: 0.5,
             maxDistance: 400,

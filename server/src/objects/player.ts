@@ -471,7 +471,7 @@ export class Player extends GameObject {
 
         // Reductions are merged additively
         amount *= 1 - (
-            (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
+            (this.inventory.helmet?.definition.damageReduction ?? 0) + (this.inventory.vest?.definition.damageReduction ?? 0)
         );
 
         amount = this._clampDamageAmount(amount);
