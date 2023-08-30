@@ -14,7 +14,7 @@ import {
     TICK_SPEED
 } from "../../../../common/src/constants";
 
-import { vClone, type Vector, vAdd, v } from "../../../../common/src/utils/vector";
+import { vClone, type Vector, vAdd, v, vRotate } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -37,6 +37,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { Obstacle } from "./obstacle";
 
 const showMeleeDebugCircle = false;
 
@@ -98,6 +99,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitbox = new CircleHitbox(this.radius);
 
     floorType = FloorType.Grass;
+
+    get hitSound(): string {
+        return randomBoolean() ? "player_hit_1" : "player_hit_2";
+    }
 
     constructor(game: Game, id: number, isActivePlayer = false) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
@@ -238,12 +243,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.playAnimation(animation);
         }
         this.animationSeq = animationSeq;
-
-        // Hit effect
-        if (stream.readBoolean() && !this.isNew) {
-            // this.images.bloodEmitter.emitParticle(1);
-            this.playSound(randomBoolean() ? "player_hit_1" : "player_hit_2", 0.5);
-        }
     }
 
     override deserializeFull(stream: SuroiBitStream): void {
@@ -498,6 +497,37 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
 
                 this.playSound("swing", 0.8);
+
+                const rotated = vRotate(weaponDef.offset, this.rotation);
+                const position = vAdd(this.position, rotated);
+                const hitbox = new CircleHitbox(weaponDef.radius, position);
+
+                // Play hit effect on closest object
+                // TODO: share this logic with the server
+
+                const damagedObjects: Array<Player | Obstacle> = [];
+
+                for (const object of this.game.objectsSet) {
+                    if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
+                        if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                    }
+                }
+
+                damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
+                    if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
+                    if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
+                    const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
+                    const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
+
+                    return distanceA - distanceB;
+                });
+
+                const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
+                for (let i = 0; i < targetLimit; i++) {
+                    const closestObject = damagedObjects[i];
+                    this.playSound(closestObject.hitSound, 0.2);
+                }
+
                 break;
             }
             case AnimationType.Gun: {

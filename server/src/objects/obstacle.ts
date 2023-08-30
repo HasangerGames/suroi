@@ -50,8 +50,6 @@ export class Obstacle extends GameObject {
 
     parentBuilding?: Building;
 
-    hitEffect = 0;
-
     constructor(
         game: Game,
         type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
@@ -127,10 +125,6 @@ export class Obstacle extends GameObject {
     override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem): void {
         const definition = this.definition;
 
-        this.hitEffect++;
-        this.hitEffect %= 8;
-        this.game.partialDirtyObjects.add(this);
-
         if (this.health === 0 || definition.indestructible) return;
 
         const weaponDef = weaponUsed?.definition as ItemDefinition;
@@ -142,6 +136,7 @@ export class Obstacle extends GameObject {
         }
 
         this.health -= amount;
+        this.game.partialDirtyObjects.add(this);
 
         if (this.health <= 0 || this.dead) {
             this.health = 0;
@@ -247,7 +242,6 @@ export class Obstacle extends GameObject {
     override serializePartial(stream: SuroiBitStream): void {
         stream.writeScale(this.scale);
         stream.writeBoolean(this.dead);
-        stream.writeBits(this.hitEffect, 3);
         if (this.isDoor && this.door !== undefined) {
             stream.writeBits(this.door.offset, 2);
         }

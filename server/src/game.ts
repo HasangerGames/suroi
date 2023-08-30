@@ -334,7 +334,6 @@ export class Game {
             this.updateObjects = false;
 
             for (const player of this.livingPlayers) {
-                player.hitEffect = false;
                 player.dirty.action = false;
             }
 
