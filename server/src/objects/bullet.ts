@@ -49,7 +49,7 @@ export class Bullet extends BaseBullet {
 
             if (object instanceof Player) {
                 this.position = collision.intersection.point;
-
+                this.damagedIDs.add(object.id);
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1),
@@ -59,6 +59,7 @@ export class Bullet extends BaseBullet {
                 this.dead = true;
                 break;
             } else if (object instanceof Obstacle) {
+                this.damagedIDs.add(object.id);
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,

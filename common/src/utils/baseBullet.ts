@@ -31,6 +31,8 @@ export class BaseBullet {
     readonly reflectionCount: number;
     readonly reflectedFromID: number;
 
+    readonly damagedIDs = new Set<number>();
+
     dead = false;
 
     readonly source: ObjectType<ObjectCategory.Loot, GunDefinition>;
@@ -73,7 +75,7 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.damageable && !object.dead && object.id !== this.reflectedFromID) {
+            if (object.damageable && !object.dead && object.id !== this.reflectedFromID && !this.damagedIDs.has(object.id)) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
                 if (collision) {

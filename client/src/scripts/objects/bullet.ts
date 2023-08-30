@@ -49,6 +49,7 @@ export class Bullet extends BaseBullet {
                     this.game.soundManager.play(object.hitSound, collision.intersection.point, 0.1);
                 }
 
+                this.damagedIDs.add(object.id);
                 if (object instanceof Obstacle && (object.type.definition.noCollisions)) continue;
 
                 this.dead = true;
