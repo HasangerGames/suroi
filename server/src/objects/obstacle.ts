@@ -146,7 +146,8 @@ export class Obstacle extends GameObject {
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
-            this.collidable = false;
+
+            if (!this.definition.isWindow) this.collidable = false;
 
             this.scale = definition.scale.spawnMin;
 
