@@ -11,7 +11,8 @@ import { Emotes } from "../../common/src/definitions/emotes";
 const config = {
     address: "127.0.0.1:8000",
     botCount: 100,
-    joinDelay: 100
+    joinDelay: 100,
+    region: "dev"
 };
 
 const skins: string[] = [];
@@ -176,7 +177,7 @@ class Bot {
 }
 
 void (async() => {
-    gameData = await (await fetch(`http://${config.address}/api/getGame?region=dev`)).json();
+    gameData = await (await fetch(`http://${config.address}/api/getGame?region=${config.region}`)).json();
 
     if (!gameData.success) {
         console.error("Failed to fetch game");
@@ -187,7 +188,7 @@ void (async() => {
         setTimeout(() => {
             bots.add(new Bot(i));
             if (i === config.botCount) allBotsJoined = true;
-        }, config.joinDelay);
+        }, i * config.joinDelay);
     }
 })();
 
