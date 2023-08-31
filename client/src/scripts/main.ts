@@ -11,6 +11,10 @@ import { COLORS } from "./utils/constants";
 
 import { loadSounds } from "./utils/soundManager";
 
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
+
 declare const API_URL: string;
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
