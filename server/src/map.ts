@@ -57,11 +57,13 @@ export class Map {
                 count = random(spawnConfig.min, spawnConfig.max);
             }
 
-            this.generateObstacles(obstacle,
+            this.generateObstacles(
+                obstacle,
                 count,
                 spawnConfig.spawnProbability,
                 spawnConfig.radius,
-                spawnConfig.squareRadius);
+                spawnConfig.squareRadius
+            );
         }
 
         for (const obstacle in mapDefinition.obstacles) {

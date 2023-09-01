@@ -11,6 +11,10 @@ import { COLORS } from "./utils/constants";
 
 import { loadSounds } from "./utils/soundManager";
 
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
+
 declare const API_URL: string;
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
@@ -21,12 +25,18 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
+function disablePlayButton(text: string): void {
+    playSoloBtn.addClass("btn-disabled");
+    playSoloBtn.prop("disabled", true);
+    playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+}
+
 async function main(): Promise<void> {
+    disablePlayButton("Loading...");
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
-        playSoloBtn.addClass("btn-disabled");
-        playSoloBtn.prop("disabled", true);
-        playSoloBtn.html('<span style="position: relative; bottom: 1px;"><div class="spin"></div> Connecting...</span>');
+        disablePlayButton("Connecting...");
+
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
@@ -103,6 +113,8 @@ async function main(): Promise<void> {
     loadSounds(core.game.soundManager);
 
     setupInputs(core.game);
+
+    enablePlayButton();
 
     core.music.play();
     core.music.volume(localStorageInstance.config.musicVolume);

@@ -11,12 +11,9 @@ import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface MapDefinition {
-
     readonly width: number
     readonly height: number
-
     readonly buildings?: Record<string, number>
-
     readonly obstacles?: Record<string, number>
 
     // Obstacles with custom spawn logic

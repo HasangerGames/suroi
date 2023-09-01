@@ -36,11 +36,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     isNew = true;
 
-    hitEffect = 0;
-
     hitbox!: Hitbox;
 
     orientation!: Orientation;
+
+    get hitSound(): string {
+        return `${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`;
+    }
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
@@ -67,13 +69,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         const destroyed = stream.readBoolean();
 
         const definition = this.type.definition;
-
-        const hitEffect = stream.readBits(3);
-
-        if (this.hitEffect !== hitEffect && !this.isNew && !destroyed) {
-            this.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`, 0.2);
-        }
-        this.hitEffect = hitEffect;
 
         if (definition.isDoor && this.door !== undefined) {
             const offset = stream.readBits(2);

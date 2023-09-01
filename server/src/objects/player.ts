@@ -188,8 +188,6 @@ export class Player extends GameObject {
         return this.inventory.activeWeaponIndex;
     }
 
-    hitEffect = false;
-
     animation = {
         type: AnimationType.None,
         // This boolean is flipped when an animation plays
@@ -471,7 +469,7 @@ export class Player extends GameObject {
 
         // Reductions are merged additively
         amount *= 1 - (
-            (this.inventory.helmet?.definition.damageReductionPercentage ?? 0) + (this.inventory.vest?.definition.damageReductionPercentage ?? 0)
+            (this.inventory.helmet?.definition.damageReduction ?? 0) + (this.inventory.vest?.definition.damageReduction ?? 0)
         );
 
         amount = this._clampDamageAmount(amount);
@@ -515,16 +513,11 @@ export class Player extends GameObject {
             }
 
             if (source instanceof Player) {
-                this.hitEffect = true;
-
                 if (source !== this) {
                     source.damageDone += amount;
                 }
             }
         }
-
-        this.partialDirtyObjects.add(this);
-        this.game.partialDirtyObjects.add(this);
 
         if (this.health <= 0 && !this.dead) {
             if (canTrackStats) {
@@ -662,7 +655,6 @@ export class Player extends GameObject {
         stream.writeRotation(this.rotation, 16);
         stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
         stream.writeBoolean(this.animation.seq);
-        stream.writeBoolean(this.hitEffect);
     }
 
     override serializeFull(stream: SuroiBitStream): void {

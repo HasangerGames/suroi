@@ -57,7 +57,7 @@ jobs:
           node-version: 20
           cache: 'pnpm'
           cache-dependency-path: '**/pnpm-lock.yaml'
-  
+
       - name: Install Packages (Common)
         working-directory: ./common
         run: pnpm install --frozen-lockfile
@@ -69,3 +69,7 @@ jobs:
       - name: Build
         working-directory: ./server
         run: pnpm build
+
+      - name: Validate object definitions
+        working-directory: ./server
+        run: pnpm validateDefinitions

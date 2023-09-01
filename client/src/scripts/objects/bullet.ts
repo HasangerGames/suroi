@@ -9,6 +9,7 @@ import { distance } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { PIXI_SCALE } from "../utils/constants";
 import { BaseBullet } from "../../../../common/src/utils/baseBullet";
+import { Player } from "./player";
 
 export class Bullet extends BaseBullet {
     readonly game: Game;
@@ -43,6 +44,12 @@ export class Bullet extends BaseBullet {
 
             for (const collision of collisions) {
                 const object = collision.object;
+
+                if (object instanceof Obstacle || object instanceof Player) {
+                    this.game.soundManager.play(object.hitSound, collision.intersection.point, 0.1);
+                }
+
+                this.damagedIDs.add(object.id);
                 if (object instanceof Obstacle && (object.type.definition.noCollisions)) continue;
 
                 this.dead = true;
