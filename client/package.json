@@ -25,6 +25,7 @@
     "@babel/eslint-parser": "^7.22.10",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/preset-env": "^7.22.14",
+    "@types/howler": "^2.2.8",
     "@types/jquery": "^3.5.17",
     "@types/node": "^20.5.7",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
@@ -58,10 +59,10 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
-    "@pixi/compressed-textures": "^7.2.4",
     "@fortawesome/fontawesome-free": "^6.4.2",
-    "howler": "^2.2.3",
+    "@pixi/compressed-textures": "^7.2.4",
     "gsap": "^3.12.2",
+    "howler": "^2.2.3",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
     "pixi.js": "^7.2.4"

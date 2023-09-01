@@ -48,6 +48,9 @@ importers:
       '@babel/preset-env':
         specifier: ^7.22.14
         version: 7.22.14(@babel/core@7.22.10)
+      '@types/howler':
+        specifier: ^2.2.8
+        version: 2.2.8
       '@types/jquery':
         specifier: ^3.5.17
         version: 3.5.17
@@ -2423,6 +2426,10 @@ packages:
       '@types/express-serve-static-core': 4.17.36
       '@types/qs': 6.9.7
       '@types/serve-static': 1.15.2
+    dev: true
+
+  /@types/howler@2.2.8:
+    resolution: {integrity: sha512-7OK+cGHTWIDCOvBlEc61Lzj2tJhCpmeqiqdeNbZvTxLHluBMF6xz/2wjoQkK1M8mJIStp40OdPnkp8xIvwwsuw==}
     dev: true
 
   /@types/html-minifier-terser@6.1.0:
