@@ -123,7 +123,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                         frames: this.particleFrames,
                         position: this.hitbox.randomPoint(),
                         depth: (definition.depth ?? 0) + 1,
-                        lifeTime: 1000,
+                        lifeTime: 1500,
                         rotation: {
                             start: randomRotation(),
                             end: randomRotation()
@@ -132,7 +132,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                             start: 1,
                             end: 0
                         },
-                        speed: velFromAngle(randomRotation(), randomFloat(0.5, 2))
+                        speed: velFromAngle(randomRotation(), randomFloat(definition.explosion ? 5 : 0.5, definition.explosion ? 10 : 2))
                     });
                 }
             }

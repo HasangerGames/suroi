@@ -79,7 +79,7 @@ export class Building extends GameObject {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         position: this.ceilingHitbox!.randomPoint(),
                         depth: 10,
-                        lifeTime: 1200,
+                        lifeTime: 2000,
                         rotation: {
                             start: randomRotation(),
                             end: randomRotation()
