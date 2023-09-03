@@ -381,6 +381,7 @@ export function setupInputs(game: Game): void {
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
         if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
             game.activePlayer.container.rotation = player.rotation;
+            game.map.indicator.rotation = player.rotation;
         }
         player.turning = true;
         player.dirty.inputs = true;

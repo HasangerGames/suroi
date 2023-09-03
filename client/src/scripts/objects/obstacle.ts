@@ -7,13 +7,13 @@ import type { ObjectType } from "../../../../common/src/utils/objectType";
 
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import type { Variation, Orientation } from "../../../../common/src/typings";
-import { gsap } from "gsap";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { randomBoolean } from "../../../../common/src/utils/random";
 import { PIXI_SCALE } from "../utils/constants";
+import { Tween } from "../utils/tween";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -78,9 +78,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 if (!this.isNew) {
                     if (offset === 0) this.playSound("door_close", 0.3);
                     else this.playSound("door_open", 0.3);
-                    gsap.to(this.image, {
-                        rotation: orientationToRotation(offset),
-                        duration: 0.2
+                    // eslint-disable-next-line no-new
+                    new Tween(this.game, {
+                        target: this.image,
+                        to: { rotation: orientationToRotation(offset) },
+                        duration: 200
                     });
                 } else {
                     this.image.setRotation(orientationToRotation(this.door.offset));

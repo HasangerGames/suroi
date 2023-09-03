@@ -1,5 +1,3 @@
-import gsap from "gsap";
-
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
@@ -12,6 +10,8 @@ import { type PlayerManager } from "../utils/playerManager";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -25,7 +25,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     radius: number;
 
-    animation?: gsap.core.Tween;
+    animation?: Tween<Vector>;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
         super(game, type, id);
@@ -76,9 +76,6 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             this.images.background.setFrame(backgroundTexture);
         } else {
             this.images.background.setVisible(false);
-            // fixme Figure out why destroy doesn't work
-            // I think you can't destroy a container child without destroying the container first
-            // - Leo
         }
 
         this.radius = LootRadius[(this.type.definition).itemType];
@@ -103,11 +100,11 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
         // Play an animation if this is new loot
         if (isNew) {
             this.container.scale.set(0.5);
-            this.animation = gsap.to(this.container.scale, {
-                x: 1,
-                y: 1,
-                ease: "elastic.out(1.01, 0.3)",
-                duration: 1
+            this.animation = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 1000,
+                ease: EaseFunctions.elasticOut
             });
         }
 
@@ -115,7 +112,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     }
 
     destroy(): void {
-        this.animation?.pause().kill();
+        this.animation?.kill();
         super.destroy();
     }
 

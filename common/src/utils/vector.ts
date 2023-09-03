@@ -27,6 +27,17 @@ export function vAdd(a: Vector, b: Vector): Vector {
 }
 
 /**
+ * Adds two vectors together
+ * @param a - The first Vector
+ * @param x - The x-coordinate of the second vector
+ * @param y - The y-coordinate of the second vector
+ * @returns A new Vector resulting from the addition of a, and x and y
+ */
+export function vAdd2(a: Vector, x: number, y: number): Vector {
+    return v(a.x + x, a.y + y);
+}
+
+/**
  * Subtracts one Vector from another
  * @param a - The Vector to be subtracted from
  * @param b - The Vector to subtract

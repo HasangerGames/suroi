@@ -9,8 +9,8 @@ import { type FloorType, type BuildingDefinition } from "../../../../common/src/
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { gsap } from "gsap";
 import { Container } from "pixi.js";
+import { Tween } from "../utils/tween";
 
 export class Building extends GameObject {
     override type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -26,7 +26,7 @@ export class Building extends GameObject {
 
     orientation!: Orientation;
 
-    ceilingTween?: gsap.core.Tween;
+    ceilingTween?: Tween<Container>;
 
     ceilingVisible = true;
 
@@ -55,13 +55,14 @@ export class Building extends GameObject {
     }
 
     toggleCeiling(visible: boolean): void {
-        if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
+        if (this.ceilingVisible === visible || !this.ceilingTween?.dead) return;
 
         this.ceilingTween?.kill();
 
-        this.ceilingTween = gsap.to(this.images.ceilingContainer, {
-            alpha: visible ? 1 : 0,
-            duration: 0.2,
+        this.ceilingTween = new Tween(this.game, {
+            target: this.images.ceilingContainer,
+            to: { alpha: visible ? 1 : 0 },
+            duration: 200,
             onComplete: () => {
                 this.ceilingVisible = visible;
             }

@@ -2,11 +2,13 @@ import { type Game } from "../game";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type Vector } from "../../../../common/src/utils/vector";
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { vClone, type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
+import { vecLerp } from "../../../../common/src/utils/math";
+import { toPixiCoords } from "../utils/pixi";
 
 export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     id: number;
@@ -18,15 +20,27 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     private readonly sounds = new Set<Sound>();
 
+    oldPosition!: Vector;
+    lastPositionChange!: number;
     _position!: Vector;
     get position(): Vector { return this._position; }
     set position(pos: Vector) {
+        if (this._position !== undefined) this.oldPosition = vClone(this._position);
+        this.lastPositionChange = Date.now();
         this._position = pos;
 
         // Update the position of all sounds
         for (const sound of this.sounds) {
             this.game.soundManager.sounds[sound.name].pos(this.position.x, this.position.y, undefined, sound.id);
         }
+    }
+
+    exactPosition?: Vector;
+
+    updatePosition(): void {
+        if (this.oldPosition === undefined || this.container.position === undefined) return;
+        this.exactPosition = vecLerp(this.oldPosition, this.position, (Date.now() - this.lastPositionChange) / TICK_SPEED);
+        this.container.position = toPixiCoords(this.exactPosition);
     }
 
     rotation!: number;

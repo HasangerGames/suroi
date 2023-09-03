@@ -1,13 +1,13 @@
 import { type Application, Container } from "pixi.js";
 import { type Vector, v, vAdd, vMul, vClone } from "../../../../common/src/utils/vector";
-import { gsap } from "gsap";
 import { toPixiCoords } from "./pixi";
-import { localStorageInstance } from "./localStorageHandler";
-import { TICK_SPEED } from "../../../../common/src/constants";
+import { Tween } from "./tween";
+import { type Game } from "../game";
 
 export class Camera {
     pixi: Application;
     container: Container;
+    game: Game;
 
     zoom = 48;
 
@@ -15,16 +15,16 @@ export class Camera {
 
     oldPosition = v(0, 0);
 
-    zoomTween?: gsap.core.Tween;
-    moveTween?: gsap.core.Tween;
+    zoomTween?: Tween<Vector>;
 
-    constructor(pixi: Application) {
-        this.pixi = pixi;
+    constructor(game: Game) {
+        this.game = game;
+        this.pixi = game.pixi;
         this.container = new Container();
         this.container.sortableChildren = true;
-        pixi.stage.addChild(this.container);
+        this.pixi.stage.addChild(this.container);
 
-        pixi.renderer.on("resize", this.updatePosition.bind(this));
+        this.pixi.renderer.on("resize", this.updatePosition.bind(this));
 
         this.resize();
     }
@@ -38,11 +38,11 @@ export class Camera {
         this.zoomTween?.kill();
 
         if (animation) {
-            this.zoomTween = gsap.to(this.container.scale, {
-                x: scale,
-                y: scale,
-                duration: 0.8,
-                onUpdate: () => { this.updatePosition(false); }
+            this.zoomTween = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: scale, y: scale },
+                duration: 800,
+                onUpdate: () => { this.updatePosition(); }
             });
         } else {
             this.container.scale.set(scale);
@@ -56,21 +56,12 @@ export class Camera {
         this.updatePosition();
     }
 
-    updatePosition(anim = true): void {
+    updatePosition(): void {
         const cameraPos = vAdd(
             vMul(toPixiCoords(this.position), this.container.scale.x),
-            v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2));
-
-        this.moveTween?.kill();
-        if (localStorageInstance.config.movementSmoothing && anim) {
-            this.moveTween = gsap.to(this.container.position, {
-                x: -cameraPos.x,
-                y: -cameraPos.y,
-                duration: TICK_SPEED / 1000
-            });
-        } else {
-            this.container.position.set(-cameraPos.x, -cameraPos.y);
-        }
+            v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2)
+        );
+        this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
     setZoom(zoom: number): void {

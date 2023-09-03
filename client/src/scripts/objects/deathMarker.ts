@@ -1,5 +1,3 @@
-import gsap from "gsap";
-
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
@@ -8,7 +6,9 @@ import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
-import { Text } from "pixi.js";
+import { type Container, Text } from "pixi.js";
+import { Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
@@ -19,8 +19,8 @@ export class DeathMarker extends GameObject {
     image: SuroiSprite;
     playerNameText: Text;
 
-    scaleAnim?: gsap.core.Tween;
-    alphaAnim?: gsap.core.Tween;
+    scaleAnim?: Tween<Vector>;
+    alphaAnim?: Tween<Container>;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, type, id);
@@ -63,14 +63,15 @@ export class DeathMarker extends GameObject {
         if (stream.readBoolean()) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = gsap.to(this.container.scale, {
-                x: 1,
-                y: 1,
-                duration: 0.4
+            this.scaleAnim = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 400
             });
-            this.alphaAnim = gsap.to(this.container, {
-                alpha: 1,
-                duration: 0.4
+            this.alphaAnim = new Tween(this.game, {
+                target: this.container,
+                to: { alpha: 1 },
+                duration: 400
             });
         }
     }

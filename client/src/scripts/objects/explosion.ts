@@ -5,8 +5,8 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import type { ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { gsap } from "gsap";
 import { distanceSquared } from "../../../../common/src/utils/math";
+import { EaseFunctions, Tween } from "../utils/tween";
 
 /**
  * Custom particle class that adds friction to its velocity.
@@ -55,17 +55,20 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
     // Destroy particle emitter.
     setTimeout(() => { emitter.destroy(); }, definition.particles.duration);*/
 
-    gsap.to(image.scale, {
-        x: definition.animation.scale,
-        y: definition.animation.scale,
-        duration: definition.animation.duration / 1000,
-        ease: "Expo.Out"
+    /* eslint-disable no-new */
+
+    new Tween(game, {
+        target: image.scale,
+        to: { x: definition.animation.scale, y: definition.animation.scale },
+        duration: definition.animation.duration,
+        ease: EaseFunctions.expoOut
     });
 
-    gsap.to(image, {
-        alpha: 0,
-        duration: definition.animation.duration * 1.5 / 1000, // the alpha animation is a bit longer so it looks nicer
-        ease: "Expo.Out",
+    new Tween(game, {
+        target: image,
+        to: { alpha: 0 },
+        duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
+        ease: EaseFunctions.expoOut,
         onComplete: () => {
             image.destroy();
         }

@@ -8,7 +8,7 @@ import { Bullet } from "../../objects/bullet";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory, TICK_SPEED } from "../../../../../common/src/constants";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -22,8 +22,7 @@ import { type BuildingDefinition } from "../../../../../common/src/definitions/b
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
-import { gsap } from "gsap";
-import { localStorageInstance } from "../../utils/localStorageHandler";
+import { vClone } from "../../../../../common/src/utils/vector";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -362,23 +361,11 @@ export class UpdatePacket extends ReceivingPacket {
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
             if (game.gas.state === GasState.Advancing) {
-                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
-                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-
-                if (localStorageInstance.config.movementSmoothing) {
-                    gsap.to(game.gas, {
-                        radius: currentRadius,
-                        duration: TICK_SPEED / 1000
-                    });
-                    gsap.to(game.gas.position, {
-                        x: currentPosition.x,
-                        y: currentPosition.y,
-                        duration: TICK_SPEED / 1000
-                    });
-                } else {
-                    game.gas.radius = currentRadius;
-                    game.gas.position = currentPosition;
-                }
+                game.gas.lastPosition = vClone(game.gas.position);
+                game.gas.lastRadius = game.gas.radius;
+                game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
+                game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
+                game.gas.lastUpdateTime = game.now;
             }
         }
 

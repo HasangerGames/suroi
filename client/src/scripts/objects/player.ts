@@ -1,20 +1,16 @@
-import gsap, { Cubic } from "gsap";
-
 import type { Game } from "../game";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
-import { GameObject } from "../types/gameObject";
 
 import {
     ANIMATION_TYPE_BITS, AnimationType,
     ObjectCategory,
     PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
-    PlayerActions,
-    TICK_SPEED
+    PlayerActions
 } from "../../../../common/src/constants";
 
-import { vClone, type Vector, vAdd, v, vRotate } from "../../../../common/src/utils/vector";
+import { vClone, vAdd, v, vRotate, vAdd2 } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean } from "../../../../common/src/utils/random";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -38,13 +34,13 @@ import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Obstacle } from "./obstacle";
+import { GameObject } from "../types/gameObject";
+import { EaseFunctions, Tween } from "../utils/tween";
 
 const showMeleeDebugCircle = false;
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
-
-    oldPosition!: Vector;
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
 
@@ -76,15 +72,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     readonly emoteContainer: Container;
 
-    emoteAnim?: gsap.core.Tween;
-    emoteHideAnim?: gsap.core.Tween;
+    emoteAnim?: Tween<Container>;
+    emoteHideAnim?: Tween<Container>;
 
-    leftFistAnim?: gsap.core.Tween;
-    rightFistAnim?: gsap.core.Tween;
-    weaponAnim?: gsap.core.Tween;
-
-    moveAnim?: gsap.core.Tween;
-    emoteMoveAnim?: gsap.core.Tween;
+    leftFistAnim?: Tween<SuroiSprite>;
+    rightFistAnim?: Tween<SuroiSprite>;
+    weaponAnim?: Tween<SuroiSprite>;
 
     _emoteHideTimeoutID?: NodeJS.Timeout;
 
@@ -152,6 +145,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.updateWeapon();
     }
 
+    override updatePosition(): void {
+        super.updatePosition();
+        this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
+    }
+
     override deserializePartial(stream: SuroiBitStream): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -171,7 +169,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = stream.readRotation(16);
 
-        if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) this.container.rotation = this.rotation;
+        if (
+            !this.isActivePlayer ||
+            this.game.spectating ||
+            !localStorageInstance.config.clientSidePrediction
+        ) this.container.rotation = this.rotation;
 
         /*const oldAngle = this.container.angle;
         const newAngle = Phaser.Math.RadToDeg(this.rotation);
@@ -208,32 +210,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }*/
 
-        const pos = toPixiCoords(this.position);
-        const emotePos = vAdd(pos, v(0, -175));
-
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
+            const pos = toPixiCoords(this.position);
+            const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
             this.emoteContainer.position.copyFrom(emotePos);
-        } else {
-            this.emoteMoveAnim?.kill();
-            this.moveAnim?.kill();
-            this.moveAnim = gsap.to(this.container.position, {
-                x: pos.x,
-                y: pos.y,
-                duration: TICK_SPEED / 1000
-            });
-            this.emoteMoveAnim = gsap.to(this.emoteContainer.position, {
-                x: emotePos.x,
-                y: emotePos.y,
-                duration: TICK_SPEED / 1000
-            });
         }
 
         if (this.isActivePlayer) {
             this.game.camera.setPosition(this.position);
             Howler.pos(this.position.x, this.position.y);
             this.game.map.setPosition(this.position);
-            this.game.map.indicator.setRotation(this.rotation);
+            if (!localStorageInstance.config.clientSidePrediction) {
+                this.game.map.indicator.setRotation(this.rotation);
+            }
         }
 
         // Animation
@@ -318,15 +308,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
         if (anim) {
-            this.leftFistAnim = gsap.to(this.images.leftFist, {
-                x: fists.left.x,
-                y: fists.left.y,
-                duration: fists.animationDuration / 1000
+            this.leftFistAnim = new Tween(this.game, {
+                target: this.images.leftFist,
+                to: { x: fists.left.x, y: fists.left.y },
+                duration: fists.animationDuration
             });
-            this.rightFistAnim = gsap.to(this.images.rightFist, {
-                x: fists.right.x,
-                y: fists.right.y,
-                duration: fists.animationDuration / 1000
+            this.rightFistAnim = new Tween(this.game, {
+                target: this.images.rightFist,
+                to: { x: fists.right.x, y: fists.right.y },
+                duration: fists.animationDuration
             });
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
@@ -357,10 +347,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.container.setChildIndex(this.images.leftFist, 2);
-            this.container.setChildIndex(this.images.rightFist, 3);
-            this.container.setChildIndex(this.images.weapon, 4);
-            this.container.setChildIndex(this.images.body, 5);
+            this.container.setChildIndex(this.images.leftFist, 1);
+            this.container.setChildIndex(this.images.rightFist, 2);
+            this.container.setChildIndex(this.images.weapon, 3);
+            this.container.setChildIndex(this.images.body, 4);
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.container.setChildIndex(this.images.weapon, 2);
             this.container.setChildIndex(this.images.body, 3);
@@ -419,23 +409,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.emoteAnim = gsap.to(this.emoteContainer, {
-            alpha: 1,
-            ease: "back.out",
-            duration: 0.25,
+        this.emoteAnim = new Tween(this.game, {
+            target: this.emoteContainer,
+            to: { alpha: 1 },
+            duration: 250,
+            ease: EaseFunctions.backOut,
             onUpdate: () => {
                 this.emoteContainer.scale.set(this.emoteContainer.alpha);
             }
         });
 
         this._emoteHideTimeoutID = setTimeout(() => {
-            this.emoteHideAnim = gsap.to(this.emoteContainer, {
-                alpha: 0,
-                duration: 0.2,
+            this.emoteHideAnim = new Tween(this.game, {
+                target: this.emoteContainer,
+                to: { alpha: 0 },
+                duration: 200,
                 onUpdate: () => {
                     this.emoteContainer.scale.set(this.emoteContainer.alpha);
                 },
-                onComplete: () => { this.emoteContainer.visible = false; }
+                onComplete: () => {
+                    this.emoteContainer.visible = false;
+                }
             });
         }, 4000);
     }
@@ -450,38 +444,38 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let altFist = Math.random() < 0.5;
                 if (!weaponDef.fists.randomFist) altFist = true;
 
-                const duration = weaponDef.fists.animationDuration / 1000;
+                const duration = weaponDef.fists.animationDuration;
 
                 if (!weaponDef.fists.randomFist || !altFist) {
-                    this.leftFistAnim = gsap.to(this.images.leftFist, {
-                        x: weaponDef.fists.useLeft.x,
-                        y: weaponDef.fists.useLeft.y,
+                    this.leftFistAnim = new Tween(this.game, {
+                        target: this.images.leftFist,
+                        to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
-                        yoyo: true,
-                        repeat: 1,
-                        ease: Cubic.easeOut
+                        ease: EaseFunctions.cubicOut,
+                        yoyo: true
                     });
                 }
                 if (altFist) {
-                    this.rightFistAnim = gsap.to(this.images.rightFist, {
-                        x: weaponDef.fists.useRight.x,
-                        y: weaponDef.fists.useRight.y,
+                    this.rightFistAnim = new Tween(this.game, {
+                        target: this.images.rightFist,
+                        to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
-                        yoyo: true,
-                        repeat: 1,
-                        ease: Cubic.easeOut
+                        ease: EaseFunctions.cubicOut,
+                        yoyo: true
                     });
                 }
 
                 if (weaponDef.image !== undefined) {
-                    this.weaponAnim = gsap.to(this.images.weapon, {
-                        x: weaponDef.image.usePosition.x,
-                        y: weaponDef.image.usePosition.y,
+                    this.weaponAnim = new Tween(this.game, {
+                        target: this.images.weapon,
+                        to: {
+                            x: weaponDef.image.usePosition.x,
+                            y: weaponDef.image.usePosition.y,
+                            angle: weaponDef.image.useAngle
+                        },
                         duration,
-                        angle: weaponDef.image.useAngle,
-                        yoyo: true,
-                        repeat: 1,
-                        ease: Cubic.easeOut
+                        ease: EaseFunctions.cubicOut,
+                        yoyo: true
                     });
                 }
 
@@ -537,25 +531,25 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
                     const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
-                    this.weaponAnim = gsap.to(this.images.weapon, {
-                        x: weaponDef.image.position.x - recoilAmount,
-                        duration: 0.05,
-                        yoyo: true,
-                        repeat: 1
+                    this.weaponAnim = new Tween(this.game, {
+                        target: this.images.weapon,
+                        to: { x: weaponDef.image.position.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true
                     });
 
-                    this.leftFistAnim = gsap.to(this.images.leftFist, {
-                        x: weaponDef.fists.left.x - recoilAmount,
-                        duration: 0.05,
-                        yoyo: true,
-                        repeat: 1
+                    this.leftFistAnim = new Tween(this.game, {
+                        target: this.images.leftFist,
+                        to: { x: weaponDef.fists.left.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true
                     });
 
-                    this.rightFistAnim = gsap.to(this.images.rightFist, {
-                        x: weaponDef.fists.right.x - recoilAmount,
-                        duration: 0.05,
-                        yoyo: true,
-                        repeat: 1
+                    this.rightFistAnim = new Tween(this.game, {
+                        target: this.images.rightFist,
+                        to: { x: weaponDef.fists.right.x - recoilAmount },
+                        duration: 50,
+                        yoyo: true
                     });
                 }
                 break;
@@ -569,8 +563,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
-        this.emoteMoveAnim?.kill();
-        this.moveAnim?.kill();
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();

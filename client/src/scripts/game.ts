@@ -38,6 +38,7 @@ import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./utils/gas";
 import core from "./core";
 import { Minimap } from "./utils/map";
+import { type Tween } from "./utils/tween";
 
 export class Game {
     socket!: WebSocket;
@@ -74,22 +75,42 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
+    tweens = new Set<Tween<unknown>>();
+
+    private _now!: number;
+    get now(): number { return this._now; }
+
     constructor(pixi: Application) {
         this.pixi = pixi;
 
         this.pixi.ticker.add(() => {
             if (!this.gameStarted) return;
 
+            this._now = Date.now();
+
             const delta = this.pixi.ticker.deltaMS;
+
+            if (localStorageInstance.config.movementSmoothing) {
+                for (const player of this.players) {
+                    player.updatePosition();
+                }
+                if (this.activePlayer.exactPosition !== undefined) {
+                    this.camera.setPosition(this.activePlayer.exactPosition);
+                }
+            }
+
+            for (const tween of this.tweens) {
+                tween.update();
+            }
 
             for (const bullet of this.bullets) {
                 bullet.update(delta);
             }
 
-            this.gas.render();
+            this.gas.update();
         });
 
-        this.camera = new Camera(this.pixi);
+        this.camera = new Camera(this);
 
         this.map = new Minimap(this);
 
