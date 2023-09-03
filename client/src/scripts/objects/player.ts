@@ -12,8 +12,8 @@ import {
 
 import { vClone, vAdd, v, vRotate, vAdd2 } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { random, randomBoolean } from "../../../../common/src/utils/random";
-import { distanceSquared } from "../../../../common/src/utils/math";
+import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
 
@@ -65,7 +65,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
-        // readonly bloodEmitter: Phaser.GameObjects.Particles.ParticleEmitter
         readonly emoteBackground: SuroiSprite
         readonly emoteImage: SuroiSprite
     };
@@ -92,10 +91,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitbox = new CircleHitbox(this.radius);
 
     floorType = FloorType.Grass;
-
-    get hitSound(): string {
-        return randomBoolean() ? "player_hit_1" : "player_hit_2";
-    }
 
     constructor(game: Game, id: number, isActivePlayer = false) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
@@ -519,7 +514,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
                 for (let i = 0; i < targetLimit; i++) {
                     const closestObject = damagedObjects[i];
-                    this.playSound(closestObject.hitSound, 0.2);
+                    closestObject.hitEffect(position, angleBetween(this.position, position));
                 }
 
                 break;
@@ -559,6 +554,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
         }
+    }
+
+    hitEffect(position: Vector, angle: number): void {
+        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.1);
+
+        this.game.particleManager.addParticle({
+            frames: "blood_particle.svg",
+            depth: 3,
+            position,
+            lifeTime: 1000,
+            rotation: randomRotation(),
+            scale: {
+                start: 0.5,
+                end: 1
+            },
+            alpha: {
+                start: 1,
+                end: 0
+            },
+            speed: velFromAngle(angle, randomFloat(0.1, 0.3))
+        });
     }
 
     destroy(): void {

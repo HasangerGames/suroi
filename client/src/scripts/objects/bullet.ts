@@ -46,7 +46,7 @@ export class Bullet extends BaseBullet {
                 const object = collision.object;
 
                 if (object instanceof Obstacle || object instanceof Player) {
-                    this.game.soundManager.play(object.hitSound, collision.intersection.point, 0.1);
+                    object.hitEffect(collision.intersection.point, Math.atan2(collision.intersection.normal.y, collision.intersection.normal.x));
                 }
 
                 this.damagedIDs.add(object.id);

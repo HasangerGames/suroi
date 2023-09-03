@@ -39,6 +39,7 @@ import { Gas } from "./utils/gas";
 import core from "./core";
 import { Minimap } from "./utils/map";
 import { type Tween } from "./utils/tween";
+import { ParticleManager } from "./objects/particles";
 
 export class Game {
     socket!: WebSocket;
@@ -65,6 +66,8 @@ export class Game {
     pixi: Application;
 
     soundManager = new SoundManager();
+
+    particleManager = new ParticleManager(this);
 
     map: Minimap;
 
@@ -106,6 +109,8 @@ export class Game {
             for (const bullet of this.bullets) {
                 bullet.update(delta);
             }
+
+            this.particleManager.update(delta);
 
             this.gas.update();
         });
@@ -246,6 +251,7 @@ export class Game {
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
+        this.particleManager.clear();
 
         this.playerManager = new PlayerManager(this);
 

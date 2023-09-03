@@ -5,10 +5,15 @@
 export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readonly bitCount: number;
     readonly definitions: T[];
+    readonly idStringToNumber: Record<string, number> = {};
 
     constructor(definitions: T[]) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
         this.definitions = definitions;
+
+        for (let i = 0; i < definitions.length; i++) {
+            this.idStringToNumber[definitions[i].idString] = i;
+        }
     }
 }
 

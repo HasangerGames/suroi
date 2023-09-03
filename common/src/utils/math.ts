@@ -96,10 +96,24 @@ export function distanceSquared(a: Vector, b: Vector): number {
     return ((b.x - a.x) ** 2) + ((b.y - a.y) ** 2);
 }
 
+/**
+ * Interpolate between two values
+ * @param start The start value
+ * @param end The end value
+ * @param interpFactor The interpolation factor ranging from 0 to 1
+ *
+ */
 export function lerp(start: number, end: number, interpFactor: number): number {
     return start * (1 - interpFactor) + end * interpFactor;
 }
 
+/**
+ * Interpolate between two Vectors
+ * @param start The start Vector
+ * @param end The end Vector
+ * @param interpFactor The interpolation factor ranging from 0 to 1
+ *
+ */
 export function vecLerp(start: Vector, end: Vector, interpFactor: number): Vector {
     return vAdd(vMul(start, 1 - interpFactor), vMul(end, interpFactor));
 }
@@ -118,6 +132,14 @@ export function circleCollision(pos1: Vector, r1: number, pos2: Vector, r2: numb
 
     return a * a > x * x + y * y;
 }
+
+/**
+ * Check whether a circle and a rectangle collide
+ * @param min The min Vector of the rectangle
+ * @param max The max vector of the rectangle
+ * @param pos2 The center of the circle
+ * @param r2 The radius of the circle
+ */
 
 export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: number): boolean {
     const cpt = {
@@ -141,8 +163,23 @@ export function clamp(a: number, min: number, max: number): number {
     return a < max ? a > min ? a : min : max;
 }
 
+/**
+ *
+ * Check whether two rectangles collide
+ * @param min The min Vector of the first rectangle
+ * @param max The max vector of the first rectangle
+ * @param min2 The min Vector of the second rectangle
+ * @param max2 The max vector of the second rectangle
+ */
 export function rectRectCollision(min1: Vector, max1: Vector, min2: Vector, max2: Vector): boolean {
     return min2.x < max1.x && min2.y < max1.y && min1.x < max2.x && min1.y < max2.y;
+}
+
+export function velFromAngle(angle: number, multiplier = 1): Vector {
+    return {
+        x: Math.cos(angle) * multiplier,
+        y: Math.sin(angle) * multiplier
+    };
 }
 
 export interface CollisionRecord { collided: boolean, distance: number }
@@ -164,6 +201,14 @@ export function distanceToCircle(pos1: Vector, r1: number, pos2: Vector, r2: num
     return { collided: a2 > xy, distance: a2 - xy };
 }
 
+/**
+ * Determine the distance between a circle and a rectangle
+ * @param min The min Vector of the rectangle
+ * @param max The max vector of the rectangle
+ * @param pos2 The center of the circle
+ * @param r2 The radius of the circle
+ * @returns An object representation of whether the circles collide and the distance between their closest vertices
+ */
 export function distanceToRectangle(min: Vector, max: Vector, circlePos: Vector, circleRad: number): CollisionRecord {
     const distX = Math.max(min.x, Math.min(max.x, circlePos.x)) - circlePos.x;
     const distY = Math.max(min.y, Math.min(max.y, circlePos.y)) - circlePos.y;
@@ -172,6 +217,14 @@ export function distanceToRectangle(min: Vector, max: Vector, circlePos: Vector,
     return { collided: distSquared < radSquared, distance: distSquared - radSquared };
 }
 
+/**
+ * Determine the distance between two rectangles
+ * @param min The min Vector of the first rectangle
+ * @param max The max vector of the first rectangle
+ * @param min2 The min Vector of the second rectangle
+ * @param max2 The max vector of the second rectangle
+ * @returns An object representation of whether the circles collide and the distance between their closest vertices
+ */
 export function rectangleDistanceToRectangle(min1: Vector, max1: Vector, min2: Vector, max2: Vector): CollisionRecord {
     const distX = Math.max(min1.x, Math.min(max1.x, min2.x, max2.x)) - Math.min(min1.x, Math.max(max1.x, min2.x, max2.x));
     const distY = Math.max(min1.y, Math.min(max1.y, min2.y, max2.y)) - Math.min(min1.y, Math.max(max1.y, min2.y, max2.y));
@@ -186,10 +239,23 @@ export function rectangleDistanceToRectangle(min1: Vector, max1: Vector, min2: V
     return { collided: false, distance: distSquared };
 }
 
+/**
+ * Add two orientations
+ * @param n1 The first orientation
+ * @param n2 The second orientation
+ * @return Both orientations added
+ */
 export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
     return (n1 + n2) % 4 as Orientation;
 }
 
+/**
+ * Add a Vector to another one and rotate it by the given orientation
+ * @param position1 The initial Vector
+ * @param position2 The Vector to add to the first one
+ * @param orientation The orientation to rotate it
+ * @return A new Vector
+ */
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
     if (orientation === 0) return vAdd(position1, position2);
     let xOffset: number, yOffset: number;
@@ -212,6 +278,14 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
     return vAdd(position1, v(xOffset, yOffset));
 }
 
+/**
+ * Transform a rectangle by a given position and orientation
+ * @param pos The position to transform the rectangle by
+ * @param min The rectangle min Vector
+ * @param pos The rectangle max Vector
+ * @param orientation The orientation to rotate it
+ * @return A new Rectangle transformed by the given position and orientation
+ */
 export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { min: Vector, max: Vector } {
     min = vMul(min, scale);
     max = vMul(max, scale);
@@ -243,6 +317,14 @@ export function signedAreaTri(a: Vector, b: Vector, c: Vector): number {
     return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
 }
 
+/**
+ * Checks if a line intersects another line
+ * @param a0 The start of the first line
+ * @param a1 The end of the first line
+ * @param b0 The start of the second line
+ * @param b1 The end of the second line
+ * @return The intersection position if it happened, if not returns null
+*/
 export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vector): Vector | null {
     const x1 = signedAreaTri(a0, a1, b1);
     const x2 = signedAreaTri(a0, a1, b0);
@@ -259,6 +341,14 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
 
 export type IntersectionResponse = { point: Vector, normal: Vector } | null;
 
+/**
+ * Checks if a line intersects a circle
+ * @param s0 The start of the line
+ * @param s1 The end of the line
+ * @param pos The position of the circle
+ * @param rad The radius of the circle
+ * @return An intersection response with the intersection position and normal Vectors, returns null if they don't intersect
+*/
 export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
     let d = vSub(s1, s0);
     const len = Math.max(vLength(d), 0.000001);
@@ -288,6 +378,14 @@ export function lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: n
     return null;
 }
 
+/**
+ * Checks if a line intersects a rectangle
+ * @param s0 The start of the line
+ * @param s1 The end of the line
+ * @param min The min Vector of the rectangle
+ * @param max The max Vector of the rectangle
+ * @return An intersection response with the intersection position and normal Vectors, returns null if they don't intersect
+*/
 export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vector): IntersectionResponse {
     let tmin = 0;
     let tmax = Number.MAX_VALUE;

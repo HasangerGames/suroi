@@ -112,7 +112,7 @@ class Bot {
         let action: InputActions | undefined;
         if (this.emote) {
             this.emote = false;
-            switch (random(1, 4)) {
+            switch (random(0, 3)) {
                 case 0:
                     action = InputActions.TopEmoteSlot;
                     break;

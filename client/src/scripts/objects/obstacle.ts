@@ -9,11 +9,12 @@ import type { ObstacleDefinition } from "../../../../common/src/definitions/obst
 import type { Variation, Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
-import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
+import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { randomBoolean } from "../../../../common/src/utils/random";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { PIXI_SCALE } from "../utils/constants";
 import { Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
@@ -21,7 +22,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     variation!: Variation;
 
     image: SuroiSprite;
-    // emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     damageable = true;
 
@@ -40,18 +40,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     orientation!: Orientation;
 
-    get hitSound(): string {
-        return `${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`;
-    }
+    particleFrames: string[] = [];
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
         super(game, type, id);
 
-        // the image and emitter key, position and other properties are set after the obstacle is deserialized
         this.image = new SuroiSprite(); //.setAlpha(0.5);
         this.container.addChild(this.image);
-        // // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
-        // this.emitter = this.scene.add.particles(0, 0, "main");
 
         const definition = this.type.definition;
 
@@ -62,6 +57,17 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
 
         if (definition.invisible) this.container.visible = false;
+
+        // If there are multiple particle variations, generate a list of variation image names
+        const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
+
+        if (definition.particleVariations) {
+            for (let i = 0; i < definition.particleVariations; i++) {
+                this.particleFrames.push(`${particleImage}_${i + 1}.svg`);
+            }
+        } else {
+            this.particleFrames.push(`${particleImage}.svg`);
+        }
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -113,7 +119,24 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 }
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
-                // this.emitter.explode(10);
+
+                for (let i = 0; i < 10; i++) {
+                    this.game.particleManager.addParticle({
+                        frames: this.particleFrames,
+                        position: this.hitbox.randomPoint(),
+                        depth: (definition.depth ?? 0) + 1,
+                        lifeTime: 1500,
+                        rotation: {
+                            start: randomRotation(),
+                            end: randomRotation()
+                        },
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        speed: velFromAngle(randomRotation(), randomFloat(definition.explosion ? 5 : 0.5, definition.explosion ? 10 : 2))
+                    });
+                }
             }
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
@@ -172,28 +195,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
-        // If there are multiple particle variations, generate a list of variation image names
-        const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
-        let frames: string[] | undefined;
-
-        if (definition.particleVariations !== undefined) {
-            frames = [];
-            for (let i = 0; i < definition.particleVariations; i++) {
-                frames.push(`${particleImage}_${i + 1}.svg`);
-            }
-        }
-
-        // Update the particle emitter
-        /*this.emitter.setConfig({
-            frame: definition.particleVariations === undefined ? `${particleImage}.svg` : frames,
-            quantity: 1,
-            rotate: { min: 0, max: 360 },
-            lifespan: 1500,
-            speed: { min: 125, max: 175 },
-            scale: { start: 1, end: 0 },
-            emitting: false
-        }).setDepth((definition.depth ?? 0) + 1).setPosition(this.container.x, this.container.y);*/
-
         this.isNew = false;
 
         if (!this.isDoor) {
@@ -201,9 +202,27 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
     }
 
+    hitEffect(position: Vector, angle: number): void {
+        this.game.soundManager.play(`${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.1);
+
+        const particleAngle = angle + randomFloat(-0.3, 0.3);
+
+        this.game.particleManager.addParticle({
+            frames: this.particleFrames,
+            position,
+            depth: Math.max((this.type.definition.depth ?? 0) + 1, 4),
+            lifeTime: 600,
+            rotation: randomRotation(),
+            scale: {
+                start: 1,
+                end: 0.2
+            },
+            speed: velFromAngle(particleAngle, randomFloat(0.5, 2))
+        });
+    }
+
     destroy(): void {
         super.destroy();
         this.image.destroy();
-        // this.emitter.destroy(true);
     }
 }

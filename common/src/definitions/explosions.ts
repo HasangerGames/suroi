@@ -16,11 +16,6 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly frame: string
         readonly scale: number
     }
-    readonly particles: {
-        readonly duration: number
-        readonly frame: string
-        readonly count: number
-    }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
 }
 
@@ -43,11 +38,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
-            },
-            particles: {
-                duration: 1500,
-                frame: "barrel_fire_particle.svg",
-                count: 10
             }
         },
         {
@@ -67,11 +57,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
-            },
-            particles: {
-                duration: 1500,
-                frame: "barrel_fire_particle.svg",
-                count: 10
             }
         },
         {
@@ -91,11 +76,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1500,
                 frame: "barrel_explosion.svg",
                 scale: 2.5
-            },
-            particles: {
-                duration: 2500,
-                frame: "super_barrel_fire_particle.svg",
-                count: 20
             }
         }
     ]
