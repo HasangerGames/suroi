@@ -1,0 +1,116 @@
+import { type Vector, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { type Game } from "../game";
+import { random } from "../../../../common/src/utils/random";
+import { lerp } from "../../../../common/src/utils/math";
+
+export class ParticleManager {
+    particles = new Set<Particle>();
+
+    game: Game;
+
+    constructor(game: Game) {
+        this.game = game;
+    }
+
+    update(delta: number): void {
+        for (const particle of this.particles) {
+            particle.update(delta);
+
+            if (particle.dead) {
+                this.particles.delete(particle);
+                particle.image.destroy();
+            }
+        }
+    }
+
+    addParticle(options: ParticleOptions): Particle {
+        const particle = new Particle(options);
+        this.particles.add(particle);
+        this.game.camera.container.addChild(particle.image);
+        return particle;
+    }
+
+    addParticles(options: ParticleOptions, count: number): void {
+        for (let i = 0; i < count; i++) {
+            this.addParticle(options);
+        }
+    }
+
+    clear(): void {
+        this.particles.clear();
+    }
+}
+
+export type ParticleProperty = {
+    start: number
+    end: number
+} | number;
+
+export interface ParticleOptions {
+    frames: string | string[]
+    position: Vector
+    speed: Vector
+    lifeTime: number
+    depth: number
+    scale?: ParticleProperty
+    alpha?: ParticleProperty
+    rotation?: ParticleProperty
+}
+
+export class Particle {
+    position: Vector;
+    image: SuroiSprite;
+    dead = false;
+    ticker = 0;
+
+    options: ParticleOptions;
+
+    scale = 1;
+    alpha = 1;
+    rotation = 0;
+
+    constructor(options: ParticleOptions) {
+        this.position = options.position;
+        const frames = options.frames;
+        const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
+        this.image = new SuroiSprite(frame);
+        this.image.setDepth(options.depth);
+
+        this.scale = typeof options.scale === "number" ? options.scale : 1;
+        this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
+        this.rotation = typeof options.rotation === "number" ? options.rotation : 1;
+
+        this.options = options;
+    }
+
+    update(delta: number): void {
+        this.position = vAdd(this.position, vMul(this.options.speed, 1 / delta));
+        const options = this.options;
+
+        this.ticker += delta;
+        if (this.ticker >= options.lifeTime) {
+            this.dead = true;
+            this.ticker = options.lifeTime;
+        }
+
+        const t = this.ticker / options.lifeTime;
+
+        // i was too lazy to figure out a better way of doing that lol...
+        if (typeof options.scale === "object" && "start" in options.scale) {
+            this.scale = lerp(options.scale.start, options.scale.end, t);
+        }
+
+        if (typeof options.alpha === "object" && "start" in options.alpha) {
+            this.alpha = lerp(options.alpha.start, options.alpha.end, t);
+        }
+
+        if (typeof options.rotation === "object" && "start" in options.rotation) {
+            this.rotation = lerp(options.rotation.start, options.rotation.end, t);
+        }
+
+        this.image.position.copyFrom(toPixiCoords(this.position));
+        this.image.scale.set(this.scale);
+        this.image.setRotation(this.rotation).setAlpha(this.alpha);
+    }
+}
