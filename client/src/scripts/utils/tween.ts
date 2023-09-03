@@ -53,6 +53,10 @@ export class Tween<T> {
     update(): void {
         const now = this.game.now;
         if (now > this.endTime) {
+            // TODO Find a better way to ensure the tween completes
+            for (const [key, value] of Object.entries(this.endValues)) {
+                (this.target[key as keyof T] as number) = value;
+            }
             if (this.yoyo) {
                 this.yoyo = false;
                 this.startTime = now;
@@ -80,8 +84,9 @@ export class Tween<T> {
 }
 
 // Credit to https://easings.net/
-export const EaseFunctions: Record<string, (x: number) => number> = {
-    cubicOut: (x: number) => 1 - Math.pow(1 - x, 3),
+export const EaseFunctions = {
+    sineIn: (x: number) => 1 - Math.cos((x * Math.PI) / 2),
+    sineOut: (x: number) => Math.sin((x * Math.PI) / 2),
     expoOut: (x: number): number => x === 1 ? 1 : 1 - Math.pow(2, -10 * x),
     elasticOut: (x: number): number => {
         const c4 = (2 * Math.PI) / 3;

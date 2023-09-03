@@ -10,7 +10,7 @@ import {
     PlayerActions
 } from "../../../../common/src/constants";
 
-import { vClone, vAdd, v, vRotate, vAdd2 } from "../../../../common/src/utils/vector";
+import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
@@ -446,7 +446,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
-                        ease: EaseFunctions.cubicOut,
+                        ease: EaseFunctions.sineIn,
                         yoyo: true
                     });
                 }
@@ -455,7 +455,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         target: this.images.rightFist,
                         to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
-                        ease: EaseFunctions.cubicOut,
+                        ease: EaseFunctions.sineIn,
                         yoyo: true
                     });
                 }
@@ -469,7 +469,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             angle: weaponDef.image.useAngle
                         },
                         duration,
-                        ease: EaseFunctions.cubicOut,
+                        ease: EaseFunctions.sineIn,
                         yoyo: true
                     });
                 }

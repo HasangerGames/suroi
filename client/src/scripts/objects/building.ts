@@ -12,7 +12,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container } from "pixi.js";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { velFromAngle } from "../../../../common/src/utils/math";
-import { Tween } from "../utils/tween";
+import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Building extends GameObject {
     override type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -55,7 +55,7 @@ export class Building extends GameObject {
     }
 
     toggleCeiling(visible: boolean): void {
-        if (this.ceilingVisible === visible || !this.ceilingTween?.dead) return;
+        if (this.ceilingVisible === visible) return;
 
         this.ceilingTween?.kill();
 
@@ -63,6 +63,7 @@ export class Building extends GameObject {
             target: this.images.ceilingContainer,
             to: { alpha: visible ? 1 : 0 },
             duration: 200,
+            ease: EaseFunctions.sineOut,
             onComplete: () => {
                 this.ceilingVisible = visible;
             }
@@ -121,8 +122,6 @@ export class Building extends GameObject {
         this.images.ceilingContainer.rotation = this.rotation;
 
         this.ceilingHitbox = (this.type.definition).ceilingHitbox.transform(this.position, 1, this.orientation);
-
-        this.floors = [];
 
         for (const floor of (this.type.definition).floors) {
             this.floors.push({

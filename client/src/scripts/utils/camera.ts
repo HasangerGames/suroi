@@ -1,7 +1,7 @@
 import { type Application, Container } from "pixi.js";
 import { type Vector, v, vAdd, vMul, vClone } from "../../../../common/src/utils/vector";
 import { toPixiCoords } from "./pixi";
-import { Tween } from "./tween";
+import { EaseFunctions, Tween } from "./tween";
 import { type Game } from "../game";
 
 export class Camera {
@@ -42,6 +42,7 @@ export class Camera {
                 target: this.container.scale,
                 to: { x: scale, y: scale },
                 duration: 800,
+                ease: EaseFunctions.sineOut,
                 onUpdate: () => { this.updatePosition(); }
             });
         } else {

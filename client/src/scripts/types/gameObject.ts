@@ -39,7 +39,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     updatePosition(): void {
         if (this.oldPosition === undefined || this.container.position === undefined) return;
-        this.exactPosition = vecLerp(this.oldPosition, this.position, (Date.now() - this.lastPositionChange) / TICK_SPEED);
+        const interpFactor = (Date.now() - this.lastPositionChange) / TICK_SPEED;
+        this.exactPosition = vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1));
         this.container.position = toPixiCoords(this.exactPosition);
     }
 

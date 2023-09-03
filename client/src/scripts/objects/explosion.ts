@@ -24,7 +24,7 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
     new Tween(game, {
         target: image.scale,
         to: { x: definition.animation.scale, y: definition.animation.scale },
-        duration: definition.animation.duration / 1000,
+        duration: definition.animation.duration,
         ease: EaseFunctions.expoOut
     });
 

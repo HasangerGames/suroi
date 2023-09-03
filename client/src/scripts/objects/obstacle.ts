@@ -88,7 +88,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                     new Tween(this.game, {
                         target: this.image,
                         to: { rotation: orientationToRotation(offset) },
-                        duration: 200
+                        duration: 150
                     });
                 } else {
                     this.image.setRotation(orientationToRotation(this.door.offset));
