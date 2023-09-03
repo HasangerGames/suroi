@@ -94,7 +94,7 @@ export class Building extends GameObject {
                         speed: velFromAngle(randomRotation(), randomFloat(0.5, 3))
                     });
                 }
-                this.playSound("ceiling_collapse", 0.1);
+                this.playSound("ceiling_collapse", 0.5, 96);
             }
             this.ceilingTween?.kill();
             this.images.ceilingContainer.zIndex = -0.1;

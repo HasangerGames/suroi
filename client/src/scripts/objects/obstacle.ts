@@ -82,8 +82,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
                 if (!this.isNew) {
-                    if (offset === 0) this.playSound("door_close", 0.3);
-                    else this.playSound("door_open", 0.3);
+                    if (offset === 0) this.playSound("door_close", 0.3, 48);
+                    else this.playSound("door_open", 0.3, 48);
                     // eslint-disable-next-line no-new
                     new Tween(this.game, {
                         target: this.image,
@@ -111,7 +111,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         if (!this.dead && destroyed) {
             this.dead = true;
             if (!this.isNew) {
-                this.playSound(`${definition.material}_destroyed`, 0.2);
+                this.playSound(`${definition.material}_destroyed`, 0.2, 96);
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
@@ -203,7 +203,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(`${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.1);
+        this.game.soundManager.play(`${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
         const particleAngle = angle + randomFloat(-0.3, 0.3);
 

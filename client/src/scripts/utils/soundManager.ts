@@ -3,8 +3,9 @@ import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { FloorType } from "../../../../common/src/definitions/buildings";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { v, vSub, type Vector, vLength } from "../../../../common/src/utils/vector";
 import { localStorageInstance } from "./localStorageHandler";
+import { clamp } from "../../../../common/src/utils/math";
 
 export interface Sound {
     name: string
@@ -16,6 +17,8 @@ export class SoundManager {
 
     volume = localStorageInstance.config.sfxVolume;
 
+    position = v(0, 0);
+
     constructor() {
         this.sounds = {};
     }
@@ -26,23 +29,22 @@ export class SoundManager {
         this.sounds[name] = sound;
     }
 
-    play(name: string, position?: Vector, fallOff = 1): Sound {
-        let sound = this.sounds[name];
+    play(name: string, position?: Vector, fallOff = 1, maxRange = 256): Sound {
+        const sound = this.sounds[name];
         let id: number;
 
         if (sound) {
             if (position) {
-                sound = sound.pos(position.x, position.y).pannerAttr({
-                    coneInnerAngle: 360,
-                    coneOuterAngle: 360,
-                    coneOuterGain: 0.5,
-                    distanceModel: "inverse",
-                    maxDistance: 1024,
-                    refDistance: 1,
-                    rolloffFactor: fallOff,
-                    panningModel: "equalpower"
-                });
-                sound.volume(this.volume);
+                const baseVolume = this.volume;
+                const diff = vSub(this.position, position);
+                const dist = vLength(diff);
+                const distNormal = clamp(Math.abs(dist / maxRange), 0, 1);
+                const scaledVolume = (1.0 - distNormal) ** (1.0 + fallOff * 2.0);
+                const clipVolume = scaledVolume * baseVolume;
+                const stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
+
+                sound.volume(clipVolume);
+                sound.stereo(stereoNorm);
             }
 
             id = sound.play();
