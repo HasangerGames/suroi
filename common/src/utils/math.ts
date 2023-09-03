@@ -140,7 +140,6 @@ export function circleCollision(pos1: Vector, r1: number, pos2: Vector, r2: numb
  * @param pos2 The center of the circle
  * @param r2 The radius of the circle
  */
-
 export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: number): boolean {
     const cpt = {
         x: clamp(pos.x, min.x, max.x),
