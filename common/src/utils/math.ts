@@ -145,6 +145,13 @@ export function rectRectCollision(min1: Vector, max1: Vector, min2: Vector, max2
     return min2.x < max1.x && min2.y < max1.y && min1.x < max2.x && min1.y < max2.y;
 }
 
+export function velFromAngle(angle: number, multiplier = 1): Vector {
+    return {
+        x: Math.cos(angle) * multiplier,
+        y: Math.sin(angle) * multiplier
+    };
+}
+
 export interface CollisionRecord { collided: boolean, distance: number }
 
 /**

@@ -323,7 +323,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
             rotationMode: "limited",
-            reflectBullets: true
+            reflectBullets: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "box",
@@ -448,7 +451,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-41.9, 32), v(-38.65, 35.13)), // Left post
                 new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post
             ]),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "wall_particle"
+            }
         },
         {
             idString: "door",

@@ -1056,22 +1056,6 @@ logger.indent("Validating explosions", () => {
                     baseErrorPath: errorPath2
                 });
             });
-
-            logger.indent("Validating particles", () => {
-                const errorPath2 = tester.createPath(errorPath, "particles");
-
-                tester.assertIsPositiveReal({
-                    obj: explosion.particles,
-                    field: "duration",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsNaturalFiniteNumber({
-                    obj: explosion.particles,
-                    field: "count",
-                    baseErrorPath: errorPath2
-                });
-            });
         });
     }
 });

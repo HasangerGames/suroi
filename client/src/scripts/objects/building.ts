@@ -11,6 +11,8 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { gsap } from "gsap";
 import { Container } from "pixi.js";
+import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { velFromAngle } from "../../../../common/src/utils/math";
 
 export class Building extends GameObject {
     override type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -19,7 +21,6 @@ export class Building extends GameObject {
         floor: SuroiSprite
         ceiling: SuroiSprite
         ceilingContainer: Container
-        // emitter
     };
 
     ceilingHitbox?: Hitbox;
@@ -43,7 +44,6 @@ export class Building extends GameObject {
             floor: new SuroiSprite(`${type.idString}_floor.svg`).setPos(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20),
             ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20),
             ceilingContainer: new Container()
-            // emitter: scene.add.particles(0, 0, "main").setDepth(8)
         };
 
         this.container.addChild(this.images.floor);
@@ -68,25 +68,31 @@ export class Building extends GameObject {
         });
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
     override deserializePartial(stream: SuroiBitStream): void {
         const dead = stream.readBoolean();
 
         if (dead) {
             if (dead && !this.dead && !this.isNew) {
-                /*this.images.emitter.setConfig({
-                    frame: `${this.type.idString}_particle.svg`,
-                    rotate: { min: -180, max: 180 },
-                    lifespan: 1000,
-                    speed: { min: 80, max: 150 },
-                    alpha: { start: 1, end: 0 },
-                    scale: { start: 1, end: 0.2 },
-                    emitting: false,
-                    // >:(
-                    emitZone: new Phaser.GameObjects.Particles.Zones.RandomZone(
-                        this.images.ceiling.getBounds() as Phaser.Types.GameObjects.Particles.RandomZoneSource)
-                }).explode(10);*/
-                this.playSound("ceiling_collapse", 0.6);
+                for (let i = 0; i < 10; i++) {
+                    this.game.particleManager.addParticle({
+                        frames: `${this.type.idString}_particle.svg`,
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        position: this.ceilingHitbox!.randomPoint(),
+                        depth: 10,
+                        lifeTime: 1200,
+                        rotation: {
+                            start: randomRotation(),
+                            end: randomRotation()
+                        },
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale: { start: 1, end: 0.2 },
+                        speed: velFromAngle(randomRotation(), randomFloat(0.5, 3))
+                    });
+                }
+                this.playSound("ceiling_collapse", 0.1);
             }
             this.ceilingTween?.kill();
             this.images.ceilingContainer.zIndex = -0.1;

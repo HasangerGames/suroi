@@ -20,6 +20,7 @@ import {
 import { transformRectangle } from "./math";
 
 import { type Orientation } from "../typings";
+import { random, randomFloat, randomPointInsideCircle } from "./random";
 
 export abstract class Hitbox {
     abstract collidesWith(that: Hitbox): boolean;
@@ -28,6 +29,7 @@ export abstract class Hitbox {
     abstract clone(): Hitbox;
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
     abstract intersectsLine(a: Vector, b: Vector): IntersectionResponse;
+    abstract randomPoint(): Vector;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -99,6 +101,10 @@ export class CircleHitbox extends Hitbox {
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsCircle(a, b, this.position, this.radius);
     }
+
+    randomPoint(): Vector {
+        return randomPointInsideCircle(this.position, this.radius);
+    }
 }
 
 export class RectangleHitbox extends Hitbox {
@@ -156,6 +162,13 @@ export class RectangleHitbox extends Hitbox {
 
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsRect(a, b, this.min, this.max);
+    }
+
+    randomPoint(): Vector {
+        return {
+            x: randomFloat(this.min.x, this.max.x),
+            y: randomFloat(this.min.y, this.max.y)
+        };
     }
 }
 
@@ -226,5 +239,9 @@ export class ComplexHitbox extends Hitbox {
             if (intersection) return intersection;
         }
         return null;
+    }
+
+    randomPoint(): Vector {
+        return this.hitBoxes[random(0, this.hitBoxes.length - 1)].randomPoint();
     }
 }

@@ -8,22 +8,6 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { gsap } from "gsap";
 import { distanceSquared } from "../../../../common/src/utils/math";
 
-/**
- * Custom particle class that adds friction to its velocity.
- */
-/*class ExplosionParticle extends Phaser.GameObjects.Particles.Particle {
-    friction = 0.95;
-
-    update(delta: number, step: number, processors: Phaser.GameObjects.Particles.ParticleProcessor[]): boolean {
-        const updated = super.update(delta, step, processors);
-
-        this.velocityX *= this.friction;
-        this.velocityY *= this.friction;
-
-        return updated;
-    }
-}*/
-
 export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector): void {
     const definition = type.definition;
     const pixiPos = toPixiCoords(position);
@@ -34,26 +18,6 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
     image.setVPos(pixiPos);
 
     game.camera.container.addChild(image);
-
-    /*const emitter = scene.add.particles(phaserPos.x, phaserPos.y, "main", {
-        frame: definition.particles.frame,
-        lifespan: definition.particles.duration,
-        speed: { min: 0, max: definition.radius.max * 60 },
-
-        // https://phaser.discourse.group/t/perticle-emitters-how-to-fade-particles-in-from-0-then-back-out-to-0/1901
-        alpha: {
-            onUpdate: (p: Phaser.GameObjects.Particles.Particle, k: string, t: number): number => {
-                return 1 - 2 * Math.abs(t - 0.5);
-            }
-        },
-        particleClass: ExplosionParticle,
-        emitting: false
-    });
-
-    emitter.explode(definition.particles.count);
-
-    // Destroy particle emitter.
-    setTimeout(() => { emitter.destroy(); }, definition.particles.duration);*/
 
     gsap.to(image.scale, {
         x: definition.animation.scale,
