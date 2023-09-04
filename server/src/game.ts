@@ -203,7 +203,7 @@ export class Game {
                 player.position = vAdd(player.position, v(movement.x * speed, movement.y * speed));
 
                 // Find and resolve collisions
-                for (const potential of this.getVisibleObjects(player.position)) {
+                for (const potential of player.nearObjects) {
                     if (potential instanceof Obstacle && potential.collidable && potential.hitbox !== undefined && player.hitbox.collidesWith(potential.hitbox)) { // TODO Make an array of collidable objects
                         player.hitbox.resolveCollision(potential.hitbox);
                     }
