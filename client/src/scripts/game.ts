@@ -33,11 +33,11 @@ import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
 import { Container, type Application } from "pixi.js";
-import { Camera } from "./utils/camera";
+import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
-import { Gas } from "./utils/gas";
+import { Gas } from "./rendering/gas";
 import core from "./core";
-import { Minimap } from "./utils/map";
+import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
 
@@ -103,7 +103,7 @@ export class Game {
             }
 
             for (const tween of this.tweens) {
-                tween.update();
+                tween.update(delta);
             }
 
             for (const bullet of this.bullets) {

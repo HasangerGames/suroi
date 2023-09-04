@@ -2,7 +2,7 @@ import { type Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { GasState, TICK_SPEED } from "../../../../common/src/constants";
-import { COLORS } from "./constants";
+import { COLORS } from "../utils/constants";
 import { lerp, vecLerp } from "../../../../common/src/utils/math";
 
 const kOverdraw = 100 * 1000;

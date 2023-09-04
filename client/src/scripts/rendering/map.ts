@@ -1,9 +1,9 @@
 import { Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
-import { MINIMAP_SCALE } from "./constants";
-import { localStorageInstance } from "./localStorageHandler";
+import { MINIMAP_SCALE } from "../utils/constants";
+import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "./pixi";
+import { SuroiSprite } from "../utils/pixi";
 
 export class Minimap {
     container = new Container();

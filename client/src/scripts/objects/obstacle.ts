@@ -13,7 +13,7 @@ import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/util
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { PIXI_SCALE } from "../utils/constants";
-import { Tween } from "../utils/tween";
+import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
@@ -120,23 +120,23 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
 
-                for (let i = 0; i < 10; i++) {
-                    this.game.particleManager.addParticle({
-                        frames: this.particleFrames,
-                        position: this.hitbox.randomPoint(),
-                        depth: (definition.depth ?? 0) + 1,
-                        lifeTime: 1500,
-                        rotation: {
-                            start: randomRotation(),
-                            end: randomRotation()
-                        },
-                        alpha: {
-                            start: 1,
-                            end: 0
-                        },
-                        speed: velFromAngle(randomRotation(), randomFloat(definition.explosion ? 5 : 0.5, definition.explosion ? 10 : 2))
-                    });
-                }
+                this.game.particleManager.spawnParticles(10, () => ({
+                    frames: this.particleFrames,
+                    position: this.hitbox.randomPoint(),
+                    depth: (definition.depth ?? 0) + 1,
+                    lifeTime: 1500,
+                    rotation: {
+                        start: randomRotation(),
+                        end: randomRotation()
+                    },
+                    scale: randomFloat(0.65, 0.85),
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.sextIn
+                    },
+                    speed: velFromAngle(randomRotation(), randomFloat(0.25, 0.5) * (definition.explosion ? 3 : 1))
+                }));
             }
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
@@ -207,17 +207,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         const particleAngle = angle + randomFloat(-0.3, 0.3);
 
-        this.game.particleManager.addParticle({
+        this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
             depth: Math.max((this.type.definition.depth ?? 0) + 1, 4),
             lifeTime: 600,
-            rotation: randomRotation(),
-            scale: {
-                start: 1,
-                end: 0.2
-            },
-            speed: velFromAngle(particleAngle, randomFloat(0.5, 2))
+            scale: { start: 0.9, end: 0.2 },
+            alpha: { start: 1, end: 0.65 },
+            speed: velFromAngle(particleAngle, randomFloat(0.25, 0.75))
         });
     }
 

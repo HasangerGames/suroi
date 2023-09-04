@@ -75,25 +75,24 @@ export class Building extends GameObject {
 
         if (dead) {
             if (dead && !this.dead && !this.isNew) {
-                for (let i = 0; i < 10; i++) {
-                    this.game.particleManager.addParticle({
-                        frames: `${this.type.idString}_particle.svg`,
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        position: this.ceilingHitbox!.randomPoint(),
-                        depth: 10,
-                        lifeTime: 2000,
-                        rotation: {
-                            start: randomRotation(),
-                            end: randomRotation()
-                        },
-                        alpha: {
-                            start: 1,
-                            end: 0
-                        },
-                        scale: { start: 1, end: 0.2 },
-                        speed: velFromAngle(randomRotation(), randomFloat(0.5, 3))
-                    });
-                }
+                this.game.particleManager.spawnParticles(10, () => ({
+                    frames: `${this.type.idString}_particle.svg`,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    position: this.ceilingHitbox!.randomPoint(),
+                    depth: 10,
+                    lifeTime: 2000,
+                    rotation: {
+                        start: randomRotation(),
+                        end: randomRotation()
+                    },
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.sextIn
+                    },
+                    scale: { start: 1, end: 0.2 },
+                    speed: velFromAngle(randomRotation(), randomFloat(0.1, 0.2))
+                }));
                 this.playSound("ceiling_collapse", 0.1);
             }
             this.ceilingTween?.kill();

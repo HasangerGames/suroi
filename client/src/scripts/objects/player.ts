@@ -12,7 +12,7 @@ import {
 
 import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { random, randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -559,12 +559,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitEffect(position: Vector, angle: number): void {
         this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.1);
 
-        this.game.particleManager.addParticle({
+        this.game.particleManager.spawnParticle({
             frames: "blood_particle.svg",
             depth: 3,
             position,
             lifeTime: 1000,
-            rotation: randomRotation(),
             scale: {
                 start: 0.5,
                 end: 1
@@ -573,7 +572,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 start: 1,
                 end: 0
             },
-            speed: velFromAngle(angle, randomFloat(0.1, 0.3))
+            speed: velFromAngle(angle, randomFloat(0.1, 0.2))
         });
     }
 

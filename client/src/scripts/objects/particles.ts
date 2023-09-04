@@ -1,7 +1,7 @@
 import { type Vector, vAdd, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Game } from "../game";
-import { random } from "../../../../common/src/utils/random";
+import { random, randomRotation } from "../../../../common/src/utils/random";
 import { lerp } from "../../../../common/src/utils/math";
 
 export class ParticleManager {
@@ -24,17 +24,15 @@ export class ParticleManager {
         }
     }
 
-    addParticle(options: ParticleOptions): Particle {
+    spawnParticle(options: ParticleOptions): Particle {
         const particle = new Particle(options);
         this.particles.add(particle);
         this.game.camera.container.addChild(particle.image);
         return particle;
     }
 
-    addParticles(options: ParticleOptions, count: number): void {
-        for (let i = 0; i < count; i++) {
-            this.addParticle(options);
-        }
+    spawnParticles(count: number, options: () => ParticleOptions): void {
+        for (let i = 0; i < count; i++) this.spawnParticle(options());
     }
 
     clear(): void {
@@ -45,6 +43,7 @@ export class ParticleManager {
 export type ParticleProperty = {
     start: number
     end: number
+    ease?: (x: number) => number
 } | number;
 
 export interface ParticleOptions {
@@ -61,8 +60,9 @@ export interface ParticleOptions {
 export class Particle {
     position: Vector;
     image: SuroiSprite;
-    dead = false;
+
     ticker = 0;
+    dead = false;
 
     options: ParticleOptions;
 
@@ -79,7 +79,7 @@ export class Particle {
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;
-        this.rotation = typeof options.rotation === "number" ? options.rotation : 1;
+        this.rotation = typeof options.rotation === "number" ? options.rotation : randomRotation();
 
         this.options = options;
     }
@@ -94,19 +94,19 @@ export class Particle {
             this.ticker = options.lifeTime;
         }
 
-        const t = this.ticker / options.lifeTime;
+        const interpFactor = this.ticker / options.lifeTime;
 
         // i was too lazy to figure out a better way of doing that lol...
         if (typeof options.scale === "object" && "start" in options.scale) {
-            this.scale = lerp(options.scale.start, options.scale.end, t);
+            this.scale = lerp(options.scale.start, options.scale.end, options.scale.ease ? options.scale.ease(interpFactor) : interpFactor);
         }
 
         if (typeof options.alpha === "object" && "start" in options.alpha) {
-            this.alpha = lerp(options.alpha.start, options.alpha.end, t);
+            this.alpha = lerp(options.alpha.start, options.alpha.end, options.alpha.ease ? options.alpha.ease(interpFactor) : interpFactor);
         }
 
         if (typeof options.rotation === "object" && "start" in options.rotation) {
-            this.rotation = lerp(options.rotation.start, options.rotation.end, t);
+            this.rotation = lerp(options.rotation.start, options.rotation.end, options.rotation.ease ? options.rotation.ease(interpFactor) : interpFactor);
         }
 
         this.image.position.copyFrom(toPixiCoords(this.position));

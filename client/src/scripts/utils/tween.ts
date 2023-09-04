@@ -4,9 +4,6 @@ import { lerp } from "../../../../common/src/utils/math";
 export class Tween<T> {
     readonly game: Game;
 
-    startTime: number;
-    endTime: number;
-
     readonly target: T;
     readonly duration!: number;
 
@@ -20,6 +17,7 @@ export class Tween<T> {
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
+    ticker = 0;
     dead = false;
 
     constructor(
@@ -45,22 +43,18 @@ export class Tween<T> {
         this.yoyo = config.yoyo;
         this.onUpdate = config.onUpdate;
         this.onComplete = config.onComplete;
-        this.startTime = this.game.now;
-        this.endTime = this.startTime + this.duration;
         this.game.tweens.add(this);
     }
 
-    update(): void {
-        const now = this.game.now;
-        if (now > this.endTime) {
-            // TODO Find a better way to ensure the tween completes
+    update(delta: number): void {
+        this.ticker += delta;
+        if (this.ticker >= this.duration) {
             for (const [key, value] of Object.entries(this.endValues)) {
                 (this.target[key as keyof T] as number) = value;
             }
             if (this.yoyo) {
                 this.yoyo = false;
-                this.startTime = now;
-                this.endTime = this.startTime + this.duration;
+                this.ticker = 0;
                 [this.startValues, this.endValues] = [this.endValues, this.startValues];
             } else {
                 this.kill();
@@ -71,7 +65,7 @@ export class Tween<T> {
         for (const key in this.startValues) {
             const startValue = this.startValues[key];
             const endValue = this.endValues[key];
-            const interpFactor = (now - this.startTime) / this.duration;
+            const interpFactor = this.ticker / this.duration;
             (this.target[key as keyof T] as number) = lerp(startValue, endValue, this.ease ? this.ease(interpFactor) : interpFactor);
         }
         this.onUpdate?.();
@@ -85,6 +79,7 @@ export class Tween<T> {
 
 // Credit to https://easings.net/
 export const EaseFunctions = {
+    sextIn: (x: number) => Math.pow(x, 6),
     sineIn: (x: number) => 1 - Math.cos((x * Math.PI) / 2),
     sineOut: (x: number) => Math.sin((x * Math.PI) / 2),
     expoOut: (x: number): number => x === 1 ? 1 : 1 - Math.pow(2, -10 * x),

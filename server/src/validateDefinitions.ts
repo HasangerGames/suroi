@@ -17,7 +17,7 @@ import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
 import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { ColorStyles, FontStyles, styleText } from "./ansiColoring";
+import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";

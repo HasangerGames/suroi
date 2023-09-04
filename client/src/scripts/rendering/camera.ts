@@ -1,7 +1,7 @@
 import { type Application, Container } from "pixi.js";
 import { type Vector, v, vAdd, vMul, vClone } from "../../../../common/src/utils/vector";
-import { toPixiCoords } from "./pixi";
-import { EaseFunctions, Tween } from "./tween";
+import { toPixiCoords } from "../utils/pixi";
+import { EaseFunctions, Tween } from "../utils/tween";
 import { type Game } from "../game";
 
 export class Camera {
