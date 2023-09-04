@@ -152,11 +152,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.hitbox.position = this.position;
 
+        if (this.isActivePlayer) {
+            this.game.camera.setPosition(this.position);
+            this.game.soundManager.position = this.position;
+            this.game.map.setPosition(this.position);
+            if (!localStorageInstance.config.clientSidePrediction) {
+                this.game.map.indicator.setRotation(this.rotation);
+            }
+        }
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 9) {
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.footstepSound = this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0.5);
+                this.footstepSound = this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0.6, 48);
                 this.distSinceLastFootstep = 0;
                 this.floorType = FloorType.Grass;
             }
@@ -210,15 +218,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
             this.emoteContainer.position.copyFrom(emotePos);
-        }
-
-        if (this.isActivePlayer) {
-            this.game.camera.setPosition(this.position);
-            Howler.pos(this.position.x, this.position.y);
-            this.game.map.setPosition(this.position);
-            if (!localStorageInstance.config.clientSidePrediction) {
-                this.game.map.indicator.setRotation(this.rotation);
-            }
         }
 
         // Animation
@@ -285,7 +284,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
             }
-            if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.9);
+            if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
         }
 
         this.updateEquipment();
@@ -397,7 +396,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteAnim?.kill();
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
-        this.playSound("emote", 0.4);
+        this.playSound("emote", 0.4, 128);
         this.images.emoteImage.setFrame(`${type.idString}.svg`);
 
         this.emoteContainer.visible = true;
@@ -485,7 +484,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     setTimeout(() => this.container.removeChild(graphics), 500);
                 }
 
-                this.playSound("swing", 0.8);
+                this.playSound("swing", 0.4, 96);
 
                 const rotated = vRotate(weaponDef.offset, this.rotation);
                 const position = vAdd(this.position, rotated);
@@ -521,7 +520,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             case AnimationType.Gun: {
                 const weaponDef = this.activeItem.definition as GunDefinition;
-                this.playSound(`${weaponDef.idString}_fire`, 0.3);
+                this.playSound(`${weaponDef.idString}_fire`, 0.5);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
@@ -550,14 +549,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.GunClick: {
-                this.playSound("gun_click", 0.6);
+                this.playSound("gun_click", 0.8, 48);
                 break;
             }
         }
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.1);
+        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.5, 96);
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle.svg",

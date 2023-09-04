@@ -21,8 +21,8 @@ export class Bullet extends BaseBullet {
     readonly sourceGun: GunItem;
     readonly shooter: Player;
 
-    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player, reflectionCount = 0, reflectedFromID = -1) {
-        super(position, rotation, source.type, reflectionCount, reflectedFromID);
+    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player, reflectionCount = 0, reflectedFromID?: number) {
+        super(position, rotation, source.type, reflectedFromID ?? shooter.id, reflectionCount);
 
         this.game = game;
         this.sourceGun = source;

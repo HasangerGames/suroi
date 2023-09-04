@@ -18,8 +18,8 @@ export class Bullet extends BaseBullet {
     trailReachedMaxLength = false;
     trailTicks = 0;
 
-    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, reflectionCount: number, reflectedFromID = -1) {
-        super(position, rotation, source, reflectionCount, reflectedFromID);
+    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, shooterID: number, reflectionCount: number) {
+        super(position, rotation, source, shooterID, reflectionCount);
 
         this.game = game;
 

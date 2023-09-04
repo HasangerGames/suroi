@@ -29,7 +29,8 @@ export class BaseBullet {
     readonly maxDistanceSquared: number;
 
     readonly reflectionCount: number;
-    readonly reflectedFromID: number;
+
+    readonly sourceID: number;
 
     readonly damagedIDs = new Set<number>();
 
@@ -39,13 +40,18 @@ export class BaseBullet {
 
     readonly definition: GunDefinition["ballistics"];
 
-    constructor(position: Vector, rotation: number, source: ObjectType<ObjectCategory.Loot, GunDefinition>, reflectionCount = 0, reflectedFromID = -1) {
+    constructor(position: Vector,
+                rotation: number,
+                source: ObjectType<ObjectCategory.Loot,
+                GunDefinition>,
+                sourceID: number,
+                reflectionCount = 0) {
         this.initialPosition = vClone(position);
         this.position = position;
         this.rotation = rotation;
         this.source = source;
         this.reflectionCount = reflectionCount;
-        this.reflectedFromID = reflectedFromID;
+        this.sourceID = sourceID;
 
         this.definition = this.source.definition.ballistics;
 
@@ -75,7 +81,9 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.damageable && !object.dead && object.id !== this.reflectedFromID && !this.damagedIDs.has(object.id)) {
+            if (object.damageable && !object.dead &&
+                object.id !== this.sourceID &&
+                !this.damagedIDs.has(object.id)) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
                 if (collision) {

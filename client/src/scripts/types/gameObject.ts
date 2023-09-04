@@ -18,8 +18,6 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     damageable = false;
 
-    private readonly sounds = new Set<Sound>();
-
     oldPosition!: Vector;
     lastPositionChange!: number;
     _position!: Vector;
@@ -28,11 +26,6 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         if (this._position !== undefined) this.oldPosition = vClone(this._position);
         this.lastPositionChange = Date.now();
         this._position = pos;
-
-        // Update the position of all sounds
-        for (const sound of this.sounds) {
-            this.game.soundManager.sounds[sound.name].pos(this.position.x, this.position.y, undefined, sound.id);
-        }
     }
 
     exactPosition?: Vector;
@@ -64,17 +57,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container.destroy();
     }
 
-    playSound(key: string, fallOff: number): Sound {
-        const sound = this.game.soundManager.play(key, this.position, fallOff);
-
-        if (sound.id !== -1) {
-            this.sounds.add(sound);
-            this.game.soundManager.get(key).on("end", () => {
-                this.sounds.delete(sound);
-            }, sound.id);
-        }
-
-        return sound;
+    playSound(key: string, fallOff?: number, maxDistance?: number): Sound {
+        return this.game.soundManager.play(key, this.position, fallOff, maxDistance);
     }
 
     abstract deserializePartial(stream: SuroiBitStream): void;

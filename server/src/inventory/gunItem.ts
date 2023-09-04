@@ -2,7 +2,7 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
 import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
-import { v, vAdd, vRotate } from "../../../common/src/utils/vector";
+import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
@@ -100,15 +100,13 @@ export class GunItem extends InventoryItem {
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
-        const lineStartPosition = vAdd(owner.position, vRotate(v(owner.hitbox.radius + 0.2, 0), owner.rotation));
-
         for (const object of this.owner.nearObjects) {
             if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
-                const intersection = object.hitbox.intersectsLine(lineStartPosition, position);
+                const intersection = object.hitbox.intersectsLine(owner.position, position);
                 if (intersection === null) continue;
 
                 if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
-                    position = intersection.point;
+                    position = vSub(intersection.point, vRotate(v(0.2, 0), owner.rotation));
                 }
             }
         }
