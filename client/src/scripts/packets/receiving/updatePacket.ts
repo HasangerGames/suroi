@@ -361,7 +361,7 @@ export class UpdatePacket extends ReceivingPacket {
                 game.gas.lastRadius = game.gas.radius;
                 game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                game.gas.lastUpdateTime = game.now;
+                game.gas.lastUpdateTime = Date.now();
             }
         }
 

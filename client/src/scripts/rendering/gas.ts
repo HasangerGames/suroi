@@ -1,5 +1,4 @@
 import { type Container, Graphics } from "pixi.js";
-import { type Game } from "../game";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { GasState, TICK_SPEED } from "../../../../common/src/constants";
 import { COLORS } from "../utils/constants";
@@ -9,8 +8,6 @@ const kOverdraw = 100 * 1000;
 const kSegments = 512;
 
 export class Gas {
-    game: Game;
-
     state = GasState.Inactive;
     initialDuration = 0;
     oldPosition = v(0, 0);
@@ -28,8 +25,7 @@ export class Gas {
 
     scale: number;
 
-    constructor(game: Game, scale: number, container: Container) {
-        this.game = game;
+    constructor(scale: number, container: Container) {
         this.scale = scale;
 
         this.graphics = new Graphics();
@@ -64,7 +60,7 @@ export class Gas {
         let position: Vector;
         let radius: number;
         if (this.state === GasState.Advancing) {
-            const interpFactor = (this.game.now - this.lastUpdateTime) / TICK_SPEED;
+            const interpFactor = (Date.now() - this.lastUpdateTime) / TICK_SPEED;
             position = vecLerp(this.lastPosition, this.position, interpFactor);
             radius = lerp(this.lastRadius, this.radius, interpFactor);
         } else {

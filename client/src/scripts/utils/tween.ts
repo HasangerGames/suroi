@@ -4,6 +4,9 @@ import { lerp } from "../../../../common/src/utils/math";
 export class Tween<T> {
     readonly game: Game;
 
+    startTime = Date.now();
+    endTime: number;
+
     readonly target: T;
     readonly duration!: number;
 
@@ -17,7 +20,6 @@ export class Tween<T> {
     readonly onUpdate?: () => void;
     readonly onComplete?: () => void;
 
-    ticker = 0;
     dead = false;
 
     constructor(
@@ -43,18 +45,20 @@ export class Tween<T> {
         this.yoyo = config.yoyo;
         this.onUpdate = config.onUpdate;
         this.onComplete = config.onComplete;
+        this.endTime = this.startTime + this.duration;
         this.game.tweens.add(this);
     }
 
-    update(delta: number): void {
-        this.ticker += delta;
-        if (this.ticker >= this.duration) {
+    update(): void {
+        const now = Date.now();
+        if (now >= this.endTime) {
             for (const [key, value] of Object.entries(this.endValues)) {
                 (this.target[key as keyof T] as number) = value;
             }
             if (this.yoyo) {
                 this.yoyo = false;
-                this.ticker = 0;
+                this.startTime = now;
+                this.endTime = this.startTime + this.duration;
                 [this.startValues, this.endValues] = [this.endValues, this.startValues];
             } else {
                 this.kill();
@@ -65,7 +69,7 @@ export class Tween<T> {
         for (const key in this.startValues) {
             const startValue = this.startValues[key];
             const endValue = this.endValues[key];
-            const interpFactor = this.ticker / this.duration;
+            const interpFactor = (now - this.startTime) / this.duration;
             (this.target[key as keyof T] as number) = lerp(startValue, endValue, this.ease ? this.ease(interpFactor) : interpFactor);
         }
         this.onUpdate?.();

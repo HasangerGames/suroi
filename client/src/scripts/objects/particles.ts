@@ -61,7 +61,8 @@ export class Particle {
     position: Vector;
     image: SuroiSprite;
 
-    ticker = 0;
+    spawnTime = Date.now();
+    deathTime: number;
     dead = false;
 
     options: ParticleOptions;
@@ -71,6 +72,7 @@ export class Particle {
     rotation = 0;
 
     constructor(options: ParticleOptions) {
+        this.deathTime = this.spawnTime + options.lifeTime;
         this.position = options.position;
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
@@ -88,13 +90,14 @@ export class Particle {
         this.position = vAdd(this.position, vMul(this.options.speed, 1 / delta));
         const options = this.options;
 
-        this.ticker += delta;
-        if (this.ticker >= options.lifeTime) {
+        const now = Date.now();
+        let interpFactor: number;
+        if (now >= this.deathTime) {
             this.dead = true;
-            this.ticker = options.lifeTime;
+            interpFactor = 1;
+        } else {
+            interpFactor = (now - this.spawnTime) / options.lifeTime;
         }
-
-        const interpFactor = this.ticker / options.lifeTime;
 
         // i was too lazy to figure out a better way of doing that lol...
         if (typeof options.scale === "object" && "start" in options.scale) {

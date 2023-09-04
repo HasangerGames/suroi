@@ -81,16 +81,11 @@ export class Game {
 
     tweens = new Set<Tween<unknown>>();
 
-    private _now!: number;
-    get now(): number { return this._now; }
-
     constructor(pixi: Application) {
         this.pixi = pixi;
 
         this.pixi.ticker.add(() => {
             if (!this.gameStarted) return;
-
-            this._now = Date.now();
 
             const delta = this.pixi.ticker.deltaMS;
 
@@ -104,7 +99,7 @@ export class Game {
             }
 
             for (const tween of this.tweens) {
-                tween.update(delta);
+                tween.update();
             }
 
             for (const bullet of this.bullets) {
@@ -166,7 +161,7 @@ export class Game {
             this.players.add(this.activePlayer);
             this.objectsSet.add(this.activePlayer);
 
-            this.gas = new Gas(this, PIXI_SCALE, this.camera.container);
+            this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
             this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);

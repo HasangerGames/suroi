@@ -1,6 +1,6 @@
-import { distanceSquared } from "../../../common/src/utils/math";
-import { type Vector, v, vAdd, vMul, vClone } from "../../../common/src/utils/vector";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { distanceSquared } from "./math";
+import { type Vector, v, vAdd, vMul, vClone } from "./vector";
+import { type GunDefinition } from "../definitions/guns";
 import { type ObjectType } from "./objectType";
 import { type ObjectCategory } from "../constants";
 import { type Hitbox } from "./hitbox";
@@ -40,12 +40,14 @@ export class BaseBullet {
 
     readonly definition: GunDefinition["ballistics"];
 
-    constructor(position: Vector,
-                rotation: number,
-                source: ObjectType<ObjectCategory.Loot,
-                GunDefinition>,
-                sourceID: number,
-                reflectionCount = 0) {
+    constructor(
+        position: Vector,
+        rotation: number,
+        source: ObjectType<ObjectCategory.Loot,
+        GunDefinition>,
+        sourceID: number,
+        reflectionCount = 0
+    ) {
         this.initialPosition = vClone(position);
         this.position = position;
         this.rotation = rotation;
