@@ -132,6 +132,7 @@ export class Game {
         window.addEventListener("resize", this.resize.bind(this));
 
         this.music.play();
+        this.music.loop();
         this.music.volume(localStorageInstance.config.musicVolume);
     }
 
