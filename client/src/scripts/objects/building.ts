@@ -5,7 +5,7 @@ import { type ObjectCategory } from "../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
-import { type FloorType, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -33,7 +33,7 @@ export class Building extends GameObject {
 
     isNew = true;
 
-    floors: Array<{ type: FloorType, hitbox: Hitbox }> = [];
+    floorHitboxes: Hitbox[] = [];
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, type, id);
@@ -123,16 +123,21 @@ export class Building extends GameObject {
         this.ceilingHitbox = (this.type.definition).ceilingHitbox.transform(this.position, 1, this.orientation);
 
         for (const floor of (this.type.definition).floors) {
-            this.floors.push({
-                type: floor.type,
-                hitbox: floor.hitbox.transform(this.position, 1, this.orientation)
-            });
+            const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
+            this.floorHitboxes.push(floorHitbox);
+            this.game.floorHitboxes.set(
+                floorHitbox,
+                floor.type
+            );
         }
     }
 
     destroy(): void {
-        this.ceilingTween?.kill();
         super.destroy();
+        this.ceilingTween?.kill();
         this.images.ceilingContainer.destroy();
+        for (const floorHitbox of this.floorHitboxes) {
+            this.game.floorHitboxes.delete(floorHitbox);
+        }
     }
 }

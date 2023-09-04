@@ -90,8 +90,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitbox = new CircleHitbox(this.radius);
 
-    floorType = FloorType.Grass;
-
     constructor(game: Game, id: number, isActivePlayer = false) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
         this.isActivePlayer = isActivePlayer;
@@ -162,11 +160,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
-            if (this.distSinceLastFootstep > 9) {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                this.footstepSound = this.playSound(`${FloorType[this.floorType].toLowerCase()}_step_${random(1, 2)}`, 0.6, 48);
+            if (this.distSinceLastFootstep > 7) {
+                let floorType = FloorType.Grass;
+                for (const [hitbox, type] of this.game.floorHitboxes) {
+                    if (hitbox.collidesWith(this.hitbox)) {
+                        floorType = type;
+                        break;
+                    }
+                }
+                this.footstepSound = this.playSound(`${FloorType[floorType].toLowerCase()}_step_${random(1, 2)}`, 0.6, 48);
                 this.distSinceLastFootstep = 0;
-                this.floorType = FloorType.Grass;
             }
         }
 

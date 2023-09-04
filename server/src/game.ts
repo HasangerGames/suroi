@@ -204,7 +204,12 @@ export class Game {
 
                 // Find and resolve collisions
                 for (const potential of player.nearObjects) {
-                    if (potential instanceof Obstacle && potential.collidable && potential.hitbox !== undefined && player.hitbox.collidesWith(potential.hitbox)) { // TODO Make an array of collidable objects
+                    if (
+                        potential instanceof Obstacle &&
+                        potential.collidable &&
+                        potential.hitbox !== undefined &&
+                        player.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
+                    ) {
                         player.hitbox.resolveCollision(potential.hitbox);
                     }
                 }

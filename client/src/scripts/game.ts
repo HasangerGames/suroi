@@ -27,7 +27,7 @@ import { localStorageInstance } from "./utils/localStorageHandler";
 import { Obstacle } from "./objects/obstacle";
 import { Loot } from "./objects/loot";
 import { InputPacket } from "./packets/sending/inputPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { type CollisionRecord, circleCollision, distanceSquared } from "../../../common/src/utils/math";
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -39,15 +39,18 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
+import { type FloorType } from "../../../common/src/definitions/buildings";
 
 export class Game {
     socket!: WebSocket;
 
-    objects: Map<number, GameObject> = new Map<number, GameObject>();
+    objects = new Map<number, GameObject>();
     objectsSet: Set<GameObject> = new Set<GameObject>();
     players: Set<Player> = new Set<Player>();
     bullets: Set<Bullet> = new Set<Bullet>();
     activePlayer!: Player;
+
+    floorHitboxes = new Map<Hitbox, FloorType>();
 
     gameStarted = false;
     gameOver = false;
@@ -286,6 +289,7 @@ export class Game {
         const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
 
         let skipLootCheck = true;
+
         /*
             Context: rerendering ui elements needlessly is bad, so we
             determine the information that should trigger a re-render if
@@ -328,6 +332,7 @@ export class Game {
                 this.sendPacket(new InputPacket(this.playerManager));
             }
 
+            // Only run interact message and loot checks every other tick
             skipLootCheck = !skipLootCheck;
             if (skipLootCheck) return;
 
@@ -356,15 +361,6 @@ export class Game {
                     }
                 } else if (object instanceof Building) {
                     if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
-
-                    for (const player of this.players) {
-                        for (const floor of object.floors) {
-                            if (floor.hitbox.collidesWith(player.hitbox)) {
-                                player.floorType = floor.type;
-                                break;
-                            }
-                        }
-                    }
                 }
             }
 
