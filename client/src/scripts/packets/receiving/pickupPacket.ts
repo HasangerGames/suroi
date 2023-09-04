@@ -4,7 +4,6 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../../common/src/utils/objectDefinitions";
-import core from "../../core";
 
 export class PickupPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -23,6 +22,6 @@ export class PickupPacket extends ReceivingPacket {
                 break;
         }
 
-        core.game?.soundManager.play(`${soundID}`);
+        this.playerManager.game.soundManager.play(`${soundID}`);
     }
 }

@@ -36,7 +36,6 @@ import { Container, type Application } from "pixi.js";
 import { Camera } from "./utils/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./utils/gas";
-import core from "./core";
 import { Minimap } from "./utils/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
@@ -77,6 +76,8 @@ export class Game {
     // Add all to a container so pixi has to do less sorting of zIndexes
     playersContainer = new Container();
     bulletsContainer = new Container();
+
+    music = new Howl({ src: "./audio/music/menu_music.mp3" });
 
     tweens = new Set<Tween<unknown>>();
 
@@ -129,6 +130,9 @@ export class Game {
         }, 500);
 
         window.addEventListener("resize", this.resize.bind(this));
+
+        this.music.play();
+        this.music.volume(localStorageInstance.config.musicVolume);
     }
 
     connect(address: string): void {
@@ -140,7 +144,7 @@ export class Game {
         this.socket.binaryType = "arraybuffer";
 
         this.socket.onopen = (): void => {
-            core.music.stop();
+            this.music.stop();
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -255,8 +259,8 @@ export class Game {
 
         this.playerManager = new PlayerManager(this);
 
-        core.music.stop().play();
-        core.music.volume(localStorageInstance.config.musicVolume);
+        this.music.stop().play();
+        this.music.volume(localStorageInstance.config.musicVolume);
     }
 
     sendPacket(packet: SendingPacket): void {

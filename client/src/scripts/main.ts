@@ -1,6 +1,5 @@
 import $ from "jquery";
 
-import core from "./core";
 import { Game } from "./game";
 
 import { setupInputs } from "./utils/inputManager";
@@ -14,6 +13,7 @@ import { loadSounds } from "./utils/soundManager";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
+import { setupUI } from "./ui";
 
 declare const API_URL: string;
 
@@ -102,22 +102,16 @@ async function main(): Promise<void> {
         resolution: window.devicePixelRatio || 1
     });
 
-    core.pixi = app;
-
     await loadAtlases();
 
     $("#game-ui").append(app.view as HTMLCanvasElement);
 
-    core.game = new Game(app);
+    const game = new Game(app);
 
-    loadSounds(core.game.soundManager);
-
-    setupInputs(core.game);
-
+    loadSounds(game.soundManager);
+    setupInputs(game);
+    setupUI(game);
     enablePlayButton();
-
-    core.music.play();
-    core.music.volume(localStorageInstance.config.musicVolume);
 }
 $(() => {
     void main();

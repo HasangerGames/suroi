@@ -1,7 +1,5 @@
 import $ from "jquery";
 
-import core from "./core";
-
 import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
 import { requestFullscreen } from "./utils/misc";
@@ -12,8 +10,10 @@ import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
+import { type Game } from "./game";
+import { isMobile } from "pixi.js";
 
-$((): void => {
+export function setupUI(game: Game) {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");
@@ -151,18 +151,15 @@ $((): void => {
 
     body.on("click", () => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", () => { core.game?.endGame(); });
-    $("#btn-play-again").on("click", () => { core.game?.endGame(); });
+    $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); });
 
-    const sendSpectatePacket = (action: SpectateActions): void => core.game?.sendPacket(new SpectatePacket(core.game?.playerManager, action));
+    const sendSpectatePacket = (action: SpectateActions): void => { game.sendPacket(new SpectatePacket(game.playerManager, action)); };
 
     $("#btn-spectate").on("click", () => {
-        const game = core.game;
-        if (game !== undefined) {
-            sendSpectatePacket(SpectateActions.BeginSpectating);
-            game.spectating = true;
-            core.game?.map.indicator.setFrame("player_indicator.svg");
-        }
+        sendSpectatePacket(SpectateActions.BeginSpectating);
+        game.spectating = true;
+        game.map.indicator.setFrame("player_indicator.svg");
     });
 
     $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });
@@ -327,18 +324,19 @@ $((): void => {
 
     // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
-        core.music.volume(value);
+        game.music.volume(value);
     });
 
     // SFX volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
-        if (core.game) core.game.soundManager.volume = value;
+        game.soundManager.volume = value;
     });
 
     // Master volume
     addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
         Howler.volume(value);
     });
+    Howler.volume(localStorageInstance.config.masterVolume);
 
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cameraShake");
@@ -374,15 +372,15 @@ $((): void => {
 
     // Minimap stuff
     addSliderListener("#slider-minimap-transparency", "minimapTransparency", () => {
-        core.game?.map.updateTransparency();
+        game.map.updateTransparency();
     });
 
     addSliderListener("#slider-big-map-transparency", "bigMapTransparency", () => {
-        core.game?.map.updateTransparency();
+        game.map.updateTransparency();
     });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
-        core.game?.map.toggleMiniMap(true);
+        game.map.toggleMiniMap(true);
     });
 
     // Leave warning
@@ -392,10 +390,10 @@ $((): void => {
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
         const slotElement = $(`#weapon-slot-${i + 1}`);
         slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
-            if (core.game !== undefined && slotElement.hasClass("has-item")) {
+            if (slotElement.hasClass("has-item")) {
                 e.stopImmediatePropagation();
-                if (e.button === 0) core.game.playerManager.equipItem(i);
-                else if (e.button === 2) core.game.playerManager.dropItem(i);
+                if (e.button === 0) game.playerManager.equipItem(i);
+                else if (e.button === 2) game.playerManager.dropItem(i);
             }
         });
     }
@@ -409,10 +407,8 @@ $((): void => {
         </div>`);
 
         $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            if (core.game) {
-                core.game.playerManager.useItem(scope.idString);
-                e.stopPropagation();
-            }
+            game.playerManager.useItem(scope.idString);
+            e.stopPropagation();
         });
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
@@ -432,10 +428,8 @@ $((): void => {
         </div>`);
 
         $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            if (core.game) {
-                core.game.playerManager.useItem(item.idString);
-                e.stopPropagation();
-            }
+            game.playerManager.useItem(item.idString);
+            e.stopPropagation();
         });
     }
 
@@ -450,22 +444,18 @@ $((): void => {
     }
 
     // Hide mobile settings on desktop
-    $("#tab-mobile").toggle(core.isMobile);
+    $("#tab-mobile").toggle(isMobile.any);
 
     // Mobile event listeners
-    if (core.game?.playerManager.isMobile) {
+    if (game.playerManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            if (core.game !== undefined) {
-                core.game.playerManager.interact();
-            }
+            game.playerManager.interact();
         });
 
         // Reload button
         $("#btn-reload").show().on("click", () => {
-            if (core.game !== undefined) {
-                core.game.playerManager.reload();
-            }
+            game.playerManager.reload();
         });
 
         // Emote button & wheel
@@ -478,11 +468,9 @@ $((): void => {
         });
         const createEmoteWheelListener = (slot: string, action: InputActions): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
-                if (core.game !== undefined) {
-                    $("#emote-wheel").hide();
-                    core.game.playerManager.action = action;
-                    core.game.playerManager.dirty.inputs = true;
-                }
+                $("#emote-wheel").hide();
+                game.playerManager.action = action;
+                game.playerManager.dirty.inputs = true;
             });
         };
         createEmoteWheelListener("top", InputActions.TopEmoteSlot);
@@ -498,7 +486,7 @@ $((): void => {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning && !core.game?.gameOver) {
+        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning && !game.gameOver) {
             e.preventDefault();
         }
     });
@@ -532,4 +520,4 @@ $((): void => {
         tabContent.addClass("active");
         tabContent.show();
     });
-});
+}
