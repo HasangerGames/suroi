@@ -50,7 +50,7 @@ async function main(): Promise<void> {
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
-                core.game?.connect(address);
+                game.connect(address);
                 $("#splash-server-message").hide();
             } else {
                 let message: string | undefined;
