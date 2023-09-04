@@ -13,7 +13,7 @@ import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { isMobile } from "pixi.js";
 
-export function setupUI(game: Game) {
+export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");

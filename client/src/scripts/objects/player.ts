@@ -12,7 +12,7 @@ import {
 
 import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { random, randomBoolean, randomFloat } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -548,6 +548,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         duration: 50,
                         yoyo: true
                     });
+
+                    if (weaponDef.particles) {
+                        this.game.particleManager.spawnParticle({
+                            frames: `${weaponDef.ammoType}_particle.svg`,
+                            depth: 3,
+                            position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
+                            lifeTime: 400,
+                            scale: {
+                                start: 0.8,
+                                end: 0.4
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sextIn
+                            },
+                            rotation: this.rotation + randomFloat(-0.2, 0.2) + Math.PI / 2,
+                            speed: vRotate(randomVector(0.2, -0.5, 1, 1.5), this.rotation)
+                        });
+                    }
                 }
                 break;
             }

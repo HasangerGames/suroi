@@ -38,6 +38,10 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
 
+    readonly particles?: {
+        readonly position: Vector
+    }
+
     readonly ballistics: {
         readonly damage: number
         readonly obstacleMultiplier: number
@@ -87,6 +91,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(120, 2) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 14,
             obstacleMultiplier: 1.5,
@@ -119,6 +126,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(110, 1) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 9,
@@ -152,6 +162,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(105, 0) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 10,
@@ -186,6 +199,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(4, 0.5)
+        },
         ballistics: {
             damage: 5,
             obstacleMultiplier: 0.5,
@@ -219,6 +235,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(105, 4) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 64,
             obstacleMultiplier: 1,
@@ -252,6 +271,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(125, 4) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 75,
             obstacleMultiplier: 1,
@@ -282,6 +304,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(78, 0) },
+        particles: {
+            position: v(3, 0.5)
+        },
         capacity: 15,
         reloadTime: 1.5,
         ballistics: {
@@ -312,6 +337,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(58, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         capacity: 16,
         reloadTime: 1.9,
         ballistics: {
@@ -344,6 +372,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(80, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
         ballistics: {
             damage: 15.5,
             obstacleMultiplier: 1,
@@ -378,6 +409,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         ballistics: {
             damage: 21,
             obstacleMultiplier: 1.5,
@@ -410,6 +444,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(103, -4) },
+        particles: {
+            position: v(4, 0.5)
+        },
         capacity: 30,
         reloadTime: 2.25,
         ballistics: {
@@ -440,6 +477,9 @@ export const Guns: GunDefinition[] = [
             left: v(70, 4),
             right: v(65, 0),
             animationDuration: 100
+        },
+        particles: {
+            position: v(3.5, 0.6)
         },
         image: { position: v(88, 0) },
         ballistics: {
@@ -472,6 +512,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         ballistics: {
             damage: 11,
             obstacleMultiplier: 1,
@@ -502,6 +545,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(110, 0) },
+        particles: {
+            position: v(4, 0.5)
+        },
         ballistics: {
             damage: 16,
             obstacleMultiplier: 1.5,
@@ -533,6 +579,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(128, 0) },
+        particles: {
+            position: v(4.5, 1)
+        },
         ballistics: {
             damage: 16,
             obstacleMultiplier: 2.5,
@@ -565,6 +614,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
         ballistics: {
             damage: 24,
             obstacleMultiplier: 1.5,
@@ -638,6 +690,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(90, 0) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 10,

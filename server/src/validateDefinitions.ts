@@ -1176,6 +1176,13 @@ logger.indent("Validating guns", () => {
                 }
             });
 
+            if (gun.particles !== undefined) {
+                logger.indent("Validating particles", () => {
+                    const errorPath2 = tester.createPath(errorPath, "particles");
+                    validateVector(errorPath2, gun.particles!.position);
+                });
+            }
+
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
                 const ballistics = gun.ballistics;
