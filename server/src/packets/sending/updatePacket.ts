@@ -141,9 +141,7 @@ export class UpdatePacket extends SendingPacket {
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
                 stream.writeBits(bullet.reflectionCount, 2);
-                if (bullet.reflectionCount > 0) {
-                    stream.writeObjectID(bullet.reflectedFromID);
-                }
+                stream.writeObjectID(bullet.sourceID);
             }
         }
 
