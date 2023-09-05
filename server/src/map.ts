@@ -1,6 +1,5 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
-import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { type Variation, type Orientation } from "../../common/src/typings";
@@ -12,11 +11,10 @@ import {
     randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
-import { Scopes } from "../../common/src/definitions/scopes";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
@@ -78,41 +76,6 @@ export class Map {
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
 
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
-
-        // Calculate visible objects
-        const visibleObjectsStartTime = Date.now();
-        for (const zoomLevel of Scopes.map(scope => scope.zoomLevel)) {
-            this.game.visibleObjects[zoomLevel] = {};
-            const xCullDist = zoomLevel * 1.8; const yCullDist = zoomLevel * 1.35;
-
-            for (let x = 0; x <= this.width; x += SERVER_GRID_SIZE) {
-                this.game.visibleObjects[zoomLevel][x] = {};
-                for (let y = 0; y <= this.height; y += SERVER_GRID_SIZE) {
-                    const visibleObjects = new Set<GameObject>();
-                    const minX = x - xCullDist;
-                    const minY = y - yCullDist;
-                    const maxX = x + xCullDist;
-                    const maxY = y + yCullDist;
-
-                    const rectangle = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
-
-                    for (const object of this.game.staticObjects) {
-                        if (object instanceof Obstacle && (object.position.x > minX &&
-                            object.position.x < maxX &&
-                            object.position.y > minY &&
-                            object.position.y < maxY)) {
-                            visibleObjects.add(object);
-                        } else if (object instanceof Building && rectangle.collidesWith(object.spawnHitbox)) {
-                            visibleObjects.add(object);
-                        }
-                    }
-
-                    this.game.visibleObjects[zoomLevel][x][y] = visibleObjects;
-                }
-            }
-        }
-
-        log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
     generateBuildings(idString: string, count: number): void {
@@ -168,6 +131,7 @@ export class Map {
         }
 
         this.game.staticObjects.add(building);
+        this.game.grid.addObject(building);
         return building;
     }
 
@@ -237,6 +201,8 @@ export class Map {
             parentBuilding
         );
         this.game.staticObjects.add(obstacle);
+
+        this.game.grid.addObject(obstacle);
         return obstacle;
     }
 
@@ -320,7 +286,7 @@ export class Map {
 
             const hitbox = initialHitbox.transform(position, scale, orientation);
 
-            for (const object of this.game.staticObjects) {
+            for (const object of this.game.grid.intersectsRect(hitbox.toRectangle())) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;

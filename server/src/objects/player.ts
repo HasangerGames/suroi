@@ -14,13 +14,12 @@ import {
     ObjectCategory,
     PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
-    PlayerActions,
-    SERVER_GRID_SIZE
+    PlayerActions
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
@@ -37,7 +36,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { type Vector } from "../../../common/src/utils/vector";
+import { v, type Vector } from "../../../common/src/utils/vector";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -383,17 +382,14 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.movesSinceLastUpdate = 0;
 
-        const approximateX = Math.round(this.position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        const approximateY = Math.round(this.position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        this.nearObjects = this.game.getVisibleObjects(this.position);
-        const visibleAtZoom = this.game.visibleObjects[this.zoom];
-
-        const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
-
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
+
+        this.nearObjects = this.game.grid.intersectsRect(new RectangleHitbox(v(minX, minY), v(maxX, maxY)));
+
+        const newVisibleObjects = this.nearObjects;
 
         for (const object of this.game.dynamicObjects) {
             if (

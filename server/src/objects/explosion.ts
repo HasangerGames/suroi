@@ -36,7 +36,7 @@ export class Explosion {
         }
 
         // list of all near objects
-        const objects = new Set<GameObject>([...this.game.getVisibleObjects(this.position), ...nearObjects]);
+        const objects = new Set<GameObject>([...this.game.grid.intersectsRect(new CircleHitbox(definition.radius.max, this.position).toRectangle()), ...nearObjects]);
 
         // list of all collisions to damage
         const collisions: Array<{

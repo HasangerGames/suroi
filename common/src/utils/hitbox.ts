@@ -66,6 +66,8 @@ export abstract class Hitbox {
      * @return A Vector of a random position inside this HitBox
      */
     abstract randomPoint(): Vector;
+
+    abstract toRectangle(): RectangleHitbox;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -141,6 +143,10 @@ export class CircleHitbox extends Hitbox {
     randomPoint(): Vector {
         return randomPointInsideCircle(this.position, this.radius);
     }
+
+    toRectangle(): RectangleHitbox {
+        return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
+    }
 }
 
 export class RectangleHitbox extends Hitbox {
@@ -158,6 +164,12 @@ export class RectangleHitbox extends Hitbox {
 
         this.width = max.x - min.x;
         this.height = max.y - min.y;
+    }
+
+    static fromLine(a: Vector, b: Vector): RectangleHitbox {
+        return new RectangleHitbox(
+            v(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y),
+            v(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y));
     }
 
     collidesWith(that: Hitbox): boolean {
@@ -208,6 +220,10 @@ export class RectangleHitbox extends Hitbox {
             x: randomFloat(this.min.x, this.max.x),
             y: randomFloat(this.min.y, this.max.y)
         };
+    }
+
+    toRectangle(): RectangleHitbox {
+        return this.clone();
     }
 }
 
@@ -287,5 +303,18 @@ export class ComplexHitbox extends Hitbox {
 
     randomPoint(): Vector {
         return this.hitBoxes[random(0, this.hitBoxes.length - 1)].randomPoint();
+    }
+
+    toRectangle(): RectangleHitbox {
+        let min = v(0, 0);
+        let max = v(Infinity, Infinity)
+        for (const hitbox of this.hitBoxes) {
+            const toRect = hitbox.toRectangle();
+            toRect.min.x = Math.max(min.x, toRect.min.x);
+            toRect.min.y = Math.max(min.y, toRect.min.y);
+            toRect.max.x = Math.min(max.x, toRect.max.x);
+            toRect.max.y = Math.min(max.y, toRect.max.y);
+        }
+        return new RectangleHitbox(min, max);
     }
 }

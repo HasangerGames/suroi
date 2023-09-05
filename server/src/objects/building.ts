@@ -18,6 +18,8 @@ export class Building extends GameObject {
 
     private _wallsToDestroy?: number;
 
+    readonly hitbox: Hitbox;
+
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, type, position);
 
@@ -28,6 +30,8 @@ export class Building extends GameObject {
         this._wallsToDestroy = type.definition.wallsToDestroy;
 
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
+
+        this.hitbox = this.spawnHitbox;
 
         this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
     }

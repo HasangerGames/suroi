@@ -15,7 +15,7 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE, TICK_SPEED } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, type DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
@@ -34,6 +34,8 @@ import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
+import { Grid } from "./utils/grid";
+import { Maps } from "./data/maps";
 
 export class Game {
     readonly _id: number;
@@ -61,7 +63,7 @@ export class Game {
      * A Set of all the dynamic (moving) objects in the world
      */
     readonly dynamicObjects = new Set<GameObject>();
-    readonly visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
+    readonly grid: Grid;
     updateObjects = false;
 
     aliveCountDirty = false;
@@ -108,6 +110,7 @@ export class Game {
         this._id = id;
 
         // Generate map
+        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height, 16);
         this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);
@@ -436,24 +439,6 @@ export class Game {
                 this.gas.advanceGas();
             }, 5000);
         }
-    }
-
-    /**
-     * Get the visible objects at a given position and zoom level
-     * @param position The position
-     * @param zoom The zoom level, defaults to 48
-     * @returns A set with the visible game objects at the given position and zoom level
-     * @throws {Error} If the zoom level is invalid
-     */
-    getVisibleObjects(position: Vector, zoom = 48): Set<GameObject> {
-        if (this.visibleObjects[zoom] === undefined) throw new Error(`Invalid zoom level: ${zoom}`);
-        // return an empty set if the position is out of bounds
-        if (position.x < 0 || position.x > this.map.width ||
-            position.y < 0 || position.y > this.map.height) return new Set();
-        /* eslint-disable no-unexpected-multiline */
-        return this.visibleObjects[zoom]
-            [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
-            [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
     }
 
     removePlayer(player: Player): void {
