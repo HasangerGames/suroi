@@ -17,7 +17,7 @@ import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
-import { distance, velFromAngle } from "../../../common/src/utils/math";
+import { clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
@@ -60,6 +60,9 @@ export class Loot extends GameObject {
         }
 
         this.position = vAdd(this.position, velocity);
+
+        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
         for (const object of objects) {

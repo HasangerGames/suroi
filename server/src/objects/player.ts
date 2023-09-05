@@ -36,7 +36,10 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { v, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Obstacle } from "./obstacle";
+import { clamp } from "../../../common/src/utils/math";
+import { Building } from "./building";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -342,6 +345,111 @@ export class Player extends GameObject {
 
     emote(slot: number): void {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
+    }
+
+    update(): void {
+        // This system allows opposite movement keys to cancel each other out.
+        const movement = v(0, 0);
+
+        if (this.isMobile && this.movement.moving) {
+            movement.x = Math.cos(this.movement.angle) * 1.45;
+            movement.y = Math.sin(this.movement.angle) * 1.45;
+        } else {
+            if (this.movement.up) movement.y--;
+            if (this.movement.down) movement.y++;
+            if (this.movement.left) movement.x--;
+            if (this.movement.right) movement.x++;
+        }
+
+        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+            movement.x *= Math.SQRT1_2;
+            movement.y *= Math.SQRT1_2;
+        }
+
+        if (movement.x !== 0 || movement.y !== 0) {
+            this.movesSinceLastUpdate++;
+        }
+
+        // Calculate speed
+        let recoilMultiplier = 1;
+        if (this.recoil.active) {
+            if (this.recoil.time < this.game.now) {
+                this.recoil.active = false;
+            } else {
+                recoilMultiplier = this.recoil.multiplier;
+            }
+        }
+        /* eslint-disable no-multi-spaces */
+        const speed = Config.movementSpeed *            // Base speed
+            recoilMultiplier *                          // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
+            this.modifiers.baseSpeed;                   // Current on-wearer modifier
+        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+
+        // Find and resolve collisions
+        for (const potential of this.nearObjects) {
+            if (
+                potential instanceof Obstacle &&
+                potential.collidable &&
+                potential.hitbox !== undefined &&
+                this.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
+            ) {
+                this.hitbox.resolveCollision(potential.hitbox);
+            }
+        }
+
+        // World boundaries
+        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+
+        // Disable invulnerability if the player moves or turns
+        if (this.isMoving || this.turning) {
+            this.disableInvulnerability();
+            this.game.partialDirtyObjects.add(this);
+        }
+
+        // Drain adrenaline
+        if (this.adrenaline > 0) {
+            this.adrenaline -= 0.015;
+        }
+
+        // Regenerate health
+        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
+        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
+        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
+        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+
+        // Shoot gun/use melee
+        if (this.startedAttacking) {
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem?.useItem();
+        }
+
+        // Gas damage
+        if (this.game.gas.doDamage && this.game.gas.isInGas(this.position)) {
+            this.piercingDamage(this.game.gas.dps, "gas");
+        }
+
+        let isInsideBuilding = false;
+        for (const object of this.nearObjects) {
+            if (object instanceof Building && !object.dead) {
+                if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                    isInsideBuilding = true;
+                    break;
+                }
+            }
+        }
+        if (isInsideBuilding && !this.isInsideBuilding) {
+            this.zoom = 48;
+        } else if (!this.isInsideBuilding) {
+            this.zoom = this.inventory.scope.definition.zoomLevel;
+        }
+        this.isInsideBuilding = isInsideBuilding;
+
+        this.turning = false;
     }
 
     spectate(spectating?: Player): void {

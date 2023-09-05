@@ -22,7 +22,7 @@ import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vAdd, type Vector } from "../../common/src/utils/vector";
+import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
@@ -32,8 +32,6 @@ import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
-import { Building } from "./objects/building";
-import { Obstacle } from "./objects/obstacle";
 import { Grid } from "./utils/grid";
 import { Maps } from "./data/maps";
 
@@ -162,110 +160,7 @@ export class Game {
 
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
-                // This system allows opposite movement keys to cancel each other out.
-                const movement = v(0, 0);
-
-                if (player.isMobile && player.movement.moving) {
-                    movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = Math.sin(player.movement.angle) * 1.45;
-                } else {
-                    if (player.movement.up) movement.y--;
-                    if (player.movement.down) movement.y++;
-                    if (player.movement.left) movement.x--;
-                    if (player.movement.right) movement.x++;
-                }
-
-                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-                    movement.x *= Math.SQRT1_2;
-                    movement.y *= Math.SQRT1_2;
-                }
-
-                if (movement.x !== 0 || movement.y !== 0) {
-                    player.movesSinceLastUpdate++;
-                }
-
-                // Calculate speed
-                let recoilMultiplier = 1;
-                if (player.recoil.active) {
-                    if (player.recoil.time < this.now) {
-                        player.recoil.active = false;
-                    } else {
-                        recoilMultiplier = player.recoil.multiplier;
-                    }
-                }
-                /* eslint-disable no-multi-spaces */
-                const speed = Config.movementSpeed *     // Base speed
-                    recoilMultiplier *                            // Recoil from items
-                    (player.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
-                    (1 + (player.adrenaline / 1000)) *            // Linear speed boost from adrenaline
-                    player.activeItemDefinition.speedMultiplier * // Active item speed modifier
-                    player.modifiers.baseSpeed;                   // Current on-wearer modifier
-                player.position = vAdd(player.position, v(movement.x * speed, movement.y * speed));
-
-                // Find and resolve collisions
-                for (const potential of player.nearObjects) {
-                    if (
-                        potential instanceof Obstacle &&
-                        potential.collidable &&
-                        potential.hitbox !== undefined &&
-                        player.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
-                    ) {
-                        player.hitbox.resolveCollision(potential.hitbox);
-                    }
-                }
-
-                // World boundaries
-                if (player.position.x < 0) player.position.x = 0;
-                if (player.position.x > this.map.width) player.position.x = this.map.width;
-                if (player.position.y < 0) player.position.y = 0;
-                if (player.position.y > this.map.height) player.position.y = this.map.height;
-
-                // Disable invulnerability if the player moves or turns
-                if (player.isMoving || player.turning) {
-                    player.disableInvulnerability();
-                    this.partialDirtyObjects.add(player);
-                }
-
-                // Drain adrenaline
-                if (player.adrenaline > 0) {
-                    player.adrenaline -= 0.015;
-                }
-
-                // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 2.75 / this.tickDelta;
-                else if (player.adrenaline >= 50) player.health += 2.125 / this.tickDelta;
-                else if (player.adrenaline >= 25) player.health += 1.125 / this.tickDelta;
-                else if (player.adrenaline > 0) player.health += 0.625 / this.tickDelta;
-
-                // Shoot gun/use melee
-                if (player.startedAttacking) {
-                    player.startedAttacking = false;
-                    player.disableInvulnerability();
-                    player.activeItem?.useItem();
-                }
-
-                // Gas damage
-                if (this.gas.doDamage && this.gas.isInGas(player.position)) {
-                    player.piercingDamage(this.gas.dps, "gas");
-                }
-
-                let isInsideBuilding = false;
-                for (const object of player.nearObjects) {
-                    if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
-                            isInsideBuilding = true;
-                            break;
-                        }
-                    }
-                }
-                if (isInsideBuilding && !player.isInsideBuilding) {
-                    player.zoom = 48;
-                } else if (!player.isInsideBuilding) {
-                    player.zoom = player.inventory.scope.definition.zoomLevel;
-                }
-                player.isInsideBuilding = isInsideBuilding;
-
-                player.turning = false;
+                player.update();
             }
 
             // Second loop over players: calculate visible objects & send updates
