@@ -822,18 +822,6 @@ function validateHitbox(baseErrorPath: string, hitbox: Hitbox): void {
     } else if (hitbox instanceof RectangleHitbox) {
         validateVector(baseErrorPath, hitbox.min);
         validateVector(baseErrorPath, hitbox.max);
-
-        tester.assertIsPositiveFiniteReal({
-            obj: hitbox,
-            field: "width",
-            baseErrorPath
-        });
-
-        tester.assertIsPositiveFiniteReal({
-            obj: hitbox,
-            field: "height",
-            baseErrorPath
-        });
     } else if (hitbox instanceof ComplexHitbox) {
         hitbox.hitBoxes.map(validateHitbox.bind(null, baseErrorPath));
     }

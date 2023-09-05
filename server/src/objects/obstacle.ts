@@ -194,8 +194,6 @@ export class Obstacle extends GameObject {
                 );
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
-                this.hitbox.width = this.hitbox.max.x - this.hitbox.min.x;
-                this.hitbox.height = this.hitbox.max.y - this.hitbox.min.y;
             }
 
             // Punch doors to open

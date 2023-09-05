@@ -153,17 +153,11 @@ export class RectangleHitbox extends Hitbox {
     min: Vector;
     max: Vector;
 
-    width: number;
-    height: number;
-
     constructor(min: Vector, max: Vector) {
         super();
 
         this.min = min;
         this.max = max;
-
-        this.width = max.x - min.x;
-        this.height = max.y - min.y;
     }
 
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
@@ -306,14 +300,14 @@ export class ComplexHitbox extends Hitbox {
     }
 
     toRectangle(): RectangleHitbox {
-        let min = v(0, 0);
-        let max = v(Infinity, Infinity)
+        const min = v(Infinity, Infinity);
+        const max = v(0, 0);
         for (const hitbox of this.hitBoxes) {
             const toRect = hitbox.toRectangle();
-            toRect.min.x = Math.max(min.x, toRect.min.x);
-            toRect.min.y = Math.max(min.y, toRect.min.y);
-            toRect.max.x = Math.min(max.x, toRect.max.x);
-            toRect.max.y = Math.min(max.y, toRect.max.y);
+            min.x = Math.min(min.x, toRect.min.x);
+            min.y = Math.min(min.y, toRect.min.y);
+            max.x = Math.max(max.x, toRect.max.x);
+            max.y = Math.max(max.y, toRect.max.y);
         }
         return new RectangleHitbox(min, max);
     }

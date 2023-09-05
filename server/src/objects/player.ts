@@ -632,8 +632,8 @@ export class Player extends GameObject {
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
-        this.game.dynamicObjects.add(deathMarker);
-        this.game.fullDirtyObjects.add(deathMarker);
+        this.game.grid.addObject(deathMarker);
+        this.game.updateObjects = true;
 
         // Send game over to dead player
         if (!this.disconnected) {
