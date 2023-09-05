@@ -22,7 +22,7 @@ import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
@@ -131,12 +131,9 @@ export class Game {
 
             if (this.stopped) return;
 
-            // Update loot positions
+            // Update loots
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
-                    this.partialDirtyObjects.add(loot);
-                }
-                loot.oldPosition = vClone(loot.position);
+                loot.update();
             }
 
             // Update bullets

@@ -4,37 +4,73 @@ import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, vMul, type Vector, vClone } from "../../../common/src/utils/vector";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, LootRadius, TICK_SPEED, type ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { Obstacle } from "./obstacle";
+import { distance, velFromAngle } from "../../../common/src/utils/math";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
 
-    oldPosition: Vector;
+    oldPosition = v(0, 0);
 
     count = 1;
 
     isNew = true;
+
+    hitbox: CircleHitbox;
+
+    velocity = v(0, 0);
+
+    get position(): Vector {
+        return this.hitbox.position;
+    }
+
+    set position(pos: Vector) {
+        this.hitbox.position = pos;
+    }
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
 
         this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], position);
 
-        this.oldPosition = position;
         if (count !== undefined) this.count = count;
 
         setTimeout((): void => { this.isNew = false; }, 100);
+    }
+
+    update(): void {
+        this.velocity = vMul(this.velocity, 0.95);
+        const velocity = vMul(this.velocity, 1 / TICK_SPEED);
+
+        if (distance(this.oldPosition, this.position) > 0.01) {
+            this.game.partialDirtyObjects.add(this);
+            this.oldPosition = vClone(this.position);
+        }
+
+        this.position = vAdd(this.position, velocity);
+
+        const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const object of objects) {
+            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
+                this.hitbox.resolveCollision(object.hitbox);
+            }
+        }
+    }
+
+    push(angle: number, velocity: number): void {
+        this.velocity = vAdd(this.velocity, velFromAngle(angle, velocity));
     }
 
     canInteract(player: Player): boolean {
