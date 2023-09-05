@@ -1,6 +1,7 @@
-import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture } from "pixi.js";
+import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture, Graphics, Graphics, Color } from "pixi.js";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 
 declare const ATLAS_HASH: string;
 
@@ -84,4 +85,32 @@ export class SuroiSprite extends Sprite {
 
 export function toPixiCoords(pos: Vector): Vector {
     return vMul(pos, PIXI_SCALE);
+}
+
+export function drawnHitbox(hitbox: Hitbox, graphics?: Graphics): Graphics {
+    if (!graphics) {
+        graphics = new Graphics();
+        graphics.lineStyle({
+            color: 0xff0000,
+            alpha: 0.5,
+            width: 2
+        });
+        graphics.fill.alpha = 0;
+    }
+    if (hitbox instanceof RectangleHitbox) {
+        const min = toPixiCoords(hitbox.min);
+        const max = toPixiCoords(hitbox.max);
+        graphics.moveTo(min.x, min.y)
+            .lineTo(max.x, min.y)
+            .lineTo(max.x, max.y)
+            .lineTo(min.x, max.y);
+    } else if (hitbox instanceof CircleHitbox) {
+        const pos = toPixiCoords(hitbox.position);
+        graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
+    } else if (hitbox instanceof ComplexHitbox) {
+        for (const h of hitbox.hitBoxes) drawnHitbox(h, graphics);
+    }
+    graphics.closePath().endFill();
+
+    return graphics;
 }
