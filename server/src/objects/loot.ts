@@ -17,7 +17,8 @@ import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
-import { clamp, distance, velFromAngle } from "../../../common/src/utils/math";
+import { angleBetween, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
+import { randomRotation } from "../../../common/src/utils/random";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
@@ -47,6 +48,8 @@ export class Loot extends GameObject {
 
         if (count !== undefined) this.count = count;
 
+        this.push(randomRotation(), 0.5);
+
         setTimeout((): void => { this.isNew = false; }, 100);
     }
 
@@ -70,6 +73,11 @@ export class Loot extends GameObject {
         for (const object of objects) {
             if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
                 this.hitbox.resolveCollision(object.hitbox);
+            }
+
+            // TODO: better loot physics, this is just temporary
+            if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
+                this.push(angleBetween(object.position, this.position), -0.2);
             }
         }
     }
@@ -234,7 +242,7 @@ export class Loot extends GameObject {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    override damage(amount: number, source?: GameObject): void {}
+    override damage(amount: number, source?: GameObject): void { }
 
     override serializePartial(stream: SuroiBitStream): void {
         stream.writePosition(this.position);
