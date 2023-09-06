@@ -489,35 +489,36 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.playSound("swing", 0.4, 96);
 
-                const rotated = vRotate(weaponDef.offset, this.rotation);
-                const position = vAdd(this.position, rotated);
-                const hitbox = new CircleHitbox(weaponDef.radius, position);
+                setTimeout(() => {
+                    // Play hit effect on closest object
+                    // TODO: share this logic with the server
+                    const rotated = vRotate(weaponDef.offset, this.rotation);
+                    const position = vAdd(this.position, rotated);
+                    const hitbox = new CircleHitbox(weaponDef.radius, position);
 
-                // Play hit effect on closest object
-                // TODO: share this logic with the server
+                    const damagedObjects: Array<Player | Obstacle> = [];
 
-                const damagedObjects: Array<Player | Obstacle> = [];
-
-                for (const object of this.game.objectsSet) {
-                    if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
-                        if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                    for (const object of this.game.objectsSet) {
+                        if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
+                            if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                        }
                     }
-                }
 
-                damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                    if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
-                    if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
-                    const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
-                    const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
+                    damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
+                        if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
+                        if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
+                        const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
+                        const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
 
-                    return distanceA - distanceB;
-                });
+                        return distanceA - distanceB;
+                    });
 
-                const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
-                for (let i = 0; i < targetLimit; i++) {
-                    const closestObject = damagedObjects[i];
-                    closestObject.hitEffect(position, angleBetween(this.position, position));
-                }
+                    const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
+                    for (let i = 0; i < targetLimit; i++) {
+                        const closestObject = damagedObjects[i];
+                        closestObject.hitEffect(position, angleBetween(this.position, position));
+                    }
+                }, 50);
 
                 break;
             }

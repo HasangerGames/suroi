@@ -1,4 +1,4 @@
-import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture, Graphics, Graphics, Color } from "pixi.js";
+import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture } from "pixi.js";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
