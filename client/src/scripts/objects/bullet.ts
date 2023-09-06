@@ -40,7 +40,7 @@ export class Bullet extends BaseBullet {
 
     update(delta: number): void {
         if (!this.dead) {
-            const collisions = this.updateAndGetCollisions(delta, this.game.objectsSet);
+            const collisions = this.updateAndGetCollisions(delta, this.game.objects);
 
             for (const collision of collisions) {
                 const object = collision.object;

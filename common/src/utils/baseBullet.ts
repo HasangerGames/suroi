@@ -44,7 +44,7 @@ export class BaseBullet {
         position: Vector,
         rotation: number,
         source: ObjectType<ObjectCategory.Loot,
-        GunDefinition>,
+            GunDefinition>,
         sourceID: number,
         reflectionCount = 0
     ) {
@@ -70,7 +70,7 @@ export class BaseBullet {
      * @param objects A set containing objects to check for collision
      * @returns An array containing the objects that the bullet collided and the intersection data
      */
-    updateAndGetCollisions(delta: number, objects: Set<GameObject>): Collision[] {
+    updateAndGetCollisions(delta: number, objects: { [Symbol.iterator](): Iterator<GameObject> }): Collision[] {
         const oldPosition = vClone(this.position);
 
         this.position = vAdd(this.position, vMul(this.velocity, delta));

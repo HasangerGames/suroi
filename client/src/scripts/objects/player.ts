@@ -498,7 +498,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     const damagedObjects: Array<Player | Obstacle> = [];
 
-                    for (const object of this.game.objectsSet) {
+                    for (const object of this.game.objects) {
                         if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
                             if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
                         }

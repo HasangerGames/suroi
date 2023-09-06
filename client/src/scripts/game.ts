@@ -40,13 +40,13 @@ import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
 import { type FloorType } from "../../../common/src/definitions/buildings";
+import { ObjectPool } from "../../../common/src/utils/objectPool";
 
 export class Game {
     socket!: WebSocket;
 
-    objects = new Map<number, GameObject>();
-    objectsSet: Set<GameObject> = new Set<GameObject>();
-    players: Set<Player> = new Set<Player>();
+    objects = new ObjectPool<GameObject>();
+    players = new ObjectPool<Player>();
     bullets: Set<Bullet> = new Set<Bullet>();
     activePlayer!: Player;
 
@@ -162,7 +162,6 @@ export class Game {
             this.activePlayer = new Player(this, -1, true);
 
             this.players.add(this.activePlayer);
-            this.objectsSet.add(this.activePlayer);
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
@@ -250,7 +249,6 @@ export class Game {
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
-        this.objectsSet.clear();
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
@@ -343,7 +341,7 @@ export class Game {
             const player = this.activePlayer;
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
-            for (const object of this.objectsSet) {
+            for (const object of this.objects) {
                 if (object instanceof Obstacle && object.isDoor && !object.dead) {
                     const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
                     const dist = distanceSquared(object.position, player.position);
@@ -411,7 +409,7 @@ export class Game {
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
-                            (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
+                                (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
                             this.playerManager.interact();
                         } else if (

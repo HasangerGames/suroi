@@ -144,15 +144,15 @@ export class UpdatePacket extends ReceivingPacket {
                 const activePlayer = game.objects.get(activePlayerID);
                 if (activePlayer !== undefined) {
                     activePlayer.destroy();
-                    game.objects.delete(activePlayerID);
+                    game.objects.deleteByID(activePlayerID);
                 }
 
                 // Reset the active player
-                game.objects.delete(game.activePlayer.id);
+                game.objects.deleteByID(game.activePlayer.id);
                 game.activePlayer.id = activePlayerID;
                 game.activePlayer.distSinceLastFootstep = 0;
                 game.activePlayer.isNew = true;
-                game.objects.set(game.activePlayer.id, game.activePlayer);
+                game.objects.add(game.activePlayer);
             }
             // Name dirty
             if (stream.readBoolean()) {
@@ -181,7 +181,7 @@ export class UpdatePacket extends ReceivingPacket {
                 const id = stream.readObjectID();
                 let object: GameObject | undefined;
 
-                if (!game.objects.has(id)) {
+                if (!game.objects.hasID(id)) {
                     switch (type.category) {
                         case ObjectCategory.Player: {
                             object = new Player(game, id);
@@ -211,8 +211,7 @@ export class UpdatePacket extends ReceivingPacket {
                         continue;
                     }
 
-                    game.objects.set(object.id, object);
-                    game.objectsSet.add(object);
+                    game.objects.add(object);
                 } else {
                     const objectFromSet: GameObject | undefined = game.objects.get(id);
                     if (objectFromSet === undefined) {
@@ -252,8 +251,7 @@ export class UpdatePacket extends ReceivingPacket {
                     continue;
                 }
                 object.destroy();
-                game.objects.delete(id);
-                game.objectsSet.delete(object);
+                game.objects.delete(object);
                 if (object instanceof Player) {
                     game.players.delete(object);
                 }
