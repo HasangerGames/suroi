@@ -302,7 +302,7 @@ export class ComplexHitbox extends Hitbox {
     toRectangle(): RectangleHitbox {
         const min = v(Infinity, Infinity);
         const max = v(0, 0);
-        for (const hitbox of this.hitBoxes) {
+        for (const hitbox of this.hitboxes) {
             const toRect = hitbox.toRectangle();
             min.x = Math.min(min.x, toRect.min.x);
             min.y = Math.min(min.y, toRect.min.y);
