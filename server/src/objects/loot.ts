@@ -44,6 +44,7 @@ export class Loot extends GameObject {
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
+
         this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], position);
         this.oldPosition = this._position;
 
