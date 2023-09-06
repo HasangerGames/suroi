@@ -2,11 +2,12 @@ import { Player } from "./player";
 import { type Game } from "../game";
 import { normalizeAngle } from "../../../common/src/utils/math";
 import { type GunItem } from "../inventory/gunItem";
-import { type Vector } from "../../../common/src/utils/vector";
+import { vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
 import { TICK_SPEED } from "../../../common/src/constants";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 
 export interface DamageRecord {
     object: Obstacle | Player
@@ -30,7 +31,9 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const objects = new Set([...this.game.livingPlayers, ...this.game.getVisibleObjects(this.position)]);
+        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICK_SPEED)));
+
+        const objects = this.game.grid.intersectsRect(lineRect);
         const collisions = this.updateAndGetCollisions(TICK_SPEED, objects);
 
         // Bullets from dead players should not deal damage so delete them

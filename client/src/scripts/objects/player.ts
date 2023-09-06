@@ -12,7 +12,7 @@ import {
 
 import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
 import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { random, randomBoolean, randomFloat } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -140,7 +140,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updatePosition(): void {
         super.updatePosition();
-        this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
+        if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
@@ -488,35 +488,36 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.playSound("swing", 0.4, 96);
 
-                const rotated = vRotate(weaponDef.offset, this.rotation);
-                const position = vAdd(this.position, rotated);
-                const hitbox = new CircleHitbox(weaponDef.radius, position);
+                setTimeout(() => {
+                    // Play hit effect on closest object
+                    // TODO: share this logic with the server
+                    const rotated = vRotate(weaponDef.offset, this.rotation);
+                    const position = vAdd(this.position, rotated);
+                    const hitbox = new CircleHitbox(weaponDef.radius, position);
 
-                // Play hit effect on closest object
-                // TODO: share this logic with the server
+                    const damagedObjects: Array<Player | Obstacle> = [];
 
-                const damagedObjects: Array<Player | Obstacle> = [];
-
-                for (const object of this.game.objectsSet) {
-                    if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
-                        if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                    for (const object of this.game.objects) {
+                        if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
+                            if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                        }
                     }
-                }
 
-                damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                    if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
-                    if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
-                    const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
-                    const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
+                    damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
+                        if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
+                        if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
+                        const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
+                        const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
 
-                    return distanceA - distanceB;
-                });
+                        return distanceA - distanceB;
+                    });
 
-                const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
-                for (let i = 0; i < targetLimit; i++) {
-                    const closestObject = damagedObjects[i];
-                    closestObject.hitEffect(position, angleBetween(this.position, position));
-                }
+                    const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
+                    for (let i = 0; i < targetLimit; i++) {
+                        const closestObject = damagedObjects[i];
+                        closestObject.hitEffect(position, angleBetween(this.position, position));
+                    }
+                }, 50);
 
                 break;
             }
@@ -547,6 +548,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         duration: 50,
                         yoyo: true
                     });
+
+                    if (weaponDef.particles) {
+                        this.game.particleManager.spawnParticle({
+                            frames: `${weaponDef.ammoType}_particle.svg`,
+                            depth: 3,
+                            position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
+                            lifeTime: 400,
+                            scale: {
+                                start: 0.8,
+                                end: 0.4
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sextIn
+                            },
+                            rotation: this.rotation + randomFloat(-0.2, 0.2) + Math.PI / 2,
+                            speed: vRotate(randomVector(0.2, -0.5, 1, 1.5), this.rotation)
+                        });
+                    }
                 }
                 break;
             }
@@ -579,6 +600,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
+        clearTimeout(this._emoteHideTimeoutID);
+        this.emoteHideAnim?.kill();
+        this.emoteAnim?.kill();
+        this.emoteContainer.destroy();
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();

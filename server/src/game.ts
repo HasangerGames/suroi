@@ -15,14 +15,14 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE, TICK_SPEED } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, type DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
@@ -32,8 +32,8 @@ import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
-import { Building } from "./objects/building";
-import { Obstacle } from "./objects/obstacle";
+import { Grid } from "./utils/grid";
+import { Maps } from "./data/maps";
 
 export class Game {
     readonly _id: number;
@@ -57,12 +57,7 @@ export class Game {
      * A Set of all the static objects in the world
      */
     readonly staticObjects = new Set<GameObject>();
-    /**
-     * A Set of all the dynamic (moving) objects in the world
-     */
-    readonly dynamicObjects = new Set<GameObject>();
-    readonly visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
-    updateObjects = false;
+    readonly grid: Grid;
 
     aliveCountDirty = false;
 
@@ -108,6 +103,7 @@ export class Game {
         this._id = id;
 
         // Generate map
+        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height, 16);
         this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);
@@ -128,12 +124,9 @@ export class Game {
 
             if (this.stopped) return;
 
-            // Update loot positions
+            // Update loots
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
-                    this.partialDirtyObjects.add(loot);
-                }
-                loot.oldPosition = vClone(loot.position);
+                loot.update();
             }
 
             // Update bullets
@@ -162,110 +155,7 @@ export class Game {
 
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
-                // This system allows opposite movement keys to cancel each other out.
-                const movement = v(0, 0);
-
-                if (player.isMobile && player.movement.moving) {
-                    movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = Math.sin(player.movement.angle) * 1.45;
-                } else {
-                    if (player.movement.up) movement.y--;
-                    if (player.movement.down) movement.y++;
-                    if (player.movement.left) movement.x--;
-                    if (player.movement.right) movement.x++;
-                }
-
-                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-                    movement.x *= Math.SQRT1_2;
-                    movement.y *= Math.SQRT1_2;
-                }
-
-                if (movement.x !== 0 || movement.y !== 0) {
-                    player.movesSinceLastUpdate++;
-                }
-
-                // Calculate speed
-                let recoilMultiplier = 1;
-                if (player.recoil.active) {
-                    if (player.recoil.time < this.now) {
-                        player.recoil.active = false;
-                    } else {
-                        recoilMultiplier = player.recoil.multiplier;
-                    }
-                }
-                /* eslint-disable no-multi-spaces */
-                const speed = Config.movementSpeed *     // Base speed
-                    recoilMultiplier *                            // Recoil from items
-                    (player.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
-                    (1 + (player.adrenaline / 1000)) *            // Linear speed boost from adrenaline
-                    player.activeItemDefinition.speedMultiplier * // Active item speed modifier
-                    player.modifiers.baseSpeed;                   // Current on-wearer modifier
-                player.position = vAdd(player.position, v(movement.x * speed, movement.y * speed));
-
-                // Find and resolve collisions
-                for (const potential of player.nearObjects) {
-                    if (
-                        potential instanceof Obstacle &&
-                        potential.collidable &&
-                        potential.hitbox !== undefined &&
-                        player.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
-                    ) {
-                        player.hitbox.resolveCollision(potential.hitbox);
-                    }
-                }
-
-                // World boundaries
-                if (player.position.x < 0) player.position.x = 0;
-                if (player.position.x > this.map.width) player.position.x = this.map.width;
-                if (player.position.y < 0) player.position.y = 0;
-                if (player.position.y > this.map.height) player.position.y = this.map.height;
-
-                // Disable invulnerability if the player moves or turns
-                if (player.isMoving || player.turning) {
-                    player.disableInvulnerability();
-                    this.partialDirtyObjects.add(player);
-                }
-
-                // Drain adrenaline
-                if (player.adrenaline > 0) {
-                    player.adrenaline -= 0.015;
-                }
-
-                // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 2.75 / this.tickDelta;
-                else if (player.adrenaline >= 50) player.health += 2.125 / this.tickDelta;
-                else if (player.adrenaline >= 25) player.health += 1.125 / this.tickDelta;
-                else if (player.adrenaline > 0) player.health += 0.625 / this.tickDelta;
-
-                // Shoot gun/use melee
-                if (player.startedAttacking) {
-                    player.startedAttacking = false;
-                    player.disableInvulnerability();
-                    player.activeItem?.useItem();
-                }
-
-                // Gas damage
-                if (this.gas.doDamage && this.gas.isInGas(player.position)) {
-                    player.piercingDamage(this.gas.dps, "gas");
-                }
-
-                let isInsideBuilding = false;
-                for (const object of player.nearObjects) {
-                    if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
-                            isInsideBuilding = true;
-                            break;
-                        }
-                    }
-                }
-                if (isInsideBuilding && !player.isInsideBuilding) {
-                    player.zoom = 48;
-                } else if (!player.isInsideBuilding) {
-                    player.zoom = player.inventory.scope.definition.zoomLevel;
-                }
-                player.isInsideBuilding = isInsideBuilding;
-
-                player.turning = false;
+                player.update();
             }
 
             // Second loop over players: calculate visible objects & send updates
@@ -273,9 +163,7 @@ export class Game {
                 if (!player.joined) continue;
 
                 // Calculate visible objects
-                if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
-                    player.updateVisibleObjects();
-                }
+                player.updateVisibleObjects();
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
@@ -336,7 +224,6 @@ export class Game {
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
-            this.updateObjects = false;
 
             for (const player of this.livingPlayers) {
                 player.dirty.action = false;
@@ -415,13 +302,11 @@ export class Game {
         game.livingPlayers.add(player);
         game.spectatablePlayers.push(player);
         game.connectedPlayers.add(player);
-        game.dynamicObjects.add(player);
+        game.grid.addObject(player);
         game.fullDirtyObjects.add(player);
-        game.updateObjects = true;
         game.aliveCountDirty = true;
         game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
-        player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendData(this.mapPacketStream);
@@ -438,24 +323,6 @@ export class Game {
         }
     }
 
-    /**
-     * Get the visible objects at a given position and zoom level
-     * @param position The position
-     * @param zoom The zoom level, defaults to 48
-     * @returns A set with the visible game objects at the given position and zoom level
-     * @throws {Error} If the zoom level is invalid
-     */
-    getVisibleObjects(position: Vector, zoom = 48): Set<GameObject> {
-        if (this.visibleObjects[zoom] === undefined) throw new Error(`Invalid zoom level: ${zoom}`);
-        // return an empty set if the position is out of bounds
-        if (position.x < 0 || position.x > this.map.width ||
-            position.y < 0 || position.y > this.map.height) return new Set();
-        /* eslint-disable no-unexpected-multiline */
-        return this.visibleObjects[zoom]
-            [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
-            [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
-    }
-
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
@@ -468,7 +335,6 @@ export class Game {
         removeFrom(this.spectatablePlayers, player);
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
-            this.dynamicObjects.delete(player);
             this.removeObject(player);
         } else {
             player.rotation = 0;
@@ -494,22 +360,19 @@ export class Game {
         }
         try {
             player.socket.close();
-        } catch (e) {}
+        } catch (e) { }
     }
 
     addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
         const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
-        this.dynamicObjects.add(loot);
-        this.fullDirtyObjects.add(loot);
-        this.updateObjects = true;
+        this.grid.addObject(loot);
         return loot;
     }
 
     removeLoot(loot: Loot): void {
         loot.dead = true;
         this.loot.delete(loot);
-        this.dynamicObjects.delete(loot);
         this.removeObject(loot);
     }
 
@@ -540,8 +403,8 @@ export class Game {
      * @param object The object to delete
      */
     removeObject(object: GameObject): void {
+        this.grid.removeObject(object);
         this.idAllocator.give(object.id);
-        this.updateObjects = true;
     }
 
     get aliveCount(): number {

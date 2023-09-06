@@ -21,6 +21,9 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     oldPosition!: Vector;
     lastPositionChange!: number;
     _position!: Vector;
+
+    destroyed = false;
+
     get position(): Vector { return this._position; }
     set position(position: Vector) {
         if (this._position !== undefined) this.oldPosition = vClone(this._position);
@@ -30,7 +33,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     exactPosition?: Vector;
     updatePosition(): void {
-        if (this.oldPosition === undefined || this.container.position === undefined) return;
+        if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / TICK_SPEED;
         this.exactPosition = vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1));
         this.container.position = toPixiCoords(this.exactPosition);
@@ -67,6 +70,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     }
 
     destroy(): void {
+        this.destroyed = true;
         this.container.destroy();
     }
 

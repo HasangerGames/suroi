@@ -50,6 +50,8 @@ export class Obstacle extends GameObject {
 
     parentBuilding?: Building;
 
+    hitbox: Hitbox;
+
     constructor(
         game: Game,
         type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
@@ -159,7 +161,7 @@ export class Obstacle extends GameObject {
                 this.parentBuilding?.damage();
 
                 // a bit of a hack to break doors attached to walls :)
-                for (const object of this.game.getVisibleObjects(this.position)) {
+                for (const object of this.game.grid.intersectsRect(this.hitbox.toRectangle())) {
                     if (
                         object instanceof Obstacle &&
                         object.definition.isDoor &&
@@ -192,8 +194,6 @@ export class Obstacle extends GameObject {
                 );
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
-                this.hitbox.width = this.hitbox.max.x - this.hitbox.min.x;
-                this.hitbox.height = this.hitbox.max.y - this.hitbox.min.y;
             }
 
             // Punch doors to open

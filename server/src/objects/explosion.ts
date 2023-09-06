@@ -28,15 +28,8 @@ export class Explosion {
     explode(): void {
         const definition = this.type.definition;
 
-        const nearObjects: GameObject[] = [];
-
-        // precalculate near by dynamic objects
-        for (const object of this.game.dynamicObjects) {
-            if (object.hitbox && object.hitbox.collidesWith(new CircleHitbox(definition.radius.max, this.position))) nearObjects.push(object);
-        }
-
         // list of all near objects
-        const objects = new Set<GameObject>([...this.game.getVisibleObjects(this.position), ...nearObjects]);
+        const objects = this.game.grid.intersectsRect(new CircleHitbox(definition.radius.max, this.position).toRectangle());
 
         // list of all collisions to damage
         const collisions: Array<{

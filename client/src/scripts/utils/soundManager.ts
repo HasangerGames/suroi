@@ -31,26 +31,27 @@ export class SoundManager {
 
     play(name: string, position?: Vector, fallOff = 1, maxRange = 256): Sound {
         const sound = this.sounds[name];
-        let id: number;
+        let id = -1;
 
         if (sound) {
+            let volume = this.volume;
+            let stereoNorm = 0;
             if (position) {
                 const baseVolume = this.volume;
                 const diff = vSub(this.position, position);
                 const dist = vLength(diff);
                 const distNormal = clamp(Math.abs(dist / maxRange), 0, 1);
                 const scaledVolume = (1.0 - distNormal) ** (1.0 + fallOff * 2.0);
-                const clipVolume = scaledVolume * baseVolume;
-                const stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
-
-                sound.volume(clipVolume);
-                sound.stereo(stereoNorm);
+                volume = scaledVolume * baseVolume;
+                stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
             }
-
-            id = sound.play();
+            if (volume > 0) {
+                sound.volume(volume);
+                sound.stereo(stereoNorm);
+                id = sound.play();
+            }
         } else {
             console.warn(`Sound with name "${name}" not found.`);
-            id = -1;
         }
         return {
             name,

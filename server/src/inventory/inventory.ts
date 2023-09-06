@@ -243,7 +243,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        this.dropWeapon(slot, -0.01);
+        this.dropWeapon(slot, -5);
         this._setWeapon(slot, this._reifyItem(item));
 
         if (index !== undefined) {
@@ -270,16 +270,16 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushForce The velocity to push the loot, defaults to -0.02
+     * @param pushForce The velocity to push the loot, defaults to -5
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushForce = -0.02): GunItem | MeleeItem | undefined {
+    dropWeapon(slot: number, pushForce = -10): GunItem | MeleeItem | undefined {
         const item = this._weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
         const loot = this.owner.game.addLoot(item.type, this.owner.position);
-        //loot.push(this.owner.rotation, pushForce);
+        loot.push(this.owner.rotation, pushForce);
 
         if (item instanceof GunItem && item.ammo > 0) {
             // Put the ammo in the gun back in the inventory
@@ -308,7 +308,7 @@ export class Inventory {
                 splitUpLoot(this.owner, ammoType, overAmount);*/
                 this.items[ammoType] -= overAmount;
                 const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
-                //loot.push(this.owner.rotation, pushForce);
+                loot.push(this.owner.rotation, pushForce);
             }
 
             this.owner.dirty.inventory = true;

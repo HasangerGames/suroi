@@ -118,7 +118,7 @@ export const Maps: Record<string, MapDefinition> = {
             // Generate all Loots
             const itemPos = v(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 511);
+                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), vClone(itemPos), 511);
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {

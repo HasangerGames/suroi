@@ -14,13 +14,12 @@ import {
     ObjectCategory,
     PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
-    PlayerActions,
-    SERVER_GRID_SIZE
+    PlayerActions
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
@@ -37,7 +36,10 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Obstacle } from "./obstacle";
+import { clamp } from "../../../common/src/utils/math";
+import { Building } from "./building";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -131,8 +133,6 @@ export class Player extends GameObject {
             this.movement.right ||
             this.movement.moving;
     }
-
-    movesSinceLastUpdate = 0;
 
     readonly movement = {
         up: false,
@@ -330,7 +330,6 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
-        this.updateVisibleObjects();
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
@@ -345,6 +344,111 @@ export class Player extends GameObject {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
 
+    update(): void {
+        // This system allows opposite movement keys to cancel each other out.
+        const movement = v(0, 0);
+
+        if (this.isMobile && this.movement.moving) {
+            movement.x = Math.cos(this.movement.angle) * 1.45;
+            movement.y = Math.sin(this.movement.angle) * 1.45;
+        } else {
+            if (this.movement.up) movement.y--;
+            if (this.movement.down) movement.y++;
+            if (this.movement.left) movement.x--;
+            if (this.movement.right) movement.x++;
+        }
+
+        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+            movement.x *= Math.SQRT1_2;
+            movement.y *= Math.SQRT1_2;
+        }
+
+        // Calculate speed
+        let recoilMultiplier = 1;
+        if (this.recoil.active) {
+            if (this.recoil.time < this.game.now) {
+                this.recoil.active = false;
+            } else {
+                recoilMultiplier = this.recoil.multiplier;
+            }
+        }
+        /* eslint-disable no-multi-spaces */
+        const speed = Config.movementSpeed *            // Base speed
+            recoilMultiplier *                          // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
+            this.modifiers.baseSpeed;                   // Current on-wearer modifier
+
+        this.game.grid.removeObject(this);
+        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        this.game.grid.addObject(this);
+
+        // Find and resolve collisions
+        this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const potential of this.nearObjects) {
+            if (
+                potential instanceof Obstacle &&
+                potential.collidable &&
+                potential.hitbox !== undefined &&
+                this.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
+            ) {
+                this.hitbox.resolveCollision(potential.hitbox);
+            }
+        }
+
+        // World boundaries
+        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+
+        // Disable invulnerability if the player moves or turns
+        if (this.isMoving || this.turning) {
+            this.disableInvulnerability();
+            this.game.partialDirtyObjects.add(this);
+        }
+
+        // Drain adrenaline
+        if (this.adrenaline > 0) {
+            this.adrenaline -= 0.015;
+        }
+
+        // Regenerate health
+        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
+        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
+        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
+        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+
+        // Shoot gun/use melee
+        if (this.startedAttacking) {
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem?.useItem();
+        }
+
+        // Gas damage
+        if (this.game.gas.doDamage && this.game.gas.isInGas(this.position)) {
+            this.piercingDamage(this.game.gas.dps, "gas");
+        }
+
+        let isInsideBuilding = false;
+        for (const object of this.nearObjects) {
+            if (object instanceof Building && !object.dead) {
+                if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                    isInsideBuilding = true;
+                    break;
+                }
+            }
+        }
+        if (isInsideBuilding && !this.isInsideBuilding) {
+            this.zoom = 48;
+        } else if (!this.isInsideBuilding) {
+            this.zoom = this.inventory.scope.definition.zoomLevel;
+        }
+        this.isInsideBuilding = isInsideBuilding;
+
+        this.turning = false;
+    }
+
     spectate(spectating?: Player): void {
         if (spectating === undefined) {
             this.game.removePlayer(this);
@@ -355,7 +459,6 @@ export class Player extends GameObject {
         }
         this.spectating = spectating;
         spectating.spectators.add(this);
-        spectating.updateVisibleObjects();
 
         // Add all visible objects to full dirty objects
         for (const object of spectating.visibleObjects) {
@@ -368,7 +471,7 @@ export class Player extends GameObject {
         }
 
         spectating.fullDirtyObjects.add(spectating);
-        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
+        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects.clear();
         spectating.fullUpdate = true;
     }
 
@@ -381,54 +484,27 @@ export class Player extends GameObject {
     }
 
     updateVisibleObjects(): void {
-        this.movesSinceLastUpdate = 0;
-
-        const approximateX = Math.round(this.position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        const approximateY = Math.round(this.position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        this.nearObjects = this.game.getVisibleObjects(this.position);
-        const visibleAtZoom = this.game.visibleObjects[this.zoom];
-
-        const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
-
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
+        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY))
 
-        for (const object of this.game.dynamicObjects) {
-            if (
-                object.position.x > minX &&
-                object.position.x < maxX &&
-                object.position.y > minY &&
-                object.position.y < maxY
-            ) {
-                newVisibleObjects.add(object);
-                if (!this.visibleObjects.has(object)) {
-                    this.fullDirtyObjects.add(object);
-                }
-                // make sure this player is added to other players visible objects
-                if (!this.dead && object instanceof Player && !object.visibleObjects.has(this)) {
-                    object.visibleObjects.add(this);
-                    object.fullDirtyObjects.add(this);
-                }
-            } else if (this.visibleObjects.has(object)) {
+        const newVisibleObjects = this.game.grid.intersectsRect(rect);
+
+        for (const object of this.visibleObjects) {
+            if (!newVisibleObjects.has(object)) {
+                this.visibleObjects.delete(object);
                 this.deletedObjects.add(object);
             }
         }
 
         for (const object of newVisibleObjects) {
             if (!this.visibleObjects.has(object)) {
+                this.visibleObjects.add(object);
                 this.fullDirtyObjects.add(object);
             }
         }
-
-        for (const object of this.visibleObjects) {
-            if (!newVisibleObjects.has(object)) {
-                this.deletedObjects.add(object);
-            }
-        }
-
-        this.visibleObjects = newVisibleObjects;
     }
 
     sendPacket(packet: SendingPacket): void {
@@ -597,7 +673,6 @@ export class Player extends GameObject {
 
         this.game.livingPlayers.delete(this);
         removeFrom(this.game.spectatablePlayers, this);
-        this.game.dynamicObjects.delete(this);
         this.game.removeObject(this);
 
         //
@@ -636,8 +711,7 @@ export class Player extends GameObject {
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
-        this.game.dynamicObjects.add(deathMarker);
-        this.game.fullDirtyObjects.add(deathMarker);
+        this.game.grid.addObject(deathMarker);
 
         // Send game over to dead player
         if (!this.disconnected) {

@@ -10,7 +10,7 @@ import { Emotes } from "../../common/src/definitions/emotes";
 
 const config = {
     address: "127.0.0.1:8000",
-    botCount: 100,
+    botCount: 79,
     joinDelay: 100,
     region: "dev"
 };
