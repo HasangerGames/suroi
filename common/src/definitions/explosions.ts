@@ -32,7 +32,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 250,
-                intensity: 0.02
+                intensity: 50
             },
             animation: {
                 duration: 1000,
@@ -51,7 +51,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 250,
-                intensity: 0.02
+                intensity: 50
             },
             animation: {
                 duration: 1000,
@@ -70,7 +70,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 500,
-                intensity: 0.03
+                intensity: 100
             },
             animation: {
                 duration: 1500,

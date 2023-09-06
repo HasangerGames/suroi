@@ -132,7 +132,7 @@ export class UpdatePacket extends ReceivingPacket {
         // Zoom
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
-            game.camera.setZoom(playerManager.zoom);
+            game.camera.zoom = playerManager.zoom;
         }
 
         // Active player ID and name

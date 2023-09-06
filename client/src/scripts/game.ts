@@ -90,8 +90,6 @@ export class Game {
         this.pixi.ticker.add(() => {
             if (!this.gameStarted) return;
 
-            const delta = this.pixi.ticker.deltaMS;
-
             if (localStorageInstance.config.movementSmoothing) {
                 for (const player of this.players) {
                     player.updateContainerPosition();
@@ -100,12 +98,16 @@ export class Game {
                         !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
                     ) player.updateContainerRotation();
                 }
-                this.camera.setPosition(this.activePlayer.container.position);
+                this.camera.position = this.activePlayer.container.position;
             }
+
+            this.camera.update();
 
             for (const tween of this.tweens) {
                 tween.update();
             }
+
+            const delta = this.pixi.ticker.deltaMS;
 
             for (const bullet of this.bullets) {
                 bullet.update(delta);

@@ -1,18 +1,29 @@
 import { type Application, Container } from "pixi.js";
-import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Vector, v, vAdd, vMul, vAdd2 } from "../../../../common/src/utils/vector";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Game } from "../game";
+import { randomFloat } from "../../../../common/src/utils/random";
 
 export class Camera {
     pixi: Application;
     container: Container;
     game: Game;
 
-    zoom = 48;
-
     position = v(0, 0);
 
+    private _zoom = 48;
+    get zoom(): number { return this._zoom; }
+    set zoom(zoom: number) {
+        this._zoom = zoom;
+        this.resize(true);
+    }
+
     zoomTween?: Tween<Vector>;
+
+    shaking = false;
+    shakeStart!: number;
+    shakeDuration!: number;
+    shakeIntensity!: number;
 
     constructor(game: Game) {
         this.game = game;
@@ -21,15 +32,11 @@ export class Camera {
         this.container.sortableChildren = true;
         this.pixi.stage.addChild(this.container);
 
-        this.pixi.renderer.on("resize", this.updatePosition.bind(this));
-
         this.resize();
     }
 
     resize(animation = false): void {
-        let size = window.innerWidth;
-        if (window.innerHeight > window.innerWidth) size = window.innerHeight;
-
+        const size = window.innerHeight < window.innerWidth ? window.innerWidth : window.innerHeight;
         const scale = (size / 2560) * (48 / this.zoom); // 2560 = 1x, 5120 = 2x
 
         this.zoomTween?.kill();
@@ -39,30 +46,33 @@ export class Camera {
                 target: this.container.scale,
                 to: { x: scale, y: scale },
                 duration: 800,
-                ease: EaseFunctions.sineOut,
-                onUpdate: () => { this.updatePosition(); }
+                ease: EaseFunctions.sineOut
             });
         } else {
             this.container.scale.set(scale);
-            this.updatePosition();
         }
     }
 
-    setPosition(pos: Vector): void {
-        this.position = pos;
-        this.updatePosition();
-    }
+    update(): void {
+        let position = this.position;
 
-    updatePosition(): void {
+        if (this.shaking) {
+            const s = this.shakeIntensity;
+            position = vAdd2(position, randomFloat(-s, s), randomFloat(-s, s));
+            if (Date.now() - this.shakeStart > this.shakeDuration) this.shaking = false;
+        }
+
         const cameraPos = vAdd(
-            vMul(this.position, this.container.scale.x),
+            vMul(position, this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2)
         );
         this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
-    setZoom(zoom: number): void {
-        this.zoom = zoom;
-        this.resize(true);
+    shake(duration: number, intensity: number): void {
+        this.shaking = true;
+        this.shakeStart = Date.now();
+        this.shakeDuration = duration;
+        this.shakeIntensity = intensity;
     }
 }

@@ -143,7 +143,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (this.isActivePlayer) {
             if (!localStorageInstance.config.movementSmoothing) {
-                this.game.camera.setPosition(toPixiCoords(this.position));
+                this.game.camera.position = toPixiCoords(this.position);
             }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
