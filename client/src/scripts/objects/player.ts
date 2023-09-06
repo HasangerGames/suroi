@@ -140,7 +140,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     override updatePosition(): void {
         super.updatePosition();
-        this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
+        if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
     override deserializePartial(stream: SuroiBitStream): void {
