@@ -493,9 +493,9 @@ export function setupUI(game: Game): void {
 
     // Hack to style range inputs background and add a label with the value :)
     function updateRangeInput(element: HTMLInputElement): void {
-        const value = Number(element.value);
-        const max = Number(element.max);
-        const min = Number(element.min);
+        const value = +element.value;
+        const max = +element.max;
+        const min = +element.min;
         const x = (value - min) / (max - min) * 100;
         $(element).css("--background", `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`);
         $(element).siblings(".range-input-value").text(element.id !== "slider-joystick-size" ? `${value * 100}%` : value);

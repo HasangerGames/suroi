@@ -2,6 +2,7 @@ import { LootTiers, type WeightedItem } from "../data/lootTables";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../common/src/constants";
 import { weightedRandom } from "../../../common/src/utils/random";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 
 export class LootItem {
     idString: string;
@@ -22,13 +23,13 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
 
         loot.push(new LootItem(type, count));
 
-        const definition = ObjectType.fromString(ObjectCategory.Loot, type).definition;
+        const definition = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, type).definition;
         if (definition === undefined) {
             throw new Error(`Unknown loot item: ${type}`);
         }
 
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount as number > 0) { // TODO Clean this up
-            loot.push(new LootItem(definition.ammoType as string, definition.ammoSpawnAmount as number));
+        if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
+            loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
         }
     };
 
@@ -59,6 +60,6 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
  * @param value The value to check for.
  */
 export function removeFrom<T>(array: T[], value: T): void {
-    const index: number = array.indexOf(value);
+    const index = array.indexOf(value);
     if (index !== -1) array.splice(index, 1);
 }

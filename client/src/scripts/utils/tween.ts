@@ -55,6 +55,7 @@ export class Tween<T> {
             for (const [key, value] of Object.entries(this.endValues)) {
                 (this.target[key as keyof T] as number) = value;
             }
+
             if (this.yoyo) {
                 this.yoyo = false;
                 this.startTime = now;

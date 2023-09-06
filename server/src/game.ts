@@ -141,8 +141,8 @@ export class Game {
             // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
             // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
             // while on the server, without this, some bullets won't because the first bullets will kill the crate
-            for (const record of records) {
-                record.object.damage(record.damage, record.source, record.weapon);
+            for (const { object, damage, source, weapon } of records) {
+                object.damage(damage, source, weapon);
             }
 
             // Handle explosions

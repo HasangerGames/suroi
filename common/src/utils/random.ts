@@ -69,7 +69,7 @@ export function randomPointInsideCircle(position: Vector, radius: number): Vecto
 /**
  * Pick a random element from a weighted series of elements.
  * @param items The elements to choose from.
- * @param weights A legend of the elements' relative weight.
+ * @param weights A legend of the elements' relative weights.
  */
 export function weightedRandom<T>(items: T[], weights: number[]): T {
     let i: number;

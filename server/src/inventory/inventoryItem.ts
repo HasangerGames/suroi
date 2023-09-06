@@ -87,8 +87,7 @@ export abstract class InventoryItem {
      */
     constructor(idString: string, owner: Player) {
         this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
-        // todo maybe change the ObjectType class to better infer definition's type so that this cast doesn't need to be done
-        this.category = (this.type.definition as ItemDefinition).itemType;
+        this.category = this.type.definition.itemType;
         this.owner = owner;
     }
 
