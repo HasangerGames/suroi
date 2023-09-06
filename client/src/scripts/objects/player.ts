@@ -180,41 +180,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             !(this.isActivePlayer && localStorageInstance.config.clientSidePrediction)
         ) this.container.rotation = this.rotation;
 
-        /*const oldAngle = this.container.angle;
-        const newAngle = Phaser.Math.RadToDeg(this.rotation);
-        const finalAngle = oldAngle + Phaser.Math.Angle.ShortestBetween(oldAngle, newAngle);
-        const minimap = this.scene.scene.get("minimap") as MinimapScene;
-        if (this.isActivePlayer && (!this.game.gameOver || this.game.spectating)) {
-            gsap.to(minimap.playerIndicator, {
-                x: this.position.x * MINIMAP_SCALE,
-                y: this.position.y * MINIMAP_SCALE,
-                angle: finalAngle,
-                ease: "none",
-                duration: 0.03
-            });
-
-            if (this.game.gas.oldRadius !== 0 && this.game.gas.state !== GasState.Inactive) {
-                minimap.gasToCenterLine.setTo(
-                    this.game.gas.newPosition.x * MINIMAP_SCALE,
-                    this.game.gas.newPosition.y * MINIMAP_SCALE,
-                    minimap.playerIndicator.x,
-                    minimap.playerIndicator.y
-                );
-            }
-        }
-
-        if (!this.isActivePlayer || this.game.spectating || !localStorageInstance.config.clientSidePrediction) {
-            if (this.isNew || !localStorageInstance.config.rotationSmoothing) {
-                this.container.setRotation(this.rotation);
-            } else {
-                gsap.to(this.container, {
-                    angle: finalAngle,
-                    ease: "none",
-                    duration: 0.03
-                });
-            }
-        }*/
-
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
