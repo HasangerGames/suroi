@@ -601,6 +601,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
+        clearTimeout(this._emoteHideTimeoutID);
+        this.emoteHideAnim?.kill();
+        this.emoteAnim?.kill();
+        this.emoteContainer.destroy();
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();
