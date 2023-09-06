@@ -134,8 +134,6 @@ export class Player extends GameObject {
             this.movement.moving;
     }
 
-    movesSinceLastUpdate = 0;
-
     readonly movement = {
         up: false,
         down: false,
@@ -332,7 +330,6 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
-        this.updateVisibleObjects();
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
@@ -366,10 +363,6 @@ export class Player extends GameObject {
             movement.y *= Math.SQRT1_2;
         }
 
-        if (movement.x !== 0 || movement.y !== 0) {
-            this.movesSinceLastUpdate++;
-        }
-
         // Calculate speed
         let recoilMultiplier = 1;
         if (this.recoil.active) {
@@ -392,8 +385,8 @@ export class Player extends GameObject {
         this.game.grid.addObject(this);
 
         // Find and resolve collisions
-        const collidableObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
-        for (const potential of collidableObjects) {
+        this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const potential of this.nearObjects) {
             if (
                 potential instanceof Obstacle &&
                 potential.collidable &&
@@ -438,7 +431,7 @@ export class Player extends GameObject {
         }
 
         let isInsideBuilding = false;
-        for (const object of collidableObjects) {
+        for (const object of this.nearObjects) {
             if (object instanceof Building && !object.dead) {
                 if (object.scopeHitbox.collidesWith(this.hitbox)) {
                     isInsideBuilding = true;
@@ -466,7 +459,6 @@ export class Player extends GameObject {
         }
         this.spectating = spectating;
         spectating.spectators.add(this);
-        spectating.updateVisibleObjects();
 
         // Add all visible objects to full dirty objects
         for (const object of spectating.visibleObjects) {
@@ -479,7 +471,7 @@ export class Player extends GameObject {
         }
 
         spectating.fullDirtyObjects.add(spectating);
-        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
+        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects.clear();
         spectating.fullUpdate = true;
     }
 
@@ -492,30 +484,27 @@ export class Player extends GameObject {
     }
 
     updateVisibleObjects(): void {
-        this.movesSinceLastUpdate = 0;
-
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
+        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY))
 
-        this.nearObjects = this.game.grid.intersectsRect(new RectangleHitbox(v(minX, minY), v(maxX, maxY)));
-
-        const newVisibleObjects = this.nearObjects;
-
-        for (const object of newVisibleObjects) {
-            if (!this.visibleObjects.has(object)) {
-                this.fullDirtyObjects.add(object);
-            }
-        }
+        const newVisibleObjects = this.game.grid.intersectsRect(rect);
 
         for (const object of this.visibleObjects) {
             if (!newVisibleObjects.has(object)) {
+                this.visibleObjects.delete(object);
                 this.deletedObjects.add(object);
             }
         }
 
-        this.visibleObjects = newVisibleObjects;
+        for (const object of newVisibleObjects) {
+            if (!this.visibleObjects.has(object)) {
+                this.visibleObjects.add(object);
+                this.fullDirtyObjects.add(object);
+            }
+        }
     }
 
     sendPacket(packet: SendingPacket): void {
@@ -723,7 +712,6 @@ export class Player extends GameObject {
         // Create death marker
         const deathMarker = new DeathMarker(this);
         this.game.grid.addObject(deathMarker);
-        this.game.updateObjects = true;
 
         // Send game over to dead player
         if (!this.disconnected) {

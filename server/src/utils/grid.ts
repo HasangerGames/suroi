@@ -66,11 +66,10 @@ export class Grid {
 
         for (let x = min.x; x <= max.x; x += this.cellSize) {
             for (let y = min.y; y <= max.y; y += this.cellSize) {
-                for (const i of this._grid[x][y]) {
-                    const id = i[0];
+                for (const [id, object] of this._grid[x][y]) {
                     if (!objectsAdded.get(id)) {
                         objectsAdded.set(id, true);
-                        objects.add(i[1]);
+                        objects.add(object);
                     }
                 }
             }

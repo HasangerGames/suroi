@@ -58,7 +58,6 @@ export class Game {
      */
     readonly staticObjects = new Set<GameObject>();
     readonly grid: Grid;
-    updateObjects = false;
 
     aliveCountDirty = false;
 
@@ -164,9 +163,7 @@ export class Game {
                 if (!player.joined) continue;
 
                 // Calculate visible objects
-                if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
-                    player.updateVisibleObjects();
-                }
+                player.updateVisibleObjects();
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
@@ -227,7 +224,6 @@ export class Game {
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
-            this.updateObjects = false;
 
             for (const player of this.livingPlayers) {
                 player.dirty.action = false;
@@ -308,11 +304,9 @@ export class Game {
         game.connectedPlayers.add(player);
         game.grid.addObject(player);
         game.fullDirtyObjects.add(player);
-        game.updateObjects = true;
         game.aliveCountDirty = true;
         game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
-        player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendData(this.mapPacketStream);
@@ -373,7 +367,6 @@ export class Game {
         const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
         this.grid.addObject(loot);
-        this.updateObjects = true;
         return loot;
     }
 
@@ -412,7 +405,6 @@ export class Game {
     removeObject(object: GameObject): void {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
-        this.updateObjects = true;
     }
 
     get aliveCount(): number {
