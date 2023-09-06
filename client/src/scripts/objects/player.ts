@@ -1,4 +1,4 @@
-import type { Game } from "../game";
+import { type Game } from "../game";
 
 import { localStorageInstance } from "../utils/localStorageHandler";
 
@@ -104,6 +104,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weapon: new SuroiSprite(),
             emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
+            /*
+            bloodEmitter: this.scene.add.particles(0, 0, "main", {
+                frame: "blood_particle.svg",
+                quantity: 1,
+                lifespan: 1000,
+                speed: { min: 20, max: 30 },
+                scale: { start: 0.75, end: 1 },
+                alpha: { start: 1, end: 0 },
+                emitting: false
+            })
+            */
         };
 
         this.container.addChild(
@@ -456,25 +467,28 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     const damagedObjects: Array<Player | Obstacle> = [];
 
                     for (const object of this.game.objects) {
-                        if (!object.dead && object !== this && object.damageable && (object instanceof Obstacle || object instanceof Player)) {
-                            if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
+                        if (
+                            !object.dead &&
+                            object !== this &&
+                            object.damageable &&
+                            (object instanceof Obstacle || object instanceof Player)
+                        ) {
+                            if (object.hitbox?.collidesWith(hitbox)) {
+                                damagedObjects.push(object);
+                            }
                         }
                     }
 
-                    damagedObjects.sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                        if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return 99;
-                        if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -99;
-                        const distanceA = a.hitbox.distanceTo(this.hitbox).distance;
-                        const distanceB = b.hitbox.distanceTo(this.hitbox).distance;
+                    damagedObjects
+                        .sort((a: Player | Obstacle, b: Player | Obstacle): number => {
+                            if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return Infinity;
+                            if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -Infinity;
 
-                        return distanceA - distanceB;
-                    });
-
-                    const targetLimit = Math.min(damagedObjects.length, weaponDef.maxTargets);
-                    for (let i = 0; i < targetLimit; i++) {
-                        const closestObject = damagedObjects[i];
-                        closestObject.hitEffect(position, angleBetween(this.position, position));
-                    }
+                            return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
+                        })
+                        .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
+                        // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+                        .forEach(target => target.hitEffect(position, angleBetween(this.position, position)));
                 }, 50);
 
                 break;

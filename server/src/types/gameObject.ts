@@ -14,7 +14,13 @@ export abstract class GameObject {
     game: Game;
 
     _position: Vector;
+    get position(): Vector { return this._position; }
+    set position(position: Vector) { this._position = position; }
+
     _rotation = 0;
+    get rotation(): number { return this._rotation; }
+    set rotation(rotation: number) { this._rotation = rotation; }
+
     scale = 1;
     dead = false;
     hitbox?: Hitbox;
@@ -27,22 +33,6 @@ export abstract class GameObject {
         this.game = game;
         this.type = type;
         this._position = position;
-    }
-
-    get position(): Vector {
-        return this._position;
-    }
-
-    set position(position: Vector) {
-        this._position = position;
-    }
-
-    get rotation(): number {
-        return this._rotation;
-    }
-
-    set rotation(rotation: number) {
-        this._rotation = rotation;
     }
 
     abstract damage(amount: number, source?: GameObject): void;

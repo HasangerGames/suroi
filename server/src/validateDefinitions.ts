@@ -823,7 +823,7 @@ function validateHitbox(baseErrorPath: string, hitbox: Hitbox): void {
         validateVector(baseErrorPath, hitbox.min);
         validateVector(baseErrorPath, hitbox.max);
     } else if (hitbox instanceof ComplexHitbox) {
-        hitbox.hitBoxes.map(validateHitbox.bind(null, baseErrorPath));
+        hitbox.hitboxes.map(validateHitbox.bind(null, baseErrorPath));
     }
 }
 

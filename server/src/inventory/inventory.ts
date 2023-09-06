@@ -211,7 +211,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-            [this._weapons[1], this._weapons[0]];
+        [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -292,7 +292,7 @@ export class Inventory {
                 : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
 
             if (overAmount > 0) {
-                /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
+                /* const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
                     for (let i = 0; i < dropCount; i++) {
                         const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, 60);
@@ -305,7 +305,7 @@ export class Inventory {
                     }
                 };
 
-                splitUpLoot(this.owner, ammoType, overAmount);*/
+                splitUpLoot(this.owner, ammoType, overAmount); */
                 this.items[ammoType] -= overAmount;
                 const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
                 loot.push(this.owner.rotation, pushForce);

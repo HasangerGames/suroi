@@ -23,13 +23,13 @@ import { randomRotation } from "../../../common/src/utils/random";
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
 
+    declare readonly hitbox: CircleHitbox;
+
     oldPosition = v(0, 0);
 
     count = 1;
 
     isNew = true;
-
-    hitbox: CircleHitbox;
 
     velocity = v(0, 0);
 
@@ -43,8 +43,8 @@ export class Loot extends GameObject {
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
-
         this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], position);
+        this.oldPosition = this._position;
 
         if (count !== undefined) this.count = count;
 
@@ -92,8 +92,6 @@ export class Loot extends GameObject {
         const definition = this.type.definition;
 
         switch (definition.itemType) {
-            // average ESLint L
-            // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
@@ -163,15 +161,15 @@ export class Loot extends GameObject {
                 const currentCount = inventory.items[idString];
                 const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
 
-                if (currentCount + this.count <= maxCapacity) {
-                    inventory.items[idString] += this.count;
-                } else if (currentCount + 1 > maxCapacity) {
-                    // inventory full
-                } else if (currentCount + this.count > maxCapacity) {
-                    inventory.items[idString] = maxCapacity;
-                    this.count = (currentCount + this.count) - maxCapacity;
-                    this.game.fullDirtyObjects.add(this);
-                    deleteItem = false;
+                if (currentCount + 1 <= maxCapacity) {
+                    if (currentCount + this.count <= maxCapacity) {
+                        inventory.items[idString] += this.count;
+                    } else if (currentCount + this.count > maxCapacity) {
+                        inventory.items[idString] = maxCapacity;
+                        this.count = (currentCount + this.count) - maxCapacity;
+                        this.game.fullDirtyObjects.add(this);
+                        deleteItem = false;
+                    }
                 }
                 break;
             }

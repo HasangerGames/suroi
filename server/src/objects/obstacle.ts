@@ -106,7 +106,8 @@ export class Obstacle extends GameObject {
                 this.game.addLoot(
                     ObjectType.fromString(ObjectCategory.Loot, item.idString),
                     this.position,
-                    item.count);
+                    item.count
+                );
             }
         }
 
@@ -160,7 +161,7 @@ export class Obstacle extends GameObject {
             if (this.definition.isWall) {
                 this.parentBuilding?.damage();
 
-                // a bit of a hack to break doors attached to walls :)
+                // hack a bit of a hack to break doors attached to walls :)
                 for (const object of this.game.grid.intersectsRect(this.hitbox.toRectangle())) {
                     if (
                         object instanceof Obstacle &&

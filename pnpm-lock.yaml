@@ -189,7 +189,7 @@ importers:
         version: github.com/uNetworking/uWebSockets.js/809b99d2d7d12e2cbf89b7135041e9b41ff84084
       ws:
         specifier: ^8.13.0
-        version: 8.13.0
+        version: 8.14.0
     devDependencies:
       '@types/node':
         specifier: ^20.5.9
@@ -7769,7 +7769,7 @@ packages:
       webpack: 5.88.2(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-middleware: 5.3.3(webpack@5.88.2)
-      ws: 8.13.0
+      ws: 8.14.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -7895,8 +7895,8 @@ packages:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
-  /ws@8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
+  /ws@8.14.0:
+    resolution: {integrity: sha512-WR0RJE9Ehsio6U4TuM+LmunEsjQ5ncHlw4sn9ihD6RoJKZrVyH9FWV3dmnwu8B2aNib1OvG2X6adUCyFpQyWcg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
