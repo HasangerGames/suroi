@@ -140,8 +140,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.updateWeapon();
     }
 
-    override updatePosition(): void {
-        super.updatePosition();
+    override updateContainerPosition(): void {
+        super.updateContainerPosition();
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
@@ -153,7 +153,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
-            this.game.camera.setPosition(this.position);
+            if (!localStorageInstance.config.movementSmoothing) {
+                this.game.camera.setPosition(toPixiCoords(this.position));
+            }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
             if (!localStorageInstance.config.clientSidePrediction) {
@@ -569,7 +571,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     destroy(): void {
-        super.destroy();
+        this.destroyed = true;
+        if (!this.isActivePlayer) this.container.destroy();
+        else this.container.visible = false;
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();

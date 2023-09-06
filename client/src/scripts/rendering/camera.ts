@@ -1,6 +1,5 @@
 import { type Application, Container } from "pixi.js";
-import { type Vector, v, vAdd, vMul, vClone } from "../../../../common/src/utils/vector";
-import { toPixiCoords } from "../utils/pixi";
+import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Game } from "../game";
 
@@ -12,8 +11,6 @@ export class Camera {
     zoom = 48;
 
     position = v(0, 0);
-
-    oldPosition = v(0, 0);
 
     zoomTween?: Tween<Vector>;
 
@@ -52,14 +49,13 @@ export class Camera {
     }
 
     setPosition(pos: Vector): void {
-        this.oldPosition = vClone(this.position);
         this.position = pos;
         this.updatePosition();
     }
 
     updatePosition(): void {
         const cameraPos = vAdd(
-            vMul(toPixiCoords(this.position), this.container.scale.x),
+            vMul(this.position, this.container.scale.x),
             v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2)
         );
         this.container.position.set(-cameraPos.x, -cameraPos.y);

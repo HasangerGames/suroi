@@ -384,7 +384,6 @@ export function setupInputs(game: Game): void {
         }
         player.turning = true;
         player.dirty.inputs = true;
-        // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 
     // Mobile joysticks
