@@ -1,4 +1,4 @@
-import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture } from "pixi.js";
+import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture, Graphics } from "pixi.js";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
@@ -87,7 +87,7 @@ export function toPixiCoords(pos: Vector): Vector {
     return vMul(pos, PIXI_SCALE);
 }
 
-export function drawnHitbox(hitbox: Hitbox, graphics?: Graphics): Graphics {
+export function drawHitbox(hitbox: Hitbox, graphics?: Graphics): Graphics {
     if (!graphics) {
         graphics = new Graphics();
         graphics.lineStyle({
@@ -108,7 +108,7 @@ export function drawnHitbox(hitbox: Hitbox, graphics?: Graphics): Graphics {
         const pos = toPixiCoords(hitbox.position);
         graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
     } else if (hitbox instanceof ComplexHitbox) {
-        for (const h of hitbox.hitBoxes) drawnHitbox(h, graphics);
+        for (const h of hitbox.hitBoxes) drawHitbox(h, graphics);
     }
     graphics.closePath().endFill();
 
