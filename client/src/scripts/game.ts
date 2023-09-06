@@ -94,15 +94,13 @@ export class Game {
 
             if (localStorageInstance.config.movementSmoothing) {
                 for (const player of this.players) {
-                    player.updatePosition();
+                    player.updateContainerPosition();
                     if (
                         localStorageInstance.config.rotationSmoothing &&
                         !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
-                    ) player.updateRotation();
+                    ) player.updateContainerRotation();
                 }
-                if (this.activePlayer.exactPosition !== undefined) {
-                    this.camera.setPosition(this.activePlayer.exactPosition);
-                }
+                this.camera.setPosition(this.activePlayer.container.position);
             }
 
             for (const tween of this.tweens) {

@@ -31,12 +31,10 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this._position = position;
     }
 
-    exactPosition?: Vector;
-    updatePosition(): void {
+    updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / TICK_SPEED;
-        this.exactPosition = vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1));
-        this.container.position = toPixiCoords(this.exactPosition);
+        this.container.position = toPixiCoords(vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
     oldRotation!: number;
@@ -49,7 +47,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this._rotation = rotation;
     }
 
-    updateRotation(): void {
+    updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
         const interpFactor = (Date.now() - this.lastRotationChange) / TICK_SPEED;
         this.container.rotation = lerp(this.oldRotation, this.rotation, Math.min(interpFactor, 1));
