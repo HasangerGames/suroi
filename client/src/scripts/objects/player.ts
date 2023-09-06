@@ -176,9 +176,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.rotation = stream.readRotation(16);
 
         if (
-            !this.isActivePlayer ||
-            this.game.spectating ||
-            !localStorageInstance.config.clientSidePrediction
+            !localStorageInstance.config.rotationSmoothing &&
+            !(this.isActivePlayer && localStorageInstance.config.clientSidePrediction)
         ) this.container.rotation = this.rotation;
 
         /*const oldAngle = this.container.angle;

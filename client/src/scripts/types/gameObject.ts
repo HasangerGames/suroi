@@ -7,7 +7,7 @@ import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constant
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
-import { vecLerp } from "../../../../common/src/utils/math";
+import { lerp, vecLerp } from "../../../../common/src/utils/math";
 import { toPixiCoords } from "../utils/pixi";
 
 export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
@@ -22,14 +22,13 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     lastPositionChange!: number;
     _position!: Vector;
     get position(): Vector { return this._position; }
-    set position(pos: Vector) {
+    set position(position: Vector) {
         if (this._position !== undefined) this.oldPosition = vClone(this._position);
         this.lastPositionChange = Date.now();
-        this._position = pos;
+        this._position = position;
     }
 
     exactPosition?: Vector;
-
     updatePosition(): void {
         if (this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / TICK_SPEED;
@@ -37,7 +36,21 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container.position = toPixiCoords(this.exactPosition);
     }
 
-    rotation!: number;
+    oldRotation!: number;
+    lastRotationChange!: number;
+    _rotation!: number;
+    get rotation(): number { return this._rotation; }
+    set rotation(rotation: number) {
+        if (this._rotation !== undefined) this.oldRotation = this._rotation;
+        this.lastRotationChange = Date.now();
+        this._rotation = rotation;
+    }
+
+    updateRotation(): void {
+        if (this.oldRotation === undefined || this.container.rotation === undefined) return;
+        const interpFactor = (Date.now() - this.lastRotationChange) / TICK_SPEED;
+        this.container.rotation = lerp(this.oldRotation, this.rotation, Math.min(interpFactor, 1));
+    }
 
     dead = false;
 

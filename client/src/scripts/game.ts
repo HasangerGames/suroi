@@ -95,6 +95,10 @@ export class Game {
             if (localStorageInstance.config.movementSmoothing) {
                 for (const player of this.players) {
                     player.updatePosition();
+                    if (
+                        localStorageInstance.config.rotationSmoothing &&
+                        !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
+                    ) player.updateRotation();
                 }
                 if (this.activePlayer.exactPosition !== undefined) {
                     this.camera.setPosition(this.activePlayer.exactPosition);
