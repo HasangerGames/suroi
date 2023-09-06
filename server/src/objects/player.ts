@@ -386,10 +386,14 @@ export class Player extends GameObject {
             (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier * // Active item speed modifier
             this.modifiers.baseSpeed;                   // Current on-wearer modifier
+
+        this.game.grid.removeObject(this);
         this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        this.game.grid.addObject(this);
 
         // Find and resolve collisions
-        for (const potential of this.nearObjects) {
+        const collidableObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const potential of collidableObjects) {
             if (
                 potential instanceof Obstacle &&
                 potential.collidable &&
@@ -434,7 +438,7 @@ export class Player extends GameObject {
         }
 
         let isInsideBuilding = false;
-        for (const object of this.nearObjects) {
+        for (const object of collidableObjects) {
             if (object instanceof Building && !object.dead) {
                 if (object.scopeHitbox.collidesWith(this.hitbox)) {
                     isInsideBuilding = true;
@@ -498,27 +502,6 @@ export class Player extends GameObject {
         this.nearObjects = this.game.grid.intersectsRect(new RectangleHitbox(v(minX, minY), v(maxX, maxY)));
 
         const newVisibleObjects = this.nearObjects;
-
-        for (const object of this.game.dynamicObjects) {
-            if (
-                object.position.x > minX &&
-                object.position.x < maxX &&
-                object.position.y > minY &&
-                object.position.y < maxY
-            ) {
-                newVisibleObjects.add(object);
-                if (!this.visibleObjects.has(object)) {
-                    this.fullDirtyObjects.add(object);
-                }
-                // make sure this player is added to other players visible objects
-                if (!this.dead && object instanceof Player && !object.visibleObjects.has(this)) {
-                    object.visibleObjects.add(this);
-                    object.fullDirtyObjects.add(this);
-                }
-            } else if (this.visibleObjects.has(object)) {
-                this.deletedObjects.add(object);
-            }
-        }
 
         for (const object of newVisibleObjects) {
             if (!this.visibleObjects.has(object)) {
@@ -701,7 +684,6 @@ export class Player extends GameObject {
 
         this.game.livingPlayers.delete(this);
         removeFrom(this.game.spectatablePlayers, this);
-        this.game.dynamicObjects.delete(this);
         this.game.removeObject(this);
 
         //

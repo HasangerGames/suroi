@@ -33,7 +33,7 @@ export class Bullet extends BaseBullet {
     update(): DamageRecord[] {
         const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICK_SPEED)));
 
-        const objects = new Set([...this.game.livingPlayers, ...this.game.grid.intersectsRect(lineRect)]);
+        const objects = this.game.grid.intersectsRect(lineRect);
         const collisions = this.updateAndGetCollisions(TICK_SPEED, objects);
 
         // Bullets from dead players should not deal damage so delete them

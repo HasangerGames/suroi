@@ -59,7 +59,9 @@ export class Loot extends GameObject {
             this.oldPosition = vClone(this.position);
         }
 
+        this.game.grid.removeObject(this);
         this.position = vAdd(this.position, velocity);
+        this.game.grid.addObject(this);
 
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);

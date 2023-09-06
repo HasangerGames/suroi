@@ -57,10 +57,6 @@ export class Game {
      * A Set of all the static objects in the world
      */
     readonly staticObjects = new Set<GameObject>();
-    /**
-     * A Set of all the dynamic (moving) objects in the world
-     */
-    readonly dynamicObjects = new Set<GameObject>();
     readonly grid: Grid;
     updateObjects = false;
 
@@ -310,7 +306,7 @@ export class Game {
         game.livingPlayers.add(player);
         game.spectatablePlayers.push(player);
         game.connectedPlayers.add(player);
-        game.dynamicObjects.add(player);
+        game.grid.addObject(player);
         game.fullDirtyObjects.add(player);
         game.updateObjects = true;
         game.aliveCountDirty = true;
@@ -345,7 +341,6 @@ export class Game {
         removeFrom(this.spectatablePlayers, player);
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
-            this.dynamicObjects.delete(player);
             this.removeObject(player);
         } else {
             player.rotation = 0;
@@ -371,14 +366,13 @@ export class Game {
         }
         try {
             player.socket.close();
-        } catch (e) {}
+        } catch (e) { }
     }
 
     addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
         const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
-        this.dynamicObjects.add(loot);
-        this.fullDirtyObjects.add(loot);
+        this.grid.addObject(loot);
         this.updateObjects = true;
         return loot;
     }
@@ -386,7 +380,6 @@ export class Game {
     removeLoot(loot: Loot): void {
         loot.dead = true;
         this.loot.delete(loot);
-        this.dynamicObjects.delete(loot);
         this.removeObject(loot);
     }
 
@@ -417,6 +410,7 @@ export class Game {
      * @param object The object to delete
      */
     removeObject(object: GameObject): void {
+        this.grid.removeObject(object);
         this.idAllocator.give(object.id);
         this.updateObjects = true;
     }

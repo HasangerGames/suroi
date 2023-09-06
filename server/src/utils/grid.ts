@@ -38,26 +38,17 @@ export class Grid {
             for (let x = min.x; x <= max.x; x += this.cellSize) {
                 for (let y = min.y; y <= max.y; y += this.cellSize) {
                     this._grid[x][y].set(object.id, object);
+                    object.gridCells.push(v(x, y));
                 }
             }
         }
     }
 
     removeObject(object: GameObject): void {
-        if (object.hitbox === undefined) {
-            const pos = this._roundToCells(object.position);
-            this._grid[pos.x][pos.y].delete(object.id);
-        } else {
-            const rect = object.hitbox.toRectangle();
-            const min = this._roundToCells(rect.min);
-            const max = this._roundToCells(rect.max);
-
-            for (let x = min.x; x <= max.x; x += this.cellSize) {
-                for (let y = min.y; y <= max.y; y += this.cellSize) {
-                    this._grid[x][y].delete(object.id);
-                }
-            }
+        for (const cell of object.gridCells) {
+            this._grid[cell.x][cell.y].delete(object.id);
         }
+        object.gridCells = [];
     }
 
     /**

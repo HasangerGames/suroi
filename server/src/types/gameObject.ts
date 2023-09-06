@@ -19,6 +19,9 @@ export abstract class GameObject {
     dead = false;
     hitbox?: Hitbox;
 
+    // which grid cells this object is occupying
+    gridCells: Vector[] = [];
+
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectID;
         this.game = game;
