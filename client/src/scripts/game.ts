@@ -101,8 +101,6 @@ export class Game {
                 this.camera.position = this.activePlayer.container.position;
             }
 
-            this.camera.update();
-
             for (const tween of this.tweens) {
                 tween.update();
             }
@@ -116,6 +114,8 @@ export class Game {
             this.particleManager.update(delta);
 
             this.gas.update();
+
+            this.camera.update();
         });
 
         this.camera = new Camera(this);
