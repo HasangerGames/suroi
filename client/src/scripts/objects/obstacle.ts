@@ -2,11 +2,10 @@ import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
 import type { ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import type { Variation, Orientation } from "../../../../common/src/typings";
+import type { Orientation, Variation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
@@ -15,13 +14,14 @@ import { randomBoolean, randomFloat, randomRotation } from "../../../../common/s
 import { PIXI_SCALE } from "../utils/constants";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
 
-    variation!: Variation;
-
     image: SuroiSprite;
+
+    variation?: Variation;
 
     damageable = true;
 
@@ -70,14 +70,37 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.scale = stream.readScale();
-        const destroyed = stream.readBoolean();
-
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
         const definition = this.type.definition;
+        if (data.fullUpdate) {
+            this.position = data.position;
+            this.rotation = data.rotation.rotation;
+            this.orientation = data.rotation.orientation;
+            this.variation = data.variation;
+        }
 
-        if (definition.isDoor && this.door !== undefined) {
-            const offset = stream.readBits(2);
+        this.scale = data.scale;
+        this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+
+        if (definition.isDoor && this.door && this.isNew) {
+            let offsetX: number;
+            let offsetY: number;
+            if (definition.hingeOffset) {
+                offsetX = definition.hingeOffset.x * PIXI_SCALE;
+                offsetY = definition.hingeOffset.y * PIXI_SCALE;
+            } else {
+                offsetX = offsetY = 0;
+            }
+            this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
+
+            this.rotation = orientationToRotation(this.orientation);
+
+            this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.orientation));
+        }
+
+        if (definition.isDoor && this.door !== undefined && data.door) {
+            const offset = data.door.offset;
 
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
@@ -108,8 +131,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.image.scale.set(this.dead ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        if (!this.dead && destroyed) {
-            this.dead = true;
+        if (!this.dead && data.dead) {
+            this.dead = data.dead;
             if (!this.isNew) {
                 this.playSound(`${definition.material}_destroyed`, 0.2, 96);
                 if (definition.noResidue) {
@@ -148,62 +171,23 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         if (!this.isNew && !this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
-    }
-
-    override deserializeFull(stream: SuroiBitStream): void {
-        // Get position, rotation, and variations
-        this.position = stream.readPosition();
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-        const definition = this.type.definition;
+        this.image.setVisible(!(this.dead && !!definition.noResidue));
 
-        if (definition.isDoor && this.door !== undefined && this.isNew) {
-            let offsetX: number;
-            let offsetY: number;
-            if (definition.hingeOffset !== undefined) {
-                offsetX = definition.hingeOffset.x * PIXI_SCALE;
-                offsetY = definition.hingeOffset.y * PIXI_SCALE;
-            } else {
-                offsetX = offsetY = 0;
-            }
-            this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
+        let texture = definition.frames?.base ?? `${definition.idString}`;
+        if (this.dead) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
 
-            const orientation = stream.readBits(2) as Orientation;
-
-            this.rotation = orientationToRotation(orientation);
-
-            this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
-            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));
-        } else {
-            const obstacleRotation = stream.readObstacleRotation(definition.rotationMode);
-            this.rotation = obstacleRotation.rotation;
-            this.orientation = obstacleRotation.orientation;
-        }
-
-        const hasVariations = definition.variations !== undefined;
-        if (hasVariations) this.variation = stream.readVariation();
-
-        if (this.dead && definition.noResidue) {
-            this.image.setVisible(false);
-        } else {
-            let texture = definition.frames?.base ?? `${definition.idString}`;
-            if (this.dead) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
-            else if (hasVariations) texture += `_${this.variation + 1}`;
-            // Update the obstacle image
-            this.image.setFrame(`${texture}.svg`);
-        }
+        if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
+        // Update the obstacle image
+        this.image.setFrame(`${texture}.svg`);
 
         this.container.rotation = this.rotation;
-
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
         this.isNew = false;
-
-        if (!this.isDoor) {
-            this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
-        }
     }
 
     hitEffect(position: Vector, angle: number): void {

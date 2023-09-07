@@ -211,7 +211,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-        [this._weapons[1], this._weapons[0]];
+            [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -404,7 +404,7 @@ export class Inventory {
                 if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
                 if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
-                this.owner.executeAction(new HealingAction(this.owner, item));
+                this.owner.executeAction(new HealingAction(this.owner, item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>));
                 break;
             }
             case ItemType.Scope: {

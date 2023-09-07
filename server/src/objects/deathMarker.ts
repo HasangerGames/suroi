@@ -4,6 +4,7 @@ import { type Player } from "./player";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectSerializations } from "../../../common/src/utils/ObjectsSerializations";
 
 export class DeathMarker extends GameObject {
     player: Player;
@@ -20,11 +21,18 @@ export class DeathMarker extends GameObject {
     override damage(amount: number, source: GameObject): void { }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
+        ObjectSerializations[ObjectCategory.DeathMarker].serializePartial(stream, {
+            position: this.position,
+            player: {
+                isDev: this.player.isDev,
+                name: this.player.name,
+                nameColor: this.player.nameColor
+            },
+            isNew: this.isNew
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePlayerNameWithColor(this.player);
-        stream.writeBoolean(this.isNew);
+        this.serializePartial(stream);
     }
 }

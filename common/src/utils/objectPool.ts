@@ -5,12 +5,6 @@ export class ObjectPool<T extends { id: number }> {
         this.objects.clear();
     }
 
-    forEach(callback: (object: T) => void) {
-        for (const [, obj] of this.objects) {
-            callback(obj);
-        }
-    }
-
     add(object: T): boolean {
         if (this.objects.has(object.id)) return false;
         this.objects.set(object.id, object);
@@ -45,7 +39,7 @@ export class ObjectPool<T extends { id: number }> {
         return this.objects.size;
     }
 
-    [Symbol.iterator]() {
-        return this.objects.values()
+    [Symbol.iterator](): Iterator<T> {
+        return this.objects.values();
     }
 }

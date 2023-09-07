@@ -105,7 +105,6 @@ export class UpdatePacket extends SendingPacket {
             for (const fullObject of player.fullDirtyObjects) {
                 stream.writeObjectType(fullObject.type);
                 stream.writeObjectID(fullObject.id);
-                fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
             player.fullDirtyObjects.clear();

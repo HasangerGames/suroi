@@ -19,6 +19,7 @@ import { Player } from "./player";
 import { type Building } from "./building";
 import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ObjectSerializations } from "../../../common/src/utils/ObjectsSerializations";
 
 export class Obstacle extends GameObject {
     health: number;
@@ -241,18 +242,25 @@ export class Obstacle extends GameObject {
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writeScale(this.scale);
-        stream.writeBoolean(this.dead);
-        if (this.isDoor && this.door !== undefined) {
-            stream.writeBits(this.door.offset, 2);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializePartial(stream, {
+            ...this,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, this.definition.rotationMode);
-        if (this.definition.variations !== undefined) {
-            stream.writeVariation(this.variation);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializeFull(stream, {
+            scale: this.scale,
+            dead: this.dead,
+            definition: this.definition,
+            door: this.door,
+            fullUpdate: true,
+            position: this.position,
+            variation: this.variation,
+            rotation: {
+                rotation: this.rotation,
+                orientation: this.rotation as Orientation
+            }
+        });
     }
 }

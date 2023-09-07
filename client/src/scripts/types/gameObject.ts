@@ -1,6 +1,6 @@
 import { type Game } from "../game";
 
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constants";
@@ -76,6 +76,5 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         return this.game.soundManager.play(key, this.position, fallOff, maxDistance);
     }
 
-    abstract deserializePartial(stream: SuroiBitStream): void;
-    abstract deserializeFull(stream: SuroiBitStream): void;
+    abstract updateFromData(data: ObjectsNetData[T]): void;
 }
