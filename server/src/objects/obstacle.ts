@@ -209,6 +209,7 @@ export class Obstacle extends GameObject {
             throw new Error("Door with non-rectangular hitbox");
         }
 
+        this.game.grid.removeObject(this);
         this.door.open = !this.door.open;
         if (this.door.open) {
             let isOnOtherSide = false;
@@ -237,6 +238,7 @@ export class Obstacle extends GameObject {
             this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
         }
+        this.game.grid.addObject(this);
 
         this.game.partialDirtyObjects.add(this);
     }

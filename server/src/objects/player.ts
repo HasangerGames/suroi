@@ -379,9 +379,9 @@ export class Player extends GameObject {
             this.activeItemDefinition.speedMultiplier * // Active item speed modifier
             this.modifiers.baseSpeed;                   // Current on-wearer modifier
 
+        // remove it from the grid and re-insert after finishing calculating the new position
         this.game.grid.removeObject(this);
         this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
-        this.game.grid.addObject(this);
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
@@ -399,6 +399,7 @@ export class Player extends GameObject {
         // World boundaries
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.game.grid.addObject(this);
 
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
