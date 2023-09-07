@@ -11,7 +11,7 @@ import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
-import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {

@@ -33,7 +33,7 @@ import { type HealingItemDefinition } from "../../../../common/src/definitions/h
 import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 const showMeleeDebugCircle = false;
 

@@ -8,7 +8,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Container, Text } from "pixi.js";
 import { Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
-import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);

@@ -12,7 +12,7 @@ import { Container } from "pixi.js";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class Building extends GameObject {
     declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;

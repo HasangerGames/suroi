@@ -8,7 +8,7 @@ import { type Vector } from "../../../common/src/utils/vector";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
-import { ObjectSerializations } from "../../../common/src/utils/ObjectsSerializations";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Building extends GameObject {
     readonly definition: BuildingDefinition;

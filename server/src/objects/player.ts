@@ -38,7 +38,7 @@ import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
-import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/ObjectsSerializations";
+import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;

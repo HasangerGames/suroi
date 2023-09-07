@@ -19,7 +19,7 @@ import { Player } from "./player";
 import { type Building } from "./building";
 import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { ObjectSerializations } from "../../../common/src/utils/ObjectsSerializations";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Obstacle extends GameObject {
     health: number;

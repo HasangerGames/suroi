@@ -16,7 +16,7 @@ import { type EmoteDefinition } from "../../../../../common/src/definitions/emot
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
 import { vClone } from "../../../../../common/src/utils/vector";
-import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/ObjectsSerializations";
+import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it

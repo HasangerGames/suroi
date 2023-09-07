@@ -19,7 +19,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
 import { angleBetween, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 import { randomRotation } from "../../../common/src/utils/random";
-import { ObjectSerializations } from "../../../common/src/utils/ObjectsSerializations";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
