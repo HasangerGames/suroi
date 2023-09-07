@@ -2,7 +2,6 @@ import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
 import { type ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
@@ -13,9 +12,10 @@ import { Container } from "pixi.js";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class Building extends GameObject {
-    override type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+    declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
     readonly images: {
         floor: SuroiSprite
@@ -37,7 +37,6 @@ export class Building extends GameObject {
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, type, id);
-        this.type = type;
 
         const definition = type.definition;
         this.images = {
@@ -70,11 +69,10 @@ export class Building extends GameObject {
         });
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        const dead = stream.readBoolean();
-
-        if (dead) {
-            if (dead && !this.dead && !this.isNew) {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Building]): void {
+        const definition = this.type.definition;
+        if (data.dead) {
+            if (!this.dead && !this.isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: `${this.type.idString}_particle.svg`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -100,19 +98,19 @@ export class Building extends GameObject {
             this.images.ceilingContainer.alpha = 1;
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
         }
-        this.dead = dead;
+        this.dead = data.dead;
 
         this.isNew = false;
-    }
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
+        if (!data.fullUpdate) return;
+
+        this.position = data.position;
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
         this.images.ceilingContainer.position.copyFrom(pos);
 
-        this.orientation = stream.readBits(2) as Orientation;
+        this.orientation = data.rotation as Orientation;
 
         this.rotation = orientationToRotation(this.orientation);
 
@@ -120,9 +118,9 @@ export class Building extends GameObject {
 
         this.images.ceilingContainer.rotation = this.rotation;
 
-        this.ceilingHitbox = (this.type.definition).ceilingHitbox.transform(this.position, 1, this.orientation);
+        this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
 
-        for (const floor of (this.type.definition).floors) {
+        for (const floor of definition.floors) {
             const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
             this.floorHitboxes.push(floorHitbox);
             this.game.floorHitboxes.set(

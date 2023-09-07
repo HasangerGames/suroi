@@ -8,11 +8,9 @@ import { type SendingPacket } from "../types/sendingPacket";
 
 import { ObjectType } from "../../../common/src/utils/objectType";
 import {
-    ANIMATION_TYPE_BITS,
     AnimationType,
     INVENTORY_MAX_WEAPONS,
     ObjectCategory,
-    PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
     PlayerActions
 } from "../../../common/src/constants";
@@ -26,7 +24,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
-import { type HealingAction, type Action } from "../inventory/action";
+import { HealingAction, type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
@@ -40,6 +38,7 @@ import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
+import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -380,9 +379,9 @@ export class Player extends GameObject {
             this.activeItemDefinition.speedMultiplier * // Active item speed modifier
             this.modifiers.baseSpeed;                   // Current on-wearer modifier
 
+        // remove it from the grid and re-insert after finishing calculating the new position
         this.game.grid.removeObject(this);
         this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
-        this.game.grid.addObject(this);
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
@@ -400,6 +399,7 @@ export class Player extends GameObject {
         // World boundaries
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.game.grid.addObject(this);
 
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
@@ -488,7 +488,7 @@ export class Player extends GameObject {
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
-        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY))
+        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
 
         const newVisibleObjects = this.game.grid.intersectsRect(rect);
 
@@ -725,27 +725,34 @@ export class Player extends GameObject {
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeRotation(this.rotation, 16);
-        stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
-        stream.writeBoolean(this.animation.seq);
+        ObjectSerializations[ObjectCategory.Player].serializeFull(stream, {
+            position: this.position,
+            rotation: this.rotation,
+            animation: this.animation,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.invulnerable);
-        stream.writeObjectTypeNoCategory(this.activeItem.type);
-        stream.writeObjectTypeNoCategory(this.loadout.skin);
-        stream.writeBits(this.inventory.helmet?.definition.level ?? 0, 2);
-        stream.writeBits(this.inventory.vest?.definition.level ?? 0, 2);
-        stream.writeBits(this.inventory.backpack.definition.level, 2);
-
-        stream.writeBoolean(this.dirty.action);
-        if (this.dirty.action) {
-            stream.writeBits(this.action ? this.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
-
-            if (this.action?.type === PlayerActions.UseItem) {
-                stream.writeObjectTypeNoCategory((this.action as HealingAction).item);
+        const data: ObjectsNetData[ObjectCategory.Player] = {
+            position: this.position,
+            rotation: this.rotation,
+            animation: this.animation,
+            fullUpdate: true,
+            invulnerable: this.invulnerable,
+            helmet: this.inventory.helmet ? this.inventory.helmet.definition.level : 0,
+            vest: this.inventory.vest ? this.inventory.vest.definition.level : 0,
+            backpack: this.inventory.backpack.definition.level,
+            skin: this.loadout.skin,
+            activeItem: this.activeItem.type,
+            action: {
+                dirty: this.dirty.action
             }
+        };
+        if (this.dirty.action) {
+            data.action.type = this.action ? this.action.type : PlayerActions.None;
+            if (this.action instanceof HealingAction) data.action.item = this.action.item;
         }
+        ObjectSerializations[ObjectCategory.Player].serializeFull(stream, data);
     }
 }

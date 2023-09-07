@@ -1,13 +1,14 @@
 import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type ObjectCategory } from "../../../common/src/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Game } from "../game";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Building extends GameObject {
     readonly definition: BuildingDefinition;
@@ -48,11 +49,18 @@ export class Building extends GameObject {
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.dead);
+        ObjectSerializations[ObjectCategory.Building].serializePartial(stream, {
+            dead: this.dead,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, "limited");
+        ObjectSerializations[ObjectCategory.Building].serializeFull(stream, {
+            dead: this.dead,
+            position: this.position,
+            rotation: this.rotation,
+            fullUpdate: true
+        });
     }
 }

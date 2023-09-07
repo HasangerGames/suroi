@@ -2,7 +2,6 @@ import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
 import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
@@ -12,6 +11,7 @@ import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -81,24 +81,18 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
         this.radius = LootRadius[(this.type.definition).itemType];
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Loot]): void {
+        this.position = data.position;
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
-    }
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        // Loot should only be fully updated on creation
-        if (this.created) {
-            console.warn("Full update of existing loot");
-        }
+        if (!data.fullUpdate) return;
 
-        this.count = stream.readBits(9);
-        const isNew = stream.readBoolean();
+        this.count = data.count;
 
         // Play an animation if this is new loot
-        if (isNew) {
+        if (data.isNew) {
             this.container.scale.set(0.5);
             this.animation = new Tween(this.game, {
                 target: this.container.scale,
@@ -118,6 +112,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     canInteract(player: PlayerManager): boolean {
         const activePlayer = this.game.activePlayer;
+        if (!activePlayer) return false;
         const definition = this.type.definition;
 
         switch (definition.itemType) {

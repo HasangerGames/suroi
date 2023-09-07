@@ -19,6 +19,7 @@ import { Player } from "./player";
 import { type Building } from "./building";
 import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Obstacle extends GameObject {
     health: number;
@@ -208,6 +209,7 @@ export class Obstacle extends GameObject {
             throw new Error("Door with non-rectangular hitbox");
         }
 
+        this.game.grid.removeObject(this);
         this.door.open = !this.door.open;
         if (this.door.open) {
             let isOnOtherSide = false;
@@ -236,23 +238,31 @@ export class Obstacle extends GameObject {
             this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
         }
+        this.game.grid.addObject(this);
 
         this.game.partialDirtyObjects.add(this);
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writeScale(this.scale);
-        stream.writeBoolean(this.dead);
-        if (this.isDoor && this.door !== undefined) {
-            stream.writeBits(this.door.offset, 2);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializePartial(stream, {
+            ...this,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, this.definition.rotationMode);
-        if (this.definition.variations !== undefined) {
-            stream.writeVariation(this.variation);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializeFull(stream, {
+            scale: this.scale,
+            dead: this.dead,
+            definition: this.definition,
+            door: this.door,
+            fullUpdate: true,
+            position: this.position,
+            variation: this.variation,
+            rotation: {
+                rotation: this.rotation,
+                orientation: this.rotation as Orientation
+            }
+        });
     }
 }

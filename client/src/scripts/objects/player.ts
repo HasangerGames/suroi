@@ -3,15 +3,13 @@ import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 
 import {
-    ANIMATION_TYPE_BITS, AnimationType,
+    AnimationType,
     ObjectCategory,
-    PLAYER_ACTIONS_BITS,
     PLAYER_RADIUS,
     PlayerActions
 } from "../../../../common/src/constants";
 
 import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
@@ -28,7 +26,6 @@ import { type ArmorDefinition } from "../../../../common/src/definitions/armors"
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { FloorType } from "../../../../common/src/definitions/buildings";
-import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
@@ -36,6 +33,7 @@ import { type HealingItemDefinition } from "../../../../common/src/definitions/h
 import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 const showMeleeDebugCircle = false;
 
@@ -48,7 +46,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     isNew = true;
 
-    isActivePlayer: boolean;
+    get isActivePlayer(): boolean {
+        return this.id === this.game.activePlayerID;
+    }
 
     animationSeq!: boolean;
 
@@ -90,9 +90,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitbox = new CircleHitbox(this.radius);
 
-    constructor(game: Game, id: number, isActivePlayer = false) {
+    constructor(game: Game, id: number) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
-        this.isActivePlayer = isActivePlayer;
 
         this.images = {
             vest: new SuroiSprite().setVisible(false),
@@ -104,17 +103,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weapon: new SuroiSprite(),
             emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
-            /*
-            bloodEmitter: this.scene.add.particles(0, 0, "main", {
-                frame: "blood_particle.svg",
-                quantity: 1,
-                lifespan: 1000,
-                speed: { min: 20, max: 30 },
-                scale: { start: 0.75, end: 1 },
-                alpha: { start: 1, end: 0 },
-                emitting: false
-            })
-            */
         };
 
         this.container.addChild(
@@ -145,10 +133,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Player]): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
-        this.position = stream.readPosition();
+        this.position = data.position;
 
         this.hitbox.position = this.position;
 
@@ -177,11 +165,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        this.rotation = stream.readRotation(16);
+        this.rotation = data.rotation;
 
         if (
             !localStorageInstance.config.rotationSmoothing &&
-            !(this.isActivePlayer && localStorageInstance.config.clientSidePrediction)
+            !(this.isActivePlayer && localStorageInstance.config.clientSidePrediction && !this.game.spectating)
         ) this.container.rotation = this.rotation;
 
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
@@ -192,77 +180,71 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // Animation
-        const animation: AnimationType = stream.readBits(ANIMATION_TYPE_BITS);
-        const animationSeq = stream.readBoolean();
-        if (this.animationSeq !== animationSeq && this.animationSeq !== undefined) {
-            this.playAnimation(animation);
+        if (this.animationSeq !== data.animation.seq && this.animationSeq !== undefined) {
+            this.playAnimation(data.animation.type);
         }
-        this.animationSeq = animationSeq;
-    }
+        this.animationSeq = data.animation.seq;
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        this.container.alpha = stream.readBoolean() ? 0.5 : 1; // Invulnerability
+        if (data.fullUpdate) {
+            this.container.alpha = data.invulnerable ? 0.5 : 1;
 
-        this.oldItem = this.activeItem.idNumber;
-        this.activeItem = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
-
-        const skinID = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot).idString;
-        this.images.body.setFrame(`${skinID}_base.svg`);
-        this.images.leftFist.setFrame(`${skinID}_fist.svg`);
-        this.images.rightFist.setFrame(`${skinID}_fist.svg`);
-
-        if (this.isActivePlayer && !UI_DEBUG_MODE) {
-            $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
-        }
-
-        this.helmetLevel = stream.readBits(2);
-        this.vestLevel = stream.readBits(2);
-        this.backpackLevel = stream.readBits(2);
-
-        // Action
-        if (stream.readBoolean()) {
-            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
-            let actionTime = 0;
-            let actionName = "";
-            let actionSoundName = "";
-            switch (action) {
-                case PlayerActions.None:
-                    if (this.isActivePlayer) $("#action-container").hide().stop();
-                    if (this.actionSound) this.game.soundManager.stop(this.actionSound);
-                    break;
-                case PlayerActions.Reload: {
-                    actionName = "Reloading...";
-                    actionSoundName = `${this.activeItem.idString}_reload`;
-                    actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
-                    break;
-                }
-                case PlayerActions.UseItem: {
-                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
-                    actionName = `${itemDef.useText} ${itemDef.name}`;
-                    actionTime = itemDef.useTime;
-                    actionSoundName = itemDef.idString;
-                    break;
-                }
+            this.oldItem = data.activeItem.idNumber;
+            this.activeItem = data.activeItem;
+            if (this.isActivePlayer && !UI_DEBUG_MODE) {
+                $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
             }
-            if (this.isActivePlayer) {
-                if (actionName) {
-                    $("#action-name").text(actionName);
-                    $("#action-container").show();
+
+            const skinID = data.skin.idString;
+            this.images.body.setFrame(`${skinID}_base.svg`);
+            this.images.leftFist.setFrame(`${skinID}_fist.svg`);
+            this.images.rightFist.setFrame(`${skinID}_fist.svg`);
+
+            this.helmetLevel = data.helmet;
+            this.vestLevel = data.vest;
+            this.backpackLevel = data.backpack;
+
+            if (data.action.dirty) {
+                let actionTime = 0;
+                let actionName = "";
+                let actionSoundName = "";
+                switch (data.action.type) {
+                    case PlayerActions.None:
+                        if (this.isActivePlayer) $("#action-container").hide().stop();
+                        if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+                        break;
+                    case PlayerActions.Reload: {
+                        actionName = "Reloading...";
+                        actionSoundName = `${this.activeItem.idString}_reload`;
+                        actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
+                        break;
+                    }
+                    case PlayerActions.UseItem: {
+                        const itemDef = (data.action.item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>).definition;
+                        actionName = `${itemDef.useText} ${itemDef.name}`;
+                        actionTime = itemDef.useTime;
+                        actionSoundName = itemDef.idString;
+                        break;
+                    }
                 }
-                if (actionTime > 0) {
-                    $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
-                        $("#action-container").hide();
-                    });
+                if (this.isActivePlayer) {
+                    if (actionName) {
+                        $("#action-name").text(actionName);
+                        $("#action-container").show();
+                    }
+                    if (actionTime > 0) {
+                        $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
+                            $("#action-container").hide();
+                        });
+                    }
                 }
+                if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
             }
-            if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
+            this.updateEquipment();
+
+            this.updateFistsPosition(true);
+            this.updateWeapon();
+            this.isNew = false;
         }
-
-        this.updateEquipment();
-
-        this.updateFistsPosition(true);
-        this.updateWeapon();
-        this.isNew = false;
     }
 
     updateFistsPosition(anim: boolean): void {

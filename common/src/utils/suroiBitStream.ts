@@ -9,8 +9,7 @@ import { ObjectDefinitionsList } from "./objectDefinitionsList";
 import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
-    OBJECT_CATEGORY_BITS,
-    type ObjectCategory,
+    OBJECT_CATEGORY_BITS, type ObjectCategory,
     PACKET_TYPE_BITS,
     type PacketType,
     VARIATION_BITS,

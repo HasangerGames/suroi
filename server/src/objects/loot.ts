@@ -9,7 +9,7 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, TICK_SPEED, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, LootRadius, TICK_SPEED, ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
@@ -19,6 +19,7 @@ import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
 import { angleBetween, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 import { randomRotation } from "../../../common/src/utils/random";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
@@ -243,11 +244,18 @@ export class Loot extends GameObject {
     override damage(amount: number, source?: GameObject): void { }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
+        ObjectSerializations[ObjectCategory.Loot].serializePartial(stream, {
+            position: this.position,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeBits(this.count, 9);
-        stream.writeBoolean(this.isNew);
+        ObjectSerializations[ObjectCategory.Loot].serializeFull(stream, {
+            position: this.position,
+            count: this.count,
+            isNew: this.isNew,
+            fullUpdate: true
+        });
     }
 }

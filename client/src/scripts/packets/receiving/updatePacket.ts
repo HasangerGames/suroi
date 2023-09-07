@@ -1,8 +1,5 @@
-import { DeathMarker } from "../../objects/deathMarker";
 import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
-import { Obstacle } from "../../objects/obstacle";
-import { Loot } from "../../objects/loot";
 import { Bullet } from "../../objects/bullet";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
@@ -14,15 +11,12 @@ import type { GunDefinition } from "../../../../../common/src/definitions/guns";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
-import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { UI_DEBUG_MODE } from "../../utils/constants";
-import { Building } from "../../objects/building";
-import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
 import { vClone } from "../../../../../common/src/utils/vector";
+import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -36,6 +30,19 @@ function safeRound(value: number): number {
 }
 
 export class UpdatePacket extends ReceivingPacket {
+    fullDirtyObjects = new Set<{
+        id: number
+        type: ObjectType
+        data: ObjectsNetData[ObjectCategory]
+    }>();
+
+    partialDirtyObjects = new Set<{
+        id: number
+        data: ObjectsNetData[ObjectCategory]
+    }>();
+
+    deletedObjects = new Array<number>();
+
     override deserialize(stream: SuroiBitStream): void {
         const game = this.playerManager.game;
         const playerManager = this.playerManager;
@@ -137,23 +144,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Active player ID and name
         if (activePlayerDirty) {
-            const activePlayerID = stream.readObjectID();
-            const idChanged = game.activePlayer.id !== activePlayerID;
-            if (idChanged) {
-                // Destroy the old object representing the active player
-                const activePlayer = game.objects.get(activePlayerID);
-                if (activePlayer !== undefined) {
-                    activePlayer.destroy();
-                    game.objects.deleteByID(activePlayerID);
-                }
-
-                // Reset the active player
-                game.objects.deleteByID(game.activePlayer.id);
-                game.activePlayer.id = activePlayerID;
-                game.activePlayer.distSinceLastFootstep = 0;
-                game.activePlayer.isNew = true;
-                game.objects.add(game.activePlayer);
-            }
+            game.activePlayerID = stream.readObjectID();
             // Name dirty
             if (stream.readBoolean()) {
                 const name = stream.readPlayerNameWithColor();
@@ -179,50 +170,13 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                let object: GameObject | undefined;
+                const data = ObjectSerializations[type.category].deserializeFull(stream, type);
 
-                if (!game.objects.hasID(id)) {
-                    switch (type.category) {
-                        case ObjectCategory.Player: {
-                            object = new Player(game, id);
-                            game.players.add(object as Player);
-                            break;
-                        }
-                        case ObjectCategory.Obstacle: {
-                            object = new Obstacle(game, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
-                            break;
-                        }
-                        case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(game, type as ObjectType<ObjectCategory.DeathMarker>, id);
-                            break;
-                        }
-                        case ObjectCategory.Loot: {
-                            object = new Loot(game, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
-                            break;
-                        }
-                        case ObjectCategory.Building: {
-                            object = new Building(game, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
-                            break;
-                        }
-                    }
-
-                    if (object === undefined) {
-                        console.warn(`Unknown object category: ${type.category}`);
-                        continue;
-                    }
-
-                    game.objects.add(object);
-                } else {
-                    const objectFromSet: GameObject | undefined = game.objects.get(id);
-                    if (objectFromSet === undefined) {
-                        console.warn(`Could not find object with ID ${id}`);
-                        continue;
-                    }
-                    object = objectFromSet;
-                }
-
-                object.deserializePartial(stream);
-                object.deserializeFull(stream);
+                this.fullDirtyObjects.add({
+                    id,
+                    type,
+                    data
+                });
             }
         }
 
@@ -232,11 +186,16 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < partialObjectCount; i++) {
                 const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
+
                 if (object === undefined) {
                     console.warn(`Unknown partial object with ID ${id}`);
                     continue;
                 }
-                object.deserializePartial(stream);
+                const data = ObjectSerializations[object.type.category].deserializePartial(stream, object.type);
+                this.partialDirtyObjects.add({
+                    id,
+                    data
+                });
             }
         }
 
@@ -245,16 +204,7 @@ export class UpdatePacket extends ReceivingPacket {
             const deletedObjectCount = stream.readUint16();
             for (let i = 0; i < deletedObjectCount; i++) {
                 const id = stream.readObjectID();
-                const object: GameObject | undefined = game.objects.get(id);
-                if (object === undefined) {
-                    console.warn(`Trying to delete unknown object with ID ${id}`);
-                    continue;
-                }
-                object.destroy();
-                game.objects.delete(object);
-                if (object instanceof Player) {
-                    game.players.delete(object);
-                }
+                this.deletedObjects.push(id);
             }
         }
 

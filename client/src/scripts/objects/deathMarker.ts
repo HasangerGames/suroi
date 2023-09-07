@@ -2,13 +2,13 @@ import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
 import { ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 import { type Container, Text } from "pixi.js";
 import { Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
@@ -42,25 +42,23 @@ export class DeathMarker extends GameObject {
         this.container.zIndex = 0;
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
+    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {
+        this.position = data.position;
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
-    }
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        this.playerName = stream.readPlayerName();
-
-        if (stream.readBoolean()) {
-            this.nameColor = stream.readUTF8String(10);
-        }
+        this.playerName = data.player.name;
         this.playerNameText.text = this.playerName;
+
+        if (data.player.isDev) {
+            this.nameColor = data.player.nameColor;
+        }
 
         this.playerNameText.style.fill = this.nameColor;
 
         // Play an animation if this is a new death marker.
-        if (stream.readBoolean()) {
+        if (data.isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
             this.scaleAnim = new Tween(this.game, {

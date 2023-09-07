@@ -14,7 +14,7 @@ import { type GameObject } from "./types/gameObject";
 import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { PacketType, TICK_SPEED } from "../../../common/src/constants";
+import { ObjectCategory, PacketType, TICK_SPEED } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
@@ -39,8 +39,12 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
-import { type FloorType } from "../../../common/src/definitions/buildings";
+import { type BuildingDefinition, type FloorType } from "../../../common/src/definitions/buildings";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { DeathMarker } from "./objects/deathMarker";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
 
 export class Game {
     socket!: WebSocket;
@@ -48,7 +52,12 @@ export class Game {
     objects = new ObjectPool<GameObject>();
     players = new ObjectPool<Player>();
     bullets: Set<Bullet> = new Set<Bullet>();
-    activePlayer!: Player;
+
+    activePlayerID = -1;
+
+    get activePlayer(): Player | undefined {
+        return this.objects.get(this.activePlayerID) as Player;
+    }
 
     floorHitboxes = new Map<Hitbox, FloorType>();
 
@@ -98,7 +107,9 @@ export class Game {
                         !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
                     ) player.updateContainerRotation();
                 }
-                this.camera.position = this.activePlayer.container.position;
+                if (this.activePlayer) {
+                    this.camera.position = this.activePlayer.container.position;
+                }
             }
 
             for (const tween of this.tweens) {
@@ -163,10 +174,6 @@ export class Game {
             this.sendPacket(new PingPacket(this.playerManager));
             this.sendPacket(new JoinPacket(this.playerManager));
 
-            this.activePlayer = new Player(this, -1, true);
-
-            this.players.add(this.activePlayer);
-
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
@@ -186,7 +193,9 @@ export class Game {
                     break;
                 }
                 case PacketType.Update: {
-                    new UpdatePacket(this.playerManager).deserialize(stream);
+                    const packet = new UpdatePacket(this.playerManager);
+                    packet.deserialize(stream);
+                    this.processUpdate(packet);
                     break;
                 }
                 case PacketType.GameOver: {
@@ -287,6 +296,60 @@ export class Game {
         this.camera.resize();
     }
 
+    processUpdate(updateData: UpdatePacket): void {
+        for (const { id, type, data } of updateData.fullDirtyObjects) {
+            let object: GameObject | undefined = this.objects.get(id);
+            if (object === undefined || object.destroyed) {
+                switch (type.category) {
+                    case ObjectCategory.Player: {
+                        object = new Player(this, id);
+                        this.players.add(object as Player);
+                        break;
+                    }
+                    case ObjectCategory.Obstacle: {
+                        object = new Obstacle(this, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
+                        break;
+                    }
+                    case ObjectCategory.DeathMarker: {
+                        object = new DeathMarker(this, type as ObjectType<ObjectCategory.DeathMarker>, id);
+                        break;
+                    }
+                    case ObjectCategory.Loot: {
+                        object = new Loot(this, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                        break;
+                    }
+                    case ObjectCategory.Building: {
+                        object = new Building(this, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
+                        break;
+                    }
+                }
+            }
+            if (object) {
+                this.objects.add(object);
+                object?.updateFromData(data);
+            }
+        }
+
+        for (const { id, data } of updateData.partialDirtyObjects) {
+            const object = this.objects.get(id);
+            if (object) {
+                object.updateFromData(data);
+            }
+        }
+        for (const id of updateData.deletedObjects) {
+            const object = this.objects.get(id);
+            if (object === undefined) {
+                console.warn(`Trying to delete unknown object with ID ${id}`);
+                continue;
+            }
+            object.destroy();
+            this.objects.delete(object);
+            if (object instanceof Player) {
+                this.players.delete(object);
+            }
+        }
+    }
+
     tick = (() => {
         const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
 
@@ -337,12 +400,13 @@ export class Game {
             // Only run interact message and loot checks every other tick
             skipLootCheck = !skipLootCheck;
             if (skipLootCheck) return;
+            const player = this.activePlayer;
+            if (!player) return;
 
             // Loop through all loot objects to check if the player is colliding with one to show the interact message
             let minDist = Number.MAX_VALUE;
             let closestObject: Loot | Obstacle | undefined;
             let canInteract: boolean | undefined;
-            const player = this.activePlayer;
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
