@@ -86,11 +86,11 @@ export const Guns: GunDefinition[] = [
         moveSpread: 4,
         length: 10,
         fists: {
-            left: v(140, -5),
-            right: v(65, 0),
+            left: v(122, -3),
+            right: v(62, 0),
             animationDuration: 100
         },
-        image: { position: v(120, 2) },
+        image: { position: v(90, 2) },
         particles: {
             position: v(4, 0.6)
         },
@@ -121,8 +121,8 @@ export const Guns: GunDefinition[] = [
         bulletCount: 9,
         length: 10,
         fists: {
-            left: v(130, -6),
-            right: v(65, 0),
+            left: v(120, -3),
+            right: v(47, 0),
             animationDuration: 100
         },
         image: { position: v(110, 1) },
@@ -157,7 +157,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         length: 10,
         fists: {
-            left: v(145, -6),
+            left: v(145, -3),
             right: v(60, 0),
             animationDuration: 100
         },
@@ -706,19 +706,25 @@ export const Guns: GunDefinition[] = [
                 maxAdrenaline: 0.8
             },
             on: {
-                kill: {
-                    limit: 5,
-                    maxHealth: 1.488,
-                    maxAdrenaline: 1.201,
-                    minAdrenaline: 8,
-                    healthRestored: 230,
-                    adrenalineRestored: 30,
-                    speedBoost: 1.02
-                },
-                damageDealt: {
-                    healthRestored: 1,
-                    adrenalineRestored: 1
-                }
+                kill: [
+                    {
+                        limit: 5,
+                        maxHealth: 1.488,
+                        maxAdrenaline: 1.201,
+                        minAdrenaline: 20,
+                        speedBoost: 1.02
+                    },
+                    {
+                        healthRestored: 230,
+                        adrenalineRestored: 30
+                    }
+                ],
+                damageDealt: [
+                    {
+                        healthRestored: 2,
+                        adrenalineRestored: 1.5
+                    }
+                ]
             }
         }
     }

@@ -42,7 +42,8 @@ export function absMod(a: number, n: number): number {
  * @param radians The angle, in radians
  */
 export function normalizeAngle(radians: number): number {
-    return Math.atan2(Math.sin(radians), Math.cos(radians));
+    const π = Math.PI;
+    return absMod(radians - π, 2 * π) - π;
 }
 
 /**

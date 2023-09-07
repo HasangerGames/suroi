@@ -42,6 +42,7 @@ class Bot {
     interact = false;
     emote = false;
     angle = random(-Math.PI, Math.PI);
+    angularSpeed = random(0, 0.1);
 
     connected = false;
 
@@ -106,7 +107,7 @@ class Bot {
         stream.writeBoolean(this.shootStart);
         stream.writeBoolean(true); // rotating
         stream.writeRotation(this.angle, 16);
-        this.angle += 0.1;
+        this.angle += this.angularSpeed;
         if (this.angle > Math.PI) this.angle = -Math.PI;
 
         let action: InputActions | undefined;

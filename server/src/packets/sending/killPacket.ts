@@ -13,12 +13,14 @@ export class KillPacket extends SendingPacket {
 
     readonly killed: Player;
     readonly weaponUsed?: GunItem | MeleeItem | ObjectType;
+    readonly kills: number;
 
     constructor(player: Player, killed: Player, weaponUsed?: GunItem | MeleeItem | ObjectType) {
         super(player);
 
         this.killed = killed;
         this.weaponUsed = weaponUsed;
+        this.kills = (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0;
     }
 
     override serialize(stream: SuroiBitStream): void {
@@ -38,7 +40,7 @@ export class KillPacket extends SendingPacket {
             stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
             stream.writeBoolean(shouldTrackStats);
             if (shouldTrackStats) {
-                stream.writeUint8(weaponUsed.stats.kills);
+                stream.writeUint8(this.kills);
             }
         }
     }

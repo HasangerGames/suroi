@@ -85,7 +85,7 @@ export class Player extends GameObject {
     private _minAdrenaline = 0;
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
-        this._minAdrenaline = minAdrenaline;
+        this._minAdrenaline = Math.min(minAdrenaline, this._maxAdrenaline);
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
@@ -559,13 +559,7 @@ export class Player extends GameObject {
     piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
-        /* eslint-disable @typescript-eslint/restrict-plus-operands */
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-
         amount = this._clampDamageAmount(amount);
-
-        /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
@@ -582,9 +576,12 @@ export class Player extends GameObject {
             this.damageTaken += amount;
 
             if (canTrackStats && !this.dead) {
-                if ((weaponUsed.stats.damage += amount) <= ((attributes?.damageDealt ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
-                    applyPlayerFX(attributes!.damageDealt!);
+                const damageDealt = weaponUsed.stats.damage += amount;
+
+                for (const entry of attributes?.damageDealt ?? []) {
+                    if (damageDealt < (entry.limit ?? Infinity)) {
+                        applyPlayerFX(entry);
+                    }
                 }
             }
 
@@ -597,9 +594,12 @@ export class Player extends GameObject {
 
         if (this.health <= 0 && !this.dead) {
             if (canTrackStats) {
-                if (weaponUsed.stats.kills++ <= ((attributes?.kill ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
-                    applyPlayerFX(attributes!.kill!);
+                const kills = ++weaponUsed.stats.kills;
+
+                for (const entry of attributes?.kill ?? []) {
+                    if (kills < (entry.limit ?? Infinity)) {
+                        applyPlayerFX(entry);
+                    }
                 }
             }
 

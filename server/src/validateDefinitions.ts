@@ -669,13 +669,23 @@ function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinit
 
                     if (on.damageDealt) {
                         logger.indent("Validating on-damage wearer attributes", () => {
-                            validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "on", "damageDealt"), wearerAttributes!.on!.damageDealt!);
+                            wearerAttributes!.on!.damageDealt!.forEach((e, i) =>
+                                validateWearerAttributesInternal(
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "damageDealt", `entry ${i}`),
+                                    e
+                                )
+                            );
                         });
                     }
 
                     if (on.kill) {
                         logger.indent("Validating on-kill wearer attributes", () => {
-                            validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "on", "kill"), wearerAttributes!.on!.kill!);
+                            wearerAttributes!.on!.kill!.forEach((e, i) =>
+                                validateWearerAttributesInternal(
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "kill", `entry ${i}`),
+                                    e
+                                )
+                            );
                         });
                     }
                 });

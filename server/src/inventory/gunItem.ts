@@ -112,7 +112,6 @@ export class GunItem extends InventoryItem {
         }
 
         const limit = definition.bulletCount ?? 1;
-        const step = spread / limit;
 
         for (let i = 0; i < limit; i++) {
             this.owner.game.addBullet(
@@ -121,9 +120,9 @@ export class GunItem extends InventoryItem {
                     owner.rotation + Math.PI / 2 +
                     (
                         definition.consistentPatterning === true
-                            ? i * step - spread / 2
-                            : randomFloat(-spread, spread)
-                    )
+                            ? i / limit - 0.5
+                            : randomFloat(-1, 1)
+                    ) * spread
                 ),
                 this,
                 this.owner

@@ -3,15 +3,15 @@
  */
 export class IDAllocator {
     /**
-     * The list of free ID's
+     * A map associating numbers (indices) with booleans corresponding
+     * to whether that ID is free
      */
-    private readonly _list: number[] = [];
+    private readonly _list: boolean[];
 
     /**
      * The largest id this allocator can store
      */
     private readonly _max: number;
-
     /**
      * Creates a new `IDAllocator` storing `2 ** n` id's
      * @param bits A positive integer representing the number of bits this allocator should manage
@@ -24,9 +24,7 @@ export class IDAllocator {
 
         this._max = 2 ** bits;
 
-        for (let i = 0; i < this._max; i++) {
-            this.give(i);
-        }
+        this._list = Array.from({ length: this._max - 1 }, () => true);
     }
 
     /**
@@ -35,27 +33,35 @@ export class IDAllocator {
      * @throws {Error} If there are no ID's left
      */
     takeNext(): number {
-        const value = this._list.shift();
-        if (value !== undefined) return value;
+        let index = -1;
+        for (let i = 0, l = this._list.length; i < l; i++) {
+            if (this._list[i]) {
+                index = i;
+                break;
+            }
+        }
 
-        throw new Error("Out of IDs");
+        if (index === -1) throw new Error("Out of IDs");
+
+        this._list[index] = false;
+        return index;
     }
 
     /**
-     * Returns a value to the pool of available id's
+     * Returns a value to the pool of available ID's
      *
-     * **Warning:** No mechanism exists to ensure that the given id isn't already in the pool. It is the caller's
-     * responsibility to ensure that the unique id's given by this allocator remain unique, notably by ensuring that
-     * they are deallocated with the right allocator and that id's are never changed
+     * **Warning:** No mechanism exists to ensure that the given ID isn't already in the pool. It is the caller's
+     * responsibility to ensure that the unique ID's given by this allocator remain unique, notably by ensuring that
+     * they are deallocated with the right allocator and that ID's are never changed
      *
      * @param value The ID to return
      * @throws {RangeError} If the given value isn't a positive integer, or is out of this allocator's range
      */
     give(value: number): void {
         if (value % 1 !== 0 || value < 0 || value > this._max) {
-            throw new RangeError(`Cannot give back a value thats not in range (value: ${value})`);
+            throw new RangeError(`Cannot give back a value that is not in range (value: ${value})`);
         }
 
-        this._list.push(value);
+        this._list[value] = true;
     }
 }

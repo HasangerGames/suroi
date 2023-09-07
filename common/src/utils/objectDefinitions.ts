@@ -95,7 +95,7 @@ export interface ItemDefinition extends ObjectDefinition {
             /**
              * These attributes are applied whenever the player gets a kill
              */
-            readonly kill?: {
+            readonly kill?: Array<{
                 /**
                  * The upper limit after which this effect is no longer reapplied
                  */
@@ -108,11 +108,11 @@ export interface ItemDefinition extends ObjectDefinition {
                  * A fixed amount of adrenaline restored
                  */
                 readonly adrenalineRestored?: number
-            } & WearerAttributes
+            } & WearerAttributes>
             /**
              * These attributs are applied whenever the player deals damage
              */
-            readonly damageDealt?: {
+            readonly damageDealt?: Array<{
                 /**
                  * The upper limit after which this effect is no longer reapplied
                  */
@@ -125,7 +125,7 @@ export interface ItemDefinition extends ObjectDefinition {
                  * A fixed amount of adrenaline restored
                  */
                 readonly adrenalineRestored?: number
-            } & WearerAttributes
+            } & WearerAttributes>
         }
     }
 }
