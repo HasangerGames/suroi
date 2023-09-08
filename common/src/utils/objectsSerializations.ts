@@ -1,13 +1,9 @@
 import { ANIMATION_TYPE_BITS, type AnimationType, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../constants";
-import { type BuildingDefinition } from "../definitions/buildings";
-import { type EmoteDefinition } from "../definitions/emotes";
-import { type ExplosionDefinition } from "../definitions/explosions";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { type LootDefinition } from "../definitions/loots";
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
-import { type ObjectDefinition } from "./objectDefinitions";
 import { type ObjectType } from "./objectType";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
@@ -102,24 +98,14 @@ export interface ObjectsNetData {
     }
 }
 
-interface ObjectSerialization<T extends ObjectCategory, U extends ObjectDefinition> {
+interface ObjectSerialization<T extends ObjectCategory> {
     serializePartial: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
     serializeFull: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
-    deserializePartial: (stream: SuroiBitStream, type: ObjectType<T, U>) => ObjectsNetData[T]
-    deserializeFull: (stream: SuroiBitStream, type: ObjectType<T, U>) => ObjectsNetData[T]
+    deserializePartial: (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[T]
+    deserializeFull: (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[T]
 }
 
-export interface DefinitionMapping {
-    [ObjectCategory.Player]: ObjectDefinition
-    [ObjectCategory.Obstacle]: ObstacleDefinition
-    [ObjectCategory.Explosion]: ExplosionDefinition
-    [ObjectCategory.DeathMarker]: ObjectDefinition
-    [ObjectCategory.Loot]: LootDefinition
-    [ObjectCategory.Building]: BuildingDefinition
-    [ObjectCategory.Emote]: EmoteDefinition
-}
-
-export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<K, DefinitionMapping[K]> } = {
+export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<K> } = {
     //
     // Player serialization
     //
@@ -207,7 +193,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
         },
         deserializePartial(stream, type) {
-            const definition = type.definition;
+            const definition = type.definition as ObstacleDefinition;
             const data: ObjectsNetData[ObjectCategory.Obstacle] = {
                 definition,
                 fullUpdate: false,
@@ -222,7 +208,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             return data;
         },
         deserializeFull(stream, type) {
-            const definition = type.definition;
+            const definition = type.definition as ObstacleDefinition;
             const partial = this.deserializePartial(stream, type);
             const full: Partial<ObjectsNetData[ObjectCategory.Obstacle]> = {
                 fullUpdate: true,
