@@ -321,7 +321,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.95
             },
-            hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
+            hitbox: new RectangleHitbox(v(-5.3, -0.8), v(5.3, 0.8)),
             rotationMode: "limited",
             reflectBullets: true,
             frames: {
@@ -446,7 +446,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-26.2, 21.57), v(13.86, 23.5)), // Longer bottommost wall
                 new RectangleHitbox(v(-48.33, 21.57), v(-36.25, 23.5)), // Shorter bottommost wall
                 new RectangleHitbox(v(-48.33, -33.2), v(-46.4, -11)), // Leftmost wall until left window
-                new RectangleHitbox(v(-48.33, 1), v(-46.4, 23.5)), // Leftmost wall after the window
+                new RectangleHitbox(v(-48.33, -0.5), v(-46.4, 23.5)), // Leftmost wall after the window
 
                 new RectangleHitbox(v(-41.9, 32), v(-38.65, 35.13)), // Left post
                 new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post

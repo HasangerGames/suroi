@@ -112,34 +112,34 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "House",
         spawnHitbox: new ComplexHitbox([
             new RectangleHitbox(v(11, -40), v(52, 11)), // Garage
-            new RectangleHitbox(v(-50, -40), v(15, 28)), // Main House
-            new RectangleHitbox(v(-45, 23), v(-16, 40)) // Doorstep
+            new RectangleHitbox(v(-52, -40), v(16, 28)), // Main House
+            new RectangleHitbox(v(-45, 23), v(-17, 40)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -33), v(42, 5.5)), // Garage
-            new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-            new RectangleHitbox(v(-42, -37), v(-22, 34)), // Doorstep
+            new RectangleHitbox(v(12, -36.5), v(46.5, 5.5)), // Garage
+            new RectangleHitbox(v(-47.5, -36.5), v(13, 19.5)), // Main House
+            new RectangleHitbox(v(-42, 19), v(-21, 35)), // Doorstep
             new CircleHitbox(5, v(-1.5, -37)), // Living room window
             new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
             new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(10, -36), v(47, 6)), // Garage
-            new RectangleHitbox(v(-46, -36), v(12, 19)), // Main House
-            new RectangleHitbox(v(-40, -20), v(-22, 30)) // Doorstep
+            new RectangleHitbox(v(12, -36.5), v(46.5, 5.5)), // Garage
+            new RectangleHitbox(v(-47.5, -36.5), v(13, 19.5)), // Main House
+            new RectangleHitbox(v(-39, 19), v(-24, 30)) // Doorstep
         ]),
         floorImagePos: v(0, 0),
         ceilingImagePos: v(0, -1.5),
         floors: [
             {
                 type: "stone",
-                hitbox: new ComplexHitbox([new RectangleHitbox(v(12, -33), v(42, 5.5))]) // Garage
+                hitbox: new ComplexHitbox([new RectangleHitbox(v(13, -36), v(46, 5.5))]) // Garage
             },
             {
                 type: "wood",
                 hitbox: new ComplexHitbox([
-                    new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
-                    new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
+                    new RectangleHitbox(v(-48, -37), v(12, 19)), // Main House
+                    new RectangleHitbox(v(-40.8, 20), v(-22, 34)) // Doorstep
                 ])
             }
         ],
