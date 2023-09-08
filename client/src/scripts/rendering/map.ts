@@ -24,6 +24,8 @@ export class Minimap {
     width = 0;
     height = 0;
 
+    oceanPadding = 50;
+
     minimapWidth = 0;
     minimapHeight = 0;
 
@@ -33,7 +35,7 @@ export class Minimap {
         this.game = game;
         game.pixi.stage.addChild(this.container);
 
-        this.container.mask = this.mask;
+        this.objectsContainer.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
 
@@ -54,7 +56,11 @@ export class Minimap {
         this.mask.clear();
         this.mask.beginFill(0);
         if (this.expanded) {
-            this.mask.drawRect(0, 0, window.innerWidth, window.innerHeight);
+            this.mask.drawRect(
+                window.innerWidth / 2 - (this.minimapWidth / 2) - this.oceanPadding,
+                0,
+                this.minimapWidth + this.oceanPadding * 2,
+                this.minimapHeight + this.oceanPadding * 2);
         } else {
             this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
         }
@@ -103,12 +109,12 @@ export class Minimap {
     updatePosition(): void {
         if (this.expanded) {
             this.container.position.set(window.innerWidth / 2, 0);
-            this.objectsContainer.position.set(-this.width / 2, 0);
+            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding);
             return;
         }
         const pos = vClone(this.position);
-        pos.x -= this.minimapWidth / 2 + this.margins.x * 2;
-        pos.y -= this.minimapHeight / 2 + this.margins.y * 2;
+        pos.x -= (this.minimapWidth / 2 + this.margins.x) / this.container.scale.x;
+        pos.y -= (this.minimapHeight / 2 + this.margins.y) / this.container.scale.y;
 
         this.container.position.set(0, 0);
         this.objectsContainer.position.copyFrom(vMul(pos, -1));
