@@ -3,15 +3,15 @@
  */
 export class IDAllocator {
     /**
-     * A map associating numbers (indices) with booleans corresponding
-     * to whether that ID is free
+     * The list of free ID's
      */
-    private readonly _list: boolean[];
+    private readonly _list: number[] = [];
 
     /**
      * The largest id this allocator can store
      */
     private readonly _max: number;
+
     /**
      * Creates a new `IDAllocator` storing `2 ** n` id's
      * @param bits A positive integer representing the number of bits this allocator should manage
@@ -24,7 +24,9 @@ export class IDAllocator {
 
         this._max = 2 ** bits;
 
-        this._list = Array.from({ length: this._max - 1 }, () => true);
+        for (let i = 0; i < this._max; i++) {
+            this.give(i);
+        }
     }
 
     /**
@@ -33,18 +35,10 @@ export class IDAllocator {
      * @throws {Error} If there are no ID's left
      */
     takeNext(): number {
-        let index = -1;
-        for (let i = 0, l = this._list.length; i < l; i++) {
-            if (this._list[i]) {
-                index = i;
-                break;
-            }
-        }
+        const value = this._list.shift();
+        if (value !== undefined) return value;
 
-        if (index === -1) throw new Error("Out of IDs");
-
-        this._list[index] = false;
-        return index;
+        throw new Error("Out of IDs");
     }
 
     /**
@@ -59,9 +53,9 @@ export class IDAllocator {
      */
     give(value: number): void {
         if (value % 1 !== 0 || value < 0 || value > this._max) {
-            throw new RangeError(`Cannot give back a value that is not in range (value: ${value})`);
+            throw new RangeError(`Cannot give back a value thats not in range (value: ${value})`);
         }
 
-        this._list[value] = true;
+        this._list.push(value);
     }
 }
