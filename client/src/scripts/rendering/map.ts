@@ -51,11 +51,16 @@ export class Minimap {
         else this.resizeSmallMap();
     }
 
-    resizeMask(): void {
+       resizeMask(): void {
         this.mask.clear()
-            .beginFill(0)
-            .drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight)
-            .endFill();
+        this.mask.beginFill(0)
+        if (this.expanded) {
+            this.mask.drawRect(0, 0, window.innerWidth, window.innerHeight);
+        }
+        else {
+            this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight)
+        }
+        this.mask.endFill();
         this.updatePosition();
     }
 
@@ -77,7 +82,7 @@ export class Minimap {
     resizeBigMap(): void {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        this.container.scale.set((0.85 * screenHeight) / (this.height * MINIMAP_SCALE));
+        this.container.scale.set((screenHeight) / (this.height * MINIMAP_SCALE));
         // noinspection JSSuspiciousNameCombination
         this.minimapWidth = screenHeight;
         this.minimapHeight = screenHeight;
