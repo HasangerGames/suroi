@@ -1,7 +1,7 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { COLORS, MINIMAP_SCALE, PIXI_SCALE } from "../../utils/constants";
+import { COLORS, PIXI_SCALE } from "../../utils/constants";
 import { Graphics } from "pixi.js";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
@@ -66,7 +66,7 @@ export class MapPacket extends ReceivingPacket {
 
         game.camera.container.addChild(graphics);
 
-        minimapTexture.scale.set(MINIMAP_SCALE / PIXI_SCALE);
+        minimapTexture.scale.set(1 / PIXI_SCALE);
 
         game.map.objectsContainer.removeChildren();
         game.map.objectsContainer.addChild(minimapTexture);

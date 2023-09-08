@@ -22,8 +22,6 @@ export const COLORS = {
     beach: new Color("hsl(40, 39%, 55%)")
 };
 
-export const MINIMAP_SCALE = 2;
-
 export const PIXI_SCALE = 20;
 
 export enum EmoteSlot {
