@@ -51,7 +51,7 @@ export class Minimap {
         else this.resizeSmallMap();
     }
 
-       resizeMask(): void {
+    resizeMask(): void {
         this.mask.clear()
         this.mask.beginFill(0)
         if (this.expanded) {
@@ -60,8 +60,6 @@ export class Minimap {
         else {
             this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight)
         }
-        this.mask.endFill();
-        this.updatePosition();
     }
 
     resizeSmallMap(): void {

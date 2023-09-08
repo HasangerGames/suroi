@@ -1,7 +1,7 @@
 import { Howl } from "howler";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
-import { FloorType } from "../../../../common/src/definitions/buildings";
+import { FloorTypes } from "../../../../common/src/definitions/buildings";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { v, vSub, type Vector, vLength } from "../../../../common/src/utils/vector";
 import { localStorageInstance } from "./localStorageHandler";
@@ -144,14 +144,9 @@ export function loadSounds(soundManager: SoundManager): void {
         soundsToLoad.push([healingItem.idString, `audio/sfx/healing/${healingItem.idString}`]);
     }
 
-    // funny hack to load sounds based on the strings of an enum :)
-    for (const floorType of Object.keys(FloorType)) {
-        if (floorType.length > 1) {
-            const floorName = floorType.toLowerCase();
-
-            soundsToLoad.push([`${floorName}_step_1`, `audio/sfx/footsteps/${floorName}_1`]);
-            soundsToLoad.push([`${floorName}_step_2`, `audio/sfx/footsteps/${floorName}_2`]);
-        }
+    for (const floorType in FloorTypes) {
+        soundsToLoad.push([`${floorType}_step_1`, `audio/sfx/footsteps/${floorType}_1`]);
+        soundsToLoad.push([`${floorType}_step_2`, `audio/sfx/footsteps/${floorType}_2`]);
     }
 
     for (const sound of soundsToLoad) {

@@ -39,7 +39,7 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
-import { type BuildingDefinition, type FloorType } from "../../../common/src/definitions/buildings";
+import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
@@ -59,7 +59,7 @@ export class Game {
         return this.objects.get(this.activePlayerID) as Player;
     }
 
-    floorHitboxes = new Map<Hitbox, FloorType>();
+    floorHitboxes = new Map<Hitbox, string>();
 
     gameStarted = false;
     gameOver = false;
@@ -420,7 +420,7 @@ export class Game {
                     }
                 } else if (object instanceof Loot) {
                     const dist = distanceSquared(object.position, player.position);
-                    if (dist < minDist && circleCollision(player.position, 3, object.position, object.radius)) {
+                    if (dist < minDist && circleCollision(player.position, 3, object.position, object.hitbox.radius)) {
                         minDist = dist;
                         closestObject = object;
                         canInteract = closestObject.canInteract(this.playerManager);

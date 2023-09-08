@@ -34,6 +34,17 @@ export enum ItemType {
     Skin
 }
 
+export const LootRadius: Record<ItemType, number> = {
+    [ItemType.Gun]: 3.4,
+    [ItemType.Ammo]: 2,
+    [ItemType.Melee]: 3,
+    [ItemType.Healing]: 2.5,
+    [ItemType.Armor]: 3,
+    [ItemType.Backpack]: 3,
+    [ItemType.Scope]: 3,
+    [ItemType.Skin]: 3
+};
+
 export interface WearerAttributes {
     /**
      * A number by which the player's maximum health will be multiplied

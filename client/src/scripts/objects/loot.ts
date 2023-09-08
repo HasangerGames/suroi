@@ -1,17 +1,19 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
+import { ArmorType, type ObjectCategory } from "../../../../common/src/constants";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type PlayerManager } from "../utils/playerManager";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
@@ -23,7 +25,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     count = 0;
 
-    radius: number;
+    hitbox: CircleHitbox;
 
     animation?: Tween<Vector>;
 
@@ -78,31 +80,36 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             this.images.background.setVisible(false);
         }
 
-        this.radius = LootRadius[(this.type.definition).itemType];
+        this.hitbox = new CircleHitbox(LootRadius[definition.itemType]);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Loot]): void {
         this.position = data.position;
+        this.hitbox.position = this.position;
 
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-        if (!data.fullUpdate) return;
+        if (data.fullUpdate) {
+            this.count = data.count;
 
-        this.count = data.count;
-
-        // Play an animation if this is new loot
-        if (data.isNew) {
-            this.container.scale.set(0.5);
-            this.animation = new Tween(this.game, {
-                target: this.container.scale,
-                to: { x: 1, y: 1 },
-                duration: 1000,
-                ease: EaseFunctions.elasticOut
-            });
+            // Play an animation if this is new loot
+            if (data.isNew) {
+                this.container.scale.set(0.5);
+                this.animation = new Tween(this.game, {
+                    target: this.container.scale,
+                    to: { x: 1, y: 1 },
+                    duration: 1000,
+                    ease: EaseFunctions.elasticOut
+                });
+            }
         }
-
         this.created = true;
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.hitbox, HITBOX_COLORS.loot, this.debugGraphics);
+        }
     }
 
     destroy(): void {

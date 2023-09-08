@@ -17,7 +17,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
@@ -25,17 +25,14 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { FloorType } from "../../../../common/src/definitions/buildings";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Container, Graphics } from "pixi.js";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { Container } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-
-const showMeleeDebugCircle = false;
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -153,14 +150,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 7) {
-                let floorType = FloorType.Grass;
+                let floorType = "grass";
                 for (const [hitbox, type] of this.game.floorHitboxes) {
                     if (hitbox.collidesWith(this.hitbox)) {
                         floorType = type;
                         break;
                     }
                 }
-                this.footstepSound = this.playSound(`${FloorType[floorType].toLowerCase()}_step_${random(1, 2)}`, 0.6, 48);
+                this.footstepSound = this.playSound(`${floorType}_step_${random(1, 2)}`, 0.6, 48);
                 this.distSinceLastFootstep = 0;
             }
         }
@@ -244,6 +241,36 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.updateFistsPosition(true);
             this.updateWeapon();
             this.isNew = false;
+        }
+
+        if (HITBOX_DEBUG_MODE) {
+            const ctx = this.debugGraphics;
+            ctx.clear();
+
+            drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
+
+            switch (this.activeItem.definition.itemType) {
+                case ItemType.Gun: {
+                    const weaponDef = this.activeItem.definition as GunDefinition;
+                    ctx.lineStyle({
+                        color: HITBOX_COLORS.playerWeapon,
+                        width: 4
+                    });
+                    ctx.moveTo(this.container.position.x, this.container.position.y);
+                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(weaponDef.length, 0), this.rotation)));
+                    ctx.lineTo(lineEnd.x, lineEnd.y);
+                    ctx.endFill();
+                    break;
+                }
+                case ItemType.Melee: {
+                    const weaponDef = this.activeItem.definition as MeleeDefinition;
+                    const rotated = vRotate(weaponDef.offset, this.rotation);
+                    const position = vAdd(this.position, rotated);
+                    const hitbox = new CircleHitbox(weaponDef.radius, position);
+                    drawHitbox(hitbox, HITBOX_COLORS.playerWeapon, ctx);
+                    break;
+                }
+            }
         }
     }
 
@@ -424,17 +451,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         ease: EaseFunctions.sineIn,
                         yoyo: true
                     });
-                }
-
-                if (showMeleeDebugCircle) {
-                    const graphics = new Graphics();
-                    graphics.beginFill();
-                    graphics.fill.color = 0xff0000;
-                    graphics.fill.alpha = 0.9;
-                    graphics.drawCircle(weaponDef.offset.x * PIXI_SCALE, weaponDef.offset.y * PIXI_SCALE, weaponDef.radius * PIXI_SCALE);
-                    graphics.endFill();
-                    this.container.addChild(graphics);
-                    setTimeout(() => this.container.removeChild(graphics), 500);
                 }
 
                 this.playSound("swing", 0.4, 96);

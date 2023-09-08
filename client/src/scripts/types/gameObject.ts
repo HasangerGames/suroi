@@ -1,14 +1,15 @@
 import { type Game } from "../game";
 
-import { type ObjectsNetData } from "../../../../common/src/utils/ObjectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
-import { Container } from "pixi.js";
+import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { lerp, vecLerp } from "../../../../common/src/utils/math";
 import { toPixiCoords } from "../utils/pixi";
+import { HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     id: number;
@@ -23,6 +24,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
     _position!: Vector;
 
     destroyed = false;
+
+    debugGraphics!: Graphics;
 
     get position(): Vector { return this._position; }
     set position(position: Vector) {
@@ -65,10 +68,19 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container = new Container();
 
         this.game.camera.container.addChild(this.container);
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics = new Graphics();
+            this.debugGraphics.zIndex = 9;
+            this.game.camera.container.addChild(this.debugGraphics);
+        }
     }
 
     destroy(): void {
         this.destroyed = true;
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.destroy();
+        }
         this.container.destroy();
     }
 

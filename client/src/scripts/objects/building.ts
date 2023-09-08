@@ -4,15 +4,16 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
-import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { Container } from "pixi.js";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Building extends GameObject {
     declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -127,6 +128,23 @@ export class Building extends GameObject {
                 floorHitbox,
                 floor.type
             );
+        }
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
+
+            drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics);
+
+            drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingZoomCeiling,
+                this.debugGraphics);
+
+            for (const floor of definition.floors) {
+                drawHitbox(floor.hitbox.transform(this.position, 1, this.orientation), FloorTypes[floor.type].debugColor, this.debugGraphics);
+            }
         }
     }
 

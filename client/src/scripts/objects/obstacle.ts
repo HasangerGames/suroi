@@ -9,9 +9,9 @@ import type { Orientation, Variation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { PIXI_SCALE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -188,6 +188,16 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
         this.isNew = false;
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.hitbox, definition.noCollisions ? HITBOX_COLORS.obstacleNoCollision : HITBOX_COLORS.obstacle, this.debugGraphics);
+            if (definition.spawnHitbox) {
+                drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics);
+            }
+        }
     }
 
     hitEffect(position: Vector, angle: number): void {

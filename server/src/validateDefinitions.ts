@@ -2,7 +2,7 @@ import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { Armors, type ArmorDefinition } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
-import { Buildings } from "../../common/src/definitions/buildings";
+import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Guns } from "../../common/src/definitions/guns";
@@ -972,6 +972,14 @@ logger.indent("Validating building definitions", () => {
 
                 for (const floor of building.floors) {
                     validateHitbox(errorPath2, floor.hitbox);
+
+                    tester.assertReferenceExistsObject({
+                        obj: floor,
+                        field: "type",
+                        collection: FloorTypes,
+                        baseErrorPath: errorPath2,
+                        collectionName: "Floors"
+                    });
                 }
             }
         });

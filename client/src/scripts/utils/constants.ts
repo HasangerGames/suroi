@@ -2,6 +2,18 @@ import { Color } from "pixi.js";
 
 export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = false;
+
+export const HITBOX_COLORS = {
+    obstacle: new Color("red"),
+    obstacleNoCollision: new Color("yellow"),
+    spawnHitbox: new Color("orange"),
+    buildingZoomCeiling: new Color("purple"),
+    buildingScopeCeiling: new Color("cyan"),
+    loot: new Color("magenta"),
+    player: new Color("blue"),
+    playerWeapon: new Color("red")
+};
 
 export const COLORS = {
     grass: new Color("hsl(113, 42%, 42%)"),

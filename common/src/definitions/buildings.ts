@@ -4,11 +4,22 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 import { weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
 
-export enum FloorType {
-    Grass,
-    Stone,
-    Wood
+// TODO: Add more properties like actual color, speed multiplier (for like water floors) etc
+export interface FloorDefinition {
+    debugColor: number
 }
+
+export const FloorTypes: Record<string, FloorDefinition> = {
+    grass: {
+        debugColor: 0x005500
+    },
+    stone: {
+        debugColor: 0x121212
+    },
+    wood: {
+        debugColor: 0x7f5500
+    }
+};
 
 interface BuildingObstacle {
     id: string
@@ -40,7 +51,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     wallsToDestroy?: number
 
     floors: Array<{
-        type: FloorType
+        type: string
         hitbox: Hitbox
     }>
 }
@@ -57,7 +68,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         wallsToDestroy: 2,
         floors: [
             {
-                type: FloorType.Wood,
+                type: "wood",
                 hitbox: new RectangleHitbox(v(-5, -7), v(5, 9))
             }
         ],
@@ -121,11 +132,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImagePos: v(0, -1.5),
         floors: [
             {
-                type: FloorType.Stone,
+                type: "stone",
                 hitbox: new ComplexHitbox([new RectangleHitbox(v(12, -33), v(42, 5.5))]) // Garage
             },
             {
-                type: FloorType.Wood,
+                type: "wood",
                 hitbox: new ComplexHitbox([
                     new RectangleHitbox(v(-45, -37), v(12, 15)), // Main House
                     new RectangleHitbox(v(-42, -37), v(-22, 34)) // Doorstep
@@ -359,7 +370,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImagePos: v(0, 0),
         floors: [
             {
-                type: FloorType.Stone,
+                type: "stone",
                 hitbox: new RectangleHitbox(v(-20, -38), v(20, 38))
             }
         ],

@@ -164,6 +164,15 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
+        // Deleted objects
+        if (deletedObjectsDirty) {
+            const deletedObjectCount = stream.readUint16();
+            for (let i = 0; i < deletedObjectCount; i++) {
+                const id = stream.readObjectID();
+                this.deletedObjects.push(id);
+            }
+        }
+
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
@@ -196,15 +205,6 @@ export class UpdatePacket extends ReceivingPacket {
                     id,
                     data
                 });
-            }
-        }
-
-        // Deleted objects
-        if (deletedObjectsDirty) {
-            const deletedObjectCount = stream.readUint16();
-            for (let i = 0; i < deletedObjectCount; i++) {
-                const id = stream.readObjectID();
-                this.deletedObjects.push(id);
             }
         }
 

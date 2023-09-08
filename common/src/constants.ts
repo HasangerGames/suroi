@@ -100,14 +100,3 @@ export const PLAYER_NAME_MAX_LENGTH = 16;
 export const TICK_SPEED = 30;
 
 export const PLAYER_RADIUS = 2.25;
-
-export const LootRadius = {
-    0: 3.4, // Gun
-    1: 2, // Ammo
-    2: 3, // Melee
-    3: 2.5, // Healing
-    4: 3, // Armor
-    5: 3, // Backpack
-    6: 3, // Scope
-    7: 3 // Skin
-};

@@ -98,6 +98,17 @@ export class UpdatePacket extends SendingPacket {
         // Objects
         //
 
+        // Deleted objects
+        if (deletedObjectsDirty) {
+            stream.writeUint16(player.deletedObjects.size);
+
+            for (const deletedObject of player.deletedObjects) {
+                stream.writeObjectID(deletedObject.id);
+            }
+
+            player.deletedObjects.clear();
+        }
+
         // Full objects
         if (fullObjectsDirty) {
             stream.writeUint16(player.fullDirtyObjects.size);
@@ -119,17 +130,6 @@ export class UpdatePacket extends SendingPacket {
                 partialObject.serializePartial(stream);
             }
             player.partialDirtyObjects.clear();
-        }
-
-        // Deleted objects
-        if (deletedObjectsDirty) {
-            stream.writeUint16(player.deletedObjects.size);
-
-            for (const deletedObject of player.deletedObjects) {
-                stream.writeObjectID(deletedObject.id);
-            }
-
-            player.deletedObjects.clear();
         }
 
         // Bullets
