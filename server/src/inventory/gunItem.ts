@@ -10,6 +10,7 @@ import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { Obstacle } from "../objects/obstacle";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 
 /**
  * A class representing a firearm
@@ -100,7 +101,8 @@ export class GunItem extends InventoryItem {
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
-        for (const object of this.owner.nearObjects) {
+        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+        for (const object of objects) {
             if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
                 if (intersection === null) continue;
