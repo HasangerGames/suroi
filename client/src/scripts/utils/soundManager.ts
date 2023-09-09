@@ -111,6 +111,10 @@ export function loadSounds(soundManager: SoundManager): void {
             "audio/sfx/pickup/ammo_pickup"
         ],
         [
+            "scope_pickup",
+            "audio/sfx/pickup/scope_pickup"
+        ],
+        [
             "gauze_pickup",
             "audio/sfx/pickup/gauze_pickup"
         ],
@@ -149,7 +153,7 @@ export function loadSounds(soundManager: SoundManager): void {
         soundsToLoad.push([`${floorType}_step_2`, `audio/sfx/footsteps/${floorType}_2`]);
     }
 
-    for (const sound of soundsToLoad) {
-        soundManager.load(sound[0], sound[1]);
+    for (const [name, path] of soundsToLoad) {
+        soundManager.load(name, path);
     }
 }

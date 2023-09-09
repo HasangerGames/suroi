@@ -17,6 +17,9 @@ export class PickupPacket extends ReceivingPacket {
             case ItemType.Healing:
                 soundID = `${type.idString}_pickup`;
                 break;
+            case ItemType.Scope:
+                soundID = "scope_pickup";
+                break;
             default:
                 soundID = "pickup";
                 break;
