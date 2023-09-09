@@ -96,39 +96,7 @@ export class Game {
     constructor(pixi: Application) {
         this.pixi = pixi;
 
-        this.pixi.ticker.add(() => {
-            if (!this.gameStarted) return;
-
-            if (localStorageInstance.config.movementSmoothing) {
-                for (const player of this.players) {
-                    player.updateContainerPosition();
-                    if (
-                        localStorageInstance.config.rotationSmoothing &&
-                        !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
-                    ) player.updateContainerRotation();
-                }
-                if (this.activePlayer) {
-                    this.camera.position = this.activePlayer.container.position;
-                }
-            }
-
-            for (const tween of this.tweens) {
-                tween.update();
-            }
-
-            const delta = this.pixi.ticker.deltaMS;
-
-            for (const bullet of this.bullets) {
-                bullet.update(delta);
-            }
-
-            this.particleManager.update(delta);
-
-            this.map.update();
-            this.gas.update();
-
-            this.camera.update();
-        });
+        this.pixi.ticker.add(this.render.bind(this));
 
         this.camera = new Camera(this);
 
@@ -297,6 +265,39 @@ export class Game {
 
     resize(): void {
         this.camera.resize();
+    }
+
+    render(): void {
+        if (!this.gameStarted) return;
+        const delta = this.pixi.ticker.deltaMS;
+
+        if (localStorageInstance.config.movementSmoothing) {
+            for (const player of this.players) {
+                player.updateContainerPosition();
+                if (
+                    localStorageInstance.config.rotationSmoothing &&
+                    !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
+                ) player.updateContainerRotation();
+            }
+            if (this.activePlayer) {
+                this.camera.position = this.activePlayer.container.position;
+            }
+        }
+
+        for (const tween of this.tweens) {
+            tween.update();
+        }
+
+        for (const bullet of this.bullets) {
+            bullet.update(delta);
+        }
+
+        this.particleManager.update(delta);
+
+        this.map.update();
+        this.gas.update();
+
+        this.camera.update();
     }
 
     processUpdate(updateData: UpdatePacket): void {
