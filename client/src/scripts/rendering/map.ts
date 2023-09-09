@@ -1,8 +1,10 @@
-import { Container, Graphics } from "pixi.js";
+import { Container, Graphics, LINE_CAP } from "pixi.js";
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
+import { Gas } from "./gas";
+import { GasState } from "../../../../common/src/constants";
 
 export class Minimap {
     container = new Container();
@@ -16,6 +18,12 @@ export class Minimap {
     mask = new Graphics();
 
     position = v(0, 0);
+    lastPosition = v(0, 0);
+
+    // used for the gas to player line and circle
+    gasPos = v(0, 0);
+    gasRadius = 0;
+    gasGraphics = new Graphics();
 
     objectsContainer = new Container();
 
@@ -31,6 +39,8 @@ export class Minimap {
 
     margins = v(0, 0);
 
+    gas = new Gas(1, this.objectsContainer);
+
     constructor(game: Game) {
         this.game = game;
         game.pixi.stage.addChild(this.container);
@@ -45,6 +55,42 @@ export class Minimap {
         if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
 
         this.indicator.scale.set(0.1);
+
+        this.objectsContainer.addChild(this.indicator);
+        this.gasGraphics.zIndex = 9999;
+        this.indicator.setDepth(9999);
+    }
+
+    update(): void {
+        this.gas.updateFrom(this.game.gas);
+        this.gas.update();
+        // only re-render gas line and circle if something changed
+        if ((this.position.x === this.lastPosition.x &&
+            this.position.y === this.lastPosition.y &&
+            this.gas.newRadius === this.gasRadius &&
+            this.gas.newPosition.x === this.gasPos.x &&
+            this.gas.newPosition.y === this.gasPos.y) || this.gas.state === GasState.Inactive) return;
+
+        this.lastPosition = this.position;
+        this.gasPos = this.gas.newPosition;
+        this.gasRadius = this.gas.newRadius;
+
+        this.gasGraphics.clear();
+
+        this.gasGraphics.lineStyle({
+            color: 0x00f9f9,
+            width: 2,
+            cap: LINE_CAP.ROUND
+        });
+
+        this.gasGraphics.moveTo(this.position.x, this.position.y)
+            .lineTo(this.gasPos.x, this.gasPos.y);
+
+        this.gasGraphics.endFill();
+
+        this.gasGraphics.line.color = 0xffffff;
+        this.gasGraphics.arc(this.gasPos.x, this.gasPos.y, this.gasRadius, 0, Math.PI * 2);
+        this.gasGraphics.endFill();
     }
 
     resize(): void {

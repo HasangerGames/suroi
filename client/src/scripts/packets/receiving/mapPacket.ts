@@ -126,7 +126,7 @@ export class MapPacket extends ReceivingPacket {
 
             minimapTexture.addChild(image);
 
-            game.map.objectsContainer.addChild(game.map.indicator);
+            game.map.objectsContainer.addChild(game.map.indicator, game.map.gas.graphics, game.map.gasGraphics).sortChildren();
         }
     }
 }

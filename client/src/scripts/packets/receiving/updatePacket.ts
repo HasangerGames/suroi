@@ -261,6 +261,7 @@ export class UpdatePacket extends ReceivingPacket {
             const percentageDirty = stream.readBoolean();
             if (percentageDirty) { // Percentage dirty
                 gasPercentage = stream.readFloat(0, 1, 16);
+                game.gas.lastUpdateTime = Date.now();
                 currentDuration = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             } else {
                 currentDuration = game.gas.initialDuration;
@@ -304,12 +305,13 @@ export class UpdatePacket extends ReceivingPacket {
         if (gasPercentage !== undefined) {
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
-            if (game.gas.state === GasState.Advancing) {
+            if (game.gas.state === GasState.Advancing || !game.gas.firstRadiusReceived) {
                 game.gas.lastPosition = vClone(game.gas.position);
                 game.gas.lastRadius = game.gas.radius;
                 game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
                 game.gas.lastUpdateTime = Date.now();
+                game.gas.firstRadiusReceived = true;
             }
         }
 

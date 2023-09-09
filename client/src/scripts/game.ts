@@ -124,6 +124,7 @@ export class Game {
 
             this.particleManager.update(delta);
 
+            this.map.update();
             this.gas.update();
 
             this.camera.update();
@@ -176,6 +177,8 @@ export class Game {
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
+
+            this.map.indicator.setFrame("player_indicator.svg");
 
             this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);
         };

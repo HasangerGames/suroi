@@ -63,11 +63,11 @@ export class KillFeedPacket extends ReceivingPacket {
                     : undefined;
 
                 switch (true) {
-                    case killed.id === this.playerManager.game.activePlayer.id: { // was killed
+                    case killed.id === this.playerManager.game.activePlayerID: { // was killed
                         killFeedItem.addClass("kill-feed-item-victim");
                         break;
                     }
-                    case killedBy?.id === this.playerManager.game.activePlayer.id: { // killed other
+                    case killedBy?.id === this.playerManager.game.activePlayerID: { // killed other
                         killFeedItem.addClass("kill-feed-item-killer");
                         break;
                     }
