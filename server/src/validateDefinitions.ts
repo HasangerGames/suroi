@@ -15,7 +15,7 @@ import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
-import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition, BulletDefinition } from "../../common/src/utils/objectDefinitions";
+import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition, type BulletDefinition } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
@@ -1054,7 +1054,7 @@ function validateBalistics(baseErrorPath: string, ballistics: BulletDefinition):
             includeMax: true,
             includeMin: true,
             baseErrorPath
-        })
+        });
     }
 }
 
@@ -1133,7 +1133,7 @@ logger.indent("Validating explosions", () => {
 
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                validateBalistics(errorPath2, explosion.ballistics)
+                validateBalistics(errorPath2, explosion.ballistics);
             });
 
             tester.assertIsNaturalFiniteNumber({
@@ -1141,11 +1141,9 @@ logger.indent("Validating explosions", () => {
                 field: "shrapnelCount",
                 baseErrorPath: errorPath
             });
-
         });
     }
 });
-
 
 logger.indent("Validating guns", () => {
     tester.assertNoDuplicateIdStrings(Guns, "Guns", "guns");
@@ -1272,7 +1270,7 @@ logger.indent("Validating guns", () => {
 
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                validateBalistics(errorPath2, gun.ballistics)
+                validateBalistics(errorPath2, gun.ballistics);
             });
 
             if (gun.fireMode === FireMode.Burst) {

@@ -5,7 +5,7 @@ import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { distance } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { PIXI_SCALE } from "../utils/constants";
-import { BaseBullet, BulletOptions } from "../../../../common/src/utils/baseBullet";
+import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { Player } from "./player";
 
 export class Bullet extends BaseBullet {
@@ -20,7 +20,7 @@ export class Bullet extends BaseBullet {
 
         this.game = game;
 
-        let key: string
+        let key: string;
         if (this.source.category === ObjectCategory.Loot) key = this.source.definition.ammoType;
         else key = "shrapnel";
         this.image = new SuroiSprite(`${key}_trail.svg`)

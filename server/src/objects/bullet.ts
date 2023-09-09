@@ -3,17 +3,17 @@ import { type Game } from "../game";
 import { normalizeAngle } from "../../../common/src/utils/math";
 import { GunItem } from "../inventory/gunItem";
 import { vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
-import { BaseBullet, BulletOptions } from "../../../common/src/utils/baseBullet";
+import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
-import { ObjectCategory, TICK_SPEED } from "../../../common/src/constants";
+import { type ObjectCategory, TICK_SPEED } from "../../../common/src/constants";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { Explosion } from "./explosion";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
+import { type Explosion } from "./explosion";
 import { randomFloat } from "../../../common/src/utils/random";
 
-type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>
+type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
 
 export interface DamageRecord {
     object: Obstacle | Player
@@ -42,7 +42,7 @@ export class Bullet extends BaseBullet {
             source: source.type,
             sourceID: options.reflectedFromID ?? shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
-        }
+        };
         super(bulletOptions);
 
         this.game = game;
@@ -117,6 +117,6 @@ export class Bullet extends BaseBullet {
             reflectedFromID: objectId,
             reflectionCount: this.reflectionCount + 1,
             variance: this.variance
-        })
+        });
     }
 }

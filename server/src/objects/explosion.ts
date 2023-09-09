@@ -91,7 +91,7 @@ export class Explosion {
             this.game.addBullet(this, this.source, {
                 position: this.position,
                 rotation: randomRotation()
-            })
+            });
         }
     }
 

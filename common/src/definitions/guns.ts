@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType, BulletDefinition } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, type BulletDefinition } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
 

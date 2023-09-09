@@ -101,7 +101,7 @@ export class GunItem extends InventoryItem {
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
-        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
         for (const object of objects) {
             if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
@@ -123,7 +123,7 @@ export class GunItem extends InventoryItem {
                         ? i / limit - 0.5
                         : randomFloat(-1, 1)
                 ) * spread
-            )
+            );
             this.owner.game.addBullet(this, this.owner, { position, rotation });
         }
 

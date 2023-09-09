@@ -6,8 +6,6 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import type { GunDefinition } from "../../../../../common/src/definitions/guns";
-
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";

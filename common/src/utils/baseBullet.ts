@@ -4,8 +4,8 @@ import { type GunDefinition } from "../definitions/guns";
 import { type ObjectType } from "./objectType";
 import { type ObjectCategory } from "../constants";
 import { type Hitbox } from "./hitbox";
-import { ExplosionDefinition } from "../definitions/explosions";
-import { BulletDefinition } from "./objectDefinitions";
+import { type ExplosionDefinition } from "../definitions/explosions";
+import { type BulletDefinition } from "./objectDefinitions";
 
 export interface BulletOptions {
     position: Vector
