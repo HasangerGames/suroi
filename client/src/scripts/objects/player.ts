@@ -164,9 +164,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        if (
-            !localStorageInstance.config.rotationSmoothing &&
-            !(this.isActivePlayer && localStorageInstance.config.clientSidePrediction && !this.game.spectating)
+        if (!localStorageInstance.config.clientSidePrediction ||
+            !(localStorageInstance.config.clientSidePrediction && this.isActivePlayer && !this.game.spectating)
         ) this.container.rotation = this.rotation;
 
         if (this.isNew || !localStorageInstance.config.movementSmoothing) {
