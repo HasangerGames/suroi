@@ -11,6 +11,7 @@ import { Obstacle } from "./obstacle";
 import { type ObjectCategory } from "../../../common/src/constants";
 import { Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { randomRotation } from "../../../common/src/utils/random";
 
 export class Explosion {
     game: Game;
@@ -84,6 +85,13 @@ export class Explosion {
 
                 object.damage(damage, this.source, this.type);
             }
+        }
+
+        for (let i = 0; i < definition.shrapnelCount; i++) {
+            this.game.addBullet(this, this.source, {
+                position: this.position,
+                rotation: randomRotation()
+            })
         }
     }
 

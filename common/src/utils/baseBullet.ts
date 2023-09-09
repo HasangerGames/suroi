@@ -4,6 +4,17 @@ import { type GunDefinition } from "../definitions/guns";
 import { type ObjectType } from "./objectType";
 import { type ObjectCategory } from "../constants";
 import { type Hitbox } from "./hitbox";
+import { ExplosionDefinition } from "../definitions/explosions";
+import { BulletDefinition } from "./objectDefinitions";
+
+export interface BulletOptions {
+    position: Vector
+    rotation: number
+    source: ObjectType<ObjectCategory.Explosion, ExplosionDefinition> | ObjectType<ObjectCategory.Loot, GunDefinition>
+    sourceID: number
+    reflectionCount?: number
+    variance?: number
+}
 
 interface GameObject {
     position: Vector
@@ -34,33 +45,29 @@ export class BaseBullet {
 
     readonly damagedIDs = new Set<number>();
 
+    readonly variance: number;
+
     dead = false;
 
-    readonly source: ObjectType<ObjectCategory.Loot, GunDefinition>;
+    readonly source: ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
 
-    readonly definition: GunDefinition["ballistics"];
+    readonly definition: BulletDefinition;
 
-    constructor(
-        position: Vector,
-        rotation: number,
-        source: ObjectType<ObjectCategory.Loot, GunDefinition>,
-        sourceID: number,
-        reflectionCount = 0
-    ) {
-        this.initialPosition = vClone(position);
-        this.position = position;
-        this.rotation = rotation;
-        this.source = source;
-        this.reflectionCount = reflectionCount;
-        this.sourceID = sourceID;
+    constructor(options: BulletOptions) {
+        this.initialPosition = vClone(options.position);
+        this.position = options.position;
+        this.rotation = options.rotation;
+        this.source = options.source;
+        this.reflectionCount = options.reflectionCount ?? 0;
+        this.sourceID = options.sourceID;
+        this.variance = options.variance ?? 0;
 
         this.definition = this.source.definition.ballistics;
-
-        this.maxDistance = (this.definition.maxDistance / (reflectionCount + 1));
+        this.maxDistance = (this.definition.maxDistance * (this.variance + 1)) / (this.reflectionCount + 1);
 
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.velocity = vMul(v(Math.sin(rotation), -Math.cos(rotation)), this.definition.speed);
+        this.velocity = vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.speed * (this.variance + 1));
     }
 
     /**
@@ -83,7 +90,7 @@ export class BaseBullet {
 
         for (const object of objects) {
             if (object.damageable && !object.dead &&
-                object.id !== this.sourceID &&
+                !(!this.definition.shrapnel && object.id === this.sourceID) &&
                 !this.damagedIDs.has(object.id)) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 

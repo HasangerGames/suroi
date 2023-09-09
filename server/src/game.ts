@@ -17,7 +17,7 @@ import { type GameObject } from "./types/gameObject";
 import { log } from "../../common/src/utils/misc";
 import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet, type DamageRecord } from "./objects/bullet";
+import { Bullet, ServerBulletOptions, type DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
@@ -376,15 +376,12 @@ export class Game {
         this.removeObject(loot);
     }
 
-    addBullet(position: Vector, rotation: number, source: GunItem, shooter: Player, reflectCount?: number, reflectedFromID?: number): Bullet {
+    addBullet(source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions): Bullet {
         const bullet = new Bullet(
             this,
-            position,
-            rotation,
             source,
             shooter,
-            reflectCount,
-            reflectedFromID
+            options
         );
         this.bullets.add(bullet);
         this.newBullets.add(bullet);

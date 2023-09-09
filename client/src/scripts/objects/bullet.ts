@@ -1,14 +1,11 @@
 import type { Game } from "../game";
 
-import { type ObjectCategory } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { ObjectCategory } from "../../../../common/src/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { distance } from "../../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { PIXI_SCALE } from "../utils/constants";
-import { BaseBullet } from "../../../../common/src/utils/baseBullet";
+import { BaseBullet, BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { Player } from "./player";
 
 export class Bullet extends BaseBullet {
@@ -18,13 +15,16 @@ export class Bullet extends BaseBullet {
     trailReachedMaxLength = false;
     trailTicks = 0;
 
-    constructor(game: Game, source: ObjectType<ObjectCategory.Loot, GunDefinition>, position: Vector, rotation: number, shooterID: number, reflectionCount: number) {
-        super(position, rotation, source, shooterID, reflectionCount);
+    constructor(game: Game, options: BulletOptions) {
+        super(options);
 
         this.game = game;
 
-        this.image = new SuroiSprite(`${this.source.definition.ammoType}_trail.svg`)
-            .setRotation(rotation - Math.PI / 2)
+        let key: string
+        if (this.source.category === ObjectCategory.Loot) key = this.source.definition.ammoType;
+        else key = "shrapnel";
+        this.image = new SuroiSprite(`${key}_trail.svg`)
+            .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
         this.maxLength = this.image.width;
@@ -33,7 +33,7 @@ export class Bullet extends BaseBullet {
 
         this.image.anchor.set(1, 0.5);
 
-        this.image.alpha = (this.definition.tracerOpacity ?? 1) / (reflectionCount + 1);
+        this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
 
         this.game.bulletsContainer.addChild(this.image);
     }

@@ -1,4 +1,4 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions, BulletDefinition } from "../utils/objectDefinitions";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
@@ -17,6 +17,9 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly scale: number
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
+
+    readonly shrapnelCount: number
+    readonly ballistics: BulletDefinition
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
@@ -38,6 +41,15 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
+            },
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                maxDistance: 20,
+                variance: 1,
+                shrapnel: true
             }
         },
         {
@@ -57,6 +69,15 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
+            },
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                maxDistance: 20,
+                variance: 1,
+                shrapnel: true
             }
         },
         {
@@ -76,6 +97,15 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 duration: 1500,
                 frame: "barrel_explosion.svg",
                 scale: 2.5
+            },
+            shrapnelCount: 20,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 2,
+                speed: 0.08,
+                maxDistance: 30,
+                variance: 1,
+                shrapnel: true
             }
         }
     ]

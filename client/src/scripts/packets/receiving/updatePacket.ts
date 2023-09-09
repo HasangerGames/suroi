@@ -212,13 +212,21 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const source = stream.readObjectTypeNoCategory<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot);
+                const source = stream.readObjectType() as Bullet["source"];
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
+                const variance = stream.readFloat(0, 1, 4);
                 const reflectionCount = stream.readBits(2);
                 const sourceID = stream.readObjectID();
 
-                const bullet = new Bullet(game, source, position, rotation, sourceID, reflectionCount);
+                const bullet = new Bullet(game, {
+                    source,
+                    position,
+                    rotation,
+                    reflectionCount,
+                    sourceID,
+                    variance
+                });
 
                 game.bullets.add(bullet);
             }

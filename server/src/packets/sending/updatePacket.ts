@@ -136,9 +136,10 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.definition.idString));
+                stream.writeObjectType(bullet.source);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
+                stream.writeFloat(bullet.variance, 0, 1, 4)
                 stream.writeBits(bullet.reflectionCount, 2);
                 stream.writeObjectID(bullet.sourceID);
             }
