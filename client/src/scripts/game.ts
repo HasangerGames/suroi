@@ -51,7 +51,8 @@ export class Game {
 
     objects = new ObjectPool<GameObject>();
     players = new ObjectPool<Player>();
-    bullets: Set<Bullet> = new Set<Bullet>();
+    loots = new Set<Loot>();
+    bullets = new Set<Bullet>();
 
     activePlayerID = -1;
 
@@ -107,6 +108,9 @@ export class Game {
                         !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
                     ) player.updateContainerRotation();
                 }
+
+                for (const loot of this.loots) loot.updateContainerPosition();
+
                 if (this.activePlayer) {
                     this.camera.position = this.activePlayer.container.position;
                 }
@@ -316,6 +320,7 @@ export class Game {
                     }
                     case ObjectCategory.Loot: {
                         object = new Loot(this, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                        this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
@@ -346,6 +351,8 @@ export class Game {
             this.objects.delete(object);
             if (object instanceof Player) {
                 this.players.delete(object);
+            } else if (object instanceof Loot) {
+                this.loots.delete(object);
             }
         }
     }
