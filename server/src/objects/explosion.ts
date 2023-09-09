@@ -6,12 +6,13 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
-import { distance, distanceSquared } from "../../../common/src/utils/math";
+import { angleBetween, distanceSquared } from "../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { type ObjectCategory } from "../../../common/src/constants";
 import { Player } from "./player";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { randomRotation } from "../../../common/src/utils/random";
+import { Loot } from "./loot";
 
 export class Explosion {
     game: Game;
@@ -30,60 +31,62 @@ export class Explosion {
         const definition = this.type.definition;
 
         // list of all near objects
-        const objects = this.game.grid.intersectsRect(new CircleHitbox(definition.radius.max, this.position).toRectangle());
+        const objects = this.game.grid.intersectsRect(new CircleHitbox(definition.radius.max * 2, this.position).toRectangle());
 
-        // list of all collisions to damage
-        const collisions: Array<{
-            object: GameObject
-            pos: Vector
-        }> = [];
+        const damagedObjects = new Map<number, boolean>();
 
         for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
             // all objects that collided with this line
             const lineCollisions: Array<{
                 object: GameObject
                 pos: Vector
+                distance: number
             }> = [];
 
             const lineEnd = vAdd(this.position, vRotate(v(definition.radius.max, 0), angle));
 
             for (const object of objects) {
-                if (object.dead || !object.hitbox || !(object instanceof Obstacle || object instanceof Player)) continue;
+                if (object.dead || !object.hitbox || !(object instanceof Obstacle || object instanceof Player || object instanceof Loot)) continue;
 
                 // check if the object hitbox collides with a line from the explosion center to the explosion max distance
                 const intersection = object.hitbox.intersectsLine(this.position, lineEnd);
                 if (intersection) {
                     lineCollisions.push({
                         pos: intersection.point,
-                        object
+                        object,
+                        distance: distanceSquared(this.position, intersection.point)
                     });
                 }
             }
 
             // sort by closest to the explosion center to prevent damaging objects through walls
             lineCollisions.sort((a, b) => {
-                return distanceSquared(a.pos, this.position) - distanceSquared(b.pos, this.position);
+                return a.distance - b.distance;
             });
-            if (lineCollisions[0] && !collisions.find((x) => x.object.id === lineCollisions[0].object.id)) {
-                collisions.push(lineCollisions[0]);
-            }
-        }
 
-        // do the damage
-        for (const collision of collisions) {
-            const dist = distance(this.position, collision.pos);
-            const object = collision.object;
+            for (const collision of lineCollisions) {
+                const object = collision.object;
 
-            if (object instanceof Player || object instanceof Obstacle) {
-                let damage = definition.damage;
-                if (object instanceof Obstacle) damage *= definition.obstacleMultiplier;
+                if (!damagedObjects.has(object.id)) {
+                    damagedObjects.set(object.id, true);
+                    const dist = Math.sqrt(collision.distance);
 
-                if (dist > definition.radius.min) {
-                    const damagePercent = Math.abs(dist / definition.radius.max - 1);
-                    damage *= damagePercent;
+                    if (object instanceof Player || object instanceof Obstacle) {
+                        let damage = definition.damage;
+                        if (object instanceof Obstacle) damage *= definition.obstacleMultiplier;
+
+                        if (dist > definition.radius.min) {
+                            const damagePercent = Math.abs(dist / definition.radius.max - 1);
+                            damage *= damagePercent;
+                        }
+
+                        object.damage(damage, this.source, this.type);
+                    }
+                    if (object instanceof Loot) {
+                        object.push(angleBetween(object.position, this.position), (definition.radius.max - dist) * 5);
+                    }
                 }
-
-                object.damage(damage, this.source, this.type);
+                if (object instanceof Obstacle && !object.definition.noCollisions) break;
             }
         }
 

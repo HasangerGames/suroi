@@ -155,7 +155,7 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                const position = vAdd(this.position, this.lootSpawnOffset);
+                const position = vAdd(this.loot.length > 1 ? this.hitbox.randomPoint() : this.position, this.lootSpawnOffset);
                 this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
             }
 
