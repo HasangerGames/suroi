@@ -238,6 +238,9 @@ export class Game {
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
         this.particleManager.clear();
+        this.map.gasGraphics.clear();
+        this.floorHitboxes.clear();
+        this.loots.clear();
 
         this.playerManager = new PlayerManager(this);
 
