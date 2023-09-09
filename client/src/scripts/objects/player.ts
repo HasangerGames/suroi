@@ -184,7 +184,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (data.fullUpdate) {
             this.container.alpha = data.invulnerable ? 0.5 : 1;
 
-            this.oldItem = data.activeItem.idNumber;
+            this.oldItem = this.activeItem.idNumber;
             this.activeItem = data.activeItem;
             if (this.isActivePlayer && !UI_DEBUG_MODE) {
                 $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);

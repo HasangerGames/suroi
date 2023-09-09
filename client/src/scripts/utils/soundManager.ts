@@ -46,9 +46,9 @@ export class SoundManager {
                 stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
             }
             if (volume > 0) {
-                sound.volume(volume);
-                sound.stereo(stereoNorm);
                 id = sound.play();
+                sound.volume(volume, id);
+                sound.stereo(stereoNorm, id);
             }
         } else {
             console.warn(`Sound with name "${name}" not found.`);
