@@ -1,4 +1,4 @@
-import { Container, Graphics, LINE_CAP, Sprite, Texture } from "pixi.js";
+import { Container, Graphics, LINE_CAP, Sprite, Texture, isMobile } from "pixi.js";
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
@@ -62,6 +62,18 @@ export class Minimap {
         this.indicator.zIndex = 9999;
         this.sprite.position.set(-this.oceanPadding);
         this.objectsContainer.addChild(this.sprite, this.indicator, this.gas.graphics, this.gasGraphics).sortChildren();
+
+        $("#minimap-border").on("click", (e) => {
+            if (isMobile.any) {
+                this.switchToBigMap();
+                e.stopImmediatePropagation();
+            }
+        });
+
+        $("#btn-close-minimap").on("pointerdown", (e) => {
+            this.switchToSmallMap();
+            e.stopImmediatePropagation();
+        });
     }
 
     update(): void {
@@ -107,6 +119,7 @@ export class Minimap {
         this.mask.drawRoundedRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight, this.expanded ? 15 : 0);
         this.updatePosition();
         this.updateTransparency();
+        $("#btn-close-minimap").css("left", `${this.margins.x + this.minimapWidth + 16}px`);
     }
 
     resizeSmallMap(): void {
@@ -167,16 +180,18 @@ export class Minimap {
         this.expanded = true;
         this.resizeBigMap();
         $("#minimap-border").hide();
-        $("#scopes-container").toggle(!this.expanded);
-        $("#gas-msg-info").toggle(!this.expanded);
+        $("#scopes-container").hide();
+        $("#gas-msg-info").hide();
+        $("#btn-close-minimap").show();
     }
 
     switchToSmallMap(): void {
         this.expanded = false;
         this.resizeSmallMap();
-        $("#minimap-border").toggle(!this.expanded);
-        $("#scopes-container").toggle(!this.expanded);
-        $("#gas-msg-info").toggle(!this.expanded);
+        $("#minimap-border").show();
+        $("#scopes-container").show();
+        $("#gas-msg-info").show();
+        $("#btn-close-minimap").hide();
     }
 
     updateTransparency(): void {

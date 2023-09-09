@@ -2,7 +2,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { COLORS, PIXI_SCALE } from "../../utils/constants";
-import { Container, Graphics, RenderTexture } from "pixi.js";
+import { Container, Graphics, RenderTexture, isMobile } from "pixi.js";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
@@ -77,7 +77,7 @@ export class MapPacket extends ReceivingPacket {
         const renderTexture = RenderTexture.create({
             width: width + oceanPadding * 2,
             height: height + oceanPadding * 2,
-            resolution: window.devicePixelRatio * 2
+            resolution: isMobile.any ? 1 : 2
         });
 
         const numObstacles = stream.readBits(10);

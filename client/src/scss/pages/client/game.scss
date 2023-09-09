@@ -46,6 +46,12 @@
     padding: 0;
 }
 
+#btn-close-minimap {
+    position: absolute;
+    z-index: 1000;
+    top: 16px;
+}
+
 #top-left-container {
     position: absolute;
     top: 10px;
