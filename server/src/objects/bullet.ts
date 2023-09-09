@@ -20,6 +20,7 @@ export interface DamageRecord {
     damage: number
     weapon: Weapon
     source: GameObject
+    position: Vector
 }
 
 export interface ServerBulletOptions {
@@ -29,6 +30,7 @@ export interface ServerBulletOptions {
     reflectedFromID?: number
     variance?: number
 }
+
 export class Bullet extends BaseBullet {
     readonly game: Game;
 
@@ -77,7 +79,8 @@ export class Bullet extends BaseBullet {
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1),
                     weapon,
-                    source: this.shooter
+                    source: this.shooter,
+                    position: collision.intersection.point
                 });
                 this.dead = true;
                 break;
@@ -87,7 +90,8 @@ export class Bullet extends BaseBullet {
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
                     weapon,
-                    source: this.shooter
+                    source: this.shooter,
+                    position: collision.intersection.point
                 });
 
                 // skip killing the bullet for obstacles with noCollisions like bushes

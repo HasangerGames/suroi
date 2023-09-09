@@ -6,7 +6,7 @@ import { type LootItem, getLootTableLoot } from "../utils/misc";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
+import { angleBetween, calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
@@ -126,7 +126,7 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem): void {
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem, position?: Vector): void {
         const definition = this.definition;
 
         if (this.health === 0 || definition.indestructible) return;
@@ -155,8 +155,11 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                const position = vAdd(this.loot.length > 1 ? this.hitbox.randomPoint() : this.position, this.lootSpawnOffset);
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
+                const lootPos = vAdd(this.loot.length > 1 ? this.hitbox.randomPoint() : this.position, this.lootSpawnOffset);
+                const loot = this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), lootPos, item.count);
+                if (source.position !== undefined || position !== undefined) {
+                    loot.push(angleBetween(this.position, position ?? source.position), 7);
+                }
             }
 
             if (this.definition.isWall) {
