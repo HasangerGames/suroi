@@ -1,4 +1,4 @@
-import { Container, Graphics, LINE_CAP } from "pixi.js";
+import { Container, Graphics, LINE_CAP, Sprite, Texture } from "pixi.js";
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
@@ -27,12 +27,14 @@ export class Minimap {
 
     objectsContainer = new Container();
 
+    sprite = new Sprite(Texture.EMPTY);
+
     indicator = new SuroiSprite("player_indicator.svg");
 
     width = 0;
     height = 0;
 
-    oceanPadding = 50;
+    oceanPadding = 16 * 10;
 
     minimapWidth = 0;
     minimapHeight = 0;
@@ -56,9 +58,10 @@ export class Minimap {
 
         this.indicator.scale.set(0.1);
 
-        this.objectsContainer.addChild(this.indicator);
         this.gasGraphics.zIndex = 9999;
-        this.indicator.setDepth(9999);
+        this.indicator.zIndex = 9999;
+        this.sprite.position.set(-this.oceanPadding);
+        this.objectsContainer.addChild(this.sprite, this.indicator, this.gas.graphics, this.gasGraphics).sortChildren();
     }
 
     update(): void {
@@ -101,15 +104,7 @@ export class Minimap {
     reRender(): void {
         this.mask.clear();
         this.mask.beginFill(0);
-        if (this.expanded) {
-            this.mask.drawRect(
-                window.innerWidth / 2 - (this.minimapWidth / 2) - this.oceanPadding,
-                0,
-                this.minimapWidth + this.oceanPadding * 2,
-                this.minimapHeight + this.oceanPadding * 2);
-        } else {
-            this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
-        }
+        this.mask.drawRoundedRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight, this.expanded ? 15 : 0);
         this.updatePosition();
         this.updateTransparency();
     }
@@ -132,12 +127,14 @@ export class Minimap {
     resizeBigMap(): void {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
-        const size = Math.min(Math.min(screenHeight, screenWidth), screenHeight - 135);
+        const smallestDim = Math.min(screenHeight, screenWidth);
+        const mapScale = screenWidth / screenHeight / 10;
+        const size = smallestDim === screenHeight ? smallestDim - smallestDim * mapScale : smallestDim;
         this.container.scale.set(size / this.height);
         // noinspection JSSuspiciousNameCombination
-        this.minimapWidth = size;
-        this.minimapHeight = size;
-        this.margins = v(0, 0);
+        this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
+        this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
+        this.margins = v(window.innerWidth / 2 - (size / 2) - (this.oceanPadding / 2) * this.container.scale.x, 15 * this.container.scale.y);
         this.reRender();
     }
 
@@ -155,7 +152,7 @@ export class Minimap {
     updatePosition(): void {
         if (this.expanded) {
             this.container.position.set(window.innerWidth / 2, 0);
-            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding);
+            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2 + 15);
             return;
         }
         const pos = vClone(this.position);
@@ -183,7 +180,7 @@ export class Minimap {
     }
 
     updateTransparency(): void {
-        this.objectsContainer.alpha = localStorageInstance.config[this.expanded ? "bigMapTransparency" : "minimapTransparency"];
+        this.container.alpha = localStorageInstance.config[this.expanded ? "bigMapTransparency" : "minimapTransparency"];
     }
 
     toggleMiniMap(noSwitchToggle = false): void {
