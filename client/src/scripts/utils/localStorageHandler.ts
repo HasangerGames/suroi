@@ -42,6 +42,7 @@ export interface Config {
         bottomEmote: string
         leftEmote: string
     }
+    scopeLooping: boolean
     keybinds: KeybindActions
     masterVolume: number
     sfxVolume: number
@@ -109,6 +110,7 @@ export const defaultConfig: Config = {
         toggleMiniMap: ["N", ""],
         emoteWheel: ["Mouse2", ""]
     },
+    scopeLooping: true,
     masterVolume: 1,
     musicVolume: 1,
     sfxVolume: 1,

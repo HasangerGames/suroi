@@ -160,17 +160,32 @@ export class PlayerManager {
         const scopeId = Scopes.indexOf(this.scope.definition);
         let scopeString = this.scope.idString;
         let searchIndex = scopeId;
-
-        while (true) {
-            searchIndex = absMod(searchIndex + direction, Scopes.length);
-            const scopeCandidate = Scopes[searchIndex].idString;
-
-            if (this.items[scopeCandidate]) {
-                scopeString = scopeCandidate;
-                break;
+        if (localStorageInstance.config.scopeLooping) {
+            while (true) {
+                searchIndex = absMod(searchIndex + direction, Scopes.length);
+                const scopeCandidate = Scopes[searchIndex].idString;
+                if (this.items[scopeCandidate]) {
+                    scopeString = scopeCandidate;
+                    break;
+                }
+            }
+        } else {
+            while (true) {
+                searchIndex = searchIndex + direction;
+                if (searchIndex >= Scopes.length) {
+                    searchIndex = Scopes.length - 1;
+                    break;
+                }
+                if (searchIndex < 0) {
+                    searchIndex = 0;
+                }
+                const scopeCandidate = Scopes[searchIndex].idString;
+                if (this.items[scopeCandidate]) {
+                    scopeString = scopeCandidate;
+                    break;
+                }
             }
         }
-
         if (scopeString !== this.scope.idString) this.useItem(scopeString);
     }
 
