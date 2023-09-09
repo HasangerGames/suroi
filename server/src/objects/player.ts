@@ -1,7 +1,6 @@
-import { type Body, Circle, Vec2 } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Game } from "../game";
 import { type PlayerContainer } from "../server";
@@ -9,24 +8,23 @@ import { type SendingPacket } from "../types/sendingPacket";
 
 import { ObjectType } from "../../../common/src/utils/objectType";
 import {
-    ANIMATION_TYPE_BITS,
     AnimationType,
     INVENTORY_MAX_WEAPONS,
     ObjectCategory,
     PLAYER_RADIUS,
-    SERVER_GRID_SIZE
+    PlayerActions
 } from "../../../common/src/constants";
 import { DeathMarker } from "./deathMarker";
 import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillKillFeedMessage } from "../types/killFeedMessage";
-import { type Action } from "../inventory/action";
+import { HealingAction, type Action } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
 import { Config } from "../config";
@@ -36,24 +34,13 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Obstacle } from "./obstacle";
+import { clamp } from "../../../common/src/utils/math";
+import { Building } from "./building";
+import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 
 export class Player extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: true,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: true,
-        loot: false
-    };
-
-    //fast = false;
-
     hitbox: CircleHitbox;
 
     readonly damageable = true;
@@ -98,7 +85,7 @@ export class Player extends GameObject {
     private _minAdrenaline = 0;
     get minAdrenaline(): number { return this._minAdrenaline; }
     set minAdrenaline(minAdrenaline: number) {
-        this._minAdrenaline = minAdrenaline;
+        this._minAdrenaline = Math.min(minAdrenaline, this._maxAdrenaline);
         this.dirty.maxMinStats = true;
         this.adrenaline = this._adrenaline;
     }
@@ -146,8 +133,6 @@ export class Player extends GameObject {
             this.movement.moving;
     }
 
-    movesSinceLastUpdate = 0;
-
     readonly movement = {
         up: false,
         down: false,
@@ -176,11 +161,6 @@ export class Player extends GameObject {
     turning = false;
 
     /**
-     * The position this player died at, if applicable
-     */
-    deathPosition?: Vec2;
-
-    /**
      * Keeps track of various fields which are "dirty"
      * and therefore need to be sent to the client for
      * updating
@@ -206,8 +186,6 @@ export class Player extends GameObject {
     get activeItemIndex(): number {
         return this.inventory.activeWeaponIndex;
     }
-
-    hitEffect = false;
 
     animation = {
         type: AnimationType.None,
@@ -249,8 +227,6 @@ export class Player extends GameObject {
 
     fullUpdate = true;
 
-    body: Body;
-
     action: Action | undefined;
 
     spectating?: Player;
@@ -277,7 +253,7 @@ export class Player extends GameObject {
 
     isInsideBuilding = false;
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vec2) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
         const userData = socket.getUserData();
@@ -302,22 +278,7 @@ export class Player extends GameObject {
 
         this.joinTime = game.now;
 
-        // Init body
-        this.body = game.world.createBody({
-            type: "dynamic",
-            position,
-            fixedRotation: true
-        });
-
-        this.body.createFixture({
-            shape: Circle(PLAYER_RADIUS),
-            friction: 0.0,
-            density: 1000.0,
-            restitution: 0.0,
-            userData: this
-        });
-
-        this.hitbox = new CircleHitbox(PLAYER_RADIUS, this.position);
+        this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
         this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
@@ -350,35 +311,12 @@ export class Player extends GameObject {
         this.dirty.activeWeaponIndex = true;
     }
 
-    calculateSpeed(): number {
-        let recoilMultiplier = 1;
-        if (this.recoil.active) {
-            if (this.recoil.time < this.game.now) {
-                this.recoil.active = false;
-            } else {
-                recoilMultiplier = this.recoil.multiplier;
-            }
-        }
-
-        // shove it
-        /* eslint-disable no-multi-spaces */
-        return Config.movementSpeed *                    // Base speed
-            recoilMultiplier *                           // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *        // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *             // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier *  // Active item speed modifier
-            this._modifiers.baseSpeed;                   // Current on-wearer modifier
+    get position(): Vector {
+        return this.hitbox.position;
     }
 
-    setVelocity(xVelocity: number, yVelocity: number): void {
-        this.body.setLinearVelocity(Vec2(xVelocity, yVelocity));
-        if (xVelocity !== 0 || yVelocity !== 0) {
-            this.movesSinceLastUpdate++;
-        }
-    }
-
-    get position(): Vec2 {
-        return this.deathPosition ?? this.body.getPosition();
+    set position(position: Vector) {
+        this.hitbox.position = position;
     }
 
     get zoom(): number {
@@ -391,7 +329,6 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
-        this.updateVisibleObjects();
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
@@ -406,6 +343,112 @@ export class Player extends GameObject {
         this.game.emotes.add(new Emote(this.loadout.emotes[slot], this));
     }
 
+    update(): void {
+        // This system allows opposite movement keys to cancel each other out.
+        const movement = v(0, 0);
+
+        if (this.isMobile && this.movement.moving) {
+            movement.x = Math.cos(this.movement.angle) * 1.45;
+            movement.y = Math.sin(this.movement.angle) * 1.45;
+        } else {
+            if (this.movement.up) movement.y--;
+            if (this.movement.down) movement.y++;
+            if (this.movement.left) movement.x--;
+            if (this.movement.right) movement.x++;
+        }
+
+        if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
+            movement.x *= Math.SQRT1_2;
+            movement.y *= Math.SQRT1_2;
+        }
+
+        // Calculate speed
+        let recoilMultiplier = 1;
+        if (this.recoil.active) {
+            if (this.recoil.time < this.game.now) {
+                this.recoil.active = false;
+            } else {
+                recoilMultiplier = this.recoil.multiplier;
+            }
+        }
+        /* eslint-disable no-multi-spaces */
+        const speed = Config.movementSpeed *            // Base speed
+            recoilMultiplier *                          // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
+            this.modifiers.baseSpeed;                   // Current on-wearer modifier
+
+        // remove it from the grid and re-insert after finishing calculating the new position
+        this.game.grid.removeObject(this);
+        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+
+        // Find and resolve collisions
+        this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const potential of this.nearObjects) {
+            if (
+                potential instanceof Obstacle &&
+                potential.collidable &&
+                potential.hitbox !== undefined &&
+                this.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
+            ) {
+                this.hitbox.resolveCollision(potential.hitbox);
+            }
+        }
+
+        // World boundaries
+        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+        this.game.grid.addObject(this);
+
+        // Disable invulnerability if the player moves or turns
+        if (this.isMoving || this.turning) {
+            this.disableInvulnerability();
+            this.game.partialDirtyObjects.add(this);
+        }
+
+        // Drain adrenaline
+        if (this.adrenaline > 0) {
+            this.adrenaline -= 0.015;
+        }
+
+        // Regenerate health
+        if (this.adrenaline >= 87.5) this.health += 2.75 / this.game.tickDelta;
+        else if (this.adrenaline >= 50) this.health += 2.125 / this.game.tickDelta;
+        else if (this.adrenaline >= 25) this.health += 1.125 / this.game.tickDelta;
+        else if (this.adrenaline > 0) this.health += 0.625 / this.game.tickDelta;
+
+        // Shoot gun/use melee
+        if (this.startedAttacking) {
+            this.startedAttacking = false;
+            this.disableInvulnerability();
+            this.activeItem?.useItem();
+        }
+
+        // Gas damage
+        if (this.game.gas.doDamage && this.game.gas.isInGas(this.position)) {
+            this.piercingDamage(this.game.gas.dps, "gas");
+        }
+
+        let isInsideBuilding = false;
+        for (const object of this.nearObjects) {
+            if (object instanceof Building && !object.dead) {
+                if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                    isInsideBuilding = true;
+                    break;
+                }
+            }
+        }
+        if (isInsideBuilding && !this.isInsideBuilding) {
+            this.zoom = 48;
+        } else if (!this.isInsideBuilding) {
+            this.zoom = this.inventory.scope.definition.zoomLevel;
+        }
+        this.isInsideBuilding = isInsideBuilding;
+
+        this.turning = false;
+    }
+
     spectate(spectating?: Player): void {
         if (spectating === undefined) {
             this.game.removePlayer(this);
@@ -416,7 +459,6 @@ export class Player extends GameObject {
         }
         this.spectating = spectating;
         spectating.spectators.add(this);
-        spectating.updateVisibleObjects();
 
         // Add all visible objects to full dirty objects
         for (const object of spectating.visibleObjects) {
@@ -429,7 +471,7 @@ export class Player extends GameObject {
         }
 
         spectating.fullDirtyObjects.add(spectating);
-        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects = new Set<GameObject>();
+        if (spectating.partialDirtyObjects.size) spectating.partialDirtyObjects.clear();
         spectating.fullUpdate = true;
     }
 
@@ -442,54 +484,27 @@ export class Player extends GameObject {
     }
 
     updateVisibleObjects(): void {
-        this.movesSinceLastUpdate = 0;
-
-        const approximateX = Math.round(this.position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        const approximateY = Math.round(this.position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE;
-        this.nearObjects = this.game.getVisibleObjects(this.position);
-        const visibleAtZoom = this.game.visibleObjects[this.zoom];
-
-        const newVisibleObjects = new Set<GameObject>(visibleAtZoom !== undefined ? visibleAtZoom[approximateX][approximateY] : this.nearObjects);
-
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;
         const maxY = this.position.y + this.yCullDist;
+        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
 
-        for (const object of this.game.dynamicObjects) {
-            if (
-                object.position.x > minX &&
-                object.position.x < maxX &&
-                object.position.y > minY &&
-                object.position.y < maxY
-            ) {
-                newVisibleObjects.add(object);
-                if (!this.visibleObjects.has(object)) {
-                    this.fullDirtyObjects.add(object);
-                }
-                // make sure this player is added to other players visible objects
-                if (!this.dead && object instanceof Player && !object.visibleObjects.has(this)) {
-                    object.visibleObjects.add(this);
-                    object.fullDirtyObjects.add(this);
-                }
-            } else if (this.visibleObjects.has(object)) {
+        const newVisibleObjects = this.game.grid.intersectsRect(rect);
+
+        for (const object of this.visibleObjects) {
+            if (!newVisibleObjects.has(object)) {
+                this.visibleObjects.delete(object);
                 this.deletedObjects.add(object);
             }
         }
 
         for (const object of newVisibleObjects) {
             if (!this.visibleObjects.has(object)) {
+                this.visibleObjects.add(object);
                 this.fullDirtyObjects.add(object);
             }
         }
-
-        for (const object of this.visibleObjects) {
-            if (!newVisibleObjects.has(object)) {
-                this.deletedObjects.add(object);
-            }
-        }
-
-        this.visibleObjects = newVisibleObjects;
     }
 
     sendPacket(packet: SendingPacket): void {
@@ -544,13 +559,7 @@ export class Player extends GameObject {
     piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
         if (this.invulnerable) return;
 
-        /* eslint-disable @typescript-eslint/restrict-plus-operands */
-        /* eslint-disable @typescript-eslint/no-non-null-assertion */
-        /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-
         amount = this._clampDamageAmount(amount);
-
-        /* eslint-disable @typescript-eslint/restrict-plus-operands */
 
         const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
@@ -567,29 +576,30 @@ export class Player extends GameObject {
             this.damageTaken += amount;
 
             if (canTrackStats && !this.dead) {
-                if ((weaponUsed.stats.damage += amount) <= ((attributes?.damageDealt ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
-                    applyPlayerFX(attributes!.damageDealt!);
+                const damageDealt = weaponUsed.stats.damage += amount;
+
+                for (const entry of attributes?.damageDealt ?? []) {
+                    if (damageDealt < (entry.limit ?? Infinity)) {
+                        applyPlayerFX(entry);
+                    }
                 }
             }
 
             if (source instanceof Player) {
-                this.hitEffect = true;
-
                 if (source !== this) {
                     source.damageDone += amount;
                 }
             }
         }
 
-        this.partialDirtyObjects.add(this);
-        this.game.partialDirtyObjects.add(this);
-
         if (this.health <= 0 && !this.dead) {
             if (canTrackStats) {
-                if (weaponUsed.stats.kills++ <= ((attributes?.kill ?? { limit: -Infinity }).limit ?? Infinity)) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion,@typescript-eslint/no-unnecessary-type-assertion
-                    applyPlayerFX(attributes!.kill!);
+                const kills = ++weaponUsed.stats.kills;
+
+                for (const entry of attributes?.kill ?? []) {
+                    if (kills < (entry.limit ?? Infinity)) {
+                        applyPlayerFX(entry);
+                    }
                 }
             }
 
@@ -656,12 +666,6 @@ export class Player extends GameObject {
         this.movement.left = false;
         this.movement.right = false;
         this.attacking = false;
-        this.deathPosition = this.position.clone();
-        try {
-            this.game.world.destroyBody(this.body);
-        } catch (e) {
-            console.error("Error destroying player body. Details: ", e);
-        }
         this.game.aliveCountDirty = true;
         this.adrenaline = 0;
         this.dirty.inventory = true;
@@ -669,7 +673,6 @@ export class Player extends GameObject {
 
         this.game.livingPlayers.delete(this);
         removeFrom(this.game.spectatablePlayers, this);
-        this.game.dynamicObjects.delete(this);
         this.game.removeObject(this);
 
         //
@@ -708,8 +711,7 @@ export class Player extends GameObject {
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
-        this.game.dynamicObjects.add(deathMarker);
-        this.game.fullDirtyObjects.add(deathMarker);
+        this.game.grid.addObject(deathMarker);
 
         // Send game over to dead player
         if (!this.disconnected) {
@@ -723,19 +725,34 @@ export class Player extends GameObject {
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeRotation(this.rotation, 16);
-        stream.writeBits(this.animation.type, ANIMATION_TYPE_BITS);
-        stream.writeBoolean(this.animation.seq);
-        stream.writeBoolean(this.hitEffect);
+        ObjectSerializations[ObjectCategory.Player].serializeFull(stream, {
+            position: this.position,
+            rotation: this.rotation,
+            animation: this.animation,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.invulnerable);
-        stream.writeObjectTypeNoCategory(this.activeItem.type);
-        stream.writeObjectTypeNoCategory(this.loadout.skin);
-        stream.writeBits(this.inventory.helmet?.definition.level ?? 0, 2);
-        stream.writeBits(this.inventory.vest?.definition.level ?? 0, 2);
-        stream.writeBits(this.inventory.backpack.definition.level, 2);
+        const data: ObjectsNetData[ObjectCategory.Player] = {
+            position: this.position,
+            rotation: this.rotation,
+            animation: this.animation,
+            fullUpdate: true,
+            invulnerable: this.invulnerable,
+            helmet: this.inventory.helmet ? this.inventory.helmet.definition.level : 0,
+            vest: this.inventory.vest ? this.inventory.vest.definition.level : 0,
+            backpack: this.inventory.backpack.definition.level,
+            skin: this.loadout.skin,
+            activeItem: this.activeItem.type,
+            action: {
+                dirty: this.dirty.action
+            }
+        };
+        if (this.dirty.action) {
+            data.action.type = this.action ? this.action.type : PlayerActions.None;
+            if (this.action instanceof HealingAction) data.action.item = this.action.item;
+        }
+        ObjectSerializations[ObjectCategory.Player].serializeFull(stream, data);
     }
 }

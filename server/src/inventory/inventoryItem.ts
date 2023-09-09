@@ -87,8 +87,7 @@ export abstract class InventoryItem {
      */
     constructor(idString: string, owner: Player) {
         this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
-        // todo maybe change the ObjectType class to better infer definition's type so that this cast doesn't need to be done
-        this.category = (this.type.definition as ItemDefinition).itemType;
+        this.category = this.type.definition.itemType;
         this.owner = owner;
     }
 
@@ -126,22 +125,26 @@ export abstract class InventoryItem {
             const { damageDealt, kill } = on;
 
             if (kill) {
-                for (let i = 0; i < Math.min(this._stats.kills, kill.limit ?? Infinity); i++) {
-                    applyModifiers(kill);
+                for (const entry of kill ?? []) {
+                    for (let i = 0, limit = Math.min(this._stats.kills, entry.limit ?? Infinity); i < limit; i++) {
+                        applyModifiers(entry);
+                    }
                 }
             }
 
             if (damageDealt) {
-                for (let i = 0; i < Math.min(this._stats.damage, damageDealt.limit ?? Infinity); i++) {
-                    applyModifiers(damageDealt);
+                for (const entry of damageDealt ?? []) {
+                    for (let i = 0, limit = Math.min(this._stats.damage, entry.limit ?? Infinity); i < limit; i++) {
+                        applyModifiers(entry);
+                    }
                 }
             }
-        }
 
-        this._modifiers.maxHealth = newModifiers.maxHealth;
-        this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
-        this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
-        this._modifiers.baseSpeed = newModifiers.baseSpeed;
-        this.owner.updateAndApplyModifiers();
+            this._modifiers.maxHealth = newModifiers.maxHealth;
+            this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
+            this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
+            this._modifiers.baseSpeed = newModifiers.baseSpeed;
+            this.owner.updateAndApplyModifiers();
+        }
     }
 }

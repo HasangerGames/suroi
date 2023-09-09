@@ -1,51 +1,56 @@
-import type Phaser from "phaser";
-import gsap from "gsap";
-
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { ArmorType, type ObjectCategory } from "../../../../common/src/constants";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
 import { type PlayerManager } from "../utils/playerManager";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 
 export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
     readonly images: {
-        readonly background: Phaser.GameObjects.Image
-        readonly item: Phaser.GameObjects.Image
+        readonly background: SuroiSprite
+        readonly item: SuroiSprite
     };
 
     created = false;
 
     count = 0;
 
-    radius: number;
+    hitbox: CircleHitbox;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
-        super(game, scene, type, id);
+    animation?: Tween<Vector>;
+
+    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
+        super(game, type, id);
 
         const definition = this.type.definition;
 
         this.images = {
-            background: this.scene.add.image(0, 0, "main"),
-            item: this.scene.add.image(0, 0, "main", `${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
+            background: new SuroiSprite(),
+            item: new SuroiSprite(`${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
         };
 
-        if (definition.itemType === ItemType.Skin) this.images.item.setScale(0.75).setAngle(90);
+        if (definition.itemType === ItemType.Skin) this.images.item.setAngle(90).scale.set(0.75);
 
-        this.container.add([this.images.background, this.images.item]).setDepth(2);
+        this.container.addChild(this.images.background, this.images.item);
+
+        this.container.zIndex = 1;
 
         // Set the loot texture based on the type
         let backgroundTexture: string | undefined;
         switch (definition.itemType) {
             case ItemType.Gun: {
                 backgroundTexture = `loot_background_gun_${definition.ammoType}.svg`;
-                this.images.item.setScale(0.85);
+                this.images.item.scale.set(0.85);
                 break;
             }
             //
@@ -54,7 +59,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             case ItemType.Melee: {
                 backgroundTexture = "loot_background_melee.svg";
                 const imageScale = definition.image?.lootScale;
-                if (imageScale !== undefined) this.images.item.setScale(imageScale);
+                if (imageScale !== undefined) this.images.item.scale.set(imageScale);
                 break;
             }
             case ItemType.Healing: {
@@ -70,51 +75,51 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             }
         }
         if (backgroundTexture !== undefined) {
-            this.images.background.setTexture("main", backgroundTexture);
+            this.images.background.setFrame(backgroundTexture);
         } else {
             this.images.background.setVisible(false);
-            // fixme Figure out why destroy doesn't work
-            // I think you can't destroy a container child without destroying the container first
-            // - Leo
         }
 
-        this.radius = LootRadius[(this.type.definition).itemType];
+        this.hitbox = new CircleHitbox(LootRadius[definition.itemType]);
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
-    }
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Loot]): void {
+        this.position = data.position;
+        this.hitbox.position = this.position;
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        // Loot should only be fully updated on creation
-        if (this.created) {
-            console.warn("Full update of existing loot");
+        const pos = toPixiCoords(this.position);
+        this.container.position.copyFrom(pos);
+
+        if (data.fullUpdate) {
+            this.count = data.count;
+
+            // Play an animation if this is new loot
+            if (data.isNew) {
+                this.container.scale.set(0.5);
+                this.animation = new Tween(this.game, {
+                    target: this.container.scale,
+                    to: { x: 1, y: 1 },
+                    duration: 1000,
+                    ease: EaseFunctions.elasticOut
+                });
+            }
         }
-
-        this.count = stream.readBits(9);
-        const isNew = stream.readBoolean();
-
-        // Play an animation if this is new loot
-        if (isNew) {
-            this.container.setScale(0.5);
-            gsap.to(this.container, {
-                scale: 1,
-                ease: "elastic.out(1.01, 0.3)",
-                duration: 1
-            });
-        }
-
         this.created = true;
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.hitbox, HITBOX_COLORS.loot, this.debugGraphics);
+        }
     }
 
     destroy(): void {
+        this.animation?.kill();
         super.destroy();
-        this.images.item.destroy(true);
-        this.images.background.destroy(true);
     }
 
     canInteract(player: PlayerManager): boolean {
         const activePlayer = this.game.activePlayer;
+        if (!activePlayer) return false;
         const definition = this.type.definition;
 
         switch (definition.itemType) {

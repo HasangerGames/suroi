@@ -1,27 +1,29 @@
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import type { ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
-import { randomBoolean } from "../../../../common/src/utils/random";
 
 import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import type { Variation, Orientation } from "../../../../common/src/typings";
-import { gsap } from "gsap";
+import type { Orientation, Variation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import type { Hitbox } from "../../../../common/src/utils/hitbox";
-import { calculateDoorHitboxes } from "../../../../common/src/utils/math";
+import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;
-    destroyed!: boolean;
 
-    variation!: Variation;
+    image: SuroiSprite;
 
-    image: Phaser.GameObjects.Image;
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+    variation?: Variation;
+
+    damageable = true;
 
     isDoor?: boolean;
     door?: {
@@ -34,160 +36,188 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     isNew = true;
 
-    hitEffect = 0;
+    hitbox!: Hitbox;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
-        super(game, scene, type, id);
+    orientation!: Orientation;
 
-        // the image and emitter key, position and other properties are set after the obstacle is deserialized
-        this.image = this.scene.add.image(0, 0, "main"); //.setAlpha(0.5);
-        this.container.add(this.image);
-        // Adding the emitter to the container messes up the layering of particles and they will appear bellow loot
-        this.emitter = this.scene.add.particles(0, 0, "main");
+    particleFrames: string[] = [];
+
+    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
+        super(game, type, id);
+
+        this.image = new SuroiSprite(); //.setAlpha(0.5);
+        this.container.addChild(this.image);
 
         const definition = this.type.definition;
 
         this.isDoor = this.type.definition.isDoor;
         if (this.isDoor) {
             this.door = { offset: 0 };
-            this.image.setOrigin(0, 0.5);
+            this.image.anchor.set(0, 0.5);
         }
 
-        if (definition.invisible) this.container.setVisible(false);
+        if (definition.invisible) this.container.visible = false;
+
+        // If there are multiple particle variations, generate a list of variation image names
+        const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
+
+        if (definition.particleVariations) {
+            for (let i = 0; i < definition.particleVariations; i++) {
+                this.particleFrames.push(`${particleImage}_${i + 1}.svg`);
+            }
+        } else {
+            this.particleFrames.push(`${particleImage}.svg`);
+        }
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.scale = stream.readScale();
-        const destroyed = stream.readBoolean();
-
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
         const definition = this.type.definition;
-
-        const hitEffect = stream.readBits(3);
-
-        if (this.hitEffect !== hitEffect && !this.isNew && !destroyed) {
-            this.scene.playSound(`${definition.material}_hit_${randomBoolean() ? "1" : "2"}`);
-
-            if (!definition.indestructible) this.emitter.emitParticle(1);
+        if (data.fullUpdate) {
+            this.position = data.position;
+            this.rotation = data.rotation.rotation;
+            this.orientation = data.rotation.orientation;
+            this.variation = data.variation;
         }
-        this.hitEffect = hitEffect;
 
-        if (definition.isDoor && this.door !== undefined) {
-            const offset = stream.readBits(2);
+        this.scale = data.scale;
+        this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+
+        if (definition.isDoor && this.door && this.isNew) {
+            let offsetX: number;
+            let offsetY: number;
+            if (definition.hingeOffset) {
+                offsetX = definition.hingeOffset.x * PIXI_SCALE;
+                offsetY = definition.hingeOffset.y * PIXI_SCALE;
+            } else {
+                offsetX = offsetY = 0;
+            }
+            this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
+
+            this.rotation = orientationToRotation(this.orientation);
+
+            this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.orientation));
+        }
+
+        if (definition.isDoor && this.door !== undefined && data.door) {
+            const offset = data.door.offset;
+
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
                 if (!this.isNew) {
-                    if (offset === 0) this.scene.playSound("door_close");
-                    else this.scene.playSound("door_open");
-                    gsap.to(this.image, {
-                        rotation: orientationToRotation(offset),
-                        duration: 0.2
+                    if (offset === 0) this.playSound("door_close", 0.3, 48);
+                    else this.playSound("door_open", 0.3, 48);
+                    // eslint-disable-next-line no-new
+                    new Tween(this.game, {
+                        target: this.image,
+                        to: { rotation: orientationToRotation(offset) },
+                        duration: 150
                     });
                 } else {
                     this.image.setRotation(orientationToRotation(this.door.offset));
                 }
 
                 if (this.door.offset === 1) {
-                    this.door.hitbox = this.door.openAltHitbox?.clone();
-                } else if (this.door.offset === 3) {
                     this.door.hitbox = this.door.openHitbox?.clone();
+                } else if (this.door.offset === 3) {
+                    this.door.hitbox = this.door.openAltHitbox?.clone();
                 } else {
                     this.door.hitbox = this.door.closedHitbox?.clone();
                 }
+                if (this.door.hitbox) this.hitbox = this.door.hitbox;
             }
         }
 
-        this.image.setScale(this.destroyed ? 1 : this.scale);
+        this.image.scale.set(this.dead ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
-        if (!this.destroyed && destroyed) {
-            this.destroyed = true;
+        if (!this.dead && data.dead) {
+            this.dead = data.dead;
             if (!this.isNew) {
-                this.scene.playSound(`${definition.material}_destroyed`);
+                this.playSound(`${definition.material}_destroyed`, 0.2, 96);
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setTexture("main", `${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
+                    this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
                 }
-                this.container.setRotation(this.rotation).setScale(this.scale).setDepth(0);
-                this.emitter.explode(10);
+                this.container.rotation = this.rotation;
+                this.container.scale.set(this.scale);
+
+                this.game.particleManager.spawnParticles(10, () => ({
+                    frames: this.particleFrames,
+                    position: this.hitbox.randomPoint(),
+                    depth: (definition.depth ?? 0) + 1,
+                    lifeTime: 1500,
+                    rotation: {
+                        start: randomRotation(),
+                        end: randomRotation()
+                    },
+                    scale: {
+                        start: randomFloat(0.85, 0.95),
+                        end: 0,
+                        ease: EaseFunctions.quadIn
+                    },
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.sextIn
+                    },
+                    speed: velFromAngle(randomRotation(), randomFloat(0.25, 0.5) * (definition.explosion ? 3 : 1))
+                }));
+            }
+        }
+        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
+
+        if (!this.isNew && !this.isDoor) {
+            this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+        }
+
+        const pos = toPixiCoords(this.position);
+        this.container.position.copyFrom(pos);
+
+        this.image.setVisible(!(this.dead && !!definition.noResidue));
+
+        let texture = definition.frames?.base ?? `${definition.idString}`;
+        if (this.dead) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+
+        if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
+        // Update the obstacle image
+        this.image.setFrame(`${texture}.svg`);
+
+        this.container.rotation = this.rotation;
+        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
+
+        this.isNew = false;
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.hitbox, definition.noCollisions ? HITBOX_COLORS.obstacleNoCollision : HITBOX_COLORS.obstacle, this.debugGraphics);
+            if (definition.spawnHitbox) {
+                drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.spawnHitbox,
+                    this.debugGraphics);
             }
         }
     }
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        // Get position, rotation, and variations
-        this.position = stream.readPosition();
+    hitEffect(position: Vector, angle: number): void {
+        this.game.soundManager.play(`${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
-        const definition = this.type.definition;
-        if (definition.isDoor && this.door !== undefined && this.isNew) {
-            let offsetX: number;
-            let offsetY: number;
-            if (definition.hingeOffset !== undefined) {
-                offsetX = definition.hingeOffset.x * 20;
-                offsetY = definition.hingeOffset.y * 20;
-            } else {
-                offsetX = offsetY = 0;
-            }
-            this.image.setPosition(this.image.x + offsetX, this.image.y + offsetY);
+        const particleAngle = angle + randomFloat(-0.3, 0.3);
 
-            let orientation = stream.readBits(2) as Orientation;
-
-            this.rotation = orientationToRotation(orientation);
-
-            // inverted Y axis moment
-            if (orientation === 1) orientation = 3;
-            else if (orientation === 3) orientation = 1;
-
-            this.door.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, orientation);
-            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, orientation));
-        } else {
-            this.rotation = stream.readObstacleRotation(definition.rotationMode);
-        }
-
-        const hasVariations = definition.variations !== undefined;
-        if (hasVariations) this.variation = stream.readVariation();
-
-        if (this.destroyed && definition.noResidue) {
-            this.image.setVisible(false);
-        } else {
-            let texture = definition.frames?.base ?? `${definition.idString}`;
-            if (this.destroyed) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
-            else if (hasVariations) texture += `_${this.variation + 1}`;
-            // Update the obstacle image
-            this.image.setFrame(`${texture}.svg`);
-        }
-
-        this.container.setRotation(this.rotation)
-            .setDepth(this.destroyed ? 0 : definition.depth ?? 0);
-
-        // If there are multiple particle variations, generate a list of variation image names
-        const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
-        let frames: string[] | undefined;
-
-        if (definition.particleVariations !== undefined) {
-            frames = [];
-            for (let i = 0; i < definition.particleVariations; i++) {
-                frames.push(`${particleImage}_${i + 1}.svg`);
-            }
-        }
-
-        // Update the particle emitter
-        this.emitter.setConfig({
-            frame: definition.particleVariations === undefined ? `${particleImage}.svg` : frames,
-            quantity: 1,
-            rotate: { min: 0, max: 360 },
-            lifespan: 1500,
-            speed: { min: 125, max: 175 },
-            scale: { start: 1, end: 0 },
-            emitting: false
-        }).setDepth((definition.depth ?? 0) + 1).setPosition(this.container.x, this.container.y);
-
-        this.isNew = false;
+        this.game.particleManager.spawnParticle({
+            frames: this.particleFrames,
+            position,
+            depth: Math.max((this.type.definition.depth ?? 0) + 1, 4),
+            lifeTime: 600,
+            scale: { start: 0.9, end: 0.2 },
+            alpha: { start: 1, end: 0.65 },
+            speed: velFromAngle(particleAngle, randomFloat(0.25, 0.75))
+        });
     }
 
     destroy(): void {
         super.destroy();
-        this.image.destroy(true);
-        this.emitter.destroy(true);
+        this.image.destroy();
     }
 }

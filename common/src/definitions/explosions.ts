@@ -1,4 +1,4 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions, type BulletDefinition } from "../utils/objectDefinitions";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
@@ -16,12 +16,10 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly frame: string
         readonly scale: number
     }
-    readonly particles: {
-        readonly duration: number
-        readonly frame: string
-        readonly count: number
-    }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
+
+    readonly shrapnelCount: number
+    readonly ballistics: BulletDefinition
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
@@ -37,17 +35,21 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 250,
-                intensity: 0.02
+                intensity: 50
             },
             animation: {
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
             },
-            particles: {
-                duration: 1500,
-                frame: "barrel_fire_particle.svg",
-                count: 10
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                maxDistance: 20,
+                variance: 1,
+                shrapnel: true
             }
         },
         {
@@ -61,17 +63,21 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 250,
-                intensity: 0.02
+                intensity: 50
             },
             animation: {
                 duration: 1000,
                 frame: "barrel_explosion.svg",
                 scale: 1.5
             },
-            particles: {
-                duration: 1500,
-                frame: "barrel_fire_particle.svg",
-                count: 10
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                maxDistance: 20,
+                variance: 1,
+                shrapnel: true
             }
         },
         {
@@ -85,17 +91,21 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             cameraShake: {
                 duration: 500,
-                intensity: 0.03
+                intensity: 100
             },
             animation: {
                 duration: 1500,
                 frame: "barrel_explosion.svg",
                 scale: 2.5
             },
-            particles: {
-                duration: 2500,
-                frame: "super_barrel_fire_particle.svg",
-                count: 20
+            shrapnelCount: 20,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 2,
+                speed: 0.08,
+                maxDistance: 30,
+                variance: 1,
+                shrapnel: true
             }
         }
     ]

@@ -17,14 +17,14 @@ export class PickupPacket extends ReceivingPacket {
             case ItemType.Healing:
                 soundID = `${type.idString}_pickup`;
                 break;
-            case ItemType.Gun:
-                soundID = `${type.idString}_switch`;
+            case ItemType.Scope:
+                soundID = "scope_pickup";
                 break;
             default:
                 soundID = "pickup";
                 break;
         }
 
-        this.playerManager.game.activePlayer.scene.playSound(soundID);
+        this.playerManager.game.soundManager.play(`${soundID}`);
     }
 }

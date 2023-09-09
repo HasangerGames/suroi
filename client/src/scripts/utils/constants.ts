@@ -1,19 +1,28 @@
-import { MAP_HEIGHT, MAP_WIDTH } from "../../../../common/src/constants";
+import { Color } from "pixi.js";
 
 export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
-export const GRASS_COLOR = 0x49993e;
-export const GRASS_RGB = {
-    r: 73,
-    g: 153,
-    b: 62
-};
-export const GAS_COLOR = 0xff4800;
-export const GAS_ALPHA = 0.55;
+export const HITBOX_DEBUG_MODE = false;
 
-export const MINIMAP_SCALE = 2;
-export const MINIMAP_GRID_WIDTH = MAP_WIDTH * MINIMAP_SCALE;
-export const MINIMAP_GRID_HEIGHT = MAP_HEIGHT * MINIMAP_SCALE;
+export const HITBOX_COLORS = {
+    obstacle: new Color("red"),
+    obstacleNoCollision: new Color("yellow"),
+    spawnHitbox: new Color("orange"),
+    buildingZoomCeiling: new Color("purple"),
+    buildingScopeCeiling: new Color("cyan"),
+    loot: new Color("magenta"),
+    player: new Color("blue"),
+    playerWeapon: new Color("red")
+};
+
+export const COLORS = {
+    grass: new Color("hsl(113, 42%, 42%)"),
+    water: new Color("hsl(211, 63%, 42%)"),
+    gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
+    beach: new Color("hsl(40, 39%, 55%)")
+};
+
+export const PIXI_SCALE = 20;
 
 export enum EmoteSlot {
     Top,

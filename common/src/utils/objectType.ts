@@ -46,14 +46,10 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
     }
 
     static fromString<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T, idString: string): ObjectType<T, U> {
-        const type = new ObjectType<T, U>(category, -1, idString);
-
-        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
+        const definitions = ObjectDefinitionsList[category];
         if (definitions === undefined) {
             throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idString})`);
         }
-
-        type.idNumber = definitions.definitions.findIndex(def => def.idString === idString);
-        return type;
+        return new ObjectType<T, U>(category, definitions.idStringToNumber[idString], idString);
     }
 }

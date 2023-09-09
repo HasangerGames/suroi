@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, type BulletDefinition } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
 
@@ -38,23 +38,11 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
 
-    readonly ballistics: {
-        readonly damage: number
-        readonly obstacleMultiplier: number
-        readonly speed: number
-        readonly maxDistance: number
-        // fixme doesn't work right now
-        readonly penetration?: {
-            readonly players?: boolean
-            readonly obstacles?: boolean
-        }
-        readonly tracerOpacity?: {
-            readonly start?: number
-            readonly end?: number
-        }
-        readonly tracerWidth?: number
-        readonly tracerLength?: number
+    readonly particles?: {
+        readonly position: Vector
     }
+
+    readonly ballistics: BulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {
@@ -85,11 +73,14 @@ export const Guns: GunDefinition[] = [
         moveSpread: 4,
         length: 10,
         fists: {
-            left: v(140, -5),
-            right: v(65, 0),
+            left: v(122, -3),
+            right: v(62, 0),
             animationDuration: 100
         },
-        image: { position: v(120, 2) },
+        image: { position: v(90, 2) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 14,
             obstacleMultiplier: 1.5,
@@ -117,11 +108,14 @@ export const Guns: GunDefinition[] = [
         bulletCount: 9,
         length: 10,
         fists: {
-            left: v(130, -6),
-            right: v(65, 0),
+            left: v(120, -3),
+            right: v(47, 0),
             animationDuration: 100
         },
         image: { position: v(110, 1) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 9,
@@ -150,11 +144,14 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         length: 10,
         fists: {
-            left: v(145, -6),
+            left: v(145, -3),
             right: v(60, 0),
             animationDuration: 100
         },
         image: { position: v(105, 0) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 10,
@@ -179,7 +176,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 600,
         fireMode: FireMode.Single,
         bulletCount: 18,
-        shotSpread: 15,
+        shotSpread: 30,
         moveSpread: 7,
         canQuickswitch: true,
         length: 11,
@@ -189,6 +186,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(4, 0.5)
+        },
         ballistics: {
             damage: 5,
             obstacleMultiplier: 0.5,
@@ -222,6 +222,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(105, 4) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 64,
             obstacleMultiplier: 1,
@@ -255,6 +258,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(125, 4) },
+        particles: {
+            position: v(4, 0.6)
+        },
         ballistics: {
             damage: 75,
             obstacleMultiplier: 1,
@@ -285,6 +291,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(78, 0) },
+        particles: {
+            position: v(3, 0.5)
+        },
         capacity: 15,
         reloadTime: 1.5,
         ballistics: {
@@ -315,6 +324,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(58, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         capacity: 16,
         reloadTime: 1.9,
         ballistics: {
@@ -347,6 +359,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(80, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
         ballistics: {
             damage: 15.5,
             obstacleMultiplier: 1,
@@ -381,6 +396,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         ballistics: {
             damage: 21,
             obstacleMultiplier: 1.5,
@@ -413,6 +431,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(103, -4) },
+        particles: {
+            position: v(4, 0.5)
+        },
         capacity: 30,
         reloadTime: 2.25,
         ballistics: {
@@ -443,6 +464,9 @@ export const Guns: GunDefinition[] = [
             left: v(70, 4),
             right: v(65, 0),
             animationDuration: 100
+        },
+        particles: {
+            position: v(3.5, 0.6)
         },
         image: { position: v(88, 0) },
         ballistics: {
@@ -475,6 +499,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(3.5, 0.5)
+        },
         ballistics: {
             damage: 11,
             obstacleMultiplier: 1,
@@ -505,6 +532,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(110, 0) },
+        particles: {
+            position: v(4, 0.5)
+        },
         ballistics: {
             damage: 16,
             obstacleMultiplier: 1.5,
@@ -536,6 +566,9 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(128, 0) },
+        particles: {
+            position: v(4.5, 1)
+        },
         ballistics: {
             damage: 16,
             obstacleMultiplier: 2.5,
@@ -568,16 +601,16 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(100, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
         ballistics: {
             damage: 24,
             obstacleMultiplier: 1.5,
             speed: 0.22,
             maxDistance: 160,
             tracerLength: 1.3,
-            tracerOpacity: {
-                start: 0.5,
-                end: 0.2
-            }
+            tracerOpacity: 0.5
         }
     },
     {
@@ -599,7 +632,7 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         killstreak: true,
         bulletCount: 1,
-        length: 11,
+        length: 10,
         fists: {
             left: v(135, -6),
             right: v(75, 0),
@@ -614,12 +647,7 @@ export const Guns: GunDefinition[] = [
             penetration: {
                 players: true,
                 obstacles: true
-            },
-            tracerOpacity: {
-                start: 1,
-                end: 0.5
-            },
-            tracerLength: 2
+            }
         }
     },
     {
@@ -642,13 +670,16 @@ export const Guns: GunDefinition[] = [
         killstreak: true,
         consistentPatterning: true,
         bulletCount: 10,
-        length: 8,
+        length: 10,
         fists: {
             left: v(155, -6),
             right: v(75, 0),
             animationDuration: 100
         },
         image: { position: v(90, 0) },
+        particles: {
+            position: v(4, 0.6)
+        },
         singleReload: true,
         ballistics: {
             damage: 10,
@@ -662,19 +693,25 @@ export const Guns: GunDefinition[] = [
                 maxAdrenaline: 0.8
             },
             on: {
-                kill: {
-                    limit: 5,
-                    maxHealth: 1.488,
-                    maxAdrenaline: 1.201,
-                    minAdrenaline: 8,
-                    healthRestored: 230,
-                    adrenalineRestored: 30,
-                    speedBoost: 1.02
-                },
-                damageDealt: {
-                    healthRestored: 1,
-                    adrenalineRestored: 1
-                }
+                kill: [
+                    {
+                        limit: 5,
+                        maxHealth: 1.488,
+                        maxAdrenaline: 1.201,
+                        minAdrenaline: 20,
+                        speedBoost: 1.02
+                    },
+                    {
+                        healthRestored: 230,
+                        adrenalineRestored: 30
+                    }
+                ],
+                damageDealt: [
+                    {
+                        healthRestored: 2,
+                        adrenalineRestored: 1.5
+                    }
+                ]
             }
         }
     }

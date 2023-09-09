@@ -1,20 +1,19 @@
 import $ from "jquery";
-import Phaser from "phaser";
 
-import core from "./core";
 import { Game } from "./game";
-
-import { GameScene } from "./scenes/gameScene";
-import { MenuScene } from "./scenes/menuScene";
-import { MinimapScene } from "./scenes/minimapScene";
-import { GRASS_COLOR } from "./utils/constants";
 
 import { setupInputs } from "./utils/inputManager";
 import { localStorageInstance } from "./utils/localStorageHandler";
+import { Application } from "pixi.js";
+import { loadAtlases } from "./utils/pixi";
+import { COLORS } from "./utils/constants";
+
+import { loadSounds } from "./utils/soundManager";
 
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
+import { setupUI } from "./ui";
 
 declare const API_URL: string;
 
@@ -26,12 +25,18 @@ export function enablePlayButton(): void {
     playSoloBtn.text("Play Solo");
 }
 
-$(() => {
+function disablePlayButton(text: string): void {
+    playSoloBtn.addClass("btn-disabled");
+    playSoloBtn.prop("disabled", true);
+    playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+}
+
+async function main(): Promise<void> {
+    disablePlayButton("Loading...");
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
-        playSoloBtn.addClass("btn-disabled");
-        playSoloBtn.prop("disabled", true);
-        playSoloBtn.html('<span style="position: relative; bottom: 1px;"><div class="spin"></div> Connecting...</span>');
+        disablePlayButton("Connecting...");
+
         void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
@@ -45,7 +50,7 @@ $(() => {
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
-                core.game?.connect(address);
+                game.connect(address);
                 $("#splash-server-message").hide();
             } else {
                 let message: string | undefined;
@@ -88,20 +93,26 @@ $(() => {
     }
 
     // Initialize the game object
-    core.game = new Game();
 
-    // Create the Phaser Game
-    // const forceRenderer: string | null = new URLSearchParams(window.location.search).get("forceRenderer");
-    core.phaser = new Phaser.Game({
-        // type: forceRenderer === "canvas" ? Phaser.CANVAS : forceRenderer === "webgl" ? Phaser.WEBGL : Phaser.AUTO,
-        type: Phaser.WEBGL,
-        scene: [MenuScene, GameScene, MinimapScene],
-        backgroundColor: GRASS_COLOR,
-        scale: {
-            mode: Phaser.Scale.RESIZE,
-            autoCenter: Phaser.Scale.CENTER_BOTH,
-            parent: $("#game-ui")[0]
-        }
+    const app = new Application({
+        resizeTo: window,
+        background: COLORS.water,
+        antialias: true,
+        autoDensity: true,
+        resolution: window.devicePixelRatio || 1
     });
-    setupInputs(core.game);
+
+    await loadAtlases();
+
+    $("#game-ui").append(app.view as HTMLCanvasElement);
+
+    const game = new Game(app);
+
+    loadSounds(game.soundManager);
+    setupInputs(game);
+    setupUI(game);
+    enablePlayButton();
+}
+$(() => {
+    void main();
 });

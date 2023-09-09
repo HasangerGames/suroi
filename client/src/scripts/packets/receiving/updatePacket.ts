@@ -1,31 +1,20 @@
-import type { MinimapScene } from "../../scenes/minimapScene";
-
-import { DeathMarker } from "../../objects/deathMarker";
 import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
-import { Obstacle } from "../../objects/obstacle";
-import { Loot } from "../../objects/loot";
 import { Bullet } from "../../objects/bullet";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
-import { GasState, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../../../../../common/src/constants";
-import type { GunDefinition } from "../../../../../common/src/definitions/guns";
-
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
-import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { type LootDefinition } from "../../../../../common/src/definitions/loots";
-import { type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { MINIMAP_SCALE, UI_DEBUG_MODE } from "../../utils/constants";
-import { Building } from "../../objects/building";
-import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
+import { UI_DEBUG_MODE } from "../../utils/constants";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
 import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
+import { vClone } from "../../../../../common/src/utils/vector";
+import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -39,26 +28,33 @@ function safeRound(value: number): number {
 }
 
 export class UpdatePacket extends ReceivingPacket {
-    override deserialize(stream: SuroiBitStream): void {
-        const player = this.playerManager.game.activePlayer;
-        if (player === undefined) return;
+    fullDirtyObjects = new Set<{
+        id: number
+        type: ObjectType
+        data: ObjectsNetData[ObjectCategory]
+    }>();
 
-        const game = player.game;
-        const playerManager = game.playerManager;
-        const scene = player.scene;
+    partialDirtyObjects = new Set<{
+        id: number
+        data: ObjectsNetData[ObjectCategory]
+    }>();
+
+    deletedObjects = new Array<number>();
+
+    override deserialize(stream: SuroiBitStream): void {
+        const game = this.playerManager.game;
+        const playerManager = this.playerManager;
 
         // Dirty values
         const maxMinStatsDirty = stream.readBoolean();
         const healthDirty = stream.readBoolean();
         const adrenalineDirty = stream.readBoolean();
         const zoomDirty = stream.readBoolean();
-        const actionDirty = stream.readBoolean();
         const activePlayerDirty = stream.readBoolean();
         const fullObjectsDirty = stream.readBoolean();
         const partialObjectsDirty = stream.readBoolean();
         const deletedObjectsDirty = stream.readBoolean();
         const bulletsDirty = stream.readBoolean();
-        const deletedBulletsDirty = stream.readBoolean();
         const explosionsDirty = stream.readBoolean();
         const emotesDirty = stream.readBoolean();
         const gasDirty = stream.readBoolean();
@@ -96,6 +92,7 @@ export class UpdatePacket extends ReceivingPacket {
 
         // Health
         if (healthDirty) {
+            const oldHealth = playerManager.health;
             playerManager.health = stream.readFloat(0, playerManager.maxHealth, 12);
             const absolute = playerManager.health;
             const realPercentage = 100 * absolute / playerManager.maxHealth;
@@ -105,7 +102,8 @@ export class UpdatePacket extends ReceivingPacket {
             const healthBarAmount = $<HTMLSpanElement>("#health-bar-percentage");
 
             healthBar.width(`${realPercentage}%`);
-            $("#health-bar-animation").width(`${realPercentage}%`);
+
+            if (oldHealth > playerManager.health) $("#health-bar-animation").width(`${realPercentage}%`);
 
             healthBarAmount.text(safeRound(absolute));
 
@@ -139,66 +137,12 @@ export class UpdatePacket extends ReceivingPacket {
         // Zoom
         if (zoomDirty) {
             playerManager.zoom = stream.readUint8();
-            scene.resize(true);
-        }
-
-        // Action
-        if (actionDirty) {
-            const action = stream.readBits(PLAYER_ACTIONS_BITS) as PlayerActions;
-            let actionTime = 0;
-            switch (action) {
-                case PlayerActions.None:
-                    $("#action-container").hide().stop();
-                    // TODO Only stop the sound that's playing
-                    scene.sounds.get(`${player.activeItem.idString}_reload`)?.stop();
-                    scene.sounds.get("gauze")?.stop();
-                    scene.sounds.get("medikit")?.stop();
-                    scene.sounds.get("cola")?.stop();
-                    scene.sounds.get("tablets")?.stop();
-                    break;
-                case PlayerActions.Reload: {
-                    $("#action-container").show();
-                    $("#action-name").text("Reloading...");
-                    scene.playSound(`${player.activeItem.idString}_reload`);
-                    actionTime = (player.activeItem.definition as GunDefinition).reloadTime;
-                    break;
-                }
-                case PlayerActions.UseItem: {
-                    $("#action-container").show();
-                    const itemDef = stream.readObjectTypeNoCategory(ObjectCategory.Loot).definition as HealingItemDefinition;
-                    $("#action-name").text(`${itemDef.useText} ${itemDef.name}`);
-                    actionTime = itemDef.useTime;
-                    scene.playSound(itemDef.idString);
-                }
-            }
-            if (actionTime > 0) {
-                $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
-                    $("#action-container").hide();
-                });
-            }
+            game.camera.zoom = playerManager.zoom;
         }
 
         // Active player ID and name
         if (activePlayerDirty) {
-            const activePlayerID = stream.readObjectID();
-            const idChanged = game.activePlayer.id !== activePlayerID;
-            if (idChanged) {
-                // Destroy the old object representing the active player
-                const activePlayer = game.objects.get(activePlayerID);
-                if (activePlayer !== undefined) {
-                    activePlayer.destroy();
-                    game.objects.delete(activePlayerID);
-                }
-
-                // Reset the active player
-                game.activePlayer.container.setVisible(true);
-                game.objects.delete(game.activePlayer.id);
-                game.activePlayer.id = activePlayerID;
-                game.activePlayer.emoteContainer.setVisible(false);
-                game.activePlayer.distSinceLastFootstep = 0;
-                game.activePlayer.isNew = true;
-                game.objects.set(game.activePlayer.id, game.activePlayer);
-            }
+            game.activePlayerID = stream.readObjectID();
             // Name dirty
             if (stream.readBoolean()) {
                 const name = stream.readPlayerNameWithColor();
@@ -218,55 +162,28 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
+        // Deleted objects
+        if (deletedObjectsDirty) {
+            const deletedObjectCount = stream.readUint16();
+            for (let i = 0; i < deletedObjectCount; i++) {
+                const id = stream.readObjectID();
+                this.deletedObjects.push(id);
+            }
+        }
+
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                let object: GameObject | undefined;
+                const data = ObjectSerializations[type.category].deserializeFull(stream, type);
 
-                if (!game.objects.has(id)) {
-                    switch (type.category) {
-                        case ObjectCategory.Player: {
-                            object = new Player(game, scene, type as ObjectType<ObjectCategory.Player>, id);
-                            break;
-                        }
-                        case ObjectCategory.Obstacle: {
-                            object = new Obstacle(game, scene, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
-                            break;
-                        }
-                        case ObjectCategory.DeathMarker: {
-                            object = new DeathMarker(game, scene, type as ObjectType<ObjectCategory.DeathMarker>, id);
-                            break;
-                        }
-                        case ObjectCategory.Loot: {
-                            object = new Loot(game, scene, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
-                            break;
-                        }
-                        case ObjectCategory.Building: {
-                            object = new Building(game, scene, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
-                            break;
-                        }
-                    }
-
-                    if (object === undefined) {
-                        console.warn(`Unknown object category: ${type.category}`);
-                        continue;
-                    }
-
-                    game.objects.set(object.id, object);
-                } else {
-                    const objectFromSet: GameObject | undefined = game.objects.get(id);
-                    if (objectFromSet === undefined) {
-                        console.warn(`Could not find object with ID ${id}`);
-                        continue;
-                    }
-                    object = objectFromSet;
-                }
-
-                object.deserializePartial(stream);
-                object.deserializeFull(stream);
+                this.fullDirtyObjects.add({
+                    id,
+                    type,
+                    data
+                });
             }
         }
 
@@ -276,26 +193,16 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < partialObjectCount; i++) {
                 const id = stream.readObjectID();
                 const object: GameObject | undefined = game.objects.get(id);
+
                 if (object === undefined) {
                     console.warn(`Unknown partial object with ID ${id}`);
                     continue;
                 }
-                object.deserializePartial(stream);
-            }
-        }
-
-        // Deleted objects
-        if (deletedObjectsDirty) {
-            const deletedObjectCount = stream.readUint16();
-            for (let i = 0; i < deletedObjectCount; i++) {
-                const id = stream.readObjectID();
-                const object: GameObject | undefined = game.objects.get(id);
-                if (object === undefined) {
-                    console.warn(`Trying to delete unknown object with ID ${id}`);
-                    continue;
-                }
-                object.destroy();
-                game.objects.delete(id);
+                const data = ObjectSerializations[object.type.category].deserializePartial(stream, object.type);
+                this.partialDirtyObjects.add({
+                    id,
+                    data
+                });
             }
         }
 
@@ -303,26 +210,24 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const id = stream.readUint8();
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                const source = stream.readObjectType() as Bullet["source"];
+                const position = stream.readPosition();
+                const rotation = stream.readRotation(16);
+                const variance = stream.readFloat(0, 1, 4);
+                const reflectionCount = stream.readBits(2);
+                const sourceID = stream.readObjectID();
 
-                const bullet = new Bullet(game, scene, stream);
+                const bullet = new Bullet(game, {
+                    source,
+                    position,
+                    rotation,
+                    reflectionCount,
+                    sourceID,
+                    variance
+                });
 
-                game.bullets.set(id, bullet);
-            }
-        }
-
-        // Deleted bullets
-        if (deletedBulletsDirty) {
-            const destroyedBulletCount = stream.readUint8();
-            for (let i = 0; i < destroyedBulletCount; i++) {
-                const bulletID = stream.readUint8();
-                const bullet = game.bullets.get(bulletID);
-                if (bullet === undefined) {
-                    console.warn(`Could not find bullet with ID ${bulletID}`);
-                    continue;
-                }
-                bullet.destroy();
-                game.bullets.delete(bulletID);
+                game.bullets.add(bullet);
             }
         }
 
@@ -332,8 +237,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    game.activePlayer.scene,
-                    stream.readObjectType<ObjectCategory.Explosion, ExplosionDefinition>(),
+                    stream.readObjectTypeNoCategory(ObjectCategory.Explosion),
                     stream.readPosition()
                 );
             }
@@ -346,12 +250,9 @@ export class UpdatePacket extends ReceivingPacket {
                 const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
                 const playerID = stream.readObjectID();
                 const player = this.playerManager.game.objects.get(playerID);
-                if (player === undefined || !(player instanceof Player)) return;
-                player.emote(emoteType);
+                if (player instanceof Player) player.emote(emoteType);
             }
         }
-
-        const minimap = scene.scene.get("minimap") as MinimapScene;
 
         // Gas
         let gasPercentage: number | undefined;
@@ -362,44 +263,24 @@ export class UpdatePacket extends ReceivingPacket {
             game.gas.newPosition = stream.readPosition();
             game.gas.oldRadius = stream.readFloat(0, 2048, 16);
             game.gas.newRadius = stream.readFloat(0, 2048, 16);
+
             let currentDuration: number | undefined;
             const percentageDirty = stream.readBoolean();
             if (percentageDirty) { // Percentage dirty
                 gasPercentage = stream.readFloat(0, 1, 16);
+                game.gas.lastUpdateTime = Date.now();
                 currentDuration = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             } else {
                 currentDuration = game.gas.initialDuration;
             }
             if (!(percentageDirty && game.gas.firstPercentageReceived)) { // Ensures that gas messages aren't displayed when switching between players when spectating
                 let gasMessage: string | undefined;
-                // TODO Clean up code
                 if (game.gas.state === GasState.Waiting) {
                     gasMessage = `Toxic gas advances in ${currentDuration}s`;
-                    scene.gasCircle.setPosition(game.gas.oldPosition.x * 20, game.gas.oldPosition.y * 20).setRadius(game.gas.oldRadius * 20);
-                    minimap.gasCircle.setPosition(game.gas.oldPosition.x * MINIMAP_SCALE, game.gas.oldPosition.y * MINIMAP_SCALE).setRadius(game.gas.oldRadius * MINIMAP_SCALE);
-                    minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                    if (game.gas.oldRadius === 0) {
-                        minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas has shrunk completely
-                    } else {
-                        minimap.gasToCenterLine.setTo(
-                            game.gas.newPosition.x * MINIMAP_SCALE,
-                            game.gas.newPosition.y * MINIMAP_SCALE,
-                            minimap.playerIndicator.x,
-                            minimap.playerIndicator.y
-                        );
-                    }
                 } else if (game.gas.state === GasState.Advancing) {
                     gasMessage = "Toxic gas is advancing! Move to the safe zone";
-                    minimap.gasNewPosCircle.setPosition(game.gas.newPosition.x * MINIMAP_SCALE, game.gas.newPosition.y * MINIMAP_SCALE).setRadius(game.gas.newRadius * MINIMAP_SCALE);
-                    minimap.gasToCenterLine.setTo(
-                        game.gas.newPosition.x * MINIMAP_SCALE,
-                        game.gas.newPosition.y * MINIMAP_SCALE,
-                        minimap.playerIndicator.x,
-                        minimap.playerIndicator.y
-                    );
                 } else if (game.gas.state === GasState.Inactive) {
                     gasMessage = "Waiting for players...";
-                    minimap.gasToCenterLine.setTo(0, 0, 0, 0); // Disable the gas line if the gas is inactive
                 }
 
                 if (game.gas.state === GasState.Advancing) {
@@ -431,23 +312,13 @@ export class UpdatePacket extends ReceivingPacket {
         if (gasPercentage !== undefined) {
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
-            if (game.gas.state === GasState.Advancing) {
-                const currentPosition = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
-                const currentRadius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                scene.tweens.add({
-                    targets: scene.gasCircle,
-                    x: currentPosition.x * 20,
-                    y: currentPosition.y * 20,
-                    radius: currentRadius * 20,
-                    duration: 30
-                });
-                scene.tweens.add({
-                    targets: minimap.gasCircle,
-                    x: currentPosition.x * MINIMAP_SCALE,
-                    y: currentPosition.y * MINIMAP_SCALE,
-                    radius: currentRadius * MINIMAP_SCALE,
-                    duration: 30
-                });
+            if (game.gas.state === GasState.Advancing || !game.gas.firstRadiusReceived) {
+                game.gas.lastPosition = vClone(game.gas.position);
+                game.gas.lastRadius = game.gas.radius;
+                game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
+                game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
+                game.gas.lastUpdateTime = Date.now();
+                game.gas.firstRadiusReceived = true;
             }
         }
 

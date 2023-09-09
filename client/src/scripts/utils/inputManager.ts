@@ -5,8 +5,6 @@ import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../.
 import { type PlayerManager } from "./playerManager";
 import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
 import { type Game } from "../game";
-import { type MinimapScene } from "../scenes/minimapScene";
-import core from "../core";
 import { v } from "../../../../common/src/utils/vector";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
@@ -182,13 +180,13 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
         toggleMap: new Action(
             "toggleMap",
             () => {
-                (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggle();
+                game.map.toggle();
             }
         ),
         toggleMiniMap: new Action(
             "toggleMiniMap",
             () => {
-                (core.phaser?.scene.getScene("minimap") as MinimapScene)?.toggleMiniMap();
+                game.map.toggleMiniMap();
             }
         ),
         emoteWheel: new Action(
@@ -380,12 +378,12 @@ export function setupInputs(game: Game): void {
         }
 
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
+        if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
             game.activePlayer.container.rotation = player.rotation;
+            game.map.indicator.rotation = player.rotation;
         }
         player.turning = true;
         player.dirty.inputs = true;
-        // scene.activeGame.sendPacket(new InputPacket(scene.playerManager));
     });
 
     // Mobile joysticks
@@ -416,7 +414,7 @@ export function setupInputs(game: Game): void {
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
-                game.activePlayer.container.setRotation(game.playerManager.rotation);
+                game.activePlayer.container.rotation = game.playerManager.rotation;
             }
             game.playerManager.turning = true;
             game.playerManager.attacking = data.distance > config.joystickSize / 3;

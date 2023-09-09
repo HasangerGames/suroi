@@ -46,7 +46,7 @@ export class KillFeedPacket extends SendingPacket {
                     stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
                     stream.writeBoolean(shouldTrackStats);
                     if (shouldTrackStats) {
-                        stream.writeUint8(weaponUsed.stats.kills);
+                        stream.writeUint8(killMessage.kills);
                     }
                 }
 

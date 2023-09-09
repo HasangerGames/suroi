@@ -1,6 +1,5 @@
 import { type ObjectCategory, PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
@@ -15,17 +14,20 @@ export abstract class Action {
         this.player = player;
         this._timeoutId = setTimeout(this.execute.bind(this), time * 1000);
         this.player.dirty.action = true;
+        this.player.game.fullDirtyObjects.add(this.player);
     }
 
     cancel(): void {
         clearTimeout(this._timeoutId);
         this.player.action = undefined;
         this.player.dirty.action = true;
+        this.player.game.fullDirtyObjects.add(this.player);
     }
 
     execute(): void {
         this.player.action = undefined;
         this.player.dirty.action = true;
+        this.player.game.fullDirtyObjects.add(this.player);
     }
 }
 
@@ -59,11 +61,11 @@ export class HealingAction extends Action {
     private readonly _type = PlayerActions.UseItem;
     get type(): PlayerActions.UseItem { return this._type; }
 
-    readonly item: ObjectType<ObjectCategory.Loot, LootDefinition>;
+    readonly item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>;
     override readonly speedMultiplier = 0.5;
 
-    constructor(player: Player, item: ObjectType<ObjectCategory.Loot, LootDefinition>) {
-        const itemDef = item.definition as HealingItemDefinition;
+    constructor(player: Player, item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>) {
+        const itemDef = item.definition;
         super(player, itemDef.useTime);
         this.item = item;
     }
@@ -72,7 +74,7 @@ export class HealingAction extends Action {
         super.execute();
 
         const items = this.player.inventory.items;
-        const itemDef = this.item.definition as HealingItemDefinition;
+        const itemDef = this.item.definition;
 
         items[itemDef.idString] -= 1;
 

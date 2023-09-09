@@ -211,7 +211,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-            [this._weapons[1], this._weapons[0]];
+        [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -243,7 +243,7 @@ export class Inventory {
         }
 
         // Drop old item into the game world and set the new item
-        this.dropWeapon(slot, -0.01);
+        this.dropWeapon(slot, -5);
         this._setWeapon(slot, this._reifyItem(item));
 
         if (index !== undefined) {
@@ -270,10 +270,10 @@ export class Inventory {
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushForce The velocity to push the loot, defaults to -0.02
+     * @param pushForce The velocity to push the loot, defaults to -5
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushForce = -0.02): GunItem | MeleeItem | undefined {
+    dropWeapon(slot: number, pushForce = -10): GunItem | MeleeItem | undefined {
         const item = this._weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
@@ -292,7 +292,7 @@ export class Inventory {
                 : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
 
             if (overAmount > 0) {
-                /*const splitUpLoot = (player: Player, item: string, amount: number): void => {
+                /* const splitUpLoot = (player: Player, item: string, amount: number): void => {
                     const dropCount = Math.floor(amount / 60);
                     for (let i = 0; i < dropCount; i++) {
                         const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, 60);
@@ -305,7 +305,7 @@ export class Inventory {
                     }
                 };
 
-                splitUpLoot(this.owner, ammoType, overAmount);*/
+                splitUpLoot(this.owner, ammoType, overAmount); */
                 this.items[ammoType] -= overAmount;
                 const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
                 loot.push(this.owner.rotation, pushForce);
@@ -404,7 +404,7 @@ export class Inventory {
                 if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
                 if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
-                this.owner.executeAction(new HealingAction(this.owner, item));
+                this.owner.executeAction(new HealingAction(this.owner, item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>));
                 break;
             }
             case ItemType.Scope: {

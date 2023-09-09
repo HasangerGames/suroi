@@ -1,4 +1,3 @@
-import core from "../core";
 import { type Game } from "../game";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import {
@@ -16,6 +15,7 @@ import { Ammos } from "../../../../common/src/definitions/ammos";
 import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 import { v } from "../../../../common/src/utils/vector";
 import { absMod } from "../../../../common/src/utils/math";
+import { isMobile } from "pixi.js";
 
 /**
  * This class manages the active player data and inventory
@@ -37,11 +37,7 @@ export class PlayerManager {
     adrenaline = 0;
 
     get isMobile(): boolean {
-        return this.isActuallyMobile && localStorageInstance.config.mobileControls;
-    }
-
-    get isActuallyMobile(): boolean {
-        return core.phaser !== undefined && !core.phaser.device.os.desktop;
+        return isMobile.any && localStorageInstance.config.mobileControls;
     }
 
     readonly movement = {

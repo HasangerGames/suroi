@@ -27,6 +27,17 @@ export function vAdd(a: Vector, b: Vector): Vector {
 }
 
 /**
+ * Adds two vectors together
+ * @param a - The first Vector
+ * @param x - The x-coordinate of the second vector
+ * @param y - The y-coordinate of the second vector
+ * @returns A new Vector resulting from the addition of a, and x and y
+ */
+export function vAdd2(a: Vector, x: number, y: number): Vector {
+    return v(a.x + x, a.y + y);
+}
+
+/**
  * Subtracts one Vector from another
  * @param a - The Vector to be subtracted from
  * @param b - The Vector to subtract
@@ -44,6 +55,16 @@ export function vSub(a: Vector, b: Vector): Vector {
  */
 export function vMul(a: Vector, n: number): Vector {
     return v(a.x * n, a.y * n);
+}
+
+/**
+ * Divides a Vector by a scalar
+ * @param a - The Vector to be divided
+ * @param n - The scalar value to divide the Vector by
+ * @returns A new Vector resulting from the division of vector a and scalar n
+ */
+export function vDiv(a: Vector, n: number): Vector {
+    return v(a.x / n, a.y / n);
 }
 
 /**
@@ -65,4 +86,39 @@ export function vRotate(vector: Vector, angle: number): Vector {
     const cos = Math.cos(angle);
     const sin = Math.sin(angle);
     return v(vector.x * cos - vector.y * sin, vector.x * sin + vector.y * cos);
+}
+
+export function vLengthSqr(a: Vector): number {
+    return a.x * a.x + a.y * a.y;
+}
+
+export function vLength(a: Vector): number {
+    return Math.sqrt(vLengthSqr(a));
+}
+
+export function vDot(a: Vector, b: Vector): number {
+    return a.x * b.x + a.y * b.y;
+}
+
+export function vNormalizeSafe(a: Vector, b?: Vector): Vector {
+    b = b ?? v(1.0, 0.0);
+    const eps = 0.000001;
+    const len = vLength(a);
+    return {
+        x: len > eps ? a.x / len : b.x,
+        y: len > eps ? a.y / len : b.y
+    };
+}
+
+export function vNormalize(a: Vector): Vector {
+    const eps = 0.000001;
+    const len = vLength(a);
+    return {
+        x: len > eps ? a.x / len : a.x,
+        y: len > eps ? a.y / len : a.y
+    };
+}
+
+export function vInvert(a: Vector): Vector {
+    return v(-a.x, -a.y);
 }

@@ -1,4 +1,4 @@
-import { GasState, MAP_HEIGHT, MAP_WIDTH } from "../../common/src/constants";
+import { GasState } from "../../common/src/constants";
 import { distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
@@ -83,7 +83,7 @@ export class Gas {
             if (currentStage.newRadius !== 0) {
                 this.newPosition = Config.gas.mode !== GasMode.Debug
                     ? randomPointInsideCircle(this.oldPosition, currentStage.oldRadius - currentStage.newRadius)
-                    : v(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+                    : v(this.game.map.width / 2, this.game.map.height / 2);
             } else {
                 this.newPosition = vClone(this.oldPosition);
             }

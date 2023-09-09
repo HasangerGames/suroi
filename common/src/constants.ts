@@ -97,19 +97,6 @@ export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
-export const MAP_WIDTH = 1024;
-export const MAP_HEIGHT = 1024;
-export const SERVER_GRID_SIZE = 10;
+export const TICK_SPEED = 30;
 
 export const PLAYER_RADIUS = 2.25;
-
-export const LootRadius = {
-    0: 3.4, // Gun
-    1: 2, // Ammo
-    2: 3, // Melee
-    3: 2.5, // Healing
-    4: 3, // Armor
-    5: 3, // Backpack
-    6: 3, // Scope
-    7: 3 // Skin
-};

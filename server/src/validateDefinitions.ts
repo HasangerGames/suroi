@@ -2,7 +2,7 @@ import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { Armors, type ArmorDefinition } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
-import { Buildings } from "../../common/src/definitions/buildings";
+import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Guns } from "../../common/src/definitions/guns";
@@ -15,9 +15,9 @@ import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
-import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
+import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition, type BulletDefinition } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { ColorStyles, FontStyles, styleText } from "./ansiColoring";
+import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
@@ -669,13 +669,23 @@ function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinit
 
                     if (on.damageDealt) {
                         logger.indent("Validating on-damage wearer attributes", () => {
-                            validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "on", "damageDealt"), wearerAttributes!.on!.damageDealt!);
+                            wearerAttributes!.on!.damageDealt!.forEach((e, i) =>
+                                validateWearerAttributesInternal(
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "damageDealt", `entry ${i}`),
+                                    e
+                                )
+                            );
                         });
                     }
 
                     if (on.kill) {
                         logger.indent("Validating on-kill wearer attributes", () => {
-                            validateWearerAttributesInternal(tester.createPath(baseErrorPath, "wearer attributes", "on", "kill"), wearerAttributes!.on!.kill!);
+                            wearerAttributes!.on!.kill!.forEach((e, i) =>
+                                validateWearerAttributesInternal(
+                                    tester.createPath(baseErrorPath, "wearer attributes", "on", "kill", `entry ${i}`),
+                                    e
+                                )
+                            );
                         });
                     }
                 });
@@ -822,20 +832,8 @@ function validateHitbox(baseErrorPath: string, hitbox: Hitbox): void {
     } else if (hitbox instanceof RectangleHitbox) {
         validateVector(baseErrorPath, hitbox.min);
         validateVector(baseErrorPath, hitbox.max);
-
-        tester.assertIsPositiveFiniteReal({
-            obj: hitbox,
-            field: "width",
-            baseErrorPath
-        });
-
-        tester.assertIsPositiveFiniteReal({
-            obj: hitbox,
-            field: "height",
-            baseErrorPath
-        });
     } else if (hitbox instanceof ComplexHitbox) {
-        hitbox.hitBoxes.map(validateHitbox.bind(null, baseErrorPath));
+        hitbox.hitboxes.map(validateHitbox.bind(null, baseErrorPath));
     }
 }
 
@@ -974,6 +972,14 @@ logger.indent("Validating building definitions", () => {
 
                 for (const floor of building.floors) {
                     validateHitbox(errorPath2, floor.hitbox);
+
+                    tester.assertReferenceExistsObject({
+                        obj: floor,
+                        field: "type",
+                        collection: FloorTypes,
+                        baseErrorPath: errorPath2,
+                        collectionName: "Floors"
+                    });
                 }
             }
         });
@@ -983,6 +989,74 @@ logger.indent("Validating building definitions", () => {
 logger.indent("Validating emotes", () => {
     tester.assertNoDuplicateIdStrings(Emotes.definitions, "Emotes", "emotes");
 });
+
+function validateBalistics(baseErrorPath: string, ballistics: BulletDefinition): void {
+    tester.assertIsRealNumber({
+        obj: ballistics,
+        field: "damage",
+        baseErrorPath
+    });
+
+    tester.assertIsRealNumber({
+        obj: ballistics,
+        field: "obstacleMultiplier",
+        baseErrorPath
+    });
+
+    tester.assertIsPositiveFiniteReal({
+        obj: ballistics,
+        field: "speed",
+        baseErrorPath
+    });
+
+    tester.assertIsPositiveFiniteReal({
+        obj: ballistics,
+        field: "maxDistance",
+        baseErrorPath
+    });
+
+    if (ballistics.tracerOpacity) {
+        const errorPath3 = tester.createPath(baseErrorPath, "tracer opacity");
+
+        tester.assertInBounds({
+            obj: ballistics,
+            field: "tracerOpacity",
+            min: 0,
+            max: 1,
+            includeMin: true,
+            includeMax: true,
+            baseErrorPath: errorPath3
+        });
+    }
+
+    if (ballistics.tracerWidth) {
+        tester.assertIsPositiveReal({
+            obj: ballistics,
+            field: "tracerWidth",
+            baseErrorPath
+        });
+    }
+
+    if (ballistics.tracerLength) {
+        tester.assertIsPositiveReal({
+            obj: ballistics,
+            field: "tracerLength",
+            baseErrorPath
+        });
+    }
+
+    if (ballistics.variance) {
+        tester.assertInBounds({
+            obj: ballistics,
+            field: "variance",
+            min: 0,
+            max: 1,
+            includeMax: true,
+            includeMin: true,
+            baseErrorPath
+        });
+    }
+}
 
 logger.indent("Validating explosions", () => {
     tester.assertNoDuplicateIdStrings(Explosions.definitions, "Explosions", "explosions");
@@ -1057,20 +1131,15 @@ logger.indent("Validating explosions", () => {
                 });
             });
 
-            logger.indent("Validating particles", () => {
-                const errorPath2 = tester.createPath(errorPath, "particles");
+            logger.indent("Validating ballistics", () => {
+                const errorPath2 = tester.createPath(errorPath, "ballistics");
+                validateBalistics(errorPath2, explosion.ballistics);
+            });
 
-                tester.assertIsPositiveReal({
-                    obj: explosion.particles,
-                    field: "duration",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsNaturalFiniteNumber({
-                    obj: explosion.particles,
-                    field: "count",
-                    baseErrorPath: errorPath2
-                });
+            tester.assertIsNaturalFiniteNumber({
+                obj: explosion,
+                field: "shrapnelCount",
+                baseErrorPath: errorPath
             });
         });
     }
@@ -1192,73 +1261,16 @@ logger.indent("Validating guns", () => {
                 }
             });
 
+            if (gun.particles !== undefined) {
+                logger.indent("Validating particles", () => {
+                    const errorPath2 = tester.createPath(errorPath, "particles");
+                    validateVector(errorPath2, gun.particles!.position);
+                });
+            }
+
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                const ballistics = gun.ballistics;
-
-                tester.assertIsRealNumber({
-                    obj: ballistics,
-                    field: "damage",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsRealNumber({
-                    obj: ballistics,
-                    field: "obstacleMultiplier",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsPositiveFiniteReal({
-                    obj: ballistics,
-                    field: "speed",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsPositiveFiniteReal({
-                    obj: ballistics,
-                    field: "maxDistance",
-                    baseErrorPath: errorPath2
-                });
-
-                if (ballistics.tracerOpacity) {
-                    const errorPath3 = tester.createPath(errorPath2, "tracer opacity");
-
-                    tester.assertInBounds({
-                        obj: ballistics.tracerOpacity,
-                        field: "start",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath3
-                    });
-
-                    tester.assertInBounds({
-                        obj: ballistics.tracerOpacity,
-                        field: "end",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath3
-                    });
-                }
-
-                if (ballistics.tracerWidth) {
-                    tester.assertIsPositiveReal({
-                        obj: ballistics,
-                        field: "tracerWidth",
-                        baseErrorPath: errorPath2
-                    });
-                }
-
-                if (ballistics.tracerLength) {
-                    tester.assertIsPositiveReal({
-                        obj: ballistics,
-                        field: "tracerLength",
-                        baseErrorPath: errorPath2
-                    });
-                }
+                validateBalistics(errorPath2, gun.ballistics);
             });
 
             if (gun.fireMode === FireMode.Burst) {

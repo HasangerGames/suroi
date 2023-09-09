@@ -201,7 +201,7 @@ const config: Configuration = {
                 outDir: "img/atlases",
                 filename: `main.${ATLAS_HASH}.png`
             }],
-            compilerOptions: { margin: 2 }
+            compilerOptions: { margin: 4 }
         }),
         new SpritesheetWebpackPlugin({
             patterns: [{
@@ -209,7 +209,7 @@ const config: Configuration = {
                 outDir: "img/atlases",
                 filename: `buildings.${ATLAS_HASH}.png`
             }],
-            compilerOptions: { margin: 2 }
+            compilerOptions: { margin: 4 }
         }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })

@@ -1,9 +1,7 @@
-import { boxLine, circleLine } from "intersects";
-
 import {
     vClone,
     v,
-    type Vector
+    type Vector, vSub, vLength, vInvert, vAdd, vMul
 } from "./vector";
 import {
     circleCollision,
@@ -13,19 +11,63 @@ import {
     rectangleCollision,
     rectRectCollision,
     rectangleDistanceToRectangle,
-    addAdjust
+    addAdjust,
+    lineIntersectsRect,
+    lineIntersectsCircle,
+    type IntersectionResponse
 } from "./math";
 
 import { transformRectangle } from "./math";
 
 import { type Orientation } from "../typings";
+import { random, randomFloat, randomPointInsideCircle } from "./random";
 
 export abstract class Hitbox {
+    /**
+     * Checks if this `Hitbox` collides with another one
+     * @param that The other `Hitbox`
+     * @return True if both `Hitbox`es collide
+     */
     abstract collidesWith(that: Hitbox): boolean;
+    /**
+     * Resolve collision between `Hitbox`es.
+     * @param that The other `Hitbox`
+     */
+    abstract resolveCollision(that: Hitbox): void;
+    /**
+     * Get the distance from this `Hitbox` from another `Hitbox`.
+     * @param that The other `Hitbox`
+     * @return a CollisionRecord with the distance and if both `Hitbox`es collide
+     */
     abstract distanceTo(that: Hitbox): CollisionRecord;
+    /**
+     * Clone this `Hitbox`.
+     * @return a new `Hitbox` cloned from this one
+     */
     abstract clone(): Hitbox;
+    /**
+     * Transform this `Hitbox` and returns a new `Hitbox`.
+     * NOTE: This doesn't change the initial `Hitbox`
+     * @param position The position to transform the `Hitbox` by
+     * @param scale The scale to transform the `Hitbox`
+     * @param orientation The orientation to transform the `Hitbox`
+     * @return A new `Hitbox` transformed by the parameters
+     */
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
-    abstract intersectsLine(a: Vector, b: Vector): boolean;
+    /**
+     * Check if a line intersects with this `Hitbox`.
+     * @param a the start point of the line
+     * @param b the end point of the line
+     * @return An intersection response containing the intersection position and normal
+     */
+    abstract intersectsLine(a: Vector, b: Vector): IntersectionResponse;
+    /**
+     * Get a random position inside this `Hitbox`.
+     * @return A Vector of a random position inside this `Hitbox`
+     */
+    abstract randomPoint(): Vector;
+
+    abstract toRectangle(): RectangleHitbox;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -51,6 +93,31 @@ export class CircleHitbox extends Hitbox {
         throw new Error("Invalid hitbox object");
     }
 
+    resolveCollision(that: Hitbox): void {
+        if (that instanceof CircleHitbox) {
+            const vectorConnectingCenters = vSub(that.position, this.position);
+            const lengthConnectingCenters = vLength(vectorConnectingCenters);
+            const intersectionLength = this.radius + that.radius - lengthConnectingCenters;
+            const intersectionVector = vMul(vectorConnectingCenters, intersectionLength / lengthConnectingCenters);
+            this.position = vAdd(this.position, vInvert(intersectionVector));
+        } else if (that instanceof RectangleHitbox) {
+            const e = vMul(vSub(that.max, that.min), 0.5);
+            const p = vSub(this.position, vAdd(that.min, e));
+            const xp = Math.abs(p.x) - e.x - this.radius;
+            const yp = Math.abs(p.y) - e.y - this.radius;
+            this.position = vAdd(
+                this.position,
+                xp > yp
+                    ? v(-Math.sign(p.x) * xp, 0)
+                    : v(0, -Math.sign(p.y) * yp)
+            );
+        } else if (that instanceof ComplexHitbox) {
+            for (const hitbox of that.hitboxes) {
+                if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+            }
+        }
+    }
+
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToCircle(that.position, that.radius, this.position, this.radius);
@@ -66,17 +133,19 @@ export class CircleHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
-        // inverted Y axis on the client moment
-        let newOrientation = orientation;
-        if (typeof window !== "undefined") {
-            if (orientation === 1) newOrientation = 3;
-            else if (orientation === 3) newOrientation = 1;
-        }
-        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, newOrientation));
+        return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
-        return circleLine(this.position.x, this.position.y, this.radius, a.x, a.y, b.x, b.y);
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        return lineIntersectsCircle(a, b, this.position, this.radius);
+    }
+
+    randomPoint(): Vector {
+        return randomPointInsideCircle(this.position, this.radius);
+    }
+
+    toRectangle(): RectangleHitbox {
+        return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
     }
 }
 
@@ -84,17 +153,17 @@ export class RectangleHitbox extends Hitbox {
     min: Vector;
     max: Vector;
 
-    width: number;
-    height: number;
-
     constructor(min: Vector, max: Vector) {
         super();
 
         this.min = min;
         this.max = max;
+    }
 
-        this.width = max.x - min.x;
-        this.height = max.y - min.y;
+    static fromLine(a: Vector, b: Vector): RectangleHitbox {
+        return new RectangleHitbox(
+            v(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y),
+            v(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y));
     }
 
     collidesWith(that: Hitbox): boolean {
@@ -109,11 +178,18 @@ export class RectangleHitbox extends Hitbox {
         return false;
     }
 
+    resolveCollision(that: Hitbox): void {
+        if (that instanceof CircleHitbox) {
+            return that.resolveCollision(this);
+        }
+        throw new Error("Not Implemented");
+    }
+
     distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToRectangle(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
-            return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max); // TODO Write a rectangleDistanceToRectangle function
+            return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max);
         }
 
         throw new Error("Invalid hitbox object");
@@ -124,55 +200,67 @@ export class RectangleHitbox extends Hitbox {
     }
 
     transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
-        // inverted Y axis on the client moment
-        let newOrientation = orientation;
-        if (typeof window !== "undefined") {
-            if (orientation === 1) newOrientation = 3;
-            else if (orientation === 3) newOrientation = 1;
-        }
-        const rect = transformRectangle(position, this.min, this.max, scale, newOrientation);
+        const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
-        return boxLine(this.min.x, this.min.y, this.width, this.height, a.x, a.y, b.x, b.y);
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        return lineIntersectsRect(a, b, this.min, this.max);
+    }
+
+    randomPoint(): Vector {
+        return {
+            x: randomFloat(this.min.x, this.max.x),
+            y: randomFloat(this.min.y, this.max.y)
+        };
+    }
+
+    toRectangle(): RectangleHitbox {
+        return this.clone();
     }
 }
 
 export class ComplexHitbox extends Hitbox {
     position = v(0, 0);
-    hitBoxes: Array<RectangleHitbox | CircleHitbox>;
+    hitboxes: Array<RectangleHitbox | CircleHitbox>;
 
     constructor(hitBoxes: Array<RectangleHitbox | CircleHitbox>) {
         super();
-        this.hitBoxes = hitBoxes;
+        this.hitboxes = hitBoxes;
     }
 
     collidesWith(that: Hitbox): boolean {
-        for (const hitbox of this.hitBoxes) {
+        for (const hitbox of this.hitboxes) {
             if (hitbox.collidesWith(that)) return true;
         }
         return false;
+    }
+
+    resolveCollision(that: Hitbox): void {
+        if (that instanceof CircleHitbox) {
+            return that.resolveCollision(this);
+        }
+        throw new Error("Not Implemented");
     }
 
     distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
         let distance = Number.MAX_VALUE;
         let record: CollisionRecord;
 
-        for (const hitbox of this.hitBoxes) {
+        for (const hitbox of this.hitboxes) {
             let newRecord: CollisionRecord;
 
             if (hitbox instanceof CircleHitbox) {
                 if (that instanceof CircleHitbox) {
                     newRecord = distanceToCircle(that.position, that.radius, hitbox.position, hitbox.radius);
-                } else if (that instanceof RectangleHitbox) {
+                } else { // if (that instanceof RectangleHitbox) {
                     newRecord = distanceToRectangle(that.min, that.max, hitbox.position, hitbox.radius);
                 }
-            } else if (hitbox instanceof RectangleHitbox) {
+            } else { // if (hitbox instanceof RectangleHitbox) {
                 if (that instanceof CircleHitbox) {
                     newRecord = distanceToRectangle(hitbox.min, hitbox.max, that.position, that.radius);
-                } else if (that instanceof RectangleHitbox) {
+                } else { // if (that instanceof RectangleHitbox) {
                     newRecord = rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max);
                 }
             }
@@ -187,22 +275,40 @@ export class ComplexHitbox extends Hitbox {
     }
 
     clone(): ComplexHitbox {
-        return new ComplexHitbox(this.hitBoxes);
+        return new ComplexHitbox(this.hitboxes);
     }
 
     transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
         this.position = position;
         const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
-        for (const hitbox of this.hitBoxes) {
+        for (const hitbox of this.hitboxes) {
             hitBoxes.push(hitbox.transform(position, scale, orientation));
         }
         return new ComplexHitbox(hitBoxes);
     }
 
-    intersectsLine(a: Vector, b: Vector): boolean {
-        for (const hitbox of this.hitBoxes) {
-            if (hitbox.intersectsLine(a, b)) return true;
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        for (const hitbox of this.hitboxes) {
+            const intersection = hitbox.intersectsLine(a, b);
+            if (intersection) return intersection;
         }
-        return false;
+        return null;
+    }
+
+    randomPoint(): Vector {
+        return this.hitboxes[random(0, this.hitboxes.length - 1)].randomPoint();
+    }
+
+    toRectangle(): RectangleHitbox {
+        const min = v(Infinity, Infinity);
+        const max = v(0, 0);
+        for (const hitbox of this.hitboxes) {
+            const toRect = hitbox.toRectangle();
+            min.x = Math.min(min.x, toRect.min.x);
+            min.y = Math.min(min.y, toRect.min.y);
+            max.x = Math.max(max.x, toRect.max.x);
+            max.y = Math.max(max.y, toRect.max.y);
+        }
+        return new RectangleHitbox(min, max);
     }
 }

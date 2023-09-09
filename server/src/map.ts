@@ -1,6 +1,5 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
-import { type GameObject } from "./types/gameObject";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { type Variation, type Orientation } from "../../common/src/typings";
@@ -12,12 +11,10 @@ import {
     randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { MAP_HEIGHT, MAP_WIDTH, ObjectCategory, PLAYER_RADIUS, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
-import { Box, Vec2 } from "planck";
-import { Scopes } from "../../common/src/definitions/scopes";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
@@ -28,24 +25,17 @@ import { addAdjust, addOrientations } from "../../common/src/utils/math";
 export class Map {
     game: Game;
 
-    readonly width = MAP_WIDTH;
-    readonly height = MAP_HEIGHT;
+    readonly width: number;
+    readonly height: number;
 
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
         this.game = game;
 
-        // Create world boundaries
-        this.createWorldBoundary(this.width / 2, 0, this.width / 2, 0);
-        this.createWorldBoundary(0, this.height / 2, 0, this.height / 2);
-        this.createWorldBoundary(this.width / 2, this.height, this.width / 2, 0);
-        this.createWorldBoundary(this.width, this.height / 2, 0, this.height / 2);
-
         const mapDefinition = Maps[mapName];
 
-        if (mapDefinition === undefined) {
-            throw new Error(`Unknown map: ${mapName}`);
-        }
+        this.width = mapDefinition.width;
+        this.height = mapDefinition.height;
 
         // Generate buildings
 
@@ -86,41 +76,6 @@ export class Map {
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
 
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
-
-        // Calculate visible objects
-        const visibleObjectsStartTime = Date.now();
-        for (const zoomLevel of Scopes.map(scope => scope.zoomLevel)) {
-            this.game.visibleObjects[zoomLevel] = {};
-            const xCullDist = zoomLevel * 1.8; const yCullDist = zoomLevel * 1.35;
-
-            for (let x = 0; x <= this.width; x += SERVER_GRID_SIZE) {
-                this.game.visibleObjects[zoomLevel][x] = {};
-                for (let y = 0; y <= this.height; y += SERVER_GRID_SIZE) {
-                    const visibleObjects = new Set<GameObject>();
-                    const minX = x - xCullDist;
-                    const minY = y - yCullDist;
-                    const maxX = x + xCullDist;
-                    const maxY = y + yCullDist;
-
-                    const rectangle = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
-
-                    for (const object of this.game.staticObjects) {
-                        if (object instanceof Obstacle && (object.position.x > minX &&
-                            object.position.x < maxX &&
-                            object.position.y > minY &&
-                            object.position.y < maxY)) {
-                            visibleObjects.add(object);
-                        } else if (object instanceof Building && rectangle.collidesWith(object.spawnHitbox)) {
-                            visibleObjects.add(object);
-                        }
-                    }
-
-                    this.game.visibleObjects[zoomLevel][x][y] = visibleObjects;
-                }
-            }
-        }
-
-        log(`Calculating visible objects took ${Date.now() - visibleObjectsStartTime}ms`);
     }
 
     generateBuildings(idString: string, count: number): void {
@@ -176,6 +131,7 @@ export class Map {
         }
 
         this.game.staticObjects.add(building);
+        this.game.grid.addObject(building);
         return building;
     }
 
@@ -245,6 +201,8 @@ export class Map {
             parentBuilding
         );
         this.game.staticObjects.add(obstacle);
+
+        this.game.grid.addObject(obstacle);
         return obstacle;
     }
 
@@ -303,12 +261,12 @@ export class Map {
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
             (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                let offset = 12;
+                let offset = 20;
                 if (type.category === ObjectCategory.Building) offset = 50;
 
                 getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
-                const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vec2, readonly radius: number };
+                const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vector, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
             } else {
                 getPosition = (): Vector => v(0, 0);
@@ -328,7 +286,7 @@ export class Map {
 
             const hitbox = initialHitbox.transform(position, scale, orientation);
 
-            for (const object of this.game.staticObjects) {
+            for (const object of this.game.grid.intersectsRect(hitbox.toRectangle())) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;
@@ -350,7 +308,7 @@ export class Map {
         if (squareRadius) {
             getPosition = (): Vector => randomVector(this.width / 2 - radius, this.width / 2 + radius, this.height / 2 - radius, this.height / 2 + radius);
         } else {
-            getPosition = (): Vector => randomPointInsideCircle(new Vec2(this.width / 2, this.height / 2), radius);
+            getPosition = (): Vector => randomPointInsideCircle(v(this.width / 2, this.height / 2), radius);
         }
 
         return this.getRandomPositionFor(type, scale, orientation, getPosition);
@@ -368,30 +326,5 @@ export class Map {
             default:
                 return 0;
         }
-    }
-
-    private createWorldBoundary(x: number, y: number, width: number, height: number): void {
-        const boundary = this.game.world.createBody({
-            type: "static",
-            position: Vec2(x, y)
-        });
-
-        boundary.createFixture({
-            shape: Box(width, height),
-            userData: {
-                is: {
-                    player: false,
-                    obstacle: true,
-                    bullet: false,
-                    object: false
-                },
-                collidesWith: {
-                    player: true,
-                    obstacle: false,
-                    bullet: true,
-                    object: true
-                }
-            }
-        });
     }
 }

@@ -1,12 +1,14 @@
-import gsap from "gsap";
-
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import { ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../../common/src/utils/objectType";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+
+import { type Container, Text } from "pixi.js";
+import { Tween } from "../utils/tween";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
@@ -14,49 +16,67 @@ export class DeathMarker extends GameObject {
     playerName!: string;
     nameColor = "#dcdcdc";
 
-    image: Phaser.GameObjects.Image;
-    playerNameText: Phaser.GameObjects.Text;
+    image: SuroiSprite;
+    playerNameText: Text;
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
-        super(game, scene, type, id);
+    scaleAnim?: Tween<Vector>;
+    alphaAnim?: Tween<Container>;
 
-        this.image = this.scene.add.image(0, 0, "main", "death_marker.svg");
-        this.playerNameText = this.scene.add.text(0, 95, "",
+    constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
+        super(game, type, id);
+
+        this.image = new SuroiSprite("death_marker.svg");
+        this.playerNameText = new Text("",
             {
                 fontSize: 36,
-                fontFamily: "Inter"
-            })
-            .setOrigin(0.5, 0.5)
-            .setShadow(2, 2, "#000", 2, true, true);
-        this.container.add([this.image, this.playerNameText]).setDepth(1);
+                fontFamily: "Inter",
+                dropShadow: true,
+                dropShadowBlur: 2,
+                dropShadowDistance: 2,
+                dropShadowColor: 0
+            });
+        this.playerNameText.y = 95;
+        this.playerNameText.anchor.set(0.5);
+        this.container.addChild(this.image, this.playerNameText);
+
+        this.container.zIndex = 0;
     }
 
-    override deserializePartial(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
-    }
+    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {
+        this.position = data.position;
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        this.playerName = stream.readPlayerName();
+        const pos = toPixiCoords(this.position);
+        this.container.position.copyFrom(pos);
 
-        if (stream.readBoolean()) {
-            this.nameColor = stream.readUTF8String(10);
+        this.playerName = data.player.name;
+        this.playerNameText.text = this.playerName;
+
+        if (data.player.isDev) {
+            this.nameColor = data.player.nameColor;
         }
-        this.playerNameText.setText(this.playerName).setColor(this.nameColor);
+
+        this.playerNameText.style.fill = this.nameColor;
 
         // Play an animation if this is a new death marker.
-        if (stream.readBoolean()) {
-            this.container.setScale(0.5).setAlpha(0);
-            gsap.to(this.container, {
-                scale: 1,
-                alpha: 1,
-                duration: 0.4
+        if (data.isNew) {
+            this.container.scale.set(0.5);
+            this.container.alpha = 0;
+            this.scaleAnim = new Tween(this.game, {
+                target: this.container.scale,
+                to: { x: 1, y: 1 },
+                duration: 400
+            });
+            this.alphaAnim = new Tween(this.game, {
+                target: this.container,
+                to: { alpha: 1 },
+                duration: 400
             });
         }
     }
 
     destroy(): void {
         super.destroy();
-        this.image.destroy(true);
-        this.playerNameText.destroy(true);
+        this.scaleAnim?.kill();
+        this.alphaAnim?.kill();
     }
 }

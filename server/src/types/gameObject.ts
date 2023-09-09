@@ -5,11 +5,7 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 
-export interface CollisionFilter { player: boolean, obstacle: boolean, bullet: boolean, loot: boolean }
-
 export abstract class GameObject {
-    abstract is: CollisionFilter;
-    abstract collidesWith: CollisionFilter;
     damageable = false;
 
     id: number;
@@ -18,32 +14,25 @@ export abstract class GameObject {
     game: Game;
 
     _position: Vector;
+    get position(): Vector { return this._position; }
+    set position(position: Vector) { this._position = position; }
+
     _rotation = 0;
+    get rotation(): number { return this._rotation; }
+    set rotation(rotation: number) { this._rotation = rotation; }
+
     scale = 1;
     dead = false;
     hitbox?: Hitbox;
+
+    // which grid cells this object is occupying
+    gridCells: Vector[] = [];
 
     protected constructor(game: Game, type: ObjectType, position: Vector) {
         this.id = game.nextObjectID;
         this.game = game;
         this.type = type;
         this._position = position;
-    }
-
-    get position(): Vector {
-        return this._position;
-    }
-
-    set position(position: Vector) {
-        this._position = position;
-    }
-
-    get rotation(): number {
-        return this._rotation;
-    }
-
-    set rotation(rotation: number) {
-        this._rotation = rotation;
     }
 
     abstract damage(amount: number, source?: GameObject): void;

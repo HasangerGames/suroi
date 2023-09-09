@@ -1,42 +1,84 @@
 import { ReceivingPacket } from "../../types/receivingPacket";
-import type { MinimapScene } from "../../scenes/minimapScene";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import type { ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { COLORS, PIXI_SCALE } from "../../utils/constants";
+import { Container, Graphics, RenderTexture, isMobile } from "pixi.js";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { MINIMAP_GRID_HEIGHT, MINIMAP_GRID_WIDTH, MINIMAP_SCALE } from "../../utils/constants";
+import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
-import { type Orientation } from "../../../../../common/src/typings";
+import { SuroiSprite } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const minimap = this.playerManager.game.activePlayer.scene.scene.get("minimap") as MinimapScene;
+        const game = this.playerManager.game;
+        const map = game.map;
 
-        // Draw the grid
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
-        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
-            minimap.add.rectangle(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
+        const width = map.width = stream.readUint16();
+        const height = map.height = stream.readUint16();
+
+        const cellSize = 16;
+        const oceanPadding = map.oceanPadding;
+
+        const graphics = new Graphics();
+        const mapGraphics = new Graphics();
+        const mapRender = new Container();
+        mapRender.interactiveChildren = false;
+
+        graphics.beginFill();
+        graphics.fill.color = COLORS.beach.toNumber();
+        graphics.drawRect(0, 0, width, height);
+        graphics.fill.color = COLORS.grass.toNumber();
+        graphics.drawRect(cellSize, cellSize, width - cellSize * 2, height - cellSize * 2);
+        graphics.zIndex = -10;
+
+        mapGraphics.beginFill();
+        mapGraphics.fill.color = COLORS.water.toNumber();
+        mapGraphics.drawRect(-oceanPadding, -oceanPadding, width + oceanPadding * 2, height + oceanPadding * 2);
+        mapGraphics.fill.color = COLORS.beach.toNumber();
+        mapGraphics.drawRect(0, 0, width, height);
+        mapGraphics.fill.color = COLORS.grass.toNumber();
+        mapGraphics.drawRect(cellSize, cellSize, width - cellSize * 2, height - cellSize * 2);
+
+        graphics.lineStyle({
+            color: 0x000000,
+            alpha: 0.25,
+            width: 2 / PIXI_SCALE
+        });
+        mapGraphics.lineStyle({
+            color: 0x000000,
+            alpha: 0.5,
+            width: 1.5
+        });
+        graphics.scale.set(PIXI_SCALE);
+
+        for (let x = 0; x <= width; x += cellSize) {
+            graphics.moveTo(x, 0);
+            graphics.lineTo(x, height);
+
+            mapGraphics.moveTo(x, 0);
+            mapGraphics.lineTo(x, height);
         }
-        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
-            minimap.add.rectangle(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE, 0x000000, 0.35).setOrigin(0, 0).setDepth(-1);
+        for (let y = 0; y <= height; y += cellSize) {
+            graphics.moveTo(0, y);
+            graphics.lineTo(width, y);
+
+            mapGraphics.moveTo(0, y);
+            mapGraphics.lineTo(width, y);
         }
 
-        minimap.renderTexture.beginDraw();
+        graphics.endFill();
 
-        // Draw the grid
-        // This method isn't used because it makes the grid look really bad on mobile
-        /*const graphics = minimap.make.graphics();
-        graphics.fillStyle(0x000000, 0.35);
+        game.camera.container.addChild(graphics);
 
-        const CELL_SIZE = 16 * MINIMAP_SCALE;
-        for (let x = 0; x <= MINIMAP_GRID_WIDTH; x += CELL_SIZE) {
-            graphics.fillRect(x, 0, MINIMAP_SCALE, MINIMAP_GRID_HEIGHT);
-        }
-        for (let y = 0; y <= MINIMAP_GRID_HEIGHT; y += CELL_SIZE) {
-            graphics.fillRect(0, y, MINIMAP_GRID_WIDTH, MINIMAP_SCALE);
-        }
-        minimap.renderTexture.batchDraw(graphics, 0, 0);*/
+        mapRender.position.set(oceanPadding);
+        mapRender.addChild(mapGraphics);
+
+        const renderTexture = RenderTexture.create({
+            width: width + oceanPadding * 2,
+            height: height + oceanPadding * 2,
+            resolution: isMobile.any ? 1 : 2
+        });
 
         const numObstacles = stream.readBits(10);
 
@@ -48,43 +90,35 @@ export class MapPacket extends ReceivingPacket {
             let rotation = 0;
             let scale = 1;
 
-            let texture = type.idString;
-
-            let atlas = "main";
+            let textureId = type.idString;
 
             switch (type.category) {
                 case ObjectCategory.Obstacle: {
                     scale = stream.readScale();
-                    const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-                    rotation = stream.readObstacleRotation(definition.rotationMode);
+                    const definition = type.definition as ObstacleDefinition;
+                    rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                     const hasVariations = definition.variations !== undefined;
                     let variation = 0;
                     if (hasVariations) {
                         variation = stream.readVariation();
-                        texture += `_${variation + 1}`;
+                        textureId += `_${variation + 1}`;
                     }
                     break;
                 }
                 case ObjectCategory.Building: {
-                    texture += "_ceiling";
-                    rotation = stream.readObstacleRotation("limited") as Orientation;
+                    textureId += "_ceiling";
+                    rotation = stream.readObstacleRotation("limited").rotation;
 
                     const definition = type.definition as BuildingDefinition;
 
                     const floorPos = vAdd(position, vRotate(definition.floorImagePos, rotation));
 
-                    atlas = "buildings";
+                    const floorImage = new SuroiSprite(`${type.idString}_floor.svg`);
 
-                    minimap.renderTexture.batchDraw(minimap.make.image({
-                        x: floorPos.x * MINIMAP_SCALE,
-                        y: floorPos.y * MINIMAP_SCALE,
-                        key: atlas,
-                        frame: `${type.idString}_floor.svg`,
-                        add: false,
-                        scale: scale / (20 / MINIMAP_SCALE),
-                        rotation
-                    }));
+                    floorImage.setVPos(floorPos).setRotation(rotation);
+                    floorImage.scale.set(1 / PIXI_SCALE);
+                    mapRender.addChild(floorImage);
 
                     position = vAdd(position, vRotate(definition.ceilingImagePos, rotation));
                     break;
@@ -92,16 +126,19 @@ export class MapPacket extends ReceivingPacket {
             }
 
             // Create the object image
-            minimap.renderTexture.batchDraw(minimap.make.image({
-                x: position.x * MINIMAP_SCALE,
-                y: position.y * MINIMAP_SCALE,
-                key: atlas,
-                frame: `${texture}.svg`,
-                add: false,
-                scale: scale / (20 / MINIMAP_SCALE),
-                rotation
-            }));
+            const image = new SuroiSprite(`${textureId}.svg`);
+            image.setVPos(position).setRotation(rotation);
+            image.scale.set(scale * (1 / PIXI_SCALE));
+
+            mapRender.addChild(image);
         }
-        minimap.renderTexture.endDraw();
+        game.pixi.renderer.render(mapRender, {
+            renderTexture
+        });
+        map.sprite.texture = renderTexture;
+        mapRender.destroy({
+            children: true,
+            texture: false
+        });
     }
 }

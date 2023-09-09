@@ -42,11 +42,11 @@ export class IDAllocator {
     }
 
     /**
-     * Returns a value to the pool of available id's
+     * Returns a value to the pool of available ID's
      *
-     * **Warning:** No mechanism exists to ensure that the given id isn't already in the pool. It is the caller's
-     * responsibility to ensure that the unique id's given by this allocator remain unique, notably by ensuring that
-     * they are deallocated with the right allocator and that id's are never changed
+     * **Warning:** No mechanism exists to ensure that the given ID isn't already in the pool. It is the caller's
+     * responsibility to ensure that the unique ID's given by this allocator remain unique, notably by ensuring that
+     * they are deallocated with the right allocator and that ID's are never changed
      *
      * @param value The ID to return
      * @throws {RangeError} If the given value isn't a positive integer, or is out of this allocator's range

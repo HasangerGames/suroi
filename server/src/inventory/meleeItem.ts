@@ -1,9 +1,8 @@
 import { InventoryItem } from "./inventoryItem";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type Player } from "../objects/player";
-import { vRotate } from "../../../common/src/utils/vector";
+import { vAdd, vRotate } from "../../../common/src/utils/vector";
 import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
-import { Vec2 } from "planck";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type GameObject } from "../types/gameObject";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -61,26 +60,27 @@ export class MeleeItem extends InventoryItem {
                 !owner.disconnected
             ) {
                 const rotated = vRotate(definition.offset, owner.rotation);
-                const position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+                const position = vAdd(owner.position, rotated);
                 const hitbox = new CircleHitbox(definition.radius, position);
 
                 // Damage the closest object
 
                 const damagedObjects: GameObject[] = [];
 
-                for (const object of this.owner.visibleObjects) {
+                const objects = owner.game.grid.intersectsRect(hitbox.toRectangle());
+
+                for (const object of objects) {
                     if (!object.dead && object !== owner && object.damageable) {
                         if (object.hitbox && hitbox.collidesWith(object.hitbox)) damagedObjects.push(object);
                     }
                 }
 
                 damagedObjects.sort((a: GameObject, b: GameObject): number => {
-                    if (a instanceof Obstacle && a.definition.noMeleeCollision) return 99;
-                    if (b instanceof Obstacle && b.definition.noMeleeCollision) return -99;
-                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-                    const distanceA = a.hitbox!.distanceTo(this.owner.hitbox).distance; const distanceB = b.hitbox!.distanceTo(this.owner.hitbox).distance;
+                    if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
+                    if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
-                    return distanceA - distanceB;
+                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+                    return a.hitbox!.distanceTo(this.owner.hitbox).distance - b.hitbox!.distanceTo(this.owner.hitbox).distance;
                 });
 
                 const targetLimit = Math.min(damagedObjects.length, definition.maxTargets);

@@ -9,16 +9,14 @@ import { ObjectDefinitionsList } from "./objectDefinitionsList";
 import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
-    OBJECT_CATEGORY_BITS,
-    type ObjectCategory,
+    OBJECT_CATEGORY_BITS, type ObjectCategory,
     PACKET_TYPE_BITS,
     type PacketType,
     VARIATION_BITS,
     PLAYER_NAME_MAX_LENGTH,
-    OBJECT_ID_BITS,
-    MAP_HEIGHT
+    OBJECT_ID_BITS
 } from "../constants";
-import { type Variation } from "../typings";
+import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
 
 export class SuroiBitStream extends BitStream {
@@ -183,8 +181,6 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a position Vector to the stream with the game default max and minimum X and Y.
-     * This is used to write positions from the server to the client.
-     * And the Y position is subtracted from the map height because phaser Y axis is inverted.
      * @param vector The Vector to write.
      */
     writePosition(vector: Vector): void {
@@ -193,13 +189,11 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Write a position Vector to the stream with the game default max and minimum X and Y.
-     * This is used to write positions from the server to the client.
-     * And the Y position is subtracted from the map height because phaser Y axis is inverted.
      * @param x The x-coordinate of the vector to write
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, MAP_HEIGHT - y, 0, 0, 1024, 1024, 16);
+        this.writeVector2(x, y, 0, 0, 1024, 1024, 16);
     }
 
     /**
@@ -252,17 +246,28 @@ export class SuroiBitStream extends BitStream {
      * @param mode The rotation mode (full, limited, binary, or none)
      * @return The rotation in radians.
      */
-    readObstacleRotation(mode: string): number {
+    readObstacleRotation(mode: string): { rotation: number, orientation: Orientation } {
+        let orientation: Orientation = 0;
+        let rotation = 0;
         switch (mode) {
             case "full":
-                return this.readRotation(4);
+                rotation = this.readRotation(4);
+                break;
             case "limited": // 4 possible orientations
-                return -normalizeAngle(this.readBits(2) * (Math.PI / 2));
+                orientation = this.readBits(2) as Orientation;
+                rotation = -normalizeAngle(orientation) * (Math.PI / 2);
+                break;
             case "binary": // 2 possible orientations
-                if (this.readBoolean()) return Math.PI / 2;
-                else return 0;
+                if (this.readBoolean()) {
+                    rotation = Math.PI / 2;
+                    orientation = 1;
+                }
+                break;
         }
-        return 0;
+        return {
+            rotation,
+            orientation
+        };
     }
 
     /**

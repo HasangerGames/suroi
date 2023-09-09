@@ -1,14 +1,7 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
-import {
-    ObjectCategory,
-    PLAYER_ACTIONS_BITS,
-    PacketType,
-    PlayerActions
-} from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type HealingAction } from "../../inventory/action";
 
 export class UpdatePacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -28,7 +21,6 @@ export class UpdatePacket extends SendingPacket {
         stream.writeBoolean(player.dirty.health || player.fullUpdate);
         stream.writeBoolean(player.dirty.adrenaline || player.fullUpdate);
         stream.writeBoolean(player.dirty.zoom || player.fullUpdate);
-        stream.writeBoolean(player.dirty.action || player.fullUpdate);
         stream.writeBoolean(player.dirty.activePlayerID || player.fullUpdate);
 
         const fullObjectsDirty = player.fullDirtyObjects.size !== 0;
@@ -42,9 +34,6 @@ export class UpdatePacket extends SendingPacket {
 
         const bulletsDirty = game.newBullets.size !== 0;
         stream.writeBoolean(bulletsDirty);
-
-        const deletedBulletsDirty = game.deletedBulletIDs.size !== 0;
-        stream.writeBoolean(deletedBulletsDirty);
 
         const explosionsDirty = game.explosions.size !== 0;
         stream.writeBoolean(explosionsDirty);
@@ -87,16 +76,6 @@ export class UpdatePacket extends SendingPacket {
             player.dirty.zoom = false;
         }
 
-        // Action
-        if (player.dirty.action || player.fullUpdate) {
-            player.dirty.action = false;
-            stream.writeBits(player.action ? player.action.type : PlayerActions.None, PLAYER_ACTIONS_BITS);
-
-            if (player.action?.type === PlayerActions.UseItem) {
-                stream.writeObjectTypeNoCategory((player.action as HealingAction).item);
-            }
-        }
-
         // Active player ID
         if (player.dirty.activePlayerID || player.fullUpdate) {
             stream.writeObjectID(player.id);
@@ -115,6 +94,17 @@ export class UpdatePacket extends SendingPacket {
         // Objects
         //
 
+        // Deleted objects
+        if (deletedObjectsDirty) {
+            stream.writeUint16(player.deletedObjects.size);
+
+            for (const deletedObject of player.deletedObjects) {
+                stream.writeObjectID(deletedObject.id);
+            }
+
+            player.deletedObjects.clear();
+        }
+
         // Full objects
         if (fullObjectsDirty) {
             stream.writeUint16(player.fullDirtyObjects.size);
@@ -122,7 +112,6 @@ export class UpdatePacket extends SendingPacket {
             for (const fullObject of player.fullDirtyObjects) {
                 stream.writeObjectType(fullObject.type);
                 stream.writeObjectID(fullObject.id);
-                fullObject.serializePartial(stream);
                 fullObject.serializeFull(stream);
             }
             player.fullDirtyObjects.clear();
@@ -139,33 +128,16 @@ export class UpdatePacket extends SendingPacket {
             player.partialDirtyObjects.clear();
         }
 
-        // Deleted objects
-        if (deletedObjectsDirty) {
-            stream.writeUint16(player.deletedObjects.size);
-
-            for (const deletedObject of player.deletedObjects) {
-                stream.writeObjectID(deletedObject.id);
-            }
-
-            player.deletedObjects.clear();
-        }
-
         // Bullets
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeUint8(bullet.id);
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.definition.idString));
+                stream.writeObjectType(bullet.source);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
-            }
-        }
-
-        // Deleted bullets
-        if (deletedBulletsDirty) {
-            stream.writeUint8(game.deletedBulletIDs.size);
-            for (const bulletID of game.deletedBulletIDs) {
-                stream.writeUint8(bulletID);
+                stream.writeFloat(bullet.variance, 0, 1, 4);
+                stream.writeBits(bullet.reflectionCount, 2);
+                stream.writeObjectID(bullet.sourceID);
             }
         }
 

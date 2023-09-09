@@ -1,7 +1,6 @@
 // noinspection ES6PreferShortImport
 import { Config, SpawnMode } from "./config";
 
-import { Fixture, Settings, Vec2, World } from "planck";
 import type { WebSocket } from "uWebSockets.js";
 
 import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
@@ -10,32 +9,31 @@ import { Gas } from "./gas";
 
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
-import { removeFrom, v2v } from "./utils/misc";
+import { removeFrom } from "./utils/misc";
 
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, SERVER_GRID_SIZE } from "../../common/src/constants";
+import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet, DamageRecord } from "./objects/bullet";
+import { Bullet, type ServerBulletOptions, type DamageRecord } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { Loot } from "./objects/loot";
 import { IDAllocator } from "./utils/idAllocator";
-import { Obstacle } from "./objects/obstacle";
-import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
-import { Building } from "./objects/building";
+import { Grid } from "./utils/grid";
+import { Maps } from "./data/maps";
 
 export class Game {
     readonly _id: number;
@@ -49,9 +47,6 @@ export class Game {
      */
     private readonly mapPacketStream: SuroiBitStream;
 
-    readonly _world: World;
-    get world(): World { return this._world; }
-
     /**
      * The value of `Date.now()`, as of the start of the tick.
      */
@@ -62,12 +57,7 @@ export class Game {
      * A Set of all the static objects in the world
      */
     readonly staticObjects = new Set<GameObject>();
-    /**
-     * A Set of all the dynamic (moving) objects in the world
-     */
-    readonly dynamicObjects = new Set<GameObject>();
-    readonly visibleObjects: Record<number, Record<number, Record<number, Set<GameObject>>>> = {};
-    updateObjects = false;
+    readonly grid: Grid;
 
     aliveCountDirty = false;
 
@@ -90,11 +80,6 @@ export class Game {
      * All bullets created this tick
      */
     readonly newBullets = new Set<Bullet>();
-    readonly deletedBulletIDs = new Set<number>();
-    /**
-     * All records of damage by bullets this tick
-     */
-    readonly damageRecords = new Set<DamageRecord>();
 
     /**
      * All kill feed messages this tick
@@ -112,77 +97,13 @@ export class Game {
 
     tickTimes: number[] = [];
 
+    tickDelta = 1000 / TICK_SPEED;
+
     constructor(id: number) {
         this._id = id;
 
-        this._world = new World({ gravity: Vec2(0, 0) }); // Create the Planck.js World
-        Settings.maxLinearCorrection = 0; // Prevents collision jitter
-        Settings.maxTranslation = 12.5; // Allows bullets to travel fast
-
-        // Collision filtering code:
-        // - Players should collide with obstacles, but not with each other or with loot.
-        // - Bullets should collide with players and obstacles, but not with each other or with loot.
-        // - Loot should only collide with obstacles and other loot.
-        Fixture.prototype.shouldCollide = function(that: Fixture): boolean {
-            // Get the objects
-            const thisObject = this.getUserData() as GameObject;
-            const thatObject = that.getUserData() as GameObject;
-
-            // Check if they should collide
-            if (thisObject.is.player) return thatObject.collidesWith.player;
-            else if (thisObject.is.obstacle) return thatObject.collidesWith.obstacle;
-            else if (thisObject.is.bullet) return thatObject.collidesWith.bullet;
-            else if (thisObject.is.loot) return thatObject.collidesWith.loot;
-            else return false;
-        };
-
-        // If maxLinearCorrection is set to 0, player collisions work perfectly, but loot doesn't spread out.
-        // If maxLinearCorrection is greater than 0, loot spreads out, but player collisions are jittery.
-        // This code solves the dilemma by setting maxLinearCorrection to the appropriate value for the object.
-        this.world.on("pre-solve", contact => {
-            const objectA = contact.getFixtureA().getUserData() as GameObject;
-            const objectB = contact.getFixtureB().getUserData() as GameObject;
-            if (objectA.is.loot || objectB.is.loot) Settings.maxLinearCorrection = 0.06;
-            else Settings.maxLinearCorrection = 0;
-        });
-
-        // this return type is technically not true, but it gets typescript to shut up
-        const isValidBullet = (object: unknown): object is Bullet => object instanceof Bullet && object.distanceSquared <= object.maxDistanceSquared && !object.dead;
-
-        // Handle bullet collisions
-        this.world.on("begin-contact", contact => {
-            const objectA = contact.getFixtureA().getUserData();
-            const objectB = contact.getFixtureB().getUserData();
-
-            let bullet: Bullet | undefined;
-            let target: GameObject | undefined;
-
-            if (isValidBullet(objectA)) [bullet, target] = [objectA, objectB as GameObject];
-            if (isValidBullet(objectB)) [bullet, target] = [objectB, objectA as GameObject];
-
-            if (bullet && target) {
-                /*
-                    fixme This is broken right now, and it's not clear why
-                */
-                // const penetration = bullet.source.ballistics.penetration;
-                // if (
-                //     !(penetration?.players === true && target instanceof Player) &&
-                //     !(penetration?.obstacles === true && target instanceof Obstacle)
-                // ) {
-                // Delete the bullet
-                let deleteBullet = true;
-                // }
-
-                // Obstacles with noCollisions like bushes
-                if (target instanceof Obstacle && target.definition.noCollisions) deleteBullet = false;
-
-                bullet.dead = deleteBullet;
-
-                this.damageRecords.add(new DamageRecord(target, bullet.shooter, bullet, deleteBullet));
-            }
-        });
-
         // Generate map
+        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height, 16);
         this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);
@@ -194,7 +115,7 @@ export class Game {
         this.allowJoin = true;
 
         // Start the tick loop
-        this.tick(30);
+        this.tick(TICK_SPEED);
     }
 
     tick(delay: number): void {
@@ -203,53 +124,26 @@ export class Game {
 
             if (this.stopped) return;
 
-            // Update loot positions
+            // Update loots
             for (const loot of this.loot) {
-                if (loot.oldPosition.x !== loot.position.x || loot.oldPosition.y !== loot.position.y) {
-                    this.partialDirtyObjects.add(loot);
-                }
-                loot.oldPosition = vClone(loot.position);
+                loot.update();
             }
 
             // Update bullets
+            let records: DamageRecord[] = [];
             for (const bullet of this.bullets) {
-                if (bullet.distanceSquared >= bullet.maxDistanceSquared) {
-                    if (!bullet.dead) this.removeBullet(bullet);
-                    // Note: Bullets that pass their maximum distance are automatically deleted by the client,
-                    // so there's no need to add them to the list of deleted bullets
-                }
+                records = records.concat(bullet.update());
+
+                if (bullet.dead) this.bullets.delete(bullet);
             }
 
-            // Do damage to objects hit by bullets
-            for (const damageRecord of this.damageRecords) {
-                const bullet = damageRecord.bullet;
-                const [damagedIsPlayer, damagedIsObstacle] = [damageRecord.damaged instanceof Player, damageRecord.damaged instanceof Obstacle];
-
-                // Delete the bullet
-                // fixme broken rn
-                // const penetration = bullet.source.ballistics.penetration;
-                // if (
-                //     !(penetration?.players === true && damagedIsPlayer) &&
-                //     !(penetration?.obstacles === true && damagedIsObstacle)
-                // ) {
-                if (damageRecord.deleteBullet) {
-                    this.removeBullet(bullet);
-                    this.deletedBulletIDs.add(bullet.id);
-                }
-                // }
-
-                // Bullets from dead players should not deal damage
-                if (bullet.shooter.dead) continue;
-
-                // Do the damage
-                const definition = bullet.source.definition.ballistics;
-                if (damagedIsPlayer) {
-                    (damageRecord.damaged as Player).damage(definition.damage, damageRecord.damager, bullet.source);
-                } else if (damagedIsObstacle) {
-                    (damageRecord.damaged as Obstacle).damage?.(definition.damage * definition.obstacleMultiplier, damageRecord.damager, bullet.source.type);
-                }
+            // Do the damage after updating all bullets
+            // This is to make sure bullets that hit the same object on the same tick will die so they don't de-sync with the client
+            // Example: a shotgun insta killing a crate, in the client all bullets will hit the crate
+            // while on the server, without this, some bullets won't because the first bullets will kill the crate
+            for (const { object, damage, source, weapon, position } of records) {
+                object.damage(damage, source, weapon, position);
             }
-            this.damageRecords.clear();
 
             // Handle explosions
             for (const explosion of this.explosions) {
@@ -259,91 +153,9 @@ export class Game {
             // Update gas
             this.gas.tick();
 
-            // Update physics
-            this.world.step(30);
-
             // First loop over players: Movement, animations, & actions
             for (const player of this.livingPlayers) {
-                // This system allows opposite movement keys to cancel each other out.
-                const movement = v(0, 0);
-
-                if (player.isMobile && player.movement.moving) {
-                    movement.x = Math.cos(player.movement.angle) * 1.45;
-                    movement.y = -Math.sin(player.movement.angle) * 1.45;
-                } else {
-                    if (player.movement.up) movement.y++;
-                    if (player.movement.down) movement.y--;
-                    if (player.movement.left) movement.x--;
-                    if (player.movement.right) movement.x++;
-                }
-
-                if (movement.x * movement.y !== 0) { // If the product is non-zero, then both of the components must be non-zero
-                    movement.x *= Math.SQRT1_2;
-                    movement.y *= Math.SQRT1_2;
-                }
-
-                /*if (this.emotes.size > 0) {
-                    player.fast = !player.fast;
-                    if (player.fast) {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "hasanger");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
-                    } else {
-                        player.loadout.skin = ObjectType.fromString(ObjectCategory.Loot, "debug");
-                        player.fullDirtyObjects.add(player);
-                        this.fullDirtyObjects.add(player);
-                    }
-                }
-                if (player.fast) speed *= 30;*/
-
-                const speed = player.calculateSpeed();
-                player.setVelocity(movement.x * speed, movement.y * speed);
-
-                if (player.isMoving || player.turning) {
-                    player.disableInvulnerability();
-                    this.partialDirtyObjects.add(player);
-                }
-
-                // Drain adrenaline
-                if (player.adrenaline > 0) {
-                    player.adrenaline -= 0.015;
-                }
-
-                // Regenerate health
-                if (player.adrenaline >= 87.5) player.health += 0.082; // 2.75 / 33.3
-                else if (player.adrenaline >= 50) player.health += 0.0638; // 2.125 / 33.3
-                else if (player.adrenaline >= 25) player.health += 0.0337; // 1.125 / 33.3
-                else if (player.adrenaline > 0) player.health += 0.0187; // 0.625 / 33.3
-
-                // Shoot gun/use melee
-                if (player.startedAttacking) {
-                    player.startedAttacking = false;
-                    player.disableInvulnerability();
-                    player.activeItem?.useItem();
-                }
-
-                // Gas damage
-                if (this.gas.doDamage && this.gas.isInGas(player.position)) {
-                    player.piercingDamage(this.gas.dps, "gas");
-                }
-
-                let isInsideBuilding = false;
-                for (const object of player.nearObjects) {
-                    if (object instanceof Building && !object.dead) {
-                        if (object.scopeHitbox.collidesWith(player.hitbox)) {
-                            isInsideBuilding = true;
-                            break;
-                        }
-                    }
-                }
-                if (isInsideBuilding && !player.isInsideBuilding) {
-                    player.zoom = 48;
-                } else if (!player.isInsideBuilding) {
-                    player.zoom = player.inventory.scope.definition.zoomLevel;
-                }
-                player.isInsideBuilding = isInsideBuilding;
-
-                player.turning = false;
+                player.update();
             }
 
             // Second loop over players: calculate visible objects & send updates
@@ -351,9 +163,7 @@ export class Game {
                 if (!player.joined) continue;
 
                 // Calculate visible objects
-                if (player.movesSinceLastUpdate > 8 || this.updateObjects) {
-                    player.updateVisibleObjects();
-                }
+                player.updateVisibleObjects();
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
@@ -408,17 +218,15 @@ export class Game {
             this.partialDirtyObjects.clear();
             this.deletedObjects.clear();
             this.newBullets.clear();
-            this.deletedBulletIDs.clear();
             this.explosions.clear();
             this.emotes.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
-            this.updateObjects = false;
 
             for (const player of this.livingPlayers) {
-                player.hitEffect = false;
+                player.dirty.action = false;
             }
 
             // Winning logic
@@ -454,21 +262,21 @@ export class Game {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
                 log(`Game #${this._id} average ms/tick: ${mspt}`, true);
-                log(`Load: ${((mspt / 30) * 100).toFixed(1)}%`);
+                log(`Load: ${((mspt / TICK_SPEED) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, 30 - tickTime));
+            this.tick(Math.max(0, TICK_SPEED - tickTime));
         }, delay);
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
-        let spawnPosition = Vec2(0, 0);
+        let spawnPosition = v(0, 0);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
                 let foundPosition = false;
                 while (!foundPosition) {
-                    spawnPosition = v2v(this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player)));
+                    spawnPosition = this.map.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Player));
                     if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) foundPosition = true;
                 }
                 break;
@@ -478,7 +286,7 @@ export class Game {
                 break;
             }
             case SpawnMode.Radius: {
-                spawnPosition = v2v(randomPointInsideCircle(Config.spawn.position, Config.spawn.radius));
+                spawnPosition = randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
                 break;
             }
         }
@@ -494,13 +302,11 @@ export class Game {
         game.livingPlayers.add(player);
         game.spectatablePlayers.push(player);
         game.connectedPlayers.add(player);
-        game.dynamicObjects.add(player);
+        game.grid.addObject(player);
         game.fullDirtyObjects.add(player);
-        game.updateObjects = true;
         game.aliveCountDirty = true;
         game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
-        player.updateVisibleObjects();
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendData(this.mapPacketStream);
@@ -517,24 +323,6 @@ export class Game {
         }
     }
 
-    /**
-     * Get the visible objects at a given position and zoom level
-     * @param position The position
-     * @param zoom The zoom level, defaults to 48
-     * @returns A set with the visible game objects at the given position and zoom level
-     * @throws {Error} If the zoom level is invalid
-     */
-    getVisibleObjects(position: Vector, zoom = 48): Set<GameObject> {
-        if (this.visibleObjects[zoom] === undefined) throw new Error(`Invalid zoom level: ${zoom}`);
-        // return an empty set if the position is out of bounds
-        if (position.x < 0 || position.x > this.map.width ||
-            position.y < 0 || position.y > this.map.height) return new Set();
-        /* eslint-disable no-unexpected-multiline */
-        return this.visibleObjects[zoom]
-            [Math.round(position.x / SERVER_GRID_SIZE) * SERVER_GRID_SIZE]
-            [Math.round(position.y / SERVER_GRID_SIZE) * SERVER_GRID_SIZE];
-    }
-
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
@@ -547,13 +335,7 @@ export class Game {
         removeFrom(this.spectatablePlayers, player);
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
-            this.dynamicObjects.delete(player);
             this.removeObject(player);
-            try {
-                this.world.destroyBody(player.body);
-            } catch (e) {
-                console.error("Error destroying player body. Details: ", e);
-            }
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
@@ -578,33 +360,28 @@ export class Game {
         }
         try {
             player.socket.close();
-        } catch (e) {}
+        } catch (e) { }
     }
 
     addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
         const loot = new Loot(this, type, position, count);
         this.loot.add(loot);
-        this.dynamicObjects.add(loot);
-        this.fullDirtyObjects.add(loot);
-        this.updateObjects = true;
+        this.grid.addObject(loot);
         return loot;
     }
 
     removeLoot(loot: Loot): void {
         loot.dead = true;
         this.loot.delete(loot);
-        this.dynamicObjects.delete(loot);
-        this.world.destroyBody(loot.body);
         this.removeObject(loot);
     }
 
-    addBullet(position: Vec2, rotation: number, source: GunItem, shooter: Player): Bullet {
+    addBullet(source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions): Bullet {
         const bullet = new Bullet(
             this,
-            position,
-            rotation,
             source,
-            shooter
+            shooter,
+            options
         );
         this.bullets.add(bullet);
         this.newBullets.add(bullet);
@@ -612,18 +389,8 @@ export class Game {
         return bullet;
     }
 
-    /**
-     * Delete a bullet and give the id back to the allocator
-     * @param bullet The bullet to delete
-     */
-    removeBullet(bullet: Bullet): void {
-        this.bulletIDAllocator.give(bullet.id);
-        this.world.destroyBody(bullet.body);
-        this.bullets.delete(bullet);
-    }
-
-    addExplosion(type: ObjectType<ObjectCategory.Explosion, ExplosionDefinition>, position: Vector, source: GameObject): Explosion {
-        const explosion = new Explosion(this, type, position, source);
+    addExplosion(type: string, position: Vector, source: GameObject): Explosion {
+        const explosion = new Explosion(this, ObjectType.fromString(ObjectCategory.Explosion, type), position, source);
         this.explosions.add(explosion);
         return explosion;
     }
@@ -633,8 +400,8 @@ export class Game {
      * @param object The object to delete
      */
     removeObject(object: GameObject): void {
+        this.grid.removeObject(object);
         this.idAllocator.give(object.id);
-        this.updateObjects = true;
     }
 
     get aliveCount(): number {
@@ -645,11 +412,5 @@ export class Game {
 
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
-    }
-
-    bulletIDAllocator = new IDAllocator(8);
-
-    get nextBulletID(): number {
-        return this.bulletIDAllocator.takeNext();
     }
 }

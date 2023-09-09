@@ -1,90 +1,108 @@
-import { type Body, Circle, Vec2 } from "planck";
-
 import { type Game } from "../game";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
-import { v2v } from "../utils/misc";
+import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
-import { randomRotation } from "../../../common/src/utils/random";
+import { v, vAdd, vMul, type Vector, vClone } from "../../../common/src/utils/vector";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, LootRadius, type ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, TICK_SPEED, ObjectCategory } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { Obstacle } from "./obstacle";
+import { angleBetween, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
+import { randomRotation } from "../../../common/src/utils/random";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Loot extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: true
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: false,
-        loot: true
-    };
-
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
 
-    body: Body;
+    declare readonly hitbox: CircleHitbox;
 
-    oldPosition: Vector;
+    oldPosition = v(0, 0);
 
     count = 1;
 
     isNew = true;
 
+    velocity = v(0, 0);
+
+    get position(): Vector {
+        return this.hitbox.position;
+    }
+
+    set position(pos: Vector) {
+        this.hitbox.position = pos;
+    }
+
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
 
-        this.oldPosition = position;
+        this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], vClone(position));
+        this.oldPosition = this._position;
+
         if (count !== undefined) this.count = count;
 
-        // Create the body and hitbox
-        this.body = game.world.createBody({
-            type: "dynamic",
-            position: v2v(position),
-            linearDamping: 0.003,
-            angularDamping: 0,
-            fixedRotation: true
-        });
-
-        const radius = LootRadius[this.type.definition.itemType];
-
-        this.body.createFixture({
-            shape: Circle(radius),
-            restitution: 0,
-            density: 1.0,
-            friction: 0.0,
-            userData: this
-        });
-        this.hitbox = new CircleHitbox(radius, this.position);
-
-        // Push the loot in a random direction
-        this.push(randomRotation(), 0.005);
+        this.push(randomRotation(), 1);
 
         setTimeout((): void => { this.isNew = false; }, 100);
     }
 
-    get position(): Vector {
-        return this.body.getPosition();
+    update(): void {
+        if (distanceSquared(this.oldPosition, this.position) > 0.0001) {
+            this.game.partialDirtyObjects.add(this);
+            this.oldPosition = vClone(this.position);
+        }
+
+        if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
+            this.velocity = vMul(this.velocity, 0.9);
+            const velocity = vMul(this.velocity, 1 / TICK_SPEED);
+            this.game.grid.removeObject(this);
+            this.position = vAdd(this.position, velocity);
+            this.game.grid.addObject(this);
+        }
+
+        this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
+        this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
+
+        const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        for (const object of objects) {
+            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
+                this.hitbox.resolveCollision(object.hitbox);
+            }
+
+            if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
+                const dist = distance(object.position, this.position);
+
+                if (this.hitbox.radius - object.hitbox.radius - 0.5 < dist) {
+                    this.push(angleBetween(object.position, this.position), -0.3);
+                }
+
+                const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
+                const vecCollisionNorm = v(vecCollision.x / dist, vecCollision.y / dist);
+                const vRelativeVelocity = v(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+
+                const speed = vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y;
+
+                if (speed < 0) continue;
+
+                this.velocity.x -= (speed * vecCollisionNorm.x);
+                this.velocity.y -= (speed * vecCollisionNorm.y);
+                object.velocity.x += (speed * vecCollisionNorm.x);
+                object.velocity.y += (speed * vecCollisionNorm.y);
+            }
+        }
     }
 
-    get rotation(): number {
-        const angle = this.body.getAngle();
-        return Math.atan2(Math.cos(angle), Math.sin(angle));
+    push(angle: number, velocity: number): void {
+        this.velocity = vAdd(this.velocity, velFromAngle(angle, velocity));
     }
 
     canInteract(player: Player): boolean {
@@ -93,8 +111,6 @@ export class Loot extends GameObject {
         const definition = this.type.definition;
 
         switch (definition.itemType) {
-            // average ESLint L
-            // eslint-disable-next-line no-fallthrough
             case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
@@ -164,15 +180,15 @@ export class Loot extends GameObject {
                 const currentCount = inventory.items[idString];
                 const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
 
-                if (currentCount + this.count <= maxCapacity) {
-                    inventory.items[idString] += this.count;
-                } else if (currentCount + 1 > maxCapacity) {
-                    // inventory full
-                } else if (currentCount + this.count > maxCapacity) {
-                    inventory.items[idString] = maxCapacity;
-                    this.count = (currentCount + this.count) - maxCapacity;
-                    this.game.fullDirtyObjects.add(this);
-                    deleteItem = false;
+                if (currentCount + 1 <= maxCapacity) {
+                    if (currentCount + this.count <= maxCapacity) {
+                        inventory.items[idString] += this.count;
+                    } else if (currentCount + this.count > maxCapacity) {
+                        inventory.items[idString] = maxCapacity;
+                        this.count = (currentCount + this.count) - maxCapacity;
+                        this.game.fullDirtyObjects.add(this);
+                        deleteItem = false;
+                    }
                 }
                 break;
             }
@@ -242,20 +258,22 @@ export class Loot extends GameObject {
         }
     }
 
-    push(angle: number, velocity: number): void {
-        const vel = this.body.getLinearVelocity();
-        this.body.setLinearVelocity(vel.add(Vec2(Math.cos(angle), -Math.sin(angle)).mul(velocity)));
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    override damage(amount: number, source?: GameObject): void {}
+    override damage(amount: number, source?: GameObject): void { }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
+        ObjectSerializations[ObjectCategory.Loot].serializePartial(stream, {
+            position: this.position,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writeBits(this.count, 9);
-        stream.writeBoolean(this.isNew);
+        ObjectSerializations[ObjectCategory.Loot].serializeFull(stream, {
+            position: this.position,
+            count: this.count,
+            isNew: this.isNew,
+            fullUpdate: true
+        });
     }
 }

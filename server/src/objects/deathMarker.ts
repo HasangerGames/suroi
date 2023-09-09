@@ -1,25 +1,12 @@
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../common/src/constants";
 import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class DeathMarker extends GameObject {
-    readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
-    readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
     player: Player;
     isNew = true;
 
@@ -31,14 +18,21 @@ export class DeathMarker extends GameObject {
     }
 
     /* eslint-disable @typescript-eslint/no-empty-function */
-    override damage(amount: number, source: GameObject): void {}
+    override damage(amount: number, source: GameObject): void { }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
+        ObjectSerializations[ObjectCategory.DeathMarker].serializePartial(stream, {
+            position: this.position,
+            player: {
+                isDev: this.player.isDev,
+                name: this.player.name,
+                nameColor: this.player.nameColor
+            },
+            isNew: this.isNew
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePlayerNameWithColor(this.player);
-        stream.writeBoolean(this.isNew);
+        this.serializePartial(stream);
     }
 }

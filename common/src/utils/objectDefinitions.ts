@@ -5,10 +5,15 @@
 export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readonly bitCount: number;
     readonly definitions: T[];
+    readonly idStringToNumber: Record<string, number> = {};
 
     constructor(definitions: T[]) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
         this.definitions = definitions;
+
+        for (let i = 0; i < definitions.length; i++) {
+            this.idStringToNumber[definitions[i].idString] = i;
+        }
     }
 }
 
@@ -27,6 +32,34 @@ export enum ItemType {
     Backpack,
     Scope,
     Skin
+}
+
+export const LootRadius: Record<ItemType, number> = {
+    [ItemType.Gun]: 3.4,
+    [ItemType.Ammo]: 2,
+    [ItemType.Melee]: 3,
+    [ItemType.Healing]: 2.5,
+    [ItemType.Armor]: 3,
+    [ItemType.Backpack]: 3,
+    [ItemType.Scope]: 3,
+    [ItemType.Skin]: 3
+};
+
+export interface BulletDefinition {
+    readonly damage: number
+    readonly obstacleMultiplier: number
+    readonly speed: number
+    readonly maxDistance: number
+    // fixme doesn't work right now
+    readonly penetration?: {
+        readonly players?: boolean
+        readonly obstacles?: boolean
+    }
+    readonly tracerOpacity?: number
+    readonly tracerWidth?: number
+    readonly tracerLength?: number
+    readonly variance?: number
+    readonly shrapnel?: boolean
 }
 
 export interface WearerAttributes {
@@ -90,7 +123,7 @@ export interface ItemDefinition extends ObjectDefinition {
             /**
              * These attributes are applied whenever the player gets a kill
              */
-            readonly kill?: {
+            readonly kill?: Array<{
                 /**
                  * The upper limit after which this effect is no longer reapplied
                  */
@@ -103,11 +136,11 @@ export interface ItemDefinition extends ObjectDefinition {
                  * A fixed amount of adrenaline restored
                  */
                 readonly adrenalineRestored?: number
-            } & WearerAttributes
+            } & WearerAttributes>
             /**
              * These attributs are applied whenever the player deals damage
              */
-            readonly damageDealt?: {
+            readonly damageDealt?: Array<{
                 /**
                  * The upper limit after which this effect is no longer reapplied
                  */
@@ -120,7 +153,7 @@ export interface ItemDefinition extends ObjectDefinition {
                  * A fixed amount of adrenaline restored
                  */
                 readonly adrenalineRestored?: number
-            } & WearerAttributes
+            } & WearerAttributes>
         }
     }
 }

@@ -1,5 +1,5 @@
-import { Vec2 } from "planck";
-import { MAP_HEIGHT, MAP_WIDTH } from "../../common/src/constants";
+import { Maps } from "./data/maps";
+import { type Vector, v } from "../../common/src/utils/vector";
 
 export enum SpawnMode { Random, Radius, Fixed }
 export enum GasMode { Normal, Debug, Disabled }
@@ -37,10 +37,10 @@ export interface ConfigType {
         readonly mode: SpawnMode.Random
     } | {
         readonly mode: SpawnMode.Fixed
-        readonly position: Vec2
+        readonly position: Vector
     } | {
         readonly mode: SpawnMode.Radius
-        readonly position: Vec2
+        readonly position: Vector
         readonly radius: number
     }
 
@@ -122,9 +122,14 @@ export const Config = {
         certFile: ""
     },
 
-    movementSpeed: 0.028,
+    movementSpeed: 0.77,
 
-    spawn: { mode: SpawnMode.Fixed, position: Vec2(MAP_WIDTH / 2, MAP_HEIGHT / 2) },
+    spawn: {
+        mode: SpawnMode.Fixed,
+        get position() {
+            return v(Maps[Config.mapName].width / 2, Maps[Config.mapName].height / 2);
+        }
+    },
 
     playerLimit: 80,
 

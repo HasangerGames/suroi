@@ -1,15 +1,13 @@
-import { type Body, Box, Circle, type Shape, Vec2 } from "planck";
-
 import { type Game } from "../game";
 
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 import { type LootItem, getLootTableLoot } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { angleBetween, calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
+import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Orientation, type Variation } from "../../../common/src/typings";
@@ -17,37 +15,23 @@ import { LootTables } from "../data/lootTables";
 import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { Player } from "./player";
 import { type Building } from "./building";
 import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Obstacle extends GameObject {
-    override readonly is: CollisionFilter = {
-        player: false,
-        obstacle: true,
-        bullet: false,
-        loot: false
-    };
-
-    override readonly collidesWith: CollisionFilter = {
-        player: true,
-        obstacle: false,
-        bullet: true,
-        loot: true
-    };
-
-    readonly damageable = true;
-
     health: number;
     maxHealth: number;
     maxScale: number;
     healthFraction = 1;
 
+    readonly damageable = true;
+    collidable: boolean;
+
     variation: Variation;
 
-    body: Body;
     spawnHitbox: Hitbox;
 
     loot: LootItem[] = [];
@@ -67,7 +51,7 @@ export class Obstacle extends GameObject {
 
     parentBuilding?: Building;
 
-    hitEffect = 0;
+    hitbox: Hitbox;
 
     constructor(
         game: Game,
@@ -104,20 +88,7 @@ export class Obstacle extends GameObject {
 
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
 
-        this.body = this.game.world.createBody({
-            type: "static",
-            fixedRotation: true
-        });
-
-        if (this.hitbox instanceof ComplexHitbox) {
-            for (const hitBox of this.hitbox.hitBoxes) this.createFixture(hitBox);
-        } else {
-            this.createFixture(this.hitbox);
-        }
-
-        if (this.hitbox instanceof CircleHitbox) {
-            this.body.setPosition(Vec2(this.position));
-        }
+        this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.type.idString];
@@ -136,7 +107,8 @@ export class Obstacle extends GameObject {
                 this.game.addLoot(
                     ObjectType.fromString(ObjectCategory.Loot, item.idString),
                     this.position,
-                    item.count);
+                    item.count
+                );
             }
         }
 
@@ -154,30 +126,8 @@ export class Obstacle extends GameObject {
         }
     }
 
-    private createFixture(hitbox: Hitbox): void {
-        if (hitbox instanceof CircleHitbox) {
-            this.body.createFixture({
-                shape: Circle(hitbox.radius * this.scale),
-                userData: this,
-                isSensor: this.definition.noCollisions
-            });
-        } else if (hitbox instanceof RectangleHitbox) {
-            const width = hitbox.width / 2;
-            const height = hitbox.height / 2;
-            this.body.createFixture({
-                shape: Box(width, height, Vec2(hitbox.min.x + width, hitbox.min.y + height)),
-                userData: this,
-                isSensor: this.definition.noCollisions
-            });
-        }
-    }
-
-    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem): void {
+    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem, position?: Vector): void {
         const definition = this.definition;
-
-        this.hitEffect++;
-        this.hitEffect %= 8;
-        this.game.partialDirtyObjects.add(this);
 
         if (this.health === 0 || definition.indestructible) return;
 
@@ -190,44 +140,42 @@ export class Obstacle extends GameObject {
         }
 
         this.health -= amount;
+        this.game.partialDirtyObjects.add(this);
 
         if (this.health <= 0 || this.dead) {
             this.health = 0;
             this.dead = true;
 
+            if (!this.definition.isWindow) this.collidable = false;
+
             this.scale = definition.scale.spawnMin;
 
             if (definition.explosion !== undefined) {
-                this.game.addExplosion(
-                    ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, definition.explosion),
-                    this.position,
-                    source
-                );
+                this.game.addExplosion(definition.explosion, this.position, source);
             }
 
             for (const item of this.loot) {
-                const position = vAdd(this.position, this.lootSpawnOffset);
-                this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), position, item.count);
+                const lootPos = vAdd(this.loot.length > 1 ? this.hitbox.randomPoint() : this.position, this.lootSpawnOffset);
+                const loot = this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), lootPos, item.count);
+                if (source.position !== undefined || position !== undefined) {
+                    loot.push(angleBetween(this.position, position ?? source.position), 7);
+                }
             }
 
             if (this.definition.isWall) {
                 this.parentBuilding?.damage();
 
-                // a bit of a hack to break doors attached to walls :)
-                for (const object of this.game.getVisibleObjects(this.position)) {
-                    if (object instanceof Obstacle &&
+                // hack a bit of a hack to break doors attached to walls :)
+                for (const object of this.game.grid.intersectsRect(this.hitbox.toRectangle())) {
+                    if (
+                        object instanceof Obstacle &&
                         object.definition.isDoor &&
                         object.door?.openHitbox &&
-                        this.hitbox?.collidesWith(object.door.openHitbox)) {
+                        this.hitbox?.collidesWith(object.door.openHitbox)
+                    ) {
                         object.damage(9999, source, weaponUsed);
                     }
                 }
-            }
-
-            if (this.definition.isWindow) {
-                this.collidesWith.bullet = false;
-            } else {
-                this.game.world.destroyBody(this.body);
             }
         } else {
             this.healthFraction = this.health / this.maxHealth;
@@ -251,21 +199,6 @@ export class Obstacle extends GameObject {
                 );
                 this.hitbox.min = rotatedRect.min;
                 this.hitbox.max = rotatedRect.max;
-                this.hitbox.width = this.hitbox.max.x - this.hitbox.min.x;
-                this.hitbox.height = this.hitbox.max.y - this.hitbox.min.y;
-            }
-
-            // Transform the Planck.js Body
-            if (this.body !== null) {
-                const shape = this.body.getFixtureList()?.getShape() as Shape & { m_vertices: Vec2[] };
-                if (this.hitbox instanceof CircleHitbox) {
-                    shape.m_radius = shape.m_radius * scaleFactor;
-                } else if (this.hitbox instanceof RectangleHitbox) {
-                    // copium >:(
-                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
-                    this.body.destroyFixture(this.body.getFixtureList()!);
-                    this.createFixture(this.hitbox);
-                }
             }
 
             // Punch doors to open
@@ -279,24 +212,24 @@ export class Obstacle extends GameObject {
             throw new Error("Door with non-rectangular hitbox");
         }
 
-        let isOnOtherSide = false;
-        switch (this.rotation) {
-            case 0:
-                isOnOtherSide = player.position.y > this.position.y;
-                break;
-            case 1:
-                isOnOtherSide = player.position.x < this.position.x;
-                break;
-            case 2:
-                isOnOtherSide = player.position.y < this.position.y;
-                break;
-            case 3:
-                isOnOtherSide = player.position.x > this.position.x;
-                break;
-        }
-
+        this.game.grid.removeObject(this);
         this.door.open = !this.door.open;
         if (this.door.open) {
+            let isOnOtherSide = false;
+            switch (this.rotation) {
+                case 0:
+                    isOnOtherSide = player.position.y < this.position.y;
+                    break;
+                case 1:
+                    isOnOtherSide = player.position.x < this.position.x;
+                    break;
+                case 2:
+                    isOnOtherSide = player.position.y > this.position.y;
+                    break;
+                case 3:
+                    isOnOtherSide = player.position.x > this.position.x;
+                    break;
+            }
             if (isOnOtherSide) {
                 this.door.offset = 3;
                 this.hitbox = this.door.openAltHitbox.clone();
@@ -308,74 +241,31 @@ export class Obstacle extends GameObject {
             this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
         }
-
-        // When pushing, ensure that they won't get stuck in the door.
-        // If they do, move them to the opposite side regardless of their current position.
-        // TODO Find a cleaner way to do this if possible
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        const hitbox = this.hitbox as RectangleHitbox;
-        if (player?.hitbox.collidesWith(hitbox)) {
-            const newPosition = player.position.clone();
-            const radius: number = player.hitbox.radius;
-            if (isOnOtherSide) {
-                switch (this.rotation) {
-                    case 0:
-                        newPosition.y = hitbox.max.y + radius;
-                        break;
-                    case 1:
-                        newPosition.x = hitbox.min.x - radius;
-                        break;
-                    case 2:
-                        newPosition.y = hitbox.min.y - radius;
-                        break;
-                    case 3:
-                        newPosition.x = hitbox.max.x + radius;
-                        break;
-                }
-            } else {
-                switch (this.rotation) {
-                    case 0:
-                        newPosition.y = hitbox.min.y - radius;
-                        break;
-                    case 1:
-                        newPosition.x = hitbox.max.x + radius;
-                        break;
-                    case 2:
-                        newPosition.y = hitbox.max.y + radius;
-                        break;
-                    case 3:
-                        newPosition.x = hitbox.min.x - radius;
-                        break;
-                }
-            }
-            player.body.setPosition(newPosition);
-        }
-
-        // Destroy the old fixture
-        // eslint moment
-        // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain,@typescript-eslint/no-non-null-assertion
-        if (this.body?.getFixtureList() !== null) this.body?.destroyFixture(this.body?.getFixtureList()!);
-
-        // Create a new fixture
-        this.createFixture(this.hitbox);
+        this.game.grid.addObject(this);
 
         this.game.partialDirtyObjects.add(this);
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writeScale(this.scale);
-        stream.writeBoolean(this.dead);
-        stream.writeBits(this.hitEffect, 3);
-        if (this.isDoor && this.door !== undefined) {
-            stream.writeBits(this.door.offset, 2);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializePartial(stream, {
+            ...this,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, this.definition.rotationMode);
-        if (this.definition.variations !== undefined) {
-            stream.writeVariation(this.variation);
-        }
+        ObjectSerializations[ObjectCategory.Obstacle].serializeFull(stream, {
+            scale: this.scale,
+            dead: this.dead,
+            definition: this.definition,
+            door: this.door,
+            fullUpdate: true,
+            position: this.position,
+            variation: this.variation,
+            rotation: {
+                rotation: this.rotation,
+                orientation: this.rotation as Orientation
+            }
+        });
     }
 }

@@ -1,29 +1,16 @@
-import { type CollisionFilter, GameObject } from "../types/gameObject";
+import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type ObjectCategory } from "../../../common/src/constants";
+import { ObjectCategory } from "../../../common/src/constants";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Game } from "../game";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
 export class Building extends GameObject {
-    readonly is: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
-    readonly collidesWith: CollisionFilter = {
-        player: false,
-        obstacle: false,
-        bullet: false,
-        loot: false
-    };
-
     readonly definition: BuildingDefinition;
 
     readonly spawnHitbox: Hitbox;
@@ -31,6 +18,8 @@ export class Building extends GameObject {
     readonly scopeHitbox: Hitbox;
 
     private _wallsToDestroy?: number;
+
+    readonly hitbox: Hitbox;
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, type, position);
@@ -42,6 +31,8 @@ export class Building extends GameObject {
         this._wallsToDestroy = type.definition.wallsToDestroy;
 
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
+
+        this.hitbox = this.spawnHitbox;
 
         this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
     }
@@ -58,11 +49,18 @@ export class Building extends GameObject {
     }
 
     override serializePartial(stream: SuroiBitStream): void {
-        stream.writeBoolean(this.dead);
+        ObjectSerializations[ObjectCategory.Building].serializePartial(stream, {
+            dead: this.dead,
+            fullUpdate: false
+        });
     }
 
     override serializeFull(stream: SuroiBitStream): void {
-        stream.writePosition(this.position);
-        stream.writeObstacleRotation(this.rotation, "limited");
+        ObjectSerializations[ObjectCategory.Building].serializeFull(stream, {
+            dead: this.dead,
+            position: this.position,
+            rotation: this.rotation,
+            fullUpdate: true
+        });
     }
 }

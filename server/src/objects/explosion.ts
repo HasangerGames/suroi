@@ -5,10 +5,14 @@ import { type GameObject } from "../types/gameObject";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { type Vector } from "../../../common/src/utils/vector";
-import { distance, angleBetween } from "../../../common/src/utils/math";
+import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
+import { angleBetween, distanceSquared } from "../../../common/src/utils/math";
 import { Obstacle } from "./obstacle";
 import { type ObjectCategory } from "../../../common/src/constants";
+import { Player } from "./player";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { randomRotation } from "../../../common/src/utils/random";
+import { Loot } from "./loot";
 
 export class Explosion {
     game: Game;
@@ -24,49 +28,78 @@ export class Explosion {
     }
 
     explode(): void {
-        // NOTE: the CircleHitbox distance was returning weird values and i was lazy to debug it
-        // so for now its just checking if the obstacle distance is in range
         const definition = this.type.definition;
 
-        for (const object of this.game.getVisibleObjects(this.position)) {
-            if (!object.dead && object instanceof Obstacle) {
-                const dist = distance(this.position, object.position);
-                if (dist < definition.radius.max) {
-                    let damage = definition.damage * definition.obstacleMultiplier;
-                    if (dist > definition.radius.min) {
-                        const damagePercent = Math.abs(dist / definition.radius.max - 1);
-                        damage *= damagePercent;
+        // list of all near objects
+        const objects = this.game.grid.intersectsRect(new CircleHitbox(definition.radius.max * 2, this.position).toRectangle());
+
+        const damagedObjects = new Map<number, boolean>();
+
+        for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {
+            // all objects that collided with this line
+            const lineCollisions: Array<{
+                object: GameObject
+                pos: Vector
+                distance: number
+            }> = [];
+
+            const lineEnd = vAdd(this.position, vRotate(v(definition.radius.max, 0), angle));
+
+            for (const object of objects) {
+                if (object.dead || !object.hitbox || !(object instanceof Obstacle || object instanceof Player || object instanceof Loot)) continue;
+
+                // check if the object hitbox collides with a line from the explosion center to the explosion max distance
+                const intersection = object.hitbox.intersectsLine(this.position, lineEnd);
+                if (intersection) {
+                    lineCollisions.push({
+                        pos: intersection.point,
+                        object,
+                        distance: distanceSquared(this.position, intersection.point)
+                    });
+                }
+            }
+
+            // sort by closest to the explosion center to prevent damaging objects through walls
+            lineCollisions.sort((a, b) => {
+                return a.distance - b.distance;
+            });
+
+            for (const collision of lineCollisions) {
+                const object = collision.object;
+
+                if (!damagedObjects.has(object.id)) {
+                    damagedObjects.set(object.id, true);
+                    const dist = Math.sqrt(collision.distance);
+
+                    if (object instanceof Player || object instanceof Obstacle) {
+                        let damage = definition.damage;
+                        if (object instanceof Obstacle) damage *= definition.obstacleMultiplier;
+
+                        if (dist > definition.radius.min) {
+                            const damagePercent = Math.abs(dist / definition.radius.max - 1);
+                            damage *= damagePercent;
+                        }
+
+                        object.damage(damage, this.source, this.type);
                     }
-
-                    object.damage(damage, this.source, this.type);
+                    if (object instanceof Loot) {
+                        object.push(angleBetween(object.position, this.position), (definition.radius.max - dist) * 5);
+                    }
                 }
+                if (object instanceof Obstacle && !object.definition.noCollisions) break;
             }
         }
 
-        for (const player of this.game.livingPlayers) {
-            const dist = distance(this.position, player.position);
-            if (dist < definition.radius.max) {
-                let damage = definition.damage;
-                if (dist > definition.radius.min) {
-                    const damagePercent = Math.abs(dist / definition.radius.max - 1);
-                    damage *= damagePercent;
-                }
-
-                player.damage(damage, this.source, this.type);
-            }
-        }
-
-        for (const loot of this.game.loot) {
-            const dist = distance(loot.position, this.position);
-            if (dist < definition.radius.max) {
-                const angle = angleBetween(loot.position, this.position);
-                loot.push(-angle, ((definition.radius.max - dist) * 0.006));
-            }
+        for (let i = 0; i < definition.shrapnelCount; i++) {
+            this.game.addBullet(this, this.source, {
+                position: this.position,
+                rotation: randomRotation()
+            });
         }
     }
 
     serialize(stream: SuroiBitStream): void {
-        stream.writeObjectType(this.type);
+        stream.writeObjectTypeNoCategory(this.type);
         stream.writePosition(this.position);
     }
 }

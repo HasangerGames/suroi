@@ -1,122 +1,159 @@
 import type { Game } from "../game";
-import type { GameScene } from "../scenes/gameScene";
 import { GameObject } from "../types/gameObject";
 
 import { type ObjectCategory } from "../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
-import { type FloorType, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { Container } from "pixi.js";
+import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { velFromAngle } from "../../../../common/src/utils/math";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Building extends GameObject {
+    declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+
     readonly images: {
-        floor: Phaser.GameObjects.Image
-        ceilingContainer: Phaser.GameObjects.Container
-        ceiling: Phaser.GameObjects.Image
-        emitter: Phaser.GameObjects.Particles.ParticleEmitter
+        floor: SuroiSprite
+        ceiling: SuroiSprite
+        ceilingContainer: Container
     };
 
     ceilingHitbox?: Hitbox;
 
     orientation!: Orientation;
 
-    ceilingTween?: Phaser.Tweens.Tween;
+    ceilingTween?: Tween<Container>;
 
     ceilingVisible = true;
 
     isNew = true;
 
-    floors: Array<{ type: FloorType, hitbox: Hitbox }> = [];
+    floorHitboxes: Hitbox[] = [];
 
-    constructor(game: Game, scene: GameScene, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
-        super(game, scene, type, id);
+    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
+        super(game, type, id);
 
         const definition = type.definition;
         this.images = {
-            floor: scene.add.image(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20, "buildings", `${type.idString}_floor.svg`),
-            ceilingContainer: scene.add.container(),
-            ceiling: scene.add.image(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20, "buildings", `${type.idString}_ceiling.svg`),
-            emitter: scene.add.particles(0, 0, "main").setDepth(8)
+            floor: new SuroiSprite(`${type.idString}_floor.svg`).setPos(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20),
+            ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20),
+            ceilingContainer: new Container()
         };
 
-        this.container.add(this.images.floor).setDepth(-1);
+        this.container.addChild(this.images.floor);
+        this.container.zIndex = -1;
 
-        this.images.ceilingContainer.add(this.images.ceiling).setDepth(8);
+        this.game.camera.container.addChild(this.images.ceilingContainer);
+        this.images.ceilingContainer.addChild(this.images.ceiling);
+        this.images.ceilingContainer.zIndex = 8;
     }
 
     toggleCeiling(visible: boolean): void {
-        if (this.ceilingVisible === visible || this.ceilingTween?.isActive()) return;
+        if (this.ceilingVisible === visible) return;
 
-        this.ceilingTween?.destroy();
+        this.ceilingTween?.kill();
 
-        this.ceilingTween = this.scene.tweens.add({
-            targets: this.images.ceilingContainer,
-            alpha: visible ? 1 : 0,
+        this.ceilingTween = new Tween(this.game, {
+            target: this.images.ceilingContainer,
+            to: { alpha: visible ? 1 : 0 },
             duration: 200,
-            onended: () => {
+            ease: EaseFunctions.sineOut,
+            onComplete: () => {
                 this.ceilingVisible = visible;
             }
         });
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-    override deserializePartial(stream: SuroiBitStream): void {
-        const dead = stream.readBoolean();
-
-        if (dead) {
-            if (dead && !this.dead && !this.isNew) {
-                this.images.emitter.setConfig({
-                    frame: `${this.type.idString}_particle.svg`,
-                    rotate: { min: -180, max: 180 },
-                    lifespan: 1000,
-                    speed: { min: 80, max: 150 },
-                    alpha: { start: 1, end: 0 },
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Building]): void {
+        const definition = this.type.definition;
+        if (data.dead) {
+            if (!this.dead && !this.isNew) {
+                this.game.particleManager.spawnParticles(10, () => ({
+                    frames: `${this.type.idString}_particle.svg`,
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    position: this.ceilingHitbox!.randomPoint(),
+                    depth: 10,
+                    lifeTime: 2000,
+                    rotation: {
+                        start: randomRotation(),
+                        end: randomRotation()
+                    },
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.sextIn
+                    },
                     scale: { start: 1, end: 0.2 },
-                    emitting: false,
-                    // >:(
-                    emitZone: new Phaser.GameObjects.Particles.Zones.RandomZone(
-                        this.images.ceiling.getBounds() as Phaser.Types.GameObjects.Particles.RandomZoneSource)
-                }).explode(10);
-                this.scene.playSound("ceiling_collapse");
+                    speed: velFromAngle(randomRotation(), randomFloat(0.1, 0.2))
+                }));
+                this.playSound("ceiling_collapse", 0.5, 96);
             }
-            this.images.ceilingContainer.setDepth(-0.1).setAlpha(1);
+            this.ceilingTween?.kill();
+            this.images.ceilingContainer.zIndex = -0.1;
+            this.images.ceilingContainer.alpha = 1;
             this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
-            this.ceilingTween?.destroy();
         }
-        this.dead = dead;
+        this.dead = data.dead;
 
         this.isNew = false;
-    }
 
-    override deserializeFull(stream: SuroiBitStream): void {
-        this.position = stream.readPosition();
+        if (!data.fullUpdate) return;
 
-        this.orientation = stream.readBits(2) as Orientation;
+        this.position = data.position;
+
+        const pos = toPixiCoords(this.position);
+        this.container.position.copyFrom(pos);
+        this.images.ceilingContainer.position.copyFrom(pos);
+
+        this.orientation = data.rotation as Orientation;
 
         this.rotation = orientationToRotation(this.orientation);
 
-        this.container.setRotation(this.rotation);
-        this.images.ceilingContainer.setPosition(this.container.x, this.container.y).setRotation(this.rotation);
+        this.container.rotation = this.rotation;
 
-        this.ceilingHitbox = (this.type.definition as BuildingDefinition).ceilingHitbox.transform(this.position, 1, this.orientation);
+        this.images.ceilingContainer.rotation = this.rotation;
 
-        this.floors = [];
+        this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
 
-        for (const floor of (this.type.definition as BuildingDefinition).floors) {
-            this.floors.push({
-                type: floor.type,
-                hitbox: floor.hitbox.transform(this.position, 1, this.orientation)
-            });
+        for (const floor of definition.floors) {
+            const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
+            this.floorHitboxes.push(floorHitbox);
+            this.game.floorHitboxes.set(
+                floorHitbox,
+                floor.type
+            );
+        }
+
+        if (HITBOX_DEBUG_MODE) {
+            this.debugGraphics.clear();
+            drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
+
+            drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics);
+
+            drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.buildingZoomCeiling,
+                this.debugGraphics);
+
+            for (const floor of definition.floors) {
+                drawHitbox(floor.hitbox.transform(this.position, 1, this.orientation), FloorTypes[floor.type].debugColor, this.debugGraphics);
+            }
         }
     }
 
     destroy(): void {
         super.destroy();
-        this.images.floor.destroy();
+        this.ceilingTween?.kill();
         this.images.ceilingContainer.destroy();
-        this.images.ceiling.destroy();
-        this.images.emitter.destroy();
+        for (const floorHitbox of this.floorHitboxes) {
+            this.game.floorHitboxes.delete(floorHitbox);
+        }
     }
 }

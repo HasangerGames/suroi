@@ -27,6 +27,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
+    readonly reflectBullets?: boolean
 
     readonly frames?: {
         readonly base?: string
@@ -233,7 +234,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
-            explosion: "barrel_explosion"
+            explosion: "barrel_explosion",
+            reflectBullets: true
         },
         {
             idString: "super_barrel",
@@ -247,7 +249,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(3.65),
             rotationMode: "full",
-            explosion: "super_barrel_explosion"
+            explosion: "super_barrel_explosion",
+            reflectBullets: true
         },
         {
             idString: "oil_tank",
@@ -265,7 +268,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "gold_rock",
@@ -281,7 +285,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
-            hasLoot: true
+            hasLoot: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "warehouse_wall_1",
@@ -296,7 +303,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            reflectBullets: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "warehouse_wall_2",
@@ -310,8 +321,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.95
             },
-            hitbox: new RectangleHitbox(v(-5, -0.8), v(5, 0.8)),
-            rotationMode: "limited"
+            hitbox: new RectangleHitbox(v(-5.3, -0.8), v(5.3, 0.8)),
+            rotationMode: "limited",
+            reflectBullets: true,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "box",
@@ -346,7 +361,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         makeHouseWall("1", new RectangleHitbox(v(-4.55, -1), v(4.55, 1))),
         makeHouseWall("2", new RectangleHitbox(v(-10.43, -1), v(10.43, 1))),
@@ -364,11 +380,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
             rotationMode: "limited",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "stove",
@@ -380,12 +397,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
             rotationMode: "limited",
             explosion: "stove_explosion",
             frames: {
                 particle: "metal_particle"
-            }
+            },
+            reflectBullets: true
         },
         {
             idString: "washing_machine",
@@ -398,8 +416,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hasLoot: true,
-            hitbox: new RectangleHitbox(v(-4.55, -3), v(4.55, 3.45)),
-            rotationMode: "limited"
+            hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
+            rotationMode: "limited",
+            reflectBullets: true
         },
         {
             idString: "house_exterior",
@@ -416,23 +435,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox([
                 // Comments assume the building is not rotated (rotation = 0)
-                new RectangleHitbox(v(-48.33, 33.2), v(-34, 35.1)), // First Topmost wall
-                new RectangleHitbox(v(-23.5, 33.2), v(-6.5, 35.1)), // Topmost wall after the first window
-                new RectangleHitbox(v(4, 33.2), v(48.33, 35.1)), // Topmost wall after the second window
-                new RectangleHitbox(v(11.9, 10.9), v(13.86, 33.2)), // Wall coming off of topmost wall
-                new RectangleHitbox(v(46.4, -9.48), v(48.33, 33.2)), // Rightmost wall
-                new RectangleHitbox(v(41.05, -9.48), v(46.43, -7.58)), // Short wall coming off of rightmost wall
-                new RectangleHitbox(v(13.86, -9.48), v(19.37, -7.61)), // Short wall to the left of the previous one
-                new RectangleHitbox(v(11.9, -21.5), v(13.86, 1.2)), // Wall coming off of the longer bottommost wall
-                new RectangleHitbox(v(-26.2, -23.5), v(13.86, -21.57)), // Longer bottommost wall
-                new RectangleHitbox(v(-48.33, -23.5), v(-36.25, -21.57)), // Shorter bottommost wall
-                new RectangleHitbox(v(-48.33, 11), v(-46.4, 33.2)), // Leftmost wall until left window
-                new RectangleHitbox(v(-48.33, -23.5), v(-46.4, 1)), // Leftmost wall after the window
+                new RectangleHitbox(v(-48.33, -35.1), v(-34, -33.2)), // First Topmost wall
+                new RectangleHitbox(v(-23.5, -35.1), v(-6.5, -33.2)), // Topmost wall after the first window
+                new RectangleHitbox(v(4, -35.1), v(48.33, -33.2)), // Topmost wall after the second window
+                new RectangleHitbox(v(11.9, -33.2), v(13.86, -10.9)), // Wall coming off of topmost wall
+                new RectangleHitbox(v(46.4, -33.2), v(48.33, 9.48)), // Rightmost wall
+                new RectangleHitbox(v(41.05, 7.58), v(46.43, 9.48)), // Short wall coming off of rightmost wall
+                new RectangleHitbox(v(13.86, 7.61), v(19.37, 9.48)), // Short wall to the left of the previous one
+                new RectangleHitbox(v(11.9, -1.2), v(13.86, 21.5)), // Wall coming off of the longer bottommost wall
+                new RectangleHitbox(v(-26.2, 21.57), v(13.86, 23.5)), // Longer bottommost wall
+                new RectangleHitbox(v(-48.33, 21.57), v(-36.25, 23.5)), // Shorter bottommost wall
+                new RectangleHitbox(v(-48.33, -33.2), v(-46.4, -11)), // Leftmost wall until left window
+                new RectangleHitbox(v(-48.33, -0.5), v(-46.4, 23.5)), // Leftmost wall after the window
 
-                new RectangleHitbox(v(-41.9, -35.13), v(-38.65, -32)), // Left post
-                new RectangleHitbox(v(-24.1, -35.13), v(-20.85, -32)) // Right post
+                new RectangleHitbox(v(-41.9, 32), v(-38.65, 35.13)), // Left post
+                new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post
             ]),
-            rotationMode: "limited"
+            rotationMode: "limited",
+            frames: {
+                particle: "wall_particle"
+            }
         },
         {
             idString: "door",
@@ -522,7 +544,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.8
             },
-            hitbox: new RectangleHitbox(v(-3.1, -2.5), v(3.1, 3.5)),
+            hitbox: new RectangleHitbox(v(-3.1, -3.5), v(3.1, 2.5)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -540,7 +562,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6.25, -2.5), v(6.25, 3.55)),
+            hitbox: new RectangleHitbox(v(-6.25, -3.5), v(6.25, 2.5)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -575,7 +597,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-0.8, -7.5), v(0.3, 7.6)),
+            hitbox: new RectangleHitbox(v(-0.8, -7.6), v(0.3, 7.5)),
             rotationMode: "limited",
             depth: 2,
             frames: {
@@ -680,7 +702,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-10.85, -0.35), v(10.85, 1.15)),
+            hitbox: new RectangleHitbox(v(-10.85, -1.15), v(10.85, 0.35)),
             rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
@@ -697,7 +719,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6.05, -1), v(6.08, 3.2)),
+            hitbox: new RectangleHitbox(v(-6.05, -3.2), v(6.08, 1.1)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -716,7 +738,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-6, -1.1), v(6, 3.2)),
+            hitbox: new RectangleHitbox(v(-6, -3.2), v(6, 1.1)),
             rotationMode: "limited",
             hasLoot: true,
             frames: {
@@ -791,7 +813,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-9.6, -2.2), v(9.6, -0.3)),
+            hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2.2)),
             rotationMode: "limited",
             isWall: true,
             frames: {
@@ -811,7 +833,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hideOnMap: true,
-            hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2)),
+            hitbox: new RectangleHitbox(v(-9.6, -2), v(9.6, -0.3)),
             rotationMode: "limited",
             isWall: true,
             frames: {

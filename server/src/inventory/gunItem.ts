@@ -1,15 +1,16 @@
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { InventoryItem } from "./inventoryItem";
 import { type Player } from "../objects/player";
-import { degreesToRadians, normalizeAngle } from "../../../common/src/utils/math";
-import { v, vRotate } from "../../../common/src/utils/vector";
-import { Vec2 } from "planck";
+import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { randomFloat } from "../../../common/src/utils/random";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
 import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
 import { type ObjectType } from "../../../common/src/utils/objectType";
+import { Obstacle } from "../objects/obstacle";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 
 /**
  * A class representing a firearm
@@ -97,34 +98,33 @@ export class GunItem extends InventoryItem {
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
-        let rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
-        let position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
+        const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+        let position = vAdd(owner.position, rotated);
 
-        for (const object of this.owner.nearObjects) {
-            if (!object.dead && (object.hitbox != null) && object.hitbox.intersectsLine(this.owner.position, position)) {
-                rotated = vRotate(v(2.50001, 0), owner.rotation);
-                position = Vec2(owner.position.x + rotated.x, owner.position.y - rotated.y);
-                break;
+        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
+        for (const object of objects) {
+            if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
+                const intersection = object.hitbox.intersectsLine(owner.position, position);
+                if (intersection === null) continue;
+
+                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
+                    position = vSub(intersection.point, vRotate(v(0.2, 0), owner.rotation));
+                }
             }
         }
 
         const limit = definition.bulletCount ?? 1;
-        const step = spread / limit;
 
         for (let i = 0; i < limit; i++) {
-            this.owner.game.addBullet(
-                position,
-                normalizeAngle(
-                    owner.rotation + Math.PI / 2 +
-                    (
-                        definition.consistentPatterning === true
-                            ? i * step - spread / 2
-                            : randomFloat(-spread, spread)
-                    )
-                ),
-                this,
-                this.owner
+            const rotation = normalizeAngle(
+                owner.rotation + Math.PI / 2 +
+                (
+                    definition.consistentPatterning === true
+                        ? i / limit - 0.5
+                        : randomFloat(-1, 1)
+                ) * spread
             );
+            this.owner.game.addBullet(this, this.owner, { position, rotation });
         }
 
         owner.recoil.active = true;
