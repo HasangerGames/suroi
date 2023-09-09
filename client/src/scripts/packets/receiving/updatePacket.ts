@@ -210,6 +210,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 const source = stream.readObjectType() as Bullet["source"];
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
