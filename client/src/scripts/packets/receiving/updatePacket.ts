@@ -6,8 +6,6 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { GameObject } from "../../types/gameObject";
 
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import type { GunDefinition } from "../../../../../common/src/definitions/guns";
-
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
@@ -212,13 +210,21 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                const source = stream.readObjectTypeNoCategory<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot);
+                const source = stream.readObjectType() as Bullet["source"];
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
+                const variance = stream.readFloat(0, 1, 4);
                 const reflectionCount = stream.readBits(2);
                 const sourceID = stream.readObjectID();
 
-                const bullet = new Bullet(game, source, position, rotation, sourceID, reflectionCount);
+                const bullet = new Bullet(game, {
+                    source,
+                    position,
+                    rotation,
+                    reflectionCount,
+                    sourceID,
+                    variance
+                });
 
                 game.bullets.add(bullet);
             }
@@ -261,6 +267,7 @@ export class UpdatePacket extends ReceivingPacket {
             const percentageDirty = stream.readBoolean();
             if (percentageDirty) { // Percentage dirty
                 gasPercentage = stream.readFloat(0, 1, 16);
+                game.gas.lastUpdateTime = Date.now();
                 currentDuration = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             } else {
                 currentDuration = game.gas.initialDuration;
@@ -304,12 +311,13 @@ export class UpdatePacket extends ReceivingPacket {
         if (gasPercentage !== undefined) {
             const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
-            if (game.gas.state === GasState.Advancing) {
+            if (game.gas.state === GasState.Advancing || !game.gas.firstRadiusReceived) {
                 game.gas.lastPosition = vClone(game.gas.position);
                 game.gas.lastRadius = game.gas.radius;
                 game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
                 game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
                 game.gas.lastUpdateTime = Date.now();
+                game.gas.firstRadiusReceived = true;
             }
         }
 

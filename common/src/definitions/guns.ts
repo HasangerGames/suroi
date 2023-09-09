@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, type BulletDefinition } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
 
@@ -42,20 +42,7 @@ export type GunDefinition = ItemDefinition & {
         readonly position: Vector
     }
 
-    readonly ballistics: {
-        readonly damage: number
-        readonly obstacleMultiplier: number
-        readonly speed: number
-        readonly maxDistance: number
-        // fixme doesn't work right now
-        readonly penetration?: {
-            readonly players?: boolean
-            readonly obstacles?: boolean
-        }
-        readonly tracerOpacity?: number
-        readonly tracerWidth?: number
-        readonly tracerLength?: number
-    }
+    readonly ballistics: BulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {

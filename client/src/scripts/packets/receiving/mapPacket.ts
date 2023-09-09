@@ -2,74 +2,83 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { COLORS, PIXI_SCALE } from "../../utils/constants";
-import { Graphics } from "pixi.js";
+import { Container, Graphics, RenderTexture, isMobile } from "pixi.js";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { vAdd, vRotate } from "../../../../../common/src/utils/vector";
-import { SuroiSprite, toPixiCoords } from "../../utils/pixi";
+import { SuroiSprite } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const game = this.playerManager.game;
+        const map = game.map;
 
-        const width = game.map.width = stream.readUint16();
-        const height = game.map.height = stream.readUint16();
+        const width = map.width = stream.readUint16();
+        const height = map.height = stream.readUint16();
 
-        const GRID_WIDTH = width * PIXI_SCALE;
-        const GRID_HEIGHT = height * PIXI_SCALE;
-        const CELL_SIZE = 320;
+        const cellSize = 16;
+        const oceanPadding = map.oceanPadding;
 
         const graphics = new Graphics();
-        const minimapTexture = new Graphics();
+        const mapGraphics = new Graphics();
+        const mapRender = new Container();
+        mapRender.interactiveChildren = false;
 
         graphics.beginFill();
         graphics.fill.color = COLORS.beach.toNumber();
-        graphics.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
+        graphics.drawRect(0, 0, width, height);
         graphics.fill.color = COLORS.grass.toNumber();
-        graphics.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
+        graphics.drawRect(cellSize, cellSize, width - cellSize * 2, height - cellSize * 2);
         graphics.zIndex = -10;
 
-        minimapTexture.beginFill();
-        minimapTexture.fill.color = COLORS.beach.toNumber();
-        minimapTexture.drawRect(0, 0, GRID_WIDTH, GRID_HEIGHT);
-        minimapTexture.fill.color = COLORS.grass.toNumber();
-        minimapTexture.drawRect(CELL_SIZE, CELL_SIZE, GRID_WIDTH - CELL_SIZE * 2, GRID_HEIGHT - CELL_SIZE * 2);
+        mapGraphics.beginFill();
+        mapGraphics.fill.color = COLORS.water.toNumber();
+        mapGraphics.drawRect(-oceanPadding, -oceanPadding, width + oceanPadding * 2, height + oceanPadding * 2);
+        mapGraphics.fill.color = COLORS.beach.toNumber();
+        mapGraphics.drawRect(0, 0, width, height);
+        mapGraphics.fill.color = COLORS.grass.toNumber();
+        mapGraphics.drawRect(cellSize, cellSize, width - cellSize * 2, height - cellSize * 2);
 
         graphics.lineStyle({
             color: 0x000000,
             alpha: 0.25,
-            width: 2
+            width: 2 / PIXI_SCALE
         });
-        minimapTexture.lineStyle({
+        mapGraphics.lineStyle({
             color: 0x000000,
             alpha: 0.5,
-            width: 16
+            width: 1.5
         });
+        graphics.scale.set(PIXI_SCALE);
 
-        for (let x = 0; x <= GRID_WIDTH; x += CELL_SIZE) {
+        for (let x = 0; x <= width; x += cellSize) {
             graphics.moveTo(x, 0);
-            graphics.lineTo(x, GRID_HEIGHT);
+            graphics.lineTo(x, height);
 
-            minimapTexture.moveTo(x, 0);
-            minimapTexture.lineTo(x, GRID_HEIGHT);
+            mapGraphics.moveTo(x, 0);
+            mapGraphics.lineTo(x, height);
         }
-        for (let y = 0; y <= GRID_HEIGHT; y += CELL_SIZE) {
+        for (let y = 0; y <= height; y += cellSize) {
             graphics.moveTo(0, y);
-            graphics.lineTo(GRID_WIDTH, y);
+            graphics.lineTo(width, y);
 
-            minimapTexture.moveTo(0, y);
-            minimapTexture.lineTo(GRID_WIDTH, y);
+            mapGraphics.moveTo(0, y);
+            mapGraphics.lineTo(width, y);
         }
 
         graphics.endFill();
 
         game.camera.container.addChild(graphics);
 
-        minimapTexture.scale.set(1 / PIXI_SCALE);
+        mapRender.position.set(oceanPadding);
+        mapRender.addChild(mapGraphics);
 
-        game.map.objectsContainer.removeChildren();
-        game.map.objectsContainer.addChild(minimapTexture);
+        const renderTexture = RenderTexture.create({
+            width: width + oceanPadding * 2,
+            height: height + oceanPadding * 2,
+            resolution: isMobile.any ? 1 : 2
+        });
 
         const numObstacles = stream.readBits(10);
 
@@ -81,7 +90,7 @@ export class MapPacket extends ReceivingPacket {
             let rotation = 0;
             let scale = 1;
 
-            let texture = type.idString;
+            let textureId = type.idString;
 
             switch (type.category) {
                 case ObjectCategory.Obstacle: {
@@ -93,12 +102,12 @@ export class MapPacket extends ReceivingPacket {
                     let variation = 0;
                     if (hasVariations) {
                         variation = stream.readVariation();
-                        texture += `_${variation + 1}`;
+                        textureId += `_${variation + 1}`;
                     }
                     break;
                 }
                 case ObjectCategory.Building: {
-                    texture += "_ceiling";
+                    textureId += "_ceiling";
                     rotation = stream.readObstacleRotation("limited").rotation;
 
                     const definition = type.definition as BuildingDefinition;
@@ -107,9 +116,9 @@ export class MapPacket extends ReceivingPacket {
 
                     const floorImage = new SuroiSprite(`${type.idString}_floor.svg`);
 
-                    floorImage.setVPos(toPixiCoords(floorPos)).setRotation(rotation);
-
-                    minimapTexture.addChild(floorImage);
+                    floorImage.setVPos(floorPos).setRotation(rotation);
+                    floorImage.scale.set(1 / PIXI_SCALE);
+                    mapRender.addChild(floorImage);
 
                     position = vAdd(position, vRotate(definition.ceilingImagePos, rotation));
                     break;
@@ -117,13 +126,19 @@ export class MapPacket extends ReceivingPacket {
             }
 
             // Create the object image
-            const image = new SuroiSprite(`${texture}.svg`);
-            image.setVPos(toPixiCoords(position)).setRotation(rotation);
-            image.scale.set(scale);
+            const image = new SuroiSprite(`${textureId}.svg`);
+            image.setVPos(position).setRotation(rotation);
+            image.scale.set(scale * (1 / PIXI_SCALE));
 
-            minimapTexture.addChild(image);
-
-            game.map.objectsContainer.addChild(game.map.indicator);
+            mapRender.addChild(image);
         }
+        game.pixi.renderer.render(mapRender, {
+            renderTexture
+        });
+        map.sprite.texture = renderTexture;
+        mapRender.destroy({
+            children: true,
+            texture: false
+        });
     }
 }

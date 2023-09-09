@@ -17,7 +17,7 @@ import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
-import { angleBetween, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
+import { angleBetween, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
 import { randomRotation } from "../../../common/src/utils/random";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
@@ -45,28 +45,29 @@ export class Loot extends GameObject {
     constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
         super(game, type, position);
 
-        this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], position);
+        this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], vClone(position));
         this.oldPosition = this._position;
 
         if (count !== undefined) this.count = count;
 
-        this.push(randomRotation(), 0.5);
+        this.push(randomRotation(), 1);
 
         setTimeout((): void => { this.isNew = false; }, 100);
     }
 
     update(): void {
-        this.velocity = vMul(this.velocity, 0.95);
-        const velocity = vMul(this.velocity, 1 / TICK_SPEED);
-
-        if (distance(this.oldPosition, this.position) > 0.01) {
+        if (distanceSquared(this.oldPosition, this.position) > 0.0001) {
             this.game.partialDirtyObjects.add(this);
             this.oldPosition = vClone(this.position);
         }
 
-        this.game.grid.removeObject(this);
-        this.position = vAdd(this.position, velocity);
-        this.game.grid.addObject(this);
+        if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
+            this.velocity = vMul(this.velocity, 0.9);
+            const velocity = vMul(this.velocity, 1 / TICK_SPEED);
+            this.game.grid.removeObject(this);
+            this.position = vAdd(this.position, velocity);
+            this.game.grid.addObject(this);
+        }
 
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
@@ -77,9 +78,25 @@ export class Loot extends GameObject {
                 this.hitbox.resolveCollision(object.hitbox);
             }
 
-            // TODO: better loot physics, this is just temporary
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
-                this.push(angleBetween(object.position, this.position), -0.2);
+                const dist = distance(object.position, this.position);
+
+                if (this.hitbox.radius - object.hitbox.radius - 0.5 < dist) {
+                    this.push(angleBetween(object.position, this.position), -0.3);
+                }
+
+                const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
+                const vecCollisionNorm = v(vecCollision.x / dist, vecCollision.y / dist);
+                const vRelativeVelocity = v(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+
+                const speed = vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y;
+
+                if (speed < 0) continue;
+
+                this.velocity.x -= (speed * vecCollisionNorm.x);
+                this.velocity.y -= (speed * vecCollisionNorm.y);
+                object.velocity.x += (speed * vecCollisionNorm.x);
+                object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
     }

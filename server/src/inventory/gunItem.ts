@@ -10,6 +10,7 @@ import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { Obstacle } from "../objects/obstacle";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 
 /**
  * A class representing a firearm
@@ -100,7 +101,8 @@ export class GunItem extends InventoryItem {
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
         let position = vAdd(owner.position, rotated);
 
-        for (const object of this.owner.nearObjects) {
+        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
+        for (const object of objects) {
             if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
                 if (intersection === null) continue;
@@ -114,19 +116,15 @@ export class GunItem extends InventoryItem {
         const limit = definition.bulletCount ?? 1;
 
         for (let i = 0; i < limit; i++) {
-            this.owner.game.addBullet(
-                position,
-                normalizeAngle(
-                    owner.rotation + Math.PI / 2 +
-                    (
-                        definition.consistentPatterning === true
-                            ? i / limit - 0.5
-                            : randomFloat(-1, 1)
-                    ) * spread
-                ),
-                this,
-                this.owner
+            const rotation = normalizeAngle(
+                owner.rotation + Math.PI / 2 +
+                (
+                    definition.consistentPatterning === true
+                        ? i / limit - 0.5
+                        : randomFloat(-1, 1)
+                ) * spread
             );
+            this.owner.game.addBullet(this, this.owner, { position, rotation });
         }
 
         owner.recoil.active = true;

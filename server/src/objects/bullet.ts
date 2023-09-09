@@ -1,29 +1,49 @@
 import { Player } from "./player";
 import { type Game } from "../game";
 import { normalizeAngle } from "../../../common/src/utils/math";
-import { type GunItem } from "../inventory/gunItem";
+import { GunItem } from "../inventory/gunItem";
 import { vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
-import { BaseBullet } from "../../../common/src/utils/baseBullet";
+import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
-import { TICK_SPEED } from "../../../common/src/constants";
+import { type ObjectCategory, TICK_SPEED } from "../../../common/src/constants";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
+import { type Explosion } from "./explosion";
+import { randomFloat } from "../../../common/src/utils/random";
+
+type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
 
 export interface DamageRecord {
     object: Obstacle | Player
     damage: number
-    weapon: GunItem
+    weapon: Weapon
     source: GameObject
 }
 
+export interface ServerBulletOptions {
+    position: Vector
+    rotation: number
+    reflectionCount?: number
+    reflectedFromID?: number
+    variance?: number
+}
 export class Bullet extends BaseBullet {
     readonly game: Game;
 
-    readonly sourceGun: GunItem;
-    readonly shooter: Player;
+    readonly sourceGun: GunItem | Explosion;
+    readonly shooter: GameObject;
 
-    constructor(game: Game, position: Vector, rotation: number, source: GunItem, shooter: Player, reflectionCount = 0, reflectedFromID?: number) {
-        super(position, rotation, source.type, reflectedFromID ?? shooter.id, reflectionCount);
+    constructor(game: Game, source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions) {
+        const variance = source.type.definition.ballistics.variance;
+        const bulletOptions: BulletOptions = {
+            ...options,
+            source: source.type,
+            sourceID: options.reflectedFromID ?? shooter.id,
+            variance: variance ? randomFloat(0, variance) : undefined
+        };
+        super(bulletOptions);
 
         this.game = game;
         this.sourceGun = source;
@@ -49,14 +69,14 @@ export class Bullet extends BaseBullet {
 
         for (const collision of collisions) {
             const object = collision.object;
-
+            const weapon = this.sourceGun instanceof GunItem ? this.sourceGun : this.sourceGun.type;
             if (object instanceof Player) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1),
-                    weapon: this.sourceGun,
+                    weapon,
                     source: this.shooter
                 });
                 this.dead = true;
@@ -66,7 +86,7 @@ export class Bullet extends BaseBullet {
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
-                    weapon: this.sourceGun,
+                    weapon,
                     source: this.shooter
                 });
 
@@ -91,6 +111,12 @@ export class Bullet extends BaseBullet {
 
         const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
 
-        this.game.addBullet(this.position, rotation, this.sourceGun, this.shooter, this.reflectionCount + 1, objectId);
+        this.game.addBullet(this.sourceGun, this.shooter, {
+            position: this.position,
+            rotation,
+            reflectedFromID: objectId,
+            reflectionCount: this.reflectionCount + 1,
+            variance: this.variance
+        });
     }
 }

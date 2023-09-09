@@ -15,7 +15,7 @@ import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
-import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition } from "../../common/src/utils/objectDefinitions";
+import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition, type BulletDefinition } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
@@ -990,6 +990,74 @@ logger.indent("Validating emotes", () => {
     tester.assertNoDuplicateIdStrings(Emotes.definitions, "Emotes", "emotes");
 });
 
+function validateBalistics(baseErrorPath: string, ballistics: BulletDefinition): void {
+    tester.assertIsRealNumber({
+        obj: ballistics,
+        field: "damage",
+        baseErrorPath
+    });
+
+    tester.assertIsRealNumber({
+        obj: ballistics,
+        field: "obstacleMultiplier",
+        baseErrorPath
+    });
+
+    tester.assertIsPositiveFiniteReal({
+        obj: ballistics,
+        field: "speed",
+        baseErrorPath
+    });
+
+    tester.assertIsPositiveFiniteReal({
+        obj: ballistics,
+        field: "maxDistance",
+        baseErrorPath
+    });
+
+    if (ballistics.tracerOpacity) {
+        const errorPath3 = tester.createPath(baseErrorPath, "tracer opacity");
+
+        tester.assertInBounds({
+            obj: ballistics,
+            field: "tracerOpacity",
+            min: 0,
+            max: 1,
+            includeMin: true,
+            includeMax: true,
+            baseErrorPath: errorPath3
+        });
+    }
+
+    if (ballistics.tracerWidth) {
+        tester.assertIsPositiveReal({
+            obj: ballistics,
+            field: "tracerWidth",
+            baseErrorPath
+        });
+    }
+
+    if (ballistics.tracerLength) {
+        tester.assertIsPositiveReal({
+            obj: ballistics,
+            field: "tracerLength",
+            baseErrorPath
+        });
+    }
+
+    if (ballistics.variance) {
+        tester.assertInBounds({
+            obj: ballistics,
+            field: "variance",
+            min: 0,
+            max: 1,
+            includeMax: true,
+            includeMin: true,
+            baseErrorPath
+        });
+    }
+}
+
 logger.indent("Validating explosions", () => {
     tester.assertNoDuplicateIdStrings(Explosions.definitions, "Explosions", "explosions");
 
@@ -1061,6 +1129,17 @@ logger.indent("Validating explosions", () => {
                     field: "scale",
                     baseErrorPath: errorPath2
                 });
+            });
+
+            logger.indent("Validating ballistics", () => {
+                const errorPath2 = tester.createPath(errorPath, "ballistics");
+                validateBalistics(errorPath2, explosion.ballistics);
+            });
+
+            tester.assertIsNaturalFiniteNumber({
+                obj: explosion,
+                field: "shrapnelCount",
+                baseErrorPath: errorPath
             });
         });
     }
@@ -1191,61 +1270,7 @@ logger.indent("Validating guns", () => {
 
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                const ballistics = gun.ballistics;
-
-                tester.assertIsRealNumber({
-                    obj: ballistics,
-                    field: "damage",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsRealNumber({
-                    obj: ballistics,
-                    field: "obstacleMultiplier",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsPositiveFiniteReal({
-                    obj: ballistics,
-                    field: "speed",
-                    baseErrorPath: errorPath2
-                });
-
-                tester.assertIsPositiveFiniteReal({
-                    obj: ballistics,
-                    field: "maxDistance",
-                    baseErrorPath: errorPath2
-                });
-
-                if (ballistics.tracerOpacity) {
-                    const errorPath3 = tester.createPath(errorPath2, "tracer opacity");
-
-                    tester.assertInBounds({
-                        obj: ballistics,
-                        field: "tracerOpacity",
-                        min: 0,
-                        max: 1,
-                        includeMin: true,
-                        includeMax: true,
-                        baseErrorPath: errorPath3
-                    });
-                }
-
-                if (ballistics.tracerWidth) {
-                    tester.assertIsPositiveReal({
-                        obj: ballistics,
-                        field: "tracerWidth",
-                        baseErrorPath: errorPath2
-                    });
-                }
-
-                if (ballistics.tracerLength) {
-                    tester.assertIsPositiveReal({
-                        obj: ballistics,
-                        field: "tracerLength",
-                        baseErrorPath: errorPath2
-                    });
-                }
+                validateBalistics(errorPath2, gun.ballistics);
             });
 
             if (gun.fireMode === FireMode.Burst) {

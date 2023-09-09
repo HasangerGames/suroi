@@ -2,7 +2,7 @@ import { type Container, Graphics } from "pixi.js";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { GasState, TICK_SPEED } from "../../../../common/src/constants";
 import { COLORS } from "../utils/constants";
-import { lerp, vecLerp } from "../../../../common/src/utils/math";
+import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;
@@ -19,6 +19,7 @@ export class Gas {
     radius = 2048;
     newRadius = 2048;
     firstPercentageReceived = false;
+    firstRadiusReceived = false;
     lastUpdateTime = Date.now();
 
     graphics: Graphics;
@@ -60,7 +61,7 @@ export class Gas {
         let position: Vector;
         let radius: number;
         if (this.state === GasState.Advancing) {
-            const interpFactor = (Date.now() - this.lastUpdateTime) / TICK_SPEED;
+            const interpFactor = clamp((Date.now() - this.lastUpdateTime) / TICK_SPEED, 0, 1);
             position = vecLerp(this.lastPosition, this.position, interpFactor);
             radius = lerp(this.lastRadius, this.radius, interpFactor);
         } else {
@@ -78,5 +79,19 @@ export class Gas {
         }
         this.graphics.position.copyFrom(center);
         this.graphics.scale.set(rad);
+    }
+
+    updateFrom(gas: Gas): void {
+        this.state = gas.state;
+        this.initialDuration = gas.initialDuration;
+        this.oldPosition = gas.oldPosition;
+        this.lastPosition = gas.lastPosition;
+        this.position = gas.position;
+        this.newPosition = gas.newPosition;
+        this.oldRadius = gas.oldRadius;
+        this.lastRadius = gas.lastRadius;
+        this.radius = gas.radius;
+        this.newRadius = gas.newRadius;
+        this.lastUpdateTime = gas.lastUpdateTime;
     }
 }

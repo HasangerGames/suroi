@@ -1,11 +1,7 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
-import {
-    ObjectCategory,
-    PacketType
-} from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../../common/src/utils/objectType";
 
 export class UpdatePacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -136,9 +132,10 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, bullet.source.definition.idString));
+                stream.writeObjectType(bullet.source);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
+                stream.writeFloat(bullet.variance, 0, 1, 4);
                 stream.writeBits(bullet.reflectionCount, 2);
                 stream.writeObjectID(bullet.sourceID);
             }
