@@ -95,8 +95,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false),
+            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
+            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
             emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
@@ -110,7 +110,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon,
             this.images.backpack,
             this.images.helmet
-            // this.images.bloodEmitter
         );
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -320,16 +319,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.container.setChildIndex(this.images.leftFist, 1);
-            this.container.setChildIndex(this.images.rightFist, 2);
-            this.container.setChildIndex(this.images.weapon, 3);
-            this.container.setChildIndex(this.images.body, 4);
+            this.images.leftFist.setDepth(1);
+            this.images.rightFist.setDepth(1);
+            this.images.weapon.setDepth(2);
+            this.images.body.setDepth(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.container.setChildIndex(this.images.weapon, 2);
-            this.container.setChildIndex(this.images.body, 3);
-            this.container.setChildIndex(this.images.leftFist, 4);
-            this.container.setChildIndex(this.images.rightFist, 5);
+            this.images.leftFist.setDepth(3);
+            this.images.rightFist.setDepth(3);
+            this.images.weapon.setDepth(1);
+            this.images.body.setDepth(1);
         }
+        this.container.sortChildren();
     }
 
     updateEquipment(): void {
