@@ -110,7 +110,7 @@ export const defaultConfig: Config = {
         toggleMiniMap: ["N", ""],
         emoteWheel: ["Mouse2", ""]
     },
-    scopeLooping: true,
+    scopeLooping: false,
     masterVolume: 1,
     musicVolume: 1,
     sfxVolume: 1,
