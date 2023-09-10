@@ -158,6 +158,16 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "volcanic",
+        name: "Volcanic",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "ashfall",
+        name: "Ashfall",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "solar_flare",
         name: "Solar Flare",
         itemType: ItemType.Skin
