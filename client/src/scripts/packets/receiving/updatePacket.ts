@@ -15,6 +15,7 @@ import { PlayerManager } from "../../utils/playerManager";
 import $ from "jquery";
 import { vClone } from "../../../../../common/src/utils/vector";
 import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
+import { formatDate } from "../../utils/misc";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -276,7 +277,7 @@ export class UpdatePacket extends ReceivingPacket {
             if (!(percentageDirty && game.gas.firstPercentageReceived)) { // Ensures that gas messages aren't displayed when switching between players when spectating
                 let gasMessage: string | undefined;
                 if (game.gas.state === GasState.Waiting) {
-                    gasMessage = `Toxic gas advances in ${currentDuration}s`;
+                    gasMessage = `Toxic gas advances in ${formatDate(currentDuration)}`;
                 } else if (game.gas.state === GasState.Advancing) {
                     gasMessage = "Toxic gas is advancing! Move to the safe zone";
                 } else if (game.gas.state === GasState.Inactive) {

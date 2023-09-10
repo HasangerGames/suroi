@@ -21,3 +21,13 @@ export function requestFullscreen(): void {
         }
     }
 }
+
+export function formatDate(seconds: number): string {
+    const date = new Date(seconds * 1000);
+    let timeString = "";
+    const minutes = date.getMinutes();
+    if (minutes > 0) timeString += `${minutes}m`;
+    timeString += `${date.getSeconds()}s`;
+
+    return timeString;
+}
