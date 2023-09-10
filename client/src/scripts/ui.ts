@@ -322,6 +322,9 @@ export function setupUI(game: Game): void {
         element.checked = localStorageInstance.config[settingName] as boolean;
     }
 
+    // Scope looping toggle
+    addCheckboxListener("#toggle-scope-looping", "scopeLooping");
+
     // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
         game.music.volume(value);
