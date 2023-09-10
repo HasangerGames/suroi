@@ -2,6 +2,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
+import { formatDate } from "../../utils/misc";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -29,11 +30,7 @@ export class GameOverPacket extends ReceivingPacket {
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());
 
-        const timeAlive = new Date(stream.readUint16() * 1000);
-        let timeString = "";
-
-        if (timeAlive.getMinutes() > 0) timeString += `${timeAlive.getMinutes()}m`;
-        timeString += `${timeAlive.getSeconds()}s`;
+        const timeString = formatDate(stream.readUint16());
 
         $("#game-over-time").text(timeString);
         gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
