@@ -519,22 +519,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
-            idString: "debug_marker",
-            name: "Debug Marker",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 1.0
-            },
-            variations: 2,
-            hitbox: new CircleHitbox(0),
-            rotationMode: "limited",
-            depth: 10
-        },
-        {
             idString: "small_drawer",
             name: "Small Drawer",
             material: "wood",
