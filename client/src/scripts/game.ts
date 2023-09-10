@@ -56,7 +56,7 @@ export class Game {
 
     activePlayerID = -1;
 
-    get activePlayer(): Player | undefined {
+    get activePlayer(): Player {
         return this.objects.get(this.activePlayerID) as Player;
     }
 
