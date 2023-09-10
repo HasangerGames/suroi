@@ -146,8 +146,7 @@ export class Loot extends GameObject {
     interact(player: Player, noPickup = false): void {
         if (this.dead) return;
         const createNewItem = (type = this.type): void => {
-            const angle = player.rotation;
-            this.game.addLoot(type, vAdd(this.position, v(0.6 * Math.cos(angle), 0.6 * Math.sin(angle))), this.count);
+            this.game.addLoot(type, this.position, this.count).push(player.rotation, 6);
         };
 
         if (noPickup) {
