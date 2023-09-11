@@ -604,6 +604,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.destroyed = true;
         if (!this.isActivePlayer) this.container.destroy();
         else this.container.visible = false;
+        if (HITBOX_DEBUG_MODE) this.debugGraphics.destroy();
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();
