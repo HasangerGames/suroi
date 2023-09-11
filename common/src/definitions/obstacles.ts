@@ -108,6 +108,30 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
     };
 }
 
+function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, variations?: Variation): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "stone",
+        health: 500,
+        indestructible: true,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 0.9
+        },
+        hideOnMap: false,
+        hitbox,
+        rotationMode: "limited",
+        isWall: true,
+        particleVariations: 2,
+        variations,
+        frames: {
+            particle: "rock_particle"
+        }
+    }
+}
+
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     [
         {
@@ -823,6 +847,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "porta_potty_wall_particle"
             }
-        }
+        },
+        makeConcreteWall(
+            "concrete_wall_end",
+            "Concrete Wall End",
+            new RectangleHitbox(v(-1.2, -1), v(1.2, 1))),
+        makeConcreteWall(
+            "concrete_wall_end_broken",
+            "Concrete Wall End_broken",
+            new RectangleHitbox(v(-1.2, -1), v(1.2, 1)),
+            2),
+        makeConcreteWall(
+            "concrete_wall_segment",
+            "Concrete Wall Segment",
+            new RectangleHitbox(v(-8, -1), v(8, 1))),
+        makeConcreteWall(
+            "concrete_wall_corner",
+            "Concrete Wall Corner",
+            new RectangleHitbox(v(-1, -1), v(1, 1)),
+        )
     ]
 );
