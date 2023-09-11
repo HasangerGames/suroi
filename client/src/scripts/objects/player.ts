@@ -526,7 +526,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         this.muzzleFlashFadeAnim = new Tween(this.game, {
                             target: muzzleFlash,
                             to: { alpha: 0 },
-                            duration: 85,
+                            duration: 100,
                             onComplete: () => muzzleFlash.setVisible(false)
                         });
                         this.muzzleFlashRecoilAnim = new Tween(this.game, {
@@ -552,6 +552,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
 
                     if (weaponDef.particles) {
+                        const initialRotation = this.rotation + Math.PI / 2;
+                        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
                         this.game.particleManager.spawnParticle({
                             frames: `${weaponDef.ammoType}_particle.svg`,
                             depth: 3,
@@ -566,8 +568,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 end: 0,
                                 ease: EaseFunctions.sextIn
                             },
-                            rotation: this.rotation + randomFloat(-0.2, 0.2) + Math.PI / 2,
-                            speed: vRotate(randomVector(0.2, -0.5, 1, 1.5), this.rotation)
+                            rotation: {
+                                start: initialRotation,
+                                end: initialRotation + spinAmount
+                            },
+                            speed: vRotate(vAdd2(randomVector(0.2, -0.5, 1, 1.5), -(spinAmount / 4), 0), this.rotation)
                         });
                     }
                 }
