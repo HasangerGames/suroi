@@ -101,7 +101,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash.svg").setVisible(false),
+            muzzleFlash: new SuroiSprite("muzzle_flash.svg").setVisible(false).setDepth(7),
             emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
@@ -331,13 +331,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.leftFist.setDepth(1);
             this.images.rightFist.setDepth(1);
             this.images.weapon.setDepth(2);
-            this.images.muzzleFlash.setDepth(1);
             this.images.body.setDepth(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.leftFist.setDepth(3);
             this.images.rightFist.setDepth(3);
             this.images.weapon.setDepth(1);
-            this.images.muzzleFlash.setDepth(0);
             this.images.body.setDepth(1);
         }
         this.container.sortChildren();
@@ -516,20 +514,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
 
                     if (!weaponDef.noMuzzleFlash) {
-                        this.images.muzzleFlash.x = 11 + weaponDef.length * PIXI_SCALE;
-                        this.images.muzzleFlash.setVisible(true);
-                        this.images.muzzleFlash.alpha = 0.9;
+                        const muzzleFlash = this.images.muzzleFlash;
+                        muzzleFlash.x = 8 + weaponDef.length * PIXI_SCALE;
+                        muzzleFlash.setVisible(true);
+                        muzzleFlash.alpha = 0.95;
+                        const scale = randomFloat(0.75, 1);
+                        muzzleFlash.scale = v(scale, scale * (randomBoolean() ? 1 : -1));
+                        muzzleFlash.rotation += Math.PI * 2;
                         this.muzzleFlashFadeAnim?.kill();
                         this.muzzleFlashRecoilAnim?.kill();
                         this.muzzleFlashFadeAnim = new Tween(this.game, {
-                            target: this.images.muzzleFlash,
+                            target: muzzleFlash,
                             to: { alpha: 0 },
-                            duration: 250,
-                            onComplete: () => this.images.muzzleFlash.setVisible(false)
+                            duration: 85,
+                            onComplete: () => muzzleFlash.setVisible(false)
                         });
                         this.muzzleFlashRecoilAnim = new Tween(this.game, {
-                            target: this.images.muzzleFlash,
-                            to: { x: this.images.muzzleFlash.x - recoilAmount },
+                            target: muzzleFlash,
+                            to: { x: muzzleFlash.x - recoilAmount },
                             duration: 50,
                             yoyo: true
                         });

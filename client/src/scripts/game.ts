@@ -103,7 +103,7 @@ export class Game {
 
         this.map = new Minimap(this);
 
-        this.playersContainer.zIndex = 3;
+        this.playersContainer.zIndex = 4;
         this.bulletsContainer.zIndex = 3;
 
         setInterval(() => {
