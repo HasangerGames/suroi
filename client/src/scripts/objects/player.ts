@@ -516,16 +516,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
 
                     if (!weaponDef.noMuzzleFlash) {
-                        this.images.muzzleFlash.x = 16 + weaponDef.length * PIXI_SCALE;
+                        this.images.muzzleFlash.x = 11 + weaponDef.length * PIXI_SCALE;
                         this.images.muzzleFlash.setVisible(true);
-                        this.images.muzzleFlash.alpha = 1;
+                        this.images.muzzleFlash.alpha = 0.9;
                         this.muzzleFlashFadeAnim?.kill();
                         this.muzzleFlashRecoilAnim?.kill();
                         this.muzzleFlashFadeAnim = new Tween(this.game, {
                             target: this.images.muzzleFlash,
                             to: { alpha: 0 },
-                            duration: 500,
-                            ease: EaseFunctions.sextIn,
+                            duration: 250,
                             onComplete: () => this.images.muzzleFlash.setVisible(false)
                         });
                         this.muzzleFlashRecoilAnim = new Tween(this.game, {
