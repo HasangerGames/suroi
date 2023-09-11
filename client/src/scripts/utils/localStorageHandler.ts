@@ -90,7 +90,7 @@ export const defaultConfig: Config = {
         interact: ["F", ""],
         slot1: ["1", ""],
         slot2: ["2", ""],
-        slot3: ["3", ""],
+        slot3: ["3", "E"],
         lastEquippedItem: ["Q", ""],
         equipOtherGun: ["Space", ""],
         swapGunSlots: ["T", ""],
