@@ -155,7 +155,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                     scale: {
                         start: randomFloat(0.85, 0.95),
                         end: 0,
-                        ease: EaseFunctions.quadIn
+                        ease: EaseFunctions.quartIn
                     },
                     alpha: {
                         start: 1,

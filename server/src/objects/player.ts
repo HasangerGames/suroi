@@ -299,13 +299,13 @@ export class Player extends GameObject {
             this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
         }
 
-        /*this.inventory.addOrReplaceWeapon(0, "mosin");
-        (this.inventory.getWeapon(0) as GunItem).ammo = 5;
-        this.inventory.items["762mm"] = Infinity;
-
-        this.inventory.addOrReplaceWeapon(1, "m37");
-        (this.inventory.getWeapon(1) as GunItem).ammo = 5;
-        this.inventory.items["12g"] = Infinity;*/
+        /*const giveWeapon = (idString: string, index: number): void => {
+            this.inventory.addOrReplaceWeapon(index, idString);
+            const primaryItem = this.inventory.getWeapon(index) as GunItem;
+            const primaryDefinition = primaryItem.definition;
+            primaryItem.ammo = primaryDefinition.capacity;
+            this.inventory.items[primaryDefinition.ammoType] = Infinity;
+        };*/
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;

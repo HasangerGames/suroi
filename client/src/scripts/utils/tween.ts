@@ -84,7 +84,7 @@ export class Tween<T> {
 
 // Credit to https://easings.net/
 export const EaseFunctions = {
-    quadIn: (x: number) => Math.pow(x, 4),
+    quartIn: (x: number) => x * x * x * x,
     sextIn: (x: number) => Math.pow(x, 6),
     sineIn: (x: number) => 1 - Math.cos((x * Math.PI) / 2),
     sineOut: (x: number) => Math.sin((x * Math.PI) / 2),

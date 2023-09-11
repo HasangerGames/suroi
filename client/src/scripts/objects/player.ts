@@ -62,6 +62,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
+        readonly muzzleFlash: SuroiSprite
         readonly emoteBackground: SuroiSprite
         readonly emoteImage: SuroiSprite
     };
@@ -74,6 +75,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     leftFistAnim?: Tween<SuroiSprite>;
     rightFistAnim?: Tween<SuroiSprite>;
     weaponAnim?: Tween<SuroiSprite>;
+    muzzleFlashFadeAnim?: Tween<SuroiSprite>;
+    muzzleFlashRecoilAnim?: Tween<SuroiSprite>;
 
     _emoteHideTimeoutID?: NodeJS.Timeout;
 
@@ -98,6 +101,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
+            muzzleFlash: new SuroiSprite("muzzle_flash.svg").setVisible(false),
             emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
@@ -108,6 +112,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.leftFist,
             this.images.rightFist,
             this.images.weapon,
+            this.images.muzzleFlash,
             this.images.backpack,
             this.images.helmet
         );
@@ -304,6 +309,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     updateWeapon(): void {
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
+        this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
                 this.images.weapon.setFrame(`${weaponDef.idString}.svg`);
@@ -313,8 +319,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
 
-            if (this.isActivePlayer && this.activeItem.idNumber !== this.oldItem) {
-                this.playSound(`${this.activeItem.idString}_switch`, 0);
+            if (this.activeItem.idNumber !== this.oldItem) {
+                this.muzzleFlashFadeAnim?.kill();
+                this.muzzleFlashRecoilAnim?.kill();
+                this.images.muzzleFlash.alpha = 0;
+                if (this.isActivePlayer) this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
         }
 
@@ -322,11 +331,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.leftFist.setDepth(1);
             this.images.rightFist.setDepth(1);
             this.images.weapon.setDepth(2);
+            this.images.muzzleFlash.setDepth(1);
             this.images.body.setDepth(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.leftFist.setDepth(3);
             this.images.rightFist.setDepth(3);
             this.images.weapon.setDepth(1);
+            this.images.muzzleFlash.setDepth(0);
             this.images.body.setDepth(1);
         }
         this.container.sortChildren();
@@ -504,6 +515,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
 
+                    if (!weaponDef.noMuzzleFlash) {
+                        this.images.muzzleFlash.x = 16 + weaponDef.length * PIXI_SCALE;
+                        this.images.muzzleFlash.setVisible(true);
+                        this.images.muzzleFlash.alpha = 1;
+                        this.muzzleFlashFadeAnim?.kill();
+                        this.muzzleFlashRecoilAnim?.kill();
+                        this.muzzleFlashFadeAnim = new Tween(this.game, {
+                            target: this.images.muzzleFlash,
+                            to: { alpha: 0 },
+                            duration: 500,
+                            ease: EaseFunctions.sextIn,
+                            onComplete: () => this.images.muzzleFlash.setVisible(false)
+                        });
+                        this.muzzleFlashRecoilAnim = new Tween(this.game, {
+                            target: this.images.muzzleFlash,
+                            to: { x: this.images.muzzleFlash.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        });
+                    }
+
                     this.leftFistAnim = new Tween(this.game, {
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.left.x - recoilAmount },
@@ -578,5 +610,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.leftFistAnim?.kill();
         this.rightFistAnim?.kill();
         this.weaponAnim?.kill();
+        this.muzzleFlashFadeAnim?.kill();
+        this.muzzleFlashRecoilAnim?.kill();
     }
 }

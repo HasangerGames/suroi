@@ -42,6 +42,8 @@ export type GunDefinition = ItemDefinition & {
         readonly position: Vector
     }
 
+    readonly noMuzzleFlash?: boolean
+
     readonly ballistics: BulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -71,7 +73,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 4,
-        length: 10,
+        length: 8.9,
         fists: {
             left: v(122, -3),
             right: v(62, 0),
@@ -106,7 +108,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 2,
         canQuickswitch: true,
         bulletCount: 9,
-        length: 10,
+        length: 11,
         fists: {
             left: v(120, -3),
             right: v(47, 0),
@@ -142,7 +144,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 3,
         canQuickswitch: true,
         bulletCount: 10,
-        length: 10,
+        length: 10.6,
         fists: {
             left: v(145, -3),
             right: v(60, 0),
@@ -179,7 +181,7 @@ export const Guns: GunDefinition[] = [
         shotSpread: 30,
         moveSpread: 7,
         canQuickswitch: true,
-        length: 11,
+        length: 10.2,
         fists: {
             left: v(150, -3),
             right: v(75, 0),
@@ -251,7 +253,7 @@ export const Guns: GunDefinition[] = [
         shotSpread: 0.3,
         moveSpread: 0.3,
         canQuickswitch: true,
-        length: 13,
+        length: 13.9,
         fists: {
             left: v(145, -1),
             right: v(75, 0),
@@ -284,7 +286,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 7,
         moveSpread: 7,
-        length: 6,
+        length: 5.8,
         fists: {
             left: v(70, 4),
             right: v(65, 0),
@@ -317,7 +319,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 12,
         moveSpread: 7,
-        length: 6,
+        length: 6.7,
         fists: {
             left: v(70, 4),
             right: v(65, 0),
@@ -352,7 +354,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Burst,
         shotSpread: 3,
         moveSpread: 1,
-        length: 9,
+        length: 8.7,
         fists: {
             left: v(130, -6),
             right: v(65, 0),
@@ -424,7 +426,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 4,
         moveSpread: 7,
-        length: 9.5,
+        length: 11.2,
         fists: {
             left: v(157, -4),
             right: v(100, 0),
@@ -459,7 +461,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 9,
         moveSpread: 10,
-        length: 6,
+        length: 6.8,
         fists: {
             left: v(70, 4),
             right: v(65, 0),
@@ -492,7 +494,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 2,
-        length: 8,
+        length: 10.1,
         fists: {
             left: v(140, -5),
             right: v(65, 0),
@@ -525,7 +527,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 2,
-        length: 9,
+        length: 10.8,
         fists: {
             left: v(130, -6),
             right: v(65, 0),
@@ -559,7 +561,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 4,
-        length: 14,
+        length: 13.5,
         fists: {
             left: v(130, -6),
             right: v(65, 0),
@@ -594,7 +596,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 2,
         moveSpread: 1.5,
-        length: 10,
+        length: 11.4,
         fists: {
             left: v(130, -6),
             right: v(65, 0),
@@ -604,6 +606,7 @@ export const Guns: GunDefinition[] = [
         particles: {
             position: v(5, 0.5)
         },
+        noMuzzleFlash: true,
         ballistics: {
             damage: 24,
             obstacleMultiplier: 1.5,
@@ -632,13 +635,14 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         killstreak: true,
         bulletCount: 1,
-        length: 10,
+        length: 9.7,
         fists: {
             left: v(135, -6),
             right: v(75, 0),
             animationDuration: 100
         },
         image: { position: v(90, 0) },
+        noMuzzleFlash: true,
         ballistics: {
             damage: 800,
             obstacleMultiplier: 2,
