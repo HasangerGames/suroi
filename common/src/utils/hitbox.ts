@@ -14,7 +14,8 @@ import {
     addAdjust,
     lineIntersectsRect,
     lineIntersectsCircle,
-    type IntersectionResponse
+    type IntersectionResponse,
+    distanceSquared
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -288,11 +289,18 @@ export class ComplexHitbox extends Hitbox {
     }
 
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        const intersections: Array<{ point: Vector, normal: Vector }> = [];
+
+        // get the closest intersection point from the start of the line
         for (const hitbox of this.hitboxes) {
             const intersection = hitbox.intersectsLine(a, b);
-            if (intersection) return intersection;
+            if (intersection) intersections.push(intersection);
         }
-        return null;
+
+        intersections.sort((c, d) => {
+            return distanceSquared(c.point, a) - distanceSquared(d.point, a);
+        });
+        return intersections[0] ?? null;
     }
 
     randomPoint(): Vector {

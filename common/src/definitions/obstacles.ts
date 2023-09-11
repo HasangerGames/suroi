@@ -287,7 +287,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             indestructible: true,
-            hitbox: new RectangleHitbox(v(-13, -6.85), v(13, 6.85)),
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-8.4, -6.8), v(8.4, 6.8)),
+                new RectangleHitbox(v(-13, -1), v(13, 1)),
+                new CircleHitbox(5, v(-8, 1.8)),
+                new CircleHitbox(5, v(-8, -1.8)),
+                new CircleHitbox(5, v(8, 1.8)),
+                new CircleHitbox(5, v(8, -1.8))
+            ]),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
             rotationMode: "limited",
             frames: {
