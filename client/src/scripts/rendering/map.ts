@@ -58,10 +58,8 @@ export class Minimap {
 
         this.indicator.scale.set(0.1);
 
-        this.gasGraphics.zIndex = 9999;
-        this.indicator.zIndex = 9999;
         this.sprite.position.set(-this.oceanPadding);
-        this.objectsContainer.addChild(this.sprite, this.indicator, this.gas.graphics, this.gasGraphics).sortChildren();
+        this.objectsContainer.addChild(this.sprite, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         $("#minimap-border").on("click", (e) => {
             if (isMobile.any) {
