@@ -2,7 +2,7 @@ import { Color } from "pixi.js";
 
 export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = true;
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

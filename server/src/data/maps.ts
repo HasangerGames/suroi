@@ -214,5 +214,12 @@ export const Maps: Record<string, MapDefinition> = {
                 }
             }
         }
+    },
+    refinery: {
+        width: 512,
+        height: 512,
+        genCallback(map) {
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
+        }
     }
 };

@@ -44,14 +44,26 @@ export interface BuildingDefinition extends ObjectDefinition {
     obstacles: BuildingObstacle[]
     lootSpawners?: LootSpawner[]
 
-    floorImagePos: Vector
-    ceilingImagePos: Vector
+    floorImages: Array<{
+        key: string
+        position: Vector
+    }>
+    ceilingImages: Array<{
+        key: string
+        position: Vector
+        residue?: string
+    }>
 
     // How many walls need to be broken to destroy the ceiling
     wallsToDestroy?: number
 
     floors: Array<{
         type: string
+        hitbox: Hitbox
+    }>
+
+    groundGraphics?: Array<{
+        color: number
         hitbox: Hitbox
     }>
 }
@@ -63,8 +75,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: new RectangleHitbox(v(-10, -10), v(10, 10)),
         ceilingHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
         scopeHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
-        floorImagePos: v(0, 0),
-        ceilingImagePos: v(0, 0),
+        floorImages: [{
+            key: "porta_potty_floor.png",
+            position: v(0, 1.5)
+        }],
+        ceilingImages: [{
+            key: "porta_potty_ceiling.png",
+            position: v(0, 0),
+            residue: "porta_potty_residue.png"
+        }],
         wallsToDestroy: 2,
         floors: [
             {
@@ -128,8 +147,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new RectangleHitbox(v(-47.5, -36.5), v(13, 19.5)), // Main House
             new RectangleHitbox(v(-39, 19), v(-24, 30)) // Doorstep
         ]),
-        floorImagePos: v(0, 0),
-        ceilingImagePos: v(0, -1.5),
+        floorImages: [{
+            key: "house_floor.png",
+            position: v(0, 0)
+        }],
+        ceilingImages: [{
+            key: "house_ceiling.png",
+            position: v(0, -1.5)
+        }],
         floors: [
             {
                 type: "stone",
@@ -365,9 +390,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: new RectangleHitbox(v(-30, -44), v(30, 44)),
         ceilingHitbox: new RectangleHitbox(v(-20, -40), v(20, 40)),
         scopeHitbox: new RectangleHitbox(v(-20, -35), v(20, 35)),
-
-        floorImagePos: v(0, -0.31),
-        ceilingImagePos: v(0, 0),
+        floorImages: [{
+            key: "warehouse_floor.png",
+            position: v(0, 0)
+        }],
+        ceilingImages: [{
+            key: "warehouse_ceiling.png",
+            position: v(0, -1.5)
+        }],
         floors: [
             {
                 type: "stone",
@@ -470,6 +500,50 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 position: v(0, 0),
                 table: "warehouse"
+            }
+        ]
+    },
+    {
+        idString: "refinery",
+        name: "Refinery",
+        spawnHitbox: new RectangleHitbox(v(-56, -42), v(120, 80)),
+        scopeHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
+            new RectangleHitbox(v(-16, -36), v(49.5, -6.5))
+        ]),
+        ceilingHitbox: new ComplexHitbox([
+            new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
+            new RectangleHitbox(v(-16, -36), v(49.5, -6.5)),
+            new CircleHitbox(5, v(-16, 18.5))
+        ]),
+        floorImages: [
+            {
+                key: "refinery_floor.png",
+                position: v(0, 0)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "refinery_ceiling.png",
+                position: v(0, 0)
+            }
+        ],
+        groundGraphics: [
+            {
+                color: 0x595959,
+                hitbox: new RectangleHitbox(v(-56, -42), v(120, 80))
+            },
+            {
+                color: 0xb2b200,
+                hitbox: new CircleHitbox(10, v(50, 50))
+            }
+        ],
+        floors: [],
+        obstacles: [
+            {
+                id: "window",
+                position: v(-16, 18.5),
+                rotation: 0
             }
         ]
     }
