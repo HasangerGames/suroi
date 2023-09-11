@@ -514,7 +514,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
             new RectangleHitbox(v(-16, -36), v(49.5, -6.5)),
-            new CircleHitbox(5, v(-16, 18.5))
+            new RectangleHitbox(v(22, -7), v(35, 0)), // door
+            new CircleHitbox(5, v(-16, 18.5)) // window
         ]),
         floorImages: [
             {
@@ -541,89 +542,54 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [],
         obstacles: [
             {
+                id: "refinery_walls",
+                position: v(0, 0),
+                rotation: 0
+            },
+            {
                 id: "window",
                 position: v(-16, 18.5),
                 rotation: 0
             },
-
+            //
+            // Exterior Walls
+            //
             // bottom left walls
-            {
-                id: "concrete_wall_end",
-                position: v(-15, 80),
-                rotation: 0
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-24, 80),
-                rotation: 0
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-39, 80),
-                rotation: 0
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-44, 80),
-                rotation: 0
-            },
-            {
-                id: "concrete_wall_corner",
-                position: v(-53, 80),
-                rotation: 0
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, 71.4),
-                rotation: 1
-            },
-            {
-                id: "concrete_wall_end_broken",
-                position: v(-53, 62.5),
-                rotation: 1
-            },
+            { id: "concrete_wall_end", position: v(-15, 80), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(-32, 80), rotation: 0 },
+            { id: "concrete_wall_segment", position: v(-44.3, 80), rotation: 0 },
+            { id: "concrete_wall_corner", position: v(-53, 80), rotation: 0 },
+            { id: "concrete_wall_segment", position: v(-53, 71.4), rotation: 1 },
+            { id: "concrete_wall_end_broken", position: v(-53, 62.5), rotation: 1 },
             // wall from bottom left to top left
-            {
-                id: "concrete_wall_end_broken",
-                position: v(-53, 44),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, 35),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, 20),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, 5),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, -10),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, -25),
-                rotation: 3
-            },
-            {
-                id: "concrete_wall_segment",
-                position: v(-53, -32),
-                rotation: 3
-            },
+            { id: "concrete_wall_end_broken", position: v(-53, 44), rotation: 3 },
+            { id: "concrete_wall_segment_long", position: v(-53, 28), rotation: 3 },
+            { id: "concrete_wall_segment_long", position: v(-53, 0), rotation: 3 },
+            { id: "concrete_wall_segment_long", position: v(-53, -23.3), rotation: 3 },
             // top left corner
-            {
-                id: "concrete_wall_corner",
-                position: v(-53, -40),
-                rotation: 3
-            },
+            { id: "concrete_wall_corner", position: v(-53, -40), rotation: 3 },
+            { id: "concrete_wall_segment_long", position: v(-36.3, -40), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(-10, -40), rotation: 0 },
+            { id: "concrete_wall_end_broken", position: v(7, -40), rotation: 0 },
+            { id: "concrete_wall_end_broken", position: v(20, -40), rotation: 2 },
+            { id: "concrete_wall_segment_long", position: v(36, -40), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(65, -40), rotation: 0 },
+            { id: "concrete_wall_end", position: v(82, -40), rotation: 0 },
+            { id: "concrete_wall_end", position: v(102, -40), rotation: 2 },
+            { id: "concrete_wall_segment", position: v(110.2, -40), rotation: 2 },
+            // top right corner
+            { id: "concrete_wall_corner", position: v(119, -40), rotation: 2 },
+            { id: "concrete_wall_segment_long", position: v(119, -23.2), rotation: 1 },
+            { id: "concrete_wall_end", position: v(119, -7), rotation: 3 },
+            { id: "concrete_wall_end", position: v(119, 20), rotation: 1 },
+            { id: "concrete_wall_segment_long", position: v(119, 36), rotation: 1 },
+            { id: "concrete_wall_segment_long", position: v(119, 63.3), rotation: 1 },
+            // bottom right corner
+            { id: "concrete_wall_corner", position: v(119, 80), rotation: 1 },
+            { id: "concrete_wall_segment_long", position: v(102.3, 80), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(72, 80), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(43, 80), rotation: 0 },
+            { id: "concrete_wall_end", position: v(27, 80), rotation: 2 }
         ]
     }
 ]);

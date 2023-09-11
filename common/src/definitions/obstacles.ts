@@ -129,7 +129,7 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, variat
         frames: {
             particle: "rock_particle"
         }
-    }
+    };
 }
 
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
@@ -862,9 +862,44 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             "Concrete Wall Segment",
             new RectangleHitbox(v(-8, -1), v(8, 1))),
         makeConcreteWall(
+            "concrete_wall_segment_long",
+            "Concrete Wall Segment Long",
+            new RectangleHitbox(v(-16, -1), v(16, 1))),
+        makeConcreteWall(
             "concrete_wall_corner",
             "Concrete Wall Corner",
-            new RectangleHitbox(v(-1, -1), v(1, 1)),
-        )
+            new RectangleHitbox(v(-1, -1), v(1, 1))
+        ),
+        {
+            idString: "refinery_walls",
+            name: "Refinery Walls",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-50.5, -37), v(6.5, -35.2)), // First topmost wall
+                new RectangleHitbox(v(20, -37), v(50.75, -35.2)), // Wall after the hole
+                new RectangleHitbox(v(48.75, -35.2), v(50.75, -5.5)), // Wall from top right to bottom right
+                new RectangleHitbox(v(35, -7.55), v(50.75, -5.5)), // Wall to the right of the entrance
+                new RectangleHitbox(v(-17, -7.55), v(21.5, -5.5)), // Wall to the left of the entrance
+                new RectangleHitbox(v(-17, -7.55), v(-15, 14)), // Wall on top of the window
+                new RectangleHitbox(v(-17, 23.5), v(-15, 37)), // Wall bellow the window
+                new RectangleHitbox(v(-50.5, 35.25), v(-15, 37.25)), // Bottommost wall
+                new RectangleHitbox(v(-50.5, -37), v(-49, 37)), // Wall from topmost to bottommost
+                new RectangleHitbox(v(-50, 8), v(-37, 10)), // inner door walls
+                new RectangleHitbox(v(-26.5, 8), v(-16, 10))
+            ]),
+            rotationMode: "limited",
+            frames: {
+                particle: "wall_particle"
+            }
+        }
     ]
 );
