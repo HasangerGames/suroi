@@ -1,4 +1,4 @@
-Menu music - TTGetDunkedOn
+Menu music - Pixelbitie - Marching with Style: https://www.youtube.com/watch?v=_7lqVysj1ww
 
 Most sound effects edited by Henry Sanger
 
@@ -12,6 +12,9 @@ Guns:
 
   HP18 fire - "Normal Shotgun" by Soundeffects: https://soundbible.com/2020-Normal-Shotgun.html
   HP18 reload - "Reloading Magazine" by Fesliyan Studios:https://www.fesliyanstudios.com/play-mp3/7550, https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
+
+  ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
+
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
 Obstacles:

@@ -1,5 +1,4 @@
-import { Maps } from "./data/maps";
-import { type Vector, v } from "../../common/src/utils/vector";
+import { type Vector } from "../../common/src/utils/vector";
 
 export enum SpawnMode { Random, Radius, Fixed }
 export enum GasMode { Normal, Debug, Disabled }
@@ -125,10 +124,10 @@ export const Config = {
     movementSpeed: 0.77,
 
     spawn: {
-        mode: SpawnMode.Fixed,
+        mode: SpawnMode.Random/*,
         get position() {
             return v(Maps[Config.mapName].width / 2, Maps[Config.mapName].height / 2);
-        }
+        }*/
     },
 
     playerLimit: 80,

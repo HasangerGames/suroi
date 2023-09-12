@@ -91,6 +91,72 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "arx160",
+        name: "ARX-160",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.75,
+        fireDelay: 75,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 145,
+        fireMode: FireMode.Auto,
+        shotSpread: 5,
+        moveSpread: 10,
+        length: 11.7,
+        fists: {
+            left: v(140, -6),
+            right: v(62, 0),
+            animationDuration: 100
+        },
+        image: { position: v(170, -1) },
+        particles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 13,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            maxDistance: 160
+        }
+    },
+    {
+        idString: "aug",
+        name: "AUG",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 90,
+        fireDelay: 70,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 120,
+        fireMode: FireMode.Auto,
+        shotSpread: 4,
+        moveSpread: 7,
+        length: 11.2,
+        fists: {
+            left: v(157, -4),
+            right: v(100, 0),
+            animationDuration: 100
+        },
+        image: { position: v(103, -4) },
+        particles: {
+            position: v(4, 0.5)
+        },
+        capacity: 30,
+        reloadTime: 2.25,
+        ballistics: {
+            damage: 11.25,
+            obstacleMultiplier: 1.5,
+            speed: 0.28,
+            maxDistance: 160
+        }
+    },
+    {
         idString: "m3k",
         name: "M3K",
         itemType: ItemType.Gun,
@@ -410,39 +476,6 @@ export const Guns: GunDefinition[] = [
         burstProperties: {
             shotsPerBurst: 3,
             burstCooldown: 400
-        }
-    },
-    {
-        idString: "aug",
-        name: "AUG",
-        itemType: ItemType.Gun,
-        ammoType: "556mm",
-        ammoSpawnAmount: 90,
-        fireDelay: 70,
-        switchDelay: 400,
-        speedMultiplier: 0.92,
-        recoilMultiplier: 0.75,
-        recoilDuration: 120,
-        fireMode: FireMode.Auto,
-        shotSpread: 4,
-        moveSpread: 7,
-        length: 11.2,
-        fists: {
-            left: v(157, -4),
-            right: v(100, 0),
-            animationDuration: 100
-        },
-        image: { position: v(103, -4) },
-        particles: {
-            position: v(4, 0.5)
-        },
-        capacity: 30,
-        reloadTime: 2.25,
-        ballistics: {
-            damage: 11.25,
-            obstacleMultiplier: 1.5,
-            speed: 0.28,
-            maxDistance: 160
         }
     },
     {
