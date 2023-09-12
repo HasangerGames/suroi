@@ -506,7 +506,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "refinery",
         name: "Refinery",
-        spawnHitbox: new RectangleHitbox(v(-55, -42), v(120, 80)),
+        spawnHitbox: new RectangleHitbox(v(-55, -42), v(122, 82)),
         scopeHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
             new RectangleHitbox(v(-16, -36), v(49.5, -6.5))
@@ -530,14 +530,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
-            {
-                color: 0x595959,
-                hitbox: new RectangleHitbox(v(-53, -40), v(120, 80))
-            },
-            {
-                color: 0xb2b200,
-                hitbox: new CircleHitbox(10, v(50, 50))
-            }
+            { color: 0x595959, hitbox: new RectangleHitbox(v(-53, -40), v(120, 80)) }, // base
+            { color: 0xb2b200, hitbox: new CircleHitbox(18, v(52, 58)) }, // circles
+            { color: 0x505050, hitbox: new CircleHitbox(16, v(52, 58)) },
+            { color: 0xb2b200, hitbox: new CircleHitbox(18, v(95, 58)) },
+            { color: 0x505050, hitbox: new CircleHitbox(16, v(95, 58)) },
+            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10, 2), v(-8, 80)) }, // roads
+            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10 + 30, 2 + 30), v(-8 + 30, 80)) },
+            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10, 2), v(120, 4)) },
+            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10 + 30, 2 + 30), v(120, 4 + 30)) }
         ],
         floors: [],
         obstacles: [
@@ -550,6 +551,34 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "window",
                 position: v(-16, 18.5),
                 rotation: 0
+            },
+            {
+                id: "door",
+                position: v(-31.15, 9.2),
+                rotation: 0
+            },
+            {
+                id: "table",
+                position: v(-22, 28),
+                rotation: 0
+            },
+            {
+                id: "chair",
+                position: v(-26, 28),
+                rotation: 3
+            },
+            //
+            // Exterior Obstacles
+            //
+            { // bottom left
+                id: "oil_tank",
+                position: v(-38, 71),
+                rotation: 0
+            },
+            { // top right
+                id: "oil_tank",
+                position: v(109, -25),
+                rotation: 1
             },
             //
             // Exterior Walls
@@ -574,15 +603,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "concrete_wall_end_broken", position: v(20, -40), rotation: 2 },
             { id: "concrete_wall_segment_long", position: v(36, -40), rotation: 0 },
             { id: "concrete_wall_segment_long", position: v(65, -40), rotation: 0 },
-            { id: "concrete_wall_end", position: v(82, -40), rotation: 0 },
-            { id: "concrete_wall_end", position: v(102, -40), rotation: 2 },
+            { id: "concrete_wall_end_broken", position: v(82, -40), rotation: 0 },
+            { id: "concrete_wall_end_broken", position: v(102, -40), rotation: 2 },
             { id: "concrete_wall_segment", position: v(110.2, -40), rotation: 2 },
             // top right corner
             { id: "concrete_wall_corner", position: v(119, -40), rotation: 2 },
             { id: "concrete_wall_segment_long", position: v(119, -23.2), rotation: 1 },
-            { id: "concrete_wall_end", position: v(119, -7), rotation: 3 },
-            { id: "concrete_wall_end", position: v(119, 20), rotation: 1 },
-            { id: "concrete_wall_segment_long", position: v(119, 36), rotation: 1 },
+            { id: "concrete_wall_segment", position: v(119, -12), rotation: 1 },
+            { id: "concrete_wall_end", position: v(119, -4), rotation: 3 },
+            { id: "concrete_wall_end", position: v(119, 40), rotation: 1 },
+            { id: "concrete_wall_segment", position: v(119, 48), rotation: 1 },
             { id: "concrete_wall_segment_long", position: v(119, 63.3), rotation: 1 },
             // bottom right corner
             { id: "concrete_wall_corner", position: v(119, 80), rotation: 1 },

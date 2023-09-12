@@ -45,6 +45,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 1024,
         height: 1024,
         buildings: {
+            refinery: 1,
             warehouse: 4,
             house: 4,
             porta_potty: 10
