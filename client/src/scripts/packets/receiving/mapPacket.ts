@@ -2,7 +2,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { COLORS, PIXI_SCALE } from "../../utils/constants";
-import { Container, Graphics, RenderTexture, isMobile } from "pixi.js";
+import { Container, Graphics, RenderTexture, isMobile, Text } from "pixi.js";
 import { GRID_SIZE, ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
@@ -82,7 +82,7 @@ export class MapPacket extends ReceivingPacket {
             resolution: isMobile.any ? 1 : 2
         });
 
-        const numObstacles = stream.readBits(10);
+        const numObstacles = stream.readBits(11);
 
         for (let i = 0; i < numObstacles; i++) {
             const type = stream.readObjectType();
@@ -168,5 +168,30 @@ export class MapPacket extends ReceivingPacket {
             children: true,
             texture: false
         });
+
+        map.placesContainer.removeChildren();
+        const placesSize = stream.readBits(4);
+        for (let i = 0; i < placesSize; i++) {
+            const name = stream.readASCIIString(24);
+            const position = stream.readPosition();
+
+            const text = new Text(name, {
+                fill: "white",
+                fontFamily: "Inter",
+                fontWeight: "600",
+                stroke: "black",
+                strokeThickness: 2,
+                fontSize: 18,
+                dropShadow: true,
+                dropShadowAlpha: 0.8,
+                dropShadowColor: "black",
+                dropShadowBlur: 2
+            });
+            text.alpha = 0.7;
+            text.anchor.set(0.5);
+            text.position.copyFrom(position);
+            map.placesContainer.addChild(text);
+        }
+        map.resize();
     }
 }

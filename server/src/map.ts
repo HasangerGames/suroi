@@ -1,7 +1,7 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { type Variation, type Orientation } from "../../common/src/typings";
 import {
     random,
@@ -29,6 +29,11 @@ export class Map {
     readonly height: number;
 
     readonly beachHitbox: Hitbox;
+
+    readonly places: Array<{
+        name: string
+        position: Vector
+    }> = [];
 
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
@@ -83,6 +88,15 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
+
+        if (mapDefinition.places) {
+            for (const place of mapDefinition.places) {
+                this.places.push({
+                    name: place.name,
+                    position: vAdd(place.position, randomVector(-50, 50, -50, 50))
+                });
+            }
+        }
 
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
     }

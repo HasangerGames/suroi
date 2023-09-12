@@ -43,6 +43,8 @@ export class Minimap {
 
     gas = new Gas(1, this.objectsContainer);
 
+    placesContainer = new Container();
+
     constructor(game: Game) {
         this.game = game;
         game.pixi.stage.addChild(this.container);
@@ -59,7 +61,7 @@ export class Minimap {
         this.indicator.scale.set(0.1);
 
         this.sprite.position.set(-this.oceanPadding);
-        this.objectsContainer.addChild(this.sprite, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
+        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         $("#minimap-border").on("click", (e) => {
             if (isMobile.any) {
@@ -107,47 +109,43 @@ export class Minimap {
     }
 
     resize(): void {
-        if (this.expanded) this.resizeBigMap();
-        else this.resizeSmallMap();
-    }
+        if (this.expanded) {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const smallestDim = Math.min(screenHeight, screenWidth);
+            this.container.scale.set(smallestDim / (this.height + this.oceanPadding));
+            // noinspection JSSuspiciousNameCombination
+            this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
+            this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
+            this.margins = v(window.innerWidth / 2 - (this.minimapWidth / 2), 0);
 
-    reRender(): void {
+            const closeButton = $("#btn-close-minimap");
+            closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
+        } else {
+            if (!this.visible) return;
+
+            if (window.innerWidth > 1200) {
+                this.container.scale.set(1 / 1.25);
+                this.minimapWidth = 200;
+                this.minimapHeight = 200;
+                this.margins = v(20, 20);
+            } else {
+                this.container.scale.set(1 / 2);
+                this.minimapWidth = 125;
+                this.minimapHeight = 125;
+                this.margins = v(10, 10);
+            }
+        }
+
         this.mask.clear();
         this.mask.beginFill(0);
         this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
         this.updatePosition();
         this.updateTransparency();
-    }
 
-    resizeSmallMap(): void {
-        if (!this.visible) return;
-        if (window.innerWidth > 1200) {
-            this.container.scale.set(1 / 1.25);
-            this.minimapWidth = 200;
-            this.minimapHeight = 200;
-            this.margins = v(20, 20);
-        } else {
-            this.container.scale.set(1 / 2);
-            this.minimapWidth = 125;
-            this.minimapHeight = 125;
-            this.margins = v(10, 10);
+        for (const text of this.placesContainer.children) {
+            text.scale.set(1 / this.container.scale.x);
         }
-        this.reRender();
-    }
-
-    resizeBigMap(): void {
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const smallestDim = Math.min(screenHeight, screenWidth);
-        this.container.scale.set(smallestDim / (this.height + this.oceanPadding));
-        // noinspection JSSuspiciousNameCombination
-        this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
-        this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
-        this.margins = v(window.innerWidth / 2 - (this.minimapWidth / 2), 0);
-
-        const closeButton = $("#btn-close-minimap");
-        closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
-        this.reRender();
     }
 
     toggle(): void {
@@ -177,7 +175,7 @@ export class Minimap {
 
     switchToBigMap(): void {
         this.expanded = true;
-        this.resizeBigMap();
+        this.resize();
         this.container.visible = true;
         $("#minimap-border").hide();
         $("#scopes-container").hide();
@@ -198,7 +196,7 @@ export class Minimap {
             this.container.visible = false;
             return;
         }
-        this.resizeSmallMap();
+        this.resize();
         $("#minimap-border").show();
     }
 
