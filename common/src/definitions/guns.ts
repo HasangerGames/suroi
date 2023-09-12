@@ -581,6 +581,41 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "stoner_63",
+        name: "Stoner 63",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 150,
+        capacity: 75,
+        reloadTime: 3.8,
+        fireDelay: 90,
+        switchDelay: 500,
+        speedMultiplier: 0.9,
+        recoilMultiplier: 0.7,
+        recoilDuration: 175,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 4.5,
+        length: 13.1,
+        fists: {
+            left: v(150, -6),
+            right: v(65, 0),
+            animationDuration: 100
+        },
+        image: { position: v(150, 0) },
+        particles: {
+            position: v(5.5, 0)
+        },
+        ballistics: {
+            damage: 14.25,
+            obstacleMultiplier: 2,
+            speed: 0.28,
+            maxDistance: 180,
+            tracerWidth: 1.1,
+            tracerLength: 1.4
+        }
+    },
+    {
         idString: "vss",
         name: "VSS",
         itemType: ItemType.Gun,
