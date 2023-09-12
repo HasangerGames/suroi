@@ -13,7 +13,7 @@ export class Minimap {
 
     expanded = false;
 
-    visible = localStorageInstance.config.minimapMinimized;
+    visible = true;
 
     mask = new Graphics();
 
@@ -54,7 +54,7 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (localStorageInstance.config.minimapMinimized && this.visible) this.toggleMiniMap();
+        if (localStorageInstance.config.minimapMinimized) this.toggleMiniMap();
 
         this.indicator.scale.set(0.1);
 
@@ -114,13 +114,13 @@ export class Minimap {
     reRender(): void {
         this.mask.clear();
         this.mask.beginFill(0);
-        this.mask.drawRoundedRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight, this.expanded ? 15 : 0);
+        this.mask.drawRect(this.margins.x, this.margins.y, this.minimapWidth, this.minimapHeight);
         this.updatePosition();
         this.updateTransparency();
-        $("#btn-close-minimap").css("left", `${this.margins.x + this.minimapWidth + 16}px`);
     }
 
     resizeSmallMap(): void {
+        if (!this.visible) return;
         if (window.innerWidth > 1200) {
             this.container.scale.set(1 / 1.25);
             this.minimapWidth = 200;
@@ -139,13 +139,14 @@ export class Minimap {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight;
         const smallestDim = Math.min(screenHeight, screenWidth);
-        const mapScale = screenWidth / screenHeight / 10;
-        const size = smallestDim === screenHeight ? smallestDim - smallestDim * mapScale : smallestDim;
-        this.container.scale.set(size / this.height);
+        this.container.scale.set(smallestDim / (this.height + this.oceanPadding));
         // noinspection JSSuspiciousNameCombination
         this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
         this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
-        this.margins = v(window.innerWidth / 2 - (size / 2) - (this.oceanPadding / 2) * this.container.scale.x, 15 * this.container.scale.y);
+        this.margins = v(window.innerWidth / 2 - (this.minimapWidth / 2), 0);
+
+        const closeButton = $("#btn-close-minimap");
+        closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
         this.reRender();
     }
 
@@ -163,7 +164,7 @@ export class Minimap {
     updatePosition(): void {
         if (this.expanded) {
             this.container.position.set(window.innerWidth / 2, 0);
-            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2 + 15);
+            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2);
             return;
         }
         const pos = vClone(this.position);
@@ -177,19 +178,26 @@ export class Minimap {
     switchToBigMap(): void {
         this.expanded = true;
         this.resizeBigMap();
+        this.container.visible = true;
         $("#minimap-border").hide();
         $("#scopes-container").hide();
         $("#gas-msg-info").hide();
         $("#btn-close-minimap").show();
+        $("#center-bottom-container").hide();
     }
 
     switchToSmallMap(): void {
         this.expanded = false;
+        $("#btn-close-minimap").hide();
+        $("#center-bottom-container").show();
+        $("#gas-msg-info").show();
+        $("#scopes-container").show();
+        if (!this.visible) {
+            this.container.visible = false;
+            return;
+        }
         this.resizeSmallMap();
         $("#minimap-border").show();
-        $("#scopes-container").show();
-        $("#gas-msg-info").show();
-        $("#btn-close-minimap").hide();
     }
 
     updateTransparency(): void {
@@ -198,6 +206,8 @@ export class Minimap {
 
     toggleMiniMap(noSwitchToggle = false): void {
         this.visible = !this.visible;
+
+        this.switchToSmallMap();
         this.container.visible = this.visible;
         $("#minimap-border").toggle(this.visible);
         localStorageInstance.update({ minimapMinimized: !this.visible });

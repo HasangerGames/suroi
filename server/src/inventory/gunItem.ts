@@ -136,13 +136,7 @@ export class GunItem extends InventoryItem {
         }
 
         if (this.ammo <= 0) {
-            this._reloadTimeoutID = setTimeout(
-                () => {
-                    this.reload();
-                },
-                this.definition.fireDelay
-            );
-
+            this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
             this._shots = 0;
             return;
         }
@@ -167,13 +161,14 @@ export class GunItem extends InventoryItem {
         }
     }
 
-    reload(): void {
+    reload(skipFireDelayCheck = false): void {
         if (
             this.definition.infiniteAmmo === true ||
             this.ammo >= this.definition.capacity ||
             this.owner.inventory.items[this.definition.ammoType] <= 0 ||
             this.owner.action !== undefined ||
-            this.owner.activeItem !== this
+            this.owner.activeItem !== this ||
+            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)
         ) return;
 
         this.owner.executeAction(new ReloadAction(this.owner, this));

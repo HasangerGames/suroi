@@ -3,6 +3,7 @@ import { type Vector, v, vAdd, vMul, vAdd2 } from "../../../../common/src/utils/
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Game } from "../game";
 import { randomFloat } from "../../../../common/src/utils/random";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class Camera {
     pixi: Application;
@@ -70,6 +71,7 @@ export class Camera {
     }
 
     shake(duration: number, intensity: number): void {
+        if (!localStorageInstance.config.cameraShake) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;
