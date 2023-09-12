@@ -718,6 +718,39 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "mini14",
+        name: "Mini-14",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 80,
+        capacity: 20,
+        reloadTime: 2.4,
+        fireDelay: 155,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.8,
+        recoilDuration: 140,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 2.5,
+        length: 11.9,
+        fists: {
+            left: v(130, -6),
+            right: v(61, 0),
+            animationDuration: 100
+        },
+        image: { position: v(120, 1.5) },
+        particles: {
+            position: v(5, 0.5)
+        },
+        ballistics: {
+            damage: 25.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            maxDistance: 230
+        }
+    },
+    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
