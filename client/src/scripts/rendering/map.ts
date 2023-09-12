@@ -184,6 +184,7 @@ export class Minimap {
         $("#gas-msg-info").hide();
         $("#btn-close-minimap").show();
         $("#center-bottom-container").hide();
+        $("#kill-counter").show();
     }
 
     switchToSmallMap(): void {
@@ -192,6 +193,7 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+        $("#kill-counter").hide();
         if (!this.visible) {
             this.container.visible = false;
             return;

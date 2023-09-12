@@ -155,7 +155,7 @@
         right: 5px;
     }
 
-    .alive-counter {
+    .counter {
         margin-left: auto;
         width: fit-content;
         display: flex;
@@ -163,7 +163,7 @@
         border-radius: 8px;
         justify-content: center;
         align-items: center;
-        padding: 8px 10px 8px 14px;
+        padding: 8px 10px 8px 16px;
         gap: 10px;
 
         @media screen and (max-width: $screen_large) {
@@ -171,30 +171,17 @@
             gap: 5px;
         }
 
-        .divider {
-            display: inline-block;
-            height: 50px;
-            width: 2px;
-            background-color: white;
+        img {
+            width: 32px;
+            height: 32px;
 
             @media screen and (max-width: $screen_large) {
-                height: 25px;
+                width: 16px;
+                height: 16px;
             }
         }
 
-        #ui-alive-text {
-            font-family: "Russo One", sans-serif;
-            font-size: 32px;
-            padding-right: 8px;
-            position: relative;
-            bottom: -1px;
-
-            @media screen and (max-width: $screen_large) {
-                font-size: 16px;
-            }
-        }
-
-        #ui-players-alive {
+        .counter-text {
             padding-left: 5px;
             padding-right: 8px;
             font-weight: bold;

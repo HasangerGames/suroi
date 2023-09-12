@@ -169,12 +169,13 @@
       <div class="inventory-container" id="scopes-container">
       </div>
       <div class="ui-leaderboard">
-        <div class="alive-counter">
-          <span id="ui-alive-text">ALIVE</span>
-          <span class="divider">
-            <span style="visibility: hidden">.</span>
-          </span>
-          <div id="ui-players-alive">1</div>
+        <div class="counter">
+          <img src="/img/misc/player_icon.svg">
+          <div class="counter-text" id="ui-players-alive">1</div>
+        </div>
+        <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
+          <img src="/img/misc/skull_icon.svg">
+          <div class="counter-text" id="ui-kills">0</div>
         </div>
         <div id="kill-feed"></div>
       </div>
@@ -487,7 +488,7 @@
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><img src="/img/misc/skins_icon.svg">Skins</button>
+        <button class="tab active" id="tab-skins"><img src="/img/misc/player_icon.svg">Skins</button>
         <button class="tab" id="tab-emotes"><img src="/img/misc/emotes_icon.svg">Emotes</button>
       </div>
       <div id="customize-tabs">

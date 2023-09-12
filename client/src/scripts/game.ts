@@ -137,6 +137,7 @@ export class Game {
                 clearTimeout(gameOverScreenTimeout);
                 $("#game-over-screen").hide();
                 $("#kill-msg").hide();
+                $("#ui-kills").text("0");
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
