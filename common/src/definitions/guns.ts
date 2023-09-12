@@ -652,6 +652,39 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "sr25",
+        name: "SR-25",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 80,
+        capacity: 20,
+        reloadTime: 2.5,
+        fireDelay: 190,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 150,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 11.4,
+        fists: {
+            left: v(130, -6),
+            right: v(65, 0),
+            animationDuration: 100
+        },
+        image: { position: v(130, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
+        ballistics: {
+            damage: 28.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            maxDistance: 230
+        }
+    },
+    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
