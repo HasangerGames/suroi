@@ -4,7 +4,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
 import { Gas } from "./gas";
-import { GasState } from "../../../../common/src/constants";
+import { GRID_SIZE, GasState } from "../../../../common/src/constants";
 
 export class Minimap {
     container = new Container();
@@ -34,7 +34,7 @@ export class Minimap {
     width = 0;
     height = 0;
 
-    oceanPadding = 16 * 10;
+    oceanPadding = GRID_SIZE * 10;
 
     minimapWidth = 0;
     minimapHeight = 0;

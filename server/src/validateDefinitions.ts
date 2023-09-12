@@ -952,8 +952,36 @@ logger.indent("Validating building definitions", () => {
                 });
             }
 
-            validateVector(errorPath, building.floorImagePos);
-            validateVector(errorPath, building.ceilingImagePos);
+            if (building.ceilingImages.length) {
+                const errorPath2 = tester.createPath(errorPath, "ceiling images");
+                for (const image of building.ceilingImages) {
+                    validateVector(errorPath2, image.position);
+                }
+            }
+
+            if (building.floorImages.length) {
+                const errorPath2 = tester.createPath(errorPath, "floor images");
+                for (const image of building.floorImages) {
+                    validateVector(errorPath2, image.position);
+                }
+            }
+
+            if (building.groundGraphics) {
+                const errorPath2 = tester.createPath(errorPath, "ground graphics");
+                for (const graphic of building.groundGraphics) {
+                    validateHitbox(errorPath2, graphic.hitbox);
+
+                    tester.assertIntAndInBounds({
+                        obj: graphic,
+                        baseErrorPath: errorPath2,
+                        field: "color",
+                        max: 0xffffff,
+                        min: 0,
+                        includeMax: true,
+                        includeMin: true
+                    });
+                }
+            }
 
             if (building.wallsToDestroy !== undefined) {
                 tester.assertIntAndInBounds({
