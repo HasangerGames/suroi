@@ -3,7 +3,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { COLORS, PIXI_SCALE } from "../../utils/constants";
 import { Container, Graphics, RenderTexture, isMobile } from "pixi.js";
-import { ObjectCategory } from "../../../../../common/src/constants";
+import { GRID_SIZE, ObjectCategory } from "../../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { SuroiSprite } from "../../utils/pixi";
@@ -17,7 +17,6 @@ export class MapPacket extends ReceivingPacket {
         const width = map.width = stream.readUint16();
         const height = map.height = stream.readUint16();
 
-        const cellSize = 16;
         const oceanPadding = map.oceanPadding;
 
         const graphics = new Graphics();
@@ -29,7 +28,7 @@ export class MapPacket extends ReceivingPacket {
         graphics.fill.color = COLORS.beach.toNumber();
         graphics.drawRect(0, 0, width * PIXI_SCALE, height * PIXI_SCALE);
         graphics.fill.color = COLORS.grass.toNumber();
-        graphics.drawRect(cellSize * PIXI_SCALE, cellSize * PIXI_SCALE, (width - cellSize * 2) * PIXI_SCALE, (height - cellSize * 2) * PIXI_SCALE);
+        graphics.drawRect(GRID_SIZE * PIXI_SCALE, GRID_SIZE * PIXI_SCALE, (width - GRID_SIZE * 2) * PIXI_SCALE, (height - GRID_SIZE * 2) * PIXI_SCALE);
         graphics.zIndex = -10;
 
         mapGraphics.beginFill();
@@ -38,7 +37,7 @@ export class MapPacket extends ReceivingPacket {
         mapGraphics.fill.color = COLORS.beach.toNumber();
         mapGraphics.drawRect(0, 0, width, height);
         mapGraphics.fill.color = COLORS.grass.toNumber();
-        mapGraphics.drawRect(cellSize, cellSize, width - cellSize * 2, height - cellSize * 2);
+        mapGraphics.drawRect(GRID_SIZE, GRID_SIZE, width - GRID_SIZE * 2, height - GRID_SIZE * 2);
 
         graphics.lineStyle({
             color: 0x000000,
@@ -51,14 +50,14 @@ export class MapPacket extends ReceivingPacket {
             width: 1.5
         });
 
-        for (let x = 0; x <= width; x += cellSize) {
+        for (let x = 0; x <= width; x += GRID_SIZE) {
             graphics.moveTo(x * PIXI_SCALE, 0);
             graphics.lineTo(x * PIXI_SCALE, height * PIXI_SCALE);
 
             mapGraphics.moveTo(x, 0);
             mapGraphics.lineTo(x, height);
         }
-        for (let y = 0; y <= height; y += cellSize) {
+        for (let y = 0; y <= height; y += GRID_SIZE) {
             graphics.moveTo(0, y * PIXI_SCALE);
             graphics.lineTo(width * PIXI_SCALE, y * PIXI_SCALE);
 
