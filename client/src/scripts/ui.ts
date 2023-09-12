@@ -37,7 +37,7 @@ export function setupUI(game: Game): void {
             const killFeedItem = $("<div>");
             killFeedItem.addClass("kill-feed-item");
             // noinspection HtmlUnknownTarget
-            killFeedItem.html('<img class="kill-icon" src="./img/misc/skull.svg" alt="Skull"> Player killed Player with Mosin-Nagant');
+            killFeedItem.html('<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant');
             $("#kill-feed").prepend(killFeedItem);
         }
     }

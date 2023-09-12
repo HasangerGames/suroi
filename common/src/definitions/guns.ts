@@ -91,6 +91,72 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "arx160",
+        name: "ARX-160",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.75,
+        fireDelay: 75,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 145,
+        fireMode: FireMode.Auto,
+        shotSpread: 5,
+        moveSpread: 10,
+        length: 11.7,
+        fists: {
+            left: v(140, -6),
+            right: v(62, 0),
+            animationDuration: 100
+        },
+        image: { position: v(170, -1) },
+        particles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 13,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            maxDistance: 160
+        }
+    },
+    {
+        idString: "aug",
+        name: "AUG",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 90,
+        fireDelay: 70,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 120,
+        fireMode: FireMode.Auto,
+        shotSpread: 4,
+        moveSpread: 7,
+        length: 11.2,
+        fists: {
+            left: v(157, -4),
+            right: v(100, 0),
+            animationDuration: 100
+        },
+        image: { position: v(103, -4) },
+        particles: {
+            position: v(4, 0.5)
+        },
+        capacity: 30,
+        reloadTime: 2.25,
+        ballistics: {
+            damage: 11.25,
+            obstacleMultiplier: 1.5,
+            speed: 0.28,
+            maxDistance: 160
+        }
+    },
+    {
         idString: "m3k",
         name: "M3K",
         itemType: ItemType.Gun,
@@ -413,39 +479,6 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "aug",
-        name: "AUG",
-        itemType: ItemType.Gun,
-        ammoType: "556mm",
-        ammoSpawnAmount: 90,
-        fireDelay: 70,
-        switchDelay: 400,
-        speedMultiplier: 0.92,
-        recoilMultiplier: 0.75,
-        recoilDuration: 120,
-        fireMode: FireMode.Auto,
-        shotSpread: 4,
-        moveSpread: 7,
-        length: 11.2,
-        fists: {
-            left: v(157, -4),
-            right: v(100, 0),
-            animationDuration: 100
-        },
-        image: { position: v(103, -4) },
-        particles: {
-            position: v(4, 0.5)
-        },
-        capacity: 30,
-        reloadTime: 2.25,
-        ballistics: {
-            damage: 11.25,
-            obstacleMultiplier: 1.5,
-            speed: 0.28,
-            maxDistance: 160
-        }
-    },
-    {
         idString: "micro_uzi",
         name: "Micro Uzi",
         itemType: ItemType.Gun,
@@ -649,6 +682,72 @@ export const Guns: GunDefinition[] = [
             maxDistance: 160,
             tracerLength: 1.3,
             tracerOpacity: 0.5
+        }
+    },
+    {
+        idString: "sr25",
+        name: "SR-25",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 80,
+        capacity: 20,
+        reloadTime: 2.5,
+        fireDelay: 190,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 150,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 5,
+        length: 11.4,
+        fists: {
+            left: v(130, -6),
+            right: v(65, 0),
+            animationDuration: 100
+        },
+        image: { position: v(130, 0) },
+        particles: {
+            position: v(5, 0.5)
+        },
+        ballistics: {
+            damage: 28.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            maxDistance: 230
+        }
+    },
+    {
+        idString: "mini14",
+        name: "Mini-14",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 80,
+        capacity: 20,
+        reloadTime: 2.4,
+        fireDelay: 155,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.8,
+        recoilDuration: 140,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 2.5,
+        length: 11.9,
+        fists: {
+            left: v(130, -6),
+            right: v(61, 0),
+            animationDuration: 100
+        },
+        image: { position: v(120, 1.5) },
+        particles: {
+            position: v(5, 0.5)
+        },
+        ballistics: {
+            damage: 25.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            maxDistance: 230
         }
     },
     {

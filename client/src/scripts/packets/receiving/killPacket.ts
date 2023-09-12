@@ -11,6 +11,7 @@ export class KillPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const kills = stream.readBits(7);
         const killText = `Kills: ${kills}`;
+        $("#ui-kills").text(kills);
 
         $("#kill-msg-kills").text(killText);
         $("#kill-msg-word").text(randomKillWord());

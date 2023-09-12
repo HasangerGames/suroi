@@ -677,7 +677,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "window",
             name: "Window",
             material: "glass",
-            health: 35,
+            health: 20,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

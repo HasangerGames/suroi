@@ -41,14 +41,14 @@ Obstacles:
   Pine tree residue: Radians, Henry Sanger
   Birch tree, particles, & residue: Hester
 
-  Bed, drawers, couch, chair, table, fridge, walls, door, window, ceramic toilet, garage, washing machine: plantonthek, Henry Sanger
+  Bed, drawers, couch, chair, table, fridge, walls, door, window, ceramic toilet, garage, washing machine: platonthek, Henry Sanger
   Stove: 1092384
   Residues for above obstacles: plantonthek
 
 Building designs:
-  House: plantonthek
+  House: platonthek
   Warehouse: Leia, 1092384
-  Porta-potty: Katloo, Slapdap, 1092384
+  Porta potty: Katloo, Slapdap, 1092384
 
 Other:
   Death marker & skull: Henry Sanger
