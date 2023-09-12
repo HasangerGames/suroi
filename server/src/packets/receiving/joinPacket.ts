@@ -9,9 +9,13 @@ export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         this.player.isMobile = stream.readBoolean();
         const skin = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot);
-        if (skin.definition.itemType === ItemType.Skin &&
-            (skin.definition.roleRequired === undefined ||
-            skin.definition.roleRequired === this.player.role)) {
+
+        const definition = skin.definition;
+
+        if (definition.itemType === ItemType.Skin &&
+            !definition.notInLoadout &&
+            (definition.roleRequired === undefined ||
+                definition.roleRequired === this.player.role)) {
             this.player.loadout.skin = skin;
         }
         for (let i = 0; i < 4; i++) {
