@@ -222,5 +222,12 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
         }
+    },
+    singleObstacle: {
+        width: 128,
+        height: 128,
+        genCallback(map) {
+            map.generateObstacle("gun_mount", v(64, 64));
+        }
     }
 };
