@@ -1,6 +1,6 @@
 import { type Vector } from "../../common/src/utils/vector";
 
-export enum SpawnMode { Random, Radius, Fixed }
+export enum SpawnMode { Random, Fixed, Center, Radius }
 export enum GasMode { Normal, Debug, Disabled }
 
 export interface ConfigType {
@@ -27,16 +27,19 @@ export interface ConfigType {
     readonly movementSpeed: number
 
     /**
-     * There are 3 spawn modes: SpawnMode.Random, SpawnMode.Radius, and SpawnMode.Fixed.
+     * There are 4 spawn modes: Random, Fixed, Center, and Radius.
      * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
-     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
      * SpawnMode.Fixed always spawns the player at the exact position given, ignoring the radius.
+     * SpawnMode.Center always spawns the player in the center of the map.
+     * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
      */
     readonly spawn: {
         readonly mode: SpawnMode.Random
     } | {
         readonly mode: SpawnMode.Fixed
         readonly position: Vector
+    } | {
+        readonly mode: SpawnMode.Center
     } | {
         readonly mode: SpawnMode.Radius
         readonly position: Vector
@@ -123,12 +126,7 @@ export const Config = {
 
     movementSpeed: 0.77,
 
-    spawn: {
-        mode: SpawnMode.Random/*,
-        get position() {
-            return v(Maps[Config.mapName].width / 2, Maps[Config.mapName].height / 2);
-        }*/
-    },
+    spawn: { mode: SpawnMode.Center },
 
     playerLimit: 80,
 
@@ -142,7 +140,7 @@ export const Config = {
 
     cloudflare: false,
 
-    mapName: "main",
+    mapName: "refinery",
 
     roles: {
         dev: { password: "dev" },

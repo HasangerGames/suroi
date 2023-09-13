@@ -1,14 +1,20 @@
-import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, type Texture, type Graphics, type ColorSource } from "pixi.js";
+import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, Texture, type Graphics, type ColorSource } from "pixi.js";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { Buildings } from "../../../../common/src/definitions/buildings";
 
 declare const ATLAS_HASH: string;
 
 const textures: Record<string, Texture> = {};
 
+async function loadImage(key: string, path: string): Promise<void> {
+    console.log(`Loading image ${path}`);
+    textures[key] = await Texture.fromURL(path);
+}
+
 export async function loadAtlases(): Promise<void> {
-    for (const atlas of ["main", "buildings"]) {
+    for (const atlas of ["main"]) {
         const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
 
         const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
@@ -23,6 +29,16 @@ export async function loadAtlases(): Promise<void> {
             if (textures[frame]) console.warn(`Duplicated atlas frame key: ${frame}`);
 
             textures[frame] = spriteSheet.textures[frame];
+        }
+
+        for (const building of Buildings.definitions) {
+            for (const image of building.floorImages) {
+                await loadImage(image.key, require(`/public/img/buildings/${image.key}`));
+            }
+            for (const image of building.ceilingImages) {
+                await loadImage(image.key, require(`/public/img/buildings/${image.key}`));
+                if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}`));
+            }
         }
     }
 }

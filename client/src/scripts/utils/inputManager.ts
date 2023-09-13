@@ -413,7 +413,7 @@ export function setupInputs(game: Game): void {
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-            if (localStorageInstance.config.clientSidePrediction && !game.gameOver) {
+            if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
                 game.activePlayer.container.rotation = game.playerManager.rotation;
             }
             game.playerManager.turning = true;

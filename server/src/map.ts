@@ -1,8 +1,8 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { type Variation, type Orientation } from "../../common/src/typings";
+import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     random,
     randomFloat,
@@ -11,9 +11,9 @@ import {
     randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
@@ -28,6 +28,13 @@ export class Map {
     readonly width: number;
     readonly height: number;
 
+    readonly beachHitbox: Hitbox;
+
+    readonly places: Array<{
+        name: string
+        position: Vector
+    }> = [];
+
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
         this.game = game;
@@ -36,6 +43,13 @@ export class Map {
 
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;
+
+        this.beachHitbox = new ComplexHitbox([
+            new RectangleHitbox(v(0, 0), v(GRID_SIZE, this.height)),
+            new RectangleHitbox(v(0, 0), v(this.width, GRID_SIZE)),
+            new RectangleHitbox(v(this.width - GRID_SIZE, 0), v(this.width, this.height)),
+            new RectangleHitbox(v(0, this.height - GRID_SIZE), v(this.width, this.height))
+        ]);
 
         // Generate buildings
 
@@ -74,6 +88,15 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
+
+        if (mapDefinition.places) {
+            for (const place of mapDefinition.places) {
+                this.places.push({
+                    name: place.name,
+                    position: vAdd(place.position, randomVector(-50, 50, -50, 50))
+                });
+            }
+        }
 
         log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
     }
@@ -127,6 +150,17 @@ export class Map {
                         addAdjust(position, lootData.position, orientation),
                         item.count);
                 }
+            }
+        }
+
+        if (definition.subBuildings) {
+            for (const subBuilding of definition.subBuildings) {
+                const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
+                this.generateBuilding(
+                    ObjectType.fromString(ObjectCategory.Building, subBuilding.id),
+                    addAdjust(position, subBuilding.position, finalOrientation),
+                    finalOrientation
+                );
             }
         }
 
@@ -260,11 +294,8 @@ export class Map {
             if (type.category === ObjectCategory.Obstacle ||
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
-            (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                let offset = 20;
-                if (type.category === ObjectCategory.Building) offset = 50;
-
-                getPosition = (): Vector => randomVector(offset, this.width - offset, offset, this.height - offset);
+                (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
+                getPosition = (): Vector => randomVector(0, this.width, 0, this.height);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
                 const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vector, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
@@ -285,6 +316,11 @@ export class Map {
             position = getPosition();
 
             const hitbox = initialHitbox.transform(position, scale, orientation);
+
+            if (hitbox.collidesWith(this.beachHitbox)) {
+                collided = true;
+                continue;
+            }
 
             for (const object of this.game.grid.intersectsRect(hitbox.toRectangle())) {
                 if (object instanceof Obstacle || object instanceof Building) {

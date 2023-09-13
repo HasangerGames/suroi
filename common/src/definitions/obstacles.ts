@@ -4,7 +4,7 @@ import { v, type Vector } from "../utils/vector";
 import { type Variation } from "../typings";
 
 export type ObstacleDefinition = ObjectDefinition & {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance" | "large_refinery_barrel"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -44,7 +44,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance", "large_refinery_barrel"];//
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -105,6 +105,30 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
             particle: "wall_particle"
         },
         isWall: true
+    };
+}
+
+function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indestructible = false, variations?: Variation): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "stone",
+        health: 500,
+        indestructible,
+        noResidue: true,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 0.95
+        },
+        hitbox,
+        rotationMode: "limited",
+        isWall: true,
+        particleVariations: 2,
+        variations,
+        frames: {
+            particle: "rock_particle"
+        }
     };
 }
 
@@ -263,7 +287,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             indestructible: true,
-            hitbox: new RectangleHitbox(v(-13, -6.85), v(13, 6.85)),
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-8.4, -6.8), v(8.4, 6.8)),
+                new RectangleHitbox(v(-13, -1), v(13, 1)),
+                new CircleHitbox(5, v(-8, 1.8)),
+                new CircleHitbox(5, v(-8, -1.8)),
+                new CircleHitbox(5, v(8, 1.8)),
+                new CircleHitbox(5, v(8, -1.8))
+            ]),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
             rotationMode: "limited",
             frames: {
@@ -822,6 +853,214 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             isWall: true,
             frames: {
                 particle: "porta_potty_wall_particle"
+            }
+        },
+        makeConcreteWall(
+            "concrete_wall_end",
+            "Concrete Wall End",
+            new RectangleHitbox(v(-1.2, -1), v(1.2, 1)),
+            true
+        ),
+        makeConcreteWall(
+            "concrete_wall_end_broken",
+            "Concrete Wall End Broken",
+            new RectangleHitbox(v(-1.2, -1), v(1.2, 1)),
+            true,
+            2
+        ),
+        makeConcreteWall(
+            "concrete_wall_segment",
+            "Concrete Wall Segment",
+            new RectangleHitbox(v(-8, -1), v(8, 1)),
+            true
+        ),
+        makeConcreteWall(
+            "concrete_wall_segment_long",
+            "Concrete Wall Segment Long",
+            new RectangleHitbox(v(-16, -1), v(16, 1)),
+            true
+        ),
+        makeConcreteWall(
+            "concrete_wall_corner",
+            "Concrete Wall Corner",
+            new RectangleHitbox(v(-1, -1), v(1, 1)),
+            true
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_1",
+            "Inner Concrete Wall 1",
+            new RectangleHitbox(v(-5.4, -0.95), v(5.4, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_2",
+            "Inner Concrete Wall 2",
+            new RectangleHitbox(v(-18.3, -0.95), v(18.3, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_3",
+            "Inner Concrete Wall 3",
+            new RectangleHitbox(v(-19.57, -0.95), v(19.57, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_4",
+            "Inner Concrete Wall 4",
+            new RectangleHitbox(v(-23.57, -0.95), v(23.57, 0.95))
+        ),
+        {
+            idString: "refinery_walls",
+            name: "Refinery Walls",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-50.5, -37), v(6.5, -35.2)), // First topmost wall
+                new RectangleHitbox(v(20, -37), v(50.75, -35.2)), // Wall after the hole
+                new RectangleHitbox(v(48.75, -39), v(50.75, -5.5)), // Wall from top right to bottom right
+                new RectangleHitbox(v(34.5, -7.55), v(50.75, -5.5)), // Wall to the right of the entrance
+                new RectangleHitbox(v(-17, -7.55), v(21.5, -5.5)), // Wall to the left of the entrance
+                new RectangleHitbox(v(-17, -7.55), v(-15, 14)), // Wall on top of the window
+                new RectangleHitbox(v(-17, 23.5), v(-15, 37)), // Wall bellow the window
+                new RectangleHitbox(v(-50.5, 35.25), v(-15, 37.25)), // Bottommost wall
+                new RectangleHitbox(v(-50.5, -37), v(-48.5, 37)), // Wall from topmost to bottommost
+                new RectangleHitbox(v(-50, 8), v(-36.7, 10)), // inner door walls
+                new RectangleHitbox(v(-26.5, 8), v(-16, 10))
+            ]),
+            rotationMode: "limited",
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "small_refinery_barrel",
+            name: "Small Refinery Barrel",
+            material: "metal",
+            health: 250,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(6.8),
+            rotationMode: "full",
+            explosion: "super_barrel_explosion",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle",
+                residue: "barrel_residue"
+            }
+        },
+        {
+            idString: "large_refinery_barrel",
+            name: "Large Refinery Barrel",
+            material: "large_refinery_barrel",
+            health: 3500,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.95
+            },
+            hitbox: new CircleHitbox(17.15),
+            rotationMode: "full",
+            explosion: "large_refinery_barrel_explosion",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "smokestack",
+            name: "Smokestack",
+            material: "metal",
+            health: 500,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(8.9),
+            rotationMode: "limited",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "distillation_column",
+            name: "Distillation Column",
+            material: "metal",
+            health: 500,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new ComplexHitbox([
+                new CircleHitbox(5.22, v(0, -0.65)),
+                new CircleHitbox(4.9, v(0, 0.9))
+            ]),
+            rotationMode: "limited",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "distillation_equipment",
+            name: "Distillation Equipment",
+            material: "metal",
+            health: 500,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-14.25, -9.5), v(3.2, -0.9)), // Main tank
+                new CircleHitbox(3.15, v(0.72, 5.62)), // Bottom left circle
+                new CircleHitbox(4.4, v(8.95, 5.62)), // Bottom right circle
+                new CircleHitbox(5.35, v(8.95, -4.7)), // Top circle
+                new RectangleHitbox(v(-0.25, -1), v(1.55, 2.7)), // Pipe connected to bottom left circle
+                new RectangleHitbox(v(7.65, 0.4), v(10.25, 1.6)), // Pipe between 2 rightmost circles
+                new RectangleHitbox(v(3.4, 4.65), v(5, 6.4)), // Pipe between 2 bottommost circles
+                new RectangleHitbox(v(3.1, -5.35), v(5, -7.95)) // Pipe connected to topmost circle
+            ]),
+            rotationMode: "limited",
+            reflectBullets: true,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "gun_mount",
+            name: "Gun Mount",
+            material: "wood",
+            health: 60,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.95
+            },
+            hasLoot: true,
+            hitbox: new ComplexHitbox([
+                new RectangleHitbox(v(-4.1, -1.8), v(4.1, -0.85)), // Base
+                new RectangleHitbox(v(-0.39, -0.9), v(0.39, 1.85)), // Center post
+                new RectangleHitbox(v(-3.5, -0.9), v(-2.72, 1.85)), // Left post
+                new RectangleHitbox(v(2.8, -0.9), v(3.55, 1.85)) // Right post
+            ]),
+            rotationMode: "limited",
+            frames: {
+                particle: "furniture_particle"
             }
         }
     ]

@@ -203,14 +203,6 @@ const config: Configuration = {
             }],
             compilerOptions: { margin: 4 }
         }),
-        new SpritesheetWebpackPlugin({
-            patterns: [{
-                rootDir: path.resolve(__dirname, "../public/img/buildings"),
-                outDir: "img/atlases",
-                filename: `buildings.${ATLAS_HASH}.png`
-            }],
-            compilerOptions: { margin: 4 }
-        }),
         new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],

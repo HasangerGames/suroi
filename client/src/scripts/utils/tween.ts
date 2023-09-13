@@ -1,5 +1,6 @@
 import { type Game } from "../game";
 import { lerp } from "../../../../common/src/utils/math";
+import { DisplayObject } from "pixi.js";
 
 export class Tween<T> {
     readonly game: Game;
@@ -51,6 +52,13 @@ export class Tween<T> {
 
     update(): void {
         const now = Date.now();
+
+        // fix tweens trying to change properties of destroyed pixi objects and crashing the client
+        if (this.target instanceof DisplayObject && (this.target.destroyed || this.target.transform === undefined)) {
+            this.kill();
+            return;
+        }
+
         if (now >= this.endTime) {
             for (const [key, value] of Object.entries(this.endValues)) {
                 (this.target[key as keyof T] as number) = value;

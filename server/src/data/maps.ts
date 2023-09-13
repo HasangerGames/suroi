@@ -36,6 +36,11 @@ interface MapDefinition {
 
     readonly loots?: Record<string, number>
 
+    readonly places?: Array<{
+        name: string
+        position: Vector
+    }>
+
     // Custom callback to generate stuff
     readonly genCallback?: (map: Map) => void
 }
@@ -45,6 +50,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 1024,
         height: 1024,
         buildings: {
+            refinery: 1,
             warehouse: 4,
             house: 4,
             porta_potty: 10
@@ -80,7 +86,15 @@ export const Maps: Record<string, MapDefinition> = {
         },
         loots: {
             ground_loot: 40
-        }
+        },
+        places: [
+            { name: "Banana", position: v(100, 100) },
+            { name: "Takedown", position: v(150, 900) },
+            { name: "Lavlandet", position: v(850, 100) },
+            { name: "Noskin Narrows", position: v(850, 900) },
+            { name: "Mt. Sanger", position: v(500, 300) },
+            { name: "Deepwood", position: v(500, 700) }
+        ]
     },
     debug: {
         width: 1024,
@@ -126,7 +140,13 @@ export const Maps: Record<string, MapDefinition> = {
                     itemPos.y += 10;
                 }
             }
-        }
+        },
+        places: [
+            { name: "[object Object]", position: v(200, 200) },
+            { name: "Kernel Panic", position: v(800, 800) },
+            { name: "undefined Forest", position: v(512, 300) },
+            { name: "Memory Leak", position: v(512, 700) }
+        ]
     },
     // Arena map to test guns with really bad custom generation code lol
     arena: {
@@ -213,6 +233,23 @@ export const Maps: Record<string, MapDefinition> = {
                     map.generateObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
                 }
             }
+        },
+        places: [
+            { name: "stark is noob", position: v(256, 256) }
+        ]
+    },
+    refinery: {
+        width: 512,
+        height: 512,
+        genCallback(map) {
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
+        }
+    },
+    singleObstacle: {
+        width: 128,
+        height: 128,
+        genCallback(map) {
+            map.generateObstacle("gun_mount", v(64, 64));
         }
     }
 };

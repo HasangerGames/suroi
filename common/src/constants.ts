@@ -98,5 +98,6 @@ export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
 export const TICK_SPEED = 30;
+export const GRID_SIZE = 16;
 
 export const PLAYER_RADIUS = 2.25;

@@ -17,7 +17,7 @@ import { type GameObject } from "./types/gameObject";
 import { log } from "../../common/src/utils/misc";
 import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet, type ServerBulletOptions, type DamageRecord } from "./objects/bullet";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
@@ -225,10 +225,6 @@ export class Game {
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
 
-            for (const player of this.livingPlayers) {
-                player.dirty.action = false;
-            }
-
             // Winning logic
             if (this._started && this.aliveCount < 2 && !this._over) {
                 // Send game over packet to the last man standing
@@ -283,6 +279,10 @@ export class Game {
             }
             case SpawnMode.Fixed: {
                 spawnPosition = Config.spawn.position;
+                break;
+            }
+            case SpawnMode.Center: {
+                spawnPosition = v(Maps[Config.mapName].width / 2, Maps[Config.mapName].height / 2);
                 break;
             }
             case SpawnMode.Radius: {

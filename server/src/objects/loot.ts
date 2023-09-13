@@ -81,7 +81,7 @@ export class Loot extends GameObject {
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const dist = distance(object.position, this.position);
 
-                if (this.hitbox.radius - object.hitbox.radius - 0.5 < dist) {
+                if ((this.hitbox.radius - object.hitbox.radius) / 2 < dist) {
                     this.push(angleBetween(object.position, this.position), -0.3);
                 }
 

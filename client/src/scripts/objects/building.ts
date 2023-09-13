@@ -18,13 +18,9 @@ import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 export class Building extends GameObject {
     declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
-    readonly images: {
-        floor: SuroiSprite
-        ceiling: SuroiSprite
-        ceilingContainer: Container
-    };
+    ceilingContainer: Container;
 
-    ceilingHitbox?: Hitbox;
+    ceilingHitbox!: Hitbox;
 
     orientation!: Orientation;
 
@@ -40,18 +36,18 @@ export class Building extends GameObject {
         super(game, type, id);
 
         const definition = type.definition;
-        this.images = {
-            floor: new SuroiSprite(`${type.idString}_floor.svg`).setPos(definition.floorImagePos.x * 20, definition.floorImagePos.y * 20),
-            ceiling: new SuroiSprite(`${type.idString}_ceiling.svg`).setPos(definition.ceilingImagePos.x * 20, definition.ceilingImagePos.y * 20),
-            ceilingContainer: new Container()
-        };
 
-        this.container.addChild(this.images.floor);
         this.container.zIndex = -1;
 
-        this.game.camera.container.addChild(this.images.ceilingContainer);
-        this.images.ceilingContainer.addChild(this.images.ceiling);
-        this.images.ceilingContainer.zIndex = 8;
+        for (const image of definition.floorImages) {
+            const sprite = new SuroiSprite(image.key);
+            sprite.setVPos(toPixiCoords(image.position));
+            this.container.addChild(sprite);
+        }
+
+        this.ceilingContainer = new Container();
+        this.ceilingContainer.zIndex = 8;
+        this.game.camera.container.addChild(this.ceilingContainer);
     }
 
     toggleCeiling(visible: boolean): void {
@@ -60,7 +56,7 @@ export class Building extends GameObject {
         this.ceilingTween?.kill();
 
         this.ceilingTween = new Tween(this.game, {
-            target: this.images.ceilingContainer,
+            target: this.ceilingContainer,
             to: { alpha: visible ? 1 : 0 },
             duration: 200,
             ease: EaseFunctions.sineOut,
@@ -72,12 +68,13 @@ export class Building extends GameObject {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building]): void {
         const definition = this.type.definition;
+
         if (data.dead) {
             if (!this.dead && !this.isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: `${this.type.idString}_particle.svg`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    position: this.ceilingHitbox!.randomPoint(),
+                    position: this.ceilingHitbox.randomPoint(),
                     depth: 10,
                     lifeTime: 2000,
                     rotation: {
@@ -95,39 +92,49 @@ export class Building extends GameObject {
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
             this.ceilingTween?.kill();
-            this.images.ceilingContainer.zIndex = -0.1;
-            this.images.ceilingContainer.alpha = 1;
-            this.images.ceiling.setFrame(`${this.type.idString}_residue.svg`);
+            this.ceilingContainer.zIndex = -0.1;
+            this.ceilingContainer.alpha = 1;
+
+            this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue.svg`));
         }
         this.dead = data.dead;
 
+        this.ceilingContainer.removeChildren();
+        for (const image of definition.ceilingImages) {
+            let key = image.key;
+            if (this.dead && image.residue) key = image.residue;
+            const sprite = new SuroiSprite(key);
+            sprite.setVPos(toPixiCoords(image.position));
+            this.ceilingContainer.addChild(sprite);
+        }
+
         this.isNew = false;
 
-        if (!data.fullUpdate) return;
+        if (data.fullUpdate) {
+            this.position = data.position;
 
-        this.position = data.position;
+            const pos = toPixiCoords(this.position);
+            this.container.position.copyFrom(pos);
+            this.ceilingContainer.position.copyFrom(pos);
 
-        const pos = toPixiCoords(this.position);
-        this.container.position.copyFrom(pos);
-        this.images.ceilingContainer.position.copyFrom(pos);
+            this.orientation = data.rotation as Orientation;
 
-        this.orientation = data.rotation as Orientation;
+            this.rotation = orientationToRotation(this.orientation);
 
-        this.rotation = orientationToRotation(this.orientation);
+            this.container.rotation = this.rotation;
 
-        this.container.rotation = this.rotation;
+            this.ceilingContainer.rotation = this.rotation;
 
-        this.images.ceilingContainer.rotation = this.rotation;
+            this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
 
-        this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
-
-        for (const floor of definition.floors) {
-            const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
-            this.floorHitboxes.push(floorHitbox);
-            this.game.floorHitboxes.set(
-                floorHitbox,
-                floor.type
-            );
+            for (const floor of definition.floors) {
+                const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
+                this.floorHitboxes.push(floorHitbox);
+                this.game.floorHitboxes.set(
+                    floorHitbox,
+                    floor.type
+                );
+            }
         }
 
         if (HITBOX_DEBUG_MODE) {
@@ -151,7 +158,7 @@ export class Building extends GameObject {
     destroy(): void {
         super.destroy();
         this.ceilingTween?.kill();
-        this.images.ceilingContainer.destroy();
+        this.ceilingContainer.destroy();
         for (const floorHitbox of this.floorHitboxes) {
             this.game.floorHitboxes.delete(floorHitbox);
         }

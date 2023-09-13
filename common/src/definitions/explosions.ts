@@ -107,6 +107,34 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 variance: 1,
                 shrapnel: true
             }
+        },
+        {
+            idString: "large_refinery_barrel_explosion",
+            name: "Large Refinery Barrel",
+            damage: 10000,
+            obstacleMultiplier: 3,
+            radius: {
+                min: 48,
+                max: 58
+            },
+            cameraShake: {
+                duration: 2000,
+                intensity: 100
+            },
+            animation: {
+                duration: 1500,
+                frame: "barrel_explosion.svg",
+                scale: 5
+            },
+            shrapnelCount: 50,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 3,
+                speed: 0.08,
+                maxDistance: 60,
+                variance: 1,
+                shrapnel: true
+            }
         }
     ]
 );
