@@ -2,12 +2,12 @@ import { type Game } from "../game";
 
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { vClone, type Vector } from "../../../../common/src/utils/vector";
+import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constants";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container, Graphics } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
-import { lerp, vecLerp } from "../../../../common/src/utils/math";
+import { vecLerp } from "../../../../common/src/utils/math";
 import { toPixiCoords } from "../utils/pixi";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 
@@ -40,20 +40,27 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         this.container.position = toPixiCoords(vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
-    oldRotation!: number;
+    oldRotation!: Vector;
     lastRotationChange!: number;
     _rotation!: number;
+    rotationVector!: Vector;
     get rotation(): number { return this._rotation; }
     set rotation(rotation: number) {
-        if (this._rotation !== undefined) this.oldRotation = this._rotation;
+        if (this._rotation !== undefined) {
+            this.oldRotation = v(Math.cos(this._rotation), Math.sin(this._rotation));
+        }
         this.lastRotationChange = Date.now();
         this._rotation = rotation;
+        this.rotationVector = v(Math.cos(this.rotation), Math.sin(this.rotation));
     }
 
     updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
         const interpFactor = (Date.now() - this.lastRotationChange) / TICK_SPEED;
-        this.container.rotation = lerp(this.oldRotation, this.rotation, Math.min(interpFactor, 1));
+
+        const interpolated = vecLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
+
+        this.container.rotation = Math.atan2(interpolated.y, interpolated.x);
     }
 
     dead = false;
