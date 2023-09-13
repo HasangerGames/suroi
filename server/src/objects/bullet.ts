@@ -2,7 +2,7 @@ import { Player } from "./player";
 import { type Game } from "../game";
 import { normalizeAngle } from "../../../common/src/utils/math";
 import { GunItem } from "../inventory/gunItem";
-import { vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
+import { vAdd, vMul, type Vector, v } from "../../../common/src/utils/vector";
 import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
 import { Obstacle } from "./obstacle";
 import { type GameObject } from "../types/gameObject";
@@ -27,7 +27,6 @@ export interface ServerBulletOptions {
     position: Vector
     rotation: number
     reflectionCount?: number
-    reflectedFromID?: number
     variance?: number
 }
 
@@ -42,7 +41,7 @@ export class Bullet extends BaseBullet {
         const bulletOptions: BulletOptions = {
             ...options,
             source: source.type,
-            sourceID: options.reflectedFromID ?? shooter.id,
+            sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
         };
         super(bulletOptions);
@@ -99,7 +98,7 @@ export class Bullet extends BaseBullet {
                     this.position = collision.intersection.point;
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
-                        this.reflect(collision.intersection.normal, object.id);
+                        this.reflect(collision.intersection.normal);
                     }
 
                     this.dead = true;
@@ -110,15 +109,17 @@ export class Bullet extends BaseBullet {
         return records;
     }
 
-    reflect(normal: Vector, objectId: number): void {
+    reflect(normal: Vector): void {
         const normalAngle = Math.atan2(normal.y, normal.x);
 
         const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
 
+        // move it a bit so it won't collide again with the same hitbox
+        const position = vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation)));
+
         this.game.addBullet(this.sourceGun, this.shooter, {
-            position: this.position,
+            position,
             rotation,
-            reflectedFromID: objectId,
             reflectionCount: this.reflectionCount + 1,
             variance: this.variance
         });

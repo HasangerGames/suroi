@@ -53,6 +53,8 @@ export class BaseBullet {
 
     readonly definition: BulletDefinition;
 
+    readonly canHitShooter: boolean;
+
     constructor(options: BulletOptions) {
         this.initialPosition = vClone(options.position);
         this.position = options.position;
@@ -68,6 +70,8 @@ export class BaseBullet {
         this.maxDistanceSquared = this.maxDistance ** 2;
 
         this.velocity = vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.speed * (this.variance + 1));
+
+        this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
     }
 
     /**
@@ -90,7 +94,7 @@ export class BaseBullet {
 
         for (const object of objects) {
             if (object.damageable && !object.dead &&
-                !(!this.definition.shrapnel && object.id === this.sourceID) &&
+                !(!this.canHitShooter && object.id === this.sourceID) &&
                 !this.damagedIDs.has(object.id)) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
