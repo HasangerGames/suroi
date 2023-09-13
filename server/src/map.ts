@@ -155,10 +155,11 @@ export class Map {
 
         if (definition.subBuildings) {
             for (const subBuilding of definition.subBuildings) {
+                const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
                 this.generateBuilding(
                     ObjectType.fromString(ObjectCategory.Building, subBuilding.id),
-                    addAdjust(position, subBuilding.position, 0),
-                    addOrientations(orientation, subBuilding.orientation ?? 0)
+                    addAdjust(position, subBuilding.position, finalOrientation),
+                    finalOrientation
                 );
             }
         }

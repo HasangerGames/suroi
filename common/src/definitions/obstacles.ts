@@ -108,19 +108,19 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
     };
 }
 
-function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, variations?: Variation): ObstacleDefinition {
+function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indestructible = false, variations?: Variation): ObstacleDefinition {
     return {
         idString,
         name,
         material: "stone",
         health: 500,
-        indestructible: true,
+        indestructible,
+        noResidue: true,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
-            destroy: 0.9
+            destroy: 0.95
         },
-        hideOnMap: false,
         hitbox,
         rotationMode: "limited",
         isWall: true,
@@ -858,24 +858,53 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeConcreteWall(
             "concrete_wall_end",
             "Concrete Wall End",
-            new RectangleHitbox(v(-1.2, -1), v(1.2, 1))),
+            new RectangleHitbox(v(-1.2, -1), v(1.2, 1)),
+            true
+        ),
         makeConcreteWall(
             "concrete_wall_end_broken",
             "Concrete Wall End Broken",
             new RectangleHitbox(v(-1.2, -1), v(1.2, 1)),
-            2),
+            true,
+            2
+        ),
         makeConcreteWall(
             "concrete_wall_segment",
             "Concrete Wall Segment",
-            new RectangleHitbox(v(-8, -1), v(8, 1))),
+            new RectangleHitbox(v(-8, -1), v(8, 1)),
+            true
+        ),
         makeConcreteWall(
             "concrete_wall_segment_long",
             "Concrete Wall Segment Long",
-            new RectangleHitbox(v(-16, -1), v(16, 1))),
+            new RectangleHitbox(v(-16, -1), v(16, 1)),
+            true
+        ),
         makeConcreteWall(
             "concrete_wall_corner",
             "Concrete Wall Corner",
-            new RectangleHitbox(v(-1, -1), v(1, 1))
+            new RectangleHitbox(v(-1, -1), v(1, 1)),
+            true
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_1",
+            "Inner Concrete Wall 1",
+            new RectangleHitbox(v(-5.4, -0.95), v(5.4, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_2",
+            "Inner Concrete Wall 2",
+            new RectangleHitbox(v(-18.3, -0.95), v(18.3, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_3",
+            "Inner Concrete Wall 3",
+            new RectangleHitbox(v(-19.57, -0.95), v(19.57, 0.95))
+        ),
+        makeConcreteWall(
+            "inner_concrete_wall_4",
+            "Inner Concrete Wall 4",
+            new RectangleHitbox(v(-23.57, -0.95), v(23.57, 0.95))
         ),
         {
             idString: "refinery_walls",
@@ -904,8 +933,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-26.5, 8), v(-16, 10))
             ]),
             rotationMode: "limited",
+            particleVariations: 2,
             frames: {
-                particle: "wall_particle"
+                particle: "rock_particle"
             }
         },
         {
@@ -957,7 +987,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(8.9),
-            rotationMode: "none",
+            rotationMode: "limited",
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle"
@@ -978,7 +1008,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(5.22, v(0, -0.65)),
                 new CircleHitbox(4.9, v(0, 0.9))
             ]),
-            rotationMode: "none",
+            rotationMode: "limited",
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle"
@@ -1021,6 +1051,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.95
             },
+            hasLoot: true,
             hitbox: new ComplexHitbox([
                 new RectangleHitbox(v(-4.1, -1.8), v(4.1, -0.85)), // Base
                 new RectangleHitbox(v(-0.39, -0.9), v(0.39, 1.85)), // Center post
