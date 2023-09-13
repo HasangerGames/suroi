@@ -34,5 +34,10 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#game-over-time").text(timeString);
         gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
+
+        // Player rank
+        const aliveCount = stream.readBits(7);
+        if (won) $("#game-over-rank").text(`#${aliveCount}`);
+        else $("#game-over-rank").text(`#${aliveCount + 1}`);
     }
 }

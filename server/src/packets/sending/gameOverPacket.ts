@@ -15,6 +15,9 @@ export class GameOverPacket extends SendingPacket {
     }
 
     override serialize(stream: SuroiBitStream): void {
+        const player = this.player;
+        const game = player.game;
+
         super.serialize(stream);
 
         stream.writeBoolean(this.won);
@@ -23,5 +26,6 @@ export class GameOverPacket extends SendingPacket {
         stream.writeUint16(this.player.damageDone);
         stream.writeUint16(this.player.damageTaken);
         stream.writeUint16((this.player.game.now - this.player.joinTime) / 1000);
+        stream.writeBits(game.aliveCount, 7);
     }
 }
