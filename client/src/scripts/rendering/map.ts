@@ -117,7 +117,7 @@ export class Minimap {
             // noinspection JSSuspiciousNameCombination
             this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
             this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
-            this.margins = v(window.innerWidth / 2 - (this.minimapWidth / 2), 0);
+            this.margins = v(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
             closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
@@ -161,7 +161,7 @@ export class Minimap {
 
     updatePosition(): void {
         if (this.expanded) {
-            this.container.position.set(window.innerWidth / 2, 0);
+            this.container.position.set(window.innerWidth / 2, window.innerHeight / 2 - this.minimapHeight / 2);
             this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2);
             return;
         }
