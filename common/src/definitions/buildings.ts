@@ -1,4 +1,4 @@
-import { type Variation } from "../typings";
+import { type Orientation, type Variation } from "../typings";
 import { type Hitbox, RectangleHitbox, ComplexHitbox, CircleHitbox } from "../utils/hitbox";
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { weightedRandom } from "../utils/random";
@@ -35,6 +35,12 @@ interface LootSpawner {
     table: string
 }
 
+interface SubBuilding {
+    id: string
+    position: Vector
+    orientation?: Orientation
+}
+
 export interface BuildingDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     ceilingHitbox: Hitbox
@@ -43,6 +49,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     obstacles: BuildingObstacle[]
     lootSpawners?: LootSpawner[]
+    subBuildings?: SubBuilding[]
 
     floorImages: Array<{
         key: string
@@ -663,6 +670,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "concrete_wall_segment_long", position: v(76, 83), rotation: 0 },
             { id: "concrete_wall_segment_long", position: v(47, 83), rotation: 0 },
             { id: "concrete_wall_end", position: v(31, 83), rotation: 2 }
+        ],
+        subBuildings: [
+            {
+                id: "porta_potty",
+                position: v(60, -27.6)
+            }
         ]
     }
 ]);

@@ -1019,7 +1019,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.5
+                destroy: 0.95
             },
             hitbox: new ComplexHitbox([
                 new RectangleHitbox(v(-4.1, -1.8), v(4.1, -0.85)), // Base

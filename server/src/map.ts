@@ -2,7 +2,7 @@ import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
-import { type Variation, type Orientation } from "../../common/src/typings";
+import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     random,
     randomFloat,
@@ -11,7 +11,7 @@ import {
     randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
@@ -150,6 +150,16 @@ export class Map {
                         addAdjust(position, lootData.position, orientation),
                         item.count);
                 }
+            }
+        }
+
+        if (definition.subBuildings) {
+            for (const subBuilding of definition.subBuildings) {
+                this.generateBuilding(
+                    ObjectType.fromString(ObjectCategory.Building, subBuilding.id),
+                    addAdjust(position, subBuilding.position, 0),
+                    addOrientations(orientation, subBuilding.orientation ?? 0)
+                );
             }
         }
 
