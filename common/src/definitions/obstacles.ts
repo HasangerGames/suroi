@@ -922,14 +922,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new ComplexHitbox([
                 new RectangleHitbox(v(-50.5, -37), v(6.5, -35.2)), // First topmost wall
                 new RectangleHitbox(v(20, -37), v(50.75, -35.2)), // Wall after the hole
-                new RectangleHitbox(v(48.75, -35.2), v(50.75, -5.5)), // Wall from top right to bottom right
+                new RectangleHitbox(v(48.75, -39), v(50.75, -5.5)), // Wall from top right to bottom right
                 new RectangleHitbox(v(34.5, -7.55), v(50.75, -5.5)), // Wall to the right of the entrance
                 new RectangleHitbox(v(-17, -7.55), v(21.5, -5.5)), // Wall to the left of the entrance
                 new RectangleHitbox(v(-17, -7.55), v(-15, 14)), // Wall on top of the window
                 new RectangleHitbox(v(-17, 23.5), v(-15, 37)), // Wall bellow the window
                 new RectangleHitbox(v(-50.5, 35.25), v(-15, 37.25)), // Bottommost wall
                 new RectangleHitbox(v(-50.5, -37), v(-48.5, 37)), // Wall from topmost to bottommost
-                new RectangleHitbox(v(-50, 8), v(-36.7, 11)), // inner door walls
+                new RectangleHitbox(v(-50, 8), v(-36.7, 10)), // inner door walls
                 new RectangleHitbox(v(-26.5, 8), v(-16, 10))
             ]),
             rotationMode: "limited",
