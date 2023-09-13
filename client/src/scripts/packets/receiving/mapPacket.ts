@@ -139,7 +139,7 @@ export class MapPacket extends ReceivingPacket {
                         for (const ground of definition.groundGraphics) {
                             graphics.beginFill(ground.color);
                             mapGraphics.beginFill(ground.color);
-                            const hitbox = ground.hitbox.transform(position, 1, orientation);
+                            const hitbox = ground.bounds.transform(position, 1, orientation);
                             if (hitbox instanceof RectangleHitbox) {
                                 const width = hitbox.max.x - hitbox.min.x;
                                 const height = hitbox.max.y - hitbox.min.y;

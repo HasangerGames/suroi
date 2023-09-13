@@ -4,7 +4,7 @@ import { v, type Vector } from "../utils/vector";
 import { type Variation } from "../typings";
 
 export type ObstacleDefinition = ObjectDefinition & {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance"
+    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance" | "large_refinery_barrel"
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -44,7 +44,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance"];
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance", "large_refinery_barrel"];//
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -930,16 +930,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         {
             idString: "large_refinery_barrel",
             name: "Large Refinery Barrel",
-            material: "metal",
-            health: 500,
-            indestructible: true,
+            material: "large_refinery_barrel",
+            health: 3500,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.5
+                destroy: 0.95
             },
             hitbox: new CircleHitbox(17.15),
             rotationMode: "full",
+            explosion: "large_refinery_barrel_explosion",
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle"
@@ -1005,7 +1005,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(3.4, 4.65), v(5, 6.4)), // Pipe between 2 bottommost circles
                 new RectangleHitbox(v(3.1, -5.35), v(5, -7.95)) // Pipe connected to topmost circle
             ]),
-            rotationMode: "none",
+            rotationMode: "limited",
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle"
@@ -1015,7 +1015,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "gun_mount",
             name: "Gun Mount",
             material: "wood",
-            health: 75,
+            health: 60,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1027,7 +1027,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-3.5, -0.9), v(-2.72, 1.85)), // Left post
                 new RectangleHitbox(v(2.8, -0.9), v(3.55, 1.85)) // Right post
             ]),
-            rotationMode: "none",
+            rotationMode: "limited",
             frames: {
                 particle: "furniture_particle"
             }

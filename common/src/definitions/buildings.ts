@@ -64,7 +64,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     groundGraphics?: Array<{
         color: number
-        hitbox: Hitbox
+        bounds: Hitbox
     }>
 }
 
@@ -530,17 +530,26 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
-            { color: 0x595959, hitbox: new RectangleHitbox(v(-53, -40), v(120, 80)) }, // base
-            { color: 0xb2b200, hitbox: new CircleHitbox(18, v(52, 58)) }, // circles
-            { color: 0x505050, hitbox: new CircleHitbox(16, v(52, 58)) },
-            { color: 0xb2b200, hitbox: new CircleHitbox(18, v(95, 58)) },
-            { color: 0x505050, hitbox: new CircleHitbox(16, v(95, 58)) },
-            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10, 2), v(-8, 80)) }, // roads
-            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10 + 30, 2 + 30), v(-8 + 30, 80)) },
-            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10, 2), v(120, 4)) },
-            { color: 0xb2b200, hitbox: new RectangleHitbox(v(-10 + 30, 2 + 30), v(120, 4 + 30)) }
+            { color: 0x595959, bounds: new RectangleHitbox(v(-53, -40), v(123, 83)) }, // base
+            { color: 0xb2b200, bounds: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
+            { color: 0x505050, bounds: new CircleHitbox(19, v(45.5, 59.1)) },
+            { color: 0xb2b200, bounds: new CircleHitbox(21, v(97, 59.1)) },
+            { color: 0x505050, bounds: new CircleHitbox(19, v(97, 59.1)) },
+            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10, 2), v(-8, 83)) }, // roads
+            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10 + 25, 2 + 22), v(-8 + 25, 83)) },
+            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10, 2), v(123, 4)) },
+            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10 + 25, 2 + 22), v(123, 4 + 22)) }
         ],
-        floors: [],
+        floors: [
+            {
+                type: "wood",
+                hitbox: new RectangleHitbox(v(-49.5, 9), v(-16, 36))
+            },
+            {
+                type: "stone",
+                hitbox: new RectangleHitbox(v(-53, -40), v(120, 80))
+            }
+        ],
         obstacles: [
             {
                 id: "refinery_walls",
@@ -567,29 +576,63 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(-26, 28),
                 rotation: 3
             },
+            {
+                id: "gun_mount",
+                position: v(-46.8, 28),
+                rotation: 1
+            },
             //
             // Exterior Obstacles
             //
-            { // bottom left
+            { // Bottom left
                 id: "oil_tank",
-                position: v(-38, 71),
+                position: v(-38, 73),
                 rotation: 0
             },
-            { // top right
+            { // Top right
                 id: "oil_tank",
-                position: v(109, -25),
+                position: v(113, -25),
                 rotation: 1
+            },
+            { // Left
+                id: "large_refinery_barrel",
+                position: v(45.5, 59.1)
+            },
+            { // Right
+                id: "large_refinery_barrel",
+                position: v(97, 59.2)
+            },
+            {
+                id: "small_refinery_barrel",
+                position: v(41.3, -14.8)
+            },
+            {
+                id: "distillation_column",
+                position: v(42.7, -28)
+            },
+            {
+                id: "distillation_column",
+                position: v(-42.65, 1)
+            },
+            {
+                id: "distillation_equipment",
+                position: v(-38.2, -20.5),
+                rotation: 1
+            },
+            {
+                id: "smokestack",
+                position: v(-19.25, -25.59)
             },
             //
             // Exterior Walls
             //
             // bottom left walls
-            { id: "concrete_wall_end", position: v(-15, 80), rotation: 0 },
-            { id: "concrete_wall_segment_long", position: v(-32, 80), rotation: 0 },
-            { id: "concrete_wall_segment", position: v(-44.3, 80), rotation: 0 },
-            { id: "concrete_wall_corner", position: v(-53, 80), rotation: 0 },
-            { id: "concrete_wall_segment", position: v(-53, 71.4), rotation: 1 },
-            { id: "concrete_wall_end_broken", position: v(-53, 62.5), rotation: 1 },
+            { id: "concrete_wall_end", position: v(-15, 83), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(-32, 83), rotation: 0 },
+            { id: "concrete_wall_segment", position: v(-44.3, 83), rotation: 0 },
+            { id: "concrete_wall_corner", position: v(-53, 83), rotation: 0 },
+            { id: "concrete_wall_segment", position: v(-53, 74.4), rotation: 1 },
+            { id: "concrete_wall_end_broken", position: v(-53, 65.5), rotation: 1 },
             // wall from bottom left to top left
             { id: "concrete_wall_end_broken", position: v(-53, 44), rotation: 3 },
             { id: "concrete_wall_segment_long", position: v(-53, 28), rotation: 3 },
@@ -604,22 +647,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "concrete_wall_segment_long", position: v(36, -40), rotation: 0 },
             { id: "concrete_wall_segment_long", position: v(65, -40), rotation: 0 },
             { id: "concrete_wall_end_broken", position: v(82, -40), rotation: 0 },
-            { id: "concrete_wall_end_broken", position: v(102, -40), rotation: 2 },
-            { id: "concrete_wall_segment", position: v(110.2, -40), rotation: 2 },
+            { id: "concrete_wall_end_broken", position: v(106, -40), rotation: 2 },
+            { id: "concrete_wall_segment", position: v(114.2, -40), rotation: 2 },
             // top right corner
-            { id: "concrete_wall_corner", position: v(119, -40), rotation: 2 },
-            { id: "concrete_wall_segment_long", position: v(119, -23.2), rotation: 1 },
-            { id: "concrete_wall_segment", position: v(119, -12), rotation: 1 },
-            { id: "concrete_wall_end", position: v(119, -4), rotation: 3 },
-            { id: "concrete_wall_end", position: v(119, 40), rotation: 1 },
-            { id: "concrete_wall_segment", position: v(119, 48), rotation: 1 },
-            { id: "concrete_wall_segment_long", position: v(119, 63.3), rotation: 1 },
+            { id: "concrete_wall_corner", position: v(123, -40), rotation: 2 },
+            { id: "concrete_wall_segment_long", position: v(123, -23.2), rotation: 1 },
+            { id: "concrete_wall_segment", position: v(123, -12), rotation: 1 },
+            { id: "concrete_wall_end", position: v(123, -4), rotation: 3 },
+            { id: "concrete_wall_end", position: v(123, 43), rotation: 1 },
+            { id: "concrete_wall_segment", position: v(123, 51), rotation: 1 },
+            { id: "concrete_wall_segment_long", position: v(123, 66.3), rotation: 1 },
             // bottom right corner
-            { id: "concrete_wall_corner", position: v(119, 80), rotation: 1 },
-            { id: "concrete_wall_segment_long", position: v(102.3, 80), rotation: 0 },
-            { id: "concrete_wall_segment_long", position: v(72, 80), rotation: 0 },
-            { id: "concrete_wall_segment_long", position: v(43, 80), rotation: 0 },
-            { id: "concrete_wall_end", position: v(27, 80), rotation: 2 }
+            { id: "concrete_wall_corner", position: v(123, 83), rotation: 1 },
+            { id: "concrete_wall_segment_long", position: v(106.3, 83), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(76, 83), rotation: 0 },
+            { id: "concrete_wall_segment_long", position: v(47, 83), rotation: 0 },
+            { id: "concrete_wall_end", position: v(31, 83), rotation: 2 }
         ]
     }
 ]);

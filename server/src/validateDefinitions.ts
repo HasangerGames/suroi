@@ -969,7 +969,7 @@ logger.indent("Validating building definitions", () => {
             if (building.groundGraphics) {
                 const errorPath2 = tester.createPath(errorPath, "ground graphics");
                 for (const graphic of building.groundGraphics) {
-                    validateHitbox(errorPath2, graphic.hitbox);
+                    validateHitbox(errorPath2, graphic.bounds);
 
                     tester.assertIntAndInBounds({
                         obj: graphic,
