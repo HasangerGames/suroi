@@ -225,10 +225,6 @@ export class Game {
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
 
-            for (const player of this.livingPlayers) {
-                player.dirty.action = false;
-            }
-
             // Winning logic
             if (this._started && this.aliveCount < 2 && !this._over) {
                 // Send game over packet to the last man standing

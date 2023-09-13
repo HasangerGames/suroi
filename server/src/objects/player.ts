@@ -173,8 +173,7 @@ export class Player extends GameObject {
         weapons: true,
         inventory: true,
         activePlayerID: true,
-        zoom: true,
-        action: false
+        zoom: true
     };
 
     readonly inventory = new Inventory(this);
@@ -193,6 +192,8 @@ export class Player extends GameObject {
         // when its changed the client plays the animation
         seq: false
     };
+
+    actionSeq = 0;
 
     /**
      * Objects the player can see
@@ -746,13 +747,12 @@ export class Player extends GameObject {
             skin: this.loadout.skin,
             activeItem: this.activeItem.type,
             action: {
-                dirty: this.dirty.action
+                seq: this.actionSeq,
+                type: this.action ? this.action.type : PlayerActions.None
             }
         };
-        if (this.dirty.action) {
-            data.action.type = this.action ? this.action.type : PlayerActions.None;
-            if (this.action instanceof HealingAction) data.action.item = this.action.item;
-        }
+        if (this.action instanceof HealingAction) data.action.item = this.action.item;
+
         ObjectSerializations[ObjectCategory.Player].serializeFull(stream, data);
     }
 }

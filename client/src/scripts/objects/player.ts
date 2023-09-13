@@ -28,7 +28,7 @@ import { type EmoteDefinition } from "../../../../common/src/definitions/emotes"
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { Container } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
-import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -51,6 +51,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     footstepSound?: Sound;
     actionSound?: Sound;
+
+    action = {
+        type: PlayerActions.None,
+        seq: 0,
+        item: undefined as undefined | ObjectType<ObjectCategory.Loot, HealingItemDefinition>
+    };
+
+    particlesInterval?: number;
 
     damageable = true;
 
@@ -203,14 +211,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.vestLevel = data.vest;
             this.backpackLevel = data.backpack;
 
-            if (data.action.dirty) {
+            if (this.action.type !== data.action.type || this.action.seq !== data.action.seq) {
                 let actionTime = 0;
-                let actionName = "";
                 let actionSoundName = "";
+                let actionName = "";
                 switch (data.action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+                        window.clearInterval(this.particlesInterval);
                         break;
                     case PlayerActions.Reload: {
                         actionName = "Reloading...";
@@ -223,6 +232,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         actionName = `${itemDef.useText} ${itemDef.name}`;
                         actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
+
+                        // TODO: add particle emitters
+                        this.particlesInterval = window.setInterval(() => {
+                            this.game.particleManager.spawnParticle({
+                                frames: `${HealType[itemDef.healType].toLowerCase()}_particle.svg`,
+                                position: this.hitbox.randomPoint(),
+                                lifeTime: 500,
+                                depth: 4,
+                                rotation: 0,
+                                alpha: {
+                                    start: 1,
+                                    end: 0
+                                },
+                                scale: {
+                                    start: 1,
+                                    end: 1.5
+                                },
+                                speed: v(randomFloat(-0.5, 0.5), -0.8)
+                            });
+                        }, 150);
+
                         break;
                     }
                 }
@@ -239,6 +269,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
                 if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
             }
+            this.action.type = data.action.type;
+            this.action.seq = data.action.seq;
+            this.action.item = data.action.item;
+
             this.updateEquipment();
 
             this.updateFistsPosition(true);
@@ -590,7 +624,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle.svg",
-            depth: 3,
+            depth: 4,
             position,
             lifeTime: 1000,
             scale: {
@@ -606,10 +640,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     destroy(): void {
-        this.destroyed = true;
-        if (!this.isActivePlayer) this.container.destroy();
-        else this.container.visible = false;
-        if (HITBOX_DEBUG_MODE) this.debugGraphics.destroy();
+        super.destroy();
+        clearInterval(this.particlesInterval);
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();
