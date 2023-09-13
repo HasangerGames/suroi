@@ -28,8 +28,8 @@ export interface ObjectsNetData {
         vest: number
         backpack: number
         action: {
-            dirty: boolean
-            type?: PlayerActions
+            type: PlayerActions
+            seq: number
             item?: ObjectType<ObjectCategory.Loot, HealingItemDefinition>
         }
     })
@@ -126,13 +126,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBits(data.vest, 2);
             stream.writeBits(data.backpack, 2);
 
-            stream.writeBoolean(data.action.dirty);
-            if (data.action.dirty && data.action.type !== undefined) {
-                stream.writeBits(data.action.type, PLAYER_ACTIONS_BITS);
-
-                if (data.action.item) {
-                    stream.writeObjectTypeNoCategory(data.action.item);
-                }
+            stream.writeBits(data.action.type, PLAYER_ACTIONS_BITS);
+            stream.writeBits(data.action.seq, 2);
+            if (data.action.item) {
+                stream.writeObjectTypeNoCategory(data.action.item);
             }
         },
         deserializePartial(stream) {
@@ -157,16 +154,15 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: stream.readBits(2),
                 backpack: stream.readBits(2),
                 action: {
-                    dirty: stream.readBoolean()
+                    type: stream.readBits(PLAYER_ACTIONS_BITS),
+                    seq: stream.readBits(2)
                 }
             };
 
-            if (full.action && full.action.dirty) {
-                full.action.type = stream.readBits(PLAYER_ACTIONS_BITS);
-                if (full.action.type === PlayerActions.UseItem) {
-                    full.action.item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
-                }
+            if (full.action && full.action.type === PlayerActions.UseItem) {
+                full.action.item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
             }
+
             return {
                 ...partial, ...full as ObjectsNetData[ObjectCategory.Player]
             };

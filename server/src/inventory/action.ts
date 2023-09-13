@@ -13,20 +13,23 @@ export abstract class Action {
     protected constructor(player: Player, time: number) {
         this.player = player;
         this._timeoutId = setTimeout(this.execute.bind(this), time * 1000);
-        this.player.dirty.action = true;
+        this.player.actionSeq++;
+        this.player.actionSeq %= 4;
         this.player.game.fullDirtyObjects.add(this.player);
     }
 
     cancel(): void {
         clearTimeout(this._timeoutId);
         this.player.action = undefined;
-        this.player.dirty.action = true;
+        this.player.actionSeq++;
+        this.player.actionSeq %= 4;
         this.player.game.fullDirtyObjects.add(this.player);
     }
 
     execute(): void {
         this.player.action = undefined;
-        this.player.dirty.action = true;
+        this.player.actionSeq++;
+        this.player.actionSeq %= 4;
         this.player.game.fullDirtyObjects.add(this.player);
     }
 }

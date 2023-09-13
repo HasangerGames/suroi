@@ -146,7 +146,6 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "Kernel Panic", position: v(800, 800) },
             { name: "undefined Forest", position: v(512, 300) },
             { name: "Memory Leak", position: v(512, 700) }
-
         ]
     },
     // Arena map to test guns with really bad custom generation code lol

@@ -3,7 +3,6 @@ import { Player } from "../../objects/player";
 import { Bullet } from "../../objects/bullet";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
-import type { GameObject } from "../../types/gameObject";
 
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
@@ -163,15 +162,6 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
-        // Deleted objects
-        if (deletedObjectsDirty) {
-            const deletedObjectCount = stream.readUint16();
-            for (let i = 0; i < deletedObjectCount; i++) {
-                const id = stream.readObjectID();
-                this.deletedObjects.push(id);
-            }
-        }
-
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
@@ -192,18 +182,23 @@ export class UpdatePacket extends ReceivingPacket {
         if (partialObjectsDirty) {
             const partialObjectCount = stream.readUint16();
             for (let i = 0; i < partialObjectCount; i++) {
+                const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                const object: GameObject | undefined = game.objects.get(id);
 
-                if (object === undefined) {
-                    console.warn(`Unknown partial object with ID ${id}`);
-                    continue;
-                }
-                const data = ObjectSerializations[object.type.category].deserializePartial(stream, object.type);
+                const data = ObjectSerializations[type.category].deserializePartial(stream, type);
                 this.partialDirtyObjects.add({
                     id,
                     data
                 });
+            }
+        }
+
+        // Deleted objects
+        if (deletedObjectsDirty) {
+            const deletedObjectCount = stream.readUint16();
+            for (let i = 0; i < deletedObjectCount; i++) {
+                const id = stream.readObjectID();
+                this.deletedObjects.push(id);
             }
         }
 
