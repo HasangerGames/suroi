@@ -215,11 +215,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let actionTime = 0;
                 let actionSoundName = "";
                 let actionName = "";
+                window.clearInterval(this.particlesInterval);
                 switch (data.action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
-                        window.clearInterval(this.particlesInterval);
                         break;
                     case PlayerActions.Reload: {
                         actionName = "Reloading...";
@@ -238,7 +238,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             this.game.particleManager.spawnParticle({
                                 frames: `${HealType[itemDef.healType].toLowerCase()}_particle.svg`,
                                 position: this.hitbox.randomPoint(),
-                                lifeTime: 500,
+                                lifeTime: 1000,
                                 depth: 4,
                                 rotation: 0,
                                 alpha: {
@@ -249,9 +249,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     start: 1,
                                     end: 1.5
                                 },
-                                speed: v(randomFloat(-0.5, 0.5), -0.8)
+                                speed: v(randomFloat(-0.4, 0.4), -0.6)
                             });
-                        }, 150);
+                        }, 350);
 
                         break;
                     }
