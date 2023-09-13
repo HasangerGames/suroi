@@ -610,18 +610,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "distillation_equipment",
-                position: v(-38.2, -20.5),
-                rotation: 1
+                position: v(0, -18),
+                rotation: 2
             },
             {
                 id: "smokestack",
-                position: v(-19.25, -25.59)
+                position: v(-39, -25.59)
             },
             {
                 get id(): string {
                     return randomBoolean() ? "barrel" : "super_barrel";
                 },
-                position: v(15.5, -12)
+                position: v(-26, -30)
             },
             {
                 get id(): string {
@@ -635,7 +635,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "regular_crate",
-                position: v(5, -13)
+                position: v(-43, -11)
             },
             //
             // Outside obstacles

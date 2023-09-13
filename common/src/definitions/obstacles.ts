@@ -971,6 +971,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: "full",
             explosion: "large_refinery_barrel_explosion",
             reflectBullets: true,
+            depth: 9,
             frames: {
                 particle: "barrel_particle"
             }
@@ -989,6 +990,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(8.9),
             rotationMode: "limited",
             reflectBullets: true,
+            depth: 9,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1010,6 +1012,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ]),
             rotationMode: "limited",
             reflectBullets: true,
+            depth: 9,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1026,7 +1029,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new ComplexHitbox([
-                new RectangleHitbox(v(-14.25, -9.5), v(3.2, -0.9)), // Main tank
+                new CircleHitbox(3, v(-11.3, -3.85)), // Main tank rounded corners
+                new CircleHitbox(3, v(-11.3, -6.55)),
+                new RectangleHitbox(v(-14.3, -7), v(3.2, -3.5)),
+                new RectangleHitbox(v(-11, -9.4), v(3.2, -0.9)), // Main tank
                 new CircleHitbox(3.15, v(0.72, 5.62)), // Bottom left circle
                 new CircleHitbox(4.4, v(8.95, 5.62)), // Bottom right circle
                 new CircleHitbox(5.35, v(8.95, -4.7)), // Top circle
