@@ -126,7 +126,7 @@ export const Config = {
 
     movementSpeed: 0.77,
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Random },
 
     playerLimit: 80,
 
@@ -140,7 +140,7 @@ export const Config = {
 
     cloudflare: false,
 
-    mapName: "refinery",
+    mapName: "main",
 
     roles: {
         dev: { password: "dev" },

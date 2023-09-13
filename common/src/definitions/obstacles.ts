@@ -950,7 +950,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(6.8),
             rotationMode: "full",
-            explosion: "super_barrel_explosion",
+            explosion: "small_refinery_barrel_explosion",
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle",
