@@ -88,7 +88,7 @@ export class Game {
 
     private _started = false;
     allowJoin = false;
-    private _over = false;
+    over = false;
     stopped = false;
 
     startTimeoutID?: NodeJS.Timeout;
@@ -226,7 +226,7 @@ export class Game {
             this.gas.percentageDirty = false;
 
             // Winning logic
-            if (this._started && this.aliveCount < 2 && !this._over) {
+            if (this._started && this.aliveCount < 2 && !this.over) {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
@@ -240,7 +240,7 @@ export class Game {
 
                 // End the game in 1 second
                 this.allowJoin = false;
-                this._over = true;
+                this.over = true;
                 setTimeout(() => {
                     endGame(this._id); // End this game
                     const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
