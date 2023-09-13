@@ -22,14 +22,16 @@ export class MapPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        stream.writeUint16(this.game.map.width);
-        stream.writeUint16(this.game.map.height);
+        const map = this.game.map;
+
+        stream.writeUint16(map.width);
+        stream.writeUint16(map.height);
 
         const objects: Obstacle[] | Building[] = [...this.game.staticObjects].filter(object => {
             return (object instanceof Obstacle || object instanceof Building) && !object.definition.hideOnMap;
         }) as Obstacle[] | Building[];
 
-        stream.writeBits(objects.length, 10);
+        stream.writeBits(objects.length, 11);
 
         for (const object of objects) {
             stream.writeObjectType(object.type);
@@ -49,6 +51,13 @@ export class MapPacket extends SendingPacket {
                     stream.writeObstacleRotation(object.rotation, "limited");
                     break;
             }
+        }
+
+        stream.writeBits(map.places.length, 4);
+
+        for (const place of map.places) {
+            stream.writeASCIIString(place.name, 24);
+            stream.writePosition(place.position);
         }
     }
 }
