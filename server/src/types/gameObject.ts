@@ -33,6 +33,7 @@ export abstract class GameObject {
         this.game = game;
         this.type = type;
         this._position = position;
+        game.updateObjects = true;
     }
 
     abstract damage(amount: number, source?: GameObject): void;

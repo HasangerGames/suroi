@@ -216,6 +216,11 @@ export class Player extends GameObject {
      */
     deletedObjects = new Set<GameObject>();
     /**
+     * Ticks since last visible objects update
+     */
+    ticksSinceLastUpdate = 0;
+
+    /**
      * Emotes being sent to the player this tick
      */
     emotes = new Set<Emote>();
@@ -330,6 +335,7 @@ export class Player extends GameObject {
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
+        this.updateVisibleObjects();
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
@@ -485,6 +491,7 @@ export class Player extends GameObject {
     }
 
     updateVisibleObjects(): void {
+        this.ticksSinceLastUpdate = 0;
         const minX = this.position.x - this.xCullDist;
         const minY = this.position.y - this.yCullDist;
         const maxX = this.position.x + this.xCullDist;

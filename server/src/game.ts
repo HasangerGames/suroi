@@ -99,6 +99,8 @@ export class Game {
 
     tickDelta = 1000 / TICK_SPEED;
 
+    updateObjects = false;
+
     constructor(id: number) {
         this._id = id;
 
@@ -163,7 +165,8 @@ export class Game {
                 if (!player.joined) continue;
 
                 // Calculate visible objects
-                player.updateVisibleObjects();
+                player.ticksSinceLastUpdate++;
+                if (player.ticksSinceLastUpdate > 8 || this.updateObjects) player.updateVisibleObjects();
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
@@ -224,6 +227,7 @@ export class Game {
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
+            this.updateObjects = false;
 
             // Winning logic
             if (this._started && this.aliveCount < 2 && !this.over) {
@@ -402,6 +406,7 @@ export class Game {
     removeObject(object: GameObject): void {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
+        this.updateObjects = true;
     }
 
     get aliveCount(): number {
