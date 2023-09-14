@@ -513,7 +513,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "refinery",
         name: "Refinery",
-        spawnHitbox: new RectangleHitbox(v(-55, -42), v(122, 82)),
+        spawnHitbox: new RectangleHitbox(v(-57, -44), v(127, 87)),
         scopeHitbox: new ComplexHitbox([
             new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
             new RectangleHitbox(v(-16, -36), v(49.5, -6.5))

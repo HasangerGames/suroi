@@ -67,7 +67,8 @@ export const Maps: Record<string, MapDefinition> = {
             barrel: 70,
             super_barrel: 20,
             melee_crate: 1,
-            gold_rock: 1
+            gold_rock: 1,
+            flint_stone: 1
         },
         specialObstacles: {
             oil_tank: {
@@ -249,7 +250,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("gun_mount", v(64, 64));
+            map.generateObstacle("flint_stone", v(64, 64));
         }
     }
 };

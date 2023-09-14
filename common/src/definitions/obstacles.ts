@@ -197,6 +197,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             particleVariations: 2
         },
         {
+            idString: "flint_stone",
+            name: "Flint Stone",
+            material: "stone",
+            health: 200,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.5
+            },
+            hitbox: new RectangleHitbox(v(-3.1, -3.1), v(3.1, 3.1)),
+            rotationMode: "none",
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
             idString: "bush",
             name: "Bush",
             material: "bush",
