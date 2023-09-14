@@ -80,7 +80,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
 
         this.scale = data.scale;
-        this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
 
         if (definition.isDoor && this.door && this.isNew) {
             let offsetX: number;
@@ -97,6 +96,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
             this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
             ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.orientation));
+            this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+
         }
 
         if (definition.isDoor && this.door !== undefined && data.door) {
@@ -168,7 +169,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         }
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
-        if (!this.isNew && !this.isDoor) {
+        if (!this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
 
