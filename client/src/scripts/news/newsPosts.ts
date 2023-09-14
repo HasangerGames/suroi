@@ -3,13 +3,50 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1694706686000,
+        author: "HAZEL",
+        title: "Back with a Bang",
+        bannerImage: "/img/news/v0.10.0.png",
+        content: `Despite the construction delays, we're back on the island to officially open the newest building: the refinery! Full of plenty of loot, but watch out or the whole place could go ka-boom...
+
+We're also happy to announce a large shipment containing 4 new types of guns, including two new DMRs! One gun is Italian, and three are American. Sources indicate the new LMG is particularly potent...
+
+Our scouts have fully mapped out the island, including its beaches. We've decided to begin adding name markers to the map to aid in navigation. You're welcome!`,
+        longContent: `<h2>Suroi v0.10.0</h2>
+
+<h3>New features & changes</h3>
+<ul>
+  <li>New building! Added the refinery, the largest structure yet!</li>
+  <li>More guns! Added 4 guns: the Stoner 63 (a LMG), SR-25 (a DMR), ARX-160 (an assault rifle), and Mini-14 (a DMR).</li>
+  <li>Rewrite! The game has been rewritten to use Pixi.js (a different rendering engine), and a custom physics engine, which should improve performance a lot.</li>
+  <li>Better bullets! Bullets now reflect off of metal surfaces. Bullet collisions are now calculated client-side, making them more accurate.</li>
+  <li>Beaches & ocean! The island is now surrounded by beaches and ocean.</li>
+  <li>More & better particles! Players now emit particles when using healing items. Added bullet shell particles and muzzle flash. Obstacle hit particles now show in the correct locations.</li>
+  <li>Better sounds! Sounds now play more reliably. Sound falloff has been added, meaning further away sounds are quieter, and a subtle stereo effect has been added.</li>
+  <li>Place names! There are now named places on the map, like in surviv.io.</li>
+  <li>Fixed an issue causing the game to freeze for a few seconds every round.</li>
+  <li>New servers! The main, North America server has been upgraded from 2 cores and 2 GB RAM to 4 cores and 4 GB RAM. The Europe server has been upgraded to 4 cores and 8 GB RAM.</li>
+  <li>Added 3 new skins and 1 emote.</li>
+  <li>Made the warehouse and porta potty entrances more obvious. Added holes to the house roof.</li>
+  <li>Your rank is now shown on the game over screen.</li>
+  <li>Better hitboxes! Hitboxes and viewports have been fixed and adjusted.</li>
+  <li>New pine tree texture.</li>
+  <li>Added unique pickup sounds for healing items and scopes.</li>
+  <li>Fixed issues with auto loot pickup on mobile.</li>
+  <li>Fixed the force required to activate the right joystick not changing with joystick size.</li>
+  <li>Added an option to loop when switching scopes, disabled by default.</li>
+</ul>
+
+Special thanks to Leia and platonthek. This update wouldn't have been possible without them.`
+    },
+    {
         date: 1690748181000,
         author: "HAZEL",
         title: "Behind Closed Doors",
         bannerImage: "/img/news/v0.9.0.png",
         content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.<br><br>
 
-There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
+There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of a punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
 
 Surians can now customize their skins, and express themselves with emotes too! Everything is unlocked until accounts are added.`,
         longContent: `<h2>Suroi v0.9.0</h2>

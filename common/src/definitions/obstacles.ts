@@ -334,10 +334,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: "full",
-            hasLoot: true,
-            frames: {
-                particle: "metal_particle"
-            }
+            hasLoot: true
         },
         {
             idString: "warehouse_wall_1",

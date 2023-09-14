@@ -250,7 +250,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("flint_stone", v(64, 64));
+            map.generateObstacle("gold_rock", v(64, 64));
         }
     }
 };
