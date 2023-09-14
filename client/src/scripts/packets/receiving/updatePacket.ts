@@ -280,10 +280,10 @@ export class UpdatePacket extends ReceivingPacket {
 
                 if (game.gas.state === GasState.Advancing) {
                     $("#gas-timer").addClass("advancing");
-                    $("#gas-timer-image").attr("src", "/img/misc/gas-advancing-icon.svg");
+                    $("#gas-timer-image").attr("src", "./img/misc/gas-advancing-icon.svg");
                 } else {
                     $("#gas-timer").removeClass("advancing");
-                    $("#gas-timer-image").attr("src", "/img/misc/gas-waiting-icon.svg");
+                    $("#gas-timer-image").attr("src", "./img/misc/gas-waiting-icon.svg");
                 }
 
                 if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE) {

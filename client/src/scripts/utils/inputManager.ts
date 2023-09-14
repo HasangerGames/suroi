@@ -196,7 +196,7 @@ function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
                 $("#emote-wheel")
                     .css("left", `${game.playerManager.mouseX - 143}px`)
                     .css("top", `${game.playerManager.mouseY - 143}px`)
-                    .css("background-image", 'url("/img/misc/emote_wheel.svg")')
+                    .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                     .show();
                 game.playerManager.emoteWheelActive = true;
                 game.playerManager.emoteWheelPosition = v(game.playerManager.mouseX, game.playerManager.mouseY);
@@ -370,10 +370,10 @@ export function setupInputs(game: Game): void {
                     player.selectedEmoteSlot = EmoteSlot.Left;
                     slotName = "left";
                 }
-                $("#emote-wheel").css("background-image", `url("/img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("/img/misc/emote_wheel.svg")`);
+                $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
             } else {
                 player.selectedEmoteSlot = EmoteSlot.None;
-                $("#emote-wheel").css("background-image", 'url("/img/misc/emote_wheel.svg")');
+                $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
             }
         }
 

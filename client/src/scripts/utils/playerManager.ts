@@ -238,7 +238,7 @@ export class PlayerManager {
                     this.weapons[i] = item;
                     container.children(".item-name").text(item.definition.name);
                     const itemDef = item.definition;
-                    container.children(".item-image").attr("src", `/img/game/weapons/${itemDef.idString}.svg`).show();
+                    container.children(".item-image").attr("src", `./img/game/weapons/${itemDef.idString}.svg`).show();
 
                     if (itemDef.itemType === ItemType.Gun) {
                         const ammo = stream.readUint8();

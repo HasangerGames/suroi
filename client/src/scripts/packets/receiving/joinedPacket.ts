@@ -10,7 +10,7 @@ export class JoinedPacket extends ReceivingPacket {
             const emoteSelectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
             for (let i = 0; i < 4; i++) {
                 const emoteType = stream.readObjectTypeNoCategory(ObjectCategory.Emote);
-                $(`#emote-wheel > ${emoteSelectors[i]}`).css("background-image", `url("/img/game/emotes/${emoteType.idString}.svg")`);
+                $(`#emote-wheel > ${emoteSelectors[i]}`).css("background-image", `url("./img/game/emotes/${emoteType.idString}.svg")`);
             }
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);

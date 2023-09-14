@@ -24,7 +24,7 @@ export class SoundManager {
     }
 
     load(name: string, path: string): void {
-        const sound = new Howl({ src: `${path}.mp3` });
+        const sound = new Howl({ src: `./${path}.mp3` });
         sound.load();
         this.sounds[name] = sound;
     }

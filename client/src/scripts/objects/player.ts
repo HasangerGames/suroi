@@ -403,7 +403,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (level > 0) {
             const definition = definitions[equipmentType === "backpack" ? level : level - 1];
             container.children(".item-name").text(`Lvl. ${level}`);
-            container.children(".item-image").attr("src", `/img/game/loot/${definition.idString}.svg`);
+            container.children(".item-image").attr("src", `./img/game/loot/${definition.idString}.svg`);
 
             let itemTooltip = definition.name;
             if (equipmentType === "helmet" || equipmentType === "vest") {
