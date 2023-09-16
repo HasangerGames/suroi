@@ -9,15 +9,17 @@ import { ObjectDefinitionsList } from "./objectDefinitionsList";
 import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
-    OBJECT_CATEGORY_BITS, type ObjectCategory,
+    OBJECT_CATEGORY_BITS,
+    OBJECT_ID_BITS,
+    type ObjectCategory,
     PACKET_TYPE_BITS,
     type PacketType,
-    VARIATION_BITS,
     PLAYER_NAME_MAX_LENGTH,
-    OBJECT_ID_BITS
+    VARIATION_BITS
 } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
+import { RotationMode } from "../definitions/obstacles";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -225,17 +227,17 @@ export class SuroiBitStream extends BitStream {
     /**
      * Write an obstacle rotation to the stream.
      * @param value The rotation to write, in radians
-     * @param mode The rotation mode (full, limited, binary, or none)
+     * @param mode The rotation mode
      */
-    writeObstacleRotation(value: number, mode: string): void {
+    writeObstacleRotation(value: number, mode: RotationMode): void {
         switch (mode) {
-            case "full":
+            case RotationMode.Full:
                 this.writeRotation(value, 4);
                 break;
-            case "limited": // 4 possible orientations
+            case RotationMode.Limited: // 4 possible orientations
                 this.writeBits(value, 2);
                 break;
-            case "binary": // 2 possible orientations
+            case RotationMode.Binary: // 2 possible orientations
                 this.writeBits(value, 1);
                 break;
         }
@@ -243,21 +245,21 @@ export class SuroiBitStream extends BitStream {
 
     /**
      * Read an obstacle rotation from the stream.
-     * @param mode The rotation mode (full, limited, binary, or none)
+     * @param mode The rotation mode
      * @return The rotation in radians.
      */
-    readObstacleRotation(mode: string): { rotation: number, orientation: Orientation } {
+    readObstacleRotation(mode: RotationMode): { rotation: number, orientation: Orientation } {
         let orientation: Orientation = 0;
         let rotation = 0;
         switch (mode) {
-            case "full":
+            case RotationMode.Full:
                 rotation = this.readRotation(4);
                 break;
-            case "limited": // 4 possible orientations
+            case RotationMode.Limited: // 4 possible orientations
                 orientation = this.readBits(2) as Orientation;
                 rotation = -normalizeAngle(orientation) * (Math.PI / 2);
                 break;
-            case "binary": // 2 possible orientations
+            case RotationMode.Binary: // 2 possible orientations
                 if (this.readBoolean()) {
                     rotation = Math.PI / 2;
                     orientation = 1;

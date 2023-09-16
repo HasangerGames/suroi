@@ -1,14 +1,14 @@
 import { type Game } from "../game";
 
 import { GameObject } from "../types/gameObject";
-import { type LootItem, getLootTableLoot } from "../utils/misc";
+import { getLootTableLoot, type LootItem } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Vector, vSub, v, vAdd } from "../../../common/src/utils/vector";
-import { angleBetween, calculateDoorHitboxes, transformRectangle } from "../../../common/src/utils/math";
-import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { angleBetween, calculateDoorHitboxes } from "../../../common/src/utils/math";
+import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { LootTables } from "../data/lootTables";
@@ -80,7 +80,7 @@ export class Obstacle extends GameObject {
 
         let hitboxRotation: Orientation = 0;
 
-        if (this.definition.rotationMode === "limited") {
+        if (this.definition.rotationMode === RotationMode.Limited) {
             hitboxRotation = rotation as Orientation;
         }
 
@@ -181,25 +181,9 @@ export class Obstacle extends GameObject {
             this.healthFraction = this.health / this.maxHealth;
             const oldScale = this.scale;
 
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+            // Calculate new scale & scale hitbox
             this.scale = this.healthFraction * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
-            const scaleFactor = this.scale / oldScale;
-
-            // Transform the hitbox
-            // TODO Move this code to the Hitbox classes
-            if (this.hitbox instanceof CircleHitbox) {
-                this.hitbox.radius *= scaleFactor;
-            } else if (this.hitbox instanceof RectangleHitbox) {
-                const rotatedRect = transformRectangle(
-                    this.position,
-                    vSub(this.hitbox.min, this.position),
-                    vSub(this.hitbox.max, this.position),
-                    scaleFactor,
-                    0
-                );
-                this.hitbox.min = rotatedRect.min;
-                this.hitbox.max = rotatedRect.max;
-            }
+            this.hitbox.scale(this.scale / oldScale);
 
             // Punch doors to open
             if (this.isDoor && source instanceof Player && weaponUsed instanceof MeleeItem) this.interact(source);

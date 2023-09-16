@@ -282,7 +282,8 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
  * Transform a rectangle by a given position and orientation
  * @param pos The position to transform the rectangle by
  * @param min The rectangle min Vector
- * @param pos The rectangle max Vector
+ * @param max The rectangle max Vector
+ * @param scale The scale
  * @param orientation The orientation to rotate it
  * @return A new Rectangle transformed by the given position and orientation
  */

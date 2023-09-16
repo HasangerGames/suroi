@@ -10,7 +10,7 @@ import {
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
-import { type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
@@ -105,7 +105,7 @@ export class Map {
         const type = ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, idString);
 
         for (let i = 0; i < count; i++) {
-            const orientation = this.getRandomRotation("limited") as Orientation;
+            const orientation = this.getRandomRotation(RotationMode.Limited) as Orientation;
             const position = this.getRandomPositionFor(type, 1, orientation);
 
             this.generateBuilding(type, position, orientation);
@@ -113,7 +113,7 @@ export class Map {
     }
 
     generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation?: Orientation): Building {
-        if (orientation === undefined) orientation = this.getRandomRotation("limited") as Orientation;
+        if (orientation === undefined) orientation = this.getRandomRotation(RotationMode.Limited) as Orientation;
 
         const building = new Building(this.game, type, vClone(position), orientation);
 
@@ -126,7 +126,7 @@ export class Map {
 
             let obstacleRotation = obstacleData.rotation ?? this.getRandomRotation(obstacleType.definition.rotationMode);
 
-            if (obstacleType.definition.rotationMode === "limited") {
+            if (obstacleType.definition.rotationMode === RotationMode.Limited) {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
@@ -188,7 +188,7 @@ export class Map {
 
                 let orientation: Orientation = 0;
 
-                if (definition.rotationMode === "limited") {
+                if (definition.rotationMode === RotationMode.Limited) {
                     orientation = rotation as Orientation;
                 }
 
@@ -350,15 +350,15 @@ export class Map {
         return this.getRandomPositionFor(type, scale, orientation, getPosition);
     }
 
-    getRandomRotation(mode: ObstacleDefinition["rotationMode"]): number {
+    getRandomRotation(mode: RotationMode): number {
         switch (mode) {
-            case "full":
+            case RotationMode.Full:
                 return randomRotation();
-            case "limited":
+            case RotationMode.Limited:
                 return random(0, 3);
-            case "binary":
+            case RotationMode.Binary:
                 return random(0, 1);
-            case "none":
+            case RotationMode.None:
             default:
                 return 0;
         }

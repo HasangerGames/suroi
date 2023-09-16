@@ -97,7 +97,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
             ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.orientation));
             this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
-
         }
 
         if (definition.isDoor && this.door !== undefined && data.door) {

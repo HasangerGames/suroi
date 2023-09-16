@@ -1,6 +1,6 @@
 import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
-import { Armors, type ArmorDefinition } from "../../common/src/definitions/armors";
+import { type ArmorDefinition, Armors } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
 import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
@@ -10,12 +10,18 @@ import { HealingItems } from "../../common/src/definitions/healingItems";
 import { Helmets } from "../../common/src/definitions/helmets";
 import { Loots } from "../../common/src/definitions/loots";
 import { Melees } from "../../common/src/definitions/melees";
-import { Obstacles } from "../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
-import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../common/src/utils/hitbox";
-import { type WearerAttributes, type ObjectDefinitions, type ItemDefinition, type ObjectDefinition, type BulletDefinition } from "../../common/src/utils/objectDefinitions";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
+import {
+    type BulletDefinition,
+    type ItemDefinition,
+    type ObjectDefinition,
+    type ObjectDefinitions,
+    type WearerAttributes
+} from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
@@ -870,7 +876,7 @@ logger.indent("Validating building definitions", () => {
                                     const rotationMode = reference.rotationMode;
 
                                     switch (rotationMode) {
-                                        case "full": {
+                                        case RotationMode.Full: {
                                             tester.assertIsFiniteRealNumber({
                                                 obj: obstacle,
                                                 field: "rotation",
@@ -878,7 +884,7 @@ logger.indent("Validating building definitions", () => {
                                             });
                                             break;
                                         }
-                                        case "limited": {
+                                        case RotationMode.Limited: {
                                             tester.assertIntAndInBounds({
                                                 obj: obstacle,
                                                 field: "rotation",
@@ -890,7 +896,7 @@ logger.indent("Validating building definitions", () => {
                                             });
                                             break;
                                         }
-                                        case "binary": {
+                                        case RotationMode.Binary: {
                                             tester.assertIntAndInBounds({
                                                 obj: obstacle,
                                                 field: "rotation",
@@ -902,7 +908,7 @@ logger.indent("Validating building definitions", () => {
                                             });
                                             break;
                                         }
-                                        case "none": {
+                                        case RotationMode.None: {
                                             tester.assertInBounds({
                                                 obj: obstacle,
                                                 field: "rotation",

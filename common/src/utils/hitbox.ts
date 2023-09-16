@@ -56,6 +56,12 @@ export abstract class Hitbox {
      */
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
     /**
+     * Scale this `Hitbox`.
+     * NOTE: This does change the initial `Hitbox`
+     * @param scale The scale
+     */
+    abstract scale(scale: number): void;
+    /**
      * Check if a line intersects with this `Hitbox`.
      * @param a the start point of the line
      * @param b the end point of the line
@@ -137,6 +143,10 @@ export class CircleHitbox extends Hitbox {
         return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
+    scale(scale: number): void {
+        this.radius *= scale;
+    }
+
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsCircle(a, b, this.position, this.radius);
     }
@@ -204,6 +214,13 @@ export class RectangleHitbox extends Hitbox {
         const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
+    }
+
+    scale(scale: number): void {
+        const centerX = (this.min.x + this.max.x) / 2;
+        const centerY = (this.min.y + this.max.y) / 2;
+        this.min = v((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
+        this.max = v((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {
@@ -286,6 +303,10 @@ export class ComplexHitbox extends Hitbox {
             hitBoxes.push(hitbox.transform(position, scale, orientation));
         }
         return new ComplexHitbox(hitBoxes);
+    }
+
+    scale(scale: number): void {
+        for (const hitbox of this.hitboxes) hitbox.scale(scale);
     }
 
     intersectsLine(a: Vector, b: Vector): IntersectionResponse {

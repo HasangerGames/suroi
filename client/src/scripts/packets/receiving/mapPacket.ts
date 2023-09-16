@@ -2,9 +2,9 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { COLORS, PIXI_SCALE } from "../../utils/constants";
-import { Container, Graphics, RenderTexture, isMobile, Text } from "pixi.js";
+import { Container, Graphics, isMobile, RenderTexture, Text } from "pixi.js";
 import { GRID_SIZE, ObjectCategory } from "../../../../../common/src/constants";
-import { type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { SuroiSprite } from "../../utils/pixi";
 import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/hitbox";
@@ -113,7 +113,7 @@ export class MapPacket extends ReceivingPacket {
                     break;
                 }
                 case ObjectCategory.Building: {
-                    const { rotation, orientation } = stream.readObstacleRotation("limited");
+                    const { rotation, orientation } = stream.readObstacleRotation(RotationMode.Limited);
 
                     const definition = type.definition as BuildingDefinition;
 

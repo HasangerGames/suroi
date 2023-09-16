@@ -1,10 +1,11 @@
 import { SendingPacket } from "../../types/sendingPacket";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { PacketType, ObjectCategory } from "../../../../common/src/constants";
+import { ObjectCategory, PacketType } from "../../../../common/src/constants";
 import { Obstacle } from "../../objects/obstacle";
 import { type Game } from "../../game";
 import { Building } from "../../objects/building";
+import { RotationMode } from "../../../../common/src/definitions/obstacles";
 
 export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
@@ -48,7 +49,7 @@ export class MapPacket extends SendingPacket {
                     break;
                 }
                 case ObjectCategory.Building:
-                    stream.writeObstacleRotation(object.rotation, "limited");
+                    stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }
         }
