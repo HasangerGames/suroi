@@ -101,3 +101,5 @@ export const TICK_SPEED = 30;
 export const GRID_SIZE = 16;
 
 export const PLAYER_RADIUS = 2.25;
+
+export const ALLOW_NON_ASCII_USERNAME_CHARS = false;

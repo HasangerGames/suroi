@@ -6,6 +6,11 @@ export function log(message: string, noLine = false): void {
     if (!noLine) console.log(`${dateString} ===========================`);
 }
 
+export function stripNonASCIIChars(str: string): string {
+    // eslint-disable-next-line no-control-regex
+    return str.replace(/[^\x00-\xFF]/g, "");
+}
+
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
