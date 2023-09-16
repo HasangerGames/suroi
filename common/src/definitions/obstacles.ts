@@ -4,7 +4,7 @@ import { v, type Vector } from "../utils/vector";
 import { type Variation } from "../typings";
 
 export type ObstacleDefinition = ObjectDefinition & {
-    readonly material: "tree" | "stone" | "bush" | "crate" | "metal" | "wood" | "glass" | "cardboard" | "porcelain" | "appliance" | "large_refinery_barrel"
+    readonly material: typeof Materials[number]
     readonly health: number
     readonly indestructible?: boolean
     readonly impenetrable?: boolean
@@ -44,7 +44,19 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance", "large_refinery_barrel"];
+export const Materials: string[] = [
+    "tree",
+    "stone",
+    "bush",
+    "crate",
+    "metal",
+    "wood",
+    "glass",
+    "porcelain",
+    "cardboard",
+    "appliance",
+    "large_refinery_barrel"
+];
 
 export enum RotationMode {
     Full,
