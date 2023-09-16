@@ -19,7 +19,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
     readonly noCollisions?: boolean
-    readonly rotationMode: "full" | "limited" | "binary" | "none"
+    readonly rotationMode: RotationMode
     readonly variations?: Variation
     readonly particleVariations?: number
     readonly depth?: number // the obstacle z index
@@ -44,7 +44,14 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly isDoor?: false
 });
 
-export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance", "large_refinery_barrel"];//
+export const Materials: string[] = ["tree", "stone", "bush", "crate", "metal", "wood", "glass", "porcelain", "cardboard", "appliance", "large_refinery_barrel"];
+
+export enum RotationMode {
+    Full,
+    Limited,
+    Binary,
+    None
+}
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
     const definition = {
@@ -78,7 +85,7 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
             destroy: 0.6
         },
         hitbox: new RectangleHitbox(v(-3.1, -3.1), v(3.1, 3.1)),
-        rotationMode: "none",
+        rotationMode: RotationMode.None,
         hasLoot: true,
         frames: {
             particle: "regular_crate_particle",
@@ -100,7 +107,7 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
             destroy: 0.95
         },
         hitbox,
-        rotationMode: "limited",
+        rotationMode: RotationMode.Limited,
         frames: {
             particle: "wall_particle"
         },
@@ -122,7 +129,7 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
             destroy: 0.95
         },
         hitbox,
-        rotationMode: "limited",
+        rotationMode: RotationMode.Limited,
         isWall: true,
         particleVariations: 2,
         variations,
@@ -146,7 +153,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             variations: 3,
             depth: 5
         },
@@ -162,7 +169,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             depth: 5
         },
         {
@@ -177,7 +184,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             depth: 5
         },
         {
@@ -192,7 +199,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             variations: 7,
             particleVariations: 2
         },
@@ -208,7 +215,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new RectangleHitbox(v(-3.1, -3.1), v(3.1, 3.1)),
-            rotationMode: "none",
+            rotationMode: RotationMode.None,
             particleVariations: 2,
             frames: {
                 particle: "rock_particle"
@@ -226,7 +233,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(4.2),
             noCollisions: true,
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             variations: 2,
             particleVariations: 2,
             depth: 4
@@ -243,7 +250,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(4.2),
             noCollisions: true,
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             particleVariations: 2,
             depth: 4,
             spawnWithLoot: true,
@@ -253,14 +260,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         makeCrate("regular_crate", "Regular Crate", {
-            rotationMode: "binary"
+            rotationMode: RotationMode.Binary
         }),
         makeCrate("flint_crate", "Flint Crate", {
-            rotationMode: "none",
+            rotationMode: RotationMode.None,
             hideOnMap: true
         }),
         makeCrate("aegis_crate", "AEGIS Crate", {
-            rotationMode: "none",
+            rotationMode: RotationMode.None,
             hideOnMap: true
         }),
         makeSpecialCrate("melee_crate", "Melee Crate"),
@@ -275,7 +282,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(3.65),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
             reflectBullets: true
         },
@@ -290,7 +297,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(3.65),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
             reflectBullets: true
         },
@@ -314,7 +321,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(5, v(8, -1.8))
             ]),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
@@ -333,7 +340,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             hasLoot: true
         },
         {
@@ -349,7 +356,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true,
             frames: {
                 particle: "metal_particle"
@@ -368,7 +375,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new RectangleHitbox(v(-5.3, -0.8), v(5.3, 0.8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true,
             frames: {
                 particle: "metal_particle"
@@ -385,7 +392,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-2.2, -2.2), v(2.2, 2.2)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             variations: 3,
             depth: 2,
             hasLoot: true
@@ -404,7 +411,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
@@ -427,7 +434,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
@@ -444,7 +451,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             explosion: "stove_explosion",
             frames: {
                 particle: "metal_particle"
@@ -463,7 +470,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hasLoot: true,
             hitbox: new RectangleHitbox(v(-4.55, -3.45), v(4.55, 3)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true
         },
         {
@@ -497,7 +504,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-41.9, 32), v(-38.65, 35.13)), // Left post
                 new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post
             ]),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "wall_particle"
             }
@@ -513,7 +520,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 1.0
             },
             hitbox: new RectangleHitbox(v(-5.52, -0.8), v(4.63, 0.8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             noResidue: true,
             isDoor: true,
             hingeOffset: v(-5.5, 0),
@@ -538,7 +545,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
             ]),*/
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true
         },
         {
@@ -557,7 +564,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
             ]),*/
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "toilet_particle",
@@ -575,7 +582,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.8
             },
             hitbox: new RectangleHitbox(v(-3.1, -3.5), v(3.1, 2.5)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
@@ -593,7 +600,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.25, -3.5), v(6.25, 2.5)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
@@ -611,7 +618,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-3.7, -7.9), v(3.3, 7.9)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             }
@@ -628,7 +635,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-0.8, -7.6), v(0.3, 7.5)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             depth: 2,
             frames: {
                 particle: "metal_particle"
@@ -646,7 +653,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-4.15, -6.1), v(4.15, 6.1)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             },
@@ -664,7 +671,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-3.4, -3.35), v(3.4, 3.35)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             }
@@ -682,7 +689,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             variations: 2,
             hitbox: new RectangleHitbox(v(-6.24, -2.12), v(6.25, 2.12)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "furniture_particle"
@@ -701,7 +708,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-0.9, -4.7), v(0.9, 4.7)),
             depth: 2,
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isWindow: true
         },
         {
@@ -716,7 +723,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-5.6, -8), v(5.6, 8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             }
@@ -733,7 +740,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-10.85, -1.15), v(10.85, 0.35)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             }
@@ -750,7 +757,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.05, -3.2), v(6.08, 1.1)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "porta_potty_toilet_particle",
@@ -769,7 +776,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6, -3.2), v(6, 1.1)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
                 particle: "porta_potty_toilet_particle",
@@ -789,7 +796,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-6.4, -0.8), v(6.4, 0.8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isWall: true,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -808,7 +815,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-5.4, -0.7), v(3.8, 0.7)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isDoor: true,
             hingeOffset: v(-5.5, 0)
         },
@@ -825,7 +832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-1.5, -0.8), v(1.5, 0.8)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isWall: true,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -844,7 +851,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-9.6, 0.3), v(9.6, 2.2)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isWall: true,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -864,7 +871,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hideOnMap: true,
             hitbox: new RectangleHitbox(v(-9.6, -2), v(9.6, -0.3)),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             isWall: true,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -947,7 +954,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-50, 8), v(-36.7, 10)), // inner door walls
                 new RectangleHitbox(v(-26.5, 8), v(-16, 10))
             ]),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             particleVariations: 2,
             frames: {
                 particle: "rock_particle"
@@ -964,7 +971,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(6.8),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             explosion: "small_refinery_barrel_explosion",
             reflectBullets: true,
             frames: {
@@ -983,7 +990,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.95
             },
             hitbox: new CircleHitbox(17.15),
-            rotationMode: "full",
+            rotationMode: RotationMode.Full,
             explosion: "large_refinery_barrel_explosion",
             reflectBullets: true,
             depth: 9,
@@ -1003,7 +1010,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(8.9),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true,
             depth: 9,
             frames: {
@@ -1025,7 +1032,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(5.22, v(0, -0.65)),
                 new CircleHitbox(4.9, v(0, 0.9))
             ]),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true,
             depth: 9,
             frames: {
@@ -1056,7 +1063,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(3.4, 4.65), v(5, 6.4)), // Pipe between 2 bottommost circles
                 new RectangleHitbox(v(3.1, -5.35), v(5, -7.95)) // Pipe connected to topmost circle
             ]),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             reflectBullets: true,
             frames: {
                 particle: "barrel_particle"
@@ -1079,7 +1086,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-3.5, -0.9), v(-2.72, 1.85)), // Left post
                 new RectangleHitbox(v(2.8, -0.9), v(3.55, 1.85)) // Right post
             ]),
-            rotationMode: "limited",
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle"
             }
