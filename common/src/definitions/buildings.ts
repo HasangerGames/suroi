@@ -554,7 +554,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 type: "stone",
-                hitbox: new RectangleHitbox(v(-53, -40), v(120, 80))
+                hitbox: new RectangleHitbox(v(-53, -40), v(123, 83))
             }
         ],
         obstacles: [

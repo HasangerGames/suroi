@@ -88,7 +88,7 @@ export class Game {
 
     private _started = false;
     allowJoin = false;
-    private _over = false;
+    over = false;
     stopped = false;
 
     startTimeoutID?: NodeJS.Timeout;
@@ -98,6 +98,8 @@ export class Game {
     tickTimes: number[] = [];
 
     tickDelta = 1000 / TICK_SPEED;
+
+    updateObjects = false;
 
     constructor(id: number) {
         this._id = id;
@@ -163,7 +165,8 @@ export class Game {
                 if (!player.joined) continue;
 
                 // Calculate visible objects
-                player.updateVisibleObjects();
+                player.ticksSinceLastUpdate++;
+                if (player.ticksSinceLastUpdate > 8 || this.updateObjects) player.updateVisibleObjects();
 
                 // Full objects
                 if (this.fullDirtyObjects.size !== 0) {
@@ -224,9 +227,10 @@ export class Game {
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
+            this.updateObjects = false;
 
             // Winning logic
-            if (this._started && this.aliveCount < 2 && !this._over) {
+            if (this._started && this.aliveCount < 2 && !this.over) {
                 // Send game over packet to the last man standing
                 if (this.aliveCount === 1) {
                     const lastManStanding = [...this.livingPlayers][0];
@@ -240,7 +244,7 @@ export class Game {
 
                 // End the game in 1 second
                 this.allowJoin = false;
-                this._over = true;
+                this.over = true;
                 setTimeout(() => {
                     endGame(this._id); // End this game
                     const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
@@ -402,6 +406,7 @@ export class Game {
     removeObject(object: GameObject): void {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
+        this.updateObjects = true;
     }
 
     get aliveCount(): number {

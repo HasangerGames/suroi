@@ -13,7 +13,8 @@ import { Obstacle } from "../../objects/obstacle";
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player: Player = this.player;
-        if (!player.joined) return; // Ignore input packets from players that haven't finished joining
+        // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
+        if (!player.joined || player.dead || player.game.over) return;
 
         player.movement.up = stream.readBoolean();
         player.movement.down = stream.readBoolean();

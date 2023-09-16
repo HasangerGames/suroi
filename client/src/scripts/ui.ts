@@ -216,8 +216,8 @@ export function setupUI(game: Game): void {
 
     // Load skins
     const updateSplashCustomize = (skinID: string): void => {
-        $("#skin-base").css("background-image", `url("/img/game/skins/${skinID}_base.svg")`);
-        $("#skin-left-fist, #skin-right-fist").css("background-image", `url("/img/game/skins/${skinID}_fist.svg")`);
+        $("#skin-base").css("background-image", `url("./img/game/skins/${skinID}_base.svg")`);
+        $("#skin-left-fist, #skin-right-fist").css("background-image", `url("./img/game/skins/${skinID}_fist.svg")`);
     };
     updateSplashCustomize(localStorageInstance.config.loadout.skin);
     for (const skin of Skins) {
@@ -227,9 +227,9 @@ export function setupUI(game: Game): void {
         // noinspection CssUnknownTarget
         const skinItem = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
   <div class="skins-list-item">
-    <div class="skin-base" style="background-image: url('/img/game/skins/${skin.idString}_base.svg')"></div>
-    <div class="skin-left-fist" style="background-image: url('/img/game/skins/${skin.idString}_fist.svg')"></div>
-    <div class="skin-right-fist" style="background-image: url('/img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
+    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
@@ -265,22 +265,22 @@ export function setupUI(game: Game): void {
             });
             $(this).addClass("selected").siblings().removeClass("selected");
             $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`)
-                .css("background-image", `url("/img/game/emotes/${emote.idString}.svg")`);
+                .css("background-image", `url("./img/game/emotes/${emote.idString}.svg")`);
         });
         $("#emotes-list").append(emoteItem);
     }
     for (const slot of ["top", "right", "bottom", "left"] as Array<"top" | "right" | "bottom" | "left">) {
         $(`#emote-customize-wheel > .emote-${slot}`)
-            .css("background-image", `url("/img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
+            .css("background-image", `url("./img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("/img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
+                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
                     $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
                     $(`#emote-${localStorageInstance.config.loadout[`${slot}Emote`]}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel").css("background-image", 'url("/img/misc/emote_wheel.svg")');
+                    $("#emote-customize-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
                     $(".emotes-list-item-container").removeClass("selected").css("cursor", "default");
                 }
             });
@@ -405,7 +405,7 @@ export function setupUI(game: Game): void {
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-            <img class="item-image" src="/img/game/loot/${scope.idString}.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -421,7 +421,7 @@ export function setupUI(game: Game): void {
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
-            <img class="item-image" src="/img/game/loot/${item.idString}.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
@@ -441,7 +441,7 @@ export function setupUI(game: Game): void {
 
         $("#ammo-container").append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
-            <img class="item-image" src="/img/game/loot/${ammo.idString}.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
     }

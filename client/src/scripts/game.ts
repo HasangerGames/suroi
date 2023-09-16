@@ -502,7 +502,7 @@ export class Game {
                             prepareInteractText();
 
                             if (canInteract) {
-                                $("#interact-key").html('<img src="/img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
+                                $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
                             } else {
                                 $("#interact-key").removeClass("active").hide();
                             }

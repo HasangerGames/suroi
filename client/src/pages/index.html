@@ -17,21 +17,21 @@
     <title>Suroi - 2D battle royale game</title>
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" sizes="any" href="/img/logos/suroi_small.svg">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="./img/logos/suroi_small.svg">
 
-    <link rel="icon" type="image/x-icon" sizes="16x16" href="/img/logos/suroi_16x16.png">
-    <link rel="icon" type="image/x-icon" sizes="32x32" href="/img/logos/suroi_32x32.png">
-    <link rel="icon" type="image/x-icon" sizes="96x96" href="/img/logos/suroi_96x96.png">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
+    <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
   </head>
   <body>
     <div id="splash-ui">
       <div id="splash-logo">
-        <img src="/img/logos/suroi.svg" alt="Suroi logo" draggable="false">
+        <img src="./img/logos/suroi.svg" alt="Suroi logo" draggable="false">
       </div>
       <div id="splash-modals">
         <div id="splash-news">
           <h2>
-            <a href="/news">
+            <a href="./news">
               <i class="fa-solid fa-newspaper"></i>
               News
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
@@ -52,7 +52,7 @@
               <select name="server-select" id="server-select">
                 <option value="dev" style="display: none">Local Server</option>
                 <option value="na" selected>North America (Detroit)</option>
-                <option value="eu">Europe (London)</option>
+                <option value="eu">Europe (Berlin)</option>
                 <option value="sa">South America (São Paulo)</option>
                 <option value="as">Asia (Osaka)</option>
               </select>
@@ -92,14 +92,14 @@
           <div class="featured-container">
             <p class="featured-heading">Featured YouTubr</p>
             <a class="featured-content" id="youtube-featured-content" href="" target="_blank">
-              <img class="featured-logo" src="/img/misc/youtube-icon.svg" alt="YouTube icon">
+              <img class="featured-logo" src="./img/misc/youtube-icon.svg" alt="YouTube icon">
               <span class="featured-name" id="youtube-featured-name"></span>
             </a>
           </div>
           <div class="featured-container">
             <p class="featured-heading">Featured Streamr</p>
             <a class="featured-content" id="twitch-featured-content" target="_blank" href="">
-              <img class="featured-logo" src="/img/misc/twitch-icon.svg" alt="Twitch icon">
+              <img class="featured-logo" src="./img/misc/twitch-icon.svg" alt="Twitch icon">
               <span class="featured-name" id="twitch-featured-name"></span>
             </a>
           </div>
@@ -114,15 +114,15 @@
               Wiki
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
-            <a href="/proxy.txt" target="_blank" rel="noopener noreferrer">
+            <a href="./proxy.txt" target="_blank" rel="noopener noreferrer">
               Proxies
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
-            <a href="/leaderboard" target="_blank" rel="noopener noreferrer">
+            <a href="./leaderboard" target="_blank" rel="noopener noreferrer">
               Leaderboard
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
-            <a href="/news" target="_blank" rel="noopener noreferrer">
+            <a href="./news" target="_blank" rel="noopener noreferrer">
               News
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
@@ -131,7 +131,7 @@
       </div>
       <div>
         <div id="splash-backlinks">
-          <a href="/changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
+          <a href="./changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
         </div>
         <div id="splash-settings">
           <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i class="fa-solid fa-earth-americas"></i></button>
@@ -153,12 +153,12 @@
           <div style="display: flex; flex-direction: column; gap: 5px">
             <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
             <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
-              <img src="/img/misc/emotes_icon.svg" style="margin-bottom: -3px">
+              <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
             </button>
           </div>
         </div>
         <div id="gas-timer">
-          <img id="gas-timer-image" src="/img/misc/gas-waiting-icon.svg">
+          <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
           <span id="gas-timer-text">0:00</span>
         </div>
         <div id="debug-hud">
@@ -170,11 +170,11 @@
       </div>
       <div class="ui-leaderboard">
         <div class="counter">
-          <img src="/img/misc/player_icon.svg">
+          <img src="./img/misc/player_icon.svg">
           <div class="counter-text" id="ui-players-alive">1</div>
         </div>
         <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
-          <img src="/img/misc/skull_icon.svg">
+          <img src="./img/misc/skull_icon.svg">
           <div class="counter-text" id="ui-kills">0</div>
         </div>
         <div id="kill-feed"></div>
@@ -490,8 +490,8 @@
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><img src="/img/misc/player_icon.svg">Skins</button>
-        <button class="tab" id="tab-emotes"><img src="/img/misc/emotes_icon.svg">Emotes</button>
+        <button class="tab active" id="tab-skins"><img src="./img/misc/player_icon.svg">Skins</button>
+        <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg">Emotes</button>
       </div>
       <div id="customize-tabs">
         <div class="tab-content active" id="tab-skins-content">
