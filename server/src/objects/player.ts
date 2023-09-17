@@ -34,7 +34,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, vSub, type Vector, vMul } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
@@ -392,14 +392,17 @@ export class Player extends GameObject {
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
-        for (const potential of this.nearObjects) {
-            if (
-                potential instanceof Obstacle &&
-                potential.collidable &&
-                potential.hitbox !== undefined &&
-                this.hitbox.collidesWith(potential.hitbox) // TODO Make an array of collidable objects
-            ) {
-                this.hitbox.resolveCollision(potential.hitbox);
+
+        for (let step = 0; step < 10; step++) {
+            for (const potential of this.nearObjects) {
+                if (
+                    potential instanceof Obstacle &&
+                    potential.collidable &&
+                    potential.hitbox !== undefined &&
+                    this.hitbox.collidesWith(potential.hitbox)
+                ) {
+                    this.hitbox.resolveCollision(potential.hitbox);
+                }
             }
         }
 
