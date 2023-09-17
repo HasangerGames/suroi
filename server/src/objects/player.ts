@@ -34,7 +34,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
-import { v, vAdd, vSub, type Vector, vMul } from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";

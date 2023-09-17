@@ -130,13 +130,17 @@ export class Map {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
+            let lootSpawnOffset: Vector | undefined;
+
+            if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(v(0, 0), obstacleData.lootSpawnOffset, orientation);
+
             this.generateObstacle(
                 obstacleType,
                 obstaclePos,
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
-                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation),
+                lootSpawnOffset,
                 building
             );
         }
