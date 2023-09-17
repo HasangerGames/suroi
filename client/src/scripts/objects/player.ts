@@ -376,8 +376,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.leftFist.setDepth(3);
             this.images.rightFist.setDepth(3);
+            this.images.body.setDepth(2);
             this.images.weapon.setDepth(1);
-            this.images.body.setDepth(1);
         }
         this.container.sortChildren();
     }
@@ -627,7 +627,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.5, 96);
+        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
