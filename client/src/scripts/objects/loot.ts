@@ -36,7 +36,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
         this.images = {
             background: new SuroiSprite(),
-            item: new SuroiSprite(`${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}.svg`)
+            item: new SuroiSprite(`${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}`)
         };
 
         if (definition.itemType === ItemType.Skin) this.images.item.setAngle(90).scale.set(0.75);
@@ -49,7 +49,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
         let backgroundTexture: string | undefined;
         switch (definition.itemType) {
             case ItemType.Gun: {
-                backgroundTexture = `loot_background_gun_${definition.ammoType}.svg`;
+                backgroundTexture = `loot_background_gun_${definition.ammoType}`;
                 this.images.item.scale.set(0.85);
                 break;
             }
@@ -57,20 +57,20 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
             // No background for ammo
             //
             case ItemType.Melee: {
-                backgroundTexture = "loot_background_melee.svg";
+                backgroundTexture = "loot_background_melee";
                 const imageScale = definition.image?.lootScale;
                 if (imageScale !== undefined) this.images.item.scale.set(imageScale);
                 break;
             }
             case ItemType.Healing: {
-                backgroundTexture = "loot_background_healing.svg";
+                backgroundTexture = "loot_background_healing";
                 break;
             }
             case ItemType.Armor:
             case ItemType.Backpack:
             case ItemType.Scope:
             case ItemType.Skin: {
-                backgroundTexture = "loot_background_equipment.svg";
+                backgroundTexture = "loot_background_equipment";
                 break;
             }
         }

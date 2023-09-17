@@ -79,23 +79,23 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
-        spawnHitbox: new RectangleHitbox(v(-10, -10), v(10, 10)),
-        ceilingHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
-        scopeHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
+        spawnHitbox: new RectangleHitbox(v(-10, -12), v(10, 20)),
+        ceilingHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        scopeHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
         floorImages: [{
-            key: "porta_potty_floor.png",
+            key: "porta_potty_floor",
             position: v(0, 1.5)
         }],
         ceilingImages: [{
-            key: "porta_potty_ceiling.png",
+            key: "porta_potty_ceiling",
             position: v(0, 0),
-            residue: "porta_potty_residue.png"
+            residue: "porta_potty_residue"
         }],
         wallsToDestroy: 2,
         floors: [
             {
                 type: "wood",
-                hitbox: new RectangleHitbox(v(-5, -7), v(5, 9))
+                hitbox: new RectangleHitbox(v(-7, -9), v(7, 9))
             }
         ],
         obstacles: [
@@ -155,11 +155,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new RectangleHitbox(v(-39, 19), v(-24, 30)) // Doorstep
         ]),
         floorImages: [{
-            key: "house_floor.png",
+            key: "house_floor",
             position: v(0, 0)
         }],
         ceilingImages: [{
-            key: "house_ceiling.png",
+            key: "house_ceiling",
             position: v(0, -1.5)
         }],
         floors: [
@@ -398,11 +398,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new RectangleHitbox(v(-20, -40), v(20, 40)),
         scopeHitbox: new RectangleHitbox(v(-20, -35), v(20, 35)),
         floorImages: [{
-            key: "warehouse_floor.png",
+            key: "warehouse_floor",
             position: v(0, 0)
         }],
         ceilingImages: [{
-            key: "warehouse_ceiling.png",
+            key: "warehouse_ceiling",
             position: v(0, -1.5)
         }],
         floors: [
@@ -469,17 +469,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "box",
                 position: v(-15.7, 0),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(5, 0)
             },
             {
                 id: "box",
                 position: v(-15.8, 6.4),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(5, 0)
             },
             {
                 id: "box",
                 position: v(-15.7, -8),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(5, 0)
             },
             {
                 id: "metal_shelf",
@@ -489,17 +489,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "box",
                 position: v(15.8, 0),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-5, 0)
             },
             {
                 id: "box",
                 position: v(15.7, 6),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-5, 0)
             },
             {
                 id: "box",
                 position: v(15.6, -7),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-5, 0)
             }
         ],
 
@@ -526,13 +526,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]),
         floorImages: [
             {
-                key: "refinery_floor.png",
+                key: "refinery_floor",
                 position: v(0, 0)
             }
         ],
         ceilingImages: [
             {
-                key: "refinery_ceiling.png",
+                key: "refinery_ceiling",
                 position: v(0, 0)
             }
         ],

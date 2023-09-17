@@ -1,4 +1,4 @@
-import { type Vector, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Vector, vAdd, vMul, vDiv } from "../../../../common/src/utils/vector";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Game } from "../game";
 import { random, randomRotation } from "../../../../common/src/utils/random";
@@ -6,6 +6,7 @@ import { lerp } from "../../../../common/src/utils/math";
 
 export class ParticleManager {
     particles = new Set<Particle>();
+    emitters = new Set<ParticleEmitter>();
 
     game: Game;
 
@@ -22,6 +23,18 @@ export class ParticleManager {
                 particle.image.destroy();
             }
         }
+
+        for (const emitter of this.emitters) {
+            if (emitter.dead) {
+                this.emitters.delete(emitter);
+                continue;
+            }
+
+            if (emitter.active && emitter.lastSpawn + emitter.delay < Date.now()) {
+                this.spawnParticle(emitter.spawnOptions());
+                emitter.lastSpawn = Date.now();
+            }
+        }
     }
 
     spawnParticle(options: ParticleOptions): Particle {
@@ -35,8 +48,15 @@ export class ParticleManager {
         for (let i = 0; i < count; i++) this.spawnParticle(options());
     }
 
+    addEmitter(options: EmitterOptions): ParticleEmitter {
+        const emitter = new ParticleEmitter(options);
+        this.emitters.add(emitter);
+        return emitter;
+    }
+
     clear(): void {
         this.particles.clear();
+        this.emitters.clear();
     }
 }
 
@@ -87,7 +107,7 @@ export class Particle {
     }
 
     update(delta: number): void {
-        this.position = vAdd(this.position, vMul(this.options.speed, 1 / delta));
+        this.position = vAdd(this.position, vDiv(vMul(this.options.speed, delta), 1000));
         const options = this.options;
 
         const now = Date.now();
@@ -115,5 +135,29 @@ export class Particle {
         this.image.position.copyFrom(toPixiCoords(this.position));
         this.image.scale.set(this.scale);
         this.image.setRotation(this.rotation).setAlpha(this.alpha);
+    }
+}
+
+export interface EmitterOptions {
+    delay: number
+    active: boolean
+    spawnOptions: () => ParticleOptions
+}
+
+export class ParticleEmitter {
+    lastSpawn = 0;
+    dead = false;
+    delay: number;
+    active: boolean;
+    spawnOptions: () => ParticleOptions;
+
+    constructor(options: EmitterOptions) {
+        this.delay = options.delay;
+        this.active = options.active;
+        this.spawnOptions = options.spawnOptions;
+    }
+
+    destroy(): void {
+        this.dead = true;
     }
 }

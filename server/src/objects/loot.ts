@@ -4,7 +4,7 @@ import { GameObject } from "../types/gameObject";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import { v, vAdd, vMul, type Vector, vClone } from "../../../common/src/utils/vector";
+import { v, vAdd, vMul, type Vector, vClone, vSub } from "../../../common/src/utils/vector";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
@@ -17,7 +17,7 @@ import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Obstacle } from "./obstacle";
-import { angleBetween, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
+import { circleCircleIntersection, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
 import { randomRotation } from "../../../common/src/utils/random";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 
@@ -60,13 +60,13 @@ export class Loot extends GameObject {
             this.game.partialDirtyObjects.add(this);
             this.oldPosition = vClone(this.position);
         }
-
+        this.game.grid.removeObject(this);
         if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
             this.velocity = vMul(this.velocity, 0.9);
             const velocity = vMul(this.velocity, 1 / TICK_SPEED);
-            this.game.grid.removeObject(this);
+            velocity.x = clamp(velocity.x, -1, 1);
+            velocity.y = clamp(velocity.y, -1, 1);
             this.position = vAdd(this.position, velocity);
-            this.game.grid.addObject(this);
         }
 
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
@@ -79,12 +79,10 @@ export class Loot extends GameObject {
             }
 
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
-                const dist = distance(object.position, this.position);
+                const collision = circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
+                if (collision) this.velocity = vSub(this.velocity, collision.dir);
 
-                if ((this.hitbox.radius - object.hitbox.radius) / 2 < dist) {
-                    this.push(angleBetween(object.position, this.position), -0.3);
-                }
-
+                const dist = Math.max(distance(object.position, this.position), 1);
                 const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
                 const vecCollisionNorm = v(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = v(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
@@ -99,6 +97,7 @@ export class Loot extends GameObject {
                 object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
+        this.game.grid.addObject(this);
     }
 
     push(angle: number, velocity: number): void {

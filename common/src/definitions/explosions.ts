@@ -39,7 +39,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1000,
-                frame: "barrel_explosion.svg",
+                frame: "barrel_explosion",
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -67,7 +67,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1000,
-                frame: "barrel_explosion.svg",
+                frame: "barrel_explosion",
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -95,7 +95,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion.svg",
+                frame: "barrel_explosion",
                 scale: 2.5
             },
             shrapnelCount: 20,
@@ -123,7 +123,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion.svg",
+                frame: "barrel_explosion",
                 scale: 2.5
             },
             shrapnelCount: 25,
@@ -151,7 +151,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion.svg",
+                frame: "barrel_explosion",
                 scale: 5
             },
             shrapnelCount: 50,

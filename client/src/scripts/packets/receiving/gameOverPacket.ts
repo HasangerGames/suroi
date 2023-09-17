@@ -19,7 +19,7 @@ export class GameOverPacket extends ReceivingPacket {
             gameOverScreen.removeClass("chicken-dinner");
             $("#btn-spectate").show();
             $("#btn-spectate").removeClass("btn-disabled");
-            this.playerManager.game.map.indicator.setFrame("player_indicator_dead.svg").setRotation(0);
+            this.playerManager.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
         } else {
             gameOverScreen.addClass("chicken-dinner");
             $("#btn-spectate").hide();

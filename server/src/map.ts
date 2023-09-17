@@ -91,9 +91,14 @@ export class Map {
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
+
+                const position = v(
+                    this.width * (place.position.x + randomFloat(-0.04, 0.04)),
+                    this.height * (place.position.y + randomFloat(-0.04, 0.04)))
+
                 this.places.push({
                     name: place.name,
-                    position: vAdd(place.position, randomVector(-50, 50, -50, 50))
+                    position
                 });
             }
         }
@@ -130,13 +135,17 @@ export class Map {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
+            let lootSpawnOffset: Vector | undefined;
+
+            if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(v(0, 0), obstacleData.lootSpawnOffset, orientation);
+
             this.generateObstacle(
                 obstacleType,
                 obstaclePos,
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
-                addAdjust(v(0, 0), obstacleData.lootSpawnOffset ?? v(0, 0), orientation),
+                lootSpawnOffset,
                 building
             );
         }

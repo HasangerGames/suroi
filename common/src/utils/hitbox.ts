@@ -1,7 +1,7 @@
 import {
     vClone,
     v,
-    type Vector, vSub, vLength, vInvert, vAdd, vMul
+    type Vector, vSub, vMul
 } from "./vector";
 import {
     circleCollision,
@@ -15,7 +15,9 @@ import {
     lineIntersectsRect,
     lineIntersectsCircle,
     type IntersectionResponse,
-    distanceSquared
+    distanceSquared,
+    rectCircleIntersection,
+    circleCircleIntersection
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -101,26 +103,15 @@ export class CircleHitbox extends Hitbox {
     }
 
     resolveCollision(that: Hitbox): void {
-        if (that instanceof CircleHitbox) {
-            const vectorConnectingCenters = vSub(that.position, this.position);
-            const lengthConnectingCenters = vLength(vectorConnectingCenters);
-            const intersectionLength = this.radius + that.radius - lengthConnectingCenters;
-            const intersectionVector = vMul(vectorConnectingCenters, intersectionLength / lengthConnectingCenters);
-            this.position = vAdd(this.position, vInvert(intersectionVector));
-        } else if (that instanceof RectangleHitbox) {
-            const e = vMul(vSub(that.max, that.min), 0.5);
-            const p = vSub(this.position, vAdd(that.min, e));
-            const xp = Math.abs(p.x) - e.x - this.radius;
-            const yp = Math.abs(p.y) - e.y - this.radius;
-            this.position = vAdd(
-                this.position,
-                xp > yp
-                    ? v(-Math.sign(p.x) * xp, 0)
-                    : v(0, -Math.sign(p.y) * yp)
-            );
+        if (that instanceof RectangleHitbox) {
+            const collision = rectCircleIntersection(that.min, that.max, this.position, this.radius);
+            if (collision) this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+        } else if (that instanceof CircleHitbox) {
+            const collision = circleCircleIntersection(this.position, this.radius, that.position, that.radius);
+            if (collision) this.position = vSub(this.position, vMul(collision.dir, collision.pen));
         } else if (that instanceof ComplexHitbox) {
             for (const hitbox of that.hitboxes) {
-                if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+                this.resolveCollision(hitbox);
             }
         }
     }

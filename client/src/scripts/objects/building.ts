@@ -72,7 +72,7 @@ export class Building extends GameObject {
         if (data.dead) {
             if (!this.dead && !this.isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${this.type.idString}_particle.svg`,
+                    frames: `${this.type.idString}_particle`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     position: this.ceilingHitbox.randomPoint(),
                     depth: 10,
@@ -87,7 +87,7 @@ export class Building extends GameObject {
                         ease: EaseFunctions.sextIn
                     },
                     scale: { start: 1, end: 0.2 },
-                    speed: velFromAngle(randomRotation(), randomFloat(0.1, 0.2))
+                    speed: velFromAngle(randomRotation(), randomFloat(1, 2))
                 }));
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
@@ -95,7 +95,7 @@ export class Building extends GameObject {
             this.ceilingContainer.zIndex = -0.1;
             this.ceilingContainer.alpha = 1;
 
-            this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue.svg`));
+            this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue`));
         }
         this.dead = data.dead;
 

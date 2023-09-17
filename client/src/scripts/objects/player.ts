@@ -33,6 +33,7 @@ import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { type ParticleEmitter } from "./particles";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -58,8 +59,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         item: undefined as undefined | ObjectType<ObjectCategory.Loot, HealingItemDefinition>
     };
 
-    particlesInterval?: number;
-
     damageable = true;
 
     readonly images: {
@@ -76,6 +75,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     };
 
     readonly emoteContainer: Container;
+    healingParticlesEmitter: ParticleEmitter;
 
     emoteAnim?: Tween<Container>;
     emoteHideAnim?: Tween<Container>;
@@ -109,8 +109,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash.svg").setVisible(false).setDepth(7),
-            emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7),
+            emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
 
@@ -135,6 +135,33 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.updateFistsPosition(false);
         this.updateWeapon();
+
+        this.healingParticlesEmitter = this.game.particleManager.addEmitter({
+            delay: 350,
+            active: false,
+            spawnOptions: () => {
+                let frame = "";
+                if (this.action.item?.definition.itemType === ItemType.Healing) {
+                    frame = HealType[this.action.item.definition.healType].toLowerCase();
+                }
+                return {
+                    frames: `${frame}_particle`,
+                    position: this.hitbox.randomPoint(),
+                    lifeTime: 1000,
+                    depth: 4,
+                    rotation: 0,
+                    alpha: {
+                        start: 1,
+                        end: 0
+                    },
+                    scale: {
+                        start: 1,
+                        end: 1.5
+                    },
+                    speed: v(randomFloat(-1, 1), -3)
+                };
+            }
+        });
     }
 
     override updateContainerPosition(): void {
@@ -203,9 +230,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             const skinID = data.skin.idString;
-            this.images.body.setFrame(`${skinID}_base.svg`);
-            this.images.leftFist.setFrame(`${skinID}_fist.svg`);
-            this.images.rightFist.setFrame(`${skinID}_fist.svg`);
+            this.images.body.setFrame(`${skinID}_base`);
+            this.images.leftFist.setFrame(`${skinID}_fist`);
+            this.images.rightFist.setFrame(`${skinID}_fist`);
 
             this.helmetLevel = data.helmet;
             this.vestLevel = data.vest;
@@ -215,7 +242,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let actionTime = 0;
                 let actionSoundName = "";
                 let actionName = "";
-                window.clearInterval(this.particlesInterval);
+                this.healingParticlesEmitter.active = false;
                 switch (data.action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
@@ -232,27 +259,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         actionName = `${itemDef.useText} ${itemDef.name}`;
                         actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
-
-                        // TODO: add particle emitters
-                        this.particlesInterval = window.setInterval(() => {
-                            this.game.particleManager.spawnParticle({
-                                frames: `${HealType[itemDef.healType].toLowerCase()}_particle.svg`,
-                                position: this.hitbox.randomPoint(),
-                                lifeTime: 1000,
-                                depth: 4,
-                                rotation: 0,
-                                alpha: {
-                                    start: 1,
-                                    end: 0
-                                },
-                                scale: {
-                                    start: 1,
-                                    end: 1.5
-                                },
-                                speed: v(randomFloat(-0.4, 0.4), -0.6)
-                            });
-                        }, 350);
-
+                        this.healingParticlesEmitter.active = true;
                         break;
                     }
                 }
@@ -346,9 +353,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
-                this.images.weapon.setFrame(`${weaponDef.idString}.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}`);
             } else if (weaponDef.itemType === ItemType.Gun) {
-                this.images.weapon.setFrame(`${weaponDef.idString}_world.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}_world`);
             }
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
@@ -369,8 +376,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.leftFist.setDepth(3);
             this.images.rightFist.setDepth(3);
+            this.images.body.setDepth(2);
             this.images.weapon.setDepth(1);
-            this.images.body.setDepth(1);
         }
         this.container.sortChildren();
     }
@@ -391,7 +398,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const level = this[`${equipmentType}Level`];
         const image = this.images[equipmentType];
         if (level > 0) {
-            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
+            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world`).setVisible(true);
         } else {
             image.setVisible(false);
         }
@@ -419,7 +426,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.playSound("emote", 0.4, 128);
-        this.images.emoteImage.setFrame(`${type.idString}.svg`);
+        this.images.emoteImage.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
@@ -589,7 +596,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         const initialRotation = this.rotation + Math.PI / 2;
                         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
                         this.game.particleManager.spawnParticle({
-                            frames: `${weaponDef.ammoType}_particle.svg`,
+                            frames: `${weaponDef.ammoType}_particle`,
                             depth: 3,
                             position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
                             lifeTime: 400,
@@ -606,7 +613,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 start: initialRotation,
                                 end: initialRotation + spinAmount
                             },
-                            speed: vRotate(vAdd2(randomVector(0.2, -0.5, 1, 1.5), -(spinAmount / 4), 0), this.rotation)
+                            speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
                         });
                     }
                 }
@@ -620,10 +627,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.5, 96);
+        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
-            frames: "blood_particle.svg",
+            frames: "blood_particle",
             depth: 4,
             position,
             lifeTime: 1000,
@@ -635,13 +642,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 start: 1,
                 end: 0
             },
-            speed: velFromAngle(angle, randomFloat(0.1, 0.2))
+            speed: velFromAngle(angle, randomFloat(0.5, 1))
         });
     }
 
     destroy(): void {
         super.destroy();
-        clearInterval(this.particlesInterval);
+        this.healingParticlesEmitter.destroy();
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();

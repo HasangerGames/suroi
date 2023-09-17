@@ -5,7 +5,7 @@ import { getLootTableLoot, type LootItem } from "../utils/misc";
 
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { vAdd, type Vector } from "../../../common/src/utils/vector";
 import { angleBetween, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
@@ -38,7 +38,7 @@ export class Obstacle extends GameObject {
 
     definition: ObstacleDefinition;
 
-    lootSpawnOffset: Vector;
+    lootSpawnOffset?: Vector;
 
     isDoor: boolean;
     door?: {
@@ -69,7 +69,7 @@ export class Obstacle extends GameObject {
         this.scale = this.maxScale = scale;
         this.variation = variation;
 
-        this.lootSpawnOffset = lootSpawnOffset ?? v(0, 0);
+        this.lootSpawnOffset = lootSpawnOffset;
 
         this.parentBuilding = parentBuilding;
 
@@ -155,7 +155,9 @@ export class Obstacle extends GameObject {
             }
 
             for (const item of this.loot) {
-                const lootPos = vAdd(this.loot.length > 1 ? this.hitbox.randomPoint() : this.position, this.lootSpawnOffset);
+                let lootPos: Vector;
+                if (this.lootSpawnOffset) lootPos = vAdd(this.position, this.lootSpawnOffset);
+                else lootPos = this.loot.length > 1 ? this.hitbox.randomPoint() : this.position;
                 const loot = this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), lootPos, item.count);
                 if (source.position !== undefined || position !== undefined) {
                     loot.push(angleBetween(this.position, position ?? source.position), 7);

@@ -8,7 +8,8 @@ import {
     vDiv,
     vDot,
     vNormalizeSafe,
-    vNormalize
+    vNormalize,
+    vLengthSqr
 } from "./vector";
 
 import { type Orientation } from "../typings";
@@ -443,6 +444,57 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
         point: p,
         normal: n
     };
+}
+
+export type CollisionResponse = { dir: Vector, pen: number } | null;
+
+export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vector, rad1: number): CollisionResponse {
+    const r = rad0 + rad1;
+    const toP1 = vSub(pos1, pos0);
+    const distSqr = vLengthSqr(toP1);
+    if (distSqr < r * r) {
+        const dist = Math.sqrt(distSqr);
+        return {
+            dir: dist > 0.00001 ? vDiv(toP1, dist) : v(1.0, 0.0),
+            pen: r - dist
+        };
+    }
+    return null;
+}
+
+export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, radius: number): CollisionResponse {
+    if (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y) {
+        const e = vMul(vSub(max, min), 0.5);
+        const c = vAdd(min, e);
+        const p = vSub(pos, c);
+        const xp = Math.abs(p.x) - e.x - radius;
+        const yp = Math.abs(p.y) - e.y - radius;
+        if (xp > yp) {
+            return {
+                dir: v(p.x > 0.0 ? 1.0 : -1.0, 0.0),
+                pen: -xp
+            };
+        }
+        return {
+            dir: v(0.0, p.y > 0.0 ? 1.0 : -1.0),
+            pen: -yp
+        };
+    }
+    const cpt = v(clamp(pos.x, min.x, max.x), clamp(pos.y, min.y, max.y));
+    let dir = vSub(pos, cpt);
+
+    dir = vSub(cpt, pos);
+
+    const dstSqr = vLengthSqr(dir);
+    if (dstSqr < radius * radius) {
+        const dst = Math.sqrt(dstSqr);
+        return {
+            dir: dst > 0.0001 ? vDiv(dir, dst) : v(1.0, 0.0),
+            pen: radius - dst
+        };
+    }
+
+    return null;
 }
 
 export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {

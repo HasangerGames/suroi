@@ -46,8 +46,8 @@ export class MapPacket extends ReceivingPacket {
         });
         mapGraphics.lineStyle({
             color: 0x000000,
-            alpha: 0.5,
-            width: 1.5
+            alpha: 0.25,
+            width: 2
         });
 
         for (let x = 0; x <= width; x += GRID_SIZE) {
@@ -105,7 +105,7 @@ export class MapPacket extends ReceivingPacket {
                         textureId += `_${variation + 1}`;
                     }
                     // Create the object image
-                    const image = new SuroiSprite(`${textureId}.svg`);
+                    const image = new SuroiSprite(`${textureId}`);
                     image.setVPos(position).setRotation(rotation);
                     image.scale.set(scale * (1 / PIXI_SCALE));
 

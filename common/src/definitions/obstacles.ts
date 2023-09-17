@@ -221,6 +221,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "stone",
             health: 200,
             indestructible: true,
+            noResidue: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -334,6 +335,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ]),
             spawnHitbox: new RectangleHitbox(v(-14, -9), v(14, 9)),
             rotationMode: RotationMode.Limited,
+            noResidue: true,
             frames: {
                 particle: "metal_particle"
             },
@@ -370,6 +372,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-35.2, -0.8), v(35.2, 0.8)),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
+            noResidue: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -389,6 +392,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new RectangleHitbox(v(-5.3, -0.8), v(5.3, 0.8)),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
+            noResidue: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -424,6 +428,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new RectangleHitbox(v(-12, -3.2), v(12, 3.2)),
             rotationMode: RotationMode.Limited,
+            noResidue: true,
             frames: {
                 particle: "metal_particle"
             },
@@ -517,6 +522,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new RectangleHitbox(v(-24.1, 32), v(-20.85, 35.13)) // Right post
             ]),
             rotationMode: RotationMode.Limited,
+            noResidue: true,
             frames: {
                 particle: "wall_particle"
             }
@@ -968,6 +974,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ]),
             rotationMode: RotationMode.Limited,
             particleVariations: 2,
+            noResidue: true,
             frames: {
                 particle: "rock_particle"
             }
@@ -1025,6 +1032,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             depth: 9,
+            noResidue: true,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1047,6 +1055,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             depth: 9,
+            noResidue: true,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1077,6 +1086,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ]),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
+            noResidue: true,
             frames: {
                 particle: "barrel_particle"
             }

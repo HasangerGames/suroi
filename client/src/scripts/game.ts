@@ -153,7 +153,7 @@ export class Game {
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
-            this.map.indicator.setFrame("player_indicator.svg");
+            this.map.indicator.setFrame("player_indicator");
 
             this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);
         };
