@@ -33,6 +33,7 @@ import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { type ParticleEmitter } from "./particles";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -58,8 +59,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         item: undefined as undefined | ObjectType<ObjectCategory.Loot, HealingItemDefinition>
     };
 
-    particlesInterval?: number;
-
     damageable = true;
 
     readonly images: {
@@ -76,6 +75,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     };
 
     readonly emoteContainer: Container;
+    healingParticlesEmitter: ParticleEmitter;
 
     emoteAnim?: Tween<Container>;
     emoteHideAnim?: Tween<Container>;
@@ -135,6 +135,33 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.updateFistsPosition(false);
         this.updateWeapon();
+
+        this.healingParticlesEmitter = this.game.particleManager.addEmitter({
+            delay: 350,
+            active: false,
+            spawnOptions: () => {
+                let frame = "";
+                if (this.action.item?.definition.itemType === ItemType.Healing) {
+                    frame = HealType[this.action.item.definition.healType].toLowerCase();
+                }
+                return {
+                    frames: `${frame}_particle`,
+                    position: this.hitbox.randomPoint(),
+                    lifeTime: 1000,
+                    depth: 4,
+                    rotation: 0,
+                    alpha: {
+                        start: 1,
+                        end: 0
+                    },
+                    scale: {
+                        start: 1,
+                        end: 1.5
+                    },
+                    speed: v(randomFloat(-1, 1), -3)
+                };
+            }
+        });
     }
 
     override updateContainerPosition(): void {
@@ -215,7 +242,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let actionTime = 0;
                 let actionSoundName = "";
                 let actionName = "";
-                window.clearInterval(this.particlesInterval);
+                this.healingParticlesEmitter.active = false;
                 switch (data.action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
@@ -232,27 +259,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         actionName = `${itemDef.useText} ${itemDef.name}`;
                         actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
-
-                        // TODO: add particle emitters
-                        this.particlesInterval = window.setInterval(() => {
-                            this.game.particleManager.spawnParticle({
-                                frames: `${HealType[itemDef.healType].toLowerCase()}_particle`,
-                                position: this.hitbox.randomPoint(),
-                                lifeTime: 1000,
-                                depth: 4,
-                                rotation: 0,
-                                alpha: {
-                                    start: 1,
-                                    end: 0
-                                },
-                                scale: {
-                                    start: 1,
-                                    end: 1.5
-                                },
-                                speed: v(randomFloat(-4, 4), -6)
-                            });
-                        }, 350);
-
+                        this.healingParticlesEmitter.active = true;
                         break;
                     }
                 }
@@ -641,7 +648,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     destroy(): void {
         super.destroy();
-        clearInterval(this.particlesInterval);
+        this.healingParticlesEmitter.destroy();
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();
