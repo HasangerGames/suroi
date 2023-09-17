@@ -83,13 +83,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
         scopeHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
         floorImages: [{
-            key: "porta_potty_floor.png",
+            key: "porta_potty_floor",
             position: v(0, 1.5)
         }],
         ceilingImages: [{
-            key: "porta_potty_ceiling.png",
+            key: "porta_potty_ceiling",
             position: v(0, 0),
-            residue: "porta_potty_residue.png"
+            residue: "porta_potty_residue"
         }],
         wallsToDestroy: 2,
         floors: [
@@ -155,11 +155,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new RectangleHitbox(v(-39, 19), v(-24, 30)) // Doorstep
         ]),
         floorImages: [{
-            key: "house_floor.png",
+            key: "house_floor",
             position: v(0, 0)
         }],
         ceilingImages: [{
-            key: "house_ceiling.png",
+            key: "house_ceiling",
             position: v(0, -1.5)
         }],
         floors: [
@@ -398,11 +398,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new RectangleHitbox(v(-20, -40), v(20, 40)),
         scopeHitbox: new RectangleHitbox(v(-20, -35), v(20, 35)),
         floorImages: [{
-            key: "warehouse_floor.png",
+            key: "warehouse_floor",
             position: v(0, 0)
         }],
         ceilingImages: [{
-            key: "warehouse_ceiling.png",
+            key: "warehouse_ceiling",
             position: v(0, -1.5)
         }],
         floors: [
@@ -526,13 +526,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]),
         floorImages: [
             {
-                key: "refinery_floor.png",
+                key: "refinery_floor",
                 position: v(0, 0)
             }
         ],
         ceilingImages: [
             {
-                key: "refinery_ceiling.png",
+                key: "refinery_ceiling",
                 position: v(0, 0)
             }
         ],

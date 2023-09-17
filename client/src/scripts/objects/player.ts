@@ -109,8 +109,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash.svg").setVisible(false).setDepth(7),
-            emoteBackground: new SuroiSprite("emote_background.svg").setPos(0, 0),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7),
+            emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
 
@@ -203,9 +203,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             const skinID = data.skin.idString;
-            this.images.body.setFrame(`${skinID}_base.svg`);
-            this.images.leftFist.setFrame(`${skinID}_fist.svg`);
-            this.images.rightFist.setFrame(`${skinID}_fist.svg`);
+            this.images.body.setFrame(`${skinID}_base`);
+            this.images.leftFist.setFrame(`${skinID}_fist`);
+            this.images.rightFist.setFrame(`${skinID}_fist`);
 
             this.helmetLevel = data.helmet;
             this.vestLevel = data.vest;
@@ -236,7 +236,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         // TODO: add particle emitters
                         this.particlesInterval = window.setInterval(() => {
                             this.game.particleManager.spawnParticle({
-                                frames: `${HealType[itemDef.healType].toLowerCase()}_particle.svg`,
+                                frames: `${HealType[itemDef.healType].toLowerCase()}_particle`,
                                 position: this.hitbox.randomPoint(),
                                 lifeTime: 1000,
                                 depth: 4,
@@ -346,9 +346,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
             if (weaponDef.itemType === ItemType.Melee) {
-                this.images.weapon.setFrame(`${weaponDef.idString}.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}`);
             } else if (weaponDef.itemType === ItemType.Gun) {
-                this.images.weapon.setFrame(`${weaponDef.idString}_world.svg`);
+                this.images.weapon.setFrame(`${weaponDef.idString}_world`);
             }
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle);
@@ -391,7 +391,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const level = this[`${equipmentType}Level`];
         const image = this.images[equipmentType];
         if (level > 0) {
-            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world.svg`).setVisible(true);
+            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world`).setVisible(true);
         } else {
             image.setVisible(false);
         }
@@ -419,7 +419,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.playSound("emote", 0.4, 128);
-        this.images.emoteImage.setFrame(`${type.idString}.svg`);
+        this.images.emoteImage.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
@@ -589,7 +589,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         const initialRotation = this.rotation + Math.PI / 2;
                         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
                         this.game.particleManager.spawnParticle({
-                            frames: `${weaponDef.ammoType}_particle.svg`,
+                            frames: `${weaponDef.ammoType}_particle`,
                             depth: 3,
                             position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
                             lifeTime: 400,
@@ -623,7 +623,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.5, 96);
 
         this.game.particleManager.spawnParticle({
-            frames: "blood_particle.svg",
+            frames: "blood_particle",
             depth: 4,
             position,
             lifeTime: 1000,

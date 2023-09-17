@@ -23,7 +23,7 @@ export class Bullet extends BaseBullet {
         let key: string;
         if (this.source.category === ObjectCategory.Loot) key = this.source.definition.ammoType;
         else key = "shrapnel";
-        this.image = new SuroiSprite(`${key}_trail.svg`)
+        this.image = new SuroiSprite(`${key}_trail`)
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 

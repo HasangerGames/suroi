@@ -105,7 +105,7 @@ export class MapPacket extends ReceivingPacket {
                         textureId += `_${variation + 1}`;
                     }
                     // Create the object image
-                    const image = new SuroiSprite(`${textureId}.svg`);
+                    const image = new SuroiSprite(`${textureId}`);
                     image.setVPos(position).setRotation(rotation);
                     image.scale.set(scale * (1 / PIXI_SCALE));
 

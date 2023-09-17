@@ -175,7 +175,7 @@ export function setupUI(game: Game): void {
     $("#btn-spectate").on("click", () => {
         sendSpectatePacket(SpectateActions.BeginSpectating);
         game.spectating = true;
-        game.map.indicator.setFrame("player_indicator.svg");
+        game.map.indicator.setFrame("player_indicator");
     });
 
     $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });

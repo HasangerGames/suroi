@@ -26,19 +26,18 @@ export async function loadAtlases(): Promise<void> {
         await spriteSheet.parse();
 
         for (const frame in spriteSheet.textures) {
-            if (textures[frame]) console.warn(`Duplicated atlas frame key: ${frame}`);
-
-            textures[frame] = spriteSheet.textures[frame];
+            const frameName = frame.replace(/(.svg|.png)/, "");
+            if (textures[frameName]) console.warn(`Duplicated atlas frame key: ${frame}`);
+            textures[frameName] = spriteSheet.textures[frame];
         }
-
-        for (const building of Buildings.definitions) {
-            for (const image of building.floorImages) {
-                await loadImage(image.key, require(`/public/img/buildings/${image.key}`));
-            }
-            for (const image of building.ceilingImages) {
-                await loadImage(image.key, require(`/public/img/buildings/${image.key}`));
-                if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}`));
-            }
+    }
+    for (const building of Buildings.definitions) {
+        for (const image of building.floorImages) {
+            await loadImage(image.key, require(`/public/img/buildings/${image.key}.png`));
+        }
+        for (const image of building.ceilingImages) {
+            await loadImage(image.key, require(`/public/img/buildings/${image.key}.png`));
+            if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}.png`));
         }
     }
 }

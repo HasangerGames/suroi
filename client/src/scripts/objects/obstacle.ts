@@ -63,10 +63,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         if (definition.particleVariations) {
             for (let i = 0; i < definition.particleVariations; i++) {
-                this.particleFrames.push(`${particleImage}_${i + 1}.svg`);
+                this.particleFrames.push(`${particleImage}_${i + 1}`);
             }
         } else {
-            this.particleFrames.push(`${particleImage}.svg`);
+            this.particleFrames.push(`${particleImage}`);
         }
     }
 
@@ -128,7 +128,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             }
         }
 
-        this.image.scale.set(this.dead ? 1 : this.scale);
+        this.container.scale.set(this.dead ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
@@ -138,7 +138,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}.svg`);
+                    this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}`);
                 }
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
@@ -182,7 +182,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
         // Update the obstacle image
-        this.image.setFrame(`${texture}.svg`);
+        this.image.setFrame(`${texture}`);
 
         this.container.rotation = this.rotation;
         this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
