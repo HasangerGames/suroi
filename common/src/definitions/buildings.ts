@@ -469,17 +469,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "box",
                 position: v(-15.7, 0),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(3, 0)
             },
             {
                 id: "box",
                 position: v(-15.8, 6.4),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(3, 0)
             },
             {
                 id: "box",
                 position: v(-15.7, -8),
-                lootSpawnOffset: v(2.2, 0)
+                lootSpawnOffset: v(3, 0)
             },
             {
                 id: "metal_shelf",
@@ -489,17 +489,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "box",
                 position: v(15.8, 0),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-3, 0)
             },
             {
                 id: "box",
                 position: v(15.7, 6),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-3, 0)
             },
             {
                 id: "box",
                 position: v(15.6, -7),
-                lootSpawnOffset: v(-2.2, 0)
+                lootSpawnOffset: v(-3, 0)
             }
         ],
 
