@@ -1,4 +1,4 @@
-import { type Vector, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Vector, vAdd, vMul, vDiv } from "../../../../common/src/utils/vector";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Game } from "../game";
 import { random, randomRotation } from "../../../../common/src/utils/random";
@@ -87,7 +87,7 @@ export class Particle {
     }
 
     update(delta: number): void {
-        this.position = vAdd(this.position, vMul(this.options.speed, 1 / delta));
+        this.position = vAdd(this.position, vDiv(vMul(this.options.speed, delta), 1000));
         const options = this.options;
 
         const now = Date.now();

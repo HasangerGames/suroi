@@ -162,7 +162,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                         end: 0,
                         ease: EaseFunctions.sextIn
                     },
-                    speed: velFromAngle(randomRotation(), randomFloat(0.25, 0.5) * (definition.explosion ? 3 : 1))
+                    speed: velFromAngle(randomRotation(), randomFloat(1.5, 4) * (definition.explosion ? 3 : 1))
                 }));
             }
         }
@@ -212,7 +212,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
             lifeTime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
-            speed: velFromAngle(particleAngle, randomFloat(0.25, 0.75))
+            speed: velFromAngle(particleAngle, randomFloat(2.5, 4.5))
         });
     }
 

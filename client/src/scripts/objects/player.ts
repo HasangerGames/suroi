@@ -249,7 +249,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                     start: 1,
                                     end: 1.5
                                 },
-                                speed: v(randomFloat(-0.4, 0.4), -0.6)
+                                speed: v(randomFloat(-4, 4), -6)
                             });
                         }, 350);
 
@@ -606,7 +606,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                                 start: initialRotation,
                                 end: initialRotation + spinAmount
                             },
-                            speed: vRotate(vAdd2(randomVector(0.2, -0.5, 1, 1.5), -(spinAmount / 4), 0), this.rotation)
+                            speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
                         });
                     }
                 }
@@ -635,7 +635,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 start: 1,
                 end: 0
             },
-            speed: velFromAngle(angle, randomFloat(0.1, 0.2))
+            speed: velFromAngle(angle, randomFloat(0.5, 1))
         });
     }
 

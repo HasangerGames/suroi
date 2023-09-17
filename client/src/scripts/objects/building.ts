@@ -87,7 +87,7 @@ export class Building extends GameObject {
                         ease: EaseFunctions.sextIn
                     },
                     scale: { start: 1, end: 0.2 },
-                    speed: velFromAngle(randomRotation(), randomFloat(0.1, 0.2))
+                    speed: velFromAngle(randomRotation(), randomFloat(1, 2))
                 }));
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
