@@ -79,9 +79,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
-        spawnHitbox: new RectangleHitbox(v(-10, -10), v(10, 10)),
-        ceilingHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
-        scopeHitbox: new RectangleHitbox(v(-5, -7), v(5, 9)),
+        spawnHitbox: new RectangleHitbox(v(-10, -12), v(10, 20)),
+        ceilingHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        scopeHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
         floorImages: [{
             key: "porta_potty_floor",
             position: v(0, 1.5)
@@ -95,7 +95,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "wood",
-                hitbox: new RectangleHitbox(v(-5, -7), v(5, 9))
+                hitbox: new RectangleHitbox(v(-7, -9), v(7, 9))
             }
         ],
         obstacles: [
