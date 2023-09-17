@@ -89,12 +89,12 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Banana", position: v(100, 100) },
-            { name: "Takedown", position: v(150, 900) },
-            { name: "Lavlandet", position: v(850, 100) },
-            { name: "Noskin Narrows", position: v(850, 900) },
-            { name: "Mt. Sanger", position: v(500, 300) },
-            { name: "Deepwood", position: v(500, 700) }
+            { name: "Banana", position: v(0.14, 0.12) },
+            { name: "Takedown", position: v(0.14, 0.88) },
+            { name: "Lavlandet", position: v(0.88, 0.12) },
+            { name: "Noskin Narrows", position: v(0.82, 0.88) },
+            { name: "Mt. Sanger", position: v(0.5, 0.3) },
+            { name: "Deepwood", position: v(0.5, 0.7) }
         ]
     },
     debug: {
@@ -143,10 +143,10 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "[object Object]", position: v(200, 200) },
-            { name: "Kernel Panic", position: v(800, 800) },
-            { name: "undefined Forest", position: v(512, 300) },
-            { name: "Memory Leak", position: v(512, 700) }
+            { name: "[object Object]", position: v(0.2, 0.2) },
+            { name: "Kernel Panic", position: v(0.8, 0.8) },
+            { name: "undefined Forest", position: v(0.5, 0.3) },
+            { name: "Memory Leak", position: v(0.5, 0.7) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -236,7 +236,7 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "stark is noob", position: v(256, 256) }
+            { name: "stark is noob", position: v(0.5, 0.5) }
         ]
     },
     refinery: {

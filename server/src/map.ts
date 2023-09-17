@@ -91,9 +91,14 @@ export class Map {
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
+
+                const position = v(
+                    this.width * (place.position.x + randomFloat(-0.04, 0.04)),
+                    this.height * (place.position.y + randomFloat(-0.04, 0.04)))
+
                 this.places.push({
                     name: place.name,
-                    position: vAdd(place.position, randomVector(-50, 50, -50, 50))
+                    position
                 });
             }
         }
