@@ -3,6 +3,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
 import { formatDate } from "../../utils/misc";
+import { localStorageInstance } from "../../utils/localStorageHandler";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -33,7 +34,14 @@ export class GameOverPacket extends ReceivingPacket {
         const timeString = formatDate(stream.readUint16());
 
         $("#game-over-time").text(timeString);
-        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
+        if (won) {
+            const game = this.playerManager.game;
+            game.music.play();
+            game.music.loop();
+            game.music.volume(localStorageInstance.config.musicVolume);
+            game.musicPlaying = true;
+        }
+        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);//
 
         // Player rank
         const aliveCount = stream.readBits(7);

@@ -91,6 +91,7 @@ export class Game {
     bulletsContainer = new Container();
 
     music = new Howl({ src: "./audio/music/menu_music.mp3" });
+    musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
 
@@ -114,9 +115,12 @@ export class Game {
 
         window.addEventListener("resize", this.resize.bind(this));
 
-        this.music.play();
-        this.music.loop();
-        this.music.volume(localStorageInstance.config.musicVolume);
+        if (!this.musicPlaying) {
+            this.music.play();
+            this.music.loop();
+            this.music.volume(localStorageInstance.config.musicVolume);
+            this.musicPlaying = true;
+        }
     }
 
     connect(address: string): void {
@@ -129,6 +133,7 @@ export class Game {
 
         this.socket.onopen = (): void => {
             this.music.stop();
+            this.musicPlaying = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -245,8 +250,11 @@ export class Game {
 
         this.playerManager = new PlayerManager(this);
 
-        this.music.stop().play();
-        this.music.volume(localStorageInstance.config.musicVolume);
+        if (!this.musicPlaying) {
+            this.music.stop().play();
+            this.music.volume(localStorageInstance.config.musicVolume);
+            this.musicPlaying = true;
+        }
     }
 
     sendPacket(packet: SendingPacket): void {
