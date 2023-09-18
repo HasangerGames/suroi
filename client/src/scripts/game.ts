@@ -45,6 +45,7 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { DeathMarker } from "./objects/deathMarker";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Scopes } from "../../../common/src/definitions/scopes";
 
 export class Game {
     socket!: WebSocket;
@@ -247,6 +248,8 @@ export class Game {
         this.map.gasGraphics.clear();
         this.floorHitboxes.clear();
         this.loots.clear();
+
+        this.camera.zoom = Scopes[0].zoomLevel;
 
         this.playerManager = new PlayerManager(this);
 
