@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    depth: 4,
+                    depth: 3.5,
                     rotation: 0,
                     alpha: {
                         start: 1,
