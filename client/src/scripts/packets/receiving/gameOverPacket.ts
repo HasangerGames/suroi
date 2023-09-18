@@ -10,16 +10,19 @@ export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 export class GameOverPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         $("#interact-message").hide();
+        const activePlayer = this.game.activePlayer;
+        if (activePlayer?.actionSound) this.game.soundManager.stop(activePlayer.actionSound);
+
         const gameOverScreen: JQuery = $("#game-over-screen");
 
-        this.playerManager.game.gameOver = true;
+        this.game.gameOver = true;
         const won = stream.readBoolean();
 
         if (!won) {
             gameOverScreen.removeClass("chicken-dinner");
             $("#btn-spectate").show();
             $("#btn-spectate").removeClass("btn-disabled");
-            this.playerManager.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
+            this.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
         } else {
             gameOverScreen.addClass("chicken-dinner");
             $("#btn-spectate").hide();
@@ -35,7 +38,7 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#game-over-time").text(timeString);
         if (won) {
-            const game = this.playerManager.game;
+            const game = this.game;
             game.music.play();
             game.music.loop();
             game.music.volume(localStorageInstance.config.musicVolume);

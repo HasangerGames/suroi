@@ -6,7 +6,7 @@ import { ObjectCategory } from "../../../../../common/src/constants";
 
 export class JoinedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        if (this.playerManager.game.socket.readyState === WebSocket.OPEN) {
+        if (this.game.socket.readyState === WebSocket.OPEN) {
             const emoteSelectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
             for (let i = 0; i < 4; i++) {
                 const emoteType = stream.readObjectTypeNoCategory(ObjectCategory.Emote);

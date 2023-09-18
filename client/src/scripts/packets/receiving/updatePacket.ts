@@ -42,7 +42,7 @@ export class UpdatePacket extends ReceivingPacket {
     deletedObjects = new Array<number>();
 
     override deserialize(stream: SuroiBitStream): void {
-        const game = this.playerManager.game;
+        const game = this.game;
         const playerManager = this.playerManager;
 
         // Dirty values
@@ -245,7 +245,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < emoteCount; i++) {
                 const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
                 const playerID = stream.readObjectID();
-                const player = this.playerManager.game.objects.get(playerID);
+                const player = game.objects.get(playerID);
                 if (player instanceof Player) player.emote(emoteType);
             }
         }
