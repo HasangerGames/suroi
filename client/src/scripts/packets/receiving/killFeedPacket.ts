@@ -7,7 +7,7 @@ import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { randomKillWord } from "../../utils/misc";
 import { localStorageInstance } from "../../utils/localStorageHandler";
-import { UI_DEBUG_MODE } from "../../utils/constants";
+import { ANONYMOUS_PLAYERS_NAME, UI_DEBUG_MODE } from "../../utils/constants";
 // import { lerp } from "../../../../../common/src/utils/math";
 
 /*
@@ -50,17 +50,24 @@ export class KillFeedPacket extends ReceivingPacket {
         switch (messageType) {
             case KillFeedMessageType.Kill: {
                 const twoPartyInteraction = stream.readBoolean();
-                const killed = {
+                let killed = {
                     name: stream.readPlayerNameWithColor(),
                     id: stream.readObjectID()
                 };
 
-                const killedBy = twoPartyInteraction
+                let killedBy = twoPartyInteraction
                     ? {
                         name: stream.readPlayerNameWithColor(),
                         id: stream.readObjectID()
                     }
                     : undefined;
+
+                if(localStorageInstance.config.anonymousPlayers) {
+                    killed.name = ANONYMOUS_PLAYERS_NAME;
+                    if(killedBy) {
+                        killedBy.name = ANONYMOUS_PLAYERS_NAME;
+                    }
+                }
 
                 switch (true) {
                     case killed.id === this.game.activePlayerID: { // was killed
@@ -105,7 +112,8 @@ export class KillFeedPacket extends ReceivingPacket {
                 break;
             }
             case KillFeedMessageType.Join: {
-                const name = stream.readPlayerNameWithColor();
+                let name = stream.readPlayerNameWithColor();
+                if(localStorageInstance.config.anonymousPlayers) name = ANONYMOUS_PLAYERS_NAME;
                 const joined = stream.readBoolean();
                 killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
                 break;

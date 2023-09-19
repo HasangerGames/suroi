@@ -4,6 +4,7 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import $ from "jquery";
 import { formatDate } from "../../utils/misc";
 import { localStorageInstance } from "../../utils/localStorageHandler";
+import { ANONYMOUS_PLAYERS_NAME } from "../../utils/constants";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -30,7 +31,8 @@ export class GameOverPacket extends ReceivingPacket {
         $("#chicken-dinner").toggle(won);
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
-        $("#game-over-player-name").html(stream.readPlayerNameWithColor());
+        if(localStorageInstance.config.anonymousPlayers) $("#game-over-player-name").html(ANONYMOUS_PLAYERS_NAME);
+        else $("#game-over-player-name").html(stream.readPlayerNameWithColor());
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());
