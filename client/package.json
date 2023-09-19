@@ -42,10 +42,10 @@
     "expose-loader": "^4.1.0",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
-    "postcss": "^8.4.29",
+    "postcss": "^8.4.30",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.3.3",
-    "postcss-preset-env": "^9.1.3",
+    "postcss-preset-env": "^9.1.4",
     "sass": "^1.67.0",
     "sass-loader": "^13.3.2",
     "spritesheet-webpack-plugin": "^0.0.1",
@@ -60,7 +60,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@pixi/compressed-textures": "^7.3.0",
-    "howler": "^2.2.3",
+    "howler": "^2.2.4",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
     "pixi.js": "^7.3.0"
