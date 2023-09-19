@@ -167,7 +167,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
             variations: 3,
-            depth: 5
+            depth: 7
         },
         {
             idString: "pine_tree",
@@ -182,7 +182,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(7),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
-            depth: 5
+            depth: 7
         },
         {
             idString: "birch_tree",
@@ -197,7 +197,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
-            depth: 5
+            depth: 7
         },
         {
             idString: "rock",
@@ -249,7 +249,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             variations: 2,
             particleVariations: 2,
-            depth: 4
+            depth: 6
         },
         {
             idString: "blueberry_bush",
@@ -265,7 +265,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             noCollisions: true,
             rotationMode: RotationMode.Full,
             particleVariations: 2,
-            depth: 4,
+            depth: 6,
             spawnWithLoot: true,
             frames: {
                 particle: "bush_particle",
@@ -1012,7 +1012,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             explosion: "large_refinery_barrel_explosion",
             reflectBullets: true,
-            depth: 9,
+            depth: 10,
             frames: {
                 particle: "barrel_particle"
             }
@@ -1031,7 +1031,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(8.9),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
-            depth: 9,
+            depth: 10,
             noResidue: true,
             frames: {
                 particle: "barrel_particle"
@@ -1054,7 +1054,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ]),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
-            depth: 9,
+            depth: 10,
             noResidue: true,
             frames: {
                 particle: "barrel_particle"
