@@ -147,7 +147,7 @@ export class UpdatePacket extends ReceivingPacket {
             if (stream.readBoolean()) {
                 const name = stream.readPlayerNameWithColor();
                 if (game.spectating) {
-                    $("#game-over-screen").fadeOut();
+                    $("#game-over-overlay").fadeOut();
                     $("#spectating-msg-info").html(`<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">${name}</span>`);
                     $("#spectating-msg").show();
                     $("#spectating-buttons-container").show();
@@ -286,7 +286,7 @@ export class UpdatePacket extends ReceivingPacket {
                     $("#gas-timer-image").attr("src", "./img/misc/gas-waiting-icon.svg");
                 }
 
-                if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE) {
+                if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE && !(game.gameOver && !game.spectating)) {
                     $("#gas-msg-info").text(gasMessage ?? "");
                     $("#gas-msg").fadeIn();
                     if (game.gas.state === GasState.Inactive) {
@@ -326,6 +326,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (aliveCountDirty) {
             const aliveCount = stream.readBits(7);
             $("#ui-players-alive").text(aliveCount);
+            $("#btn-spectate").toggle(aliveCount > 1);
         }
     }
 }

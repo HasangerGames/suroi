@@ -13,20 +13,21 @@ export class GameOverPacket extends ReceivingPacket {
         const activePlayer = this.game.activePlayer;
         if (activePlayer?.actionSound) this.game.soundManager.stop(activePlayer.actionSound);
 
-        const gameOverScreen: JQuery = $("#game-over-screen");
+        $("#gas-msg").fadeOut(500);
+
+        const gameOverScreen: JQuery = $("#game-over-overlay");
 
         this.game.gameOver = true;
         const won = stream.readBoolean();
 
         if (!won) {
-            gameOverScreen.removeClass("chicken-dinner");
             $("#btn-spectate").show();
             $("#btn-spectate").removeClass("btn-disabled");
             this.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
         } else {
-            gameOverScreen.addClass("chicken-dinner");
             $("#btn-spectate").hide();
         }
+        $("#chicken-dinner").toggle(won);
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
         $("#game-over-player-name").html(stream.readPlayerNameWithColor());

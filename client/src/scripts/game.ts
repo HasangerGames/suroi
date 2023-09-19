@@ -141,7 +141,7 @@ export class Game {
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(gameOverScreenTimeout);
-                $("#game-over-screen").hide();
+                $("#game-over-overlay").hide();
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
                 $("#kill-feed").html("");
@@ -230,7 +230,7 @@ export class Game {
         clearTimeout(this.tickTimeoutID);
 
         $("#game-menu").hide();
-        $("#game-over-screen").hide();
+        $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").fadeIn();
 
