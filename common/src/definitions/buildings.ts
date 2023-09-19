@@ -123,7 +123,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "porta_potty_door",
-                position: v(2.2, 8.9),
+                position: v(2.2, 8.8),
                 rotation: 0
             },
             {
