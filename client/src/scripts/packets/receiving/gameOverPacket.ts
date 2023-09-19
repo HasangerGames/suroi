@@ -31,7 +31,7 @@ export class GameOverPacket extends ReceivingPacket {
         $("#chicken-dinner").toggle(won);
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
-        if(localStorageInstance.config.anonymousPlayers) $("#game-over-player-name").html(ANONYMOUS_PLAYERS_NAME);
+        if (localStorageInstance.config.anonymousPlayers) $("#game-over-player-name").html(ANONYMOUS_PLAYERS_NAME);
         else $("#game-over-player-name").html(stream.readPlayerNameWithColor());
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());

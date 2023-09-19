@@ -50,21 +50,21 @@ export class KillFeedPacket extends ReceivingPacket {
         switch (messageType) {
             case KillFeedMessageType.Kill: {
                 const twoPartyInteraction = stream.readBoolean();
-                let killed = {
+                const killed = {
                     name: stream.readPlayerNameWithColor(),
                     id: stream.readObjectID()
                 };
 
-                let killedBy = twoPartyInteraction
+                const killedBy = twoPartyInteraction
                     ? {
                         name: stream.readPlayerNameWithColor(),
                         id: stream.readObjectID()
                     }
                     : undefined;
 
-                if(localStorageInstance.config.anonymousPlayers) {
+                if (localStorageInstance.config.anonymousPlayers) {
                     killed.name = ANONYMOUS_PLAYERS_NAME;
-                    if(killedBy) {
+                    if (killedBy) {
                         killedBy.name = ANONYMOUS_PLAYERS_NAME;
                     }
                 }
@@ -113,7 +113,7 @@ export class KillFeedPacket extends ReceivingPacket {
             }
             case KillFeedMessageType.Join: {
                 let name = stream.readPlayerNameWithColor();
-                if(localStorageInstance.config.anonymousPlayers) name = ANONYMOUS_PLAYERS_NAME;
+                if (localStorageInstance.config.anonymousPlayers) name = ANONYMOUS_PLAYERS_NAME;
                 const joined = stream.readBoolean();
                 killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
                 break;
