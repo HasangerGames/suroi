@@ -80,7 +80,7 @@ export class Loot extends GameObject {
 
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
-                if (collision) this.velocity = vSub(this.velocity, collision.dir);
+                if (collision) this.velocity = vSub(this.velocity, vMul(collision.dir, 0.45));
 
                 const dist = Math.max(distance(object.position, this.position), 1);
                 const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
