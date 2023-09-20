@@ -94,14 +94,14 @@ let playerCount = 0;
 const servers: Record<string, {
     name: string
     address: string
-    apiAdress: string
+    apiAddress: string
 }> = {};
 
 for (const region in Config.regions) {
     servers[region] = {
         name: Config.regions[region].name,
         address: Config.regions[region].address,
-        apiAdress: Config.regions[region].address.replace("ws", "http")
+        apiAddress: Config.regions[region].address.replace("ws", "http")
     };
 }
 
@@ -152,7 +152,7 @@ app.get("/api/getGame", async(res, req) => {
             }
         } else if (typeof Config.regions[region] === "string" && region !== Config.thisRegion) {
             // Fetch the find game api for the region and return that.
-            const url = `${servers[region].apiAdress}/api/getGame?region=${region}`;
+            const url = `${servers[region].apiAddress}/api/getGame?region=${region}`;
             try {
                 response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
             } catch (e) {
