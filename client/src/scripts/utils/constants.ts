@@ -1,6 +1,5 @@
 import { Color } from "pixi.js";
 
-export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
 export const ANONYMOUS_PLAYERS_NAME = "Player";
