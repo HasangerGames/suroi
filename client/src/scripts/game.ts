@@ -168,7 +168,9 @@ export class Game {
                     break;
                 }
                 case PacketType.Map: {
-                    new MapPacket(this.playerManager).deserialize(stream);
+                    const mapPacket = new MapPacket(this.playerManager);
+                    mapPacket.deserialize(stream);
+                    this.map.updateFromPacket(mapPacket);
                     break;
                 }
                 case PacketType.Update: {

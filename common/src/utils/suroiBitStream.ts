@@ -195,7 +195,7 @@ export class SuroiBitStream extends BitStream {
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, y, 0, 0, 1024, 1024, 16);
+        this.writeVector2(x, y, 0, 0, 1344, 1344, 16);
     }
 
     /**
@@ -203,7 +203,7 @@ export class SuroiBitStream extends BitStream {
      * @return the position Vector.
      */
     readPosition(): Vector {
-        return this.readVector(0, 0, 1024, 1024, 16);
+        return this.readVector(0, 0, 1344, 1344, 16);
     }
 
     /**

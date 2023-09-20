@@ -18,6 +18,7 @@ export const HITBOX_COLORS = {
 export const COLORS = {
     grass: new Color("hsl(113, 42%, 42%)"),
     water: new Color("hsl(211, 63%, 42%)"),
+    border: new Color("hsl(211, 63%, 30%)"),
     gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
     beach: new Color("hsl(40, 39%, 55%)")
 };

@@ -13,7 +13,7 @@ import {
 import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
-import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
@@ -28,7 +28,12 @@ export class Map {
     readonly width: number;
     readonly height: number;
 
+    readonly oceanSize: number;
+    readonly beachSize: number;
+
     readonly beachHitbox: Hitbox;
+
+    readonly oceanHitbox: Hitbox;
 
     readonly places: Array<{
         name: string
@@ -43,12 +48,22 @@ export class Map {
 
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;
+        this.oceanSize = mapDefinition.oceanSize;
+        this.beachSize = mapDefinition.beachSize;
 
+        this.oceanHitbox = new ComplexHitbox([
+            new RectangleHitbox(v(0, 0), v(mapDefinition.oceanSize, this.height)),
+            new RectangleHitbox(v(0, 0), v(this.width, mapDefinition.oceanSize)),
+            new RectangleHitbox(v(this.width - mapDefinition.oceanSize, 0), v(this.width, this.height)),
+            new RectangleHitbox(v(0, this.height - mapDefinition.oceanSize), v(this.width, this.height))
+        ]);
+
+        const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
         this.beachHitbox = new ComplexHitbox([
-            new RectangleHitbox(v(0, 0), v(GRID_SIZE, this.height)),
-            new RectangleHitbox(v(0, 0), v(this.width, GRID_SIZE)),
-            new RectangleHitbox(v(this.width - GRID_SIZE, 0), v(this.width, this.height)),
-            new RectangleHitbox(v(0, this.height - GRID_SIZE), v(this.width, this.height))
+            new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
+            new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
+            new RectangleHitbox(v(this.width - beachPadding, 0), v(this.width, this.height)),
+            new RectangleHitbox(v(0, this.height - beachPadding), v(this.width, this.height))
         ]);
 
         // Generate buildings

@@ -1,10 +1,14 @@
-import { Container, Graphics, LINE_CAP, Sprite, Texture, isMobile } from "pixi.js";
+import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite } from "../utils/pixi";
 import { Gas } from "./gas";
 import { GRID_SIZE, GasState } from "../../../../common/src/constants";
+import { type MapPacket } from "../packets/receiving/mapPacket";
+import { COLORS, PIXI_SCALE } from "../utils/constants";
+import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { addAdjust } from "../../../../common/src/utils/math";
 
 export class Minimap {
     container = new Container();
@@ -34,8 +38,6 @@ export class Minimap {
     width = 0;
     height = 0;
 
-    oceanPadding = GRID_SIZE * 10;
-
     minimapWidth = 0;
     minimapHeight = 0;
 
@@ -60,7 +62,6 @@ export class Minimap {
 
         this.indicator.scale.set(0.1);
 
-        this.sprite.position.set(-this.oceanPadding);
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         $("#minimap-border").on("click", (e) => {
@@ -74,6 +75,155 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
+    }
+
+    updateFromPacket(mapPacket: MapPacket): void {
+        const width = this.width = mapPacket.width;
+        const height = this.height = mapPacket.height;
+
+        const beachPadding = mapPacket.oceanSize + mapPacket.beachSize;
+
+        const terrainGraphics = new Graphics();
+        const mapGraphics = new Graphics();
+
+        // Draw the terrain graphics
+        const drawTerrain = (ctx: Graphics, scale: number): void => {
+            ctx.zIndex = -10;
+            ctx.beginFill();
+
+            ctx.fill.color = COLORS.water.toNumber();
+            ctx.drawRect(0, 0, width * scale, height * scale);
+
+            ctx.fill.color = COLORS.beach.toNumber();
+            ctx.drawRect(mapPacket.oceanSize * scale,
+                mapPacket.oceanSize * scale,
+                (width - mapPacket.oceanSize * 2) * scale,
+                (height - mapPacket.oceanSize * 2) * scale);
+
+            ctx.fill.color = COLORS.grass.toNumber();
+            ctx.drawRect(beachPadding * scale,
+                beachPadding * scale,
+                (width - beachPadding * 2) * scale,
+                (height - beachPadding * 2) * scale);
+
+            ctx.lineStyle({
+                color: 0x000000,
+                alpha: 0.25,
+                width: 2
+            });
+
+            for (let x = 0; x <= width; x += GRID_SIZE) {
+                ctx.moveTo(x * scale, 0);
+                ctx.lineTo(x * scale, height * scale);
+            }
+            for (let y = 0; y <= height; y += GRID_SIZE) {
+                ctx.moveTo(0, y * scale);
+                ctx.lineTo(width * scale, y * scale);
+            }
+
+            ctx.endFill();
+            ctx.lineStyle();
+
+            for (const building of mapPacket.buildings) {
+                const definition = building.type.definition;
+                if (definition.groundGraphics) {
+                    for (const ground of definition.groundGraphics) {
+                        ctx.beginFill(ground.color);
+                        const hitbox = ground.bounds.transform(building.position, 1, building.orientation);
+                        if (hitbox instanceof RectangleHitbox) {
+                            const width = hitbox.max.x - hitbox.min.x;
+                            const height = hitbox.max.y - hitbox.min.y;
+                            ctx.drawRect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
+                        } else if (hitbox instanceof CircleHitbox) {
+                            ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
+                        }
+                        ctx.endFill();
+                    }
+                }
+            }
+        };
+        drawTerrain(terrainGraphics, PIXI_SCALE);
+        drawTerrain(mapGraphics, 1);
+
+        this.game.camera.container.addChild(terrainGraphics);
+
+        // draw the minimap obstacles
+        const mapRender = new Container();
+        mapRender.addChild(mapGraphics);
+
+        for (const obstacle of mapPacket.obstacles) {
+            const definition = obstacle.type.definition;
+
+            let textureId = definition.idString;
+
+            if (obstacle.variation) {
+                textureId += `_${obstacle.variation + 1}`;
+            }
+            // Create the object image
+            const image = new SuroiSprite(`${textureId}`);
+            image.setVPos(obstacle.position).setRotation(obstacle.rotation);
+            image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
+            image.setDepth(definition.depth ?? 1);
+            mapRender.addChild(image);
+        }
+
+        for (const building of mapPacket.buildings) {
+            const definition = building.type.definition;
+
+            for (const image of definition.floorImages) {
+                const sprite = new SuroiSprite(image.key);
+                sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
+                sprite.scale.set(1 / PIXI_SCALE);
+                sprite.setRotation(building.rotation);
+                mapRender.addChild(sprite);
+            }
+
+            for (const image of definition.ceilingImages) {
+                const sprite = new SuroiSprite(image.key);
+                sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
+                sprite.scale.set(1 / PIXI_SCALE);
+                mapRender.addChild(sprite);
+                sprite.setRotation(building.rotation);
+                sprite.setDepth(9);
+            }
+        }
+        mapRender.sortChildren();
+
+        // Render all obstacles and buildings to a texture
+        const renderTexture = RenderTexture.create({
+            width,
+            height,
+            resolution: isMobile.any ? 1 : 2
+        });
+        this.game.pixi.renderer.render(mapRender, { renderTexture });
+        this.sprite.texture.destroy();
+        this.sprite.texture = renderTexture;
+        mapRender.destroy({
+            children: true,
+            texture: false
+        });
+
+        // Add the places
+        this.placesContainer.removeChildren();
+        for (const place of mapPacket.places) {
+            const text = new Text(place.name, {
+                fill: "white",
+                fontFamily: "Inter",
+                fontWeight: "600",
+                stroke: "black",
+                strokeThickness: 2,
+                fontSize: 18,
+                dropShadow: true,
+                dropShadowAlpha: 0.8,
+                dropShadowColor: "black",
+                dropShadowBlur: 2
+            });
+            text.alpha = 0.7;
+            text.anchor.set(0.5);
+            text.position.copyFrom(place.position);
+            this.placesContainer.addChild(text);
+        }
+        this.resize();
     }
 
     update(): void {
@@ -113,10 +263,10 @@ export class Minimap {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const smallestDim = Math.min(screenHeight, screenWidth);
-            this.container.scale.set(smallestDim / (this.height + this.oceanPadding));
+            this.container.scale.set(smallestDim / this.height);
             // noinspection JSSuspiciousNameCombination
-            this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
-            this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
+            this.minimapWidth = this.sprite.width * this.container.scale.x;
+            this.minimapHeight = this.sprite.height * this.container.scale.y;
             this.margins = v(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
@@ -162,7 +312,7 @@ export class Minimap {
     updatePosition(): void {
         if (this.expanded) {
             this.container.position.set(window.innerWidth / 2, window.innerHeight / 2 - this.minimapHeight / 2);
-            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2);
+            this.objectsContainer.position.set(-this.width / 2, 0);
             return;
         }
         const pos = vClone(this.position);

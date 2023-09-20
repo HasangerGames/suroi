@@ -287,7 +287,7 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
+        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "15x_scope");
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
