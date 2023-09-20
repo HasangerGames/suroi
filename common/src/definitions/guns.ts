@@ -635,7 +635,7 @@ export const Guns: GunDefinition[] = [
             right: v(65, 0),
             animationDuration: 100
         },
-        image: { position: v(150, 0) },
+        image: { position: v(115, 0) },
         particles: {
             position: v(5.5, 0)
         },
