@@ -78,7 +78,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics = new Graphics();
-            this.debugGraphics.zIndex = 9;
+            this.debugGraphics.zIndex = 999;
             this.game.camera.container.addChild(this.debugGraphics);
         }
     }

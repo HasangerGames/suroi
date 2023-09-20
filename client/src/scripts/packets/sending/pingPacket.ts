@@ -9,6 +9,6 @@ export class PingPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        this.playerManager.game.lastPingDate = Date.now();
+        this.game.lastPingDate = Date.now();
     }
 }

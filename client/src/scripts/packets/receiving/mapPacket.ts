@@ -11,7 +11,7 @@ import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/h
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const game = this.playerManager.game;
+        const game = this.game;
         const map = game.map;
 
         const width = map.width = stream.readUint16();

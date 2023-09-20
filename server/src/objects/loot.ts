@@ -9,7 +9,7 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "./player";
 import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, TICK_SPEED, ObjectCategory } from "../../../common/src/constants";
+import { ArmorType, TICK_SPEED, ObjectCategory, PlayerActions } from "../../../common/src/constants";
 import { GunItem } from "../inventory/gunItem";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
@@ -164,10 +164,10 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Gun: {
-                player.action?.cancel();
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
                     inventory.appendWeapon(this.type.idString);
                 } else if (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString) {
+                    if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.type.idString);
                 }
                 break;

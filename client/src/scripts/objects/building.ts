@@ -46,7 +46,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = 8;
+        this.ceilingContainer.zIndex = 9;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 

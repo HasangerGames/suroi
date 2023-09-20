@@ -45,6 +45,7 @@ import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { DeathMarker } from "./objects/deathMarker";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Scopes } from "../../../common/src/definitions/scopes";
 
 export class Game {
     socket!: WebSocket;
@@ -140,7 +141,7 @@ export class Game {
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(gameOverScreenTimeout);
-                $("#game-over-screen").hide();
+                $("#game-over-overlay").hide();
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
                 $("#kill-feed").html("");
@@ -229,7 +230,7 @@ export class Game {
         clearTimeout(this.tickTimeoutID);
 
         $("#game-menu").hide();
-        $("#game-over-screen").hide();
+        $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
         $("#splash-ui").fadeIn();
 
@@ -247,6 +248,8 @@ export class Game {
         this.map.gasGraphics.clear();
         this.floorHitboxes.clear();
         this.loots.clear();
+
+        this.camera.zoom = Scopes[0].zoomLevel;
 
         this.playerManager = new PlayerManager(this);
 

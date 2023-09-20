@@ -13,6 +13,8 @@
     <meta property="og:title" content="Suroi - 2D battle royale game">
     <meta property="og:description"
       content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+    <meta property="og:site_name" content="suroi.io">
+    <meta property="og:image" content="https://suroi.io/suroi/img/logos/embed_icon.png">
 
     <title>Suroi - 2D battle royale game</title>
 
@@ -22,6 +24,8 @@
     <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
     <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
     <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
+
+    <link rel="manifest" href="./manifest.json"/>
   </head>
   <body>
     <div id="splash-ui">
@@ -273,34 +277,40 @@
       <div class="emote-bottom"></div>
       <div class="emote-left"></div>
     </div>
-    <div class="modal" id="game-over-screen" style="display: none">
+    <div id="game-over-overlay" style="display: none;">
+      <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
       <h1 id="game-over-text" class="modal-item">You died.</h1>
-      <h1 id="game-over-player-name"class="modal-item">Player</h1>
-      <h2>Rank</h2>
-      <h1 id="game-over-rank" class="modal-item"></h1>
-      <div class="modal-item" id="game-over-stats">
-        <div class="stat">
-          <span class="stat-name">Kills:</span>
-          <span class="stat-value" id="game-over-kills"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Damage done:</span>
-          <span class="stat-value" id="game-over-damage-done"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Damage taken:</span>
-          <span class="stat-value" id="game-over-damage-taken"></span>
-        </div>
-        <div class="stat">
-          <span class="stat-name">Time alive:</span>
-          <span class="stat-value" id="game-over-time"></span>
-        </div>
+      <div id="game-over-rank-container">
+        <span>Rank</span>
+        <span id="game-over-rank" class="modal-item"></span>
       </div>
-      <div class="modal-item">
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
-        <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+      <div id="game-over-screen">
+        <h1 id="game-over-player-name" class="modal-item">Player</h1>
+        <div class="modal-item" id="game-over-stats">
+          <div class="stat">
+            <span class="stat-name">Kills:</span>
+            <span class="stat-value" id="game-over-kills"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage done:</span>
+            <span class="stat-value" id="game-over-damage-done"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Damage taken:</span>
+            <span class="stat-value" id="game-over-damage-taken"></span>
+          </div>
+          <div class="stat">
+            <span class="stat-name">Time alive:</span>
+            <span class="stat-value" id="game-over-time"></span>
+          </div>
+        </div>
+        <div class="modal-item">
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+        </div>
       </div>
     </div>
+
     <div class="modal" id="game-menu" style="display: none">
       <div class="modal-item">
         <button class="btn btn-lg btn-darken btn-secondary" id="btn-settings-game"><i class="fa-solid fa-gear"></i> Settings</button>
@@ -511,3 +521,4 @@
   </div>
   </body>
 </html>
+

@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    depth: 4,
+                    depth: 5,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -649,6 +649,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     destroy(): void {
         super.destroy();
         this.healingParticlesEmitter.destroy();
+        if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+        if (this.isActivePlayer) $("#action-container").hide();
         clearTimeout(this._emoteHideTimeoutID);
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();

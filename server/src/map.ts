@@ -1,7 +1,7 @@
 import { type Game } from "./game";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     random,
@@ -91,10 +91,9 @@ export class Map {
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
-
                 const position = v(
                     this.width * (place.position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (place.position.y + randomFloat(-0.04, 0.04)))
+                    this.height * (place.position.y + randomFloat(-0.04, 0.04)));
 
                 this.places.push({
                     name: place.name,
