@@ -6,7 +6,10 @@ export enum GasMode { Normal, Debug, Disabled }
 export interface ConfigType {
     readonly host: string
     readonly port: number
-    readonly regions: Record<string, string>
+    readonly regions: Record<string, {
+        name: string
+        address: string
+    }>
     readonly defaultRegion: string
 
     /**
@@ -109,11 +112,11 @@ export const Config = {
     port: 8000,
 
     regions: {
-        dev: "ws://127.0.0.1:8000",
-        na: "wss://suroi.io",
-        eu: "wss://eu.suroi.io",
-        sa: "wss://sa.suroi.io",
-        as: "wss://as.suroi.io"
+        dev: { name: "Local Server", address: "ws://127.0.0.1:8000" },
+        na: { name: "North America (Detroit)", address: "wss://suroi.io" },
+        eu: { name: "Europe (Berlin)", address: "wss://eu.suroi.io" },
+        sa: { name: "South America (São Paulo)", address: "wss://sa.suroi.io" },
+        as: { name: "Asia (Osako)", address: "wss://as.suroi.io" }
     },
     defaultRegion: "na",
     thisRegion: "dev",
