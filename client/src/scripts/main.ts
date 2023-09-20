@@ -32,7 +32,7 @@ function disablePlayButton(text: string): void {
 }
 
 // TODO: use this to fetch game and remove region code from server
-let servers: Record<string, { name: string, address: string, apiAdress: string }> = {};
+let servers: Record<string, { name: string, address: string, apiAddress: string }> = {};
 
 async function main(): Promise<void> {
     disablePlayButton("Loading...");
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
 
             serverSelector.append(`<option value="${region}">${servers[region].name} - <span id="${region}-player-count">?</span> Players</option>`);
 
-            fetch(`${servers[region].apiAdress}/api/playerCount`).then((async data => {
+            fetch(`${servers[region].apiAddress}/api/playerCount`).then((async data => {
                 const regionPing = Date.now() - pingStartTime;
 
                 console.log(`${region}: ${regionPing}ms`);
