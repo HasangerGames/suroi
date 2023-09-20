@@ -62,6 +62,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setTint(tint: ColorSource): SuroiSprite {
+        this.tint = tint;
+        return this;
+    }
+
     setPos(x: number, y: number): SuroiSprite {
         this.position.set(x, y);
         return this;

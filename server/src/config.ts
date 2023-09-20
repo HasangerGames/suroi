@@ -126,7 +126,7 @@ export const Config = {
 
     movementSpeed: 0.77,
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.Center },
 
     playerLimit: 80,
 
@@ -140,7 +140,7 @@ export const Config = {
 
     cloudflare: false,
 
-    mapName: "main",
+    mapName: "singleBuilding",
 
     roles: {
         dev: { password: "dev" },

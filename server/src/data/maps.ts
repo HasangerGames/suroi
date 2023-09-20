@@ -239,18 +239,18 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "stark is noob", position: v(0.5, 0.5) }
         ]
     },
-    refinery: {
+    singleBuilding: {
         width: 512,
         height: 512,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "blue_container"), v(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("gold_rock", v(64, 64));
+            map.generateObstacle("gold_rock", v(this.width / 2, this.height / 2));
         }
     }
 };

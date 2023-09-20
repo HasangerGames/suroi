@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="348.30502"
+   height="710.00403"
+   viewBox="0 0 92.155702 187.85524"
+   version="1.1"
+   id="svg833"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="container_floor.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview835"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="1.0973349"
+     inkscape:cx="-46.47624"
+     inkscape:cy="415.55226"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs830" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.86176;stroke-linecap:square;stroke-linejoin:bevel"
+       id="rect916"
+       width="92.155701"
+       height="187.85522"
+       x="0"
+       y="-3.5527137e-15" />
+    <path
+       id="rect1077"
+       style="fill:#7f7f7f;fill-opacity:1;stroke:none;stroke-width:4.4606;stroke-linecap:square;stroke-linejoin:bevel"
+       d="M 0,0 V 710.00391 H 35.583984 312.7207 348.30469 V 0 H 312.7207 V 674.41992 H 35.583984 V 0 Z"
+       transform="scale(0.26458334)" />
+    <path
+       id="rect1343"
+       style="fill:#c0c0c0;fill-opacity:1;stroke:none;stroke-width:3.55209;stroke-linecap:square;stroke-linejoin:bevel"
+       d="m 8.7929688,8.7929688 v 674.2109412 18 h 312.7207012 18 v -18 V 8.7929688 h -18 V 683.00391 H 26.792969 V 8.7929688 Z"
+       transform="scale(0.26458334)" />
+  </g>
+</svg>

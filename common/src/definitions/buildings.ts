@@ -54,11 +54,13 @@ export interface BuildingDefinition extends ObjectDefinition {
     floorImages: Array<{
         key: string
         position: Vector
+        tint?: number
     }>
     ceilingImages: Array<{
         key: string
         position: Vector
         residue?: string
+        tint?: number
     }>
 
     // How many walls need to be broken to destroy the ceiling
@@ -75,7 +77,35 @@ export interface BuildingDefinition extends ObjectDefinition {
     }>
 }
 
+function makeContainer(idString: string, name: string, tint: number): BuildingDefinition {
+    return {
+        idString,
+        name,
+        spawnHitbox: new RectangleHitbox(v(-10, -12), v(10, 20)),
+        ceilingHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        scopeHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        floorImages: [{
+            key: "container_floor",
+            position: v(0, 0),
+            tint
+        }],
+        ceilingImages: [{
+            key: "container_ceiling_1",
+            position: v(0, 0),
+            tint
+        }],
+        floors: [
+            {
+                type: "metal",
+                hitbox: new RectangleHitbox(v(-7, -9), v(7, 9))
+            }
+        ],
+        obstacles: []
+    };
+}
+
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
+    makeContainer("blue_container", "Blue Container", 0x005fa3),
     {
         idString: "porta_potty",
         name: "Porta Potty",
