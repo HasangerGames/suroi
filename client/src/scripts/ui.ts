@@ -341,6 +341,8 @@ export function setupUI(game: Game): void {
     // Scope looping toggle
     addCheckboxListener("#toggle-scope-looping", "scopeLooping");
 
+    addCheckboxListener("#toggle-anonymous-player", "anonymousPlayers");
+
     // Music volume
     addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
         game.music.volume(value);
