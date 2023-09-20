@@ -125,6 +125,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "Question Mark"
         },
         {
+            idString: "skull",
+            name: "Skull"
+        },
+        {
             idString: "troll_face",
             name: "Troll Face"
         },
