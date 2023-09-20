@@ -41,7 +41,7 @@ export class GameOverPacket extends ReceivingPacket {
             game.music.volume(localStorageInstance.config.musicVolume);
             game.musicPlaying = true;
         }
-        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);//
+        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
 
         // Player rank
         const aliveCount = stream.readBits(7);

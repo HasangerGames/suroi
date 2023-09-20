@@ -162,7 +162,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                         end: 0,
                         ease: EaseFunctions.sextIn
                     },
-                    speed: velFromAngle(randomRotation(), randomFloat(1.5, 4) * (definition.explosion ? 3 : 1))
+                    speed: velFromAngle(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
                 }));
             }
         }
