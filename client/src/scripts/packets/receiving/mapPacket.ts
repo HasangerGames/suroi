@@ -177,7 +177,7 @@ export class MapPacket extends ReceivingPacket {
 
             const text = new Text(name, {
                 fill: "white",
-                fontFamily: "Inter",
+                fontFamily: "Inter, sans-serif",
                 fontWeight: "600",
                 stroke: "black",
                 strokeThickness: 2,
