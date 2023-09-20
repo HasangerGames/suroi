@@ -43,6 +43,7 @@ export interface Config {
         leftEmote: string
     }
     scopeLooping: boolean
+    anonymousPlayers: boolean
     keybinds: KeybindActions
     masterVolume: number
     sfxVolume: number
@@ -111,6 +112,7 @@ export const defaultConfig: Config = {
         emoteWheel: ["Mouse2", ""]
     },
     scopeLooping: false,
+    anonymousPlayers: false,
     masterVolume: 1,
     musicVolume: 1,
     sfxVolume: 1,

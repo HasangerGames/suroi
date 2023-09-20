@@ -231,6 +231,9 @@ export class Game {
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
 
+        if (this.activePlayer?.actionSound) this.soundManager.stop(this.activePlayer.actionSound);
+
+        $("#action-container").hide();
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");

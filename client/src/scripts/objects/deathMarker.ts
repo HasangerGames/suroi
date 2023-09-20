@@ -9,6 +9,7 @@ import { type Container, Text } from "pixi.js";
 import { Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
@@ -26,7 +27,7 @@ export class DeathMarker extends GameObject {
         super(game, type, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text("",
+        this.playerNameText = new Text(localStorageInstance.config.anonymousPlayers ? "Player" : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
