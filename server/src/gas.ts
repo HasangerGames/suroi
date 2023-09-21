@@ -86,8 +86,8 @@ export class Gas {
                 } else {
                     this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.oldRadius - currentStage.newRadius);
                     const radius = currentStage.newRadius;
-                    this.newPosition.x = clamp(this.newPosition.x, radius, this.game.map.width - radius)
-                    this.newPosition.y = clamp(this.newPosition.y, radius, this.game.map.height - radius)
+                    this.newPosition.x = clamp(this.newPosition.x, radius, this.game.map.width - radius);
+                    this.newPosition.y = clamp(this.newPosition.y, radius, this.game.map.height - radius);
                 }
             } else {
                 this.newPosition = vClone(this.oldPosition);
