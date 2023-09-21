@@ -805,5 +805,63 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(59.75, -27.6)
             }
         ]
-    }
+    },
+    {
+        idString: "small_house",
+        name: "Small House",
+        spawnHitbox: new RectangleHitbox(v(-40, -40), v(40, 40)),
+        ceilingHitbox: new ComplexHitbox([
+                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
+                     new RectangleHitbox(v(-31, -29.5), v(31, 29))
+                ]),
+        scopeHitbox: new ComplexHitbox([
+                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
+                     new RectangleHitbox(v(-31, -29.5), v(31, 29))
+                ]),
+        floorImages: [{
+            key: "house_floor_small",
+            position: v(0, 0)
+        }],
+        ceilingImages: [{
+            key: "house_ceiling_small",
+            position: v(0, 0)
+        }],
+        floors: [
+            {
+                type: "wood",
+                hitbox: new RectangleHitbox(v(-31, -29.5), v(31, 29))
+            },
+            {
+                type: "stone",
+                hitbox: new ComplexHitbox([
+                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4))
+                ])
+            }
+        ],
+        obstacles: [
+            {
+                id: "house_wall_4",
+                position: v(-19.5, -6.75),
+                rotation: 2
+            },
+            {
+                id: "house_wall_3",
+                position: v(5, -6.75),
+                rotation: 2
+            },
+            {
+                id: "house_wall_2",
+                position: v(9.7, -18),
+                rotation: 1
+            },
+            {
+                id: "door",
+                position: v(-6.3, -6.75),
+                rotation: 2
+            },
+        ]
+    },
 ]);

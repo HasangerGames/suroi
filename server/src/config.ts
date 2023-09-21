@@ -129,7 +129,7 @@ export const Config = {
 
     movementSpeed: 0.77,
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.Center },
 
     playerLimit: 80,
 
@@ -143,7 +143,7 @@ export const Config = {
 
     cloudflare: false,
 
-    mapName: "main",
+    mapName: "small_house",
 
     roles: {
         dev: { password: "dev" },

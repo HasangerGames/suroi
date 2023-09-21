@@ -1,7 +1,7 @@
 import { Color } from "pixi.js";
 
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = true;
 export const ANONYMOUS_PLAYERS_NAME = "Player";
 
 export const HITBOX_COLORS = {
