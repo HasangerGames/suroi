@@ -14,6 +14,16 @@ const config = merge(common, {
     },
 
     devServer: {
+        compress: true,
+        allowedHosts: "all",
+        client: {
+            logging: "warn",
+            overlay: {
+                errors: true,
+                warnings: false,
+            },
+            progress: true,
+        },
         devMiddleware: { publicPath: "http://127.0.0.1:3000" },
         static: { directory: path.resolve(__dirname, "../public") },
         historyApiFallback: true,
