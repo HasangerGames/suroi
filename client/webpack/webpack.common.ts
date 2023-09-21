@@ -28,6 +28,8 @@ const config: Configuration = {
 
     devtool: "source-map",
 
+    stats: 'minimal',
+
     resolve: { extensions: [".js", ".ts"] },
 
     module: {
