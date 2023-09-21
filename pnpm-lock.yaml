@@ -20,6 +20,9 @@ importers:
       '@pixi/compressed-textures':
         specifier: ^7.3.0
         version: 7.3.0(@pixi/assets@7.3.0)(@pixi/core@7.3.0)
+      '@pixi/graphics-extras':
+        specifier: ^7.3.0
+        version: 7.3.0(@pixi/core@7.3.0)(@pixi/graphics@7.3.0)
       howler:
         specifier: ^2.2.4
         version: 2.2.4
@@ -2107,6 +2110,16 @@ packages:
       '@pixi/core': 7.3.0
     dependencies:
       '@pixi/core': 7.3.0
+    dev: false
+
+  /@pixi/graphics-extras@7.3.0(@pixi/core@7.3.0)(@pixi/graphics@7.3.0):
+    resolution: {integrity: sha512-juuBB/kTlrByzhFoPPLuiLHW7jpq3CQheHc4UH4ZTwPeTaazj8jwiLmss+C1Jujdbm9j4gwYodF817i9EQQsKA==}
+    peerDependencies:
+      '@pixi/core': 7.3.0
+      '@pixi/graphics': 7.3.0
+    dependencies:
+      '@pixi/core': 7.3.0
+      '@pixi/graphics': 7.3.0(@pixi/core@7.3.0)(@pixi/display@7.3.0)(@pixi/sprite@7.3.0)
     dev: false
 
   /@pixi/graphics@7.3.0(@pixi/core@7.3.0)(@pixi/display@7.3.0)(@pixi/sprite@7.3.0):

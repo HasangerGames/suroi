@@ -9,6 +9,7 @@ import { type Vector } from "../../../../../common/src/utils/vector";
 import { type Orientation, type Variation } from "../../../../../common/src/typings";
 
 export class MapPacket extends ReceivingPacket {
+    seed!: number;
     width!: number;
     height!: number;
     oceanSize!: number;
@@ -35,6 +36,7 @@ export class MapPacket extends ReceivingPacket {
     }> = [];
 
     override deserialize(stream: SuroiBitStream): void {
+        this.seed = stream.readUint32();
         this.width = stream.readUint16();
         this.height = stream.readUint16();
         this.oceanSize = stream.readUint16();

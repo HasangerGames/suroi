@@ -1,4 +1,5 @@
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
+import '@pixi/graphics-extras';
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
@@ -9,6 +10,8 @@ import { type MapPacket } from "../packets/receiving/mapPacket";
 import { COLORS, PIXI_SCALE } from "../utils/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { addAdjust } from "../../../../common/src/utils/math";
+import { SeededRandom } from "../../../../common/src/utils/random";
+import { jaggedRectangle } from "../../../../common/src/utils/mapUtils";
 
 export class Minimap {
     container = new Container();
@@ -78,15 +81,33 @@ export class Minimap {
     }
 
     updateFromPacket(mapPacket: MapPacket): void {
+        const seed = mapPacket.seed;
         const width = this.width = mapPacket.width;
         const height = this.height = mapPacket.height;
 
         const beachPadding = mapPacket.oceanSize + mapPacket.beachSize;
 
-        const terrainGraphics = new Graphics();
-        const mapGraphics = new Graphics();
+        const random = new SeededRandom(seed);
+
+        const spacing = 16;
+        const variation = 8;
+
+        const beachHitbox = new RectangleHitbox(v(mapPacket.oceanSize, mapPacket.oceanSize),
+            v(width - mapPacket.oceanSize, height - mapPacket.oceanSize));
+
+        const grassHitbox = new RectangleHitbox(v(beachPadding, beachPadding),
+            v(width - beachPadding, height - beachPadding));
+
+        const beachPoints = jaggedRectangle(beachHitbox, spacing, variation, random);
+        const grassPoints = jaggedRectangle(grassHitbox, spacing, variation, random);
 
         // Draw the terrain graphics
+        const terrainGraphics = new Graphics();
+        const mapGraphics = new Graphics();
+        mapGraphics.beginFill(COLORS.grass);
+        mapGraphics.drawRect(0, 0, width, height);
+        mapGraphics.endFill();
+
         const drawTerrain = (ctx: Graphics, scale: number): void => {
             ctx.zIndex = -10;
             ctx.beginFill();
@@ -94,17 +115,22 @@ export class Minimap {
             ctx.fill.color = COLORS.water.toNumber();
             ctx.drawRect(0, 0, width * scale, height * scale);
 
-            ctx.fill.color = COLORS.beach.toNumber();
-            ctx.drawRect(mapPacket.oceanSize * scale,
-                mapPacket.oceanSize * scale,
-                (width - mapPacket.oceanSize * 2) * scale,
-                (height - mapPacket.oceanSize * 2) * scale);
+            const beach = scale === 1 ? beachPoints : beachPoints.map(point => vMul(point, scale));
+            // The grass is a hole in the map shape, the background clear color is the grass color
+            ctx.beginHole();
+            ctx.drawRoundedShape?.(beach, 20 * scale);
+            ctx.endHole();
 
-            ctx.fill.color = COLORS.grass.toNumber();
-            ctx.drawRect(beachPadding * scale,
-                beachPadding * scale,
-                (width - beachPadding * 2) * scale,
-                (height - beachPadding * 2) * scale);
+            ctx.fill.color = COLORS.beach.toNumber();
+
+            ctx.drawRoundedShape?.(beach, 20 * scale);
+
+            ctx.beginHole();
+
+            const grass = scale === 1 ? grassPoints : grassPoints.map(point => vMul(point, scale));
+            ctx.drawRoundedShape?.(grass, 20 * scale);
+
+            ctx.endHole();
 
             ctx.lineStyle({
                 color: 0x000000,
@@ -137,6 +163,7 @@ export class Minimap {
                         } else if (hitbox instanceof CircleHitbox) {
                             ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
                         }
+                        ctx.closePath();
                         ctx.endFill();
                     }
                 }
@@ -193,7 +220,7 @@ export class Minimap {
         const renderTexture = RenderTexture.create({
             width,
             height,
-            resolution: isMobile.any ? 1 : 2
+            resolution: isMobile.any ? 1 : 2,
         });
         this.game.pixi.renderer.render(mapRender, { renderTexture });
         this.sprite.texture.destroy();

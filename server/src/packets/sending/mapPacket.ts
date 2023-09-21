@@ -25,6 +25,7 @@ export class MapPacket extends SendingPacket {
 
         const map = this.game.map;
 
+        stream.writeUint32(map.seed);
         stream.writeUint16(map.width);
         stream.writeUint16(map.height);
         stream.writeUint16(map.oceanSize);

@@ -8,7 +8,8 @@ import {
     randomFloat,
     randomPointInsideCircle,
     randomRotation,
-    randomVector
+    randomVector,
+    SeededRandom
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
@@ -35,6 +36,10 @@ export class Map {
 
     readonly oceanHitbox: Hitbox;
 
+    readonly seed: number;
+
+    readonly random: SeededRandom;
+
     readonly places: Array<{
         name: string
         position: Vector
@@ -45,6 +50,10 @@ export class Map {
         this.game = game;
 
         const mapDefinition = Maps[mapName];
+
+        this.seed = random(0, 2 ** 31);
+
+        this.random = new SeededRandom(this.seed);
 
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;

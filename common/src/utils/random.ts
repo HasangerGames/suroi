@@ -1,3 +1,4 @@
+import { lerp } from "./math";
 import { v, type Vector } from "./vector";
 
 /**
@@ -78,4 +79,18 @@ export function weightedRandom<T>(items: T[], weights: number[]): T {
     const random = Math.random() * weights[weights.length - 1];
     for (i = 0; i < weights.length; i++) { if (weights[i] > random) break; }
     return items[i];
+}
+
+export class SeededRandom {
+    rng = 0
+
+    constructor(seed: number) {
+        this.rng = seed;
+    }
+
+    get(min = 0, max = 1): number {
+        this.rng = this.rng * 16807 % 2147483647;
+        const t = this.rng / 2147483647
+        return lerp(t, min, max);
+    }
 }
