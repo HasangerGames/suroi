@@ -1,5 +1,5 @@
 import { GasState } from "../../common/src/constants";
-import { distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
+import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { type Vector, v, vClone } from "../../common/src/utils/vector";
@@ -81,9 +81,14 @@ export class Gas {
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = vClone(this.newPosition);
             if (currentStage.newRadius !== 0) {
-                this.newPosition = Config.gas.mode !== GasMode.Debug
-                    ? randomPointInsideCircle(this.oldPosition, currentStage.oldRadius - currentStage.newRadius)
-                    : v(this.game.map.width / 2, this.game.map.height / 2);
+                if (Config.gas.mode === GasMode.Debug) {
+                    this.newPosition = v(this.game.map.width / 2, this.game.map.height / 2);
+                } else {
+                    this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.oldRadius - currentStage.newRadius);
+                    const radius = currentStage.newRadius;
+                    this.newPosition.x = clamp(this.newPosition.x, radius, this.game.map.width - radius)
+                    this.newPosition.y = clamp(this.newPosition.y, radius, this.game.map.height - radius)
+                }
             } else {
                 this.newPosition = vClone(this.oldPosition);
             }
