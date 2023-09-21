@@ -218,6 +218,7 @@ const config: Configuration = {
                 }
             }
         },
+        usedExports: true,
         minimizer: [
             new TerserPlugin({
                 terserOptions: {

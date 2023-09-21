@@ -2,6 +2,7 @@
   "name": "@suroi/client",
   "description": "",
   "private": true,
+  "sideEffects": false,
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config ./webpack/webpack.prod.ts",
