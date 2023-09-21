@@ -7,6 +7,7 @@ import * as path from "path";
 
 const config = merge(common, {
     mode: "development",
+    devtool: "source-map",
 
     output: {
         path: path.resolve(__dirname, "../dist"),
