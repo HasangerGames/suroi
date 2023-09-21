@@ -39,6 +39,7 @@ import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { FloorTypes } from "../../../common/src/utils/mapUtils";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -259,6 +260,8 @@ export class Player extends GameObject {
 
     isInsideBuilding = false;
 
+    floor = "water";
+
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
 
@@ -379,12 +382,13 @@ export class Player extends GameObject {
             }
         }
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *            // Base speed
-            recoilMultiplier *                          // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
-            this.modifiers.baseSpeed;                   // Current on-wearer modifier
+        const speed = Config.movementSpeed *                // Base speed
+            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Floor player is standing in speed multiplier
+            recoilMultiplier *                              // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
+            this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         // remove it from the grid and re-insert after finishing calculating the new position
         this.game.grid.removeObject(this);
@@ -415,6 +419,7 @@ export class Player extends GameObject {
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
             this.game.partialDirtyObjects.add(this);
+            this.floor = this.game.map.terrainGrid.getFloor(this.position);
         }
 
         // Drain adrenaline

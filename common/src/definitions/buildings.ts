@@ -4,23 +4,6 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 import { randomBoolean, weightedRandom } from "../utils/random";
 import { type Vector, v } from "../utils/vector";
 
-// TODO: Add more properties like actual color, speed multiplier (for like water floors) etc
-export interface FloorDefinition {
-    debugColor: number
-}
-
-export const FloorTypes: Record<string, FloorDefinition> = {
-    grass: {
-        debugColor: 0x005500
-    },
-    stone: {
-        debugColor: 0x121212
-    },
-    wood: {
-        debugColor: 0x7f5500
-    }
-};
-
 interface BuildingObstacle {
     id: string
     position: Vector
@@ -165,13 +148,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: new ComplexHitbox([new RectangleHitbox(v(13, -36), v(46, 5.5))]) // Garage
+                hitbox: new ComplexHitbox([new RectangleHitbox(v(12, -36), v(46, 5.5))]) // Garage
             },
             {
                 type: "wood",
                 hitbox: new ComplexHitbox([
                     new RectangleHitbox(v(-48, -37), v(12, 19)), // Main House
-                    new RectangleHitbox(v(-40.8, 20), v(-22, 34)) // Doorstep
+                    new RectangleHitbox(v(-40.8, 19), v(-22, 34)) // Doorstep
                 ])
             }
         ],
@@ -408,7 +391,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: new RectangleHitbox(v(-20, -38), v(20, 38))
+                hitbox: new RectangleHitbox(v(-20, -44), v(20, 44))
             }
         ],
         obstacles: [

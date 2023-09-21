@@ -27,7 +27,7 @@ import { localStorageInstance } from "./utils/localStorageHandler";
 import { Obstacle } from "./objects/obstacle";
 import { Loot } from "./objects/loot";
 import { InputPacket } from "./packets/sending/inputPacket";
-import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { type CollisionRecord, circleCollision, distanceSquared } from "../../../common/src/utils/math";
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -60,8 +60,6 @@ export class Game {
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
-
-    floorHitboxes = new Map<Hitbox, string>();
 
     gameStarted = false;
     gameOver = false;
@@ -251,7 +249,6 @@ export class Game {
         this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
-        this.floorHitboxes.clear();
         this.loots.clear();
 
         this.camera.zoom = Scopes[0].zoomLevel;

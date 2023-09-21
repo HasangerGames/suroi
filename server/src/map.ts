@@ -8,11 +8,10 @@ import {
     randomFloat,
     randomPointInsideCircle,
     randomRotation,
-    randomVector,
-    SeededRandom
+    randomVector
 } from "../../common/src/utils/random";
 import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox, PolygonHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Config, SpawnMode } from "./config";
@@ -22,6 +21,7 @@ import { Maps } from "./data/maps";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Building } from "./objects/building";
 import { addAdjust, addOrientations } from "../../common/src/utils/math";
+import { generateTerrain, TerrainGrid } from "../../common/src/utils/mapUtils";
 
 export class Map {
     game: Game;
@@ -34,16 +34,14 @@ export class Map {
 
     readonly beachHitbox: Hitbox;
 
-    readonly oceanHitbox: Hitbox;
-
     readonly seed: number;
-
-    readonly random: SeededRandom;
 
     readonly places: Array<{
         name: string
         position: Vector
     }> = [];
+
+    terrainGrid: TerrainGrid;
 
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
@@ -53,21 +51,24 @@ export class Map {
 
         this.seed = random(0, 2 ** 31);
 
-        this.random = new SeededRandom(this.seed);
-
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;
         this.oceanSize = mapDefinition.oceanSize;
         this.beachSize = mapDefinition.beachSize;
 
-        this.oceanHitbox = new ComplexHitbox([
-            new RectangleHitbox(v(0, 0), v(mapDefinition.oceanSize, this.height)),
-            new RectangleHitbox(v(0, 0), v(this.width, mapDefinition.oceanSize)),
-            new RectangleHitbox(v(this.width - mapDefinition.oceanSize, 0), v(this.width, this.height)),
-            new RectangleHitbox(v(0, this.height - mapDefinition.oceanSize), v(this.width, this.height))
-        ]);
+        this.terrainGrid = new TerrainGrid(this.width, this.height);
+
+        const { beachPoints, grassPoints } = generateTerrain(this.width,
+            this.height,
+            this.oceanSize,
+            this.beachSize,
+            this.seed);
+
+        const beachHitbox = new PolygonHitbox(beachPoints);
+        const grassHitbox = new PolygonHitbox(grassPoints);
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
+
         this.beachHitbox = new ComplexHitbox([
             new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
             new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
@@ -80,6 +81,9 @@ export class Map {
         for (const building in mapDefinition.buildings) {
             this.generateBuildings(building, mapDefinition.buildings[building]);
         }
+
+        this.terrainGrid.addFloor("grass", grassHitbox);
+        this.terrainGrid.addFloor("sand", beachHitbox);
 
         // Generate Obstacles
         for (const obstacle in mapDefinition.specialObstacles) {
@@ -194,6 +198,11 @@ export class Map {
                     finalOrientation
                 );
             }
+        }
+
+        for (const floor of definition.floors) {
+            const hitbox = floor.hitbox.transform(position, 1, orientation);
+            this.terrainGrid.addFloor(floor.type, hitbox);
         }
 
         this.game.staticObjects.add(building);

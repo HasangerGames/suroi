@@ -1,11 +1,11 @@
 import { Howl } from "howler";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { Guns } from "../../../../common/src/definitions/guns";
-import { FloorTypes } from "../../../../common/src/definitions/buildings";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { v, vSub, type Vector, vLength } from "../../../../common/src/utils/vector";
 import { localStorageInstance } from "./localStorageHandler";
 import { clamp } from "../../../../common/src/utils/math";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 
 export interface Sound {
     name: string

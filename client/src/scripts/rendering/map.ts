@@ -1,17 +1,16 @@
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
-import '@pixi/graphics-extras';
+import "@pixi/graphics-extras";
 import { type Game } from "../game";
 import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
-import { SuroiSprite } from "../utils/pixi";
+import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
 import { GRID_SIZE, GasState } from "../../../../common/src/constants";
 import { type MapPacket } from "../packets/receiving/mapPacket";
-import { COLORS, PIXI_SCALE } from "../utils/constants";
-import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { addAdjust } from "../../../../common/src/utils/math";
-import { SeededRandom } from "../../../../common/src/utils/random";
-import { jaggedRectangle } from "../../../../common/src/utils/mapUtils";
+import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
 
 export class Minimap {
     container = new Container();
@@ -50,6 +49,8 @@ export class Minimap {
 
     placesContainer = new Container();
 
+    terrainGrid: TerrainGrid;
+
     constructor(game: Game) {
         this.game = game;
         game.pixi.stage.addChild(this.container);
@@ -78,28 +79,21 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
+
+        this.terrainGrid = new TerrainGrid(0, 0);
     }
 
     updateFromPacket(mapPacket: MapPacket): void {
-        const seed = mapPacket.seed;
         const width = this.width = mapPacket.width;
         const height = this.height = mapPacket.height;
 
-        const beachPadding = mapPacket.oceanSize + mapPacket.beachSize;
+        const { beachPoints, grassPoints } = generateTerrain(width,
+            height,
+            mapPacket.oceanSize,
+            mapPacket.beachSize,
+            mapPacket.seed);
 
-        const random = new SeededRandom(seed);
-
-        const spacing = 16;
-        const variation = 8;
-
-        const beachHitbox = new RectangleHitbox(v(mapPacket.oceanSize, mapPacket.oceanSize),
-            v(width - mapPacket.oceanSize, height - mapPacket.oceanSize));
-
-        const grassHitbox = new RectangleHitbox(v(beachPadding, beachPadding),
-            v(width - beachPadding, height - beachPadding));
-
-        const beachPoints = jaggedRectangle(beachHitbox, spacing, variation, random);
-        const grassPoints = jaggedRectangle(grassHitbox, spacing, variation, random);
+        this.terrainGrid = new TerrainGrid(width, height);
 
         // Draw the terrain graphics
         const terrainGraphics = new Graphics();
@@ -213,17 +207,25 @@ export class Minimap {
                 sprite.setRotation(building.rotation);
                 sprite.setDepth(9);
             }
+
+            for (const floor of definition.floors) {
+                const hitbox = floor.hitbox.transform(building.position, 1, building.orientation);
+                this.terrainGrid.addFloor(floor.type, hitbox);
+            }
         }
         mapRender.sortChildren();
+
+        this.terrainGrid.addFloor("grass", new PolygonHitbox(grassPoints));
+        this.terrainGrid.addFloor("sand", new PolygonHitbox(beachPoints));
 
         // Render all obstacles and buildings to a texture
         const renderTexture = RenderTexture.create({
             width,
             height,
-            resolution: isMobile.any ? 1 : 2,
+            resolution: isMobile.any ? 1 : 2
         });
         this.game.pixi.renderer.render(mapRender, { renderTexture });
-        this.sprite.texture.destroy();
+        this.sprite.texture.destroy(true);
         this.sprite.texture = renderTexture;
         mapRender.destroy({
             children: true,
@@ -251,6 +253,15 @@ export class Minimap {
             this.placesContainer.addChild(text);
         }
         this.resize();
+
+        if (HITBOX_DEBUG_MODE) {
+            const debugGraphics = new Graphics();
+            debugGraphics.zIndex = 99;
+            for (const [hitbox, type] of this.terrainGrid.floors) {
+                drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
+            }
+            this.game.camera.container.addChild(debugGraphics);
+        }
     }
 
     update(): void {

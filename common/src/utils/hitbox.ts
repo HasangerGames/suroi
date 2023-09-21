@@ -17,7 +17,8 @@ import {
     type IntersectionResponse,
     distanceSquared,
     rectCircleIntersection,
-    circleCircleIntersection
+    circleCircleIntersection,
+    distance
 } from "./math";
 
 import { transformRectangle } from "./math";
@@ -77,6 +78,8 @@ export abstract class Hitbox {
     abstract randomPoint(): Vector;
 
     abstract toRectangle(): RectangleHitbox;
+
+    abstract isPointInside(point: Vector): boolean;
 }
 
 export class CircleHitbox extends Hitbox {
@@ -148,6 +151,10 @@ export class CircleHitbox extends Hitbox {
 
     toRectangle(): RectangleHitbox {
         return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
+    }
+
+    isPointInside(point: Vector): boolean {
+        return distance(point, this.position) < this.radius;
     }
 }
 
@@ -227,6 +234,10 @@ export class RectangleHitbox extends Hitbox {
 
     toRectangle(): RectangleHitbox {
         return this.clone();
+    }
+
+    isPointInside(point: Vector): boolean {
+        return point.x > this.min.x && point.y > this.min.y && point.x < this.max.x && point.y < this.max.y;
     }
 }
 
@@ -320,7 +331,7 @@ export class ComplexHitbox extends Hitbox {
     }
 
     toRectangle(): RectangleHitbox {
-        const min = v(Infinity, Infinity);
+        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
         const max = v(0, 0);
         for (const hitbox of this.hitboxes) {
             const toRect = hitbox.toRectangle();
@@ -330,5 +341,99 @@ export class ComplexHitbox extends Hitbox {
             max.y = Math.max(max.y, toRect.max.y);
         }
         return new RectangleHitbox(min, max);
+    }
+
+    isPointInside(point: Vector): boolean {
+        for (const hitbox of this.hitboxes) {
+            if (hitbox.isPointInside(point)) return true;
+        }
+        return false;
+    }
+}
+
+export class PolygonHitbox extends Hitbox {
+    points: Vector[];
+
+    constructor(points: Vector[]) {
+        super();
+        this.points = points;
+    }
+
+    collidesWith(that: Hitbox): boolean {
+        throw new Error("Not Implemented");
+    }
+
+    resolveCollision(that: Hitbox): void {
+        throw new Error("Not Implemented");
+    }
+
+    distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+        throw new Error("Not Implemented");
+    }
+
+    clone(): PolygonHitbox {
+        return new PolygonHitbox(this.points);
+    }
+
+    transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): PolygonHitbox {
+        const points: Vector[] = [];
+        for (const point of this.points) {
+            const newPoint = vMul(addAdjust(point, position, orientation ?? 0), scale ?? 1);
+            points.push(newPoint);
+        }
+        return new PolygonHitbox(points);
+    }
+
+    scale(scale: number): void {
+        for (let i = 0; i < this.points.length; i++) {
+            this.points[i] = vMul(this.points[i], scale);
+        }
+    }
+
+    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        throw new Error("Not Implemented");
+    }
+
+    randomPoint(): Vector {
+        let point: Vector;
+
+        const rect = this.toRectangle();
+
+        point = rect.randomPoint();
+
+        while (!this.isPointInside(point)) point = rect.randomPoint();
+
+        return point;
+    }
+
+    toRectangle(): RectangleHitbox {
+        const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
+        const max = v(0, 0);
+        for (const point of this.points) {
+            min.x = Math.min(min.x, point.x);
+            min.y = Math.min(min.y, point.y);
+            max.x = Math.max(max.x, point.x);
+            max.y = Math.max(max.y, point.y);
+        }
+        return new RectangleHitbox(min, max);
+    }
+
+    isPointInside(point: Vector): boolean {
+        const { x } = point;
+        const { y } = point;
+        let inside = false;
+        const count = this.points.length;
+        for (let i = 0, j = count - 1; i < count; j = i++) {
+            const xi = this.points[i].x;
+            const yi = this.points[i].y;
+            const xj = this.points[j].x;
+            const yj = this.points[j].y;
+
+            const intersect = (yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi;
+            if (intersect) {
+                inside = !inside;
+            }
+        }
+        return inside;
     }
 }

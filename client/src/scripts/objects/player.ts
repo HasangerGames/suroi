@@ -98,6 +98,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     hitbox = new CircleHitbox(this.radius);
 
+    floorType = "grass";
+
     constructor(game: Game, id: number) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
 
@@ -186,17 +188,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.map.indicator.setRotation(this.rotation);
             }
         }
+
+        this.floorType = this.game.map.terrainGrid.getFloor(this.position);
+
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 7) {
-                let floorType = "grass";
-                for (const [hitbox, type] of this.game.floorHitboxes) {
-                    if (hitbox.collidesWith(this.hitbox)) {
-                        floorType = type;
-                        break;
-                    }
-                }
-                this.footstepSound = this.playSound(`${floorType}_step_${random(1, 2)}`, 0.6, 48);
+                this.footstepSound = this.playSound(`${this.floorType}_step_${random(1, 2)}`, 0.6, 48);
                 this.distSinceLastFootstep = 0;
             }
         }

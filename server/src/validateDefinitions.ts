@@ -2,7 +2,7 @@ import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { type ArmorDefinition, Armors } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
-import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
+import { Buildings } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Guns } from "../../common/src/definitions/guns";
@@ -27,6 +27,7 @@ import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
+import { FloorTypes } from "../../common/src/utils/mapUtils";
 
 const tester = (() => {
     const errors: Array<[string, string]> = [];

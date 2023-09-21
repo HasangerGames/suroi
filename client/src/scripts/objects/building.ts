@@ -4,7 +4,7 @@ import { GameObject } from "../types/gameObject";
 import { type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
@@ -29,8 +29,6 @@ export class Building extends GameObject {
     ceilingVisible = true;
 
     isNew = true;
-
-    floorHitboxes: Hitbox[] = [];
 
     constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
         super(game, type, id);
@@ -126,15 +124,6 @@ export class Building extends GameObject {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
-
-            for (const floor of definition.floors) {
-                const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
-                this.floorHitboxes.push(floorHitbox);
-                this.game.floorHitboxes.set(
-                    floorHitbox,
-                    floor.type
-                );
-            }
         }
 
         if (HITBOX_DEBUG_MODE) {
@@ -148,10 +137,6 @@ export class Building extends GameObject {
             drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.buildingZoomCeiling,
                 this.debugGraphics);
-
-            for (const floor of definition.floors) {
-                drawHitbox(floor.hitbox.transform(this.position, 1, this.orientation), FloorTypes[floor.type].debugColor, this.debugGraphics);
-            }
         }
     }
 
@@ -159,8 +144,5 @@ export class Building extends GameObject {
         super.destroy();
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
-        for (const floorHitbox of this.floorHitboxes) {
-            this.game.floorHitboxes.delete(floorHitbox);
-        }
     }
 }

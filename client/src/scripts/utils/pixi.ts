@@ -1,7 +1,7 @@
 import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, Texture, type Graphics, type ColorSource } from "pixi.js";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { Buildings } from "../../../../common/src/definitions/buildings";
 
 declare const ATLAS_HASH: string;
@@ -122,6 +122,9 @@ export function drawHitbox(hitbox: Hitbox, color: ColorSource, graphics: Graphic
         graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
     } else if (hitbox instanceof ComplexHitbox) {
         for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
+    } else if (hitbox instanceof PolygonHitbox) {
+        const points = hitbox.points.map(point => toPixiCoords(point));
+        graphics.drawPolygon(points);
     }
     graphics.closePath().endFill();
 
