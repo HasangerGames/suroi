@@ -31,13 +31,52 @@ function disablePlayButton(text: string): void {
     playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
+// TODO: use this to fetch game and remove region code from server
+let servers: Record<string, { name: string, address: string, apiAddress: string }> = {};
+
 async function main(): Promise<void> {
     disablePlayButton("Loading...");
+
+    const serverSelector = $("#server-select");
+
+    // fetch servers and select one with best ping if no previous server was selected and stored in the config
+    void fetch(`${API_URL}/servers`).then(async data => {
+        servers = await data.json();
+
+        let bestPing = Number.MAX_VALUE;
+        let bestRegion = "";
+
+        for (const region in servers) {
+            const pingStartTime = Date.now();
+
+            serverSelector.append(`<option value="${region}">${servers[region].name} - <span id="${region}-player-count">?</span> Players</option>`);
+
+            fetch(`${servers[region].apiAddress}/api/playerCount`).then((async data => {
+                const regionPing = Date.now() - pingStartTime;
+
+                console.log(`${region}: ${regionPing}ms`);
+
+                const { count } = await data.json();
+
+                $(`#${region}-player-count`).text(count);
+
+                if (regionPing < bestPing) {
+                    bestPing = regionPing;
+                    bestRegion = region;
+                }
+            })).catch(console.error);
+        }
+
+        if (bestRegion && !localStorageInstance.config.region) {
+            serverSelector.val(bestRegion);
+        }
+    });
+
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
 
-        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
+        void $.get(`${API_URL}/getGame?region=${serverSelector.val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
             if (data.success) {
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;

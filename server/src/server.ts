@@ -89,6 +89,35 @@ const tempBannedIPs = new Set<string>();
 interface BanRecord { ip: string, expires?: number }
 let rawBanRecords: BanRecord[] = [];
 
+let playerCount = 0;
+
+const servers: Record<string, {
+    name: string
+    address: string
+    apiAddress: string
+}> = {};
+
+for (const region in Config.regions) {
+    servers[region] = {
+        name: Config.regions[region].name,
+        address: Config.regions[region].address,
+        apiAddress: Config.regions[region].address.replace("ws", "http")
+    };
+}
+
+app.get("/api/servers", (res) => {
+    cors(res);
+    res.writeHeader("Content-Type", "application/json").end(JSON.stringify(servers));
+});
+
+app.get("/api/playerCount", (res) => {
+    cors(res);
+
+    res.writeHeader("Content-Type", "application/json").end(JSON.stringify({
+        count: playerCount
+    }));
+});
+
 app.get("/api/getGame", async(res, req) => {
     let aborted = false;
     res.onAborted(() => { aborted = true; });
@@ -119,11 +148,11 @@ app.get("/api/getGame", async(res, req) => {
                 response = { success: false };
             }
             if (gameID !== undefined) {
-                response = { success: true, address: Config.regions[region], gameID };
+                response = { success: true, address: servers[region].address, gameID };
             }
         } else if (typeof Config.regions[region] === "string" && region !== Config.thisRegion) {
             // Fetch the find game api for the region and return that.
-            const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
+            const url = `${servers[region].apiAddress}/api/getGame?region=${region}`;
             try {
                 response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
             } catch (e) {
@@ -171,7 +200,7 @@ app.ws("/play", {
      */
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => {});
+        res.onAborted((): void => { });
 
         // Bot protection
         const ip = getIP(res, req);
@@ -260,6 +289,7 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
+        playerCount++;
         const userData = socket.getUserData();
         const game = games[userData.gameID];
         if (game === undefined) return;
@@ -310,6 +340,7 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close(socket: WebSocket<PlayerContainer>) {
+        playerCount--;
         const p = socket.getUserData();
         if (Config.botProtection) simultaneousConnections[p.ip as string]--;
         log(`"${p.name}" left game #${p.gameID}`);

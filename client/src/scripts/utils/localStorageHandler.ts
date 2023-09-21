@@ -50,7 +50,7 @@ export interface Config {
     musicVolume: number
     muteAudio: boolean
     language: string
-    region: string
+    region: string | undefined
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
@@ -118,7 +118,7 @@ export const defaultConfig: Config = {
     sfxVolume: 1,
     muteAudio: false,
     language: "en",
-    region: "na",
+    region: undefined,
     cameraShake: true,
     showFPS: false,
     showPing: false,

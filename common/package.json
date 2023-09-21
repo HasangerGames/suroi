@@ -14,7 +14,7 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.31.0"
   },
   "devDependencies": {
-    "@types/node": "^20.6.2",
+    "@types/node": "^20.6.3",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "eslint": "^8.49.0",

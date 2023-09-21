@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 import { type Config, localStorageInstance } from "./utils/localStorageHandler";
-import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
+import { UI_DEBUG_MODE } from "./utils/constants";
 import { requestFullscreen } from "./utils/misc";
 import {
     ALLOW_NON_ASCII_USERNAME_CHARS,
@@ -131,20 +131,15 @@ export function setupUI(game: Game): void {
     const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
-    serverSelect.val(localStorageInstance.config.region);
-    serverSelect.on("change", () => {
+    serverSelect.on("change", (e: Event) => {
+        // only update the config if user changed the value manually
+        if (!e.isTrusted) return;
         const value = serverSelect.val() as string | undefined;
 
         if (value !== undefined) {
             localStorageInstance.update({ region: value });
         }
     });
-
-    // Show dev region if enabled
-    if (!HIDE_DEV_REGION) {
-        $('option[value="dev"]').show();
-        serverSelect.val("dev");
-    }
 
     const rulesBtn = $("#btn-rules");
 
