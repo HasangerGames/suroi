@@ -20,9 +20,9 @@ const config = merge(common, {
             logging: "warn",
             overlay: {
                 errors: true,
-                warnings: false,
+                warnings: false
             },
-            progress: true,
+            progress: true
         },
         devMiddleware: { publicPath: "http://127.0.0.1:3000" },
         static: { directory: path.resolve(__dirname, "../public") },
