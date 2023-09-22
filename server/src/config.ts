@@ -130,9 +130,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "small_house",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Random },
 
     playerLimit: 80,
 
@@ -141,14 +141,6 @@ export const Config = {
     movementSpeed: 0.77,
 
     censorUsernames: true,
-
-    botProtection: false,
-    ipBanListURL: "https://suroi.io/api/bannedIPs",
-    ipBanListPassword: "password",
-
-    cloudflare: false,
-
-    mapName: "main",
 
     roles: {
         dev: { password: "dev" },
