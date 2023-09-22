@@ -17,7 +17,7 @@ import { type ItemDefinition, ItemType } from "../../../../common/src/utils/obje
 
 import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
 import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { Vests } from "../../../../common/src/definitions/vests";
@@ -34,6 +34,7 @@ import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ParticleEmitter } from "./particles";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -72,6 +73,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly muzzleFlash: SuroiSprite
         readonly emoteBackground: SuroiSprite
         readonly emoteImage: SuroiSprite
+        readonly waterOverlay: SuroiSprite
     };
 
     readonly emoteContainer: Container;
@@ -99,6 +101,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     hitbox = new CircleHitbox(this.radius);
 
     floorType = "grass";
+    waterOverlayAnim?: Tween<SuroiSprite>;
 
     constructor(game: Game, id: number) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
@@ -113,12 +116,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
             weapon: new SuroiSprite(),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
-            emoteImage: new SuroiSprite().setPos(0, 0)
+            emoteImage: new SuroiSprite().setPos(0, 0),
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false)
         };
 
         this.container.addChild(
             this.images.vest,
             this.images.body,
+            this.images.waterOverlay,
             this.images.leftFist,
             this.images.rightFist,
             this.images.weapon,
@@ -164,6 +169,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 };
             }
         });
+
+        this.images.waterOverlay.tint = COLORS.water;
     }
 
     override updateContainerPosition(): void {
@@ -189,13 +196,65 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        this.floorType = this.game.map.terrainGrid.getFloor(this.position);
+        const floorType = this.game.map.terrainGrid.getFloor(this.position);
+
+        if (floorType !== this.floorType) {
+            if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);
+            this.waterOverlayAnim?.kill();
+            this.waterOverlayAnim = new Tween(this.game, {
+                target: this.images.waterOverlay,
+                to: {
+                    alpha: FloorTypes[floorType].overlay ? 1 : 0
+                },
+                duration: 200,
+                onComplete: () => {
+                    if (!FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(false);
+                }
+            });
+        }
+        this.floorType = floorType;
 
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
+
             if (this.distSinceLastFootstep > 7) {
                 this.footstepSound = this.playSound(`${this.floorType}_step_${random(1, 2)}`, 0.6, 48);
                 this.distSinceLastFootstep = 0;
+
+                if (FloorTypes[floorType].particles) {
+                    const origin = this.hitbox.randomPoint();
+                    const options = {
+                        frames: "ripple_particle",
+                        depth: -1,
+                        position: origin,
+                        lifeTime: 1000,
+                        speed: v(0, 0)
+                    };
+                    // outer
+                    this.game.particleManager.spawnParticle({
+                        ...options,
+                        scale: {
+                            start: randomFloat(0.45, 0.55),
+                            end: randomFloat(2.95, 3.05)
+                        },
+                        alpha: {
+                            start: randomFloat(0.55, 0.65),
+                            end: 0
+                        }
+                    });
+                    // inner
+                    this.game.particleManager.spawnParticle({
+                        ...options,
+                        scale: {
+                            start: randomFloat(0.15, 0.35),
+                            end: randomFloat(1.45, 1.55)
+                        },
+                        alpha: {
+                            start: randomFloat(0.25, 0.35),
+                            end: 0
+                        }
+                    });
+                }
             }
         }
 
@@ -372,11 +431,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setDepth(2);
             this.images.body.setDepth(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.leftFist.setDepth(3);
-            this.images.rightFist.setDepth(3);
+            this.images.leftFist.setDepth(4);
+            this.images.rightFist.setDepth(4);
             this.images.body.setDepth(2);
             this.images.weapon.setDepth(1);
         }
+        this.images.waterOverlay.setDepth(this.images.body.zIndex + 1);
         this.container.sortChildren();
     }
 
@@ -650,6 +710,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
         if (this.isActivePlayer) $("#action-container").hide();
         clearTimeout(this._emoteHideTimeoutID);
+        this.waterOverlayAnim?.kill();
         this.emoteHideAnim?.kill();
         this.emoteAnim?.kill();
         this.emoteContainer.destroy();

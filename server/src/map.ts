@@ -336,7 +336,10 @@ export class Map {
                 type.category === ObjectCategory.Loot ||
                 type.category === ObjectCategory.Building ||
                 (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                getPosition = (): Vector => randomVector(0, this.width, 0, this.height);
+                getPosition = (): Vector => randomVector(this.oceanSize,
+                    this.width - this.oceanSize,
+                    this.oceanSize,
+                    this.height - this.oceanSize);
             } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
                 const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vector, readonly radius: number };
                 getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);

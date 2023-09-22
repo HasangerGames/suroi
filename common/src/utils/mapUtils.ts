@@ -59,6 +59,8 @@ export function generateTerrain(width: number, height: number, oceanSize: number
 export interface FloorDefinition {
     debugColor: number
     speedMultiplier?: number
+    overlay?: boolean
+    particles?: boolean
 }
 
 export const FloorTypes: Record<string, FloorDefinition> = {
@@ -76,7 +78,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     water: {
         debugColor: 0x0055ff,
-        speedMultiplier: 0.8
+        speedMultiplier: 0.8,
+        overlay: true,
+        particles: true
     }
 };
 
