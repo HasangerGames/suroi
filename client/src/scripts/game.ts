@@ -91,7 +91,7 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-    music = new Howl({ src: "./audio/music/menu_music.mp3" });
+    music = localStorageInstance.config.oldMenuMusic ? new Howl({ src: "./audio/music/old_menu_music.mp3" }) : new Howl({ src: "./audio/music/menu_music.mp3" });
     musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
@@ -258,6 +258,7 @@ export class Game {
 
         if (!this.musicPlaying) {
             this.music.stop().play();
+            this.music.loop();
             this.music.volume(localStorageInstance.config.musicVolume);
             this.musicPlaying = true;
         }
