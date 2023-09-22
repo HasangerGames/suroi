@@ -169,6 +169,34 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
+
+    spawnCasingParticles(weaponDef: GunDefinition): void {
+        const initialRotation = this.rotation + Math.PI / 2;
+        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
+        if (weaponDef.casings !== undefined ) {
+            this.game.particleManager.spawnParticle({
+                frames: `${weaponDef.ammoType}_particle`,
+                depth: 3,
+                position: vAdd(this.position, vRotate(weaponDef.casings.position, this.rotation)),
+                lifeTime: 400,
+                scale: {
+                    start: 0.8,
+                    end: 0.4
+                },
+                alpha: {
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctions.sextIn
+                },
+                rotation: {
+                    start: initialRotation,
+                    end: initialRotation + spinAmount
+                },
+                speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
+            });
+        }
+    }
+
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player]): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -249,7 +277,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
                     case PlayerActions.Reload: {
+                        const weaponDef = (this.activeItem.definition as GunDefinition)
                         actionName = "Reloading...";
+                        if (weaponDef.casings && weaponDef.casings.spawnOn == 'reload') {
+                            this.spawnCasingParticles(weaponDef)
+                        }
                         actionSoundName = `${this.activeItem.idString}_reload`;
                         actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
                         break;
@@ -591,30 +623,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         duration: 50,
                         yoyo: true
                     });
-
-                    if (weaponDef.particles) {
-                        const initialRotation = this.rotation + Math.PI / 2;
-                        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
-                        this.game.particleManager.spawnParticle({
-                            frames: `${weaponDef.ammoType}_particle`,
-                            depth: 3,
-                            position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
-                            lifeTime: 400,
-                            scale: {
-                                start: 0.8,
-                                end: 0.4
-                            },
-                            alpha: {
-                                start: 1,
-                                end: 0,
-                                ease: EaseFunctions.sextIn
-                            },
-                            rotation: {
-                                start: initialRotation,
-                                end: initialRotation + spinAmount
-                            },
-                            speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
-                        });
+                    
+                    if (weaponDef.casings && weaponDef.casings.spawnOn != 'reload') {
+                        this.spawnCasingParticles(weaponDef)
                     }
                 }
                 break;
