@@ -111,7 +111,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
@@ -554,7 +554,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                     if (!weaponDef.noMuzzleFlash) {
                         const muzzleFlash = this.images.muzzleFlash;
-                        muzzleFlash.x = 8 + weaponDef.length * PIXI_SCALE;
+                        muzzleFlash.x = weaponDef.length * PIXI_SCALE;
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
                         const scale = randomFloat(0.75, 1);

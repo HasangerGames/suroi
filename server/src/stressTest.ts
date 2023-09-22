@@ -10,9 +10,9 @@ import { Emotes } from "../../common/src/definitions/emotes";
 
 const config = {
     address: "127.0.0.1:8000",
+    https: false,
     botCount: 79,
-    joinDelay: 100,
-    region: "dev"
+    joinDelay: 100
 };
 
 const skins: string[] = [];
@@ -51,7 +51,7 @@ class Bot {
     ws: WebSocket;
 
     constructor(id: number) {
-        this.ws = new WebSocket(`${gameData.address}/play?gameID=${gameData.gameID}&name=BOT_${id}`);
+        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}&name=BOT_${id}`);
 
         this.ws.addEventListener("error", console.error);
 
@@ -178,7 +178,7 @@ class Bot {
 }
 
 void (async() => {
-    gameData = await (await fetch(`http://${config.address}/api/getGame?region=${config.region}`)).json();
+    gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
 
     if (!gameData.success) {
         console.error("Failed to fetch game");
