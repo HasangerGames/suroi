@@ -118,7 +118,7 @@ export const defaultConfig: Config = {
     musicVolume: 1,
     sfxVolume: 1,
     muteAudio: false,
-    oldMenuMusic: true,
+    oldMenuMusic: false,
     language: "en",
     region: undefined,
     cameraShake: true,

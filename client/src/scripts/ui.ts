@@ -352,8 +352,8 @@ export function setupUI(game: Game): void {
     });
     Howler.volume(localStorageInstance.config.masterVolume);
 
-    //Old menu music
-    addCheckboxListener("#toggle-old-music", "oldMenuMusic")
+    // Old menu music
+    addCheckboxListener("#toggle-old-music", "oldMenuMusic");
 
     // Camera shake
     addCheckboxListener("#toggle-camera-shake", "cameraShake");
