@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 
     for (const [regionID, region] of Object.entries(Config.regions)) {
         serverSelector.append(`<option value="${regionID}">${region.name} - <span id="${regionID}-player-count">?</span> Players</option>`);
-        void (async() => {
+        void (async () => {
             try {
                 const pingStartTime = Date.now();
                 const count = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
@@ -66,8 +66,7 @@ async function main(): Promise<void> {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
-
-        const region = Config.regions[regionID];
+        const region = Config.regions[serverSelector.val() as string];
         const urlPart = `${region.https ? "s" : ""}://${region.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", gameID: number }) => {
             if (data.success) {
