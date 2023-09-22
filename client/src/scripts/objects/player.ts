@@ -9,7 +9,7 @@ import {
     PlayerActions
 } from "../../../../common/src/constants";
 
-import { vClone, vAdd, v, vRotate, vAdd2, type Vector } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ObjectType } from "../../../../common/src/utils/objectType";
@@ -25,10 +25,10 @@ import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
-import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
 import { Obstacle } from "./obstacle";
 import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
@@ -178,6 +178,33 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
+    spawnCasingParticles(weaponDef: GunDefinition): void {
+        const initialRotation = this.rotation + Math.PI / 2;
+        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
+        if (weaponDef.casingParticles !== undefined) {
+            this.game.particleManager.spawnParticle({
+                frames: `${weaponDef.ammoType}_particle`,
+                depth: 3,
+                position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
+                lifeTime: 400,
+                scale: {
+                    start: 0.8,
+                    end: 0.4
+                },
+                alpha: {
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctions.sextIn
+                },
+                rotation: {
+                    start: initialRotation,
+                    end: initialRotation + spinAmount
+                },
+                speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
+            });
+        }
+    }
+
     override updateFromData(data: ObjectsNetData[ObjectCategory.Player]): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
@@ -306,7 +333,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
                     case PlayerActions.Reload: {
+                        const weaponDef = (this.activeItem.definition as GunDefinition);
                         actionName = "Reloading...";
+                        if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
                         actionSoundName = `${this.activeItem.idString}_reload`;
                         actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
                         break;
@@ -650,30 +679,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
 
-                    if (weaponDef.particles) {
-                        const initialRotation = this.rotation + Math.PI / 2;
-                        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
-                        this.game.particleManager.spawnParticle({
-                            frames: `${weaponDef.ammoType}_particle`,
-                            depth: 3,
-                            position: vAdd(this.position, vRotate(weaponDef.particles.position, this.rotation)),
-                            lifeTime: 400,
-                            scale: {
-                                start: 0.8,
-                                end: 0.4
-                            },
-                            alpha: {
-                                start: 1,
-                                end: 0,
-                                ease: EaseFunctions.sextIn
-                            },
-                            rotation: {
-                                start: initialRotation,
-                                end: initialRotation + spinAmount
-                            },
-                            speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
-                        });
-                    }
+                    if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
                 }
                 break;
             }
