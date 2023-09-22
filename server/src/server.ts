@@ -225,7 +225,7 @@ app.ws("/play", {
                 allowedTags: [],
                 allowedAttributes: {}
             });
-            if (name.length === 0) name = "Player";
+            if (name.trim().length === 0) name = "Player";
         }
 
         // Role
