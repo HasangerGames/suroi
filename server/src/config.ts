@@ -6,28 +6,20 @@ export enum GasMode { Normal, Debug, Disabled }
 export interface ConfigType {
     readonly host: string
     readonly port: number
-    readonly regions: Record<string, {
-        name: string
-        address: string
-    }>
-    readonly defaultRegion: string
 
     /**
-     * The websocket region this server is running.
-     * Used for the find game api.
+     * HTTPS/SSL options. Not used if running locally or with nginx.
      */
-    readonly thisRegion: string
-
-    /**
-     * HTTPS/SSL options. Not necessary in most cases.
-     */
-    readonly ssl: {
-        readonly enable: boolean
+    readonly ssl?: {
         readonly keyFile: string
         readonly certFile: string
     }
 
-    readonly movementSpeed: number
+    /**
+     * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
+     * Example: `"main"` for the main map or `"debug"` for the debug map
+     */
+    readonly mapName: string
 
     /**
      * There are 4 spawn modes: Random, Fixed, Center, and Radius.
@@ -69,29 +61,56 @@ export interface ConfigType {
         readonly overrideDuration: number
     }
 
+    readonly movementSpeed: number
+
     /**
      * A basic filter that censors only the most extreme swearing.
      */
     readonly censorUsernames: boolean
 
     /**
-     * The map name, must be a valid value from the server maps definitions
-     * Example: "main" for the main map or "debug" for the debug map
+     * If this option is present, various options to mitigate bots and cheaters are enabled.
      */
-    readonly mapName: string
+    readonly protection?: {
+        /**
+         * Limits the number of simultaneous connections from each IP address.
+         * If the limit is exceeded, the IP is temporarily banned.
+         */
+        readonly maxSimultaneousConnections?: number
+
+        /**
+         * Limits the number of join attempts (`count`) within the given duration (`duration`, in milliseconds) from each IP address.
+         * If the limit is exceeded, the IP is temporarily banned.
+         */
+        readonly maxJoinAttempts?: {
+            count: number
+            duration: number
+        }
+
+        /**
+         * If this option is present, a list of banned IPs will be loaded, either from a local file or from a remote source.
+         * If `url` is specified, the list is loaded from the specified URL (e.g. https://suroi.io/api/bannedIPs).
+         * The specified `password` is sent in the `Password` header.
+         * If `url` is not specified, the list is loaded from `bannedIPs.json`, and it's accessible from `/api/bannedIPs`.
+         * To access the list, the specified `password` must be provided in the `Password` header.
+         */
+        readonly ipBanList?: {
+            readonly password: string
+            readonly url?: string
+        }
+
+        /**
+         * Every `refreshDuration` milliseconds, the list of rate limited IPs is cleared, and the list of banned IPs is reloaded if enabled.
+         */
+        readonly refreshDuration: number
+    }
 
     /**
-     * Temporarily bans IPs that attempt to make more than 5 simultaneous connections or attempt to join more than 5 times in 5 seconds.
+     * If this option is specified, the given HTTP header will be used to determine IP addresses.
+     * If using nginx with the sample config, set it to `"X-Real-IP"`.
+     * If using Cloudflare, set it to `"CF-Connecting-IP"`.
      */
-    readonly botProtection: boolean
-
-    readonly ipBanListURL: string
-    readonly ipBanListPassword: string
-
-    /**
-     * If set to true, the CF-Connecting-IP header is used to determine IP addresses.
-     */
-    readonly cloudflare: boolean
+    readonly ipHeader?: string
 
     /**
      * Roles. Each role has a different password and can give exclusive skins and cheats.
@@ -104,30 +123,14 @@ export interface ConfigType {
     /**
      * Disables the lobbyClearing option if set to true
      */
-    readonly disableLobbyClearing: boolean
+    readonly disableLobbyClearing?: boolean
 }
 
 export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    regions: {
-        dev: { name: "Local Server", address: "ws://127.0.0.1:8000" },
-        na: { name: "North America (Detroit)", address: "wss://suroi.io" },
-        eu: { name: "Europe (Berlin)", address: "wss://eu.suroi.io" },
-        sa: { name: "South America (São Paulo)", address: "wss://sa.suroi.io" },
-        as: { name: "Asia (Osako)", address: "wss://as.suroi.io" }
-    },
-    defaultRegion: "na",
-    thisRegion: "dev",
-
-    ssl: {
-        enable: false,
-        keyFile: "",
-        certFile: ""
-    },
-
-    movementSpeed: 0.77,
+    mapName: "main",
 
     spawn: { mode: SpawnMode.Random },
 
@@ -135,15 +138,9 @@ export const Config = {
 
     gas: { mode: GasMode.Normal },
 
+    movementSpeed: 0.77,
+
     censorUsernames: true,
-
-    botProtection: false,
-    ipBanListURL: "https://suroi.io/api/bannedIPs",
-    ipBanListPassword: "password",
-
-    cloudflare: false,
-
-    mapName: "main",
 
     roles: {
         dev: { password: "dev" },
@@ -154,6 +151,5 @@ export const Config = {
         eipi: { password: "eipi" },
         "123op": { password: "123op" },
         radians: { password: "radians" }
-    },
-    disableLobbyClearing: false
+    }
 } satisfies ConfigType as ConfigType;
