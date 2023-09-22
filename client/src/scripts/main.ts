@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 
     for (const [regionID, region] of Object.entries(Config.regions)) {
         serverSelector.append(`<option value="${regionID}">${region.name} - <span id="${regionID}-player-count">?</span> Players</option>`);
-        void (async () => {
+        void (async() => {
             try {
                 const pingStartTime = Date.now();
                 const count = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
