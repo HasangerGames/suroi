@@ -70,8 +70,8 @@ export const Guns: GunDefinition[] = [
         fireDelay: 175,
         switchDelay: 200,
         speedMultiplier: 0.95,
-        recoilMultiplier: 0.6,
-        recoilDuration: 600,
+        recoilMultiplier: 0.8,
+        recoilDuration: 100,
         fireMode: FireMode.Single,
         bulletCount: 10,
         shotSpread: 11,
@@ -92,7 +92,7 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 50
+            maxDistance: 40
         }
     },
     {
