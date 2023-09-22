@@ -132,8 +132,6 @@ export function setupUI(game: Game): void {
 
     // Select region
     serverSelect.on("change", (e: Event) => {
-        // only update the config if user changed the value manually
-        if (!e.isTrusted) return;
         const value = serverSelect.val() as string | undefined;
 
         if (value !== undefined) {

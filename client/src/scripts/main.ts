@@ -14,8 +14,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { setupUI } from "./ui";
-
-declare const API_URL: string;
+import { Config } from "./config";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 
@@ -31,64 +30,59 @@ function disablePlayButton(text: string): void {
     playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
-// TODO: use this to fetch game and remove region code from server
-let servers: Record<string, { name: string, address: string, apiAddress: string }> = {};
-
 async function main(): Promise<void> {
     disablePlayButton("Loading...");
 
     const serverSelector = $("#server-select");
 
-    // fetch servers and select one with best ping if no previous server was selected and stored in the config
-    void fetch(`${API_URL}/servers`).then(async data => {
-        servers = await data.json();
+    let bestPing = Number.MAX_VALUE;
+    let bestRegion;
 
-        let bestPing = Number.MAX_VALUE;
-        let bestRegion = "";
-
-        for (const region in servers) {
-            const pingStartTime = Date.now();
-
-            serverSelector.append(`<option value="${region}">${servers[region].name} - <span id="${region}-player-count">?</span> Players</option>`);
-
-            fetch(`${servers[region].apiAddress}/api/playerCount`).then((async data => {
+    for (const [regionID, region] of Object.entries(Config.regions)) {
+        serverSelector.append(`<option value="${regionID}">${region.name} - <span id="${regionID}-player-count">?</span> Players</option>`);
+        void (async () => {
+            try {
+                const pingStartTime = Date.now();
+                const count = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
                 const regionPing = Date.now() - pingStartTime;
 
-                console.log(`${region}: ${regionPing}ms`);
+                console.log(`${regionID}: ${regionPing}ms`);
 
-                const { count } = await data.json();
-
-                $(`#${region}-player-count`).text(count);
+                $(`#${regionID}-player-count`).text(count);
 
                 if (regionPing < bestPing) {
                     bestPing = regionPing;
-                    bestRegion = region;
+                    bestRegion = regionID;
                 }
-            })).catch(console.error);
-        }
+            } catch (e) {
+                console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+            }
+        })();
+    }
 
-        if (bestRegion && !localStorageInstance.config.region) {
-            serverSelector.val(bestRegion);
-        }
-    });
+    const regionID = localStorageInstance.config.region ?? bestRegion ?? Config.defaultRegion;
+    serverSelector.val(regionID);
 
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
-
-        void $.get(`${API_URL}/getGame?region=${serverSelector.val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
+        const region = Config.regions[serverSelector.val() as string];
+        const urlPart = `${region.https ? "s" : ""}://${region.address}`;
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", gameID: number }) => {
             if (data.success) {
+                let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
+
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
-                let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
                 if (devPass) address += `&password=${devPass}`;
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
+
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {
