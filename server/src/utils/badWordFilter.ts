@@ -1,5 +1,9 @@
 const badWords: string[] = [
     "nigger",
+    "nigggr",
+    "nigrr",
+    "nigggrrr",
+    "n1gggr",
     "n1gger",
     "n1gg3r",
     "n!gger",
