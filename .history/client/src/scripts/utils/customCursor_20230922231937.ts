@@ -9,7 +9,7 @@ export function enableCustomCursor(): void {
     const customCursor = $("#custom-cursor");
     customCursor.css({
         display: "block",
-        position: "absolute"
+        position: "absolute",
     });
     $("#game-ui").on("mousemove", (e) => {
         customCursor.css({
