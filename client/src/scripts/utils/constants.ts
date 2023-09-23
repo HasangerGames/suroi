@@ -2,7 +2,6 @@ import { Color } from "pixi.js";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
-export const ANONYMOUS_PLAYERS_NAME = "Player";
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

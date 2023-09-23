@@ -2,16 +2,22 @@ import $ from "jquery";
 
 import { ReceivingPacket } from "../../types/receivingPacket";
 
-import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, type ObjectCategory } from "../../../../../common/src/constants";
+import {
+    DEFAULT_USERNAME,
+    KILL_FEED_MESSAGE_TYPE_BITS,
+    KillFeedMessageType,
+    type ObjectCategory
+} from "../../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { randomKillWord } from "../../utils/misc";
 import { localStorageInstance } from "../../utils/localStorageHandler";
-import { ANONYMOUS_PLAYERS_NAME, UI_DEBUG_MODE } from "../../utils/constants";
+import { UI_DEBUG_MODE } from "../../utils/constants";
+// import { lerp } from "../../../../../common/src/utils/math";
 
 /*
     To avoid having an overly-cluttered killfeed, we say that the fade time is
-    dependant on the amount of messages, up to a certain minimum/maximum
+    dependent on the amount of messages, up to a certain minimum/maximum
 
     Intuitively, if there's a lot of messages, they'll clear out faster than if
     there aren't that many
@@ -62,10 +68,8 @@ export class KillFeedPacket extends ReceivingPacket {
                     : undefined;
 
                 if (localStorageInstance.config.anonymousPlayers) {
-                    killed.name = ANONYMOUS_PLAYERS_NAME;
-                    if (killedBy) {
-                        killedBy.name = ANONYMOUS_PLAYERS_NAME;
-                    }
+                    killed.name = DEFAULT_USERNAME;
+                    if (killedBy) killedBy.name = DEFAULT_USERNAME;
                 }
 
                 switch (true) {
@@ -111,10 +115,9 @@ export class KillFeedPacket extends ReceivingPacket {
                 break;
             }
             case KillFeedMessageType.Join: {
-                let name = stream.readPlayerNameWithColor();
-                if (localStorageInstance.config.anonymousPlayers) name = ANONYMOUS_PLAYERS_NAME;
+                const name = stream.readPlayerNameWithColor();
                 const joined = stream.readBoolean();
-                killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${name} ${joined ? "joined" : "left"} the game`);
+                killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name} ${joined ? "joined" : "left"} the game`);
                 break;
             }
         }

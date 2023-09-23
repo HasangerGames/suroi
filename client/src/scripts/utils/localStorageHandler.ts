@@ -49,11 +49,13 @@ export interface Config {
     sfxVolume: number
     musicVolume: number
     muteAudio: boolean
+    oldMenuMusic: boolean
     language: string
     region: string | undefined
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
+    showCoordinates: boolean
     clientSidePrediction: boolean
     textKillFeed: boolean
     rotationSmoothing: boolean
@@ -117,11 +119,13 @@ export const defaultConfig: Config = {
     musicVolume: 1,
     sfxVolume: 1,
     muteAudio: false,
+    oldMenuMusic: false,
     language: "en",
     region: undefined,
     cameraShake: true,
     showFPS: false,
     showPing: false,
+    showCoordinates: false,
     clientSidePrediction: true,
     textKillFeed: true,
     rotationSmoothing: true,

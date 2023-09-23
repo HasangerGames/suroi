@@ -32,7 +32,9 @@ const badWords: string[] = [
     "faggot",
     "fagg0t",
     "f@ggot",
-    "f@gg0t"
+    "f@gg0t",
+    "f4ggot",
+    "f4gg0t"
 ];
 
 export function hasBadWords(text: string): boolean {

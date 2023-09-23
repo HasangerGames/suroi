@@ -89,7 +89,7 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-    music = new Howl({ src: "./audio/music/menu_music.mp3" });
+    music = new Howl({ src: localStorageInstance.config.oldMenuMusic ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
     musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
@@ -116,7 +116,6 @@ export class Game {
 
         if (!this.musicPlaying) {
             this.music.play();
-            this.music.loop();
             this.music.volume(localStorageInstance.config.musicVolume);
             this.musicPlaying = true;
         }
@@ -502,6 +501,10 @@ export class Game {
                         const lootDef = closestObject.type.definition;
 
                         // Autoloot
+                        if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {
+                            this.playerManager.interact();
+                        }
+
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
@@ -515,6 +518,7 @@ export class Game {
                             prepareInteractText();
 
                             if (canInteract) {
+                                // noinspection HtmlUnknownTarget
                                 $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
                             } else {
                                 $("#interact-key").removeClass("active").hide();
