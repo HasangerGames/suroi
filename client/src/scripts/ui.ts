@@ -88,6 +88,14 @@ export function setupUI(game: Game): void {
         {
             name: "TEAMFIGHTER 27",
             link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
+        },
+        {
+            name: "Ukraines dude",
+            link: "https://www.youtube.com/channel/UCAdNONfEL-UOXDQnMkhhlHA"
+        },
+        {
+            name: "monet",
+            link: "https://www.youtube.com/@stardust_737"
         }
     ];
 
