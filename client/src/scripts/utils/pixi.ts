@@ -67,6 +67,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setAnchor(anchor: Vector): SuroiSprite {
+        this.anchor.copyFrom(anchor);
+        return this;
+    }
+
     setPos(x: number, y: number): SuroiSprite {
         this.position.set(x, y);
         return this;

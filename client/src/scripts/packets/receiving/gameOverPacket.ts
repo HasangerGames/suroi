@@ -4,7 +4,7 @@ import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStr
 import $ from "jquery";
 import { formatDate } from "../../utils/misc";
 import { localStorageInstance } from "../../utils/localStorageHandler";
-import { ANONYMOUS_PLAYERS_NAME } from "../../utils/constants";
+import { DEFAULT_USERNAME } from "../../../../../common/src/constants";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -22,8 +22,7 @@ export class GameOverPacket extends ReceivingPacket {
         const won = stream.readBoolean();
 
         if (!won) {
-            $("#btn-spectate").show();
-            $("#btn-spectate").removeClass("btn-disabled");
+            $("#btn-spectate").removeClass("btn-disabled").show();
             this.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
         } else {
             $("#btn-spectate").hide();
@@ -31,8 +30,8 @@ export class GameOverPacket extends ReceivingPacket {
         $("#chicken-dinner").toggle(won);
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
-        if (localStorageInstance.config.anonymousPlayers) $("#game-over-player-name").html(ANONYMOUS_PLAYERS_NAME);
-        else $("#game-over-player-name").html(stream.readPlayerNameWithColor());
+        const name = stream.readPlayerNameWithColor();
+        $("#game-over-player-name").html(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name);
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());

@@ -14,8 +14,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { setupUI } from "./ui";
-
-declare const API_URL: string;
+import { Config } from "./config";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 
@@ -33,23 +32,57 @@ function disablePlayButton(text: string): void {
 
 async function main(): Promise<void> {
     disablePlayButton("Loading...");
+
+    const serverSelector = $("#server-select");
+
+    let bestPing = Number.MAX_VALUE;
+    let bestRegion;
+
+    for (const [regionID, region] of Object.entries(Config.regions)) {
+        serverSelector.append(`<option value="${regionID}">${region.name} - <span id="${regionID}-player-count">?</span> Players</option>`);
+        void (async() => {
+            try {
+                const pingStartTime = Date.now();
+                const count = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
+                const regionPing = Date.now() - pingStartTime;
+
+                console.log(`${regionID}: ${regionPing}ms`);
+
+                $(`#${regionID}-player-count`).text(count);
+
+                if (regionPing < bestPing) {
+                    bestPing = regionPing;
+                    bestRegion = regionID;
+                }
+            } catch (e) {
+                console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+            }
+        })();
+    }
+
+    const regionID = localStorageInstance.config.region ?? bestRegion ?? Config.defaultRegion;
+    serverSelector.val(regionID);
+
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
-
-        void $.get(`${API_URL}/getGame?region=${$("#server-select").val() as string}`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", address: string, gameID: number }) => {
+        const region = Config.regions[serverSelector.val() as string];
+        const urlPart = `${region.https ? "s" : ""}://${region.address}`;
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", gameID: number }) => {
             if (data.success) {
+                let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
+
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
-                let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
                 if (devPass) address += `&password=${devPass}`;
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
+
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {

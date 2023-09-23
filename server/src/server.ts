@@ -20,7 +20,12 @@ import { PingedPacket } from "./packets/receiving/pingedPacket";
 
 import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { ALLOW_NON_ASCII_USERNAME_CHARS, PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
+import {
+    ALLOW_NON_ASCII_USERNAME_CHARS,
+    DEFAULT_USERNAME,
+    PacketType,
+    PLAYER_NAME_MAX_LENGTH
+} from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
 import { ItemPacket } from "./packets/receiving/itemPacket";
@@ -31,15 +36,19 @@ import { existsSync, readFile, writeFileSync } from "fs";
  * Apply CORS headers to a response.
  * @param res The response sent by the server.
  */
-const cors = (res: HttpResponse): void => {
-    res.writeHeader("Access-Control-Allow-Origin", "*");
-    res.writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with");
-    res.writeHeader("Access-Control-Max-Age", "3600");
-};
+function cors(res: HttpResponse): void {
+    res.writeHeader("Access-Control-Allow-Origin", "*")
+        .writeHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        .writeHeader("Access-Control-Allow-Headers", "origin, content-type, accept, x-requested-with")
+        .writeHeader("Access-Control-Max-Age", "3600");
+}
+
+function forbidden(res: HttpResponse): void {
+    res.writeStatus("403 Forbidden").end("403 Forbidden");
+}
 
 // Initialize the server
-const app = Config.ssl.enable
+const app = Config.ssl
     ? SSLApp({
         key_file_name: Config.ssl.keyFile,
         cert_file_name: Config.ssl.certFile
@@ -78,16 +87,25 @@ export function allowJoin(gameID: number): boolean {
     return false;
 }
 
+const decoder = new TextDecoder();
 function getIP(res: HttpResponse, req: HttpRequest): string {
-    return Config.cloudflare ? req.getHeader("cf-connecting-ip") : req.getHeader("x-forwarded-for") || decoder.decode(res.getRemoteAddressAsText());
+    return Config.ipHeader ? req.getHeader(Config.ipHeader) : decoder.decode(res.getRemoteAddressAsText());
 }
 
 const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
-const bannedIPs = new Set<string>();
+const permaBannedIPs = new Set<string>();
 const tempBannedIPs = new Set<string>();
+const rateLimitedIPs = new Set<string>();
 interface BanRecord { ip: string, expires?: number }
 let rawBanRecords: BanRecord[] = [];
+
+let playerCount = 0;
+
+app.get("/api/playerCount", (res) => {
+    cors(res);
+    res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
+});
 
 app.get("/api/getGame", async(res, req) => {
     let aborted = false;
@@ -96,41 +114,28 @@ app.get("/api/getGame", async(res, req) => {
 
     let response: {
         success: boolean
-        message?: "tempBanned" | "permaBanned"
-        address?: string
         gameID?: number
+        message?: "tempBanned" | "permaBanned" | "rateLimited"
     };
 
     const ip = getIP(res, req);
-    if (bannedIPs.has(ip)) {
-        response = { success: false, message: tempBannedIPs.has(ip) ? "tempBanned" : "permaBanned" };
+    if (tempBannedIPs.has(ip)) {
+        response = { success: false, message: "tempBanned" };
+    } else if (permaBannedIPs.has(ip)) {
+        response = { success: false, message: "permaBanned" };
+    } else if (rateLimitedIPs.has(ip)) {
+        response = { success: false, message: "rateLimited" };
     } else {
-        const searchParams = new URLSearchParams(String(req.getQuery()));
-
-        const region = searchParams.get("region") ?? Config.defaultRegion;
-
-        if (region === Config.thisRegion) {
-            let gameID: number | undefined;
-            if (allowJoin(0)) {
-                gameID = 0;
-            } else if (allowJoin(1)) {
-                gameID = 1;
-            } else {
-                response = { success: false };
-            }
-            if (gameID !== undefined) {
-                response = { success: true, address: Config.regions[region], gameID };
-            }
-        } else if (typeof Config.regions[region] === "string" && region !== Config.thisRegion) {
-            // Fetch the find game api for the region and return that.
-            const url = `${Config.regions[region].replace("ws", "http")}/api/getGame?region=${region}`;
-            try {
-                response = await (await fetch(url, { signal: AbortSignal.timeout(5000) })).json();
-            } catch (e) {
-                response = { success: false };
-            }
+        let gameID: number | undefined;
+        if (allowJoin(0)) {
+            gameID = 0;
+        } else if (allowJoin(1)) {
+            gameID = 1;
         } else {
             response = { success: false };
+        }
+        if (gameID !== undefined) {
+            response = { success: true, gameID };
         }
     }
 
@@ -143,10 +148,10 @@ app.get("/api/getGame", async(res, req) => {
 
 app.get("/api/bannedIPs", (res, req) => {
     cors(res);
-    if (req.getHeader("password") === Config.ipBanListPassword) {
+    if (req.getHeader("password") === Config.protection?.ipBanList?.password) {
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(rawBanRecords));
     } else {
-        res.writeStatus("403 Forbidden").end("403 Forbidden");
+        forbidden(res);
     }
 });
 
@@ -161,7 +166,6 @@ export interface PlayerContainer {
     lobbyClearing: boolean
 }
 
-const decoder = new TextDecoder();
 app.ws("/play", {
     compression: DEDICATED_COMPRESSOR_256KB,
     idleTimeout: 30,
@@ -171,22 +175,36 @@ app.ws("/play", {
      */
     upgrade(res, req, context) {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-        res.onAborted((): void => {});
+        res.onAborted((): void => { });
 
         // Bot protection
         const ip = getIP(res, req);
-        if (Config.botProtection) {
-            if (bannedIPs.has(ip) || simultaneousConnections[ip] >= 5 || connectionAttempts[ip] >= 5) {
-                if (!bannedIPs.has(ip)) bannedIPs.add(ip);
-                res.writeStatus("403 Forbidden").endWithoutBody(0, true);
+        if (Config.protection) {
+            const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections;
+            const maxJoinAttempts = Config.protection.maxJoinAttempts;
+            const rateLimited = rateLimitedIPs.has(ip);
+            const exceededRateLimits =
+                (maxSimultaneousConnections !== undefined && simultaneousConnections[ip] >= maxSimultaneousConnections) ||
+                (maxJoinAttempts !== undefined && connectionAttempts[ip] >= maxJoinAttempts.count);
+            if (
+                tempBannedIPs.has(ip) ||
+                permaBannedIPs.has(ip) ||
+                rateLimited ||
+                exceededRateLimits
+            ) {
+                if (exceededRateLimits && !rateLimited) rateLimitedIPs.add(ip);
+                forbidden(res);
                 log(`Connection blocked: ${ip}`);
                 return;
             } else {
-                simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
-
-                log(`${simultaneousConnections[ip]} simultaneous connections: ${ip}`);
-                log(`${connectionAttempts[ip]}/5 connection attempts in the last 5 seconds: ${ip}`);
+                if (maxSimultaneousConnections) {
+                    simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
+                    log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                }
+                if (maxJoinAttempts) {
+                    connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
+                    log(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+                }
             }
         }
 
@@ -197,7 +215,7 @@ app.ws("/play", {
         const game = games[gameID];
 
         if (game === undefined || !allowJoin(gameID)) {
-            res.writeStatus("403 Forbidden").endWithoutBody(0, true);
+            forbidden(res);
             return;
         }
 
@@ -205,13 +223,14 @@ app.ws("/play", {
         let name = searchParams.get("name");
         name = decodeURIComponent(name ?? "").trim();
         if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
-            name = "Player";
+            name = DEFAULT_USERNAME;
         } else {
             if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
             name = sanitizeHtml(name, {
                 allowedTags: [],
                 allowedAttributes: {}
             });
+            if (name.trim().length === 0) name = DEFAULT_USERNAME;
         }
 
         // Role
@@ -260,6 +279,7 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
+        playerCount++;
         const userData = socket.getUserData();
         const game = games[userData.gameID];
         if (game === undefined) return;
@@ -310,8 +330,9 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close(socket: WebSocket<PlayerContainer>) {
+        playerCount--;
         const p = socket.getUserData();
-        if (Config.botProtection) simultaneousConnections[p.ip as string]--;
+        if (Config.protection) simultaneousConnections[p.ip as string]--;
         log(`"${p.name}" left game #${p.gameID}`);
         const game = games[p.gameID];
         if (game === undefined || p.player === undefined) return;
@@ -334,25 +355,41 @@ app.listen(Config.host, Config.port, (): void => {
     log(`Listening on ${Config.host}:${Config.port}`, true);
     log("Press Ctrl+C to exit.");
 
-    if (Config.botProtection) {
-        setInterval((): void => {
-            connectionAttempts = {};
-        }, 5000);
+    const protection = Config.protection;
+    if (protection) {
+        if (protection.maxJoinAttempts) {
+            setInterval((): void => {
+                connectionAttempts = {};
+            }, protection.maxJoinAttempts.duration);
+        }
+
         setInterval(() => {
+            rateLimitedIPs.clear();
             const processBanRecords = (records: BanRecord[]): void => {
-                bannedIPs.clear();
+                permaBannedIPs.clear();
                 tempBannedIPs.clear();
                 const now = Date.now();
                 for (const record of records) {
                     if (record.expires === undefined) {
-                        bannedIPs.add(record.ip);
+                        permaBannedIPs.add(record.ip);
                     } else if (record.expires > now) {
                         tempBannedIPs.add(record.ip);
-                        bannedIPs.add(record.ip);
                     }
                 }
+                log("Reloaded list of banned IPs");
             };
-            if (Config.thisRegion === Config.defaultRegion) {
+            if (protection.ipBanList?.url) {
+                void (async() => {
+                    try {
+                        if (!protection.ipBanList?.url) return;
+                        const response = await fetch(protection.ipBanList.url, { headers: { Password: protection.ipBanList.password } });
+                        if (response.ok) processBanRecords(await response.json());
+                        else console.error("Error: Unable to fetch list of banned IPs.");
+                    } catch (e) {
+                        console.error("Error: Unable to fetch list of banned IPs. Details:", e);
+                    }
+                })();
+            } else {
                 if (!existsSync("bannedIPs.json")) writeFileSync("bannedIPs.json", "[]");
                 readFile("bannedIPs.json", "utf8", (error, data) => {
                     if (error) {
@@ -362,17 +399,7 @@ app.listen(Config.host, Config.port, (): void => {
                     rawBanRecords = JSON.parse(data);
                     processBanRecords(rawBanRecords);
                 });
-            } else {
-                void (async() => {
-                    try {
-                        const response = await fetch(Config.ipBanListURL, { headers: { Password: Config.ipBanListPassword } });
-                        if (response.ok) processBanRecords(await response.json());
-                        else console.error("Error: Unable to fetch list of banned IPs.");
-                    } catch (e) {
-                        console.error("Error: Unable to fetch list of banned IPs. Details:", e);
-                    }
-                })();
             }
-        }, 120000);
+        }, protection.refreshDuration);
     }
 });
