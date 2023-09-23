@@ -370,6 +370,12 @@ export function setupUI(game: Game): void {
     });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
+    // Coordinates toggle
+    addCheckboxListener("#toggle-coordinates", "showCoordinates", (value: boolean) => {
+        $("#coordinates-hud").toggle(value);
+    });
+    $("#coordinates-hud").toggle(localStorageInstance.config.showCoordinates);
+
     // Client-side prediction toggle
     addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 

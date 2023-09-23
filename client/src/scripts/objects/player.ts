@@ -201,6 +201,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
 
+        if (localStorageInstance.config.showCoordinates) {
+            $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
+        }
+
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
