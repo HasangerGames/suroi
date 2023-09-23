@@ -370,7 +370,7 @@ export function setupUI(game: Game): void {
     // Load crosshairs
     localStorageInstance.update({
         ...localStorageInstance.config,
-        crosshairDimensions: [16, 16],
+        crosshairSize: 16,
         crosshairColor: "000000" as string & { length: 6 }
     });
     function loadCrosshair(): void {
@@ -378,16 +378,16 @@ export function setupUI(game: Game): void {
             backgroundImage: `url("${getCrosshair(
                 localStorageInstance.config.loadout.crosshair,
                 localStorageInstance.config.crosshairColor,
-                [16, 16]
+                localStorageInstance.config.crosshairSize
             )}")`
         });
         $("#game-ui").css({
             cursor: `url("${getCrosshair(
                 localStorageInstance.config.loadout.crosshair,
                 localStorageInstance.config.crosshairColor,
-                [16, 16]
-            )}") ${localStorageInstance.config.crosshairDimensions[0]} ${
-                localStorageInstance.config.crosshairDimensions[1]
+                localStorageInstance.config.crosshairSize
+            )}") ${localStorageInstance.config.crosshairSize} ${
+                localStorageInstance.config.crosshairSize
             }, crosshair`
         });
     }

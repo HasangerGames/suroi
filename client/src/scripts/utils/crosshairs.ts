@@ -4,7 +4,7 @@ import {
 } from "../../../../common/src/utils/objectDefinitions";
 
 export interface CrosshairDefinition extends ObjectDefinition {
-    svg: string;
+    svg: string
 }
 
 export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
@@ -23,15 +23,15 @@ export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
 export function getCrosshair(
     idString: CrosshairDefinition["idString"],
     color: string,
-    dimensions: [number, number]
+    size: number
 ): string {
     const crosshair =
         Crosshairs.definitions[Crosshairs.idStringToNumber[idString]];
 
     const svg = crosshair.svg
         .replace(/@Color@/g, color)
-        .replace(/@Width@/g, dimensions[0].toString())
-        .replace(/@Height@/g, dimensions[1].toString());
+        .replace(/@Width@/g, size.toString())
+        .replace(/@Height@/g, size.toString());
 
     return svg;
 }
