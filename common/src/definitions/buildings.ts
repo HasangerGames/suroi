@@ -18,6 +18,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     wood: {
         debugColor: 0x7f5500
+    },
+    metal: {
+        debugColor: 0x808080
     }
 };
 
