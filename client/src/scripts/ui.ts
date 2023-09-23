@@ -14,18 +14,11 @@ import {
     HealingItems,
     HealType
 } from "../../../common/src/definitions/healingItems";
-<<<<<<< HEAD
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-=======
-import { cursorDimensions } from "./utils/customCursor";
-import { Ammos } from "../../../common/src/definitions/ammos";
-import { Skins } from "../../../common/src/definitions/skins";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { Crosshairs } from "../../../common/src/definitions/crosshairs";
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
+
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { isMobile } from "pixi.js";

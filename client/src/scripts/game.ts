@@ -103,16 +103,12 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-<<<<<<< HEAD
     music = new Howl({
         src: localStorageInstance.config.oldMenuMusic
             ? "./audio/music/old_menu_music.mp3"
             : "./audio/music/menu_music.mp3",
         loop: true
     });
-=======
-    music = new Howl({ src: localStorageInstance.config.oldMenuMusic ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
 
     musicPlaying = false;
 
@@ -633,27 +629,20 @@ export class Game {
                             prepareInteractText();
 
                             if (canInteract) {
-<<<<<<< HEAD
                                 // noinspection HtmlUnknownTarget
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
->>>>>>> f7bb2d3a (feat: add custom crosshairs (WIP))
-                                $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
-=======
-                                // noinspection HtmlUnknownTarget
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
                                 $("#interact-key")
                                     .html(
                                         '<img src="./img/misc/tap-icon.svg" alt="Tap">'
                                     )
                                     .addClass("active")
                                     .show();
-<<<<<<< HEAD
-=======
->>>>>>> acfa92a8 (feat: add custom crosshairs (WIP))
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
+                                // noinspection HtmlUnknownTarget
+                                $("#interact-key")
+                                    .html(
+                                        '<img src="./img/misc/tap-icon.svg" alt="Tap">'
+                                    )
+                                    .addClass("active")
+                                    .show();
                             } else {
                                 $("#interact-key").removeClass("active").hide();
                             }
