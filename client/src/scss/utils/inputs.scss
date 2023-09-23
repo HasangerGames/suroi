@@ -89,7 +89,7 @@ input[type="checkbox"] {
         display: block;
         position: absolute;
         left: -2px;
-        bottom: 2px;
+        top: -2px;
         border-radius: 50%;
         background: $light;
         transition: left linear 200ms;
@@ -108,4 +108,3 @@ input[type="checkbox"] {
         border-bottom: 4px solid $blue;
     }
 }
-
