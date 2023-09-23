@@ -202,7 +202,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = data.position;
 
         if (localStorageInstance.config.showCoordinates) {
-            $("#coordinates-hud").text(`X: ${Math.round(this.position.x*100)/100} Y: ${Math.round(this.position.y*100)/100}`);
+            $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
         }
 
         this.hitbox.position = this.position;
