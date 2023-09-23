@@ -273,15 +273,21 @@
       <div class="emote-bottom"></div>
       <div class="emote-left"></div>
     </div>
-    <div id="game-over-overlay" style="display: none;">
-      <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
-      <h1 id="game-over-text" class="modal-item">You died.</h1>
-      <div id="game-over-rank-container">
-        <span>Rank</span>
-        <span id="game-over-rank" class="modal-item"></span>
+    <div id="game-over-overlay" style="display: none;" >
+      <div id="game-over-top-screen">
+        <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
+        <h1 id="game-over-text" class="modal-item">You died.</h1>
+        <div id="game-over-rank-container-pc">
+          <span>Rank</span>
+          <span id="game-over-rank" class="modal-item"></span>
+        </div>
       </div>
       <div id="game-over-screen">
         <h1 id="game-over-player-name" class="modal-item">Player</h1>
+        <div id="game-over-rank-container-mobile">
+          <span>Rank</span>
+          <span id="game-over-rank-mobile" class="modal-item"></span>
+        </div>
         <div class="modal-item" id="game-over-stats">
           <div class="stat">
             <span class="stat-name">Kills:</span>
