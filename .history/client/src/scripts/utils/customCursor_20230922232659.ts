@@ -11,7 +11,9 @@ export function enableCustomCursor(): void {
         display: "block",
         position: "absolute"
     });
-
+    $("#game-menu").css({
+        cursor: "none "
+    });
     $("#game-ui").on("mousemove", (e) => {
         customCursor.css({
             top: e.pageY - cursorDimensions.height / 2,

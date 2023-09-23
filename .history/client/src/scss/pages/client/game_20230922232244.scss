@@ -650,12 +650,6 @@
         justify-content: center;
         align-items: center;
 
-        cursor: pointer !important;
-
-        &.ammo-slot {
-            cursor: crosshair !important;
-        }
-
         &:hover {
             outline: 1px solid $orange;
 
@@ -666,7 +660,6 @@
 
         &.active {
             outline: 3px solid $orange;
-            cursor: crosshair !important;
 
             @media screen and (max-width: $screen_large) {
                 outline-width: 2px;
