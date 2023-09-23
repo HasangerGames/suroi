@@ -412,10 +412,7 @@ export function setupUI(game: Game): void {
                     crosshair: crosshair.idString
                 }
             });
-<<<<<<< HEAD
             loadCrosshair();
-=======
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
             $(this).addClass("selected").siblings().removeClass("selected");
         });
         $("#crosshairs-list").append(crosshairItem);
@@ -423,15 +420,12 @@ export function setupUI(game: Game): void {
     $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
         "selected"
     );
-<<<<<<< HEAD
     loadCrosshair();
-=======
     $("#custom-cursor").css({
         "background-image": `url(/img/game/crosshairs/${localStorageInstance.config.loadout.crosshair}.svg)`,
         width: `${cursorDimensions.width}px`,
         height: `${cursorDimensions.height}px`
     });
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {
