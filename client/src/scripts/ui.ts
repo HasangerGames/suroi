@@ -373,6 +373,7 @@ export function setupUI(game: Game): void {
     // Coordinates toggle
     addCheckboxListener("#toggle-coordinates", "showCoordinates");
 
+
     // Client-side prediction toggle
     addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 
