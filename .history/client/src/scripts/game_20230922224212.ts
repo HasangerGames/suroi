@@ -242,7 +242,6 @@ export class Game {
 
         this.socket.onclose = (): void => {
             enablePlayButton();
-            disableCustomCursor();
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -257,11 +256,8 @@ export class Game {
 
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
-        disableCustomCursor();
 
-        if (this.activePlayer?.actionSound) {
-            this.soundManager.stop(this.activePlayer.actionSound);
-        }
+        if (this.activePlayer?.actionSound) { this.soundManager.stop(this.activePlayer.actionSound); }
 
         $("#action-container").hide();
         $("#game-menu").hide();
@@ -333,9 +329,7 @@ export class Game {
                         player.isActivePlayer &&
                         localStorageInstance.config.clientSidePrediction
                     )
-                ) {
-                    player.updateContainerRotation();
-                }
+                ) { player.updateContainerRotation(); }
             }
 
             for (const loot of this.loots) loot.updateContainerPosition();
@@ -375,8 +369,8 @@ export class Game {
                         object = new Obstacle(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Obstacle,
-                                ObstacleDefinition
+                            ObjectCategory.Obstacle,
+                            ObstacleDefinition
                             >,
                             id
                         );
@@ -394,8 +388,8 @@ export class Game {
                         object = new Loot(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Loot,
-                                LootDefinition
+                            ObjectCategory.Loot,
+                            LootDefinition
                             >,
                             id
                         );
@@ -406,8 +400,8 @@ export class Game {
                         object = new Building(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Building,
-                                BuildingDefinition
+                            ObjectCategory.Building,
+                            BuildingDefinition
                             >,
                             id
                         );
@@ -461,12 +455,12 @@ export class Game {
             - whether the user can interact with it
         */
         const cache: {
-            object?: Loot | Obstacle;
-            offset?: number;
-            pickupBind?: string;
-            canInteract?: boolean;
-            readonly clear: () => void;
-            readonly pickupBindIsValid: () => boolean;
+            object?: Loot | Obstacle
+            offset?: number
+            pickupBind?: string
+            canInteract?: boolean
+            readonly clear: () => void
+            readonly pickupBindIsValid: () => boolean
         } = {
             clear() {
                 this.object = this.pickupBind = undefined;
@@ -484,9 +478,7 @@ export class Game {
         let bindChangeAcknowledged = false;
 
         return (): void => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
-                return;
-            }
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) { return; }
 
             if (this.playerManager.dirty.inputs) {
                 this.playerManager.dirty.inputs = false;
@@ -584,9 +576,7 @@ export class Game {
                             closestObject === undefined ||
                             // If the loot object hasn't changed, we don't need to redo the text
                             !(differences.object || differences.offset)
-                        ) {
-                            return;
-                        }
+                        ) { return; }
 
                         let interactText = "";
                         if (closestObject instanceof Obstacle) {
@@ -599,9 +589,7 @@ export class Game {
                         if (
                             closestObject instanceof Loot &&
                             closestObject.count > 1
-                        ) {
-                            interactText += ` (${closestObject.count})`;
-                        }
+                        ) { interactText += ` (${closestObject.count})`; }
                         $("#interact-text").text(interactText);
                     };
 

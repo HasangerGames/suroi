@@ -257,7 +257,7 @@ export class Game {
 
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
-        disableCustomCursor();
+        disableCustomCursor
 
         if (this.activePlayer?.actionSound) {
             this.soundManager.stop(this.activePlayer.actionSound);

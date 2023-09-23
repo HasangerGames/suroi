@@ -14,7 +14,6 @@ import {
     HealingItems,
     HealType
 } from "../../../common/src/definitions/healingItems";
-import { cursorDimensions } from "./utils/customCursor";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
@@ -371,7 +370,7 @@ export function setupUI(game: Game): void {
     for (const crosshair of Crosshairs.definitions) {
         const crosshairItem =
             $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
-        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg'); background-size: contain; background-repeat: no-repeat;"></div>
+        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg')"></div>
         <span class="crosshair-name">${crosshair.name}</span>
         </div>`);
 
@@ -389,11 +388,9 @@ export function setupUI(game: Game): void {
     $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
         "selected"
     );
-    $("#custom-cursor").css({
-        "background-image": `url(/img/game/crosshairs/${localStorageInstance.config.loadout.crosshair}.svg)`,
-        width: `${cursorDimensions.width}px`,
-        height: `${cursorDimensions.height}px`
-    });
+    $("#custom-cursor").css(
+        
+    )
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {

@@ -371,7 +371,7 @@ export function setupUI(game: Game): void {
     for (const crosshair of Crosshairs.definitions) {
         const crosshairItem =
             $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
-        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg'); background-size: contain; background-repeat: no-repeat;"></div>
+        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg')"></div>
         <span class="crosshair-name">${crosshair.name}</span>
         </div>`);
 
@@ -391,8 +391,8 @@ export function setupUI(game: Game): void {
     );
     $("#custom-cursor").css({
         "background-image": `url(/img/game/crosshairs/${localStorageInstance.config.loadout.crosshair}.svg)`,
-        width: `${cursorDimensions.width}px`,
-        height: `${cursorDimensions.height}px`
+        width: `${cursorDimensions}px`,
+        height: `100px`
     });
 
     // Disable context menu

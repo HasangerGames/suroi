@@ -109,7 +109,6 @@ export class Game {
             : "./audio/music/menu_music.mp3",
         loop: true
     });
-
     musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
@@ -237,12 +236,10 @@ export class Game {
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
             enablePlayButton();
-            disableCustomCursor();
         };
 
         this.socket.onclose = (): void => {
             enablePlayButton();
-            disableCustomCursor();
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -257,11 +254,9 @@ export class Game {
 
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
-        disableCustomCursor();
 
-        if (this.activePlayer?.actionSound) {
+        if (this.activePlayer?.actionSound)
             this.soundManager.stop(this.activePlayer.actionSound);
-        }
 
         $("#action-container").hide();
         $("#game-menu").hide();
@@ -333,9 +328,8 @@ export class Game {
                         player.isActivePlayer &&
                         localStorageInstance.config.clientSidePrediction
                     )
-                ) {
+                )
                     player.updateContainerRotation();
-                }
             }
 
             for (const loot of this.loots) loot.updateContainerPosition();
@@ -484,9 +478,8 @@ export class Game {
         let bindChangeAcknowledged = false;
 
         return (): void => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
+            if (!this.gameStarted || (this.gameOver && !this.spectating))
                 return;
-            }
 
             if (this.playerManager.dirty.inputs) {
                 this.playerManager.dirty.inputs = false;
@@ -543,11 +536,10 @@ export class Game {
                         );
                     }
                 } else if (object instanceof Building) {
-                    if (!object.dead) {
+                    if (!object.dead)
                         object.toggleCeiling(
                             !object.ceilingHitbox?.collidesWith(player.hitbox)
                         );
-                    }
                 }
             }
 
@@ -584,24 +576,21 @@ export class Game {
                             closestObject === undefined ||
                             // If the loot object hasn't changed, we don't need to redo the text
                             !(differences.object || differences.offset)
-                        ) {
+                        )
                             return;
-                        }
 
                         let interactText = "";
-                        if (closestObject instanceof Obstacle) {
+                        if (closestObject instanceof Obstacle)
                             interactText +=
                                 closestObject.door?.offset === 0
                                     ? "Open "
                                     : "Close ";
-                        }
                         interactText += closestObject.type.definition.name;
                         if (
                             closestObject instanceof Loot &&
                             closestObject.count > 1
-                        ) {
+                        )
                             interactText += ` (${closestObject.count})`;
-                        }
                         $("#interact-text").text(interactText);
                     };
 
