@@ -14,11 +14,10 @@ import {
     HealingItems,
     HealType
 } from "../../../common/src/definitions/healingItems";
-import { cursorDimensions } from "./utils/customCursor";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { Crosshairs } from "../../../common/src/definitions/crosshairs";
+import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { isMobile } from "pixi.js";
@@ -368,6 +367,29 @@ export function setupUI(game: Game): void {
     }
 
     // Load crosshairs
+    localStorageInstance.update({
+        ...localStorageInstance.config,
+        crosshairDimensions: [16, 16],
+        crosshairColor: "000000" as string & { length: 6 }
+    });
+    function loadCrosshair(): void {
+        $("#crosshair-preview").css({
+            backgroundImage: `url("${getCrosshair(
+                localStorageInstance.config.loadout.crosshair,
+                localStorageInstance.config.crosshairColor,
+                [16, 16]
+            )}")`
+        });
+        $("#game-ui").css({
+            cursor: `url("${getCrosshair(
+                localStorageInstance.config.loadout.crosshair,
+                localStorageInstance.config.crosshairColor,
+                [16, 16]
+            )}") ${localStorageInstance.config.crosshairDimensions[0]} ${
+                localStorageInstance.config.crosshairDimensions[1]
+            }, crosshair`
+        });
+    }
     for (const crosshair of Crosshairs.definitions) {
         const crosshairItem =
             $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
@@ -382,6 +404,7 @@ export function setupUI(game: Game): void {
                     crosshair: crosshair.idString
                 }
             });
+            loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
         $("#crosshairs-list").append(crosshairItem);
@@ -389,11 +412,7 @@ export function setupUI(game: Game): void {
     $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
         "selected"
     );
-    $("#custom-cursor").css({
-        "background-image": `url(/img/game/crosshairs/${localStorageInstance.config.loadout.crosshair}.svg)`,
-        width: `${cursorDimensions.width}px`,
-        height: `${cursorDimensions.height}px`
-    });
+    loadCrosshair();
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {

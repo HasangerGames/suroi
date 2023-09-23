@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="25.342986"
-     inkscape:cx="6.3528427"
-     inkscape:cy="6.372572"
+     inkscape:cx="6.3528426"
+     inkscape:cy="6.4120305"
      inkscape:window-width="1920"
      inkscape:window-height="1166"
      inkscape:window-x="-11"
@@ -39,47 +39,49 @@
      inkscape:groupmode="layer"
      id="layer1">
     <circle
-       style="fill:#FFFFFF;stroke-width:0.0619049"
+       style="fill:#ffffff;stroke-width:0.106051"
        id="path2"
-       cx="2.119453"
-       cy="2.1166673"
-       r="0.18254788" />
+       cx="2.1243513"
+       cy="2.1215656"
+       r="0.31272748" />
     <rect
-       style="fill:#FFFFFF;stroke-width:0.0723768"
-       id="rect2"
-       width="1.0583333"
-       height="0.26458332"
-       x="0.0055726767"
-       y="1.9843756"
-       ry="0.13229166" />
-    <rect
-       style="fill:#FFFFFF;stroke-width:0.0723768"
+       style="fill:#ffffff;stroke-width:0.125955"
        id="rect2-1"
-       width="1.0583333"
-       height="0.26458332"
-       x="1.0728836e-06"
-       y="-2.2489583"
-       ry="0.13229166"
+       width="1.3349673"
+       height="0.63525164"
+       x="-2.1175824e-22"
+       y="-2.4317048"
+       ry="0.31762582"
        transform="rotate(90)" />
     <rect
-       style="fill:#FFFFFF;stroke-width:0.0723768"
-       id="rect2-0"
-       width="1.0583333"
-       height="0.26458332"
-       x="3.175"
-       y="1.9843756"
-       ry="0.13229166" />
+       style="fill:#ffffff;stroke-width:0.125955"
+       id="rect2-1-8"
+       width="1.3349673"
+       height="0.63525164"
+       x="-1.3349673"
+       y="-2.434293"
+       ry="0.31762582"
+       transform="scale(-1)" />
     <rect
-       style="fill:#FFFFFF;stroke-width:0.0723768"
-       id="rect2-2"
-       width="1.0583333"
-       height="0.26458332"
-       x="3.1750002"
-       y="-2.2489583"
-       ry="0.13229166"
+       style="fill:#ffffff;stroke-width:0.125955"
+       id="rect2-1-8-4"
+       width="1.3349673"
+       height="0.63525164"
+       x="-4.2389059"
+       y="-2.434293"
+       ry="0.31762582"
+       transform="scale(-1)" />
+    <rect
+       style="fill:#ffffff;stroke-width:0.125955"
+       id="rect2-1-0"
+       width="1.3349673"
+       height="0.63525164"
+       x="2.8983674"
+       y="-2.4370787"
+       ry="0.31762582"
        transform="rotate(90)" />
     <circle
-       style="fill:none;stroke-width:0.26458333;stroke:#ffffff;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:none;stroke-width:0.465;stroke:#ffffff;stroke-opacity:1;stroke-dasharray:none"
        id="path1-7"
        cx="2.1166666"
        cy="2.1166673"

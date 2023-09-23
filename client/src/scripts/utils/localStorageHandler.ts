@@ -43,6 +43,8 @@ export interface Config {
         bottomEmote: string
         leftEmote: string
     }
+    crosshairColor: string & { length: 6 }
+    crosshairDimensions: [number, number]
     scopeLooping: boolean
     anonymousPlayers: boolean
     keybinds: KeybindActions

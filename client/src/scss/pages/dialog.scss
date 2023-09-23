@@ -1,7 +1,8 @@
 @import "../utils/tabs.scss";
 @import "../palette.scss";
 
-#settings-menu, #report-modal {
+#settings-menu,
+#report-modal {
     background-color: $bg;
     max-width: 450px;
 }
@@ -83,7 +84,8 @@
         }
     }
 
-    #settings-tabs-container, #customize-tabs-container {
+    #settings-tabs-container,
+    #customize-tabs-container {
         display: flex;
     }
 
@@ -138,7 +140,8 @@
                 transform: rotate(90deg);
             }
 
-            .skin-left-fist, .skin-right-fist {
+            .skin-left-fist,
+            .skin-right-fist {
                 position: absolute;
                 top: 64px;
                 width: 34px;
@@ -169,7 +172,10 @@
         align-self: center;
         flex-shrink: 0;
 
-        .emote-top, .emote-right, .emote-bottom, .emote-left {
+        .emote-top,
+        .emote-right,
+        .emote-bottom,
+        .emote-left {
             cursor: pointer;
             z-index: 10;
         }
@@ -208,37 +214,38 @@
         }
     }
 
-    #crosshair-name {
-        position: absolute;
-        bottom: 0;
-        padding-bottom: 10px;
-        padding-top: 10px;
-        z-index: 1000;
-        background-color: #49993e;
-        width: 100%;
-        font-size: 35px;
-        font-weight: bold;
+    #tab-crosshairs-content {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+    }
+
+    #crosshair-preview {
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+        width: 286px;
+        height: 286px;
+        background-image: url("https://krunker.io/img/crosshair.png");
+        background-size: contain;
+        background-repeat: no-repeat;
     }
 
     #crosshairs-list {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        height: 100%;
         overflow-y: scroll;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
 
         .crosshairs-list-item-container {
-            width: 140px;
-            height: 170px;
-            padding: 8px;
-            margin: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
             border: 5px solid transparent;
             border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            cursor: pointer;
+            padding: 5px;
+            background-color: $transparent_bg;
 
             &.selected {
                 border-color: $orange;
@@ -246,15 +253,14 @@
         }
 
         .crosshairs-list-item {
-            position: relative;
-            width: 102px;
-            height: 98px;
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
         }
 
         .crosshair-name {
             font-weight: bold;
             @include text-shadow;
-            text-align: center;
         }
     }
 
@@ -349,7 +355,8 @@
         }
     }
 
-    #settings-tabs, #customize-tabs {
+    #settings-tabs,
+    #customize-tabs {
         width: 100%;
         height: 380px;
         max-height: 80vh;
@@ -399,7 +406,7 @@
             margin-top: 1em;
         }
 
-        input[type=checkbox] {
+        input[type="checkbox"] {
             float: right;
         }
 
@@ -413,4 +420,3 @@
         box-shadow: none;
     }
 }
-
