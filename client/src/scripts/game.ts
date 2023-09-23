@@ -502,6 +502,10 @@ export class Game {
                         const lootDef = closestObject.type.definition;
 
                         // Autoloot
+                        if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {
+                            this.playerManager.interact();
+                        }
+
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
