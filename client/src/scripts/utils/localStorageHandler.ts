@@ -55,6 +55,7 @@ export interface Config {
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
+    showCoordinates: boolean
     clientSidePrediction: boolean
     textKillFeed: boolean
     rotationSmoothing: boolean
@@ -124,6 +125,7 @@ export const defaultConfig: Config = {
     cameraShake: true,
     showFPS: false,
     showPing: false,
+    showCoordinates: false,
     clientSidePrediction: true,
     textKillFeed: true,
     rotationSmoothing: true,
