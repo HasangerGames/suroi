@@ -421,11 +421,6 @@ export function setupUI(game: Game): void {
         "selected"
     );
     loadCrosshair();
-    $("#custom-cursor").css({
-        "background-image": `url(/img/game/crosshairs/${localStorageInstance.config.loadout.crosshair}.svg)`,
-        width: `${cursorDimensions.width}px`,
-        height: `${cursorDimensions.height}px`
-    });
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {
