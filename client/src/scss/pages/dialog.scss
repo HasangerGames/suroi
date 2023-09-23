@@ -208,6 +208,56 @@
         }
     }
 
+    #crosshair-name {
+        position: absolute;
+        bottom: 0;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        z-index: 1000;
+        background-color: #49993e;
+        width: 100%;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    #crosshairs-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 100%;
+        overflow-y: scroll;
+
+        .crosshairs-list-item-container {
+            width: 140px;
+            height: 170px;
+            padding: 8px;
+            margin: 8px;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .crosshairs-list-item {
+            position: relative;
+            width: 102px;
+            height: 98px;
+        }
+
+        .crosshair-name {
+            font-weight: bold;
+            @include text-shadow;
+            text-align: center;
+        }
+    }
+
     @media screen and (max-width: 654px) {
         #emotes-list {
             gap: 5px;

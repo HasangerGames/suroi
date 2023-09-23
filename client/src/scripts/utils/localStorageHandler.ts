@@ -37,6 +37,7 @@ export interface Config {
     rulesAcknowledged: boolean
     loadout: {
         skin: string
+        crosshair: string
         topEmote: string
         rightEmote: string
         bottomEmote: string
@@ -79,6 +80,7 @@ export const defaultConfig: Config = {
     rulesAcknowledged: false,
     loadout: {
         skin: "forest_camo",
+        crosshair: "cross",
         topEmote: "happy_face",
         rightEmote: "thumbs_up",
         bottomEmote: "suroi_logo",
