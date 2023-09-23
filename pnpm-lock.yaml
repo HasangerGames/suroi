@@ -2003,11 +2003,11 @@ packages:
   /@pixi/color@7.3.1:
     resolution: {integrity: sha512-qxDy9iEUbhR+n5zDBUUeWx9aReaELpjjP0BVneHNQxLELpx3sVxCHBXjnKe5ZTGtZsJOkD5ji7gDBfwFlUurBw==}
     dependencies:
-      '@pixi/colord': 2.9.4
+      '@pixi/colord': 2.9.5
     dev: false
 
-  /@pixi/colord@2.9.4:
-    resolution: {integrity: sha512-E2DjwptpTdH5wfmwzgQ/eLcF2kEjnY3kQYi5YaV+1uevbdvQHCFtWtnhc96xb/FkPK2v28Miae1s235n7mK9Aw==}
+  /@pixi/colord@2.9.5:
+    resolution: {integrity: sha512-3O0PvjLo+bDTPeeggS9m4bYvN8gSDG4jGv9Yp9oj6DuOlo8zbkNR0iKMCd2tzq8IDgBNzyPBU5t3DRZtsrxgJA==}
     dev: false
 
   /@pixi/compressed-textures@7.3.1(@pixi/assets@7.3.1)(@pixi/core@7.3.1):
