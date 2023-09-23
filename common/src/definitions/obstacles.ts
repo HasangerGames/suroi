@@ -439,6 +439,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeHouseWall("3", new RectangleHitbox(v(-5.7, -1), v(5.7, 1))),
         makeHouseWall("4", new RectangleHitbox(v(-10.7, -1), v(10.7, 1))),
         makeHouseWall("5", new RectangleHitbox(v(-8.02, -1), v(8.02, 1))),
+        makeHouseWall("6", new RectangleHitbox(v(-8.02, -1), v(8.02, 1))),
+        makeHouseWall("7", new RectangleHitbox(v(-8.02, -1), v(8.02, 1))),
         {
             idString: "fridge",
             name: "Fridge",

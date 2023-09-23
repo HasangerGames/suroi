@@ -842,31 +842,54 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            // Bedroom Right
             {
-                id: "house_wall_4",
+                id: "house_wall_2",
                 position: v(-19.5, -6.75),
                 rotation: 2
             },
+            // Bedroom Bottom Right
             {
-                id: "house_wall_1",
+                id: "house_wall_7",
                 position: v(6.20, -6.75),
                 rotation: 2
-            },
+            },// Bedroom Bottom Left
             {
                 id: "house_wall_2",
                 position: v(9.7, -18),
                 rotation: 1
-            },
+            },// Bedroom Door
             {
                 id: "door",
-                position: v(-4, -6.75),
+                position: v(-4.5, -6.75),
+                rotation: 2
+            }, //  Bathroom Left
+            {
+                id: "house_wall_4",
+                position: v(-2.50, 17.2),
+                rotation: 1
+            }, //  Bathroom Right
+            {
+                id: "house_wall_4",
+                position: v(9.55, 17.2),
+                rotation: 1
+            },// Bathroom Door
+            {
+                id: "door",
+                position: v(3.1, 7.2),
+                rotation: 2
+            }, // Bathroom Toilet
+            {
+                id: "toilet",
+                position: v(3.6, 24),
                 rotation: 2
             },
             {
                 id: "small_house_exterior",
                 position: v(0, 0),
                 rotation: 2
-            }
+            },
+
         ]
     },
 ]);
