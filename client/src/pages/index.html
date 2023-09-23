@@ -163,6 +163,7 @@
         <div id="debug-hud">
           <div id="fps-counter"></div>
           <div id="ping-counter"></div>
+          <div id="coordinates-hud"></div>
         </div>
       </div>
       <div class="inventory-container" id="scopes-container">
@@ -454,7 +455,13 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anonymous player names</span>
+              <span class="setting-title">Show coordinates</span>
+              <input type="checkbox" id="toggle-coordinates">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Anonymous Player Names</span>
               <input type="checkbox" id="toggle-anonymous-player">
             </label>
           </div>
