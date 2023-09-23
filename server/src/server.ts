@@ -20,7 +20,12 @@ import { PingedPacket } from "./packets/receiving/pingedPacket";
 
 import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { ALLOW_NON_ASCII_USERNAME_CHARS, PacketType, PLAYER_NAME_MAX_LENGTH } from "../../common/src/constants";
+import {
+    ALLOW_NON_ASCII_USERNAME_CHARS,
+    DEFAULT_USERNAME,
+    PacketType,
+    PLAYER_NAME_MAX_LENGTH
+} from "../../common/src/constants";
 import { hasBadWords } from "./utils/badWordFilter";
 import { URLSearchParams } from "node:url";
 import { ItemPacket } from "./packets/receiving/itemPacket";
@@ -218,13 +223,14 @@ app.ws("/play", {
         let name = searchParams.get("name");
         name = decodeURIComponent(name ?? "").trim();
         if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
-            name = "Player";
+            name = DEFAULT_USERNAME;
         } else {
             if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
             name = sanitizeHtml(name, {
                 allowedTags: [],
                 allowedAttributes: {}
             });
+            if (name.trim().length === 0) name = DEFAULT_USERNAME;
         }
 
         // Role

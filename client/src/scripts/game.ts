@@ -91,7 +91,7 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-    music = localStorageInstance.config.oldMenuMusic ? new Howl({ src: "./audio/music/old_menu_music.mp3", loop:true }) : new Howl({ src: "./audio/music/menu_music.mp3", loop:true });
+    music = new Howl({ src: localStorageInstance.config.oldMenuMusic ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
     musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
@@ -519,6 +519,7 @@ export class Game {
                             prepareInteractText();
 
                             if (canInteract) {
+                                // noinspection HtmlUnknownTarget
                                 $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
                             } else {
                                 $("#interact-key").removeClass("active").hide();
