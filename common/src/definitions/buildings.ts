@@ -811,15 +811,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Small House",
         spawnHitbox: new RectangleHitbox(v(-40, -40), v(40, 40)),
         ceilingHitbox: new ComplexHitbox([
-                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
-                     new RectangleHitbox(v(-31, -29.5), v(31, 29))
-                ]),
+            new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+            new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
+            new RectangleHitbox(v(-31, -29.5), v(31, 29))
+        ]),
         scopeHitbox: new ComplexHitbox([
-                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
-                     new RectangleHitbox(v(-31, -29.5), v(31, 29))
-                ]),
+            new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+            new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
+            new RectangleHitbox(v(-31, -29.5), v(31, 29))
+        ]),
         floorImages: [{
             key: "house_floor_small",
             position: v(0, 0)
@@ -836,8 +836,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 type: "stone",
                 hitbox: new ComplexHitbox([
-                     new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-                     new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4))
+                    new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
+                    new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4))
                 ])
             }
         ],
@@ -853,12 +853,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "house_wall_7",
                 position: v(6.20, -6.75),
                 rotation: 2
-            },// Bedroom Bottom Left
+            }, // Bedroom Bottom Left
             {
                 id: "house_wall_2",
                 position: v(9.7, -18),
                 rotation: 1
-            },// Bedroom Door
+            }, // Bedroom Door
             {
                 id: "door",
                 position: v(-4.5, -6.75),
@@ -873,7 +873,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "house_wall_4",
                 position: v(9.55, 17.2),
                 rotation: 1
-            },// Bathroom Door
+            }, // Bathroom Door
             {
                 id: "door",
                 position: v(3.1, 7.2),
@@ -881,15 +881,110 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }, // Bathroom Toilet
             {
                 id: "toilet",
-                position: v(3.6, 24),
+                position: v(3.6, 23.5),
+                rotation: 2
+            }, // Front Door
+            {
+                id: "door",
+                position: v(-15, 29),
+                rotation: 2
+            },
+            {
+                id: "door",
+                position: v(16, -29.5),
+                rotation: 2
+            }, // Living Room Cough
+            {
+                id: "couch",
+                position: v(-22, -2),
+                rotation: 3
+            },
+            // Living Room Drawer
+            {
+                id: "large_drawer",
+                position: v(-26.2, 21.5),
+                rotation: 1
+            },
+            // Living Room Bookshelf
+            {
+                id: "bookshelf",
+                position: v(-6, 17.5),
+                rotation: 3
+            }, // Kitchen Stove
+            {
+                id: "stove",
+                position: v(15.5, 24),
+                rotation: 2
+            }, // Kitchen Fridge
+            {
+                id: "fridge",
+                position: v(25, 24),
+                rotation: 2
+            },
+            // Near Kitchen Chair
+            {
+                id: "chair",
+                position: v(25, 5),
+                rotation: 0
+            }, // Near Backdoor Chair
+            {
+                id: "chair",
+                position: v(25, -5),
+                rotation: 2
+            },
+            // Dining Room Table
+            {
+                id: "table",
+                position: v(25, 0),
+                rotation: 2
+            },
+            // Backdoor Drawer
+            {
+                id: "small_drawer",
+                position: v(26, -25),
+                rotation: 3
+            },
+            // Bedroom Bed
+            {
+                id: "bed",
+                position: v(-21.5, -22.5),
+                rotation: 1
+            }, // Bedroom Drawer
+            {
+                id: "small_drawer",
+                position: v(-26, -11.5),
+                rotation: 1
+            }, // Bedroom Bookshelf
+            {
+                id: "bookshelf",
+                position: v(5.75, -22),
+                rotation: 1
+            }, // Bedroom Window
+            {
+                id: "window",
+                position: v(-7.35, -29.5),
+                rotation: 1
+            }, // Living Room Window
+            {
+                id: "window",
+                position: v(-31, 7.5),
+                rotation: 2
+            }, // Kitchen Window
+            {
+                id: "window",
+                position: v(31, 15.4),
+                rotation: 2
+            }, // Backdoor Window
+            {
+                id: "window",
+                position: v(31, -15.9),
                 rotation: 2
             },
             {
                 id: "small_house_exterior",
                 position: v(0, 0),
                 rotation: 2
-            },
-
+            }
         ]
-    },
+    }
 ]);

@@ -550,6 +550,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "small_house_door",
+            name: "Small House Door",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 1.0
+            },
+            hitbox: new RectangleHitbox(v(-5.52, -0.8), v(4.63, 0.8)),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            isDoor: true,
+            hingeOffset: v(-5.5, 0),
+            depth: 4,
+            frames: {
+                particle: "furniture_particle"
+            }
+        },
+        {
             idString: "toilet",
             name: "Toilet",
             material: "porcelain",
@@ -1129,18 +1149,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                 new RectangleHitbox(v(-32, -29.8), v(-30, 30.4)), // House Exterior Wall Right
-                 new RectangleHitbox(v(-30, 28.4), v(-22, 30.4)), // House Top Right Exterior Wall
-                 new RectangleHitbox(v(-11.4, 28.4), v(32, 30.4)), // House Top Left Exterior Wall
-                 new RectangleHitbox(v(30, -29.8), v(32, 30.4)), // House Exterior Left Wall
-                 new RectangleHitbox(v(20, -29.8), v(32, -27.8)), // House Exterior Bottom Left Wall
-                 new RectangleHitbox(v(-30, -29.8), v(9.1, -27.8)), // House Exterior Bottom Right Wall
+                new RectangleHitbox(v(-32, -29.8), v(-30, 30.4)), // House Exterior Wall Right
+                new RectangleHitbox(v(-30, 28.4), v(-22, 30.4)), // House Top Right Exterior Wall
+                new RectangleHitbox(v(-11.4, 28.4), v(32, 30.4)), // House Top Left Exterior Wall
+                new RectangleHitbox(v(30, -29.8), v(32, 30.4)), // House Exterior Left Wall
+                new RectangleHitbox(v(20, -29.8), v(32, -27.8)), // House Exterior Bottom Left Wall
+                new RectangleHitbox(v(-30, -29.8), v(9.1, -27.8)) // House Exterior Bottom Right Wall
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
                 particle: "wall_particle"
             }
-        },
+        }
     ]
 );
