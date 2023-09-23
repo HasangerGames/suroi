@@ -10,14 +10,10 @@ import {
     SpectateActions
 } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import {
-    HealingItems,
-    HealType
-} from "../../../common/src/definitions/healingItems";
+import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Skins } from "../../../common/src/definitions/skins";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { Crosshairs } from "../../../common/src/definitions/crosshairs";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { isMobile } from "pixi.js";
@@ -33,15 +29,11 @@ export function setupUI(game: Game): void {
         $("#kill-msg").show();
 
         // Spectating message
-        $("#spectating-msg-info").html(
-            '<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">Player</span>'
-        );
+        $("#spectating-msg-info").html('<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">Player</span>');
         $("#spectating-msg").show();
 
         // Gas message
-        $("#gas-msg-info")
-            .text("Toxic gas is advancing! Move to the safe zone")
-            .css("color", "cyan");
+        $("#gas-msg-info").text("Toxic gas is advancing! Move to the safe zone").css("color", "cyan");
         $("#gas-msg").show();
 
         $("#weapon-ammo-container").show();
@@ -51,9 +43,7 @@ export function setupUI(game: Game): void {
             const killFeedItem = $("<div>");
             killFeedItem.addClass("kill-feed-item");
             // noinspection HtmlUnknownTarget
-            killFeedItem.html(
-                '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
-            );
+            killFeedItem.html('<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant');
             $("#kill-feed").prepend(killFeedItem);
         }
     }
@@ -73,7 +63,9 @@ export function setupUI(game: Game): void {
             this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
         },
         toggle() {
-            this.active ? this.hide() : this.show();
+            this.active
+                ? this.hide()
+                : this.show();
         }
     };
 
@@ -114,10 +106,7 @@ export function setupUI(game: Game): void {
     $("#twitch-featured-name").text(streamer.name);
     $("#twitch-featured-content").attr("href", streamer.link);
 
-    const toggleRotateMessage = (): JQuery =>
-        $("#splash-rotate-message").toggle(
-            window.innerWidth < window.innerHeight
-        );
+    const toggleRotateMessage = (): JQuery => $("#splash-rotate-message").toggle(window.innerWidth < window.innerHeight);
     toggleRotateMessage();
     $(window).on("resize", toggleRotateMessage);
 
@@ -128,19 +117,15 @@ export function setupUI(game: Game): void {
     usernameField.on("input", () => {
         // Remove non-ASCII chars
         if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
-            usernameField.val(
-                stripNonASCIIChars(
-                    // Replace fancy quotes & dashes first, so they don't get stripped out
-                    (usernameField.val() as string)
-                        .replaceAll(/[\u201c\u201d\u201f]/g, '"')
-                        .replaceAll(/[\u2018\u2019\u201b]/g, "'")
-                        .replaceAll(/[\u2013\u2014]/g, "-")
-                )
-            );
+            usernameField.val(stripNonASCIIChars(
+                // Replace fancy quotes & dashes first, so they don't get stripped out
+                (usernameField.val() as string)
+                    .replaceAll(/[\u201c\u201d\u201f]/g, '"')
+                    .replaceAll(/[\u2018\u2019\u201b]/g, "'")
+                    .replaceAll(/[\u2013\u2014]/g, "-")
+            ));
         }
-        localStorageInstance.update({
-            playerName: usernameField.val() as string
-        });
+        localStorageInstance.update({ playerName: usernameField.val() as string });
     });
 
     const serverSelect = $<HTMLSelectElement>("#server-select");
@@ -168,25 +153,17 @@ export function setupUI(game: Game): void {
     });
 
     // todo find a better way to do these two handlers
-    $("#btn-dropdown-more").on("click", (ev) => {
+    $("#btn-dropdown-more").on("click", ev => {
         dropdown.toggle();
         ev.stopPropagation();
     });
 
-    body.on("click", () => {
-        dropdown.hide();
-    });
+    body.on("click", () => { dropdown.hide(); });
 
-    $("#btn-quit-game").on("click", () => {
-        game.endGame();
-    });
-    $("#btn-play-again").on("click", () => {
-        game.endGame();
-    });
+    $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); });
 
-    const sendSpectatePacket = (action: SpectateActions): void => {
-        game.sendPacket(new SpectatePacket(game.playerManager, action));
-    };
+    const sendSpectatePacket = (action: SpectateActions): void => { game.sendPacket(new SpectatePacket(game.playerManager, action)); };
 
     $("#btn-spectate").on("click", () => {
         sendSpectatePacket(SpectateActions.BeginSpectating);
@@ -194,21 +171,13 @@ export function setupUI(game: Game): void {
         game.map.indicator.setFrame("player_indicator");
     });
 
-    $("#btn-spectate-previous").on("click", () => {
-        sendSpectatePacket(SpectateActions.SpectatePrevious);
-    });
+    $("#btn-spectate-previous").on("click", () => { sendSpectatePacket(SpectateActions.SpectatePrevious); });
     $("#btn-report").on("click", () => {
-        if (
-            confirm(
-                "Are you sure you want to report this player?\nPlayers should only be reported for teaming or hacking."
-            )
-        ) {
+        if (confirm("Are you sure you want to report this player?\nPlayers should only be reported for teaming or hacking.")) {
             sendSpectatePacket(SpectateActions.Report);
         }
     });
-    $("#btn-spectate-next").on("click", () => {
-        sendSpectatePacket(SpectateActions.SpectateNext);
-    });
+    $("#btn-spectate-next").on("click", () => { sendSpectatePacket(SpectateActions.SpectateNext); });
 
     $("#btn-resume-game").on("click", () => gameMenu.hide());
     $("#btn-fullscreen").on("click", () => {
@@ -245,12 +214,9 @@ export function setupUI(game: Game): void {
     $("#close-report").on("click", () => $("#report-modal").fadeOut(250));
 
     $("#btn-copy-report-id").on("click", () => {
-        navigator.clipboard
-            .writeText($("#report-id-input").val() as string)
+        navigator.clipboard.writeText($("#report-id-input").val() as string)
             .then(() => {
-                $("#btn-copy-report-id").html(
-                    '<i class="fa-solid fa-check"></i> Copied'
-                );
+                $("#btn-copy-report-id").html('<i class="fa-solid fa-check"></i> Copied');
             })
             .catch(() => {
                 alert("Unable to copy report ID. Please copy it manually.");
@@ -259,29 +225,16 @@ export function setupUI(game: Game): void {
 
     // Load skins
     const updateSplashCustomize = (skinID: string): void => {
-        $("#skin-base").css(
-            "background-image",
-            `url("./img/game/skins/${skinID}_base.svg")`
-        );
-        $("#skin-left-fist, #skin-right-fist").css(
-            "background-image",
-            `url("./img/game/skins/${skinID}_fist.svg")`
-        );
+        $("#skin-base").css("background-image", `url("./img/game/skins/${skinID}_base.svg")`);
+        $("#skin-left-fist, #skin-right-fist").css("background-image", `url("./img/game/skins/${skinID}_fist.svg")`);
     };
     updateSplashCustomize(localStorageInstance.config.loadout.skin);
     for (const skin of Skins) {
-        if (
-            skin.notInLoadout ??
-            (skin.roleRequired !== undefined &&
-                skin.roleRequired !== localStorageInstance.config.role)
-        ) {
-            continue;
-        }
+        if (skin.notInLoadout ?? (skin.roleRequired !== undefined && skin.roleRequired !== localStorageInstance.config.role)) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
-        const skinItem =
-            $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
+        const skinItem = $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
   <div class="skins-list-item">
     <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
     <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
@@ -289,7 +242,7 @@ export function setupUI(game: Game): void {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function () {
+        skinItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
@@ -307,12 +260,11 @@ export function setupUI(game: Game): void {
     let selectedEmoteSlot: string | undefined;
     for (const emote of Emotes.definitions) {
         // noinspection CssUnknownTarget
-        const emoteItem =
-            $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
+        const emoteItem = $(`<div id="emote-${emote.idString}" class="emotes-list-item-container">
   <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
   <span class="emote-name">${emote.name}</span>
 </div>`);
-        emoteItem.on("click", function () {
+        emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
             localStorageInstance.update({
                 loadout: {
@@ -321,86 +273,34 @@ export function setupUI(game: Game): void {
                 }
             });
             $(this).addClass("selected").siblings().removeClass("selected");
-            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
-                "background-image",
-                `url("./img/game/emotes/${emote.idString}.svg")`
-            );
+            $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`)
+                .css("background-image", `url("./img/game/emotes/${emote.idString}.svg")`);
         });
         $("#emotes-list").append(emoteItem);
     }
-    for (const slot of ["top", "right", "bottom", "left"] as Array<
-        "top" | "right" | "bottom" | "left"
-    >) {
+    for (const slot of ["top", "right", "bottom", "left"] as Array<"top" | "right" | "bottom" | "left">) {
         $(`#emote-customize-wheel > .emote-${slot}`)
-            .css(
-                "background-image",
-                `url("./img/game/emotes/${
-                    localStorageInstance.config.loadout[`${slot}Emote`]
-                }.svg")`
-            )
+            .css("background-image", `url("./img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]}.svg")`)
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
-                    );
-                    $(".emotes-list-item-container")
-                        .removeClass("selected")
-                        .css("cursor", "pointer");
-                    $(
-                        `#emote-${
-                            localStorageInstance.config.loadout[`${slot}Emote`]
-                        }`
-                    ).addClass("selected");
+                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
+                    $(`#emote-${localStorageInstance.config.loadout[`${slot}Emote`]}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        'url("./img/misc/emote_wheel.svg")'
-                    );
-                    $(".emotes-list-item-container")
-                        .removeClass("selected")
-                        .css("cursor", "default");
+                    $("#emote-customize-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "default");
                 }
             });
     }
-
-    // Load crosshairs
-    for (const crosshair of Crosshairs.definitions) {
-        const crosshairItem =
-            $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
-        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg')"></div>
-        <span class="crosshair-name">${crosshair.name}</span>
-        </div>`);
-
-        crosshairItem.on("click", function () {
-            localStorageInstance.update({
-                loadout: {
-                    ...localStorageInstance.config.loadout,
-                    crosshair: crosshair.idString
-                }
-            });
-            $(this).addClass("selected").siblings().removeClass("selected");
-        });
-        $("#crosshairs-list").append(crosshairItem);
-    }
-    $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
-        "selected"
-    );
 
     // Disable context menu
-    $("#game-ui").on("contextmenu", (e) => {
-        e.preventDefault();
-    });
+    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
 
     // Load settings values and event listeners
 
-    function addSliderListener(
-        elementId: string,
-        settingName: keyof Config,
-        callback?: (value: number) => void
-    ): void {
+    function addSliderListener(elementId: string, settingName: keyof Config, callback?: (value: number) => void): void {
         const element = $(elementId)[0] as HTMLInputElement;
         if (!element) console.error("Invalid element id");
 
@@ -413,16 +313,10 @@ export function setupUI(game: Game): void {
             callback?.(value);
         });
 
-        element.value = (
-            localStorageInstance.config[settingName] as number
-        ).toString();
+        element.value = (localStorageInstance.config[settingName] as number).toString();
     }
 
-    function addCheckboxListener(
-        elementId: string,
-        settingName: keyof Config,
-        callback?: (value: boolean) => void
-    ): void {
+    function addCheckboxListener(elementId: string, settingName: keyof Config, callback?: (value: boolean) => void): void {
         const element = $(elementId)[0] as HTMLInputElement;
 
         element.addEventListener("input", () => {
@@ -443,13 +337,9 @@ export function setupUI(game: Game): void {
     addCheckboxListener("#toggle-anonymous-player", "anonymousPlayers");
 
     // Music volume
-    addSliderListener(
-        "#slider-music-volume",
-        "musicVolume",
-        (value: number) => {
-            game.music.volume(value);
-        }
-    );
+    addSliderListener("#slider-music-volume", "musicVolume", (value: number) => {
+        game.music.volume(value);
+    });
 
     // SFX volume
     addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
@@ -457,13 +347,9 @@ export function setupUI(game: Game): void {
     });
 
     // Master volume
-    addSliderListener(
-        "#slider-master-volume",
-        "masterVolume",
-        (value: number) => {
-            Howler.volume(value);
-        }
-    );
+    addSliderListener("#slider-master-volume", "masterVolume", (value: number) => {
+        Howler.volume(value);
+    });
     Howler.volume(localStorageInstance.config.masterVolume);
 
     // Old menu music
@@ -485,10 +371,7 @@ export function setupUI(game: Game): void {
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
     // Client-side prediction toggle
-    addCheckboxListener(
-        "#toggle-client-side-prediction",
-        "clientSidePrediction"
-    );
+    addCheckboxListener("#toggle-client-side-prediction", "clientSidePrediction");
 
     // Text kill feed toggle
     addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
@@ -505,21 +388,13 @@ export function setupUI(game: Game): void {
     addSliderListener("#slider-joystick-transparency", "joystickTransparency");
 
     // Minimap stuff
-    addSliderListener(
-        "#slider-minimap-transparency",
-        "minimapTransparency",
-        () => {
-            game.map.updateTransparency();
-        }
-    );
+    addSliderListener("#slider-minimap-transparency", "minimapTransparency", () => {
+        game.map.updateTransparency();
+    });
 
-    addSliderListener(
-        "#slider-big-map-transparency",
-        "bigMapTransparency",
-        () => {
-            game.map.updateTransparency();
-        }
-    );
+    addSliderListener("#slider-big-map-transparency", "bigMapTransparency", () => {
+        game.map.updateTransparency();
+    });
 
     addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
         game.map.toggleMiniMap(true);
@@ -531,37 +406,27 @@ export function setupUI(game: Game): void {
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
         const slotElement = $(`#weapon-slot-${i + 1}`);
-        slotElement[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent): void => {
-                if (slotElement.hasClass("has-item")) {
-                    e.stopImmediatePropagation();
-                    if (e.button === 0) game.playerManager.equipItem(i);
-                    else if (e.button === 2) game.playerManager.dropItem(i);
-                }
+        slotElement[0].addEventListener("pointerdown", (e: PointerEvent): void => {
+            if (slotElement.hasClass("has-item")) {
+                e.stopImmediatePropagation();
+                if (e.button === 0) game.playerManager.equipItem(i);
+                else if (e.button === 2) game.playerManager.dropItem(i);
             }
-        );
+        });
     }
 
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${
-            scope.idString
-        }-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${
-                scope.idString
-            }.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(scope.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.playerManager.useItem(scope.idString);
+            e.stopPropagation();
+        });
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }
@@ -570,26 +435,19 @@ export function setupUI(game: Game): void {
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${
-                item.idString
-            }.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
-                Restores ${item.restoreAmount}${
-            item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-        }
+                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(item.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.playerManager.useItem(item.idString);
+            e.stopPropagation();
+        });
     }
 
     for (const ammo of Ammos) {
@@ -613,26 +471,19 @@ export function setupUI(game: Game): void {
         });
 
         // Reload button
-        $("#btn-reload")
-            .show()
-            .on("click", () => {
-                game.playerManager.reload();
-            });
+        $("#btn-reload").show().on("click", () => {
+            game.playerManager.reload();
+        });
 
         // Emote button & wheel
         $("#emote-wheel")
             .css("top", "50%")
             .css("left", "50%")
             .css("transform", "translate(-50%, -50%)");
-        $("#btn-emotes")
-            .show()
-            .on("click", () => {
-                $("#emote-wheel").show();
-            });
-        const createEmoteWheelListener = (
-            slot: string,
-            action: InputActions
-        ): void => {
+        $("#btn-emotes").show().on("click", () => {
+            $("#emote-wheel").show();
+        });
+        const createEmoteWheelListener = (slot: string, action: InputActions): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
                 game.playerManager.action = action;
@@ -645,20 +496,14 @@ export function setupUI(game: Game): void {
         createEmoteWheelListener("left", InputActions.LeftEmoteSlot);
 
         // Game menu
-        $("#btn-game-menu")
-            .show()
-            .on("click", () => {
-                $("#game-menu").toggle();
-            });
+        $("#btn-game-menu").show().on("click", () => {
+            $("#game-menu").toggle();
+        });
     }
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if (
-            $("canvas").hasClass("active") &&
-            localStorageInstance.config.leaveWarning &&
-            !game.gameOver
-        ) {
+        if ($("canvas").hasClass("active") && localStorageInstance.config.leaveWarning && !game.gameOver) {
             e.preventDefault();
         }
     });
@@ -668,29 +513,16 @@ export function setupUI(game: Game): void {
         const value = +element.value;
         const max = +element.max;
         const min = +element.min;
-        const x = ((value - min) / (max - min)) * 100;
-        $(element).css(
-            "--background",
-            `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`
-        );
-        $(element)
-            .siblings(".range-input-value")
-            .text(
-                element.id !== "slider-joystick-size"
-                    ? `${value * 100}%`
-                    : value
-            );
+        const x = (value - min) / (max - min) * 100;
+        $(element).css("--background", `linear-gradient(to right, #ff7500 0%, #ff7500 ${x}%, #f8f9fa ${x}%, #f8f9fa 100%)`);
+        $(element).siblings(".range-input-value").text(element.id !== "slider-joystick-size" ? `${value * 100}%` : value);
     }
 
-    $("input[type=range]")
-        .on("input", (e) => {
-            updateRangeInput(e.target as HTMLInputElement);
-        })
-        .each((_i, element) => {
-            updateRangeInput(element as HTMLInputElement);
-        });
+    $("input[type=range]").on("input", (e) => {
+        updateRangeInput(e.target as HTMLInputElement);
+    }).each((_i, element) => { updateRangeInput(element as HTMLInputElement); });
 
-    $(".tab").on("click", (ev) => {
+    $(".tab").on("click", ev => {
         const tab = $(ev.target);
 
         tab.siblings().removeClass("active");

@@ -274,9 +274,8 @@ export function setupUI(game: Game): void {
             skin.notInLoadout ??
             (skin.roleRequired !== undefined &&
                 skin.roleRequired !== localStorageInstance.config.role)
-        ) {
+        )
             continue;
-        }
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -373,7 +372,7 @@ export function setupUI(game: Game): void {
         <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg')"></div>
         <span class="crosshair-name">${crosshair.name}</span>
         </div>`);
-
+        
         crosshairItem.on("click", function () {
             localStorageInstance.update({
                 loadout: {
@@ -382,12 +381,9 @@ export function setupUI(game: Game): void {
                 }
             });
             $(this).addClass("selected").siblings().removeClass("selected");
-        });
-        $("#crosshairs-list").append(crosshairItem);
+        }
+
     }
-    $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
-        "selected"
-    );
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {

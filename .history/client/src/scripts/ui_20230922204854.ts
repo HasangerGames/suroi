@@ -385,9 +385,7 @@ export function setupUI(game: Game): void {
         });
         $("#crosshairs-list").append(crosshairItem);
     }
-    $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
-        "selected"
-    );
+    #()
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {

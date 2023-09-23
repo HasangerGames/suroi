@@ -383,11 +383,8 @@ export function setupUI(game: Game): void {
             });
             $(this).addClass("selected").siblings().removeClass("selected");
         });
-        $("#crosshairs-list").append(crosshairItem);
+        $()
     }
-    $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
-        "selected"
-    );
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {

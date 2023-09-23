@@ -220,14 +220,14 @@
         font-weight: bold;
     }
 
-    #crosshairs-list {
+    #crosshair-list {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         height: 100%;
         overflow-y: scroll;
 
-        .crosshairs-list-item-container {
+        .crosshair-list-item-container {
             width: 140px;
             height: 170px;
             padding: 8px;
@@ -245,13 +245,34 @@
             }
         }
 
-        .crosshairs-list-item {
+        .crosshair-list-item {
             position: relative;
             width: 102px;
             height: 98px;
+
+            .skin-base {
+                position: relative;
+                top: 0;
+                left: 6px;
+                width: 90px;
+                height: 90px;
+                transform: rotate(90deg);
+            }
+
+            .skin-left-fist, .skin-right-fist {
+                position: absolute;
+                top: 64px;
+                width: 34px;
+                height: 34px;
+                transform: rotate(90deg);
+            }
+
+            .skin-right-fist {
+                left: 68px;
+            }
         }
 
-        .crosshair-name {
+        .skin-name {
             font-weight: bold;
             @include text-shadow;
             text-align: center;
