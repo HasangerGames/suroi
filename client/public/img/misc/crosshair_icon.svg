@@ -24,8 +24,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="25.342986"
+<<<<<<< HEAD
      inkscape:cx="6.3528426"
      inkscape:cy="6.4120305"
+=======
+     inkscape:cx="6.3528427"
+     inkscape:cy="6.372572"
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
      inkscape:window-width="1920"
      inkscape:window-height="1166"
      inkscape:window-x="-11"
@@ -39,6 +44,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <circle
+<<<<<<< HEAD
        style="fill:#ffffff;stroke-width:0.106051"
        id="path2"
        cx="2.1243513"
@@ -82,6 +88,49 @@
        transform="rotate(90)" />
     <circle
        style="fill:none;stroke-width:0.465;stroke:#ffffff;stroke-opacity:1;stroke-dasharray:none"
+=======
+       style="fill:#FFFFFF;stroke-width:0.0619049"
+       id="path2"
+       cx="2.119453"
+       cy="2.1166673"
+       r="0.18254788" />
+    <rect
+       style="fill:#FFFFFF;stroke-width:0.0723768"
+       id="rect2"
+       width="1.0583333"
+       height="0.26458332"
+       x="0.0055726767"
+       y="1.9843756"
+       ry="0.13229166" />
+    <rect
+       style="fill:#FFFFFF;stroke-width:0.0723768"
+       id="rect2-1"
+       width="1.0583333"
+       height="0.26458332"
+       x="1.0728836e-06"
+       y="-2.2489583"
+       ry="0.13229166"
+       transform="rotate(90)" />
+    <rect
+       style="fill:#FFFFFF;stroke-width:0.0723768"
+       id="rect2-0"
+       width="1.0583333"
+       height="0.26458332"
+       x="3.175"
+       y="1.9843756"
+       ry="0.13229166" />
+    <rect
+       style="fill:#FFFFFF;stroke-width:0.0723768"
+       id="rect2-2"
+       width="1.0583333"
+       height="0.26458332"
+       x="3.1750002"
+       y="-2.2489583"
+       ry="0.13229166"
+       transform="rotate(90)" />
+    <circle
+       style="fill:none;stroke-width:0.26458333;stroke:#ffffff;stroke-opacity:1;stroke-dasharray:none"
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
        id="path1-7"
        cx="2.1166666"
        cy="2.1166673"

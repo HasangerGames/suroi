@@ -253,14 +253,24 @@
         }
 
         .crosshairs-list-item {
+<<<<<<< HEAD
             width: 84px;
             height: 84px;
             flex-shrink: 0;
+=======
+            position: relative;
+            width: 102px;
+            height: 98px;
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
         }
 
         .crosshair-name {
             font-weight: bold;
             @include text-shadow;
+<<<<<<< HEAD
+=======
+            text-align: center;
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
         }
     }
 

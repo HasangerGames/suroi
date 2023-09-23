@@ -26,6 +26,7 @@ import {
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
+import { enableCustomCursor, disableCustomCursor } from "./utils/customCursor";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
 import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
@@ -102,12 +103,16 @@ export class Game {
     playersContainer = new Container();
     bulletsContainer = new Container();
 
+<<<<<<< HEAD
     music = new Howl({
         src: localStorageInstance.config.oldMenuMusic
             ? "./audio/music/old_menu_music.mp3"
             : "./audio/music/menu_music.mp3",
         loop: true
     });
+=======
+    music = new Howl({ src: localStorageInstance.config.oldMenuMusic ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
 
     musicPlaying = false;
 
@@ -156,6 +161,8 @@ export class Game {
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
+
+            enableCustomCursor();
 
             if (!UI_DEBUG_MODE) {
                 clearTimeout(gameOverScreenTimeout);
@@ -234,10 +241,12 @@ export class Game {
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
             enablePlayButton();
+            disableCustomCursor();
         };
 
         this.socket.onclose = (): void => {
             enablePlayButton();
+            disableCustomCursor();
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -252,6 +261,7 @@ export class Game {
 
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
+        disableCustomCursor();
 
         if (this.activePlayer?.actionSound) {
             this.soundManager.stop(this.activePlayer.actionSound);
@@ -623,13 +633,27 @@ export class Game {
                             prepareInteractText();
 
                             if (canInteract) {
+<<<<<<< HEAD
                                 // noinspection HtmlUnknownTarget
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> f7bb2d3a (feat: add custom crosshairs (WIP))
+                                $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
+=======
+                                // noinspection HtmlUnknownTarget
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
                                 $("#interact-key")
                                     .html(
                                         '<img src="./img/misc/tap-icon.svg" alt="Tap">'
                                     )
                                     .addClass("active")
                                     .show();
+<<<<<<< HEAD
+=======
+>>>>>>> acfa92a8 (feat: add custom crosshairs (WIP))
+>>>>>>> b290d303401844242543b3a375c55ad7befd4527
                             } else {
                                 $("#interact-key").removeClass("active").hide();
                             }
