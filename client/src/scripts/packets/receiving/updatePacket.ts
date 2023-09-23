@@ -20,11 +20,11 @@ function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
     // eslint-disable-next-line yoda
     if (0 < value && value <= 1) return 1;
-    return value;
+    return Math.round(value);
 }
 
 function safeRound(value: number): number {
-    return adjustForLowValues(Math.round(value));
+    return adjustForLowValues(value);
 }
 
 export class UpdatePacket extends ReceivingPacket {
