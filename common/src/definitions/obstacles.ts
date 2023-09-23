@@ -1127,7 +1127,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                 new RectangleHitbox(v(-32, -29.8), v(-30, 30.4)),
+                 new RectangleHitbox(v(-32, -29.8), v(-30, 30.4)), // House Exterior Wall Right
+                 new RectangleHitbox(v(-30, 28.4), v(-22, 30.4)), // House Top Right Exterior Wall
+                 new RectangleHitbox(v(-11.4, 28.4), v(32, 30.4)), // House Top Left Exterior Wall
+                 new RectangleHitbox(v(30, -29.8), v(32, 30.4)), // House Exterior Left Wall
+                 new RectangleHitbox(v(20, -29.8), v(32, -27.8)), // House Exterior Bottom Left Wall
+                 new RectangleHitbox(v(-30, -29.8), v(9.1, -27.8)), // House Exterior Bottom Right Wall
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
