@@ -375,7 +375,6 @@ export function setupUI(game: Game): void {
     }
 
     // Load crosshairs
-<<<<<<< HEAD
     localStorageInstance.update({
         ...localStorageInstance.config,
         crosshairDimensions: [16, 16],
@@ -399,8 +398,6 @@ export function setupUI(game: Game): void {
             }, crosshair`
         });
     }
-=======
->>>>>>> b290d303401844242543b3a375c55ad7befd4527
     for (const crosshair of Crosshairs.definitions) {
         const crosshairItem =
             $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
