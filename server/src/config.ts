@@ -132,7 +132,7 @@ export const Config = {
 
     mapName: "small_house",
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.Center },
 
     playerLimit: 80,
 

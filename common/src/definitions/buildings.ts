@@ -848,8 +848,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             },
             {
-                id: "house_wall_3",
-                position: v(5, -6.75),
+                id: "house_wall_1",
+                position: v(6.20, -6.75),
                 rotation: 2
             },
             {
@@ -859,9 +859,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "door",
-                position: v(-6.3, -6.75),
+                position: v(-4, -6.75),
                 rotation: 2
             },
+            {
+                id: "small_house_exterior",
+                position: v(0, 0),
+                rotation: 2
+            }
         ]
     },
 ]);

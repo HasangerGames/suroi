@@ -1112,6 +1112,28 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "furniture_particle"
             }
-        }
+        },
+        {
+            idString: "small_house_exterior",
+            name: "Small House Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                 new RectangleHitbox(v(-32, -29.8), v(-30, 30.4)),
+            ]),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "wall_particle"
+            }
+        },
     ]
 );
