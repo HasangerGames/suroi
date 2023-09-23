@@ -4,16 +4,18 @@ Most sound effects edited by Henry Sanger
 
 Guns:
   M3K switch - Dablux
-  M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios: https://www.fesliyanstudios.com/play-mp3/7548,      https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
+  M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302 -> https://www.fesliyanstudios.com/play-mp3/7548
 
   AUG reload & switch: Dablux
 
   Model 37 fire - "Shotgun Blast" by Jim Rogers: https://soundbible.com/1919-Shotgun-Blast.html
 
   HP18 fire - "Normal Shotgun" by Soundeffects: https://soundbible.com/2020-Normal-Shotgun.html
-  HP18 reload - "Reloading Magazine" by Fesliyan Studios:https://www.fesliyanstudios.com/play-mp3/7550, https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
+  HP18 reload - "Reloading Magazine" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302 -> https://www.fesliyanstudios.com/play-mp3/7550
 
   ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
+
+  Flues fire - "080902_Shotgun" from Pixabay: https://pixabay.com/sound-effects/080902-shotgun-39753/
 
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 

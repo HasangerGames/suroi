@@ -1,7 +1,7 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { ObjectCategory } from "../../../../common/src/constants";
+import { DEFAULT_USERNAME, ObjectCategory } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
@@ -27,7 +27,7 @@ export class DeathMarker extends GameObject {
         super(game, type, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text(localStorageInstance.config.anonymousPlayers ? "Player" : "",
+        this.playerNameText = new Text(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",

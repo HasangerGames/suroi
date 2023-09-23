@@ -5,9 +5,9 @@ import { randomKillWord } from "../../utils/misc";
 
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { localStorageInstance } from "../../utils/localStorageHandler";
-import { ANONYMOUS_PLAYERS_NAME } from "../../utils/constants";
+import { DEFAULT_USERNAME } from "../../../../../common/src/constants";
 
-let timeoutId: number;
+let timeoutID: number;
 
 export class KillPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -17,17 +17,17 @@ export class KillPacket extends ReceivingPacket {
 
         $("#kill-msg-kills").text(killText);
         $("#kill-msg-word").text(randomKillWord());
-        $("#kill-msg-player-name").html(stream.readPlayerNameWithColor()); // name
-        if (localStorageInstance.config.anonymousPlayers) $("#kill-msg-player-name").html(ANONYMOUS_PLAYERS_NAME);
+        const name = stream.readPlayerNameWithColor();
+        $("#kill-msg-player-name").html(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name);
         $("#kill-msg-weapon-used").text(stream.readBoolean() ? ` with ${stream.readObjectType().definition.name}${stream.readBoolean() ? ` (streak: ${stream.readUint8()})` : ""}` : "");
 
         const killModal = $("#kill-msg");
         killModal.fadeIn(350, (): void => {
             // clear the previous fade out timeout
             // so it won't fade away too fast if the player makes more than one kill in a short time span
-            if (timeoutId !== undefined) clearTimeout(timeoutId);
+            if (timeoutID !== undefined) clearTimeout(timeoutID);
 
-            timeoutId = window.setTimeout((): void => {
+            timeoutID = window.setTimeout((): void => {
                 killModal.fadeOut(350);
             }, 3000);
         });
