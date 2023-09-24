@@ -139,3 +139,15 @@
 .btn-bind.active {
     outline: 5px solid $blue;
 }
+
+.rules-close-btn {
+    position: absolute;
+    transform: translate(150px, 2px);
+    z-index: 10;
+    border-radius: 50%;
+    background-color: rgb(247, 111, 111);
+    border: 0px;
+    text-align: center;
+    width: 25px; 
+    height:25px;
+}
