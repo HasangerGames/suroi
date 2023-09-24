@@ -53,8 +53,7 @@ export class GameOverPacket extends ReceivingPacket {
         if (won) {
             $("#game-over-rank").text(`#${aliveCount}`);
             $("#game-over-rank-mobile").text(`#${aliveCount}`);
-        } 
-        else {
+        } else {
             $("#game-over-rank").text(`#${aliveCount + 1}`);
             $("#game-over-rank-mobile").text(`#${aliveCount + 1}`);
         }
