@@ -1147,12 +1147,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(2.00, 60.20, v(-31.00, 0.30)), // House Exterior Wall Right
-                RectangleHitbox.fromRect(8.00, 2.00, v(-26.00, 29.40)), // House Top Right Exterior Wall
-                RectangleHitbox.fromRect(43.40, 2.00, v(10.30, 29.40)), // House Top Left Exterior Wall
-                RectangleHitbox.fromRect(2.00, 60.20, v(31.00, 0.30)), // House Exterior Left Wall
-                RectangleHitbox.fromRect(12.00, 2.00, v(26.00, -28.80)), // House Exterior Bottom Left Wall
-                RectangleHitbox.fromRect(39.10, 2.00, v(-10.45, -28.80)) // House Exterior Bottom Right Wall
+                RectangleHitbox.fromRect(2, 9, v(-31, 26)), // Right walls
+                RectangleHitbox.fromRect(2, 22, v(-31, 0.2)),
+                RectangleHitbox.fromRect(2, 9.8, v(-31, -25)),
+
+                // Top walls
+                RectangleHitbox.fromRect(19.8, 2, v(22, 29.5)),
+                RectangleHitbox.fromRect(8.2, 2, v(-26.00, 29.5)),
+                RectangleHitbox.fromRect(14, 2, v(-4.6, 29.5)),
+
+                RectangleHitbox.fromRect(2, 32, v(30.9, 13.5)), // Left Wall
+                RectangleHitbox.fromRect(2, 16, v(30.9, -20.5)),
+
+                RectangleHitbox.fromRect(12.3, 2, v(25.8, -28.9)), // Bottom Left Wall
+                RectangleHitbox.fromRect(39.4, 2, v(-10.45, -28.9)) // Bottom Right Wall
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,

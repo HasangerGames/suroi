@@ -152,7 +152,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         scopeHitbox: new ComplexHitbox([
             RectangleHitbox.fromRect(34.50, 42.00, v(29.25, -15.50)), // Garage
             RectangleHitbox.fromRect(60.50, 56.00, v(-17.25, -8.50)), // Main House
-            RectangleHitbox.fromRect(v(-39, 19), v(-24, 30)) // Doorstep
+            RectangleHitbox.fromRect(15.00, 11.00, v(-31.50, 24.50)) // Doorstep
         ]),
         floorImages: [{
             key: "house_floor",
@@ -545,7 +545,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
             { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
             { color: 0xb2b200, bounds: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(v(-10 + 25, 2 + 22), v(123, 4 + 22)) }
+            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(108.00, 2.00, v(69.00, 25.00)) }
         ],
         floors: [
             {
@@ -813,7 +813,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingHitbox: new ComplexHitbox([
             RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
             RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75)),
-            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25))
+            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25)),
+            new CircleHitbox(5, v(-7.2, -29.5)),
+            new CircleHitbox(5, v(-31, 7.5)),
+            new CircleHitbox(5, v(31, 15.4)),
+            new CircleHitbox(5, v(31, -15.9)),
         ]),
         scopeHitbox: new ComplexHitbox([
             RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
@@ -851,12 +855,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Bedroom Bottom Right
             {
                 id: "house_wall_1",
-                position: v(6.20, -6.75),
+                position: v(5.4, -6.75),
                 rotation: 2
             }, // Bedroom Bottom Left
             {
                 id: "house_wall_2",
-                position: v(9.7, -18),
+                position: v(8.85, -18),
                 rotation: 1
             }, // Bedroom Door
             {
@@ -886,17 +890,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }, // Front Door
             {
                 id: "door",
-                position: v(-15, 29),
+                position: v(-14.8, 29),
                 rotation: 2
             },
             {
                 id: "door",
-                position: v(16, -29.5),
+                position: v(16.2, -29.5),
                 rotation: 2
             }, // Living Room Cough
             {
                 id: "couch",
-                position: v(-22, -2),
+                position: v(-21.6, -1.8),
                 rotation: 3
             },
             // Living Room Drawer
@@ -957,12 +961,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }, // Bedroom Bookshelf
             {
                 id: "bookshelf",
-                position: v(5.75, -22),
+                position: v(5.5, -22),
                 rotation: 1
             }, // Bedroom Window
             {
                 id: "window",
-                position: v(-7.35, -29.5),
+                position: v(-7.2, -29.5),
                 rotation: 1
             }, // Living Room Window
             {
