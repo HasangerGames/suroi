@@ -15,21 +15,39 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
-export function mergeDeep(target: unknown, ...sources: unknown[]): unknown {
+type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+
+export function mergeDeep<T extends Record<string, unknown>>(target: T, ...sources: Array<DeepPartial<T>>): T {
     if (!sources.length) return target;
 
     const [source, ...rest] = sources;
 
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                mergeDeep((target[key] ??= {}), source[key]);
-                continue;
-            }
+    for (const _key in source) {
+        const key: keyof T = _key;
 
-            target[key] = source[key];
+        const [sourceProp, targetProp] = [source[key], target[key]];
+        if (isObject(targetProp)) {
+            mergeDeep(targetProp, sourceProp as DeepPartial<T[keyof T] & Record<string, unknown>>);
+            continue;
         }
+
+        target[key] = sourceProp as T[keyof T];
     }
 
     return mergeDeep(target, ...rest);
+}
+
+export function cloneDeep<T>(object: T): T {
+    if (!isObject(object)) return object;
+
+    const clone = new (Object.getPrototypeOf(object).constructor)();
+
+    for (const [key, desc] of Object.entries(Object.getOwnPropertyDescriptors(object))) {
+        const clonedProperty = object[key as keyof T];
+
+        desc.value = cloneDeep(clonedProperty);
+        Object.defineProperty(clone, key, desc);
+    }
+
+    return clone;
 }

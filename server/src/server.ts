@@ -89,7 +89,9 @@ export function allowJoin(gameID: number): boolean {
 
 const decoder = new TextDecoder();
 function getIP(res: HttpResponse, req: HttpRequest): string {
-    return Config.ipHeader ? req.getHeader(Config.ipHeader) : decoder.decode(res.getRemoteAddressAsText());
+    return Config.ipHeader
+        ? req.getHeader(Config.ipHeader) ?? decoder.decode(res.getRemoteAddressAsText())
+        : decoder.decode(res.getRemoteAddressAsText());
 }
 
 const simultaneousConnections: Record<string, number> = {};

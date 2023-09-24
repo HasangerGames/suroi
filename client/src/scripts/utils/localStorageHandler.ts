@@ -55,6 +55,7 @@ export interface Config {
     cameraShake: boolean
     showFPS: boolean
     showPing: boolean
+    showCoordinates: boolean
     clientSidePrediction: boolean
     textKillFeed: boolean
     rotationSmoothing: boolean
@@ -62,6 +63,7 @@ export interface Config {
     mobileControls: boolean
     minimapMinimized: boolean
     leaveWarning: boolean
+    hideRulesButton: boolean
     joystickSize: number
     joystickTransparency: number
     minimapTransparency: number
@@ -124,6 +126,7 @@ export const defaultConfig: Config = {
     cameraShake: true,
     showFPS: false,
     showPing: false,
+    showCoordinates: false,
     clientSidePrediction: true,
     textKillFeed: true,
     rotationSmoothing: true,
@@ -131,6 +134,7 @@ export const defaultConfig: Config = {
     mobileControls: true,
     minimapMinimized: false,
     leaveWarning: true,
+    hideRulesButton: false,
     joystickSize: 150,
     joystickTransparency: 0.8,
     minimapTransparency: 0.8,
