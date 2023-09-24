@@ -1047,11 +1047,25 @@
     flex-direction: column;
     @include text-shadow;
 
+    #game-over-rank-container-mobile {
+        display: none;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        padding: 2px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+
+        #game-over-rank-mobile {
+            color: $orange;
+            margin-left: 10px;
+        }
+    }
+
     #chicken-dinner {
         filter: drop-shadow(0 0 0.6rem rgba(0, 0, 0, 0.8));
         --size: 100px;
         height: var(--size);
-        width: var(--size);
+        width: 100%;
         margin-top: calc(var(--size) * -1);
     }
 
@@ -1061,11 +1075,15 @@
         margin-bottom: 5px;
     }
 
-    #game-over-rank-container {
+    #game-over-rank-container-pc {
+        display: block;
         font-size: 30px;
+        text-align: center;
         font-weight: bold;
         margin-bottom: 10px;
         padding: 5px;
+        margin-left: 37%;
+        margin-right: 37%;
         border-bottom: 2px solid rgba(255, 255, 255, 0.5);
 
         #game-over-rank {
@@ -1079,10 +1097,16 @@
             --size: 50px;
         }
         #game-over-text {
-            font-size: 20px;
-        }
-        #game-over-rank-container {
             font-size: 15px;
+        }
+        #game-over-overlay {
+            display: flex;
+        }
+        #game-over-rank-container-pc {
+            display: none;
+        }
+        #game-over-rank-container-mobile {
+            display: block;
         }
     }
 }
@@ -1102,7 +1126,7 @@
     }
 
     #game-over-player-name {
-        margin-bottom: 20px;
+        margin-bottom: 5px;
     }
 
     .modal-item {

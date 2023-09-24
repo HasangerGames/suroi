@@ -420,6 +420,12 @@ export function setupUI(game: Game): void {
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "leaveWarning");
 
+    // Hide rules button
+    addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
+        $("#btn-rules").toggle(!value);
+    });
+    $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
+
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
         const slotElement = $(`#weapon-slot-${i + 1}`);

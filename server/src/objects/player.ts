@@ -32,7 +32,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
@@ -705,6 +705,19 @@ export class Player extends GameObject {
                     itemType.definition.noDrop === true ||
                     ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
                 ) continue;
+
+                if (itemType.definition.itemType === ItemType.Ammo) {
+                    const dropCount = Math.floor(count / 60);
+
+                    for (let i = 0; i < dropCount; i++) {
+                        this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, 60);
+                    }
+                    if (count % 60 !== 0) {
+                        this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, count % 60);
+                        this.inventory.items[item] = 0;
+                        continue;
+                    }
+                }
 
                 this.game.addLoot(itemType, this.position, count);
                 this.inventory.items[item] = 0;
