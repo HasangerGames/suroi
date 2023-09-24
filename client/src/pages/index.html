@@ -52,11 +52,21 @@
           </div>
           <div id="splash-options">
             <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
-            <div id="server-select-container">
-              <select name="server-select" id="server-select">
-              </select>
+            <div id="server-select" class="dropdown">
+              <button id="btn-server-select">
+                <span id="server-name">-</span>
+                <span style="margin-left: auto">
+                  <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                  <span id="server-player-count">-</span>
+                </span>
+                <span style="margin-left: 5px">
+                  <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+                  <span id="server-ping">-</span>
+                </span>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <ul class="dropdown-content" id="server-list"></ul>
             </div>
-
             <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->

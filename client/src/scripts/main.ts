@@ -33,42 +33,77 @@ function disablePlayButton(text: string): void {
 async function main(): Promise<void> {
     disablePlayButton("Loading...");
 
-    const serverSelector = $("#server-select");
+    interface RegionInfo {
+        name: string
+        address: string
+        https: boolean
+        playerCount: string
+        ping: number
+    }
+    const regionInfo: Record<string, RegionInfo> = {};
+    let selectedRegion: RegionInfo;
+
+    const updateServerSelector = (): void => {
+        $("#server-name").text(selectedRegion.name);
+        $("#server-player-count").text(selectedRegion.playerCount);
+        $("#server-ping").text(selectedRegion.ping);
+    };
 
     let bestPing = Number.MAX_VALUE;
     let bestRegion;
-
     for (const [regionID, region] of Object.entries(Config.regions)) {
-        serverSelector.append(`<option value="${regionID}">${region.name} - <span id="${regionID}-player-count">?</span> Players</option>`);
-        void (async() => {
-            try {
-                const pingStartTime = Date.now();
-                const count = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
-                const regionPing = Date.now() - pingStartTime;
+        const listItem = $(`
+<li class="server-list-item" data-region="${regionID}">
+  <span class="server-name">${region.name}</span>
+  <span style="margin-left: auto">
+    <img src="./img/misc/player_icon_black.svg" width="16" height="16" alt="Player count">
+    <span class="server-player-count">-</span>
+  </span>
+  <span style="margin-left: 5px">
+    <img src="./img/misc/ping_icon_black.svg" width="16" height="16" alt="Ping">
+    <span class="server-ping">-</span>
+  </span>
+</li>`);
+        $("#server-list").append(listItem);
 
-                console.log(`${regionID}: ${regionPing}ms`);
+        try {
+            const pingStartTime = Date.now();
 
-                $(`#${regionID}-player-count`).text(count);
+            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
+            const ping = Date.now() - pingStartTime;
+            regionInfo[regionID] = { ...region, playerCount, ping };
 
-                if (regionPing < bestPing) {
-                    bestPing = regionPing;
-                    bestRegion = regionID;
-                }
-            } catch (e) {
-                console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+            listItem.find(".server-player-count").text(playerCount);
+            listItem.find(".server-ping").text(ping);
+
+            if (ping < bestPing) {
+                bestPing = ping;
+                bestRegion = regionID;
             }
-        })();
+        } catch (e) {
+            listItem.addClass("server-list-item-disabled");
+            console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+        }
     }
 
-    const regionID = localStorageInstance.config.region ?? bestRegion ?? Config.defaultRegion;
-    serverSelector.val(regionID);
+    selectedRegion = regionInfo[localStorageInstance.config.region ?? bestRegion ?? Config.defaultRegion];
+    updateServerSelector();
+
+    // noinspection JSJQueryEfficiency
+    $("#server-list").on("click", ".server-list-item", function() {
+        const region = $(this).attr("data-region");
+        if (region === undefined) return;
+        const info = regionInfo[region];
+        if (info === undefined) return;
+        selectedRegion = info;
+        updateServerSelector();
+    });
 
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
-        const region = Config.regions[serverSelector.val() as string];
-        const urlPart = `${region.https ? "s" : ""}://${region.address}`;
-        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned", gameID: number }) => {
+        const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
@@ -78,7 +113,6 @@ async function main(): Promise<void> {
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
 
                 if (devPass) address += `&password=${devPass}`;
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
@@ -86,11 +120,22 @@ async function main(): Promise<void> {
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {
-                let message: string | undefined;
-                if (data.message !== undefined) {
-                    message = data.message === "tempBanned" ? "You have been banned for 1 day. Reason: Teaming" : "<strong>You have been permanently banned!</strong><br>Reason: Hacking";
+                let message: string;
+                switch (data.message) {
+                    case "tempBanned":
+                        message = "You have been banned for 1 day. Reason: Teaming";
+                        break;
+                    case "permaBanned":
+                        message = "<strong>You have been permanently banned!</strong><br>Reason: Hacking";
+                        break;
+                    case "rateLimited":
+                        message = "Error joining game.<br>Please try again in a few minutes.";
+                        break;
+                    default:
+                        message = "Error joining game.";
+                        break;
                 }
-                $("#splash-server-message-text").html(message ?? "Error joining game.<br>Please try again in 30 seconds.");
+                $("#splash-server-message-text").html(message);
                 $("#splash-server-message").show();
                 enablePlayButton();
             }
@@ -125,7 +170,7 @@ async function main(): Promise<void> {
         location.search = "";
     }
 
-    // Initialize the game object
+    // Initialize the Application object
 
     const app = new Application({
         resizeTo: window,
