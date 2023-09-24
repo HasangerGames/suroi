@@ -15,3 +15,9 @@ server/bannedIPs.json
 # try to prevent chpster moments from happening
 *.desktop
 *.css
+/.vs/suroi-fresh/FileContentIndex
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/suroi-fresh/v17/.wsuo
+/.vs/suroi-fresh/v17/workspaceFileList.bin
+/.vs/VSWorkspaceState.json
