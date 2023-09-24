@@ -423,8 +423,19 @@ export function setupUI(game: Game): void {
     // Hide rules button
     addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
         $("#btn-rules").toggle(!value);
+        $("#rules-close-btn").toggle(!value);
     });
+
+    $("#rules-close-btn").on("click", () => {
+        $("#btn-rules").toggle(false);
+        $("#rules-close-btn").toggle(false)
+        localStorageInstance.update({
+            hideRulesButton: true
+        }) 
+    })
+
     $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
+    $("#rules-close-btn").toggle(!localStorageInstance.config.hideRulesButton);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {

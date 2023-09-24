@@ -56,11 +56,11 @@ async function main(): Promise<void> {
 <li class="server-list-item" data-region="${regionID}">
   <span class="server-name">${region.name}</span>
   <span style="margin-left: auto">
-    <img src="./img/misc/player_icon_black.svg" width="16" height="16" alt="Player count">
+    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
     <span class="server-player-count">-</span>
   </span>
   <span style="margin-left: 5px">
-    <img src="./img/misc/ping_icon_black.svg" width="16" height="16" alt="Ping">
+    <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
     <span class="server-ping">-</span>
   </span>
 </li>`);
