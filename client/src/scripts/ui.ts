@@ -428,11 +428,11 @@ export function setupUI(game: Game): void {
 
     $("#rules-close-btn").on("click", () => {
         $("#btn-rules").toggle(false);
-        $("#rules-close-btn").toggle(false)
+        $("#rules-close-btn").toggle(false);
         localStorageInstance.update({
             hideRulesButton: true
-        }) 
-    })
+        });
+    });
 
     $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
     $("#rules-close-btn").toggle(!localStorageInstance.config.hideRulesButton);
