@@ -1,7 +1,7 @@
 import {
     vClone,
     v,
-    type Vector, vSub, vMul
+    type Vector, vSub, vMul, vAdd
 } from "./vector";
 import {
     circleCollision,
@@ -166,6 +166,13 @@ export class RectangleHitbox extends Hitbox {
         return new RectangleHitbox(
             v(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y),
             v(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y));
+    }
+
+    static fromRect(width: number, height: number, pos = v(0, 0)): RectangleHitbox {
+        const size = v(width / 2, height / 2);
+        const min = vSub(pos, size);
+        const max = vAdd(pos, size);
+        return new RectangleHitbox(min, max);
     }
 
     collidesWith(that: Hitbox): boolean {

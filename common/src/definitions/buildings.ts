@@ -79,9 +79,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
         name: "Porta Potty",
-        spawnHitbox: new RectangleHitbox(v(-10, -12), v(10, 20)),
-        ceilingHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
-        scopeHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        spawnHitbox: RectangleHitbox.fromRect(20, 32),
+        ceilingHitbox: RectangleHitbox.fromRect(14, 18),
+        scopeHitbox: RectangleHitbox.fromRect(14, 18),
         floorImages: [{
             key: "porta_potty_floor",
             position: v(0, 1.5)
@@ -95,7 +95,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "wood",
-                hitbox: new RectangleHitbox(v(-7, -9), v(7, 9))
+                hitbox: RectangleHitbox.fromRect(14, 18)
             }
         ],
         obstacles: [
@@ -137,22 +137,22 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "house",
         name: "House",
         spawnHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(11, -40), v(52, 11)), // Garage
-            new RectangleHitbox(v(-52, -40), v(16, 28)), // Main House
-            new RectangleHitbox(v(-45, 23), v(-17, 40)) // Doorstep
+            RectangleHitbox.fromRect(41.00, 51.00, v(31.50, -14.50)), // Garage
+            RectangleHitbox.fromRect(68.00, 68.00, v(-18.00, -6.00)), // Main House
+            RectangleHitbox.fromRect(28.00, 17.00, v(-31.00, 31.50)) // Doorstep
         ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -36.5), v(46.5, 5.5)), // Garage
-            new RectangleHitbox(v(-47.5, -36.5), v(13, 19.5)), // Main House
-            new RectangleHitbox(v(-42, 19), v(-21, 35)), // Doorstep
+            RectangleHitbox.fromRect(34.50, 42.00, v(29.25, -15.50)), // Garage
+            RectangleHitbox.fromRect(60.50, 56.00, v(-17.25, -8.50)), // Main House
+            RectangleHitbox.fromRect(21.00, 16.00, v(-31.50, 27.00)), // Doorstep
             new CircleHitbox(5, v(-1.5, -37)), // Living room window
             new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
             new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(12, -36.5), v(46.5, 5.5)), // Garage
-            new RectangleHitbox(v(-47.5, -36.5), v(13, 19.5)), // Main House
-            new RectangleHitbox(v(-39, 19), v(-24, 30)) // Doorstep
+            RectangleHitbox.fromRect(34.50, 42.00, v(29.25, -15.50)), // Garage
+            RectangleHitbox.fromRect(60.50, 56.00, v(-17.25, -8.50)), // Main House
+            RectangleHitbox.fromRect(v(-39, 19), v(-24, 30)) // Doorstep
         ]),
         floorImages: [{
             key: "house_floor",
@@ -165,13 +165,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: new ComplexHitbox([new RectangleHitbox(v(13, -36), v(46, 5.5))]) // Garage
+                hitbox: RectangleHitbox.fromRect(33.00, 41.50, v(29.50, -15.25)) // Garage
             },
             {
                 type: "wood",
                 hitbox: new ComplexHitbox([
-                    new RectangleHitbox(v(-48, -37), v(12, 19)), // Main House
-                    new RectangleHitbox(v(-40.8, 20), v(-22, 34)) // Doorstep
+                    RectangleHitbox.fromRect(60.00, 56.00, v(-18.00, -9.00)), // Main House
+                    RectangleHitbox.fromRect(18.80, 14.00, v(-31.40, 27.00)) // Doorstep
                 ])
             }
         ],
@@ -394,9 +394,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "warehouse",
         name: "Warehouse",
-        spawnHitbox: new RectangleHitbox(v(-30, -44), v(30, 44)),
-        ceilingHitbox: new RectangleHitbox(v(-20, -40), v(20, 40)),
-        scopeHitbox: new RectangleHitbox(v(-20, -35), v(20, 35)),
+        spawnHitbox: RectangleHitbox.fromRect(60.00, 88.00),
+        ceilingHitbox: RectangleHitbox.fromRect(40.00, 80.00),
+        scopeHitbox: RectangleHitbox.fromRect(40.00, 70.00),
         floorImages: [{
             key: "warehouse_floor",
             position: v(0, 0)
@@ -408,7 +408,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: new RectangleHitbox(v(-20, -38), v(20, 38))
+                hitbox: RectangleHitbox.fromRect(40.00, 76.00)
             }
         ],
         obstacles: [
@@ -513,15 +513,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "refinery",
         name: "Refinery",
-        spawnHitbox: new RectangleHitbox(v(-57, -44), v(127, 87)),
+        spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
-            new RectangleHitbox(v(-16, -36), v(49.5, -6.5))
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
         ]),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(-49.5, -36), v(-16, 36)),
-            new RectangleHitbox(v(-16, -36), v(49.5, -6.5)),
-            new RectangleHitbox(v(22, -7), v(35, 0)), // door
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
+            RectangleHitbox.fromRect(13.00, 7.00, v(28.50, -3.50)), // door
             new CircleHitbox(5, v(-16, 18.5)) // window
         ]),
         floorImages: [
@@ -537,24 +537,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
-            { color: 0x595959, bounds: new RectangleHitbox(v(-53, -40), v(123, 83)) }, // base
+            { color: 0x595959, bounds: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50)) }, // base
             { color: 0xb2b200, bounds: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
             { color: 0x505050, bounds: new CircleHitbox(19, v(45.5, 59.1)) },
             { color: 0xb2b200, bounds: new CircleHitbox(21, v(97, 59.1)) },
             { color: 0x505050, bounds: new CircleHitbox(19, v(97, 59.1)) },
-            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10, 2), v(-8, 83)) }, // roads
-            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10 + 25, 2 + 22), v(-8 + 25, 83)) },
-            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10, 2), v(123, 4)) },
-            { color: 0xb2b200, bounds: new RectangleHitbox(v(-10 + 25, 2 + 22), v(123, 4 + 22)) }
+            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
+            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
+            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
+            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(v(-10 + 25, 2 + 22), v(123, 4 + 22)) }
         ],
         floors: [
             {
                 type: "wood",
-                hitbox: new RectangleHitbox(v(-49.5, 9), v(-16, 36))
+                hitbox: RectangleHitbox.fromRect(33.50, 27.00, v(-32.75, 22.50))
             },
             {
                 type: "stone",
-                hitbox: new RectangleHitbox(v(-53, -40), v(123, 83))
+                hitbox: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50))
             }
         ],
         obstacles: [
@@ -809,16 +809,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_house",
         name: "Small House",
-        spawnHitbox: new RectangleHitbox(v(-40, -40), v(40, 40)),
+        spawnHitbox: RectangleHitbox.fromRect(80.00, 80.00, v(0.00, 0.00)),
         ceilingHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-            new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
-            new RectangleHitbox(v(-31, -29.5), v(31, 29))
+            RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
+            RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75)),
+            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25))
         ]),
         scopeHitbox: new ComplexHitbox([
-            new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-            new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4)),
-            new RectangleHitbox(v(-31, -29.5), v(31, 29))
+            RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
+            RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75)),
+            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25))
         ]),
         floorImages: [{
             key: "house_floor_small",
@@ -831,13 +831,13 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "wood",
-                hitbox: new RectangleHitbox(v(-31, -29.5), v(31, 29))
+                hitbox: RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25))
             },
             {
                 type: "stone",
                 hitbox: new ComplexHitbox([
-                    new RectangleHitbox(v(21.6, -34.1), v(11.5, -29.4)),
-                    new RectangleHitbox(v(-19.5, 34.1), v(-9.4, 29.4))
+                    RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
+                    RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75))
                 ])
             }
         ],
@@ -850,7 +850,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             // Bedroom Bottom Right
             {
-                id: "house_wall_7",
+                id: "house_wall_1",
                 position: v(6.20, -6.75),
                 rotation: 2
             }, // Bedroom Bottom Left
