@@ -124,7 +124,6 @@
         opacity: 0;
     }
 }
-
 @keyframes pulse-ring {
     0% {
         transform: scale(0.33);
@@ -191,7 +190,7 @@
 #splash-options,
 #splash-customize,
 #splash-server-message,
-#server-select {
+#btn-server-select {
     text-shadow: 3px 3px 8px #00000064;
 }
 
@@ -374,22 +373,20 @@
         font-size: 18px;
     }
 
-    select {
+    #btn-server-select {
+        background: transparent;
         color: white;
-
-        background: transparent
-            url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%23ffffff%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e")
-            no-repeat right 10px center;
-        background-size: 15px 15px;
-        appearance: none;
 
         width: 100%;
         height: 50px;
+
+        padding: 0.375rem 1rem 0.375rem 1rem;
+
         margin-top: 10px;
         margin-bottom: 10px;
 
-        border-radius: 10px;
         border: 3px solid $orange;
+        border-radius: 10px;
 
         transition: 0.15s box-shadow;
 
@@ -397,10 +394,67 @@
         text-align-last: center;
         line-height: 1.5;
 
-        padding: 0.375rem 2.25rem 0.375rem 2.25rem;
+        display: flex;
+        align-items: center;
 
-        option {
+        i { // caret
+            margin-left: 10px;
+            margin-top: -2px;
+        }
+    }
+
+    #server-list {
+        z-index: 1000;
+        width: calc(100% - 40px);
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        margin: 0;
+        padding: 0;
+        border-radius: 10px;
+
+        .server-list-item {
+            list-style-type: none;
+
+            display: flex;
+
+            padding: 10px 18px 10px 18px;
+
+            border: 1px solid #999999;
+            border-top: none;
+
+            font-size: 18px;
             color: black;
+            text-shadow: none;
+
+            user-select: none;
+            cursor: pointer;
+
+            background-color: white;
+            &:hover {
+                filter: brightness(80%);
+            }
+            transition: filter 0.25s ease;
+
+            &:first-child {
+                border-top: 1px solid #999999;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                padding-top: 12px;
+            }
+
+            &:last-child {
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                padding-bottom: 12px;
+            }
+        }
+
+        .server-list-item-disabled {
+            background-color: #bbbbbb;
+            cursor: default;
+        }
+
+        img {
+            display: inline-block;
         }
     }
 
@@ -411,6 +465,8 @@
 }
 
 #splash-socials {
+    position: relative;
+    z-index: -1;
     margin-top: 14px;
     display: flex;
     justify-content: center;
