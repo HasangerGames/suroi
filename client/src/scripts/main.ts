@@ -69,11 +69,14 @@ async function main(): Promise<void> {
         try {
             const pingStartTime = Date.now();
 
-            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)).text();
-            const ping = Date.now() - pingStartTime;
-            regionInfo[regionID] = { ...region, playerCount, ping };
+            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)
+                .catch(() => { console.error(`Could not load player count for ${region.address}.`); })
+            )?.text();
 
-            listItem.find(".server-player-count").text(playerCount);
+            const ping = Date.now() - pingStartTime;
+            regionInfo[regionID] = { ...region, playerCount: playerCount ?? "0", ping };
+
+            listItem.find(".server-player-count").text(playerCount ?? "0");
             listItem.find(".server-ping").text(ping);
 
             if (ping < bestPing) {
