@@ -231,9 +231,11 @@
         gap: 10px;
 
         & label {
-            display: flex;
-            align-items: center;
             gap: 2px;
+            display: flex; // Use flexbox to control layout
+            align-items: center; // Vertically center elements
+            justify-content: space-between; // Space between title and input
+            white-space: nowrap;
         }
     }
 

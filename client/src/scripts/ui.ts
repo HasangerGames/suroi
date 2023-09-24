@@ -369,7 +369,7 @@ export function setupUI(game: Game): void {
 
     // Load crosshairs
     loadCrosshair();
-    $("slider-crosshair-size").val(
+    $("#slider-crosshair-size").val(
         localStorageInstance.config.crosshairSize / 20
     );
     function loadCrosshair(): void {
