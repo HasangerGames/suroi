@@ -46,7 +46,7 @@ async function main(): Promise<void> {
     const updateServerSelector = (): void => {
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount);
-        $("#server-ping").text(selectedRegion.ping);
+        $("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
     };
 
     let bestPing = Number.MAX_VALUE;
@@ -68,16 +68,22 @@ async function main(): Promise<void> {
 
         try {
             const pingStartTime = Date.now();
-
             const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)
-                .catch(() => { console.error(`Could not load player count for ${region.address}.`); })
+                .catch(() => {
+                    console.error(`Could not load player count for ${region.address}.`);
+                    listItem.addClass("server-list-item-disabled");
+                })
             )?.text();
 
             const ping = Date.now() - pingStartTime;
-            regionInfo[regionID] = { ...region, playerCount: playerCount ?? "0", ping };
+            regionInfo[regionID] = {
+                ...region,
+                playerCount: playerCount ?? "-",
+                ping: playerCount ? ping : -1
+            };
 
-            listItem.find(".server-player-count").text(playerCount ?? "0");
-            listItem.find(".server-ping").text(ping);
+            listItem.find(".server-player-count").text(playerCount ?? "-");
+            listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
                 bestPing = ping;
@@ -96,8 +102,10 @@ async function main(): Promise<void> {
     $("#server-list").on("click", ".server-list-item", function() {
         const region = $(this).attr("data-region");
         if (region === undefined) return;
+
         const info = regionInfo[region];
         if (info === undefined) return;
+
         selectedRegion = info;
         updateServerSelector();
     });
