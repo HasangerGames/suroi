@@ -52,19 +52,30 @@
           </div>
           <div id="splash-options">
             <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
-            <div id="server-select-container">
-              <select name="server-select" id="server-select">
-              </select>
+            <div id="server-select" class="dropdown">
+              <button id="btn-server-select">
+                <span id="server-name">-</span>
+                <span style="margin-left: auto">
+                  <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                  <span id="server-player-count">-</span>
+                </span>
+                <span style="margin-left: 5px">
+                  <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+                  <span id="server-ping">-</span>
+                </span>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <ul class="dropdown-content" id="server-list"></ul>
             </div>
-
             <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
-              <div class="pulsating-circle" style="display: none"></div>
-              <span>Rules & Tutorial</span>
-            </button>
+                <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
+                <div class="pulsating-circle" style="display: none"></div>
+                <span>Rules &amp; Tutorial</span>
+              </button>
+              <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
           </div>
           <div id="splash-socials">
             <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -273,15 +284,21 @@
       <div class="emote-bottom"></div>
       <div class="emote-left"></div>
     </div>
-    <div id="game-over-overlay" style="display: none;">
-      <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
-      <h1 id="game-over-text" class="modal-item">You died.</h1>
-      <div id="game-over-rank-container">
-        <span>Rank</span>
-        <span id="game-over-rank" class="modal-item"></span>
+    <div id="game-over-overlay" style="display: none;" >
+      <div id="game-over-top-screen">
+        <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
+        <h1 id="game-over-text" class="modal-item">You died.</h1>
+        <div id="game-over-rank-container-pc">
+          <span>Rank</span>
+          <span id="game-over-rank" class="modal-item"></span>
+        </div>
       </div>
       <div id="game-over-screen">
         <h1 id="game-over-player-name" class="modal-item">Player</h1>
+        <div id="game-over-rank-container-mobile">
+          <span>Rank</span>
+          <span id="game-over-rank-mobile" class="modal-item"></span>
+        </div>
         <div class="modal-item" id="game-over-stats">
           <div class="stat">
             <span class="stat-name">Kills:</span>
@@ -434,6 +451,12 @@
             <label>
               <span class="setting-title">Hide minimap</span>
               <input type="checkbox" id="toggle-hide-minimap">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title">Hide rules button</span>
+              <input type="checkbox" id="toggle-hide-rules">
             </label>
           </div>
           <div class="modal-item checkbox-setting">

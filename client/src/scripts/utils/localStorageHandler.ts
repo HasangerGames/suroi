@@ -63,6 +63,7 @@ export interface Config {
     mobileControls: boolean
     minimapMinimized: boolean
     leaveWarning: boolean
+    hideRulesButton: boolean
     joystickSize: number
     joystickTransparency: number
     minimapTransparency: number
@@ -133,6 +134,7 @@ export const defaultConfig: Config = {
     mobileControls: true,
     minimapMinimized: false,
     leaveWarning: true,
+    hideRulesButton: false,
     joystickSize: 150,
     joystickTransparency: 0.8,
     minimapTransparency: 0.8,
