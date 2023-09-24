@@ -26,7 +26,6 @@ import {
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { enablePlayButton } from "./main";
-import { enableCustomCursor, disableCustomCursor } from "./utils/customCursor";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
 import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
@@ -158,8 +157,6 @@ export class Game {
             this.gameOver = false;
             this.spectating = false;
 
-            enableCustomCursor();
-
             if (!UI_DEBUG_MODE) {
                 clearTimeout(gameOverScreenTimeout);
                 $("#game-over-overlay").hide();
@@ -237,12 +234,10 @@ export class Game {
             $("#splash-server-message-text").html("Error joining game.");
             $("#splash-server-message").show();
             enablePlayButton();
-            disableCustomCursor();
         };
 
         this.socket.onclose = (): void => {
             enablePlayButton();
-            disableCustomCursor();
             if (!this.spectating && !this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
@@ -257,7 +252,6 @@ export class Game {
 
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
-        disableCustomCursor();
 
         if (this.activePlayer?.actionSound) {
             this.soundManager.stop(this.activePlayer.actionSound);

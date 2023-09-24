@@ -4,10 +4,15 @@ import {
 } from "../../../../common/src/utils/objectDefinitions";
 
 export interface CrosshairDefinition extends ObjectDefinition {
-    svg: string
+    svg: string;
 }
 
 export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
+    {
+        idString: "default",
+        name: "Default",
+        svg: "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width='@Width@' height='@Height@' viewBox='0 0 4.2333332 4.2333333' version='1.1' id='svg1' inkscape:version='1.3 (0e150ed6c4, 2023-07-21)' sodipodi:docname='default.svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Csodipodi:namedview id='namedview1' pagecolor='%23ffffff' bordercolor='%23@Color@' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' inkscape:document-units='mm' inkscape:zoom='50.685971' inkscape:cx='7.6155195' inkscape:cy='7.5859256' inkscape:window-width='1920' inkscape:window-height='1166' inkscape:window-x='-11' inkscape:window-y='-11' inkscape:window-maximized='1' inkscape:current-layer='layer1' /%3E%3Cdefs id='defs1' /%3E%3Cg inkscape:label='Layer 1' inkscape:groupmode='layer' id='layer1'%3E%3Crect style='fill:%23@Color@;stroke:%23ffffff;stroke-width:0;stroke-dasharray:none' id='rect1' width='0.2499993' height='4.2333322' x='1.991667' y='5.0061766e-07' ry='0' /%3E%3Crect style='fill:%23@Color@;stroke:%23ffffff;stroke-width:0;stroke-dasharray:none' id='rect1-8' width='0.2499993' height='4.2333326' x='1.991667' y='-4.2333331' ry='0' transform='rotate(90)' /%3E%3C/g%3E%3C/svg%3E%0A"
+    },
     {
         idString: "cross",
         name: "Cross",

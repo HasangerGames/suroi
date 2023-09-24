@@ -220,13 +220,32 @@
         height: 100%;
     }
 
+    #crosshair-customize {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #crosshair-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        & label {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+    }
+
     #crosshair-preview {
-        position: relative;
-        align-self: center;
-        flex-shrink: 0;
+        display: flex;
         width: 286px;
         height: 286px;
-        background-image: url("https://krunker.io/img/crosshair.png");
+        justify-content: center;
+        align-items: center;
+    }
+
+    #crosshair-image {
         background-size: contain;
         background-repeat: no-repeat;
     }
@@ -354,7 +373,16 @@
             justify-content: center;
         }
 
+        #tab-crosshairs-content {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
         #emotes-list {
+            padding-bottom: 16px;
+        }
+
+        #crosshairs-list {
             padding-bottom: 16px;
         }
     }

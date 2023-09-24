@@ -290,7 +290,7 @@ export function setupUI(game: Game): void {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function () {
+        skinItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
@@ -313,7 +313,7 @@ export function setupUI(game: Game): void {
   <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
   <span class="emote-name">${emote.name}</span>
 </div>`);
-        emoteItem.on("click", function () {
+        emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
             localStorageInstance.update({
                 loadout: {
@@ -330,7 +330,7 @@ export function setupUI(game: Game): void {
         $("#emotes-list").append(emoteItem);
     }
     for (const slot of ["top", "right", "bottom", "left"] as Array<
-        "top" | "right" | "bottom" | "left"
+    "top" | "right" | "bottom" | "left"
     >) {
         $(`#emote-customize-wheel > .emote-${slot}`)
             .css(
@@ -368,37 +368,51 @@ export function setupUI(game: Game): void {
     }
 
     // Load crosshairs
-    localStorageInstance.update({
-        ...localStorageInstance.config,
-        crosshairSize: 16,
-        crosshairColor: "000000" as string & { length: 6 }
-    });
+    loadCrosshair();
+    $("slider-crosshair-size").val(
+        localStorageInstance.config.crosshairSize / 20
+    );
     function loadCrosshair(): void {
-        $("#crosshair-preview").css({
+        $("#crosshair-image").css({
             backgroundImage: `url("${getCrosshair(
                 localStorageInstance.config.loadout.crosshair,
                 localStorageInstance.config.crosshairColor,
                 localStorageInstance.config.crosshairSize
-            )}")`
+            )}")`,
+            width: localStorageInstance.config.crosshairSize,
+            height: localStorageInstance.config.crosshairSize
         });
         $("#game-ui").css({
             cursor: `url("${getCrosshair(
                 localStorageInstance.config.loadout.crosshair,
                 localStorageInstance.config.crosshairColor,
                 localStorageInstance.config.crosshairSize
-            )}") ${localStorageInstance.config.crosshairSize} ${
-                localStorageInstance.config.crosshairSize
+            )}") ${localStorageInstance.config.crosshairSize / 2} ${
+                localStorageInstance.config.crosshairSize / 2
             }, crosshair`
         });
     }
     for (const crosshair of Crosshairs.definitions) {
-        const crosshairItem =
-            $(`<div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
-        <div class="crosshairs-list-item" style="background-image: url('/img/game/crosshairs/${crosshair.idString}.svg'); background-size: contain; background-repeat: no-repeat;"></div>
+        const crosshairItem = $(`
+    <div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
+        <div class="crosshairs-list-item"></div>
         <span class="crosshair-name">${crosshair.name}</span>
-        </div>`);
+    </div>`);
 
-        crosshairItem.on("click", function () {
+        const backgroundImage = `url("${getCrosshair(
+            crosshair.idString,
+            "000000",
+            localStorageInstance.config.crosshairSize
+        )}")`;
+
+        // This method sucks but it's the only way to do it without breaking the crosshair image
+        crosshairItem.find(".crosshairs-list-item").css({
+            backgroundImage,
+            "background-size": "contain",
+            "background-repeat": "no-repeat"
+        });
+
+        crosshairItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
@@ -408,12 +422,36 @@ export function setupUI(game: Game): void {
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
+
         $("#crosshairs-list").append(crosshairItem);
     }
+
     $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass(
         "selected"
     );
-    loadCrosshair();
+    addSliderListener(
+        "#slider-crosshair-size",
+        "crosshairSize",
+        (value: number) => {
+            localStorageInstance.update({
+                ...localStorageInstance.config,
+                crosshairSize: value * 20
+            });
+            loadCrosshair();
+            $("#crosshair-image").css({
+                width: localStorageInstance.config.crosshairSize,
+                height: localStorageInstance.config.crosshairSize
+            });
+        }
+    );
+
+    $("#crosshair-color-picker")[0].addEventListener("input", (e) => {
+        localStorageInstance.update({
+            ...localStorageInstance.config,
+            crosshairColor: (e.target as HTMLInputElement).value.substring(1) as string & { length: 6 }
+        });
+        loadCrosshair();
+    });
 
     // Disable context menu
     $("#game-ui").on("contextmenu", (e) => {
@@ -573,11 +611,11 @@ export function setupUI(game: Game): void {
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${
-            scope.idString
-        }-slot" style="display: none;">
+    scope.idString
+}-slot" style="display: none;">
             <img class="item-image" src="./img/game/loot/${
-                scope.idString
-            }.svg" draggable="false">
+    scope.idString
+}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -597,15 +635,15 @@ export function setupUI(game: Game): void {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${
-                item.idString
-            }.svg" draggable="false">
+    item.idString
+}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
                 Restores ${item.restoreAmount}${
-            item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-        }
+    item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
+}
             </div>
         </div>`);
 
@@ -703,7 +741,7 @@ export function setupUI(game: Game): void {
             .siblings(".range-input-value")
             .text(
                 element.id !== "slider-joystick-size"
-                    ? `${value * 100}%`
+                    ? `${Math.round(value * 100)}%`
                     : value
             );
     }
