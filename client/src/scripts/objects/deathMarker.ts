@@ -26,7 +26,7 @@ export class DeathMarker extends GameObject {
     constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
         super(game, type, id);
 
-        this.image = new SuroiSprite("death_marker");
+        this.image = new SuroiSprite(localStorageInstance.config.loadout.deathMarker);
         this.playerNameText = new Text(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,

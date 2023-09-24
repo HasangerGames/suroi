@@ -47,6 +47,16 @@ import { DeathMarker } from "./objects/deathMarker";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
 
+/*localStorageInstance.update({
+    "loadout": {
+        skin: "forest_camo",
+        deathMarker: "death_marker",
+        topEmote: "happy_face",
+        rightEmote: "thumbs_up",
+        bottomEmote: "suroi_logo",
+        leftEmote: "sad_face"
+    } })
+    */
 export class Game {
     socket!: WebSocket;
 

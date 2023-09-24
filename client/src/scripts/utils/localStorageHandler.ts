@@ -41,6 +41,7 @@ export interface Config {
         rightEmote: string
         bottomEmote: string
         leftEmote: string
+        deathMarker: string
     }
     scopeLooping: boolean
     anonymousPlayers: boolean
@@ -81,6 +82,7 @@ export const defaultConfig: Config = {
     rulesAcknowledged: false,
     loadout: {
         skin: "forest_camo",
+        deathMarker: "death_marker",
         topEmote: "happy_face",
         rightEmote: "thumbs_up",
         bottomEmote: "suroi_logo",
