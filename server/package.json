@@ -19,7 +19,7 @@
   "keywords": [],
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/node": "^20.6.4",
+    "@types/node": "^20.6.5",
     "@types/sanitize-html": "^2.9.0",
     "@types/ws": "^8.5.5",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
@@ -35,7 +35,7 @@
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.0",
     "sanitize-html": "^2.11.0",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.31.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.32.0",
     "ws": "^8.14.2"
   }
 }
