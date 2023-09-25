@@ -71,7 +71,7 @@ input[type="checkbox"] {
     border-bottom: 2px solid transparent;
 
     &:after {
-        content: '';
+        content: "";
         width: 40px;
         height: 20px;
         display: inline-block;
@@ -82,7 +82,7 @@ input[type="checkbox"] {
     }
 
     &:before {
-        content: '';
+        content: "";
         width: 20px;
         height: 20px;
         padding: 2px;
@@ -107,4 +107,10 @@ input[type="checkbox"] {
     &:focus {
         border-bottom: 4px solid $blue;
     }
+}
+
+input[type="color"] {
+    border: none;
+    border-radius: 100px;
+    background-color: $grass_bg;
 }
