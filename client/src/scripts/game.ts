@@ -369,8 +369,8 @@ export class Game {
                         object = new Obstacle(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Obstacle,
-                                ObstacleDefinition
+                            ObjectCategory.Obstacle,
+                            ObstacleDefinition
                             >,
                             id
                         );
@@ -388,8 +388,8 @@ export class Game {
                         object = new Loot(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Loot,
-                                LootDefinition
+                            ObjectCategory.Loot,
+                            LootDefinition
                             >,
                             id
                         );
@@ -400,8 +400,8 @@ export class Game {
                         object = new Building(
                             this,
                             type as ObjectType<
-                                ObjectCategory.Building,
-                                BuildingDefinition
+                            ObjectCategory.Building,
+                            BuildingDefinition
                             >,
                             id
                         );
@@ -455,12 +455,12 @@ export class Game {
             - whether the user can interact with it
         */
         const cache: {
-            object?: Loot | Obstacle;
-            offset?: number;
-            pickupBind?: string;
-            canInteract?: boolean;
-            readonly clear: () => void;
-            readonly pickupBindIsValid: () => boolean;
+            object?: Loot | Obstacle
+            offset?: number
+            pickupBind?: string
+            canInteract?: boolean
+            readonly clear: () => void
+            readonly pickupBindIsValid: () => boolean
         } = {
             clear() {
                 this.object = this.pickupBind = undefined;

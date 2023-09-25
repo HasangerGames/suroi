@@ -290,7 +290,7 @@ export function setupUI(game: Game): void {
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
-        skinItem.on("click", function () {
+        skinItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
@@ -313,7 +313,7 @@ export function setupUI(game: Game): void {
   <div class="emotes-list-item" style="background-image: url('/img/game/emotes/${emote.idString}.svg')"></div>
   <span class="emote-name">${emote.name}</span>
 </div>`);
-        emoteItem.on("click", function () {
+        emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
             localStorageInstance.update({
                 loadout: {
@@ -330,7 +330,7 @@ export function setupUI(game: Game): void {
         $("#emotes-list").append(emoteItem);
     }
     for (const slot of ["top", "right", "bottom", "left"] as Array<
-        "top" | "right" | "bottom" | "left"
+    "top" | "right" | "bottom" | "left"
     >) {
         $(`#emote-customize-wheel > .emote-${slot}`)
             .css(
@@ -412,7 +412,7 @@ export function setupUI(game: Game): void {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function () {
+        crosshairItem.on("click", function() {
             localStorageInstance.update({
                 loadout: {
                     ...localStorageInstance.config.loadout,
@@ -613,11 +613,11 @@ export function setupUI(game: Game): void {
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${
-            scope.idString
-        }-slot" style="display: none;">
+    scope.idString
+}-slot" style="display: none;">
             <img class="item-image" src="./img/game/loot/${
-                scope.idString
-            }.svg" draggable="false">
+    scope.idString
+}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -637,15 +637,15 @@ export function setupUI(game: Game): void {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${
-                item.idString
-            }.svg" draggable="false">
+    item.idString
+}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
                 Restores ${item.restoreAmount}${
-            item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-        }
+    item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
+}
             </div>
         </div>`);
 
