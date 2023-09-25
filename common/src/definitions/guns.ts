@@ -287,8 +287,8 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         length: 5.7,
         fists: {
-            left: v(50, -3),
-            right: v(95, 0),
+            left: v(95, 0),
+            right: v(50, -3),
             animationDuration: 100
         },
         image: { position: v(70, 0) },

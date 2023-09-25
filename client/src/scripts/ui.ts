@@ -24,6 +24,35 @@ import { type Game } from "./game";
 import { isMobile } from "pixi.js";
 import { stripNonASCIIChars } from "../../../common/src/utils/misc";
 
+const body = $(document.body);
+export function createDropdown(selector: string): void {
+    const dropdown = {
+        main: $(`${selector} .dropdown-content`),
+        caret: $(`${selector} button i`),
+        active: false,
+        show() {
+            this.active = true;
+            this.main.addClass("active");
+            this.caret.removeClass("fa-caret-down").addClass("fa-caret-up");
+        },
+        hide() {
+            this.active = false;
+            this.main.removeClass("active");
+            this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
+        },
+        toggle() {
+            this.active
+                ? this.hide()
+                : this.show();
+        }
+    };
+    $(`${selector} button`).on("click", ev => {
+        dropdown.toggle();
+        ev.stopPropagation();
+    });
+    body.on("click", () => { dropdown.hide(); });
+}
+
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
         // Kill message
@@ -59,26 +88,8 @@ export function setupUI(game: Game): void {
         }
     }
 
-    const dropdown = {
-        main: $("#splash-more .dropdown-content"),
-        caret: $("#btn-dropdown-more i"),
-        active: false,
-        show() {
-            this.active = true;
-            this.main.addClass("active");
-            this.caret.removeClass("fa-caret-down").addClass("fa-caret-up");
-        },
-        hide() {
-            this.active = false;
-            this.main.removeClass("active");
-            this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
-        },
-        toggle() {
-            this.active ? this.hide() : this.show();
-        }
-    };
+    //createDropdown("#splash-more");
 
-    const body = $(document.body);
     const usernameField = $("#username-input");
 
     const youtubers = [
@@ -97,6 +108,14 @@ export function setupUI(game: Game): void {
         {
             name: "TEAMFIGHTER 27",
             link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
+        },
+        {
+            name: "Ukraines dude",
+            link: "https://www.youtube.com/channel/UCAdNONfEL-UOXDQnMkhhlHA"
+        },
+        {
+            name: "monet",
+            link: "https://www.youtube.com/@stardust_737"
         }
     ];
 
@@ -144,6 +163,8 @@ export function setupUI(game: Game): void {
         });
     });
 
+    createDropdown("#server-select");
+
     const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
@@ -168,22 +189,8 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    // todo find a better way to do these two handlers
-    $("#btn-dropdown-more").on("click", (ev) => {
-        dropdown.toggle();
-        ev.stopPropagation();
-    });
-
-    body.on("click", () => {
-        dropdown.hide();
-    });
-
-    $("#btn-quit-game").on("click", () => {
-        game.endGame();
-    });
-    $("#btn-play-again").on("click", () => {
-        game.endGame();
-    });
+    $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -550,6 +557,12 @@ export function setupUI(game: Game): void {
     });
     $("#ping-counter").toggle(localStorageInstance.config.showPing);
 
+    // Coordinates toggle
+    addCheckboxListener("#toggle-coordinates", "showCoordinates", (value: boolean) => {
+        $("#coordinates-hud").toggle(value);
+    });
+    $("#coordinates-hud").toggle(localStorageInstance.config.showCoordinates);
+
     // Client-side prediction toggle
     addCheckboxListener(
         "#toggle-client-side-prediction",
@@ -593,6 +606,12 @@ export function setupUI(game: Game): void {
 
     // Leave warning
     addCheckboxListener("#toggle-leave-warning", "leaveWarning");
+
+    // Hide rules button
+    addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
+        $("#btn-rules").toggle(!value);
+    });
+    $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
