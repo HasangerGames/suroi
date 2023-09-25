@@ -52,7 +52,7 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            house: 4,
+            small_house: 5,
             porta_potty: 10
         },
         obstacles: {

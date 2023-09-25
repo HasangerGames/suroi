@@ -809,21 +809,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "small_house",
         name: "Small House",
-        spawnHitbox: RectangleHitbox.fromRect(80.00, 80.00, v(0.00, 0.00)),
+        spawnHitbox: RectangleHitbox.fromRect(80, 80),
         ceilingHitbox: new ComplexHitbox([
-            RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
-            RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75)),
-            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25)),
+            RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
             new CircleHitbox(5, v(-7.2, -29.5)),
             new CircleHitbox(5, v(-31, 7.5)),
             new CircleHitbox(5, v(31, 15.4)),
-            new CircleHitbox(5, v(31, -15.9)),
+            new CircleHitbox(5, v(31, -15.9))
         ]),
-        scopeHitbox: new ComplexHitbox([
-            RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
-            RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75)),
-            RectangleHitbox.fromRect(62.00, 58.50, v(0.00, -0.25))
-        ]),
+        scopeHitbox: RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
         floorImages: [{
             key: "house_floor_small",
             position: v(0, 0)
