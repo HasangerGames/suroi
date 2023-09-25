@@ -2,78 +2,78 @@ import { mergeDeep } from "../../../../common/src/utils/misc";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type KeybindActions = {
-    moveUp: [string, string];
-    moveDown: [string, string];
-    moveLeft: [string, string];
-    moveRight: [string, string];
-    interact: [string, string];
-    slot1: [string, string];
-    slot2: [string, string];
-    slot3: [string, string];
-    lastEquippedItem: [string, string];
-    equipOtherGun: [string, string];
-    swapGunSlots: [string, string];
-    previousItem: [string, string];
-    nextItem: [string, string];
-    useItem: [string, string];
-    dropActiveItem: [string, string];
-    reload: [string, string];
-    previousScope: [string, string];
-    nextScope: [string, string];
-    useGauze: [string, string];
-    useMedikit: [string, string];
-    useCola: [string, string];
-    useTablets: [string, string];
-    cancelAction: [string, string];
-    toggleMap: [string, string];
-    toggleMiniMap: [string, string];
-    emoteWheel: [string, string];
+    moveUp: [string, string]
+    moveDown: [string, string]
+    moveLeft: [string, string]
+    moveRight: [string, string]
+    interact: [string, string]
+    slot1: [string, string]
+    slot2: [string, string]
+    slot3: [string, string]
+    lastEquippedItem: [string, string]
+    equipOtherGun: [string, string]
+    swapGunSlots: [string, string]
+    previousItem: [string, string]
+    nextItem: [string, string]
+    useItem: [string, string]
+    dropActiveItem: [string, string]
+    reload: [string, string]
+    previousScope: [string, string]
+    nextScope: [string, string]
+    useGauze: [string, string]
+    useMedikit: [string, string]
+    useCola: [string, string]
+    useTablets: [string, string]
+    cancelAction: [string, string]
+    toggleMap: [string, string]
+    toggleMiniMap: [string, string]
+    emoteWheel: [string, string]
 };
 
 export interface Config {
     // this needs to be updated every time the config changes, because old configs need to be invalidated/ported
-    configVersion: string;
-    playerName: string;
-    rulesAcknowledged: boolean;
+    configVersion: string
+    playerName: string
+    rulesAcknowledged: boolean
     loadout: {
-        skin: string;
-        crosshair: string;
-        topEmote: string;
-        rightEmote: string;
-        bottomEmote: string;
-        leftEmote: string;
-    };
-    crosshairColor: string & { length: 6 };
-    crosshairSize: number;
-    scopeLooping: boolean;
-    anonymousPlayers: boolean;
-    keybinds: KeybindActions;
-    masterVolume: number;
-    sfxVolume: number;
-    musicVolume: number;
-    muteAudio: boolean;
-    oldMenuMusic: boolean;
-    language: string;
-    region: string | undefined;
-    cameraShake: boolean;
-    showFPS: boolean;
-    showPing: boolean;
-    clientSidePrediction: boolean;
-    textKillFeed: boolean;
-    rotationSmoothing: boolean;
-    movementSmoothing: boolean;
-    mobileControls: boolean;
-    minimapMinimized: boolean;
-    leaveWarning: boolean;
-    joystickSize: number;
-    joystickTransparency: number;
-    minimapTransparency: number;
-    bigMapTransparency: number;
+        skin: string
+        crosshair: string
+        topEmote: string
+        rightEmote: string
+        bottomEmote: string
+        leftEmote: string
+    }
+    crosshairColor: string & { length: 6 }
+    crosshairSize: number
+    scopeLooping: boolean
+    anonymousPlayers: boolean
+    keybinds: KeybindActions
+    masterVolume: number
+    sfxVolume: number
+    musicVolume: number
+    muteAudio: boolean
+    oldMenuMusic: boolean
+    language: string
+    region: string | undefined
+    cameraShake: boolean
+    showFPS: boolean
+    showPing: boolean
+    clientSidePrediction: boolean
+    textKillFeed: boolean
+    rotationSmoothing: boolean
+    movementSmoothing: boolean
+    mobileControls: boolean
+    minimapMinimized: boolean
+    leaveWarning: boolean
+    joystickSize: number
+    joystickTransparency: number
+    minimapTransparency: number
+    bigMapTransparency: number
 
-    devPassword?: string;
-    role?: string;
-    nameColor?: string;
-    lobbyClearing?: boolean;
+    devPassword?: string
+    role?: string
+    nameColor?: string
+    lobbyClearing?: boolean
 }
 
 export const defaultConfig: Config = {
@@ -154,9 +154,9 @@ const storedConfig = localStorage.getItem(configKey);
 let config =
     storedConfig !== null
         ? (mergeDeep(
-              JSON.parse(JSON.stringify(defaultConfig)),
-              JSON.parse(storedConfig)
-          ) as Config)
+            JSON.parse(JSON.stringify(defaultConfig)),
+            JSON.parse(storedConfig)
+        ) as Config)
         : defaultConfig;
 let rewriteConfigToLS = storedConfig === null;
 
@@ -206,8 +206,8 @@ if (config.configVersion !== defaultConfig.configVersion) {
             proxy.configVersion = "2";
 
             type KeybindStruct<T> = Record<
-                string,
-                T | Record<string, T | Record<string, T>>
+            string,
+            T | Record<string, T | Record<string, T>>
             >;
             type Version1Keybinds = KeybindStruct<string>;
             type Version2Keybinds = KeybindStruct<[string, string]>;

@@ -448,7 +448,9 @@ export function setupUI(game: Game): void {
     $("#crosshair-color-picker")[0].addEventListener("input", (e) => {
         localStorageInstance.update({
             ...localStorageInstance.config,
-            crosshairColor: (e.target as HTMLInputElement).value.substring(1) as string & { length: 6 }
+            crosshairColor: (e.target as HTMLInputElement).value.substring(
+                1
+            ) as string & { length: 6 }
         });
         loadCrosshair();
     });

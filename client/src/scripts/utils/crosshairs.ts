@@ -4,7 +4,7 @@ import {
 } from "../../../../common/src/utils/objectDefinitions";
 
 export interface CrosshairDefinition extends ObjectDefinition {
-    svg: string;
+    svg: string
 }
 
 export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
