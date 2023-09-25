@@ -833,10 +833,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 type: "stone",
-                hitbox: new ComplexHitbox([
-                    RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75)),
-                    RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75))
-                ])
+                hitbox: RectangleHitbox.fromRect(-10.10, 4.70, v(16.55, -31.75))
+
+            },
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(10.10, -4.70, v(-14.45, 31.75))
             }
         ],
         obstacles: [
