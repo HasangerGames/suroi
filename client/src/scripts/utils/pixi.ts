@@ -33,11 +33,11 @@ export async function loadAtlases(): Promise<void> {
     }
     for (const building of Buildings.definitions) {
         for (const image of building.floorImages) {
-            await loadImage(image.key, require(`/public/img/buildings/${image.key}.png`));
+            await loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
         }
         for (const image of building.ceilingImages) {
-            await loadImage(image.key, require(`/public/img/buildings/${image.key}.png`));
-            if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}.png`));
+            await loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
+            if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}.svg`));
         }
     }
 }

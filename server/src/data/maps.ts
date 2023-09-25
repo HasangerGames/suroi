@@ -56,7 +56,7 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            house: 4,
+            small_house: 5,
             porta_potty: 10
         },
         obstacles: {
@@ -256,13 +256,13 @@ export const Maps: Record<string, MapDefinition> = {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
         }
     },
-    singleObstacle: {
-        width: 128,
-        height: 128,
+    small_house: {
         beachSize: 16,
         oceanSize: 16,
+        width: 512,
+        height: 512,
         genCallback(map) {
-            map.generateObstacle("gold_rock", v(64, 64));
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
         }
     }
 };
