@@ -106,6 +106,7 @@ export class Building extends GameObject {
             if (this.dead && image.residue) key = image.residue;
             const sprite = new SuroiSprite(key);
             sprite.setVPos(toPixiCoords(image.position));
+            if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }
 

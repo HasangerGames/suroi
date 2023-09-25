@@ -84,9 +84,9 @@ function makeContainer(idString: string, name: string, tint: number): BuildingDe
     return {
         idString,
         name,
-        spawnHitbox: new RectangleHitbox(v(-10, -12), v(10, 20)),
-        ceilingHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
-        scopeHitbox: new RectangleHitbox(v(-7, -9), v(7, 9)),
+        spawnHitbox: RectangleHitbox.fromRect(16, 30),
+        ceilingHitbox: RectangleHitbox.fromRect(14, 27.9),
+        scopeHitbox: RectangleHitbox.fromRect(14, 28),
         floorImages: [{
             key: "container_floor",
             position: v(0, 0),
@@ -100,15 +100,20 @@ function makeContainer(idString: string, name: string, tint: number): BuildingDe
         floors: [
             {
                 type: "metal",
-                hitbox: new RectangleHitbox(v(-7, -9), v(7, 9))
+                hitbox: RectangleHitbox.fromRect(14, 28)
             }
         ],
-        obstacles: []
+        obstacles: [
+            {
+                id: `${idString}_walls`,
+                position: v(0, 0),
+                rotation: 0
+            }
+        ]
     };
 }
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
-    makeContainer("blue_container", "Blue Container", 0x005fa3),
     {
         idString: "porta_potty",
         name: "Porta Potty",
@@ -1019,5 +1024,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }
         ]
-    }
+    },
+    makeContainer("blue_container", "Blue Container", 0x005fa3)
 ]);

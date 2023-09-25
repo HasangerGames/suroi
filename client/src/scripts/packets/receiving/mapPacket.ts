@@ -124,6 +124,7 @@ export class MapPacket extends ReceivingPacket {
                     for (const image of definition.floorImages) {
                         const sprite = new SuroiSprite(image.key);
                         sprite.setVPos(image.position);
+                        if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale.set(1 / PIXI_SCALE);
                         container.addChild(sprite);
                     }
@@ -131,6 +132,7 @@ export class MapPacket extends ReceivingPacket {
                     for (const image of definition.ceilingImages) {
                         const sprite = new SuroiSprite(image.key);
                         sprite.setVPos(image.position);
+                        if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale.set(1 / PIXI_SCALE);
                         container.addChild(sprite);
                     }

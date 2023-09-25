@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="348.30502"
-   height="640.13904"
-   viewBox="0 0 92.155702 169.37013"
+   width="281.18002"
+   height="559.30804"
+   viewBox="0 0 74.395546 147.98359"
    version="1.1"
    id="svg49750"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
@@ -25,8 +25,8 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="1.5233586"
-     inkscape:cx="160.1724"
-     inkscape:cy="290.8048"
+     inkscape:cx="-58.423539"
+     inkscape:cy="295.39991"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -35,69 +35,71 @@
      inkscape:current-layer="layer1"
      inkscape:pageshadow="0"
      units="px"
-     width="348.30501px"
-     height="640.13901px" />
+     width="281.18002px"
+     height="559.30802px" />
   <defs
      id="defs49747" />
   <g
      inkscape:label="Слой 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <rect
-       style="fill:#333333;fill-opacity:1;stroke-width:2.56008;paint-order:markers stroke fill;stop-color:#000000"
+    <path
        id="rect1049-9-7-5-1-7-8"
-       width="92.155746"
-       height="169.36987"
-       x="3.4245812e-05"
-       y="-2.6696423e-05" />
-    <rect
-       style="fill:#484848;fill-opacity:1;stroke-width:2.35311;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#a1a1a1;fill-opacity:1;stroke-width:2.15008;paint-order:markers stroke fill;stop-color:#000000"
+       d="M 0,147.98373 V 0 H 74.395459 V 147.98373 H 63.075735 l -3.681429,-6.35 H 15.001151 l -3.681429,6.35 z"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
        id="rect1049-9-7-2-9-5-4-02"
-       width="82.542328"
-       height="159.75648"
-       x="4.8066854"
-       y="4.8066854" />
+       style="fill:#e0e0e0;fill-opacity:1;stroke-width:1.97626;paint-order:markers stroke fill;stop-color:#000000"
+       d="M 3.8803791,143.78399 3.8803834,4.1997418 H 70.515074 l 8.8e-5,139.5842482 h -3.559175 l -4.233201,-6.35 H 11.672673 l -4.2333835,6.35 z"
+       sodipodi:nodetypes="ccccccccc" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect24996-9-4-4-8"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="17.095524" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-133.04686"
+       transform="scale(1,-1)" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect4123"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="41.673199" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-111.5726"
+       transform="scale(1,-1)" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect4125"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="66.250877" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-90.098335"
+       transform="scale(1,-1)" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect4127"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="90.828552" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-68.624077"
+       transform="scale(1,-1)" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect4129"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="115.40623" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-47.149822"
+       transform="scale(1,-1)" />
     <rect
-       style="fill:#525252;fill-opacity:1;stroke:none;stroke-width:3.53602;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.96972;stroke-opacity:1;paint-order:markers stroke fill;stop-color:#000000"
        id="rect4131"
-       width="82.542328"
-       height="12.288837"
-       x="4.8066854"
-       y="139.9839" />
+       width="66.634819"
+       height="10.737129"
+       x="3.8803504"
+       y="-25.675562"
+       transform="scale(1,-1)" />
   </g>
 </svg>

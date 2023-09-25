@@ -35,6 +35,8 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly residue?: string
     }
 
+    readonly tint?: number
+
     readonly isWall?: boolean
     readonly isWindow?: boolean
 } & ({
@@ -148,6 +150,34 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         frames: {
             particle: "rock_particle"
         }
+    };
+}
+
+function makeContainerWalls(idString: string, name: string, tint: number): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "metal",
+        health: 500,
+        indestructible: true,
+        noResidue: true,
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 1.0
+        },
+        hitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+            RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
+            RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
+        ]),
+        rotationMode: RotationMode.Limited,
+        isWall: true,
+        frames: {
+            base: "container_walls",
+            particle: "metal_particle"
+        },
+        tint
     };
 }
 
@@ -1167,6 +1197,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "wall_particle"
             }
-        }
+        },
+        makeContainerWalls("blue_container_walls", "Blue Container Walls", 0x005fa3)
     ]
 );
