@@ -127,9 +127,7 @@ export class Game {
 
         setInterval(() => {
             if (localStorageInstance.config.showFPS) {
-                $("#fps-counter").text(
-                    `${Math.round(this.pixi.ticker.FPS)} fps`
-                );
+                $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
 
@@ -170,17 +168,11 @@ export class Game {
             this.sendPacket(new JoinPacket(this.playerManager));
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
-            this.camera.container.addChild(
-                this.playersContainer,
-                this.bulletsContainer
-            );
+            this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
             this.map.indicator.setFrame("player_indicator");
 
-            this.tickTimeoutID = window.setInterval(
-                this.tick.bind(this),
-                TICK_SPEED
-            );
+            this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);
         };
 
         // Handle incoming messages
@@ -302,9 +294,7 @@ export class Game {
 
     sendData(stream: SuroiBitStream): void {
         try {
-            this.socket.send(
-                stream.buffer.slice(0, Math.ceil(stream.index / 8))
-            );
+            this.socket.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
@@ -323,10 +313,7 @@ export class Game {
                 player.updateContainerPosition();
                 if (
                     localStorageInstance.config.rotationSmoothing &&
-                    !(
-                        player.isActivePlayer &&
-                        localStorageInstance.config.clientSidePrediction
-                    )
+                    !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
                 ) {
                     player.updateContainerRotation();
                 }
@@ -366,45 +353,20 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(
-                            this,
-                            type as ObjectType<
-                            ObjectCategory.Obstacle,
-                            ObstacleDefinition
-                            >,
-                            id
-                        );
+                        object = new Obstacle(this, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(
-                            this,
-                            type as ObjectType<ObjectCategory.DeathMarker>,
-                            id
-                        );
+                        object = new DeathMarker(this, type as ObjectType<ObjectCategory.DeathMarker>, id);
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(
-                            this,
-                            type as ObjectType<
-                            ObjectCategory.Loot,
-                            LootDefinition
-                            >,
-                            id
-                        );
+                        object = new Loot(this, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(
-                            this,
-                            type as ObjectType<
-                            ObjectCategory.Building,
-                            BuildingDefinition
-                            >,
-                            id
-                        );
+                        object = new Building(this, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
                         break;
                     }
                 }
@@ -438,8 +400,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string =>
-            localStorageInstance.config.keybinds.interact[0];
+        const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
 
         let skipLootCheck = true;
 
@@ -478,9 +439,7 @@ export class Game {
         let bindChangeAcknowledged = false;
 
         return (): void => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) {
-                return;
-            }
+            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
 
             if (this.playerManager.dirty.inputs) {
                 this.playerManager.dirty.inputs = false;
@@ -500,55 +459,27 @@ export class Game {
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
-                if (
-                    object instanceof Obstacle &&
-                    object.isDoor &&
-                    !object.dead
-                ) {
-                    const record: CollisionRecord | undefined =
-                        object.hitbox?.distanceTo(doorDetectionHitbox);
-                    const dist = distanceSquared(
-                        object.position,
-                        player.position
-                    );
+                if (object instanceof Obstacle && object.isDoor && !object.dead) {
+                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
+                    const dist = distanceSquared(object.position, player.position);
                     if (dist < minDist && record?.collided) {
                         minDist = dist;
                         closestObject = object;
                         canInteract = !object.dead;
                     }
                 } else if (object instanceof Loot) {
-                    const dist = distanceSquared(
-                        object.position,
-                        player.position
-                    );
-                    if (
-                        dist < minDist &&
-                        circleCollision(
-                            player.position,
-                            3,
-                            object.position,
-                            object.hitbox.radius
-                        )
-                    ) {
+                    const dist = distanceSquared(object.position, player.position);
+                    if (dist < minDist && circleCollision(player.position, 3, object.position, object.hitbox.radius)) {
                         minDist = dist;
                         closestObject = object;
-                        canInteract = closestObject.canInteract(
-                            this.playerManager
-                        );
+                        canInteract = closestObject.canInteract(this.playerManager);
                     }
                 } else if (object instanceof Building) {
-                    if (!object.dead) {
-                        object.toggleCeiling(
-                            !object.ceilingHitbox?.collidesWith(player.hitbox)
-                        );
-                    }
+                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
                 }
             }
 
-            const getOffset = (): number | undefined =>
-                closestObject instanceof Obstacle
-                    ? closestObject.door?.offset
-                    : undefined;
+            const getOffset = (): number | undefined => closestObject instanceof Obstacle ? closestObject.door?.offset : undefined;
 
             const differences = {
                 object: cache.object?.id !== closestObject?.id,
@@ -578,24 +509,12 @@ export class Game {
                             closestObject === undefined ||
                             // If the loot object hasn't changed, we don't need to redo the text
                             !(differences.object || differences.offset)
-                        ) {
-                            return;
-                        }
+                        ) return;
 
                         let interactText = "";
-                        if (closestObject instanceof Obstacle) {
-                            interactText +=
-                                closestObject.door?.offset === 0
-                                    ? "Open "
-                                    : "Close ";
-                        }
+                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
                         interactText += closestObject.type.definition.name;
-                        if (
-                            closestObject instanceof Loot &&
-                            closestObject.count > 1
-                        ) {
-                            interactText += ` (${closestObject.count})`;
-                        }
+                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
                     };
 
@@ -608,39 +527,20 @@ export class Game {
                         }
 
                         if (
-                            closestObject instanceof Loot &&
-                            "itemType" in lootDef &&
-                            ((lootDef.itemType !== ItemType.Gun &&
-                                lootDef.itemType !== ItemType.Melee) ||
-                                (lootDef.itemType === ItemType.Gun &&
-                                    (!this.playerManager.weapons[0] ||
-                                        !this.playerManager.weapons[1])))
+                            closestObject instanceof Loot && "itemType" in lootDef &&
+                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
+                                (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
                             this.playerManager.interact();
                         } else if (
-                            (closestObject instanceof Loot &&
-                                "itemType" in lootDef &&
-                                (lootDef.itemType === ItemType.Gun ||
-                                    lootDef.itemType === ItemType.Melee)) ||
+                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
                             closestObject instanceof Obstacle
                         ) {
                             prepareInteractText();
 
                             if (canInteract) {
                                 // noinspection HtmlUnknownTarget
-                                $("#interact-key")
-                                    .html(
-                                        '<img src="./img/misc/tap-icon.svg" alt="Tap">'
-                                    )
-                                    .addClass("active")
-                                    .show();
-                                // noinspection HtmlUnknownTarget
-                                $("#interact-key")
-                                    .html(
-                                        '<img src="./img/misc/tap-icon.svg" alt="Tap">'
-                                    )
-                                    .addClass("active")
-                                    .show();
+                                $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
                             } else {
                                 $("#interact-key").removeClass("active").hide();
                             }
@@ -661,9 +561,7 @@ export class Game {
                             if (icon === undefined) {
                                 $("#interact-key").text(input);
                             } else {
-                                $("#interact-key").html(
-                                    `<img src="${icon}" alt="${input}"/>`
-                                );
+                                $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
                             }
                         }
 

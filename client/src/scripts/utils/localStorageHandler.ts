@@ -155,13 +155,7 @@ const configKey = "config";
 const storedConfig = localStorage.getItem(configKey);
 
 // Do a deep merge to add new config keys
-let config =
-    storedConfig !== null
-        ? (mergeDeep(
-            JSON.parse(JSON.stringify(defaultConfig)),
-            JSON.parse(storedConfig)
-        ) as Config)
-        : defaultConfig;
+let config = storedConfig !== null ? mergeDeep(JSON.parse(JSON.stringify(defaultConfig)), JSON.parse(storedConfig)) as Config : defaultConfig;
 let rewriteConfigToLS = storedConfig === null;
 
 if (config.configVersion !== defaultConfig.configVersion) {
@@ -209,19 +203,13 @@ if (config.configVersion !== defaultConfig.configVersion) {
             // Version 2: cameraShake, sfxVolume and translate the single bind system to the double bind system
             proxy.configVersion = "2";
 
-            type KeybindStruct<T> = Record<
-            string,
-            T | Record<string, T | Record<string, T>>
-            >;
+            type KeybindStruct<T> = Record<string, T | Record<string, T | Record<string, T>>>;
             type Version1Keybinds = KeybindStruct<string>;
             type Version2Keybinds = KeybindStruct<[string, string]>;
 
             // fk off eslint
             // eslint-disable-next-line no-inner-declarations
-            function convertAllBinds(
-                object: Version1Keybinds,
-                target: Version2Keybinds
-            ): Version2Keybinds {
+            function convertAllBinds(object: Version1Keybinds, target: Version2Keybinds): Version2Keybinds {
                 for (const key in object) {
                     const value = object[key];
 
@@ -235,10 +223,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
                 return target;
             }
 
-            proxy.keybinds = convertAllBinds(
-                config.keybinds as unknown as Version1Keybinds,
-                {}
-            ) as unknown as Config["keybinds"];
+            proxy.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as Config["keybinds"];
         }
         // Skip old porting code that's not necessary
         case "2":
@@ -269,9 +254,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
 }
 
 export const localStorageInstance = {
-    get config() {
-        return config;
-    },
+    get config() { return config; },
     update(newConfig: Partial<Config> = {}) {
         config = { ...config, ...newConfig };
         localStorage.setItem(configKey, JSON.stringify(config));
