@@ -556,21 +556,38 @@
           </div>
           <div id="emotes-list"></div>
         </div>
-        <div class="tab-content" id="tab-crosshairs-content">
+        <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
           <div id="crosshair-customize">
             <div id="crosshair-preview">
               <div id="crosshair-image"></div>
             </div>
             <div id="crosshair-controls">
-              <label>
-                <span class="setting-title">Crosshair Size:</span>
-                <input type="range" max="5" min="0.1" id="slider-crosshair-size" step="0.1">
-                <span class="range-input-value" style="align-self: end;"></span>
-              </label>
-              <label>
-                <span class="setting-title">Crosshair Color:</span>
-                <input type="color" id="crosshair-color-picker" value="#000000">
-              </label>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Size:</span>
+                  <span class="range-input-value"></span>
+                  <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Color:</span>
+                  <input type="color" id="crosshair-color-picker" value="#000000">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Stroke Size:</span>
+                  <span class="range-input-value"></span>
+                  <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Stroke Color:</span>
+                  <input type="color" id="crosshair-stroke-picker" value="#000000">
+                </label>
+              </div>
             </div>
           </div>
           <div id="crosshairs-list"></div>

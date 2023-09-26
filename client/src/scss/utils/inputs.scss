@@ -111,6 +111,28 @@ input[type="checkbox"] {
 
 input[type="color"] {
     border: none;
-    border-radius: 100px;
-    background-color: $grass_bg;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    background-color: $orange;
+
+    position: relative;
+    top: -10px;
+
+    &::-moz-color-swatch {
+        border: 2px solid #2a2a2a;
+        border-radius: 4px;
+    }
+
+    &::-webkit-color-swatch-wrapper {
+        padding: 2px;
+        border-radius: 0;
+        outline: none;
+        border: none;
+    }
+
+    &::-webkit-color-swatch {
+        border: 2px solid #2a2a2a;
+        border-radius: 4px;
+    }
 }
