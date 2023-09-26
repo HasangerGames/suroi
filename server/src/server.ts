@@ -179,7 +179,9 @@ app.ws("/play", {
         /* eslint-disable-next-line @typescript-eslint/no-empty-function */
         res.onAborted((): void => { });
 
-        // Bot protection
+        //
+        // Bot & cheater protection
+        //
         const ip = getIP(res, req);
         if (Config.protection) {
             const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections;
@@ -212,43 +214,41 @@ app.ws("/play", {
 
         const searchParams = new URLSearchParams(req.getQuery());
 
+        //
+        // Validate game ID
+        //
         let gameID = Number(searchParams.get("gameID"));
         if (gameID < 0 || gameID > 1) gameID = 0;
         const game = games[gameID];
-
         if (game === undefined || !allowJoin(gameID)) {
             forbidden(res);
             return;
         }
 
+        //
         // Name
+        //
         let name = searchParams.get("name");
         name = decodeURIComponent(name ?? "").trim();
-        
-        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0) {
-            name = DEFAULT_USERNAME;
-        } else {
-            if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
-                name = stripNonASCIIChars(name);
-            }
-        
-            // Check for slurs
-            if (Config.censorUsernames && hasBadWords(name)) {
-                name = DEFAULT_USERNAME;
-            } else {
+
+        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0) name = DEFAULT_USERNAME;
+        else {
+            if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
+
+            if (Config.censorUsernames && hasBadWords(name)) name = DEFAULT_USERNAME;
+            else {
                 name = sanitizeHtml(name, {
                     allowedTags: [],
                     allowedAttributes: {}
                 });
-        
-                if (name.trim().length === 0) {
-                    name = DEFAULT_USERNAME;
-                }
+
+                if (name.trim().length === 0) name = DEFAULT_USERNAME;
             }
         }
 
-
+        //
         // Role
+        //
         const password = searchParams.get("password");
         const givenRole = searchParams.get("role");
         let role: string | undefined;
@@ -263,13 +263,17 @@ app.ws("/play", {
             isDev = !Config.roles[givenRole].noPrivileges;
         }
 
+        //
         // Name color
+        //
         let color = searchParams.get("nameColor");
         if (color?.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
             color = `#${color}`;
         }
 
+        //
         // Upgrade the connection
+        //
         const userData: PlayerContainer = {
             gameID,
             player: undefined,
