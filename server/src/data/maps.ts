@@ -244,7 +244,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 512,
         height: 512,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "blue_container"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {

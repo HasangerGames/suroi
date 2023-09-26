@@ -1025,5 +1025,38 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ]
     },
+    {
+        idString: "port",
+        name: "Port",
+        spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),
+        scopeHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
+        ]),
+        ceilingHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
+            RectangleHitbox.fromRect(13.00, 7.00, v(28.50, -3.50)), // door
+            new CircleHitbox(5, v(-16, 18.5)) // window
+        ]),
+        floorImages: [
+        
+        ],
+        ceilingImages: [
+            
+        ],
+        groundGraphics: [
+            { color: 0x525252, bounds: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
+        ],
+        floors: [
+            
+        ],
+        obstacles: [
+           
+        ],
+        subBuildings: [
+            
+        ]
+    },
     makeContainer("blue_container", "Blue Container", 0x005fa3)
 ]);
