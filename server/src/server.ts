@@ -224,16 +224,29 @@ app.ws("/play", {
         // Name
         let name = searchParams.get("name");
         name = decodeURIComponent(name ?? "").trim();
-        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
+        
+        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0) {
             name = DEFAULT_USERNAME;
         } else {
-            if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
-            name = sanitizeHtml(name, {
-                allowedTags: [],
-                allowedAttributes: {}
-            });
-            if (name.trim().length === 0) name = DEFAULT_USERNAME;
+            if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
+                name = stripNonASCIIChars(name);
+            }
+        
+            // Check for slurs
+            if (Config.censorUsernames && hasBadWords(name)) {
+                name = DEFAULT_USERNAME;
+            } else {
+                name = sanitizeHtml(name, {
+                    allowedTags: [],
+                    allowedAttributes: {}
+                });
+        
+                if (name.trim().length === 0) {
+                    name = DEFAULT_USERNAME;
+                }
+            }
         }
+
 
         // Role
         const password = searchParams.get("password");
