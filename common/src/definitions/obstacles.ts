@@ -695,7 +695,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "furniture_particle"
             },
-            depth: 2
+            depth: 2,
+            noCollisions: true
         },
         {
             idString: "chair",
