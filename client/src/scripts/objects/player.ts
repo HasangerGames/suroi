@@ -625,7 +625,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
 
-                    if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
+                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
                 }
                 break;
             }

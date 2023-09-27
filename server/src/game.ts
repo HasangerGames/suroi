@@ -19,7 +19,7 @@ import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/con
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
-import { JoinKillFeedMessage } from "./types/killFeedMessage";
+import { JoinKillFeedMessage, KillLeaderAssignedKillFeedMessage, KillLeaderUpdatedKillFeedMessage, KillLeaderDeadKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { v, type Vector } from "../../common/src/utils/vector";
@@ -268,6 +268,38 @@ export class Game {
 
             this.tick(Math.max(0, TICK_SPEED - tickTime));
         }, delay);
+    }
+
+    private _killLeader: Player | undefined; 
+    get killLeader() { return this._killLeader; }
+
+    updateKillLeader(player: Player): void  {
+        let oldKillLeader: Player | undefined = this._killLeader
+
+        if (player.kills > (this._killLeader?.kills ?? 4)) {
+            oldKillLeader = this._killLeader
+            this._killLeader = player;
+
+            if (oldKillLeader !== this._killLeader) {
+                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderAssignedKillFeedMessage()));
+            } 
+        }
+
+        if (player === this._killLeader) {
+                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderUpdatedKillFeedMessage()));
+
+        }
+    }
+
+    killLeaderDead(): void {
+        let newKillLeader: Player | undefined = undefined            
+        for (const player of this.livingPlayers) {
+                if (player.kills > (newKillLeader?.kills ?? 4)) {
+                    newKillLeader = player;
+                }
+            }  
+            this._killLeader = newKillLeader;
+            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderDeadKillFeedMessage()));
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {

@@ -178,8 +178,16 @@
         </div>
       </div>
       <div class="inventory-container" id="scopes-container">
-      </div>
+    </div>
+      
       <div class="ui-leaderboard">
+        <div class="ui-killLeader" id="ui-killLeader">
+          <div id="killLeader-leader-container" class="killLeader-leader-container">
+            <span id="killLeader-leader" class="killLeader-leader">Bob</span>
+            <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
+            <span id="killLeader-kills-counter" class="killLeader-kills-counter">12</span>
+          </div>
+        </div>
         <div class="counter">
           <img src="./img/misc/player_icon.svg">
           <div class="counter-text" id="ui-players-alive">1</div>
@@ -318,7 +326,10 @@
           </div>
         </div>
         <div class="modal-item">
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-quickplay">Quick Play</button>
+          </div>
           <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
         </div>
       </div>

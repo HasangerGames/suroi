@@ -147,6 +147,7 @@ export const Config = {
         artist: { password: "artist", noPrivileges: true },
         hasanger: { password: "hasanger" },
         leia: { password: "leia" },
+        limenade: { password: "limenade" },
         katie: { password: "katie" },
         eipi: { password: "eipi" },
         "123op": { password: "123op" },

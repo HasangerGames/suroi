@@ -17,17 +17,24 @@ import { setupUI } from "./ui";
 import { Config } from "./config";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
+const quickPlaySoloBtn: JQuery = $("#btn-quickplay")
 
 export function enablePlayButton(): void {
     playSoloBtn.removeClass("btn-disabled");
     playSoloBtn.prop("disabled", false);
     playSoloBtn.text("Play Solo");
+    quickPlaySoloBtn.removeClass("btn-disabled");
+    quickPlaySoloBtn.prop("disabled", false);
+    quickPlaySoloBtn.text("Play Solo");
 }
 
 function disablePlayButton(text: string): void {
     playSoloBtn.addClass("btn-disabled");
     playSoloBtn.prop("disabled", true);
     playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    quickPlaySoloBtn.addClass("btn-disabled");
+    quickPlaySoloBtn.prop("disabled", true);
+    quickPlaySoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 async function main(): Promise<void> {
@@ -110,8 +117,7 @@ async function main(): Promise<void> {
         updateServerSelector();
     });
 
-    // Join server when play button is clicked
-    playSoloBtn.on("click", () => {
+    function joinGame(): void {
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
@@ -155,7 +161,10 @@ async function main(): Promise<void> {
             $("#splash-server-message").show();
             enablePlayButton();
         });
-    });
+    };
+    // Join server when play button is clicked
+    playSoloBtn.on("click", () => joinGame());
+    quickPlaySoloBtn.on("click", () => joinGame());
 
     const params = new URLSearchParams(window.location.search);
 

@@ -171,8 +171,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); });
+    $("#btn-quit-game").on("click", () => { game.endGame(true); });
+    $("#btn-play-again").on("click", () => { game.endGame(true); });
+    $("#btn-quickplay").on("click", () => { game.endGame(false); } );
 
     const sendSpectatePacket = (action: SpectateActions): void => { game.sendPacket(new SpectatePacket(game.playerManager, action)); };
 

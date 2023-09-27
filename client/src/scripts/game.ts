@@ -220,12 +220,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) this.endGame(true);
             }
         };
     }
 
-    endGame(): void {
+    endGame(transition: boolean): void {
         clearTimeout(this.tickTimeoutID);
 
         if (this.activePlayer?.actionSound) this.soundManager.stop(this.activePlayer.actionSound);
@@ -234,7 +234,9 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").fadeIn();
+        $("#killLeader-leader").text("Unknown")
+        $("#killLeader-kills-counter").text("0")
+        if (transition) $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
