@@ -33,7 +33,10 @@ export enum AnimationType {
 
 export enum KillFeedMessageType {
     Kill,
-    Join
+    Join,
+    KillLeaderAssigned,
+    KillLeaderDead,
+    KillLeaderUpdated,
 }
 
 export enum GasState {

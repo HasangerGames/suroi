@@ -120,6 +120,30 @@ export class KillFeedPacket extends ReceivingPacket {
                 killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name} ${joined ? "joined" : "left"} the game`);
                 break;
             }
+
+            case KillFeedMessageType.KillLeaderAssigned: {
+                const name = stream.readPlayerNameWithColor();
+                const kills = stream.readUint8()
+
+                $("#killLeader-leader").html(name)
+                $("#killLeader-kills-counter").text(kills)
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderDead: {
+                const name = stream.readPlayerNameWithColor();
+                const kills = stream.readUint8()
+
+                $("#killLeader-leader").html(name)
+                $("#killLeader-kills-counter").text(kills)
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderUpdated: {
+                const kills = stream.readBits(7)
+                $("#killLeader-kills-counter").text(kills)
+                break;
+            }
         }
 
         killFeed.prepend(killFeedItem);

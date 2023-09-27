@@ -39,6 +39,7 @@ import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -55,6 +56,13 @@ export class Player extends GameObject {
 
     joined = false;
     disconnected = false;
+
+    private _kills = 0;
+    get kills(): number { return this._kills }
+    set kills(k: number) {
+        this._kills = k;
+        this.game.updateKillLeader(this);
+    }
 
     static readonly DEFAULT_MAX_HEALTH = 100;
     private _maxHealth = Player.DEFAULT_MAX_HEALTH;
@@ -112,7 +120,6 @@ export class Player extends GameObject {
 
     killedBy?: Player;
 
-    kills = 0;
     damageDone = 0;
     damageTaken = 0;
     joinTime: number;
@@ -645,6 +652,12 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead()
+        }
+
         // Death logic
         if (this.health > 0 || this.dead) return;
 

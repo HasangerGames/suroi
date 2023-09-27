@@ -71,11 +71,11 @@
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-                <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
+            <button class="rules-close-btn" id="rules-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
                 <div class="pulsating-circle" style="display: none"></div>
                 <span>Rules &amp; Tutorial</span>
               </button>
-              <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
           </div>
           <div id="splash-socials">
             <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -179,8 +179,16 @@
         </div>
       </div>
       <div class="inventory-container" id="scopes-container">
-      </div>
+    </div>
+      
       <div class="ui-leaderboard">
+        <div class="ui-killLeader" id="ui-killLeader">
+          <div id="killLeader-leader-container" class="killLeader-leader-container">
+            <span id="killLeader-leader" class="killLeader-leader">Bob</span>
+            <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
+            <span id="killLeader-kills-counter" class="killLeader-kills-counter">12</span>
+          </div>
+        </div>
         <div class="counter">
           <img src="./img/misc/player_icon.svg">
           <div class="counter-text" id="ui-players-alive">1</div>
@@ -319,7 +327,10 @@
           </div>
         </div>
         <div class="modal-item">
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-quickplay">Quick Play</button>
+          </div>
           <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
         </div>
       </div>

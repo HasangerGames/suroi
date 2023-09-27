@@ -35,3 +35,15 @@ export class KillKillFeedMessage extends KillFeedMessage {
         this.kills = (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0;
     }
 }
+
+export class KillLeaderAssignedKillFeedMessage extends KillFeedMessage {
+    override readonly type = KillFeedMessageType.KillLeaderAssigned;
+}
+
+export class KillLeaderUpdatedKillFeedMessage extends KillFeedMessage {
+    override readonly type = KillFeedMessageType.KillLeaderAssigned;
+}
+
+export class KillLeaderDeadKillFeedMessage extends KillFeedMessage {
+    override readonly type = KillFeedMessageType.KillLeaderDead;
+}

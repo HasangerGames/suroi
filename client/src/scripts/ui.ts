@@ -189,8 +189,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); });
+    $("#btn-quit-game").on("click", () => { game.endGame(true); });
+    $("#btn-play-again").on("click", () => { game.endGame(true); });
+    $("#btn-quickplay").on("click", () => { game.endGame(false); } );
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -607,8 +608,19 @@ export function setupUI(game: Game): void {
     // Hide rules button
     addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
         $("#btn-rules").toggle(!value);
+        $("#rules-close-btn").toggle(!value);
     });
+
+    $("#rules-close-btn").on("click", () => {
+        $("#btn-rules").toggle(false);
+        $("#rules-close-btn").toggle(false);
+        localStorageInstance.update({
+            hideRulesButton: true
+        });
+    });
+
     $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
+    $("#rules-close-btn").toggle(!localStorageInstance.config.hideRulesButton);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
