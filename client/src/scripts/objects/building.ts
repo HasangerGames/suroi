@@ -1,7 +1,7 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { type ObjectCategory } from "../../../../common/src/constants";
+import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
@@ -35,7 +35,7 @@ export class Building extends GameObject {
 
         const definition = type.definition;
 
-        this.container.zIndex = -1;
+        this.container.zIndex = zIndexes.Ground;
 
         for (const image of definition.floorImages) {
             const sprite = new SuroiSprite(image.key);
@@ -44,7 +44,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = 9;
+        this.ceilingContainer.zIndex = zIndexes.BuildingsCeiling;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 
@@ -73,7 +73,7 @@ export class Building extends GameObject {
                     frames: `${this.type.idString}_particle`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     position: this.ceilingHitbox.randomPoint(),
-                    depth: 10,
+                    zIndex: 10,
                     lifeTime: 2000,
                     rotation: {
                         start: randomRotation(),
@@ -90,7 +90,7 @@ export class Building extends GameObject {
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = -0.1;
+            this.ceilingContainer.zIndex = zIndexes.DeadObstacles;
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue`));

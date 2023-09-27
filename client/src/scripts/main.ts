@@ -68,7 +68,7 @@ async function main(): Promise<void> {
 
         try {
             const pingStartTime = Date.now();
-            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`)
+            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
                 .catch(() => {
                     console.error(`Could not load player count for ${region.address}.`);
                     listItem.addClass("server-list-item-disabled");

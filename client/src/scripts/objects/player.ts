@@ -6,7 +6,8 @@ import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions
+    PlayerActions,
+    zIndexes
 } from "../../../../common/src/constants";
 
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
@@ -111,10 +112,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
+            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
+            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7).setAnchor(v(0, 0.5)),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false)
@@ -155,7 +156,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    depth: 5,
+                    zIndex: 5,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -184,7 +185,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (weaponDef.casingParticles !== undefined) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.ammoType}_particle`,
-                depth: 3,
+                zIndex: 3,
                 position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
@@ -256,7 +257,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     const origin = this.hitbox.randomPoint();
                     const options = {
                         frames: "ripple_particle",
-                        depth: -1,
+                        zIndex: zIndexes.Ground,
                         position: origin,
                         lifeTime: 1000,
                         speed: v(0, 0)
@@ -459,17 +460,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.leftFist.setDepth(1);
-            this.images.rightFist.setDepth(1);
-            this.images.weapon.setDepth(2);
-            this.images.body.setDepth(3);
+            this.images.leftFist.setZIndex(1);
+            this.images.rightFist.setZIndex(1);
+            this.images.weapon.setZIndex(2);
+            this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.leftFist.setDepth(4);
-            this.images.rightFist.setDepth(4);
-            this.images.body.setDepth(2);
-            this.images.weapon.setDepth(1);
+            this.images.leftFist.setZIndex(4);
+            this.images.rightFist.setZIndex(4);
+            this.images.body.setZIndex(2);
+            this.images.weapon.setZIndex(1);
         }
-        this.images.waterOverlay.setDepth(this.images.body.zIndex + 1);
+        this.images.waterOverlay.setZIndex(this.images.body.zIndex + 1);
         this.container.sortChildren();
     }
 
@@ -699,7 +700,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
-            depth: 4,
+            zIndex: 4,
             position,
             lifeTime: 1000,
             scale: {

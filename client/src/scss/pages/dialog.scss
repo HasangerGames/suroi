@@ -1,7 +1,8 @@
 @import "../utils/tabs.scss";
 @import "../palette.scss";
 
-#settings-menu, #report-modal {
+#settings-menu,
+#report-modal {
     background-color: $bg;
     max-width: 450px;
 }
@@ -83,7 +84,8 @@
         }
     }
 
-    #settings-tabs-container, #customize-tabs-container {
+    #settings-tabs-container,
+    #customize-tabs-container {
         display: flex;
     }
 
@@ -138,7 +140,8 @@
                 transform: rotate(90deg);
             }
 
-            .skin-left-fist, .skin-right-fist {
+            .skin-left-fist,
+            .skin-right-fist {
                 position: absolute;
                 top: 64px;
                 width: 34px;
@@ -169,7 +172,10 @@
         align-self: center;
         flex-shrink: 0;
 
-        .emote-top, .emote-right, .emote-bottom, .emote-left {
+        .emote-top,
+        .emote-right,
+        .emote-bottom,
+        .emote-left {
             cursor: pointer;
             z-index: 10;
         }
@@ -205,6 +211,76 @@
         .emote-name {
             font-weight: bold;
             @include text-shadow;
+        }
+    }
+
+    #tab-crosshairs-content {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+    }
+
+    #crosshair-customize {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #crosshair-controls {
+        display: flex;
+        flex-direction: column;
+        width: 320px;
+
+        .modal-item {
+            margin-top: 0!important;
+        }
+    }
+
+    #crosshair-preview {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #crosshair-image {
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    #crosshairs-list {
+        overflow-y: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-content: start;
+
+        .crosshairs-list-item-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: $transparent_bg;
+
+            width: 100px;
+            height: 100px;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .crosshairs-list-item {
+            height: 80px;
+            width: 80px;
+        }
+
+        .crosshair-name {
+            font-weight: bold;
+            @include text-shadow;
+            text-align: center;
         }
     }
 
@@ -294,16 +370,26 @@
             justify-content: center;
         }
 
+        #tab-crosshairs-content {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
         #emotes-list {
+            padding-bottom: 16px;
+        }
+
+        #crosshairs-list {
             padding-bottom: 16px;
         }
     }
 
-    #settings-tabs, #customize-tabs {
+    #settings-tabs,
+    #customize-tabs {
         width: 100%;
         height: 380px;
         max-height: 80vh;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     #settings-tabs {
@@ -341,6 +427,7 @@
     }
 
     .modal-item {
+
         &.checkbox-setting {
             margin-bottom: 20px;
         }
@@ -349,7 +436,7 @@
             margin-top: 1em;
         }
 
-        input[type=checkbox] {
+        input[type="checkbox"], input[type="color"] {
             float: right;
         }
 
@@ -363,4 +450,3 @@
         box-shadow: none;
     }
 }
-

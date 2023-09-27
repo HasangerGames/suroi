@@ -2,7 +2,10 @@ import $ from "jquery";
 
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
+import {
+    GameOverPacket,
+    gameOverScreenTimeout
+} from "./packets/receiving/gameOverPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
@@ -14,7 +17,12 @@ import { type GameObject } from "./types/gameObject";
 import { type Bullet } from "./objects/bullet";
 
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { ObjectCategory, PacketType, TICK_SPEED } from "../../../common/src/constants";
+import {
+    ObjectCategory,
+    PacketType,
+    TICK_SPEED,
+    zIndexes
+} from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
@@ -27,8 +35,9 @@ import { localStorageInstance } from "./utils/localStorageHandler";
 import { Obstacle } from "./objects/obstacle";
 import { Loot } from "./objects/loot";
 import { InputPacket } from "./packets/sending/inputPacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
+
 import { type CollisionRecord, circleCollision, distanceSquared } from "../../../common/src/utils/math";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { Building } from "./objects/building";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { getIconFromInputName } from "./utils/inputManager";
@@ -84,12 +93,18 @@ export class Game {
 
     camera: Camera;
 
-    // Since all players and bullets have the same depth
+    // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-    music = new Howl({ src: localStorageInstance.config.oldMenuMusic ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
+    music = new Howl({
+        src: localStorageInstance.config.oldMenuMusic
+            ? "./audio/music/old_menu_music.mp3"
+            : "./audio/music/menu_music.mp3",
+        loop: true
+    });
+
     musicPlaying = false;
 
     tweens = new Set<Tween<unknown>>();
@@ -103,8 +118,8 @@ export class Game {
 
         this.map = new Minimap(this);
 
-        this.playersContainer.zIndex = 4;
-        this.bulletsContainer.zIndex = 3;
+        this.playersContainer.zIndex = zIndexes.Players;
+        this.bulletsContainer.zIndex = zIndexes.Bullets;
 
         setInterval(() => {
             if (localStorageInstance.config.showFPS) {
@@ -228,7 +243,9 @@ export class Game {
     endGame(): void {
         clearTimeout(this.tickTimeoutID);
 
-        if (this.activePlayer?.actionSound) this.soundManager.stop(this.activePlayer.actionSound);
+        if (this.activePlayer?.actionSound) {
+            this.soundManager.stop(this.activePlayer.actionSound);
+        }
 
         $("#action-container").hide();
         $("#game-menu").hide();
@@ -294,7 +311,9 @@ export class Game {
                 if (
                     localStorageInstance.config.rotationSmoothing &&
                     !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
-                ) player.updateContainerRotation();
+                ) {
+                    player.updateContainerRotation();
+                }
             }
 
             for (const loot of this.loots) loot.updateContainerPosition();
@@ -485,7 +504,6 @@ export class Game {
                     const prepareInteractText = (): void => {
                         if (
                             closestObject === undefined ||
-
                             // If the loot object hasn't changed, we don't need to redo the text
                             !(differences.object || differences.offset)
                         ) return;

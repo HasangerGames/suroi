@@ -1,6 +1,6 @@
 import { type Container, Graphics } from "pixi.js";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { GasState, TICK_SPEED } from "../../../../common/src/constants";
+import { GasState, TICK_SPEED, zIndexes } from "../../../../common/src/constants";
 import { COLORS } from "../utils/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
 
@@ -31,7 +31,7 @@ export class Gas {
 
         this.graphics = new Graphics();
 
-        this.graphics.zIndex = 99;
+        this.graphics.zIndex = zIndexes.Gas;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay

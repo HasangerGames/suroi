@@ -5,7 +5,7 @@ import { localStorageInstance } from "../utils/localStorageHandler";
 import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
-import { GRID_SIZE, GasState } from "../../../../common/src/constants";
+import { GRID_SIZE, GasState, zIndexes } from "../../../../common/src/constants";
 import { type MapPacket } from "../packets/receiving/mapPacket";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
@@ -103,7 +103,7 @@ export class Minimap {
         mapGraphics.endFill();
 
         const drawTerrain = (ctx: Graphics, scale: number): void => {
-            ctx.zIndex = -10;
+            ctx.zIndex = zIndexes.Ground;
             ctx.beginFill();
 
             ctx.fill.color = COLORS.water.toNumber();
@@ -184,7 +184,7 @@ export class Minimap {
             const image = new SuroiSprite(`${textureId}`);
             image.setVPos(obstacle.position).setRotation(obstacle.rotation);
             image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
-            image.setDepth(definition.depth ?? 1);
+            image.setZIndex(definition.zIndex ?? zIndexes.ObstaclesLayer1);
             mapRender.addChild(image);
         }
 
@@ -196,6 +196,7 @@ export class Minimap {
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
                 sprite.setRotation(building.rotation);
+                sprite.setZIndex(zIndexes.Ground);
                 mapRender.addChild(sprite);
             }
 
@@ -205,7 +206,7 @@ export class Minimap {
                 sprite.scale.set(1 / PIXI_SCALE);
                 mapRender.addChild(sprite);
                 sprite.setRotation(building.rotation);
-                sprite.setDepth(9);
+                sprite.setZIndex(zIndexes.BuildingsCeiling);
             }
 
             for (const floor of definition.floors) {
