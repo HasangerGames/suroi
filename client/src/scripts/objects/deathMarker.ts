@@ -1,7 +1,7 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { DEFAULT_USERNAME, ObjectCategory } from "../../../../common/src/constants";
+import { DEFAULT_USERNAME, ObjectCategory, zIndexes } from "../../../../common/src/constants";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
@@ -40,7 +40,7 @@ export class DeathMarker extends GameObject {
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-        this.container.zIndex = 0;
+        this.container.zIndex = zIndexes.DeathMarkers;
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {

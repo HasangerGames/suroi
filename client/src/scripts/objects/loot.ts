@@ -1,7 +1,7 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { ArmorType, type ObjectCategory } from "../../../../common/src/constants";
+import { ArmorType, zIndexes, type ObjectCategory } from "../../../../common/src/constants";
 import type { ObjectType } from "../../../../common/src/utils/objectType";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import type { LootDefinition } from "../../../../common/src/definitions/loots";
@@ -43,7 +43,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
         this.container.addChild(this.images.background, this.images.item);
 
-        this.container.zIndex = 1;
+        this.container.zIndex = zIndexes.Loot;
 
         // Set the loot texture based on the type
         let backgroundTexture: string | undefined;
