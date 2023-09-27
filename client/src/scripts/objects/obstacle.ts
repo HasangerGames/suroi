@@ -207,7 +207,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            zIndex: Math.max((this.type.definition.zIndex ?? zIndexes.ObstaclesLayer1) + 1, 4),
+            zIndex: Math.max((this.type.definition.zIndex ?? zIndexes.Players) + 1, 4),
             lifeTime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
