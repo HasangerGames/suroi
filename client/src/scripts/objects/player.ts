@@ -6,7 +6,8 @@ import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions
+    PlayerActions,
+    zIndexes
 } from "../../../../common/src/constants";
 
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
@@ -130,7 +131,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
-        this.emoteContainer.zIndex = 10;
+        this.emoteContainer.zIndex = zIndexes.Emotes;
         this.emoteContainer.visible = false;
 
         this.updateFistsPosition(false);
@@ -148,7 +149,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    zIndex: 5,
+                    zIndex: zIndexes.Players,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -175,7 +176,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (weaponDef.casingParticles !== undefined) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.ammoType}_particle`,
-                zIndex: 3,
+                zIndex: zIndexes.Players,
                 position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
