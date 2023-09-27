@@ -937,7 +937,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         makeConcreteWall(
             "inner_concrete_wall_2",
             "Inner Concrete Wall 2",
-            RectangleHitbox.fromRect(10.8, 1.9)
+            RectangleHitbox.fromRect(36.7, 1.9)
         ),
         makeConcreteWall(
             "inner_concrete_wall_3",

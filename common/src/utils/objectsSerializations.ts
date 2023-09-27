@@ -332,7 +332,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         },
         deserializeFull(stream, type) {
-            return this.deserializeFull(stream, type);
+            return this.deserializePartial(stream, type);
         }
     },
     //
@@ -351,7 +351,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         },
         deserializeFull(stream, type) {
-            return this.deserializeFull(stream, type);
+            return this.deserializePartial(stream, type);
         }
     }
 };
