@@ -2,12 +2,12 @@
 
 #game-ui {
     user-select: none;
+    --webkit-user-select: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    cursor: crosshair;
 }
 
 #btn-reload {
@@ -57,7 +57,7 @@
     top: 10px;
     left: 10px;
 
-    &>div {
+    & > div {
         margin-bottom: 10px;
     }
 
@@ -65,12 +65,11 @@
         top: 5px;
         left: 5px;
 
-        &>div {
+        & > div {
             margin-bottom: 5px;
         }
     }
 }
-
 
 #minimap-border {
     width: 220px;
@@ -276,7 +275,6 @@
     }
 }
 
-
 #action-container {
     position: absolute;
     bottom: 35%;
@@ -330,7 +328,8 @@
     background-color: #eee;
     border-radius: 3px;
     border: 1px solid #b4b4b4;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+        0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
     color: #333;
     font-size: 25px;
     font-weight: 700;
@@ -345,7 +344,7 @@
     margin-left: 3px;
 }
 
-#interact-key.active+#interact-text {
+#interact-key.active + #interact-text {
     position: relative;
     top: 3px;
 }
@@ -682,7 +681,6 @@
             }
         }
 
-
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
@@ -693,7 +691,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-
 
         cursor: pointer !important;
 
@@ -801,7 +798,11 @@
 
         &.has-item {
             opacity: 1;
-            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+            background: radial-gradient(
+                circle,
+                $light_transparent_bg 0%,
+                $transparent_bg 100%
+            );
         }
     }
 }
@@ -863,7 +864,6 @@
         }
     }
 
-
     @media screen and (max-width: $screen_large) {
         bottom: 5px;
         left: 5px;
@@ -901,7 +901,7 @@
 
         #healing-items-container {
             .inventory-slot .item-tooltip {
-                left: 80px !important
+                left: 80px !important;
             }
         }
     }
@@ -932,7 +932,11 @@
         height: 78px;
 
         &.has-item {
-            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
+            background: radial-gradient(
+                circle,
+                $light_transparent_bg 0%,
+                $transparent_bg 100%
+            );
         }
 
         .item-tooltip {
@@ -976,7 +980,6 @@
         }
     }
 }
-
 
 #scopes-container {
     position: absolute;
@@ -1031,7 +1034,6 @@
                 margin-top: 110px;
             }
         }
-
     }
 }
 
@@ -1043,7 +1045,7 @@
     //noinspection CssUnknownTarget
     background-image: url("../../../public/img/misc/emote_wheel.svg");
 
-    &>div {
+    & > div {
         width: 84px;
         height: 84px;
         position: absolute;
@@ -1156,13 +1158,12 @@
 #game-over-screen {
     text-align: center;
 
-
     background: rgba(0, 0, 0, 0.6);
     padding: 1rem;
     border-radius: 10px;
 
     button {
-        margin: .2rem 0;
+        margin: 0.2rem 0;
         width: 100%;
         display: inline-block;
     }
@@ -1195,7 +1196,7 @@
             font-weight: bold;
             width: 100%;
             display: flex;
-            padding: .5rem 0
+            padding: 0.5rem 0;
         }
 
         .stat-name {

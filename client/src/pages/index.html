@@ -151,6 +151,7 @@
       </div>
     </div>
     <div id="game-ui">
+      <div id="custom-cursor" style="display: none; z-index: 50; background-size: cover; background-repeat: no-repeat; pointer-events: none;"></div>
       <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
       <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i class="fa-solid fa-rotate-right"></i></button>
       <div id="joysticks-containers">
@@ -551,6 +552,7 @@
       <div class="tab-bar" id="customize-tab-bar">
         <button class="tab active" id="tab-skins"><img src="./img/misc/player_icon.svg">Skins</button>
         <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg">Emotes</button>
+        <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg">Crosshair</button>
       </div>
       <div id="customize-tabs">
         <div class="tab-content active" id="tab-skins-content">
@@ -564,6 +566,42 @@
             <div class="emote-left"></div>
           </div>
           <div id="emotes-list"></div>
+        </div>
+        <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
+          <div id="crosshair-customize">
+            <div id="crosshair-preview">
+              <div id="crosshair-image"></div>
+            </div>
+            <div id="crosshair-controls">
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Size:</span>
+                  <span class="range-input-value"></span>
+                  <input type="range" max="5" min="0.5" id="slider-crosshair-size" step="0.1">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Color:</span>
+                  <input type="color" id="crosshair-color-picker" value="#000000">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Stroke Size:</span>
+                  <span class="range-input-value"></span>
+                  <input type="range" max="0.2" min="0" id="slider-crosshair-stroke-size" step="0.005">
+                </label>
+              </div>
+              <div class="modal-item">
+                <label>
+                  <span class="setting-title">Stroke Color:</span>
+                  <input type="color" id="crosshair-stroke-picker" value="#000000">
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="crosshairs-list"></div>
         </div>
       </div>
     </div>

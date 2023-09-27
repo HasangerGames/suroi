@@ -6,7 +6,8 @@ import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions
+    PlayerActions,
+    zIndexes
 } from "../../../../common/src/constants";
 
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
@@ -106,10 +107,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setDepth(5),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setDepth(6),
+            backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
+            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite(),
-            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setDepth(7).setAnchor(v(0, 0.5)),
+            muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
         };
@@ -130,7 +131,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
-        this.emoteContainer.zIndex = 10;
+        this.emoteContainer.zIndex = zIndexes.Emotes;
         this.emoteContainer.visible = false;
 
         this.updateFistsPosition(false);
@@ -148,7 +149,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    depth: 5,
+                    zIndex: zIndexes.Players,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -169,13 +170,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
-    spawnCasingParticles(weaponDef: GunDefinition): void {
+    spawnCasingParticles(): void {
+        const weaponDef = this.activeItem.definition as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         if (weaponDef.casingParticles !== undefined) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.ammoType}_particle`,
-                depth: 3,
+                zIndex: zIndexes.Players,
                 position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
@@ -282,7 +284,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     case PlayerActions.Reload: {
                         const weaponDef = (this.activeItem.definition as GunDefinition);
                         actionName = "Reloading...";
-                        if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
+                        if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${this.activeItem.idString}_reload`;
                         actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
                         break;
@@ -402,15 +404,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.leftFist.setDepth(1);
-            this.images.rightFist.setDepth(1);
-            this.images.weapon.setDepth(2);
-            this.images.body.setDepth(3);
+            this.images.leftFist.setZIndex(1);
+            this.images.rightFist.setZIndex(1);
+            this.images.weapon.setZIndex(2);
+            this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
-            this.images.leftFist.setDepth(3);
-            this.images.rightFist.setDepth(3);
-            this.images.body.setDepth(2);
-            this.images.weapon.setDepth(1);
+            this.images.leftFist.setZIndex(3);
+            this.images.rightFist.setZIndex(3);
+            this.images.body.setZIndex(2);
+            this.images.weapon.setZIndex(1);
         }
         this.container.sortChildren();
     }
@@ -625,7 +627,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
 
-                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
+                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                 }
                 break;
             }
@@ -641,7 +643,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
-            depth: 4,
+            zIndex: 4,
             position,
             lifeTime: 1000,
             scale: {

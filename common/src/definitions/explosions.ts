@@ -13,7 +13,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     }
     readonly animation: {
         readonly duration: number
-        readonly frame: string
+        readonly tint: number
         readonly scale: number
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
@@ -39,7 +39,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1000,
-                frame: "barrel_explosion",
+                tint: 0x91140b,
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -67,7 +67,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1000,
-                frame: "barrel_explosion",
+                tint: 0xff5500,
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -95,7 +95,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion",
+                tint: 0xff0000,
                 scale: 2.5
             },
             shrapnelCount: 20,
@@ -123,7 +123,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion",
+                tint: 0x91140b,
                 scale: 2.5
             },
             shrapnelCount: 25,
@@ -151,7 +151,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             animation: {
                 duration: 1500,
-                frame: "barrel_explosion",
+                tint: 0xff0000,
                 scale: 5
             },
             shrapnelCount: 50,

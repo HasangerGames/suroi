@@ -12,9 +12,10 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
     const definition = type.definition;
     const pixiPos = toPixiCoords(position);
 
-    const image = new SuroiSprite(definition.animation.frame);
+    const image = new SuroiSprite("explosion_1");
 
     image.scale.set(0);
+    image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
     game.camera.container.addChild(image);

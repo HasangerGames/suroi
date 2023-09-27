@@ -37,11 +37,16 @@ export interface Config {
     rulesAcknowledged: boolean
     loadout: {
         skin: string
+        crosshair: string
         topEmote: string
         rightEmote: string
         bottomEmote: string
         leftEmote: string
     }
+    crosshairColor: string
+    crosshairSize: number
+    crosshairStrokeColor: string
+    crosshairStrokeSize: number
     scopeLooping: boolean
     anonymousPlayers: boolean
     keybinds: KeybindActions
@@ -81,6 +86,7 @@ export const defaultConfig: Config = {
     rulesAcknowledged: false,
     loadout: {
         skin: "forest_camo",
+        crosshair: "default",
         topEmote: "happy_face",
         rightEmote: "thumbs_up",
         bottomEmote: "suroi_logo",
@@ -114,6 +120,10 @@ export const defaultConfig: Config = {
         toggleMiniMap: ["N", ""],
         emoteWheel: ["Mouse2", ""]
     },
+    crosshairColor: "#000000",
+    crosshairSize: 30,
+    crosshairStrokeColor: "#000000",
+    crosshairStrokeSize: 0,
     scopeLooping: false,
     anonymousPlayers: false,
     masterVolume: 1,
@@ -210,7 +220,7 @@ if (config.configVersion !== defaultConfig.configVersion) {
                     if (typeof value === "string") {
                         target[key] = [value, ""];
                     } else {
-                        convertAllBinds(value, target[key] = {});
+                        convertAllBinds(value, (target[key] = {}));
                     }
                 }
 
