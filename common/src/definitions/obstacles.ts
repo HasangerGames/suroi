@@ -1198,6 +1198,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "wall_particle"
             }
         },
-        makeContainerWalls("blue_container_walls", "Blue Container Walls", 0x005fa3)
+        makeContainerWalls("red_container_walls", "Red Container Walls", 0xa32900),
+        makeContainerWalls("yellow_container_walls", "Yellow Container Walls", 0xcccc00),
+        makeContainerWalls("green_container_walls", "Green Container Walls", 0x00a30e),
+        makeContainerWalls("blue_container_walls", "Blue Container Walls", 0x005fa3),
+        makeContainerWalls("white_container_walls", "White Container Walls", 0xc0c0c0)
     ]
 );

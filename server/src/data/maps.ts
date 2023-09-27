@@ -7,7 +7,7 @@ import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomPointInsideCircle } from "../../../common/src/utils/random";
-import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface MapDefinition {
@@ -244,7 +244,12 @@ export const Maps: Record<string, MapDefinition> = {
         width: 512,
         height: 512,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            //map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "red_container"), v(256, 256), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "yellow_container"), v(276, 256), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "green_container"), v(296, 256), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "blue_container"), v(316, 256), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "white_container"), v(336, 256), 0);
         }
     },
     singleObstacle: {

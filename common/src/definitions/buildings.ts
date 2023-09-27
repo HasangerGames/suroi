@@ -87,11 +87,7 @@ function makeContainer(idString: string, name: string, tint: number): BuildingDe
         spawnHitbox: RectangleHitbox.fromRect(16, 30),
         ceilingHitbox: RectangleHitbox.fromRect(14, 27.9),
         scopeHitbox: RectangleHitbox.fromRect(14, 28),
-        floorImages: [{
-            key: "container_floor",
-            position: v(0, 0),
-            tint
-        }],
+        floorImages: [],
         ceilingImages: [{
             key: "container_ceiling_1",
             position: v(0, 0),
@@ -103,6 +99,10 @@ function makeContainer(idString: string, name: string, tint: number): BuildingDe
                 hitbox: RectangleHitbox.fromRect(14, 28)
             }
         ],
+        groundGraphics: [{
+            color: tint,
+            bounds: RectangleHitbox.fromRect(13.8, 27.8)
+        }],
         obstacles: [
             {
                 id: `${idString}_walls`,
@@ -1040,23 +1040,27 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             new CircleHitbox(5, v(-16, 18.5)) // window
         ]),
         floorImages: [
-        
+
         ],
         ceilingImages: [
-            
+
         ],
         groundGraphics: [
-            { color: 0x525252, bounds: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
+            { color: 0x525252, bounds: RectangleHitbox.fromRect(310, 420, v(0, 0)) }
         ],
         floors: [
-            
+
         ],
         obstacles: [
-           
+
         ],
         subBuildings: [
-            
+
         ]
     },
-    makeContainer("blue_container", "Blue Container", 0x005fa3)
+    makeContainer("red_container", "Red Container", 0xa32900),
+    makeContainer("yellow_container", "Yellow Container", 0xcccc00),
+    makeContainer("green_container", "Green Container", 0x00a30e),
+    makeContainer("blue_container", "Blue Container", 0x005fa3),
+    makeContainer("white_container", "White Container", 0xc0c0c0)
 ]);
