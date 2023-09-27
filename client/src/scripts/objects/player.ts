@@ -170,7 +170,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
-    spawnCasingParticles(weaponDef: GunDefinition): void {
+    spawnCasingParticles(): void {
+        const weaponDef = this.activeItem.definition as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         if (weaponDef.casingParticles !== undefined) {
@@ -283,7 +284,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     case PlayerActions.Reload: {
                         const weaponDef = (this.activeItem.definition as GunDefinition);
                         actionName = "Reloading...";
-                        if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
+                        if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${this.activeItem.idString}_reload`;
                         actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
                         break;
@@ -626,7 +627,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         yoyo: true
                     });
 
-                    if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(weaponDef);
+                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                 }
                 break;
             }
