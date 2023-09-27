@@ -43,8 +43,10 @@ export interface Config {
         bottomEmote: string
         leftEmote: string
     }
-    crosshairColor: string & { length: 6 }
+    crosshairColor: string
     crosshairSize: number
+    crosshairStrokeColor: string
+    crosshairStrokeSize: number
     scopeLooping: boolean
     anonymousPlayers: boolean
     keybinds: KeybindActions
@@ -118,8 +120,10 @@ export const defaultConfig: Config = {
         toggleMiniMap: ["N", ""],
         emoteWheel: ["Mouse2", ""]
     },
-    crosshairColor: "000000" as string & { length: 6 },
-    crosshairSize: 1,
+    crosshairColor: "#000000",
+    crosshairSize: 30,
+    crosshairStrokeColor: "#000000",
+    crosshairStrokeSize: 0,
     scopeLooping: false,
     anonymousPlayers: false,
     masterVolume: 1,

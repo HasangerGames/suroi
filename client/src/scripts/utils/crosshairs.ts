@@ -7,36 +7,54 @@ export interface CrosshairDefinition extends ObjectDefinition {
     svg: string
 }
 
+// NOTE: make the crosshair path 16x16 pixels and the view box 20x20 pixels so theres space for the stroke
+
 export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
     {
         idString: "default",
         name: "Default",
-        svg: "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width='@Width@' height='@Height@' viewBox='0 0 4.2333332 4.2333333' version='1.1' id='svg1' inkscape:version='1.3 (0e150ed6c4, 2023-07-21)' sodipodi:docname='default.svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Csodipodi:namedview id='namedview1' pagecolor='%23ffffff' bordercolor='%23@Color@' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' inkscape:document-units='mm' inkscape:zoom='50.685971' inkscape:cx='7.6155195' inkscape:cy='7.5859256' inkscape:window-width='1920' inkscape:window-height='1166' inkscape:window-x='-11' inkscape:window-y='-11' inkscape:window-maximized='1' inkscape:current-layer='layer1' /%3E%3Cdefs id='defs1' /%3E%3Cg inkscape:label='Layer 1' inkscape:groupmode='layer' id='layer1'%3E%3Crect style='fill:%23@Color@;stroke:%23ffffff;stroke-width:0;stroke-dasharray:none' id='rect1' width='0.2499993' height='4.2333322' x='1.991667' y='5.0061766e-07' ry='0' /%3E%3Crect style='fill:%23@Color@;stroke:%23ffffff;stroke-width:0;stroke-dasharray:none' id='rect1-8' width='0.2499993' height='4.2333326' x='1.991667' y='-4.2333331' ry='0' transform='rotate(90)' /%3E%3C/g%3E%3C/svg%3E%0A"
+        svg: `<svg fill="@Color@" height="@Size@" width="@Size@" stroke="@StrokeColor@" stroke-width="@StrokeSize@" viewBox="0 0 5.2916665 5.2916666" xmlns="http://www.w3.org/2000/svg">
+                <path d="m2.5135417.52916667v1.98437503h-1.98437503v.2645833h1.98437503v1.9843749h.2645833v-1.9843749h1.9843749v-.2645833h-1.9843749v-1.98437503z"/>
+            </svg>`
     },
     {
-        idString: "cross",
-        name: "Cross",
-        svg: "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width='@Width@' height='@Height@' viewBox='0 0 4.2333332 4.2333333' version='1.1' id='svg1' xml:space='preserve' inkscape:version='1.3 (0e150ed6c4, 2023-07-21)' sodipodi:docname='cross.svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Csodipodi:namedview id='namedview1' pagecolor='%23@Color@' bordercolor='%23@Color@' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' inkscape:document-units='mm' inkscape:zoom='50.685971' inkscape:cx='9.0163016' inkscape:cy='8.3750986' inkscape:window-width='1920' inkscape:window-height='1166' inkscape:window-x='-11' inkscape:window-y='-11' inkscape:window-maximized='1' inkscape:current-layer='layer1' /%3E%3Cdefs id='defs1' /%3E%3Cg inkscape:label='Layer 1' inkscape:groupmode='layer' id='layer1'%3E%3Cpath style='fill:%23@Color@;stroke-width:0.0333205' d='m 2.0328818,3.4020986 v -0.831229 h 0.083785 0.083785 v 0.831229 0.8312347 H 2.1166664 2.0328818 Z M 0.92604152,2.9014979 V 2.4956976 l 0.0782728,0.00114 0.078273,0.00114 0.00114,0.3251938 0.00114,0.3251882 0.3251887,0.00114 0.3251887,0.00114 0.00119,0.07827 0.00119,0.078276 H 1.3318292 0.92603301 Z M 2.4959028,3.2301195 V 3.1529521 H 2.8244266 3.1529511 V 2.8244272 2.4959022 h 0.07717 0.07717 V 2.9015945 3.3072923 H 2.9015973 2.4959028 Z M 0,2.1166658 V 2.0328818 H 0.83123236 1.6624654 v 0.083784 0.083784 H 0.83123236 0 Z m 2.5708679,0 v -0.083784 h 0.831233 0.8312324 v 0.083784 0.083784 H 3.4021009 2.5708679 Z M 0.92604152,1.3295316 V 0.9260393 H 1.3295309 1.733021 v 0.0771733 0.077167 H 1.4067016 1.0803817 V 1.4066989 1.7330182 H 1.0032117 0.9260411 Z M 3.1529511,1.4066984 V 1.0803795 H 2.8266322 2.5003123 V 1.0009835 0.9215879 l 0.4045923,0.001138 0.4045916,0.001138 0.00114,0.4045894 0.00114,0.4045951 H 3.2323716 3.1529737 Z M 2.0328818,0.83123303 V -1.6713418e-6 h 0.083785 0.083785 V 0.83123303 1.6624677 h -0.083785 -0.083785 z' id='path2' /%3E%3C/g%3E%3C/svg%3E"
+        idString: "01",
+        name: "01",
+        svg: `<svg fill="@Color@" height="@Size@" width="@Size@" stroke="@StrokeColor@" stroke-width="@StrokeSize@" viewBox="0 0 5.2916665 5.2916666" xmlns="http://www.w3.org/2000/svg">
+                <path d="m2.441453.5291666v1.453658h.4092773v-1.453658zm-1.1983765.7002157v1.0924397h.344165v-.7482747h.7482748v-.344165zm1.7135905 0v.344165h.7482747v.7482747h.3441651v-1.0924397zm-2.4406779 1.1983764v.4092774h1.453658v-.4092774zm2.8060303 0v.4092774h1.453658v-.4092774zm-2.0789429.5152141v1.0924397h1.0924398v-.344165h-.7482748v-.7482747zm2.4618652 0v.7482747h-.7482747v.344165h1.0924398v-1.0924397zm-1.2634887.3658691v1.453658h.4092773v-1.453658z"/>
+            </svg>`
     },
     {
-        idString: "precision",
-        name: "Precision",
-        svg: "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8' standalone='no'%3F%3E%3C!-- Created with Inkscape (http://www.inkscape.org/) --%3E%3Csvg width='@Width@' height='@Height@' viewBox='0 0 4.2333333 4.2333332' version='1.1' id='svg2' inkscape:version='1.3 (0e150ed6c4, 2023-07-21)' sodipodi:docname='crosshair_icon.svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:sodipodi='http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Csodipodi:namedview id='namedview1' pagecolor='%23@Color@' bordercolor='%23@Color@' borderopacity='0.25' inkscape:showpageshadow='2' inkscape:pageopacity='0.0' inkscape:pagecheckerboard='0' inkscape:deskcolor='%23d1d1d1' inkscape:document-units='mm' inkscape:zoom='25.342986' inkscape:cx='6.3528427' inkscape:cy='6.372572' inkscape:window-width='1920' inkscape:window-height='1166' inkscape:window-x='-11' inkscape:window-y='-11' inkscape:window-maximized='1' inkscape:current-layer='layer1' /%3E%3Cdefs id='defs1' /%3E%3Cg inkscape:label='Layer 1' inkscape:groupmode='layer' id='layer1'%3E%3Ccircle style='fill:%23@Color@;stroke-width:0.0619049' id='path2' cx='2.119453' cy='2.1166673' r='0.18254788' /%3E%3Crect style='fill:%23@Color@;stroke-width:0.0723768' id='rect2' width='1.0583333' height='0.26458332' x='0.0055726767' y='1.9843756' ry='0.13229166' /%3E%3Crect style='fill:%23@Color@;stroke-width:0.0723768' id='rect2-1' width='1.0583333' height='0.26458332' x='1.0728836e-06' y='-2.2489583' ry='0.13229166' transform='rotate(90)' /%3E%3Crect style='fill:%23@Color@;stroke-width:0.0723768' id='rect2-0' width='1.0583333' height='0.26458332' x='3.175' y='1.9843756' ry='0.13229166' /%3E%3Crect style='fill:%23@Color@;stroke-width:0.0723768' id='rect2-2' width='1.0583333' height='0.26458332' x='3.1750002' y='-2.2489583' ry='0.13229166' transform='rotate(90)' /%3E%3Ccircle style='fill:none;stroke-width:0.26458333;stroke:%23@Color@;stroke-opacity:1;stroke-dasharray:none' id='path1-7' cx='2.1166666' cy='2.1166673' r='1.4552083' /%3E%3C/g%3E%3C/svg%3E%0A"
+        idString: "02",
+        name: "02",
+        svg: `<svg fill="@Color@" height="@Size@" width="@Size@" stroke="@StrokeColor@" stroke-width="@StrokeSize@" viewBox="0 0 5.2916665 5.2916666" xmlns="http://www.w3.org/2000/svg">
+                <path d="m 2.6429911,0.52916667 c -0.073289,0 -0.1322916,0.059002 -0.1322916,0.13229166 V 1.0645345 C 1.7411327,1.1286256 1.1257834,1.7439749 1.0616923,2.5135417 H 0.66430054 c -0.0732897,0 -0.13229166,0.059002 -0.13229166,0.1322916 0,0.073289 0.059002,0.1322917 0.13229166,0.1322917 H 1.0611755 c 0.063612,0.7700628 0.6796027,1.38592 1.449524,1.4500406 v 0.4020427 c 0,0.07329 0.059002,0.1322916 0.1322916,0.1322916 0.073289,0 0.1322917,-0.059002 0.1322917,-0.1322916 V 4.2286824 C 3.5457002,4.1650414 4.1621991,3.5485424 4.2258402,2.778125 h 0.4015259 c 0.07329,0 0.1322916,-0.059002 0.1322916,-0.1322917 0,-0.073289 -0.059002,-0.1322916 -0.1322916,-0.1322916 H 4.2253234 C 4.1612028,1.7436204 3.5453456,1.1276296 2.7752828,1.0640177 V 0.66145833 c 0,-0.0732897 -0.059002,-0.13229166 -0.1322917,-0.13229166 z M 2.7752828,1.3286011 c 0.6261544,0.061742 1.1218721,0.5587361 1.183907,1.1849406 H 3.8336161 c -0.07329,0 -0.1322917,0.059002 -0.1322917,0.1322916 0,0.073289 0.059002,0.1322917 0.1322917,0.1322917 H 3.9591898 C 3.8975952,3.4046039 3.4017617,3.9004374 2.7752828,3.962032 V 3.8364583 c 0,-0.07329 -0.059002,-0.1322917 -0.1322917,-0.1322917 -0.073289,0 -0.1322916,0.059002 -0.1322916,0.1322917 V 3.962032 C 1.884495,3.8999971 1.3875006,3.4042794 1.3257589,2.778125 h 0.1322916 c 0.07329,0 0.1322917,-0.059002 0.1322917,-0.1322917 0,-0.073289 -0.059002,-0.1322916 -0.1322917,-0.1322916 H 1.3262756 C 1.3884739,1.8876926 1.8848504,1.3913161 2.5106995,1.3291178 v 0.1260905 c 0,0.07329 0.059002,0.1322917 0.1322916,0.1322917 0.073289,0 0.1322917,-0.059002 0.1322917,-0.1322917 z M 2.6455749,2.4634155 A 0.182548,0.182548 0 0 0 2.4631571,2.6458333 0.182548,0.182548 0 0 0 2.6455749,2.8282511 0.182548,0.182548 0 0 0 2.8285095,2.6458333 0.182548,0.182548 0 0 0 2.6455749,2.4634155 Z" />
+        </svg>`
+    },
+    {
+        idString: "03",
+        name: "03",
+        svg: `<svg fill="@Color@" height="@Size@" width="@Size@" stroke="@StrokeColor@" stroke-width="@StrokeSize@" viewBox="0 0 5.2916665 5.2916666" xmlns="http://www.w3.org/2000/svg">
+                <path d="m.94981276.52916708-.42064637.43201478 1.45003981 1.44590634.4278807-.0000001.0000001-.4247802zm3.38067114-.00000056-1.4459065 1.45004098-.0000002.4278807h.4247802l1.4531412-1.45727563zm-2.348177 2.35541208-1.45314118 1.4572756.43201471.420646 1.44590657-1.4500408.0000001-.4278808zm.9022702-.0000002-.0000001.4247803 1.4572745 1.453141.4206494-.4320118-1.4500399-1.4459063z"/>
+            </svg>`
     }
 ]);
 
 export function getCrosshair(
     idString: CrosshairDefinition["idString"],
     color: string,
-    size: number
+    size: number,
+    strokeColor: string,
+    strokeSize: number
 ): string {
     const crosshair =
         Crosshairs.definitions[Crosshairs.idStringToNumber[idString]];
 
     const svg = crosshair.svg
         .replace(/@Color@/g, color)
-        .replace(/@Width@/g, size.toString())
-        .replace(/@Height@/g, size.toString());
+        .replace(/@Size@/g, size.toString())
+        .replace(/@StrokeColor@/g, strokeColor)
+        .replace(/@StrokeSize@/g, strokeSize.toString());
 
-    return svg;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }

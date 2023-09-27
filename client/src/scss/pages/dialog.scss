@@ -228,19 +228,16 @@
     #crosshair-controls {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        width: 320px;
 
-        & label {
-            gap: 2px;
-            display: flex;
-            align-items: center;
+        .modal-item {
+            margin-top: 0!important;
         }
     }
 
     #crosshair-preview {
         display: flex;
-        width: 286px;
-        height: 286px;
+        flex-grow: 1;
         justify-content: center;
         align-items: center;
     }
@@ -251,20 +248,24 @@
     }
 
     #crosshairs-list {
-        overflow-y: scroll;
-        flex-grow: 1;
+        overflow-y: auto;
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
         gap: 8px;
+        align-content: start;
 
         .crosshairs-list-item-container {
             display: flex;
             gap: 10px;
             align-items: center;
-            border: 5px solid transparent;
+            justify-content: center;
+            border: 3px solid transparent;
             border-radius: 10px;
             padding: 5px;
             background-color: $transparent_bg;
+
+            width: 100px;
+            height: 100px;
 
             &.selected {
                 border-color: $orange;
@@ -272,12 +273,8 @@
         }
 
         .crosshairs-list-item {
-            width: 84px;
-            height: 84px;
-            flex-shrink: 0;
-            position: relative;
-            width: 102px;
-            height: 98px;
+            height: 80px;
+            width: 80px;
         }
 
         .crosshair-name {
@@ -392,7 +389,7 @@
         width: 100%;
         height: 380px;
         max-height: 80vh;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     #settings-tabs {
@@ -430,6 +427,7 @@
     }
 
     .modal-item {
+
         &.checkbox-setting {
             margin-bottom: 20px;
         }
@@ -438,7 +436,7 @@
             margin-top: 1em;
         }
 
-        input[type="checkbox"] {
+        input[type="checkbox"], input[type="color"] {
             float: right;
         }
 
