@@ -122,12 +122,12 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
                 rotation: 0
             }
         ],
-        lootSpawners: [
-            {
+        lootSpawners: open === "closed"
+            ? undefined
+            : [{
                 position: v(0, 0),
                 table: "ground_loot"
-            }
-        ]
+            }]
     };
 }
 export const ContainerTints = {
