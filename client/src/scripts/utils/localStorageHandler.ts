@@ -1,217 +1,208 @@
 import { mergeDeep } from "../../../../common/src/utils/misc";
+import { consoleVariables, gameConsole, keybinds, type CVarTypeMapping, type ExtractConVarValue } from "./console/gameConsole";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type KeybindActions = {
-    moveUp: [string, string]
-    moveDown: [string, string]
-    moveLeft: [string, string]
-    moveRight: [string, string]
-    interact: [string, string]
-    slot1: [string, string]
-    slot2: [string, string]
-    slot3: [string, string]
-    lastEquippedItem: [string, string]
-    equipOtherGun: [string, string]
-    swapGunSlots: [string, string]
-    previousItem: [string, string]
-    nextItem: [string, string]
-    useItem: [string, string]
-    dropActiveItem: [string, string]
-    reload: [string, string]
-    previousScope: [string, string]
-    nextScope: [string, string]
-    useGauze: [string, string]
-    useMedikit: [string, string]
-    useCola: [string, string]
-    useTablets: [string, string]
-    cancelAction: [string, string]
-    toggleMap: [string, string]
-    toggleMiniMap: [string, string]
-    emoteWheel: [string, string]
+/* eslint-disable @typescript-eslint/indent */
+export type KeybindActions = Record<
+    "moveUp" |
+    "moveDown" |
+    "moveLeft" |
+    "moveRight" |
+    "interact" |
+    "slot1" |
+    "slot2" |
+    "slot3" |
+    "lastEquippedItem" |
+    "equipOtherGun" |
+    "swapGunSlots" |
+    "previousItem" |
+    "nextItem" |
+    "useItem" |
+    "dropActiveItem" |
+    "reload" |
+    "previousScope" |
+    "nextScope" |
+    "useGauze" |
+    "useMedikit" |
+    "useCola" |
+    "useTablets" |
+    "cancelAction" |
+    "toggleMap" |
+    "toggleMiniMap" |
+    "emoteWheel" |
+    "toggleConsole",
+    string[]
+>;
+
+const storedConfig = localStorage.getItem("config");
+
+export const actionNameToConsoleCommand: Record<keyof KeybindActions, string> = {
+    moveUp: "+up",
+    moveDown: "+down",
+    moveLeft: "+left",
+    moveRight: "+right",
+    interact: "interact",
+    slot1: "slot 0",
+    slot2: "slot 1",
+    slot3: "slot 2",
+    lastEquippedItem: "last_item",
+    equipOtherGun: "other_weapon",
+    swapGunSlots: "swap_gun_slots",
+    previousItem: "cycle_items -1",
+    nextItem: "cycle_items 1",
+    useItem: "+attack",
+    dropActiveItem: "drop",
+    reload: "reload",
+    previousScope: "cycle_scopes -1",
+    nextScope: "cycle_scopes 1",
+    useGauze: "use_consumable gauze",
+    useMedikit: "use_consumable medikit",
+    useCola: "use_consumable cola",
+    useTablets: "use_consumable tablets",
+    cancelAction: "cancel_action",
+    toggleMap: "toggle_map",
+    toggleMiniMap: "toggle_minimap",
+    emoteWheel: "+emote_wheel",
+    toggleConsole: "toggle_console"
 };
 
-export interface Config {
-    // this needs to be updated every time the config changes, because old configs need to be invalidated/ported
-    configVersion: string
-    playerName: string
-    rulesAcknowledged: boolean
-    loadout: {
-        skin: string
-        crosshair: string
-        topEmote: string
-        rightEmote: string
-        bottomEmote: string
-        leftEmote: string
-    }
-    crosshairColor: string
-    crosshairSize: number
-    crosshairStrokeColor: string
-    crosshairStrokeSize: number
-    scopeLooping: boolean
-    anonymousPlayers: boolean
-    keybinds: KeybindActions
-    masterVolume: number
-    sfxVolume: number
-    musicVolume: number
-    muteAudio: boolean
-    oldMenuMusic: boolean
-    language: string
-    region: string | undefined
-    cameraShake: boolean
-    showFPS: boolean
-    showPing: boolean
-    showCoordinates: boolean
-    clientSidePrediction: boolean
-    textKillFeed: boolean
-    rotationSmoothing: boolean
-    movementSmoothing: boolean
-    mobileControls: boolean
-    minimapMinimized: boolean
-    leaveWarning: boolean
-    hideRulesButton: boolean
-    joystickSize: number
-    joystickTransparency: number
-    minimapTransparency: number
-    bigMapTransparency: number
+if (typeof storedConfig === "string") {
+    // autoexec config, we're happy
+    gameConsole.addReadyCallback(() => { gameConsole.handleQuery(storedConfig); });
+} else {
+    // ughhhhh porting time
 
-    devPassword?: string
-    role?: string
-    nameColor?: string
-    lobbyClearing?: boolean
-}
-
-export const defaultConfig: Config = {
-    configVersion: "13",
-    playerName: "",
-    rulesAcknowledged: false,
-    loadout: {
-        skin: "forest_camo",
-        crosshair: "default",
-        topEmote: "happy_face",
-        rightEmote: "thumbs_up",
-        bottomEmote: "suroi_logo",
-        leftEmote: "sad_face"
-    },
-    keybinds: {
-        moveUp: ["W", "ArrowUp"],
-        moveDown: ["S", "ArrowDown"],
-        moveLeft: ["A", "ArrowLeft"],
-        moveRight: ["D", "ArrowRight"],
-        interact: ["F", ""],
-        slot1: ["1", ""],
-        slot2: ["2", ""],
-        slot3: ["3", "E"],
-        lastEquippedItem: ["Q", ""],
-        equipOtherGun: ["Space", ""],
-        swapGunSlots: ["T", ""],
-        previousItem: ["MWheelUp", ""],
-        nextItem: ["MWheelDown", ""],
-        useItem: ["Mouse0", ""],
-        dropActiveItem: ["", ""],
-        reload: ["R", ""],
-        previousScope: ["", ""],
-        nextScope: ["", ""],
-        useGauze: ["5", ""],
-        useMedikit: ["6", ""],
-        useCola: ["7", ""],
-        useTablets: ["8", ""],
-        cancelAction: ["X", ""],
-        toggleMap: ["G", "M"],
-        toggleMiniMap: ["N", ""],
-        emoteWheel: ["Mouse2", ""]
-    },
-    crosshairColor: "#000000",
-    crosshairSize: 30,
-    crosshairStrokeColor: "#000000",
-    crosshairStrokeSize: 0,
-    scopeLooping: false,
-    anonymousPlayers: false,
-    masterVolume: 1,
-    musicVolume: 1,
-    sfxVolume: 1,
-    muteAudio: false,
-    oldMenuMusic: false,
-    language: "en",
-    region: undefined,
-    cameraShake: true,
-    showFPS: false,
-    showPing: false,
-    showCoordinates: false,
-    clientSidePrediction: true,
-    textKillFeed: true,
-    rotationSmoothing: true,
-    movementSmoothing: true,
-    mobileControls: true,
-    minimapMinimized: false,
-    leaveWarning: true,
-    hideRulesButton: false,
-    joystickSize: 150,
-    joystickTransparency: 0.8,
-    minimapTransparency: 0.8,
-    bigMapTransparency: 0.9,
-
-    devPassword: "",
-    nameColor: "",
-    lobbyClearing: false
-};
-
-const configKey = "config";
-const storedConfig = localStorage.getItem(configKey);
-
-// Do a deep merge to add new config keys
-let config = storedConfig !== null ? mergeDeep(JSON.parse(JSON.stringify(defaultConfig)), JSON.parse(storedConfig)) as Config : defaultConfig;
-let rewriteConfigToLS = storedConfig === null;
-
-if (config.configVersion !== defaultConfig.configVersion) {
-    rewriteConfigToLS = true;
-
-    /*
-        Here, we can attempt to port the old configuration over
-
-        note: for each branch, it's also recommended to write down what changes are being made
-        ! This switch uses fallthrough, and the omission of break is intended.
-        ! This is because if we're trying to adapt a config from version 2 to 4, we
-        ! need to apply both the changes from 2 to 3 and those from 3 to 4. Thus, we use fallthrough.
-    */
-
-    let mutated = false;
-    /**
-     * Whenever the config is mutated, the `mutated` variable is set
-     * to true.
-     *
-     * In theory, we'd want to put a `break` before the switch's `default`
-     * case, because we don't want to replace the config. However, since
-     * the rest of the `switch` (intentionally) doesn't use `break`s, this
-     * can be confusing. So instead, we use evil proxy magic to detect when
-     * the config is mutated. If the config is mutated, then it must be due
-     * to matching one of the `switch` cases; we thus shouldn't enter the
-     * `default` case
-     */
-    let proxy = new Proxy(config, {
-        set<K extends keyof Config>(target: Config, key: K, value: Config[K]) {
-            mutated = true;
-
-            // We don't need this proxy anymore
-            proxy = config;
-            target[key] = value;
-
-            return true;
+    interface OldConfig {
+        configVersion: string
+        playerName: string
+        rulesAcknowledged: boolean
+        loadout: {
+            skin: string
+            topEmote: string
+            rightEmote: string
+            bottomEmote: string
+            leftEmote: string
         }
-    });
+        scopeLooping: boolean
+        anonymousPlayers: boolean
+        keybinds: KeybindActions
+        masterVolume: number
+        sfxVolume: number
+        musicVolume: number
+        muteAudio: boolean
+        oldMenuMusic: boolean
+        language: string
+        region: string | undefined
+        cameraShake: boolean
+        showFPS: boolean
+        showPing: boolean
+        showCoordinates: boolean
+        clientSidePrediction: boolean
+        textKillFeed: boolean
+        rotationSmoothing: boolean
+        movementSmoothing: boolean
+        mobileControls: boolean
+        minimapMinimized: boolean
+        leaveWarning: boolean
+        joystickSize: number
+        joystickTransparency: number
+        minimapTransparency: number
+        bigMapTransparency: number
 
-    // fkin linters always getting in the damn way
+        devPassword?: string
+        role?: string
+        nameColor?: string
+        lobbyClearing?: boolean
+
+        consoleSettings?: {
+            left?: number
+            top?: number
+            width?: number
+            height?: number
+        }
+    }
+
+    const defaultConfig: OldConfig = {
+        configVersion: "14",
+        playerName: "",
+        rulesAcknowledged: false,
+        loadout: {
+            skin: "forest_camo",
+            topEmote: "happy_face",
+            rightEmote: "thumbs_up",
+            bottomEmote: "suroi_logo",
+            leftEmote: "sad_face"
+        },
+        keybinds: {
+            moveUp: ["W", "ArrowUp"],
+            moveDown: ["S", "ArrowDown"],
+            moveLeft: ["A", "ArrowLeft"],
+            moveRight: ["D", "ArrowRight"],
+            interact: ["F"],
+            slot1: ["1"],
+            slot2: ["2"],
+            slot3: ["3", "E"],
+            lastEquippedItem: ["Q"],
+            equipOtherGun: ["Space"],
+            swapGunSlots: ["T"],
+            previousItem: ["MWheelUp"],
+            nextItem: ["MWheelDown"],
+            useItem: ["Mouse0"],
+            dropActiveItem: [],
+            reload: ["R"],
+            previousScope: [],
+            nextScope: [],
+            useGauze: ["5"],
+            useMedikit: ["6"],
+            useCola: ["7"],
+            useTablets: ["8"],
+            cancelAction: ["X"],
+            toggleMap: ["G", "M"],
+            toggleMiniMap: ["N"],
+            emoteWheel: ["Mouse2"],
+            toggleConsole: ["§"]
+        },
+        scopeLooping: false,
+        anonymousPlayers: false,
+        masterVolume: 1,
+        musicVolume: 1,
+        sfxVolume: 1,
+        muteAudio: false,
+        oldMenuMusic: false,
+        language: "en",
+        region: undefined,
+        cameraShake: true,
+        showFPS: false,
+        showPing: false,
+        showCoordinates: false,
+        clientSidePrediction: true,
+        textKillFeed: true,
+        rotationSmoothing: true,
+        movementSmoothing: true,
+        mobileControls: true,
+        minimapMinimized: false,
+        leaveWarning: true,
+        joystickSize: 150,
+        joystickTransparency: 0.8,
+        minimapTransparency: 0.8,
+        bigMapTransparency: 0.9,
+
+        devPassword: "",
+        nameColor: "",
+        lobbyClearing: false
+    };
+
+    const config = storedConfig !== null ? mergeDeep(JSON.parse(JSON.stringify(defaultConfig)), JSON.parse(storedConfig)) as OldConfig : defaultConfig;
+
     /* eslint-disable no-fallthrough */
     // noinspection FallThroughInSwitchStatementJS
     switch (config.configVersion) {
         case "1": {
-            // Version 2: cameraShake, sfxVolume and translate the single bind system to the double bind system
-            proxy.configVersion = "2";
+            config.configVersion = "2";
 
             type KeybindStruct<T> = Record<string, T | Record<string, T | Record<string, T>>>;
             type Version1Keybinds = KeybindStruct<string>;
             type Version2Keybinds = KeybindStruct<[string, string]>;
 
-            // fk off eslint
             // eslint-disable-next-line no-inner-declarations
             function convertAllBinds(object: Version1Keybinds, target: Version2Keybinds): Version2Keybinds {
                 for (const key in object) {
@@ -227,9 +218,8 @@ if (config.configVersion !== defaultConfig.configVersion) {
                 return target;
             }
 
-            proxy.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as Config["keybinds"];
+            config.keybinds = convertAllBinds(config.keybinds as unknown as Version1Keybinds, {}) as unknown as OldConfig["keybinds"];
         }
-        // Skip old porting code that's not necessary
         case "2":
         case "3":
         case "4":
@@ -237,34 +227,64 @@ if (config.configVersion !== defaultConfig.configVersion) {
         case "6":
         case "7":
         case "8": {
-            // Version 9: Added leave warning, joystick size, joystick and minimap transparency settings
-            // And inverted the next and previous weapon keybinds
-            proxy.configVersion = "9";
-            proxy.keybinds.previousItem = defaultConfig.keybinds.previousItem;
-            proxy.keybinds.nextItem = defaultConfig.keybinds.nextItem;
+            config.configVersion = "9";
+            config.keybinds.previousItem = defaultConfig.keybinds.previousItem;
+            config.keybinds.nextItem = defaultConfig.keybinds.nextItem;
         }
         case "9":
         case "10":
         case "11":
-        case "12": {
-            proxy.configVersion = defaultConfig.configVersion;
-        }
+        case "12":
+        case "13":
+        case "14":
         default: {
-            if (!mutated) {
-                config = defaultConfig;
+            (
+                [
+                    ["cv_player_name", config.playerName],
+                    ["cv_loadout_skin", config.loadout.skin],
+                    ["cv_loadout_top_emote", config.loadout.topEmote],
+                    ["cv_loadout_right_emote", config.loadout.rightEmote],
+                    ["cv_loadout_bottom_emote", config.loadout.bottomEmote],
+                    ["cv_loadout_left_emote", config.loadout.leftEmote],
+                    ["cv_loop_scope_selection", config.scopeLooping],
+                    ["cv_anonymize_player_names", config.anonymousPlayers],
+                    ["cv_master_volume", config.masterVolume],
+                    ["cv_music_volume", config.musicVolume],
+                    ["cv_sfx_volume", config.sfxVolume],
+                    ["cv_mute_audio", config.muteAudio],
+                    ["cv_use_old_menu_music", config.oldMenuMusic],
+                    ["cv_language", config.language],
+                    ["cv_region", config.region],
+                    ["cv_camera_shake_fx", config.cameraShake],
+                    ["cv_animate_rotation", config.clientSidePrediction ? "client" : "wait_for_server"],
+                    ["cv_killfeed_style", config.textKillFeed ? "text" : "icon"],
+                    ["cv_rotation_smoothing", config.rotationSmoothing],
+                    ["cv_movement_smoothing", config.movementSmoothing],
+                    ["cv_minimap_minimized", config.minimapMinimized],
+                    ["cv_leave_warning", config.leaveWarning],
+                    ["cv_minimap_transparency", config.minimapTransparency],
+                    ["cv_map_transparency", config.bigMapTransparency],
+                    ["pf_show_fps", config.showFPS],
+                    ["pf_show_ping", config.showPing],
+                    ["pf_show_pos", config.showCoordinates],
+                    ["mb_controls_enabled", config.mobileControls],
+                    ["mb_joystick_size", config.joystickSize],
+                    ["mb_joystick_transparency", config.joystickTransparency],
+                    ["dv_password", config.devPassword],
+                    ["dv_name_color", config.nameColor],
+                    ["dv_lobby_clearing", config.lobbyClearing]
+                ] as Array<[keyof CVarTypeMapping, ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>]>
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            ).forEach(([key, value]) => { consoleVariables.set.builtIn(key, value); });
+
+            for (const [key, binds] of Object.entries(config.keybinds)) {
+                const action = actionNameToConsoleCommand[key as keyof KeybindActions];
+                if (action === undefined) continue;
+
+                for (const bind of binds) {
+                    keybinds.addActionsToInput(bind, action);
+                }
             }
         }
     }
-}
-
-export const localStorageInstance = {
-    get config() { return config; },
-    update(newConfig: Partial<Config> = {}) {
-        config = { ...config, ...newConfig };
-        localStorage.setItem(configKey, JSON.stringify(config));
-    }
-};
-
-if (rewriteConfigToLS) {
-    localStorageInstance.update();
 }

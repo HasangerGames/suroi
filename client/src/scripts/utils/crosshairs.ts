@@ -1,10 +1,7 @@
-import {
-    type ObjectDefinition,
-    ObjectDefinitions
-} from "../../../../common/src/utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 
 export interface CrosshairDefinition extends ObjectDefinition {
-    svg: string
+    readonly svg: string
 }
 
 // NOTE: make the crosshair path 16x16 pixels and the view box 20x20 pixels so theres space for the stroke

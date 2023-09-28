@@ -1,6 +1,6 @@
-import { type BulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
-import { v, type Vector } from "../utils/vector";
 import { FireMode } from "../constants";
+import { ItemType, type BulletDefinition, type ItemDefinition } from "../utils/objectDefinitions";
+import { v, type Vector } from "../utils/vector";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun

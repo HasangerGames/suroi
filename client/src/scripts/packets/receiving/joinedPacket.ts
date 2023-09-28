@@ -1,8 +1,7 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { enablePlayButton } from "../../main";
 import { ObjectCategory } from "../../../../../common/src/constants";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { enablePlayButton } from "../../main";
+import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class JoinedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

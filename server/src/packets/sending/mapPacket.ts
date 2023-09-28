@@ -1,11 +1,10 @@
-import { SendingPacket } from "../../types/sendingPacket";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory, PacketType } from "../../../../common/src/constants";
-import { Obstacle } from "../../objects/obstacle";
+import { RotationMode } from "../../../../common/src/definitions/obstacles";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
 import { Building } from "../../objects/building";
-import { RotationMode } from "../../../../common/src/definitions/obstacles";
+import { Obstacle } from "../../objects/obstacle";
+import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;

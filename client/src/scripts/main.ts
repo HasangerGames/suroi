@@ -1,20 +1,16 @@
 import $ from "jquery";
-
-import { Game } from "./game";
-
-import { setupInputs } from "./utils/inputManager";
-import { localStorageInstance } from "./utils/localStorageHandler";
 import { Application } from "pixi.js";
-import { loadAtlases } from "./utils/pixi";
-import { COLORS } from "./utils/constants";
-
-import { loadSounds } from "./utils/soundManager";
-
-import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
-import { setupUI } from "./ui";
 import { Config } from "./config";
+import { Game } from "./game";
+import { setupUI } from "./ui";
+import { consoleVariables, setUpBuiltIns } from "./utils/console/gameConsole";
+import { COLORS } from "./utils/constants";
+import { setupInputs } from "./utils/inputManager";
+import { loadAtlases } from "./utils/pixi";
+import { loadSounds } from "./utils/soundManager";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 
@@ -30,7 +26,8 @@ function disablePlayButton(text: string): void {
     playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
-async function main(): Promise<void> {
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+$(async(): Promise<void> => {
     disablePlayButton("Loading...");
 
     interface RegionInfo {
@@ -48,9 +45,8 @@ async function main(): Promise<void> {
         $("#server-player-count").text(selectedRegion.playerCount);
         $("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
     };
-
     let bestPing = Number.MAX_VALUE;
-    let bestRegion;
+    let bestRegion: string | undefined;
     for (const [regionID, region] of Object.entries(Config.regions)) {
         const listItem = $(`
 <li class="server-list-item" data-region="${regionID}">
@@ -95,13 +91,18 @@ async function main(): Promise<void> {
         }
     }
 
-    selectedRegion = regionInfo[localStorageInstance.config.region ?? bestRegion ?? Config.defaultRegion];
+    //@ts-expect-error Even though indexing an object with undefined is technically gibberish, doing so returns undefined, which
+    // is kinda what we want anyways, so it's fine
+    const cVarRegion = regionInfo[consoleVariables.get.builtIn("cv_region")?.value];
+    //@ts-expect-error ditto
+    const empiricalBestRegion = regionInfo[bestRegion];
+    const clientConfigRegion = regionInfo[Config.defaultRegion];
+    selectedRegion = cVarRegion ?? empiricalBestRegion ?? clientConfigRegion;
     updateServerSelector();
 
-    // noinspection JSJQueryEfficiency
-    $("#server-list").on("click", ".server-list-item", function() {
-        const region = $(this).attr("data-region");
-        if (region === undefined) return;
+    $("#server-list").children("li.server-list-item").on("click", function(this: HTMLLIElement) {
+        const region = this.getAttribute("data-region");
+        if (region === null) return;
 
         const info = regionInfo[region];
         if (info === undefined) return;
@@ -118,10 +119,10 @@ async function main(): Promise<void> {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
 
-                const devPass = localStorageInstance.config.devPassword;
-                const role = localStorageInstance.config.role;
-                const nameColor = localStorageInstance.config.nameColor;
-                const lobbyClearing = localStorageInstance.config.lobbyClearing;
+                const devPass = consoleVariables.get.builtIn("dv_password").value;
+                const role = consoleVariables.get.builtIn("dv_role").value;
+                const nameColor = consoleVariables.get.builtIn("dv_name_color").value;
+                const lobbyClearing = consoleVariables.get.builtIn("dv_lobby_clearing").value;
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
@@ -161,23 +162,23 @@ async function main(): Promise<void> {
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
-        localStorageInstance.update({ nameColor });
+        consoleVariables.set.builtIn("dv_name_color", nameColor);
     }
 
     const lobbyClearing = params.get("lobbyClearing");
     if (lobbyClearing) {
-        localStorageInstance.update({ lobbyClearing: lobbyClearing === "true" });
+        consoleVariables.set.builtIn("dv_lobby_clearing", lobbyClearing === "true");
     }
 
     const devPassword = params.get("password");
     if (devPassword) {
-        localStorageInstance.update({ devPassword });
+        consoleVariables.set.builtIn("dv_password", devPassword);
         location.search = "";
     }
 
     const role = params.get("role");
     if (role) {
-        localStorageInstance.update({ role });
+        consoleVariables.set.builtIn("dv_role", role);
         location.search = "";
     }
 
@@ -198,10 +199,8 @@ async function main(): Promise<void> {
     const game = new Game(app);
 
     loadSounds(game.soundManager);
-    setupInputs(game);
     setupUI(game);
+    setupInputs(game);
+    setUpBuiltIns(game);
     enablePlayButton();
-}
-$(() => {
-    void main();
 });

@@ -1,11 +1,11 @@
 import type { Game } from "../game";
 
 import { ObjectCategory } from "../../../../common/src/constants";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { distance } from "../../../../common/src/utils/math";
-import { Obstacle } from "./obstacle";
-import { PIXI_SCALE } from "../utils/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
+import { distance } from "../../../../common/src/utils/math";
+import { PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
 export class Bullet extends BaseBullet {

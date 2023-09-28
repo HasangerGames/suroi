@@ -9,7 +9,7 @@ import "../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 
 import "./scss/pages/client.scss";
 import "./scss/pages/news.scss";
-import { createDropdown } from "./scripts/ui";
+import { createDropdown } from "./scripts/uiHelpers";
 
 $(() => {
     createDropdown("#splash-more");

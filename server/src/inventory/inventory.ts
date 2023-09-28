@@ -1,18 +1,18 @@
 import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { GunItem } from "./gunItem";
-import { MeleeItem } from "./meleeItem";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
-import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
-import { type HealingItemDefinition, HealingItems, HealType } from "../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type ScopeDefinition, Scopes } from "../../../common/src/definitions/scopes";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { type AmmoDefinition, Ammos } from "../../../common/src/definitions/ammos";
+import { GunItem } from "./gunItem";
+import { type InventoryItem } from "./inventoryItem";
+import { MeleeItem } from "./meleeItem";
 
 /**
  * A class representing a player's inventory

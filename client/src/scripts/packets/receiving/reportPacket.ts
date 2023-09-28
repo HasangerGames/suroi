@@ -1,5 +1,5 @@
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class ReportPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
