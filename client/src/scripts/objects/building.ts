@@ -20,7 +20,7 @@ export class Building extends GameObject {
 
     ceilingContainer: Container;
 
-    ceilingHitbox!: Hitbox;
+    ceilingHitbox?: Hitbox;
 
     orientation!: Orientation;
 
@@ -75,7 +75,7 @@ export class Building extends GameObject {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: `${this.type.idString}_particle`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    position: this.ceilingHitbox.randomPoint(),
+                    position: this.ceilingHitbox!.randomPoint(),
                     depth: 10,
                     lifeTime: 2000,
                     rotation: {
@@ -127,7 +127,7 @@ export class Building extends GameObject {
 
             this.ceilingContainer.rotation = this.rotation;
 
-            this.ceilingHitbox = definition.ceilingHitbox.transform(this.position, 1, this.orientation);
+            this.ceilingHitbox = definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
 
             for (const floor of definition.floors) {
                 const floorHitbox = floor.hitbox.transform(this.position, 1, this.orientation);
@@ -141,7 +141,7 @@ export class Building extends GameObject {
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
-            drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
+            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
 
             drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,

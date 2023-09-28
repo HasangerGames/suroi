@@ -851,7 +851,7 @@ logger.indent("Validating building definitions", () => {
             const errorPath = tester.createPath("buildings", `building '${building.idString}'`);
 
             validateHitbox(errorPath, building.spawnHitbox);
-            validateHitbox(errorPath, building.ceilingHitbox);
+            if (building.ceilingHitbox !== undefined) validateHitbox(errorPath, building.ceilingHitbox);
             validateHitbox(errorPath, building.scopeHitbox);
 
             if (building.obstacles.length) {
@@ -975,7 +975,7 @@ logger.indent("Validating building definitions", () => {
             if (building.groundGraphics) {
                 const errorPath2 = tester.createPath(errorPath, "ground graphics");
                 for (const graphic of building.groundGraphics) {
-                    validateHitbox(errorPath2, graphic.bounds);
+                    validateHitbox(errorPath2, graphic.hitbox);
 
                     tester.assertIntAndInBounds({
                         obj: graphic,

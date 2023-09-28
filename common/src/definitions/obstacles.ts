@@ -2,6 +2,7 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
 import { v, type Vector } from "../utils/vector";
 import { type Variation } from "../typings";
+import { ContainerTints } from "./buildings";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
@@ -153,28 +154,47 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
     };
 }
 
-function makeContainerWalls(idString: string, name: string, tint: number): ObstacleDefinition {
+function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint?: number): ObstacleDefinition {
+    let hitbox: Hitbox;
+    switch (open) {
+        case "open2":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
+            ]);
+            break;
+        case "open1":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
+                RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
+            ]);
+            break;
+        case "closed":
+        default:
+            hitbox = RectangleHitbox.fromRect(14, 28);
+            break;
+    }
     return {
-        idString,
-        name,
+        idString: `container_walls_${id}`,
+        name: `Container Walls ${id}`,
         material: "metal",
         health: 500,
         indestructible: true,
         noResidue: true,
+        hideOnMap: false,
+        invisible: open === "closed",
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
             destroy: 1.0
         },
-        hitbox: new ComplexHitbox([
-            RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
-            RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
-            RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
-        ]),
+        hitbox,
         rotationMode: RotationMode.Limited,
         isWall: true,
+        reflectBullets: true,
         frames: {
-            base: "container_walls",
+            base: open !== "closed" ? `container_walls_${open}` : undefined,
             particle: "metal_particle"
         },
         tint
@@ -1198,10 +1218,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "wall_particle"
             }
         },
-        makeContainerWalls("red_container_walls", "Red Container Walls", 0xa32900),
-        makeContainerWalls("yellow_container_walls", "Yellow Container Walls", 0xcccc00),
-        makeContainerWalls("green_container_walls", "Green Container Walls", 0x00a30e),
-        makeContainerWalls("blue_container_walls", "Blue Container Walls", 0x005fa3),
-        makeContainerWalls("white_container_walls", "White Container Walls", 0xc0c0c0)
+        makeContainerWalls(1, "closed"),
+        makeContainerWalls(2, "open1", ContainerTints.Green),
+        makeContainerWalls(3, "open1", ContainerTints.Blue),
+        makeContainerWalls(4, "open2", ContainerTints.Blue),
+        makeContainerWalls(5, "open1", ContainerTints.Yellow),
+        makeContainerWalls(6, "open2", ContainerTints.Yellow)
     ]
 );

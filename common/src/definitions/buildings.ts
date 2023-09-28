@@ -46,7 +46,7 @@ interface SubBuilding {
 
 export interface BuildingDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
-    ceilingHitbox: Hitbox
+    ceilingHitbox?: Hitbox
     scopeHitbox: Hitbox
     hideOnMap?: boolean
 
@@ -76,20 +76,36 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     groundGraphics?: Array<{
         color: number
-        bounds: Hitbox
+        hitbox: Hitbox
     }>
 }
 
-function makeContainer(idString: string, name: string, tint: number): BuildingDefinition {
+function makeContainer(id: number, tint: number, wallsID: number, open: "open2" | "open1" | "closed", damaged?: boolean): BuildingDefinition {
+    let spawnHitbox: Hitbox;
+    let ceilingHitbox: Hitbox | undefined;
+    switch (open) {
+        case "open2":
+            spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
+            ceilingHitbox = RectangleHitbox.fromRect(14, 37.9);
+            break;
+        case "open1":
+            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 7));
+            ceilingHitbox = RectangleHitbox.fromRect(14, 32.9, v(0, 5));
+            break;
+        case "closed":
+        default:
+            spawnHitbox = RectangleHitbox.fromRect(16, 30);
+            break;
+    }
     return {
-        idString,
-        name,
-        spawnHitbox: RectangleHitbox.fromRect(16, 30),
-        ceilingHitbox: RectangleHitbox.fromRect(14, 27.9),
+        idString: `container_${id}`,
+        name: `Container ${id}`,
+        spawnHitbox,
+        ceilingHitbox,
         scopeHitbox: RectangleHitbox.fromRect(14, 28),
         floorImages: [],
         ceilingImages: [{
-            key: "container_ceiling_1",
+            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
             tint
         }],
@@ -99,19 +115,28 @@ function makeContainer(idString: string, name: string, tint: number): BuildingDe
                 hitbox: RectangleHitbox.fromRect(14, 28)
             }
         ],
-        groundGraphics: [{
-            color: tint,
-            bounds: RectangleHitbox.fromRect(13.8, 27.8)
-        }],
         obstacles: [
             {
-                id: `${idString}_walls`,
+                id: `container_walls_${wallsID}`,
                 position: v(0, 0),
                 rotation: 0
+            }
+        ],
+        lootSpawners: [
+            {
+                position: v(0, 0),
+                table: "ground_loot"
             }
         ]
     };
 }
+export const ContainerTints = {
+    White: 0xc0c0c0,
+    Red: 0xa32900,
+    Green: 0x00a30e,
+    Blue: 0x005fa3,
+    Yellow: 0xcccc00
+};
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
@@ -575,15 +600,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
-            { color: 0x595959, bounds: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50)) }, // base
-            { color: 0xb2b200, bounds: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
-            { color: 0x505050, bounds: new CircleHitbox(19, v(45.5, 59.1)) },
-            { color: 0xb2b200, bounds: new CircleHitbox(21, v(97, 59.1)) },
-            { color: 0x505050, bounds: new CircleHitbox(19, v(97, 59.1)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(108.00, 2.00, v(69.00, 25.00)) }
+            { color: 0x595959, hitbox: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50)) }, // base
+            { color: 0xb2b200, hitbox: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
+            { color: 0x505050, hitbox: new CircleHitbox(19, v(45.5, 59.1)) },
+            { color: 0xb2b200, hitbox: new CircleHitbox(21, v(97, 59.1)) },
+            { color: 0x505050, hitbox: new CircleHitbox(19, v(97, 59.1)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(108.00, 2.00, v(69.00, 25.00)) }
         ],
         floors: [
             {
@@ -1046,7 +1071,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         ],
         groundGraphics: [
-            { color: 0x525252, bounds: RectangleHitbox.fromRect(310, 420, v(0, 0)) }
+            { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) }
         ],
         floors: [
 
@@ -1058,9 +1083,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         ]
     },
-    makeContainer("red_container", "Red Container", 0xa32900),
-    makeContainer("yellow_container", "Yellow Container", 0xcccc00),
-    makeContainer("green_container", "Green Container", 0x00a30e),
-    makeContainer("blue_container", "Blue Container", 0x005fa3),
-    makeContainer("white_container", "White Container", 0xc0c0c0)
+    // TODO Refactor this mess
+    makeContainer(1, ContainerTints.White, 1, "closed"),
+    makeContainer(2, ContainerTints.Red, 1, "closed"),
+    makeContainer(3, ContainerTints.Green, 2, "open1"),
+    makeContainer(4, ContainerTints.Green, 2, "open1", true),
+    makeContainer(5, ContainerTints.Blue, 3, "open1"),
+    makeContainer(6, ContainerTints.Blue, 3, "open1", true),
+    makeContainer(7, ContainerTints.Blue, 4, "open2"),
+    makeContainer(8, ContainerTints.Blue, 4, "open2", true),
+    makeContainer(9, ContainerTints.Yellow, 5, "open1"),
+    makeContainer(10, ContainerTints.Yellow, 6, "open2")
 ]);

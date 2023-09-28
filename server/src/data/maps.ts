@@ -54,7 +54,14 @@ export const Maps: Record<string, MapDefinition> = {
             warehouse: 4,
             small_house: 5,
             porta_potty: 10,
-            blue_container: 10
+            container_3: 1,
+            container_4: 1,
+            container_5: 1,
+            container_6: 1,
+            container_7: 1,
+            container_8: 1,
+            container_9: 1,
+            container_10: 1
         },
         obstacles: {
             oil_tank: 6,
@@ -245,11 +252,9 @@ export const Maps: Record<string, MapDefinition> = {
         height: 512,
         genCallback(map) {
             //map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "red_container"), v(256, 256), 0);
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "yellow_container"), v(276, 256), 0);
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "green_container"), v(296, 256), 0);
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "blue_container"), v(316, 256), 0);
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "white_container"), v(336, 256), 0);
+            for (let i = 1; i <= 10; i++) {
+                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
+            }
         }
     },
     singleObstacle: {
