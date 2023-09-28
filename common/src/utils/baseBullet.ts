@@ -1,4 +1,4 @@
-import { distanceSquared } from "./math";
+import { clamp, distanceSquared } from "./math";
 import { type Vector, v, vAdd, vMul, vClone } from "./vector";
 import { type GunDefinition } from "../definitions/guns";
 import { type ObjectType } from "./objectType";
@@ -14,6 +14,7 @@ export interface BulletOptions {
     sourceID: number
     reflectionCount?: number
     variance?: number
+    clipDistance?: number
 }
 
 interface GameObject {
@@ -65,7 +66,12 @@ export class BaseBullet {
         this.variance = options.variance ?? 0;
 
         this.definition = this.source.definition.ballistics;
-        this.maxDistance = (this.definition.maxDistance * (this.variance + 1)) / (this.reflectionCount + 1);
+        let dist = this.definition.maxDistance;
+
+        if (this.definition.clipDistance && options.clipDistance !== undefined) {
+            dist = clamp(options.clipDistance, 1, this.definition.maxDistance);
+        }
+        this.maxDistance = (dist * (this.variance + 1)) / (this.reflectionCount + 1);
 
         this.maxDistanceSquared = this.maxDistance ** 2;
 

@@ -1,12 +1,12 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 
-import { absMod, angleBetween, distanceSquared } from "../../../../common/src/utils/math";
+import { absMod, angleBetween, distance, distanceSquared } from "../../../../common/src/utils/math";
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../common/src/constants";
 import { type PlayerManager } from "./playerManager";
 import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
 import { type Game } from "../game";
-import { v } from "../../../../common/src/utils/vector";
-import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import { v, vDiv } from "../../../../common/src/utils/vector";
+import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
 
 class Action {
@@ -378,6 +378,14 @@ export function setupInputs(game: Game): void {
         }
 
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+
+        if (game.activePlayer) {
+            const globalPos = v(e.clientX, e.clientY);
+            const pixiPos = game.camera.container.toLocal(globalPos);
+            const gamePos = vDiv(pixiPos, PIXI_SCALE);
+            player.distanceToMouse = distance(game.activePlayer.position, gamePos);
+        }
+
         if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
             game.activePlayer.container.rotation = player.rotation;
             game.map.indicator.rotation = player.rotation;

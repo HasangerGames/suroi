@@ -136,7 +136,12 @@ export class Game {
             for (const bullet of this.bullets) {
                 records = records.concat(bullet.update());
 
-                if (bullet.dead) this.bullets.delete(bullet);
+                if (bullet.dead) {
+                    if (bullet.definition.onHitExplosion && !bullet.reflected) {
+                        this.addExplosion(bullet.definition.onHitExplosion, bullet.position, bullet.shooter);
+                    }
+                    this.bullets.delete(bullet);
+                }
             }
 
             // Do the damage after updating all bullets

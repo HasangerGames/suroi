@@ -214,13 +214,20 @@ export class UpdatePacket extends ReceivingPacket {
                 const reflectionCount = stream.readBits(2);
                 const sourceID = stream.readObjectID();
 
+                let clipDistance: number | undefined;
+
+                if (source.definition.ballistics.clipDistance) {
+                    clipDistance = stream.readFloat(0, source.definition.ballistics.maxDistance, 16);
+                }
+
                 const bullet = new Bullet(game, {
                     source,
                     position,
                     rotation,
                     reflectionCount,
                     sourceID,
-                    variance
+                    variance,
+                    clipDistance
                 });
 
                 game.bullets.add(bullet);

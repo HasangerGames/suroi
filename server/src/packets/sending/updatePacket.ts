@@ -139,6 +139,9 @@ export class UpdatePacket extends SendingPacket {
                 stream.writeFloat(bullet.variance, 0, 1, 4);
                 stream.writeBits(bullet.reflectionCount, 2);
                 stream.writeObjectID(bullet.sourceID);
+                if (bullet.definition.clipDistance) {
+                    stream.writeFloat(bullet.clipDistance, 0, bullet.definition.maxDistance, 16);
+                }
             }
         }
 

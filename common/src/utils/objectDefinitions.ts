@@ -60,6 +60,8 @@ export interface BulletDefinition {
     readonly tracerLength?: number
     readonly variance?: number
     readonly shrapnel?: boolean
+    readonly onHitExplosion?: string
+    readonly clipDistance?: boolean
 }
 
 export interface WearerAttributes {

@@ -68,6 +68,8 @@ export class PlayerManager {
 
     rotation = 0;
 
+    distanceToMouse = 0;
+
     action = InputActions.None;
     itemToSwitch = 0;
     itemToDrop = 0;

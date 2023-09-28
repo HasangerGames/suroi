@@ -115,6 +115,8 @@ export class GunItem extends InventoryItem {
 
         const limit = definition.bulletCount ?? 1;
 
+        const clipDistance = this.owner.distanceToMouse - this.definition.length;
+
         for (let i = 0; i < limit; i++) {
             const rotation = normalizeAngle(
                 owner.rotation + Math.PI / 2 +
@@ -124,7 +126,12 @@ export class GunItem extends InventoryItem {
                         : randomFloat(-1, 1)
                 ) * spread
             );
-            this.owner.game.addBullet(this, this.owner, { position, rotation });
+
+            this.owner.game.addBullet(this, this.owner, {
+                position,
+                rotation,
+                clipDistance
+            });
         }
 
         owner.recoil.active = true;

@@ -35,6 +35,7 @@ export class InputPacket extends ReceivingPacket {
         player.turning = stream.readBoolean();
         if (player.turning) {
             player.rotation = stream.readRotation(16);
+            player.distanceToMouse = stream.readFloat(0, 128, 8);
         }
 
         switch (stream.readBits(INPUT_ACTIONS_BITS)) {

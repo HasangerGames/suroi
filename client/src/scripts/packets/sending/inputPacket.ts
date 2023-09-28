@@ -29,6 +29,7 @@ export class InputPacket extends SendingPacket {
         stream.writeBoolean(player.turning);
         if (player.turning) {
             stream.writeRotation(player.rotation, 16);
+            stream.writeFloat(player.distanceToMouse, 0, 128, 8);
         }
 
         stream.writeBits(player.action, INPUT_ACTIONS_BITS);
