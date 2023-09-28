@@ -469,6 +469,17 @@
             font-size: 12px;
         }
     }
+    
+    .flashing {
+        animation: 0.5s ease-in-out 0.5s infinite flashing
+    }
+
+    @keyframes flashing {
+        50% {background-color: #ff0000;}
+        100% {background-color: #000000;}
+
+    } 
+
 }
 
 #adrenaline-bar-container {
