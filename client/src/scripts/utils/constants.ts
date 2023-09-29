@@ -21,6 +21,14 @@ export const COLORS = {
     beach: new Color("hsl(40, 39%, 55%)")
 };
 
+export const BULLET_COLORS: Record<string, number> = {
+    "9mm": 0xffff80,
+    "12g": 0xffc8c8,
+    "556mm": 0x80ff80,
+    "762mm": 0x80ffff,
+    shrapnel: 0x1d1d1d
+};
+
 export const PIXI_SCALE = 20;
 
 export enum EmoteSlot {

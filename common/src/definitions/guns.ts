@@ -226,7 +226,8 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 48
+            maxDistance: 48,
+            tracerLength: 0.7
         }
     },
     {
@@ -263,7 +264,7 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 0.5,
             speed: 0.12,
             maxDistance: 40,
-            tracerLength: 0.7
+            tracerLength: 0.5
         }
     },
     {
@@ -300,7 +301,8 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 40
+            maxDistance: 40,
+            tracerLength: 0.5
         }
     },
     {
@@ -718,8 +720,8 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.22,
             maxDistance: 160,
-            tracerLength: 1.3,
-            tracerOpacity: 0.5
+            tracerOpacity: 0.5,
+            tracerLength: 1.5
         }
     },
     {
@@ -752,7 +754,8 @@ export const Guns: GunDefinition[] = [
             damage: 28.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 230
+            maxDistance: 230,
+            tracerLength: 1.5
         }
     },
     {
@@ -785,7 +788,8 @@ export const Guns: GunDefinition[] = [
             damage: 25.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 230
+            maxDistance: 230,
+            tracerLength: 1.5
         }
     },
     {
@@ -818,12 +822,14 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 800,
             obstacleMultiplier: 2,
-            speed: 0.5,
+            speed: 1,
             maxDistance: 400,
             penetration: {
                 players: true,
                 obstacles: true
-            }
+            },
+            tracerImage: "power_cell_trail",
+            tracerLength: 10
         }
     },
     {
