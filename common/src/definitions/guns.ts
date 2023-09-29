@@ -335,9 +335,10 @@ export const Guns: GunDefinition[] = [
             damage: 8,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 80,
+            maxDistance: 100,
             onHitExplosion: "usas_explosion",
-            clipDistance: true
+            clipDistance: true,
+            tracerColor: 0xff0000
         }
     },
     {
