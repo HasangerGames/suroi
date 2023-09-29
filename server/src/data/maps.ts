@@ -251,17 +251,17 @@ export const Maps: Record<string, MapDefinition> = {
         width: 512,
         height: 512,
         genCallback(map) {
-            //map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
-            for (let i = 1; i <= 10; i++) {
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            /*for (let i = 1; i <= 10; i++) {
                 map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
-            }
+            }*/
         }
     },
     singleObstacle: {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("gold_rock", v(this.width / 2, this.height / 2));
+            map.generateObstacle("truck", v(this.width / 2, this.height / 2));
         }
     }
 };

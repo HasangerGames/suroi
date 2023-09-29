@@ -1201,6 +1201,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "wall_particle"
             }
         },
+        {
+            idString: "truck",
+            name: "Truck",
+            material: "metal",
+            health: 60,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 1.0
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
+                RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
+                RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
+                RectangleHitbox.fromRect(4.75, 15.9, v(0, -16.65)), // Fifth wheel
+                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
+                RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
+            ]),
+            reflectBullets: true,
+            rotationMode: RotationMode.None,
+            zIndex: zIndexes.ObstaclesLayer5,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
         makeContainerWalls(1, "closed"),
         makeContainerWalls(2, "open1", ContainerTints.Green),
         makeContainerWalls(3, "open1", ContainerTints.Blue),
