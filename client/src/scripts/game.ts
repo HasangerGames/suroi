@@ -20,7 +20,8 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import {
     ObjectCategory,
     PacketType,
-    TICK_SPEED
+    TICK_SPEED,
+    zIndexes
 } from "../../../common/src/constants";
 
 import { PlayerManager } from "./utils/playerManager";
@@ -97,7 +98,7 @@ export class Game {
 
     camera: Camera;
 
-    // Since all players and bullets have the same depth
+    // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
     playersContainer = new Container();
     bulletsContainer = new Container();
@@ -122,8 +123,8 @@ export class Game {
 
         this.map = new Minimap(this);
 
-        this.playersContainer.zIndex = 4;
-        this.bulletsContainer.zIndex = 3;
+        this.playersContainer.zIndex = zIndexes.Players;
+        this.bulletsContainer.zIndex = zIndexes.Bullets;
 
         setInterval(() => {
             if (localStorageInstance.config.showFPS) {

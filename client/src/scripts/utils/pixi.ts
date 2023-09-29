@@ -97,8 +97,8 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
-    setDepth(depth: number): SuroiSprite {
-        this.zIndex = depth;
+    setZIndex(zIndex: number): SuroiSprite {
+        this.zIndex = zIndex;
         return this;
     }
 

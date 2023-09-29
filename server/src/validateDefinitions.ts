@@ -1534,10 +1534,10 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            if (obstacle.depth) {
+            if (obstacle.zIndex) {
                 tester.assertIsFiniteRealNumber({
                     obj: obstacle,
-                    field: "depth",
+                    field: "zIndex",
                     baseErrorPath: errorPath
                 });
             }
