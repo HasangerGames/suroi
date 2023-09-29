@@ -36,7 +36,9 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ParticleEmitter } from "./particles";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Player>;
+
     name!: string;
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");

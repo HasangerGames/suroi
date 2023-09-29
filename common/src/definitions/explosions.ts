@@ -20,6 +20,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 
     readonly shrapnelCount: number
     readonly ballistics: BulletDefinition
+    readonly decal?: string
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
