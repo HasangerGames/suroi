@@ -7,6 +7,7 @@ import {
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions,
+    SpectateActions,
     zIndexes
 } from "../../../../common/src/constants";
 
@@ -35,6 +36,7 @@ import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ParticleEmitter } from "./particles";
+import { SpectatePacket } from "../packets/sending/spectatePacket";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
@@ -125,6 +127,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.backpack,
             this.images.helmet
         );
+        this.container.eventMode = "static"
+
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
 
@@ -163,6 +167,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 };
             }
         });
+        this.container.on('pointerdown', (event) => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            }
+        })
+        this.container.on('click', (event) => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            }
+        })
     }
 
     override updateContainerPosition(): void {
