@@ -191,7 +191,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 maxDistance: 10,
                 variance: 1,
                 shrapnel: true
-            }
+            },
+            decal: "explosion_decal"
         }
     ]
 );
