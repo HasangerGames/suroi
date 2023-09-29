@@ -125,22 +125,7 @@ export class PlayerManager {
 
     readonly itemKills: Array<number | undefined> = new Array(INVENTORY_MAX_WEAPONS).fill(undefined);
 
-    readonly items: Record<string, number> = {
-        gauze: 0,
-        medikit: 0,
-        cola: 0,
-        tablets: 0,
-        "12g": 0,
-        "556mm": 0,
-        "762mm": 0,
-        "9mm": 0,
-        power_cell: 0,
-        "1x_scope": 1,
-        "2x_scope": 0,
-        "4x_scope": 0,
-        "8x_scope": 0,
-        "15x_scope": 0
-    };
+    readonly items: Record<string, number> = {};
 
     scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
@@ -215,14 +200,7 @@ export class PlayerManager {
         this.game = game;
 
         for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
-            let amount = 0;
-            if (item.itemType === ItemType.Ammo && item.ephemeral) {
-                amount = Infinity;
-            }
-            if (item.itemType === ItemType.Scope && item.giveByDefault) {
-                amount = 1;
-            }
-            this.items[item.idString] = amount;
+            this.items[item.idString] = 0;
         }
     }
 

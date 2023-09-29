@@ -388,7 +388,7 @@ export const gameConsole = new (class GameConsole {
                         case "\"": {
                             if (inString) {
                                 current.args.push("");
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             } else if (current.args.at(-1)!.length) {
                                 // If we encounter a " in the middle of an argument
                                 // such as `say hel"lo`
@@ -747,7 +747,7 @@ export const keybinds = (() => {
         readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
 
         generateExportString(): string {
-            return `unbind_all;${[...this._inputToAction.entries()]
+            return `${[...this._inputToAction.entries()]
                 .filter(([, actions]) => actions.size)
                 .map(
                     ([input, actions]) => [...actions.values()].map(action => `bind ${input} "${action.toString()}"`).join(";")
@@ -924,11 +924,11 @@ export const consoleVariables = new (class {
             ([...Object.values(this._builtInCVars)] as Array<ConVar<Stringable>>)
                 .filter(cvar => cvar.flags.archive)
                 .map(cvar => `${cvar.name}=${cvar.value}`)
-            ).concat(
-                [...this._userCVars.values()]
-                    .filter(cvar => cvar.flags.archive)
-                    .map(cvar => `let "${cvar.name}" ${cvar.value}`)
-            ).join(";");
+        ).concat(
+            [...this._userCVars.values()]
+                .filter(cvar => cvar.flags.archive)
+                .map(cvar => `let "${cvar.name}" ${cvar.value}`)
+        ).join(";");
     }
 
     dump(): string {
@@ -1756,10 +1756,10 @@ function setUpCommands(game: Game): void {
         {
             short: "Creates a new custom console variable, with a name and value.",
             long: "When invoked, this command attempts to create a new CVar with the given name and value. <b>Names must being with <code>uv_</code>, " +
-            "must be at least one character long (not counting the prefix) and can only contain letters, numbers and underscores.</b> Invalid names will " +
-            "result in an error.<br>" +
-            "CVars marked as <code>archive</code> will be saved when the game closes and reinitialized when the game boots up again. Readonly CVars cannot " +
-            "have their value changed after being created.",
+                "must be at least one character long (not counting the prefix) and can only contain letters, numbers and underscores.</b> Invalid names will " +
+                "result in an error.<br>" +
+                "CVars marked as <code>archive</code> will be saved when the game closes and reinitialized when the game boots up again. Readonly CVars cannot " +
+                "have their value changed after being created.",
             signatures: [
                 {
                     args: [
@@ -2002,7 +2002,7 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
     } = console;
 
     // eslint-disable-next-line no-inner-declarations
-    function makeOverride<C extends typeof window.console, K extends "log" | "info" | "warn" | "error" >(nativeKey: K, nativeMethod: C[K], gameConsoleMethod: "log" | "warn" | "error", altMode?: boolean): void {
+    function makeOverride<C extends typeof window.console, K extends "log" | "info" | "warn" | "error">(nativeKey: K, nativeMethod: C[K], gameConsoleMethod: "log" | "warn" | "error", altMode?: boolean): void {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window.console as C)[nativeKey] = function(this: typeof window["console"], ...contents: any[]) {
             nativeMethod.call(console, ...contents);
