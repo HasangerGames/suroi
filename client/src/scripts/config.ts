@@ -4,7 +4,7 @@ export interface ConfigType {
         address: string
         https: boolean
     }>
-    readonly defaultRegion: string
+    readonly defaultRegion: keyof ConfigType["regions"]
 }
 
 export const Config = {

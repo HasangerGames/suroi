@@ -74,6 +74,7 @@
             display: flex;
             @include text-shadow;
         }
+
         .dialog-close-btn {
             margin-left: auto;
             text-align: center;
@@ -304,7 +305,7 @@
             height: 191px;
             background-size: contain;
 
-            & > div {
+            &>div {
                 width: 56px;
                 height: 56px;
                 background-size: contain;
@@ -337,7 +338,7 @@
             width: 143px;
             height: 143px;
 
-            & > div {
+            &>div {
                 width: 42px;
                 height: 42px;
             }
@@ -394,6 +395,17 @@
 
     #settings-tabs {
         background: $transparent_bg;
+
+        #tab-keybinds-content .modal-item:not(:last-child) {
+            div.settings-title {
+                width: 100%;
+            }
+
+            button.btn-bind {
+                width: 45%;
+                margin-inline: 2.5%;
+            }
+        }
     }
 
     #customize-tabs {
@@ -408,7 +420,7 @@
             background: #49993e;
         }
 
-        & > img {
+        &>img {
             position: relative;
             top: 3px;
             margin-right: 5px;

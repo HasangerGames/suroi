@@ -1,8 +1,9 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
-import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
-import { v, type Vector } from "../utils/vector";
-import { type Variation } from "../typings";
+import { type Vector } from "matter-js";
 import { zIndexes } from "../constants";
+import { type Variation } from "../typings";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { v } from "../utils/vector";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]

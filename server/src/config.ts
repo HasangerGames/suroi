@@ -83,8 +83,8 @@ export interface ConfigType {
          * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxJoinAttempts?: {
-            count: number
-            duration: number
+            readonly count: number
+            readonly duration: number
         }
 
         /**

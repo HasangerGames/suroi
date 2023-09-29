@@ -1,6 +1,6 @@
-import { type ArmorDefinition } from "./armors";
-import { ItemType } from "../utils/objectDefinitions";
 import { ArmorType } from "../constants";
+import { ItemType } from "../utils/objectDefinitions";
+import { type ArmorDefinition } from "./armors";
 
 export const Helmets: ArmorDefinition[] = [
     {

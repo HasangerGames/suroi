@@ -1,39 +1,29 @@
-import { type Game } from "../game";
-
-import { localStorageInstance } from "../utils/localStorageHandler";
-
-import {
-    AnimationType,
-    ObjectCategory,
-    PLAYER_RADIUS,
-    PlayerActions,
-    zIndexes
-} from "../../../../common/src/constants";
-
-import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
-import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
-
-import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
-import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { Helmets } from "../../../../common/src/definitions/helmets";
-import { Vests } from "../../../../common/src/definitions/vests";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container } from "pixi.js";
-import { type Sound } from "../utils/soundManager";
-import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
-import { Obstacle } from "./obstacle";
-import { GameObject } from "../types/gameObject";
-import { EaseFunctions, Tween } from "../utils/tween";
+import { AnimationType, ObjectCategory, PLAYER_RADIUS, PlayerActions, zIndexes } from "../../../../common/src/constants";
+import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { Helmets } from "../../../../common/src/definitions/helmets";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { Vests } from "../../../../common/src/definitions/vests";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
+import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
+import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { consoleVariables } from "../utils/console/gameConsole";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { type Sound } from "../utils/soundManager";
+import { EaseFunctions, Tween } from "../utils/tween";
+import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
 
 export class Player extends GameObject<ObjectCategory.Player> {
@@ -125,6 +115,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.backpack,
             this.images.helmet
         );
+
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
 
@@ -203,22 +194,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
 
-        if (localStorageInstance.config.showCoordinates) {
+        if (consoleVariables.get.builtIn("pf_show_pos").value) {
             $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
         }
 
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
-            if (!localStorageInstance.config.movementSmoothing) {
+            if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
                 this.game.camera.position = toPixiCoords(this.position);
             }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
-            if (!localStorageInstance.config.clientSidePrediction) {
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
                 this.game.map.indicator.setRotation(this.rotation);
             }
         }
+
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 7) {
@@ -236,11 +228,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        if (!localStorageInstance.config.clientSidePrediction ||
-            !(localStorageInstance.config.clientSidePrediction && this.isActivePlayer && !this.game.spectating)
+        const rotationStyleIsClient = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
+        if (!rotationStyleIsClient ||
+            !(rotationStyleIsClient && this.isActivePlayer && !this.game.spectating)
         ) this.container.rotation = this.rotation;
 
-        if (this.isNew || !localStorageInstance.config.movementSmoothing) {
+        if (this.isNew || !consoleVariables.get.builtIn("cv_movement_smoothing").value) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
@@ -570,7 +563,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-                        .forEach(target => target.hitEffect(position, angleBetween(this.position, position)));
+                        .forEach(target => target.hitEffect(position, angleBetweenPoints(this.position, position)));
                 }, 50);
 
                 break;
