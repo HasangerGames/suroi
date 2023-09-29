@@ -16,7 +16,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Building extends GameObject {
-    declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+    declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
     ceilingContainer: Container;
 
@@ -32,10 +32,10 @@ export class Building extends GameObject {
 
     floorHitboxes: Hitbox[] = [];
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
-        const definition = type.definition;
+        const definition = this.type.definition;
 
         this.container.zIndex = zIndexes.Ground;
 
