@@ -15,15 +15,13 @@ export class JoinedPacket extends ReceivingPacket {
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
 
-            
-            const hasKillLeader = stream.readBoolean()
+            const hasKillLeader = stream.readBoolean();
             if (hasKillLeader) {
-                const name = stream.readPlayerNameWithColor()
-                const kills = stream.readBits(7)
-                $("#killLeader-leader").html(name)
-                $("#killLeader-kills-counter").text(kills)
+                const name = stream.readPlayerNameWithColor();
+                const kills = stream.readBits(7);
+                $("#killLeader-leader").html(name);
+                $("#killLeader-kills-counter").text(kills);
             }
-
         }
     }
 }

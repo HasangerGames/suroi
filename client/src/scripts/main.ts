@@ -17,7 +17,7 @@ import { setupUI } from "./ui";
 import { Config } from "./config";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
-const quickPlaySoloBtn: JQuery = $("#btn-quickplay")
+const quickPlaySoloBtn: JQuery = $("#btn-quickplay");
 
 export function enablePlayButton(): void {
     playSoloBtn.removeClass("btn-disabled");
@@ -161,10 +161,10 @@ async function main(): Promise<void> {
             $("#splash-server-message").show();
             enablePlayButton();
         });
-    };
+    }
     // Join server when play button is clicked
-    playSoloBtn.on("click", () => joinGame());
-    quickPlaySoloBtn.on("click", () => joinGame());
+    playSoloBtn.on("click", () => { joinGame(); });
+    quickPlaySoloBtn.on("click", () => { joinGame(); });
 
     const params = new URLSearchParams(window.location.search);
 

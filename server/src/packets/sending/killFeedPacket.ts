@@ -3,7 +3,7 @@ import { Player } from "../../objects/player";
 
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
-import { KillFeedMessage, type JoinKillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
+import { type KillFeedMessage, type JoinKillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
 
@@ -62,8 +62,8 @@ export class KillFeedPacket extends SendingPacket {
             }
 
             case KillFeedMessageType.KillLeaderAssigned: {
-                stream.writePlayerNameWithColor({name: this.player.name, isDev: this.player.isDev, nameColor: '#fff'})
-                stream.writeUint8(this.player.kills)
+                stream.writePlayerNameWithColor({ name: this.player.name, isDev: this.player.isDev, nameColor: "#fff" });
+                stream.writeUint8(this.player.kills);
                 break;
             }
 
@@ -73,8 +73,8 @@ export class KillFeedPacket extends SendingPacket {
             }
 
             case KillFeedMessageType.KillLeaderDead: {
-                stream.writePlayerNameWithColor({name: this.player.name, isDev: this.player.isDev, nameColor: '#fff'})
-                stream.writeUint8(this.player.kills)
+                stream.writePlayerNameWithColor({ name: this.player.name, isDev: this.player.isDev, nameColor: "#fff" });
+                stream.writeUint8(this.player.kills);
                 break;
             }
         }

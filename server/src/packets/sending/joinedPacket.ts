@@ -20,5 +20,4 @@ export class JoinedPacket extends SendingPacket {
             stream.writeBits(killLeader.kills, 7);
         }
     }
-    
 }

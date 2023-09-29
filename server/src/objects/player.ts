@@ -39,7 +39,6 @@ import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -58,7 +57,7 @@ export class Player extends GameObject {
     disconnected = false;
 
     private _kills = 0;
-    get kills(): number { return this._kills }
+    get kills(): number { return this._kills; }
     set kills(k: number) {
         this._kills = k;
         this.game.updateKillLeader(this);
@@ -652,10 +651,9 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
-
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead()
+            this.game.killLeaderDead();
         }
 
         // Death logic
