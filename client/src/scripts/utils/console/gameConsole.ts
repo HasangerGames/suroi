@@ -178,6 +178,8 @@ export const gameConsole = new (class GameConsole {
 
     private readonly _entries: ConsoleData[] = [];
 
+    private readonly localStorageKey = "suroi_config";
+
     constructor() {
         const assignUiProp = <K extends keyof (typeof gameConsole)["_ui"]>(key: K, selector: string, context?: JQuery): void => {
             const element = $(selector, context) as (typeof gameConsole)["_ui"][K];
@@ -205,6 +207,9 @@ export const gameConsole = new (class GameConsole {
 
         this.isOpen = this._isOpen;
         // sanity check
+
+        const config = localStorage.getItem(this.localStorageKey);
+        if (config) this.addReadyCallback(() => { this.handleQuery(config); });
     }
 
     private readonly _attachListeners = (() => {
@@ -479,7 +484,7 @@ export const gameConsole = new (class GameConsole {
     }
 
     writeToLocalStorage(): void {
-        localStorage.setItem("config", `${consoleVariables.generateExportString()};${keybinds.generateExportString()}`);
+        localStorage.setItem(this.localStorageKey, `${consoleVariables.generateExportString()};${keybinds.generateExportString()}`);
     }
 
     private _pushAndLog(entry: ConsoleData, raw = false): void {
