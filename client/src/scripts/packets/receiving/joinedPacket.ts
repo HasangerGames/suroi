@@ -22,6 +22,9 @@ export class JoinedPacket extends ReceivingPacket {
                 const kills = stream.readBits(7)
                 $("#killLeader-leader").html(name)
                 $("#killLeader-kills-counter").text(kills)
+            } else {
+                $("#killLeader-leader").html("Unknown")
+                $("#killLeader-kills-counter").text(0)
             }
 
         }
