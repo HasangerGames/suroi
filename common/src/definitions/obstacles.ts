@@ -370,7 +370,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.95
             },
-            hitbox: RectangleHitbox.fromRect(70.4, 1.6),
+            hitbox: RectangleHitbox.fromRect(70.5, 1.6),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             noResidue: true,
@@ -390,7 +390,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.95
             },
-            hitbox: RectangleHitbox.fromRect(5.3, 1.6),
+            hitbox: RectangleHitbox.fromRect(10.6, 1.6),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             noResidue: true,
