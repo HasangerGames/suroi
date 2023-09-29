@@ -270,36 +270,35 @@ export class Game {
         }, delay);
     }
 
-    private _killLeader: Player | undefined; 
+    private _killLeader: Player | undefined;
     get killLeader() { return this._killLeader; }
 
-    updateKillLeader(player: Player): void  {
-        let oldKillLeader: Player | undefined = this._killLeader
+    updateKillLeader(player: Player): void {
+        let oldKillLeader: Player | undefined = this._killLeader;
 
         if (player.kills > (this._killLeader?.kills ?? 4)) {
-            oldKillLeader = this._killLeader
+            oldKillLeader = this._killLeader;
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
                 this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderAssignedKillFeedMessage()));
-            } 
+            }
         }
 
         if (player === this._killLeader) {
-                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderUpdatedKillFeedMessage()));
-
+            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderUpdatedKillFeedMessage()));
         }
     }
 
     killLeaderDead(): void {
-        let newKillLeader: Player | undefined = undefined            
+        let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-                if (player.kills > (newKillLeader?.kills ?? 4)) {
-                    newKillLeader = player;
-                }
-            }  
-            this._killLeader = newKillLeader;
-            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderDeadKillFeedMessage()));
+            if (player.kills > (newKillLeader?.kills ?? 4)) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        this.killFeedMessages.add(new KillFeedPacket(this._killLeader, new KillLeaderDeadKillFeedMessage()));
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {

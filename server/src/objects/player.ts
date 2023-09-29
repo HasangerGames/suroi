@@ -23,7 +23,7 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
-import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { KillKillFeedMessage, KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 import { type Action, HealingAction } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
@@ -39,7 +39,6 @@ import { Obstacle } from "./obstacle";
 import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;
@@ -58,7 +57,7 @@ export class Player extends GameObject {
     disconnected = false;
 
     private _kills = 0;
-    get kills(): number { return this._kills }
+    get kills(): number { return this._kills; }
     set kills(k: number) {
         this._kills = k;
         this.game.updateKillLeader(this);
@@ -652,10 +651,9 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
-
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead()
+            this.game.killLeaderDead();
         }
 
         // Death logic
