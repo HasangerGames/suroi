@@ -36,7 +36,12 @@ export class Bullet extends BaseBullet {
         this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
 
         let tint = 0xffffff;
-        if (this.source.category === ObjectCategory.Loot) tint = BULLET_COLORS[this.source.definition.ammoType];
+
+        const source = this.source;
+        if (source.category === ObjectCategory.Loot &&
+            BULLET_COLORS[source.definition.ammoType]) {
+            tint = BULLET_COLORS[source.definition.ammoType];
+        }
 
         if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
 
