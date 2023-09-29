@@ -4,34 +4,30 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content="Suroi - 2D battle royale game">
+  <meta name="description"
+    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+  <meta name="keywords" content="battle royale, io game, browser game, open source">
 
-    <meta name="title" content="Suroi - 2D battle royale game">
-    <meta name="description"
-      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
-    <meta name="keywords" content="battle royale, io game, browser game, open source">
+  <meta property="og:title" content="Suroi - 2D battle royale game">
+  <meta property="og:description"
+    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+  <meta property="og:site_name" content="suroi.io">
+  <meta property="og:image" content="https://suroi.io/suroi/img/logos/embed_icon.png">
 
-    <meta property="og:title" content="Suroi - 2D battle royale game">
-    <meta property="og:description"
-      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
-    <meta property="og:site_name" content="suroi.io">
-    <meta property="og:image" content="https://suroi.io/suroi/img/logos/embed_icon.png">
+  <title>Suroi - 2D battle royale game</title>
 
-    <title>Suroi - 2D battle royale game</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="./img/logos/suroi_small.svg">
 
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="icon" type="image/svg+xml" sizes="any" href="./img/logos/suroi_small.svg">
+  <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
+  <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
+  <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
 
-    <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
-    <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
-    <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
-
-    <link rel="manifest" href="./manifest.json" />
-  </head>
+  <link rel="manifest" href="./manifest.json" />
+</head>
 
 <body>
   <div id="console-container">
@@ -86,11 +82,11 @@
           <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
           <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
           <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-              <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
-              <div class="pulsating-circle" style="display: none"></div>
-              <span>Rules &amp; Tutorial</span>
-            </button>
-              <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
+          <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
+            <div class="pulsating-circle" style="display: none"></div>
+            <span>Rules &amp; Tutorial</span>
+          </button>
+          <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
         </div>
         <div id="splash-socials">
           <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -153,104 +149,112 @@
             </a>
           </div>
         </div>-->
+    </div>
+    <div>
+      <div id="splash-backlinks">
+        <a href="./changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
       </div>
-      <div>
-        <div id="splash-backlinks">
-          <a href="./changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
-        </div>
-        <div id="splash-settings">
-          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i class="fa-solid fa-earth-americas"></i></button>
-          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i class="fa-solid fa-volume-high"></i></button>
-          <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
-        </div>
+      <div id="splash-settings">
+        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i
+            class="fa-solid fa-earth-americas"></i></button>
+        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i
+            class="fa-solid fa-volume-high"></i></button>
+        <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
       </div>
     </div>
-    <div id="game-ui">
-      <div id="custom-cursor" style="display: none; z-index: 50; background-size: cover; background-repeat: no-repeat; pointer-events: none;"></div>
-      <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
-      <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i class="fa-solid fa-rotate-right"></i></button>
-      <div id="joysticks-containers">
-        <div id="left-joystick-container"></div>
-        <div id="right-joystick-container"></div>
-      </div>
-      <div id="top-left-container">
-        <div style="display: flex">
-          <div id="minimap-border"></div>
-          <div style="display: flex; flex-direction: column; gap: 5px">
-            <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
-            <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
-              <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
-            </button>
-          </div>
-        </div>
-        <div id="gas-timer">
-          <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
-          <span id="gas-timer-text">0:00</span>
-        </div>
-        <div id="debug-hud">
-          <div id="fps-counter"></div>
-          <div id="ping-counter"></div>
-          <div id="coordinates-hud"></div>
+  </div>
+  <div id="game-ui">
+    <div id="custom-cursor"
+      style="display: none; z-index: 50; background-size: cover; background-repeat: no-repeat; pointer-events: none;">
+    </div>
+    <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i
+        class="fa-solid fa-close"></i></button>
+    <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i
+        class="fa-solid fa-rotate-right"></i></button>
+    <div id="joysticks-containers">
+      <div id="left-joystick-container"></div>
+      <div id="right-joystick-container"></div>
+    </div>
+    <div id="top-left-container">
+      <div style="display: flex">
+        <div id="minimap-border"></div>
+        <div style="display: flex; flex-direction: column; gap: 5px">
+          <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px"
+            id="btn-game-menu"></button>
+          <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
+            <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
+          </button>
         </div>
       </div>
-      <div class="inventory-container" id="scopes-container">
+      <div id="gas-timer">
+        <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
+        <span id="gas-timer-text">0:00</span>
       </div>
-      <div class="ui-leaderboard">
-        <div class="counter">
-          <img src="./img/misc/player_icon.svg">
-          <div class="counter-text" id="ui-players-alive">1</div>
-        </div>
-        <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
-          <img src="./img/misc/skull_icon.svg">
-          <div class="counter-text" id="ui-kills">0</div>
-        </div>
-        <div id="kill-feed"></div>
+      <div id="debug-hud">
+        <div id="fps-counter"></div>
+        <div id="ping-counter"></div>
+        <div id="coordinates-hud"></div>
       </div>
-      <div id="action-container" style="display: none;">
-        <div id="action-name"></div>
-        <div id="action-timer">
-          <div id="action-timer-anim"></div>
-        </div>
+    </div>
+    <div class="inventory-container" id="scopes-container">
+    </div>
+    <div class="ui-leaderboard">
+      <div class="counter">
+        <img src="./img/misc/player_icon.svg">
+        <div class="counter-text" id="ui-players-alive">1</div>
       </div>
-      <div id="interact-message" style="display: none;">
-        <kbd id="interact-key"></kbd>
-        <span id="interact-text"></span>
+      <div class="counter" id="kill-counter" style="margin-top: 5px; display: none">
+        <img src="./img/misc/skull_icon.svg">
+        <div class="counter-text" id="ui-kills">0</div>
       </div>
-      <div id="center-bottom-container">
-        <div id="weapon-ammo-container" style="display: none;">
-          <div id="weapon-clip-ammo"></div>
-          <div id="weapon-inventory-ammo"></div>
-        </div>
-        <div id="adrenaline-bar-container">
-          <div id="adrenaline-bar"></div>
-          <span id="adrenaline-bar-percentage"></span>
-          <span id="adrenaline-bar-min-max"></span>
-        </div>
-        <div id="health-bar-container">
-          <div id="health-bar-animation"></div>
-          <div id="health-bar"></div>
-          <span id="health-bar-percentage"></span>
-          <span id="health-bar-max"></span>
-        </div>
-        <div id="killstreak-indicator-container" style="display: none;">
-          <span id="killstreak-indicator-counter">Streak: 0</span>
-        </div>
+      <div id="kill-feed"></div>
+    </div>
+    <div id="action-container" style="display: none;">
+      <div id="action-name"></div>
+      <div id="action-timer">
+        <div id="action-timer-anim"></div>
       </div>
-      <div id="spectating-buttons-container" style="display: none">
-        <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
-        <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
-        <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div id="interact-message" style="display: none;">
+      <kbd id="interact-key"></kbd>
+      <span id="interact-text"></span>
+    </div>
+    <div id="center-bottom-container">
+      <div id="weapon-ammo-container" style="display: none;">
+        <div id="weapon-clip-ammo"></div>
+        <div id="weapon-inventory-ammo"></div>
       </div>
-      <div id="spectating-msg" style="display: none">
-        <div id="spectating-msg-info"></div>
+      <div id="adrenaline-bar-container">
+        <div id="adrenaline-bar"></div>
+        <span id="adrenaline-bar-percentage"></span>
+        <span id="adrenaline-bar-min-max"></span>
       </div>
-      <div id="gas-msg" style="display: none">
-        <div id="gas-msg-info"></div>
+      <div id="health-bar-container">
+        <div id="health-bar-animation"></div>
+        <div id="health-bar"></div>
+        <span id="health-bar-percentage"></span>
+        <span id="health-bar-max"></span>
       </div>
-      <div id="kill-msg" style="display: none">
-        <div id="kill-msg-kills"></div>
-        You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
+      <div id="killstreak-indicator-container" style="display: none;">
+        <span id="killstreak-indicator-counter">Streak: 0</span>
       </div>
+    </div>
+    <div id="spectating-buttons-container" style="display: none">
+      <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
+      <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
+      <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <div id="spectating-msg" style="display: none">
+      <div id="spectating-msg-info"></div>
+    </div>
+    <div id="gas-msg" style="display: none">
+      <div id="gas-msg-info"></div>
+    </div>
+    <div id="kill-msg" style="display: none">
+      <div id="kill-msg-kills"></div>
+      You <span id="kill-msg-word"></span> <span id="kill-msg-player-name"></span><span
+        id="kill-msg-weapon-used"></span>
+    </div>
     <div id="items-container">
       <div class="inventory-container" id="healing-items-container">
       </div>
@@ -300,7 +304,7 @@
       <div class="emote-bottom"></div>
       <div class="emote-left"></div>
     </div>
-    <div id="game-over-overlay" style="display: none;" >
+    <div id="game-over-overlay" style="display: none;">
       <div id="game-over-top-screen">
         <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
         <h1 id="game-over-text" class="modal-item">You died.</h1>
