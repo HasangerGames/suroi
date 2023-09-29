@@ -1,8 +1,8 @@
-import { type Vector, vAdd, vMul, vDiv } from "../../../../common/src/utils/vector";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { type Game } from "../game";
-import { random, randomRotation } from "../../../../common/src/utils/random";
 import { lerp } from "../../../../common/src/utils/math";
+import { random, randomRotation } from "../../../../common/src/utils/random";
+import { vAdd, vDiv, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class ParticleManager {
     particles = new Set<Particle>();

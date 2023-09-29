@@ -1,7 +1,6 @@
+import { ObjectCategory } from "../constants";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList } from "./objectDefinitionsList";
-
-import { ObjectCategory } from "../constants";
 
 export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     category: T;
@@ -32,13 +31,12 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
-            throw new Error(`No definitions found for object category: ${category} (object ID = ${idNumber})`);
+            throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idNumber})`);
         }
 
-        let definition = definitions.definitions[type.idNumber];
+        const definition = definitions.definitions[type.idNumber];
         if (definition === undefined) {
-            console.warn(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
-            definition = definitions.definitions[0];
+            throw new Error(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
         }
 
         type.idString = definition.idString;

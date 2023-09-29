@@ -21,6 +21,10 @@ body, p, input, button, select {
     color: #ffffff;
 }
 
+body {
+    overscroll-behavior: none;
+}
+
 ::placeholder {
     font-family: "Inter", sans-serif;
 }

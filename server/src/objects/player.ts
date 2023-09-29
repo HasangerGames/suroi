@@ -1,44 +1,36 @@
 import type { WebSocket } from "uWebSockets.js";
-
-import { GameObject } from "../types/gameObject";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type Game } from "../game";
-import { type PlayerContainer } from "../server";
-import { type SendingPacket } from "../types/sendingPacket";
-
-import { ObjectType } from "../../../common/src/utils/objectType";
-import {
-    AnimationType,
-    INVENTORY_MAX_WEAPONS,
-    ObjectCategory,
-    PLAYER_RADIUS,
-    PlayerActions
-} from "../../../common/src/constants";
-import { DeathMarker } from "./deathMarker";
-import { GameOverPacket } from "../packets/sending/gameOverPacket";
-import { KillPacket } from "../packets/sending/killPacket";
-import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { AnimationType, INVENTORY_MAX_WEAPONS, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
+import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { clamp } from "../../../common/src/utils/math";
+import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
+import { Config } from "../config";
+import { type Game } from "../game";
+import { HealingAction, type Action } from "../inventory/action";
+import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
-import { KillFeedPacket } from "../packets/sending/killFeedPacket";
-import { KillKillFeedMessage } from "../types/killFeedMessage";
-import { type Action, HealingAction } from "../inventory/action";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { GunItem } from "../inventory/gunItem";
-import { Config } from "../config";
 import { MeleeItem } from "../inventory/meleeItem";
-import { Emote } from "./emote";
-import { type SkinDefinition } from "../../../common/src/definitions/skins";
-import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { GameOverPacket } from "../packets/sending/gameOverPacket";
+import { KillFeedPacket } from "../packets/sending/killFeedPacket";
+import { KillPacket } from "../packets/sending/killPacket";
+import { type PlayerContainer } from "../server";
+import { GameObject } from "../types/gameObject";
+import { KillKillFeedMessage } from "../types/killFeedMessage";
+import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
-import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
-import { Obstacle } from "./obstacle";
-import { clamp } from "../../../common/src/utils/math";
 import { Building } from "./building";
-import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
+import { DeathMarker } from "./deathMarker";
+import { Emote } from "./emote";
+import { Obstacle } from "./obstacle";
 
 export class Player extends GameObject {
     hitbox: CircleHitbox;

@@ -3,7 +3,7 @@
 .btn {
     display: block;
 
-    color: #ffffff !important;
+    color: #ffffff;
     cursor: pointer;
 
     font-size: 20px;
@@ -13,7 +13,7 @@
     border: none;
     border-radius: 10px;
 
-    text-decoration: none !important;
+    text-decoration: none;
     text-shadow: 3px 3px 8px #00000064;
 }
 
@@ -43,28 +43,28 @@
 
 // Regular buttons
 .btn-primary {
-    background: $blue !important;
-    border-bottom: 2px solid $blue_bg !important;
-    box-shadow: inset 0 -2px $blue_bg !important;
+    background: $blue;
+    border-bottom: 2px solid $blue_bg;
+    box-shadow: inset 0 -2px $blue_bg;
 }
 
 .btn-secondary {
-    background: $grey !important;
-    border-bottom: 2px solid $grey_bg !important;
-    box-shadow: inset 0 -2px $grey_bg !important;
+    background: $grey;
+    border-bottom: 2px solid $grey_bg;
+    box-shadow: inset 0 -2px $grey_bg;
 }
 
 .btn-danger {
-    background: $danger !important;
-    border-bottom: 2px solid $transparent_bg !important;
-    box-shadow: inset 0 -2px $transparent_bg !important;
+    background: $danger;
+    border-bottom: 2px solid $transparent_bg;
+    box-shadow: inset 0 -2px $transparent_bg;
 }
 
 .btn-alert {
     margin-top: 10px;
-    background: $orange !important;
-    border-bottom: 2px solid $orange_bg !important;
-    box-shadow: inset 0 -2px $orange_bg !important;
+    background: $orange;
+    border-bottom: 2px solid $orange_bg;
+    box-shadow: inset 0 -2px $orange_bg;
 }
 
 // Socials
@@ -89,51 +89,51 @@
 
 .btn-facebook {
     background-image: url("../../../public/img/socials/facebook.svg");
-    background-color: $facebook !important;
+    background-color: $facebook;
     box-shadow: inset 0 -4px $facebook_bg;
 }
 
 .btn-twitter {
     background-image: url("../../../public/img/socials/twitter.svg");
-    background-color: $twitter !important;
+    background-color: $twitter;
     box-shadow: inset 0 -4px $twitter_bg;
 }
 
 .btn-instagram {
     background-image: url("../../../public/img/socials/instagram.svg");
-    background-color: $instagram !important;
+    background-color: $instagram;
     box-shadow: inset 0 -4px $instagram_bg;
 }
 
 .btn-reddit {
     background-image: url("../../../public/img/socials/reddit.svg");
-    background-color: $reddit !important;
+    background-color: $reddit;
     box-shadow: inset 0 -4px $reddit_bg;
 }
 
 .btn-discord {
     background-image: url("../../../public/img/socials/discord.svg");
-    background-color: $discord !important;
+    background-color: $discord;
     box-shadow: inset 0 -4px $discord_bg;
 }
 
 .btn-youtube {
     background-image: url("../../../public/img/socials/youtube.svg");
-    background-color: $youtube !important;
+    background-color: $youtube;
     box-shadow: inset 0 -4px $youtube_bg;
 }
 
 .btn-github {
     background-image: url("../../../public/img/socials/github.svg");
-    background-color: $github !important;
+    background-color: $github;
     box-shadow: inset 0 -4px $github_bg;
 }
 
 .btn-bind {
     display: flex;
     font-size: 14px;
-    margin-inline: 2.5% !important;
-    width: 45% !important;
+    margin-inline: 2.5%;
+    width: 45%;
 }
 
 .btn-bind.active {

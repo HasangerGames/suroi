@@ -1,16 +1,16 @@
-import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { InventoryItem } from "./inventoryItem";
-import { type Player } from "../objects/player";
-import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
-import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
-import { randomFloat } from "../../../common/src/utils/random";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { FireMode, AnimationType, type ObjectCategory } from "../../../common/src/constants";
-import { ReloadAction } from "./action";
 import { clearTimeout } from "timers";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { Obstacle } from "../objects/obstacle";
+import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { randomFloat } from "../../../common/src/utils/random";
+import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
+import { Obstacle } from "../objects/obstacle";
+import { type Player } from "../objects/player";
+import { ReloadAction } from "./action";
+import { InventoryItem } from "./inventoryItem";
 
 /**
  * A class representing a firearm

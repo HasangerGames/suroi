@@ -1,20 +1,18 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
 import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
-import type { ObjectType } from "../../../../common/src/utils/objectType";
-
-import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import type { Orientation, Variation } from "../../../../common/src/typings";
-import { orientationToRotation } from "../utils/misc";
-import type { Hitbox } from "../../../../common/src/utils/hitbox";
+import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { type Variation, type Orientation } from "../../../../common/src/typings";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { orientationToRotation } from "../utils/misc";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
     scale!: number;

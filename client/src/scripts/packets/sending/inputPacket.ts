@@ -1,11 +1,7 @@
+import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../../../../common/src/constants";
+import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
-
-import {
-    PacketType,
-    InputActions,
-    INPUT_ACTIONS_BITS
-} from "../../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 
 export class InputPacket extends SendingPacket {
     override readonly allocBytes = 16;
@@ -34,13 +30,23 @@ export class InputPacket extends SendingPacket {
         stream.writeBits(player.action, INPUT_ACTIONS_BITS);
 
         switch (player.action) {
-            case InputActions.EquipItem:
+            case InputActions.EquipItem: {
                 stream.writeBits(player.itemToSwitch, 2);
+                player.itemToSwitch = -1;
                 break;
-            case InputActions.DropItem:
+            }
+            case InputActions.DropItem: {
                 stream.writeBits(player.itemToDrop, 2);
+                player.itemToDrop = -1;
                 break;
+            }
+            case InputActions.UseConsumableItem: {
+                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, player.consumableToConsume));
+                player.consumableToConsume = "";
+                break;
+            }
         }
         player.action = InputActions.None;
+        player.dirty.inputs = false;
     }
 }

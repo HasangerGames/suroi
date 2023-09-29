@@ -1,9 +1,7 @@
+import * as path from "path";
+import { DefinePlugin } from "webpack";
 import merge from "webpack-merge";
 import common from "./webpack.common";
-
-import { DefinePlugin } from "webpack";
-
-import * as path from "path";
 
 const config = merge(common, {
     mode: "development",

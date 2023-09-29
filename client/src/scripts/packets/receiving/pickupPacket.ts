@@ -1,9 +1,8 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type LootDefinition } from "../../../../../common/src/definitions/loots";
 import { ItemType } from "../../../../../common/src/utils/objectDefinitions";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class PickupPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
