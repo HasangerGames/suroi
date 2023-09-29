@@ -23,28 +23,7 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    // Shove it
-    /* eslint-disable @typescript-eslint/indent */
-    readonly items: Record<string, number> = [HealingItems, Ammos, Scopes]
-        .flat()
-        .reduce<Record<string, number>>(
-            (acc, cur) => {
-                let amount = 0;
-
-                if (cur.itemType === ItemType.Ammo && cur.ephemeral) {
-                    amount = Infinity;
-                }
-
-                if (cur.itemType === ItemType.Scope && cur.giveByDefault) {
-                    amount = 1;
-                }
-
-                acc[cur.idString] = amount;
-
-                return acc;
-            },
-            {}
-        );
+    readonly items: Record<string, number> = {};
 
     helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
     vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
@@ -167,6 +146,17 @@ export class Inventory {
      */
     constructor(owner: Player) {
         this.owner = owner;
+
+        for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
+            let amount = 0;
+            if (item.itemType === ItemType.Ammo && item.ephemeral) {
+                amount = Infinity;
+            }
+            if (item.itemType === ItemType.Scope && item.giveByDefault) {
+                amount = 1;
+            }
+            this.items[item.idString] = amount;
+        }
     }
 
     /**
@@ -211,7 +201,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-        [this._weapons[1], this._weapons[0]];
+            [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
