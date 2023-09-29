@@ -20,6 +20,7 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import {
     ObjectCategory,
     PacketType,
+    PlayerActions,
     TICK_SPEED,
     zIndexes
 } from "../../../common/src/constants";
@@ -534,7 +535,11 @@ export class Game {
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
                                 (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
-                            this.playerManager.interact();
+                            if (lootDef.itemType === ItemType.Gun) {
+                                if (player.action.type !== PlayerActions.Reload) this.playerManager.interact();
+                            } else {
+                                this.playerManager.interact();
+                            }
                         } else if (
                             (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
                             closestObject instanceof Obstacle
