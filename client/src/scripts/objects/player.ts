@@ -37,7 +37,9 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { type ParticleEmitter } from "./particles";
 import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Player>;
+
     name!: string;
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
