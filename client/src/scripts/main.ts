@@ -16,25 +16,19 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { setupUI } from "./ui";
 import { Config } from "./config";
 
-const playSoloBtn: JQuery = $("#btn-play-solo");
-const quickPlaySoloBtn: JQuery = $("#btn-quickplay");
+const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
 
 export function enablePlayButton(): void {
-    playSoloBtn.removeClass("btn-disabled");
-    playSoloBtn.prop("disabled", false);
-    playSoloBtn.text("Play Solo");
-    quickPlaySoloBtn.removeClass("btn-disabled");
-    quickPlaySoloBtn.prop("disabled", false);
-    quickPlaySoloBtn.text("Play Solo");
+    playButtons.removeClass("btn-disabled");
+    playButtons.prop("disabled", false);
+    $("#btn-play-solo").text("Play Solo");
+    $("#btn-play-again").text("Play Again");
 }
 
 function disablePlayButton(text: string): void {
-    playSoloBtn.addClass("btn-disabled");
-    playSoloBtn.prop("disabled", true);
-    playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
-    quickPlaySoloBtn.addClass("btn-disabled");
-    quickPlaySoloBtn.prop("disabled", true);
-    quickPlaySoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    playButtons.addClass("btn-disabled");
+    playButtons.prop("disabled", true);
+    playButtons.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 async function main(): Promise<void> {
@@ -117,7 +111,8 @@ async function main(): Promise<void> {
         updateServerSelector();
     });
 
-    function joinGame(): void {
+    // Join server when play button is clicked
+    playButtons.on("click", () => {
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
@@ -161,10 +156,7 @@ async function main(): Promise<void> {
             $("#splash-server-message").show();
             enablePlayButton();
         });
-    }
-    // Join server when play button is clicked
-    playSoloBtn.on("click", () => { joinGame(); });
-    quickPlaySoloBtn.on("click", () => { joinGame(); });
+    });
 
     const params = new URLSearchParams(window.location.search);
 

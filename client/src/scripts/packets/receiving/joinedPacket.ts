@@ -19,8 +19,8 @@ export class JoinedPacket extends ReceivingPacket {
             if (hasKillLeader) {
                 const name = stream.readPlayerNameWithColor();
                 const kills = stream.readBits(7);
-                $("#killLeader-leader").html(name);
-                $("#killLeader-kills-counter").text(kills);
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
             }
         }
     }

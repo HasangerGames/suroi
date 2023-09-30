@@ -254,8 +254,8 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
-        $("#killLeader-leader").text("Unknown");
-        $("#killLeader-kills-counter").text("0");
+        $("#kill-leader-leader").text("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
         if (transition) $("#splash-ui").fadeIn();
 
         this.gameStarted = false;

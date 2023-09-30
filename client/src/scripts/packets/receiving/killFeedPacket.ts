@@ -125,8 +125,8 @@ export class KillFeedPacket extends ReceivingPacket {
                 const name = stream.readPlayerNameWithColor();
                 const kills = stream.readUint8();
 
-                $("#killLeader-leader").html(name);
-                $("#killLeader-kills-counter").text(kills);
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
 
@@ -134,14 +134,14 @@ export class KillFeedPacket extends ReceivingPacket {
                 const name = stream.readPlayerNameWithColor();
                 const kills = stream.readUint8();
 
-                $("#killLeader-leader").html(name);
-                $("#killLeader-kills-counter").text(kills);
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
 
             case KillFeedMessageType.KillLeaderUpdated: {
                 const kills = stream.readBits(7);
-                $("#killLeader-kills-counter").text(kills);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
         }
