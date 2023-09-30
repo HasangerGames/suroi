@@ -711,7 +711,7 @@ export class Player extends GameObject {
                     ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
                 ) continue;
 
-                if (itemType.definition.itemType === ItemType.Ammo) {
+                if (itemType.definition.itemType === ItemType.Ammo && count !== Infinity) {
                     const dropCount = Math.floor(count / 60);
 
                     for (let i = 0; i < dropCount; i++) {
