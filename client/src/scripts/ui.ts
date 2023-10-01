@@ -190,8 +190,8 @@ export function setupUI(game: Game): void {
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(true); });
-    $("#btn-play-again").on("click", () => { game.endGame(true); });
-    $("#btn-quickplay").on("click", () => { game.endGame(false); } );
+    $("#btn-menu").on("click", () => { game.endGame(true); });
+    $("#btn-play-again").on("click", () => { game.endGame(false); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));

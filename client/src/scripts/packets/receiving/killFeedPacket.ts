@@ -123,25 +123,25 @@ export class KillFeedPacket extends ReceivingPacket {
 
             case KillFeedMessageType.KillLeaderAssigned: {
                 const name = stream.readPlayerNameWithColor();
-                const kills = stream.readUint8()
+                const kills = stream.readUint8();
 
-                $("#killLeader-leader").html(name)
-                $("#killLeader-kills-counter").text(kills)
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
 
             case KillFeedMessageType.KillLeaderDead: {
                 const name = stream.readPlayerNameWithColor();
-                const kills = stream.readUint8()
+                const kills = stream.readUint8();
 
-                $("#killLeader-leader").html(name)
-                $("#killLeader-kills-counter").text(kills)
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
 
             case KillFeedMessageType.KillLeaderUpdated: {
-                const kills = stream.readBits(7)
-                $("#killLeader-kills-counter").text(kills)
+                const kills = stream.readBits(7);
+                $("#kill-leader-kills-counter").text(kills);
                 break;
             }
         }

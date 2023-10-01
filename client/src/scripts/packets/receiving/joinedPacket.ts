@@ -18,8 +18,7 @@ export class JoinedPacket extends ReceivingPacket {
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
 
-            
-            const hasKillLeader = stream.readBoolean()
+            const hasKillLeader = stream.readBoolean();
             if (hasKillLeader) {
                 const name = stream.readPlayerNameWithColor()
                 const kills = stream.readBits(7)
@@ -28,8 +27,8 @@ export class JoinedPacket extends ReceivingPacket {
             } else {
                 $("#killLeader-leader").html("Unknown")
                 $("#killLeader-kills-counter").text(0)
-            }
 
+            }
         }
     }
 }

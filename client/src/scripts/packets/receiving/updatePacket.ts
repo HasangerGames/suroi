@@ -109,14 +109,14 @@ export class UpdatePacket extends ReceivingPacket {
 
             if (percentage === 100) {
                 healthBar.css("background-color", "#bdc7d0");
-                if (healthBar.hasClass("flashing")) healthBar.removeClass("flashing")
+                if (healthBar.hasClass("flashing")) healthBar.removeClass("flashing");
             } else if (percentage < 60 && percentage > 25) {
                 healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
-                if (healthBar.hasClass("flashing")) healthBar.removeClass("flashing")
+                if (healthBar.hasClass("flashing")) healthBar.removeClass("flashing");
             } else if (percentage < 25 && percentage > 10) {
-                if (!healthBar.hasClass("flashing")) healthBar.addClass("flashing")
+                if (!healthBar.hasClass("flashing")) healthBar.addClass("flashing");
             } else if (percentage <= 10) {
-                if (!healthBar.hasClass("flashing")) healthBar.addClass("flashing")
+                if (!healthBar.hasClass("flashing")) healthBar.addClass("flashing");
                 healthBar.css("background-color", `rgb(${percentage * 15 + 105}, 0, 0)`);
             } else {
                 healthBar.css("background-color", "#f8f9fa");
