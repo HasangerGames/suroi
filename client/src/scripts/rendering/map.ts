@@ -108,6 +108,8 @@ export class Minimap {
         this.gasGraphics.endFill();
     }
 
+    borderContainer = $("#minimap-border");
+
     resize(): void {
         if (this.expanded) {
             const screenWidth = window.innerWidth;
@@ -124,16 +126,17 @@ export class Minimap {
         } else {
             if (!this.visible) return;
 
+            const bounds = this.borderContainer[0].getBoundingClientRect();
+            const border = parseInt(this.borderContainer.css("border-width"));
+
+            this.minimapWidth = bounds.width - border * 2;
+            this.minimapHeight = bounds.height - border * 2;
+            this.margins = v(bounds.left + border, bounds.top + border);
+
             if (window.innerWidth > 1200) {
                 this.container.scale.set(1 / 1.25);
-                this.minimapWidth = 200;
-                this.minimapHeight = 200;
-                this.margins = v(20, 20);
             } else {
                 this.container.scale.set(1 / 2);
-                this.minimapWidth = 125;
-                this.minimapHeight = 125;
-                this.margins = v(10, 10);
             }
         }
 
