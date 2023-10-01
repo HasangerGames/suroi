@@ -111,7 +111,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
-            weapon: new SuroiSprite(),
+            weapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
@@ -418,8 +418,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.leftFist.setZIndex(1);
-            this.images.rightFist.setZIndex(1);
+
+            switch(weaponDef.idString) {
+                case "ak47": case "aug": case "mini14": case "m3k": case "hp18":
+                case "mosin": case "tango_51": case "sr25": case "lewis_gun": case "stoner_63":
+                case "mcx_spear": case "arx160": case "saf_200": case "g19": case "micro_uzi": case "cz75a":
+                    this.images.rightFist.setZIndex(4);
+                    this.images.leftFist.setZIndex(1);
+                    this.images.weapon.setZIndex(2);
+                    if (weaponDef.idString === "mosin" || weaponDef.idString === "lewis_gun") {this.images.leftFist.setZIndex(4) }
+                    break;
+                default:
+                    this.images.rightFist.setZIndex(1);
+                    this.images.leftFist.setZIndex(1);                    
+                    break;
+            }
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {

@@ -76,8 +76,8 @@ export const Guns: GunDefinition[] = [
         moveSpread: 4,
         length: 7.8,
         fists: {
-            left: v(120, -5),
-            right: v(60, 0),
+            left: v(100, 0),
+            right: v(45, 0),
             animationDuration: 100
         },
         image: { position: v(90, -2) },
@@ -107,13 +107,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 5,
         moveSpread: 10,
-        length: 11.7,
+        length: 6.3,
         fists: {
-            left: v(140, -6),
-            right: v(62, 0),
+            left: v(85, 5),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(170, -1) },
+        image: { position: v(380, 518) },
         casingParticles: {
             position: v(4, 0.6)
         },
@@ -138,13 +138,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 4,
         moveSpread: 7,
-        length: 7.9,
+        length: 6.9,
         fists: {
-            left: v(110, -4),
-            right: v(60, 0),
+            left: v(110, 2),
+            right: v(40, 0),
             animationDuration: 100
         },
-        image: { position: v(90, -6) },
+        image: { position: v(70, -8) },
         casingParticles: {
             position: v(4, 0.5)
         },
@@ -175,13 +175,13 @@ export const Guns: GunDefinition[] = [
         moveSpread: 2,
         canQuickswitch: true,
         bulletCount: 9,
-        length: 9,
+        length: 8.1,
         fists: {
-            left: v(120, -3),
-            right: v(47, 0),
+            left: v(110, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(100, 1) },
+        image: { position: v(80, 1) },
         casingParticles: {
             position: v(4, 0.6)
         },
@@ -251,8 +251,8 @@ export const Guns: GunDefinition[] = [
         canQuickswitch: true,
         length: 8.5,
         fists: {
-            left: v(130, -3),
-            right: v(55, 0),
+            left: v(130, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
         image: { position: v(195, 140) },
@@ -323,13 +323,13 @@ export const Guns: GunDefinition[] = [
         shotSpread: 0.8,
         moveSpread: 0.5,
         canQuickswitch: true,
-        length: 11,
+        length: 8.7,
         fists: {
-            left: v(145, -1),
-            right: v(65, 0),
+            left: v(115, 6),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(105, 4) },
+        image: { position: v(80, 2) },
         casingParticles: {
             position: v(4, 0.6)
         },
@@ -359,13 +359,13 @@ export const Guns: GunDefinition[] = [
         shotSpread: 0.3,
         moveSpread: 0.3,
         canQuickswitch: true,
-        length: 9.2,
+        length: 8.2,
         fists: {
-            left: v(145, -1),
-            right: v(75, 0),
+            left: v(110, -1),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(60, 4) },
+        image: { position: v(30, 7) },
         casingParticles: {
             position: v(4, 0.6)
         },
@@ -394,11 +394,11 @@ export const Guns: GunDefinition[] = [
         moveSpread: 7,
         length: 4.8,
         fists: {
-            left: v(60, 4),
-            right: v(55, 0),
+            left: v(0, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(60, -2) },
+        image: { position: v(60, -4) },
         casingParticles: {
             position: v(3, 0.5)
         },
@@ -427,11 +427,11 @@ export const Guns: GunDefinition[] = [
         moveSpread: 7,
         length: 5.5,
         fists: {
-            left: v(70, 4),
-            right: v(65, 0),
+            left: v(0, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(70, -2) },
+        image: { position: v(70, -4) },
         casingParticles: {
             position: v(3.5, 0.5)
         },
@@ -460,13 +460,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Burst,
         shotSpread: 3,
         moveSpread: 1,
-        length: 8.7,
+        length: 5.7,
         fists: {
-            left: v(130, -6),
-            right: v(65, 0),
+            left: v(90, 3),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(80, 0) },
+        image: { position: v(383, 516) },
         casingParticles: {
             position: v(5, 0.5)
         },
@@ -536,14 +536,14 @@ export const Guns: GunDefinition[] = [
         moveSpread: 10,
         length: 5,
         fists: {
-            left: v(70, 4),
-            right: v(65, 0),
+            left: v(0, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
         casingParticles: {
             position: v(3.5, 0.6)
         },
-        image: { position: v(70, 0) },
+        image: { position: v(65, -5) },
         ballistics: {
             damage: 9,
             obstacleMultiplier: 1,
@@ -600,13 +600,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 2,
-        length: 10.8,
+        length: 7.2,
         fists: {
-            left: v(130, -6),
-            right: v(65, 0),
+            left: v(100, 6),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(110, 0) },
+        image: { position: v(370, 515) },
         casingParticles: {
             position: v(4, 0.5)
         },
@@ -634,13 +634,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 4,
-        length: 13.5,
+        length: 11.4,
         fists: {
-            left: v(130, -6),
-            right: v(65, 0),
+            left: v(135, 12),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(128, 0) },
+        image: { position: v(105, -5) },
         casingParticles: {
             position: v(4.5, 1)
         },
@@ -669,13 +669,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 3,
         moveSpread: 4.5,
-        length: 8.5,
+        length: 7.8,
         fists: {
-            left: v(120, -4),
-            right: v(60, 0),
+            left: v(95, 8),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(100, -2) },
+        image: { position: v(85, -4) },
         casingParticles: {
             position: v(5.5, 0)
         },
@@ -740,13 +740,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 2,
         moveSpread: 5,
-        length: 9,
+        length: 7.9,
         fists: {
-            left: v(130, -2),
-            right: v(65, 0),
+            left: v(110, 0),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(100, -2) },
+        image: { position: v(80, -5) },
         casingParticles: {
             position: v(5, 0.5)
         },
@@ -774,13 +774,13 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 1,
         moveSpread: 2.5,
-        length: 7.5,
+        length: 6.7,
         fists: {
-            left: v(110, -2),
-            right: v(61, 0),
+            left: v(80, 2),
+            right: v(35, 0),
             animationDuration: 100
         },
-        image: { position: v(90, -2) },
+        image: { position: v(70, -4) },
         casingParticles: {
             position: v(5, 0.5)
         },
