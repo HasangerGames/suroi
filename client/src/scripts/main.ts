@@ -116,7 +116,7 @@ async function main(): Promise<void> {
         playSoloBtn.prop("disabled", true);
         setTimeout(() => {
             playSoloBtn.prop("disabled", false);
-        }, 75000);
+        }, 1250);
         
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
