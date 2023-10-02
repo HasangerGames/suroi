@@ -111,23 +111,43 @@ async function main(): Promise<void> {
     });
 
     // Join server when play button is clicked
+    // Ratelimit vars
+    let clickCount = 0;
+    let lastClickTime = 0;
+    const rateLimitInterval = 60000; // 1min
+    const maxClicksPerInterval = 6;
+    
     playSoloBtn.on("click", () => {
+        const currentTime = Date.now();
+    
+        if (currentTime - lastClickTime < rateLimitInterval) {
+            clickCount++;
+    
+            if (clickCount >= maxClicksPerInterval) {
+                disablePlayButton("Ratelimited")
+                return;
+            }
+        } else {
+            clickCount = 1;
+            lastClickTime = currentTime;
+        }
+    
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
-
+    
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
-
+    
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
-
+    
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {
@@ -156,6 +176,7 @@ async function main(): Promise<void> {
             enablePlayButton();
         });
     });
+
 
     const params = new URLSearchParams(window.location.search);
 
