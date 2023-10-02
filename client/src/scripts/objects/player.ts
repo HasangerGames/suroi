@@ -205,10 +205,6 @@ export class Player extends GameObject {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
 
-        if (localStorageInstance.config.showCoordinates) {
-            $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
-        }
-
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
@@ -219,6 +215,10 @@ export class Player extends GameObject {
             this.game.map.setPosition(this.position);
             if (!localStorageInstance.config.clientSidePrediction) {
                 this.game.map.indicator.setRotation(this.rotation);
+            }
+
+            if (localStorageInstance.config.showCoordinates) {
+                $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
         if (this.oldPosition !== undefined) {

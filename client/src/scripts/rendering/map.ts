@@ -178,7 +178,6 @@ export class Minimap {
 
     switchToBigMap(): void {
         this.expanded = true;
-        this.resize();
         this.container.visible = true;
         $("#minimap-border").hide();
         $("#scopes-container").hide();
@@ -186,6 +185,7 @@ export class Minimap {
         $("#btn-close-minimap").show();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();
+        this.resize();
     }
 
     switchToSmallMap(): void {
@@ -199,8 +199,8 @@ export class Minimap {
             this.container.visible = false;
             return;
         }
-        this.resize();
         $("#minimap-border").show();
+        this.resize();
     }
 
     updateTransparency(): void {
