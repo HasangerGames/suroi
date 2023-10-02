@@ -1149,7 +1149,53 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             noResidue: true,
             frames: {
                 particle: "wall_particle"
-            }
+            },
+            
+        },
+        {
+            idString: "trailer",
+            name: "Trailer",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            hideOnMap: false,
+            invisible: false,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(15,75,v(0, 0)),
+                RectangleHitbox.fromRect(17,10,v(0, 33))
+            ]),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "barrel_particle"
+            },
+            
+        },
+        {
+            idString: "forklift",
+            name: "Forklift",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            hideOnMap: false,
+            invisible: false,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: RectangleHitbox.fromRect(9,17,v(0, -3.8)),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "barrel_particle"
+            },
+            
         }
     ]
 );

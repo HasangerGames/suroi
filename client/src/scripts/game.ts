@@ -535,10 +535,10 @@ export class Game {
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
                                 (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
-                            if (lootDef.itemType === ItemType.Gun) {
-                                if (player.action.type !== PlayerActions.Reload) this.playerManager.interact();
-                            } else {
+                            if (lootDef.itemType !== ItemType.Gun) {
                                 this.playerManager.interact();
+                            } else {
+                                if (player.action.type !== PlayerActions.Reload) this.playerManager.interact();
                             }
                         } else if (
                             (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||

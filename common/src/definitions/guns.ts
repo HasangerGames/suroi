@@ -110,7 +110,7 @@ export const Guns: GunDefinition[] = [
         length: 6.3,
         fists: {
             left: v(85, 5),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(70, 0) },
@@ -178,7 +178,7 @@ export const Guns: GunDefinition[] = [
         length: 8.1,
         fists: {
             left: v(110, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(90, 5) },
@@ -252,7 +252,7 @@ export const Guns: GunDefinition[] = [
         length: 8.5,
         fists: {
             left: v(130, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(100, 0) },
@@ -326,7 +326,7 @@ export const Guns: GunDefinition[] = [
         length: 8.7,
         fists: {
             left: v(115, 6),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(90, 4) },
@@ -362,7 +362,7 @@ export const Guns: GunDefinition[] = [
         length: 8.2,
         fists: {
             left: v(110, -1),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(90, 5) },
@@ -395,7 +395,7 @@ export const Guns: GunDefinition[] = [
         length: 4.5,
         fists: {
             left: v(0, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(60, 1) },
@@ -428,7 +428,7 @@ export const Guns: GunDefinition[] = [
         length: 5.2,
         fists: {
             left: v(0, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(70, 1) },
@@ -463,7 +463,7 @@ export const Guns: GunDefinition[] = [
         length: 5.7,
         fists: {
             left: v(90, 3),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(65, 0) },
@@ -537,7 +537,7 @@ export const Guns: GunDefinition[] = [
         length: 5,
         fists: {
             left: v(0, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         casingParticles: {
@@ -603,7 +603,7 @@ export const Guns: GunDefinition[] = [
         length: 7.2,
         fists: {
             left: v(100, 6),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(70, 0) },
@@ -637,7 +637,7 @@ export const Guns: GunDefinition[] = [
         length: 11.4,
         fists: {
             left: v(135, 12),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(112, -2) },
@@ -672,7 +672,7 @@ export const Guns: GunDefinition[] = [
         length: 7.8,
         fists: {
             left: v(95, 8),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(90, 0) },
@@ -743,7 +743,7 @@ export const Guns: GunDefinition[] = [
         length: 7.9,
         fists: {
             left: v(110, 0),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(90, 0) },
@@ -777,7 +777,7 @@ export const Guns: GunDefinition[] = [
         length: 6.7,
         fists: {
             left: v(80, 2),
-            right: v(35, 0),
+            right: v(40, 0),
             animationDuration: 100
         },
         image: { position: v(80, 0) },

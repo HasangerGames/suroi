@@ -112,7 +112,7 @@ export class Player extends GameObject {
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
+            helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
