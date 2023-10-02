@@ -113,21 +113,25 @@ async function main(): Promise<void> {
     // Join server when play button is clicked
     playSoloBtn.on("click", () => {
         disablePlayButton("Connecting...");
+        playSoloBtn.prop("disabled", true);
+        setTimeout(() => {
+            playSoloBtn.prop("disabled", false);
+        }, 75000);
+        
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
-
                 const devPass = localStorageInstance.config.devPassword;
                 const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
-
+    
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
                 if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
-
+    
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {
