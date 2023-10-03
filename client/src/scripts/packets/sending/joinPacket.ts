@@ -2,7 +2,7 @@ import { ObjectCategory, PacketType } from "../../../../../common/src/constants"
 import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
-import { consoleVariables, type CVarTypeMapping } from "../../utils/console/gameConsole";
+import { type CVarTypeMapping, consoleVariables } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
     override readonly allocBytes = 8;

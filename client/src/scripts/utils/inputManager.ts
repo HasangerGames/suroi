@@ -3,9 +3,10 @@ import { angleBetweenPoints, distanceSquared } from "../../../../common/src/util
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
-import { consoleVariables, gameConsole, keybinds } from "./console/gameConsole";
+import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { actionNameToConsoleCommand, type KeybindActions } from "./localStorageHandler";
+import { consoleVariables } from "./console/variables";
 
 function fireAllEventsAtKey(input: string, down: boolean): number {
     const actions = keybinds.getActionsBoundToInput(input) ?? [];

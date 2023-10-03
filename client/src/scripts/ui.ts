@@ -10,10 +10,10 @@ import { stripNonASCIIChars } from "../../../common/src/utils/misc";
 import { type Game } from "./game";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { body, createDropdown } from "./uiHelpers";
-import { consoleVariables, type CVarTypeMapping } from "./utils/console/gameConsole";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
+import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {

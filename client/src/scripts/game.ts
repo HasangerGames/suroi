@@ -36,12 +36,13 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type GameObject } from "./types/gameObject";
 import { type SendingPacket } from "./types/sendingPacket";
-import { consoleVariables, keybinds } from "./utils/console/gameConsole";
+import { keybinds } from "./utils/console/gameConsole";
 import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { getIconFromInputName } from "./utils/inputManager";
 import { PlayerManager } from "./utils/playerManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
+import { consoleVariables } from "./utils/console/variables";
 
 export class Game {
     socket!: WebSocket;

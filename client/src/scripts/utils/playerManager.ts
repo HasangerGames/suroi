@@ -12,7 +12,7 @@ import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "./console/gameConsole";
+import { consoleVariables } from "../utils/console/variables";
 import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 
 /**

@@ -18,7 +18,7 @@ import { random, randomBoolean, randomFloat, randomVector } from "../../../../co
 import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { consoleVariables } from "../utils/console/gameConsole";
+import { consoleVariables } from "../utils/console/variables";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";

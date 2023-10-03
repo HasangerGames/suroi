@@ -5,7 +5,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { consoleVariables } from "../utils/console/gameConsole";
+import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 

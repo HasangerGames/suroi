@@ -2,7 +2,7 @@ import { Container, type Application } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "../utils/console/gameConsole";
+import { consoleVariables } from "../utils/console/variables";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Camera {

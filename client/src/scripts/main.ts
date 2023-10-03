@@ -6,11 +6,12 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
 import { setupUI } from "./ui";
-import { consoleVariables, setUpBuiltIns } from "./utils/console/gameConsole";
+import { setUpBuiltIns } from "./utils/console/gameConsole";
 import { COLORS } from "./utils/constants";
 import { setupInputs } from "./utils/inputManager";
 import { loadAtlases } from "./utils/pixi";
 import { loadSounds } from "./utils/soundManager";
+import { consoleVariables } from "./utils/console/variables";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 

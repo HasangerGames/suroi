@@ -1,5 +1,6 @@
 import { mergeDeep } from "../../../../common/src/utils/misc";
-import { consoleVariables, keybinds, type CVarTypeMapping, type ExtractConVarValue } from "./console/gameConsole";
+import { keybinds } from "./console/gameConsole";
+import { type CVarTypeMapping, type ExtractConVarValue, consoleVariables } from "./console/variables";
 
 /* eslint-disable @typescript-eslint/indent */
 export type KeybindActions = Record<

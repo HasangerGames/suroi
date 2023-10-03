@@ -3,7 +3,7 @@ import { DEFAULT_USERNAME, KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, typ
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { consoleVariables } from "../../utils/console/gameConsole";
+import { consoleVariables } from "../../utils/console/variables";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { randomKillWord } from "../../utils/misc";
 

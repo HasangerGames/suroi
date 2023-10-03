@@ -2,7 +2,7 @@ import { Container, Graphics, LINE_CAP, Sprite, Texture, isMobile } from "pixi.j
 import { GRID_SIZE, GasState } from "../../../../common/src/constants";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "../utils/console/gameConsole";
+import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite } from "../utils/pixi";
 import { Gas } from "./gas";
 
