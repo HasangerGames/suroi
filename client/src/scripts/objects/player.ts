@@ -207,7 +207,7 @@ export class Player extends GameObject {
                 this.game.map.indicator.setRotation(this.rotation);
             }
 
-            if (consoleVariables.get.builtIn("showCoordinates").value) {
+            if (consoleVariables.get.builtIn("pf_show_pos").value) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
