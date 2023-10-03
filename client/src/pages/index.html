@@ -162,28 +162,31 @@
         <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
       </div>
     </div>
-  </div>
-  <div id="game-ui">
-    <div id="custom-cursor"
-      style="display: none; z-index: 50; background-size: cover; background-repeat: no-repeat; pointer-events: none;">
-    </div>
-    <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i
-        class="fa-solid fa-close"></i></button>
-    <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i
-        class="fa-solid fa-rotate-right"></i></button>
-    <div id="joysticks-containers">
-      <div id="left-joystick-container"></div>
-      <div id="right-joystick-container"></div>
-    </div>
-    <div id="top-left-container">
-      <div style="display: flex">
-        <div id="minimap-border"></div>
-        <div style="display: flex; flex-direction: column; gap: 5px">
-          <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px"
-            id="btn-game-menu"></button>
-          <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
-            <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
-          </button>
+    <div id="game-ui">
+      <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
+      <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i class="fa-solid fa-rotate-right"></i></button>
+      <div id="joysticks-containers">
+        <div id="left-joystick-container"></div>
+        <div id="right-joystick-container"></div>
+      </div>
+      <div id="top-left-container">
+        <div style="display: flex">
+          <div id="minimap-border"></div>
+          <div style="display: flex; flex-direction: column; gap: 5px">
+            <button class="btn btn-lg btn-primary fa-solid fa-bars" style="display: none; margin-left: 5px" id="btn-game-menu"></button>
+            <button class="btn btn-lg btn-primary" id="btn-emotes" style="display: none; margin-left: 5px">
+              <img src="./img/misc/emotes_icon.svg" style="margin-bottom: -3px">
+            </button>
+          </div>
+        </div>
+        <div id="gas-timer">
+          <img id="gas-timer-image" src="./img/misc/gas-waiting-icon.svg">
+          <span id="gas-timer-text">0:00</span>
+        </div>
+        <div id="debug-hud">
+          <div id="fps-counter"></div>
+          <div id="ping-counter"></div>
+          <div id="coordinates-hud"></div>
         </div>
       </div>
       <div id="gas-timer">

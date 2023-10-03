@@ -1,8 +1,8 @@
-import { type ObjectCategory } from "../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
+import { ObjectCategory } from "../../../common/src/constants";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
@@ -11,6 +11,7 @@ import { type GameObject } from "../types/gameObject";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { Decal } from "./decal";
 
 export class Explosion {
     game: Game;
@@ -93,6 +94,12 @@ export class Explosion {
                 position: this.position,
                 rotation: randomRotation()
             });
+        }
+
+        if (definition.decal) {
+            const decal = new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, definition.decal), this.position);
+            this.game.grid.addObject(decal);
+            this.game.updateObjects = true;
         }
     }
 

@@ -1,15 +1,11 @@
 import $ from "jquery";
 import { Container, type Application } from "pixi.js";
 import { ObjectCategory, PacketType, TICKS_PER_SECOND, zIndexes } from "../../../common/src/constants";
-import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { circleCollision, distanceSquared, type CollisionRecord } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectType } from "../../../common/src/utils/objectType";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { enablePlayButton } from "./main";
 import { Building } from "./objects/building";
@@ -43,6 +39,7 @@ import { PlayerManager } from "./utils/playerManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
 import { consoleVariables } from "./utils/console/variables";
+import { Decal } from "./objects/decal";
 
 export class Game {
     socket!: WebSocket;
@@ -334,21 +331,24 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
+                        object = new Obstacle(this, type, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(this, type as ObjectType<ObjectCategory.DeathMarker>, id);
+                        object = new DeathMarker(this, type, id);
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(this, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                        object = new Loot(this, type, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(this, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
+                        object = new Building(this, type, id);
                         break;
+                    }
+                    case ObjectCategory.Decal: {
+                        object = new Decal(this, type, id);
                     }
                 }
             }

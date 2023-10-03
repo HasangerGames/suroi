@@ -1,12 +1,21 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, OBJECT_ID_BITS, PACKET_TYPE_BITS, PLAYER_NAME_MAX_LENGTH, VARIATION_BITS, type ObjectCategory, type PacketType } from "../constants";
-import { RotationMode } from "../definitions/obstacles";
+import {
+    MAX_OBJECT_SCALE,
+    MIN_OBJECT_SCALE,
+    OBJECT_CATEGORY_BITS,
+    OBJECT_ID_BITS,
+    type ObjectCategory,
+    PACKET_TYPE_BITS,
+    type PacketType,
+    PLAYER_NAME_MAX_LENGTH,
+    VARIATION_BITS
+} from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
-import { ObjectDefinitionsList } from "./objectDefinitionsList";
-import { ObjectType } from "./objectType";
+import { ObjectDefinitionsList, ObjectType } from "./objectType";
 import { type Vector } from "./vector";
+import { RotationMode } from "../definitions/obstacles";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {

@@ -1,6 +1,21 @@
 import { ObjectCategory } from "../constants";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
-import { ObjectDefinitionsList } from "./objectDefinitionsList";
+import { Obstacles } from "../definitions/obstacles";
+import { Explosions } from "../definitions/explosions";
+import { Loots } from "../definitions/loots";
+import { Buildings } from "../definitions/buildings";
+import { Emotes } from "../definitions/emotes"; import { Decals } from "../definitions/decals";
+
+export const ObjectDefinitionsList: Record<ObjectCategory, ObjectDefinitions | undefined> = {
+    [ObjectCategory.Player]: undefined,
+    [ObjectCategory.Obstacle]: Obstacles,
+    [ObjectCategory.DeathMarker]: undefined,
+    [ObjectCategory.Loot]: Loots,
+    [ObjectCategory.Building]: Buildings,
+    [ObjectCategory.Decal]: Decals,
+    [ObjectCategory.Explosion]: Explosions,
+    [ObjectCategory.Emote]: Emotes
+};
 
 export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     category: T;

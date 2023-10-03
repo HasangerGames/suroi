@@ -26,7 +26,9 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Player>;
+
     name!: string;
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
@@ -193,11 +195,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
-
-        if (consoleVariables.get.builtIn("pf_show_pos").value) {
-            $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
-        }
-
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
@@ -208,6 +205,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.game.map.setPosition(this.position);
             if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
                 this.game.map.indicator.setRotation(this.rotation);
+            }
+
+            if (consoleVariables.get.builtIn("showCoordinates").value) {
+                $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
 
