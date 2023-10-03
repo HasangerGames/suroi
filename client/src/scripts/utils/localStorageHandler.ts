@@ -277,7 +277,7 @@ switch (config.configVersion) {
             if (action === undefined) continue;
 
             for (const bind of binds) {
-                keybinds.addActionsToInput(bind, action);
+                if (bind) keybinds.addActionsToInput(bind, action);
             }
         }
     }

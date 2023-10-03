@@ -330,24 +330,9 @@ function generateBindsConfigScreen(): void {
                     event.type === "mousedown" &&
                     !bindButton.classList.contains("active")
                 ) {
-                    switch (event.button) {
-                        case 0: {
-                            activeButton?.classList.remove("active");
-                            bindButton.classList.add("active");
-                            activeButton = bindButton;
-                            break;
-                        }
-                        case 2: {
-                            if (bind) {
-                                keybinds.remove(bind, actionNameToConsoleCommand[action]);
-                            }
-
-                            gameConsole.writeToLocalStorage();
-                            generateBindsConfigScreen();
-                            break;
-                        }
-                    }
-
+                    activeButton?.classList.remove("active");
+                    bindButton.classList.add("active");
+                    activeButton = bindButton;
                     return;
                 }
 
@@ -359,13 +344,15 @@ function generateBindsConfigScreen(): void {
                         keybinds.remove(bind, actionNameToConsoleCommand[action]);
                     }
 
-                    keybinds.addActionsToInput(key, actionNameToConsoleCommand[action]);
+                    if (key === "Escape" || key === "Backspace") {
+                        keybinds.unbindInput(bind);
+                    } else {
+                        keybinds.unbindInput(key);
+                        keybinds.addActionsToInput(key, actionNameToConsoleCommand[action]);
+                    }
 
-                    bindButton.textContent = key;
-                    bindButton.classList.remove("active");
-                    bindButton.blur();
-                    activeButton = undefined;
                     gameConsole.writeToLocalStorage();
+                    generateBindsConfigScreen();
                 }
             }
 
@@ -396,8 +383,8 @@ function generateBindsConfigScreen(): void {
 
     // Change the weapons slots keybind text
     for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i}`);
-        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.slice(0, 2).join(" / "));
+        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).slice(0, 2);
+        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }
 
