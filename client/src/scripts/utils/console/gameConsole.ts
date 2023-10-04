@@ -1,7 +1,9 @@
 import { clamp } from "../../../../../common/src/utils/math";
+import { mergeDeep } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
 import { type Command, setUpCommands } from "./commands";
-import { consoleVariables } from "./variables";
+import { defaultBinds, defaultClientCVars } from "./defaultClientCVars";
+import { type CVarFlags, type CVarTypeMapping, ConVar, consoleVariables } from "./variables";
 
 enum MessageType {
     Log = "log",
@@ -19,6 +21,12 @@ interface ConsoleData {
         readonly main: string
         readonly detail: string | string[]
     }
+}
+
+export interface GameSettings {
+    variables: Record<string, { value: Stringable, flags?: CVarFlags }>
+    aliases: Record<string, string>
+    binds: Record<string, string[]>
 }
 
 const readySystem = (() => {
@@ -54,21 +62,21 @@ export const gameConsole = new (class GameConsole {
         this._isOpen = value;
 
         if (this._isOpen) {
-            this._ui._container.show();
-            this._ui._input.trigger("focus");
-            this._ui._input.val("");
+            this._ui.container.show();
+            this._ui.input.trigger("focus");
+            this._ui.input.val("");
             invalidateNextCharacter = true;
         } else {
-            this._ui._container.hide();
+            this._ui.container.hide();
         }
     }
 
     private readonly _ui = {
-        _container: undefined as unknown as JQuery<HTMLDivElement>,
-        _header: undefined as unknown as JQuery<HTMLDivElement>,
-        _closeButton: undefined as unknown as JQuery<HTMLButtonElement>,
-        _output: undefined as unknown as JQuery<HTMLDivElement>,
-        _input: undefined as unknown as JQuery<HTMLTextAreaElement>
+        container: $("#console-container"),
+        header: $("#console-header"),
+        closeButton: $("#console-close"),
+        output: $("#console-out"),
+        input: $("#console-in")
     };
 
     get isReady(): boolean { return readySystem.isReady; }
@@ -98,8 +106,8 @@ export const gameConsole = new (class GameConsole {
                 if (width !== w) {
                     consoleVariables.set.builtIn("cv_console_width", width = w);
 
-                    if (!T._ui._container[0].style.width) {
-                        T._ui._container.css("width", width);
+                    if (!T._ui.container[0].style.width) {
+                        T._ui.container.css("width", width);
                     }
                 }
             },
@@ -115,8 +123,8 @@ export const gameConsole = new (class GameConsole {
                 if (height !== h) {
                     consoleVariables.set.builtIn("cv_console_height", height = h);
 
-                    if (!T._ui._container[0].style.height) {
-                        T._ui._container.css("height", height);
+                    if (!T._ui.container[0].style.height) {
+                        T._ui.container.css("height", height);
                     }
                 }
             }
@@ -145,8 +153,8 @@ export const gameConsole = new (class GameConsole {
                 if (left !== l) {
                     consoleVariables.set.builtIn("cv_console_left", left = l);
 
-                    if (!T._ui._container[0].style.left) {
-                        T._ui._container.css("left", left);
+                    if (!T._ui.container[0].style.left) {
+                        T._ui.container.css("left", left);
                     }
                 }
             },
@@ -162,8 +170,8 @@ export const gameConsole = new (class GameConsole {
                 if (top !== t) {
                     consoleVariables.set.builtIn("cv_console_top", top = t);
 
-                    if (!T._ui._container[0].style.top) {
-                        T._ui._container.css("top", top);
+                    if (!T._ui.container[0].style.top) {
+                        T._ui.container.css("top", top);
                     }
                 }
             }
@@ -176,146 +184,150 @@ export const gameConsole = new (class GameConsole {
 
     private readonly localStorageKey = "suroi_config";
 
-    constructor() {
-        const assignUiProp = <K extends keyof (typeof gameConsole)["_ui"]>(key: K, selector: string, context?: JQuery): void => {
-            const element = $(selector, context) as (typeof gameConsole)["_ui"][K];
-
-            this._ui[key] = element;
-
-            if (!element.length) {
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                console.warn(`Component '${key}' of the console was not found. (provided selector: '${selector}')`);
-            }
+    writeToLocalStorage(): void {
+        const settings: GameSettings = {
+            variables: consoleVariables.getAll(),
+            aliases: Object.fromEntries(aliases),
+            binds: keybinds.getAll()
         };
 
-        assignUiProp("_container", "div#console-container");
-        assignUiProp("_header", "div#console-header", this._ui._container);
-        assignUiProp("_output", "div#console-out", this._ui._container);
-        assignUiProp("_input", "textarea#console-in", this._ui._container);
-        assignUiProp("_closeButton", "div#console-header button#console-close", this._ui._container);
+        localStorage.setItem(this.localStorageKey, JSON.stringify(settings));
+    }
 
-        this._ui._container.css("left", this._position.left);
-        this._ui._container.css("top", this._position.top);
-        this._ui._container.css("width", this._dimensions.width);
-        this._ui._container.css("height", this._dimensions.height);
+    readFromLocalStorage(): void {
+        const storedConfig = localStorage.getItem(this.localStorageKey);
+
+        let binds = defaultBinds as GameSettings["binds"];
+
+        if (storedConfig) {
+            const config = JSON.parse(storedConfig) as GameSettings;
+
+            for (const name in config.variables) {
+                const variable = config.variables[name];
+
+                if (defaultClientCVars[name as keyof CVarTypeMapping]) {
+                    consoleVariables.set.builtIn(name as keyof CVarTypeMapping, variable.value as string);
+                } else {
+                    const cvar = new ConVar(name, variable.value, variable.flags);
+                    consoleVariables.declareCVar(cvar);
+                }
+            }
+            binds = mergeDeep({}, defaultBinds, config.binds);
+        }
+
+        for (const command in binds) {
+            for (const bind of binds[command]) {
+                keybinds.addActionsToInput(bind, command);
+            }
+        }
+    }
+
+    constructor() {
+        this._ui.container.css("left", this._position.left);
+        this._ui.container.css("top", this._position.top);
+        this._ui.container.css("width", this._dimensions.width);
+        this._ui.container.css("height", this._dimensions.height);
 
         this._attachListeners();
 
         this.isOpen = this._isOpen;
         // sanity check
-
-        const config = localStorage.getItem(this.localStorageKey);
-        if (config) this.addReadyCallback(() => { this.handleQuery(config); });
     }
 
-    private readonly _attachListeners = (() => {
-        let initialized = false;
-        return () => {
-            if (initialized) {
-                console.warn("Console listeners already initialized.");
-                return;
-            }
+    private _attachListeners(): void {
+        /*
+            eslint-disable no-lone-blocks
+        */
 
-            initialized = true;
+        // Close button
+        {
+            this._ui.closeButton.on("click", e => {
+                if (e.button === 0) this.close();
+            });
+        }
 
-            /*
-                eslint-disable no-lone-blocks
-            */
+        // Dragging
+        {
+            let dragging = false;
+            const offset = {
+                x: NaN,
+                y: NaN
+            };
 
-            // Close button
-            {
-                this._ui._closeButton.on("click", e => {
-                    if (e.button === 0) {
-                        this.close();
-                    }
-                });
-            }
+            const mouseUpHandler = (): void => {
+                if (!dragging) return;
 
-            // Dragging
-            {
-                let dragging = false;
-                const offset = {
-                    x: NaN,
-                    y: NaN
-                };
+                dragging = false;
 
-                const mouseUpHandler = (): void => {
-                    if (!dragging) return;
+                window.removeEventListener("mouseup", mouseUpHandler);
+                window.removeEventListener("mousemove", mouseMoveHandler);
+            };
 
-                    dragging = false;
+            const mouseMoveHandler = (event: MouseEvent): void => {
+                this._ui.container.css(
+                    "left",
+                    (this._position.left = event.clientX + offset.x, this._position.left)
+                );
 
-                    window.removeEventListener("mouseup", mouseUpHandler);
-                    window.removeEventListener("mousemove", mouseMoveHandler);
-                };
+                this._ui.container.css(
+                    "top",
+                    (this._position.top = event.clientY + offset.y, this._position.top)
+                );
+            };
 
-                const mouseMoveHandler = (event: MouseEvent): void => {
-                    this._ui._container.css(
-                        "left",
-                        (this._position.left = event.clientX + offset.x, this._position.left)
-                    );
+            this._ui.header.on("mousedown", e => {
+                dragging = true;
 
-                    this._ui._container.css(
-                        "top",
-                        (this._position.top = event.clientY + offset.y, this._position.top)
-                    );
-                };
+                // This does _not_ equal e.offsetX
+                offset.x = parseInt(this._ui.container.css("left")) - e.clientX;
+                offset.y = parseInt(this._ui.container.css("top")) - e.clientY;
 
-                this._ui._header.on("mousedown", e => {
-                    dragging = true;
+                window.addEventListener("mouseup", mouseUpHandler);
+                window.addEventListener("mousemove", mouseMoveHandler);
+            });
+        }
 
-                    // This does _not_ equal e.offsetX
-                    offset.x = parseInt(this._ui._container.css("left")) - e.clientX;
-                    offset.y = parseInt(this._ui._container.css("top")) - e.clientY;
+        // Resize
+        {
+            new ResizeObserver(e => {
+                // Ignore for closed consoles
+                if (!this._isOpen) return;
 
-                    window.addEventListener("mouseup", mouseUpHandler);
-                    window.addEventListener("mousemove", mouseMoveHandler);
-                });
-            }
+                const size = e[0]?.borderBoxSize[0];
+                // Shouldn't ever happen
+                if (size === undefined) return;
 
-            // Resize
-            {
-                if (this._ui._container[0] !== undefined) {
-                    new ResizeObserver(e => {
-                        // Ignore for closed consoles
-                        if (!this._isOpen) return;
+                // With a left-to-right writing mode, inline is horizontal and block is vertical
+                // This might not work with languages where inline is vertical
 
-                        const size = e[0]?.borderBoxSize[0];
-                        // Shouldn't ever happen
-                        if (size === undefined) return;
+                this._dimensions.width = size.inlineSize;
+                this._dimensions.height = size.blockSize;
+            }).observe(this._ui.container[0]);
+        }
 
-                        // With a left-to-right writing mode, inline is horizontal and block is vertical
-                        // This might not work with languages where inline is vertical
-
-                        this._dimensions.width = size.inlineSize;
-                        this._dimensions.height = size.blockSize;
-                    }).observe(this._ui._container[0]);
+        // Input
+        {
+            this._ui.input.on("keypress", e => {
+                if (invalidateNextCharacter) {
+                    invalidateNextCharacter = false;
+                    e.preventDefault();
+                    return;
                 }
-            }
 
-            // Input
-            {
-                this._ui._input.on("keypress", e => {
-                    if (invalidateNextCharacter) {
-                        invalidateNextCharacter = false;
-                        e.preventDefault();
-                        return;
-                    }
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    const input = this._ui.input.val() as string;
 
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.stopImmediatePropagation();
-                        const input = this._ui._input.val() as string;
+                    this._ui.input.val("");
 
-                        this._ui._input.val("");
-
-                        this.log(`> ${input}`);
-                        this.handleQuery(input);
-                    }
-                });
-            }
-        };
-    })();
+                    this.log(`> ${input}`);
+                    this.handleQuery(input);
+                }
+            });
+        }
+    }
 
     // The part everyone cares about
     handleQuery(query: string): void {
@@ -479,13 +491,9 @@ export const gameConsole = new (class GameConsole {
         }
     }
 
-    writeToLocalStorage(): void {
-        localStorage.setItem(this.localStorageKey, `${consoleVariables.generateExportString()};${keybinds.generateExportString()}`);
-    }
-
     private _pushAndLog(entry: ConsoleData, raw = false): void {
         this._entries.push(entry);
-        this._ui._output.append(this._generateHTML(entry, raw));
+        this._ui.output.append(this._generateHTML(entry, raw));
     }
 
     private readonly _generateHTML = (() => {
@@ -607,7 +615,7 @@ export const gameConsole = new (class GameConsole {
 
     clear(): void {
         this._entries.length = 0;
-        this._ui._output.html("");
+        this._ui.output.html("");
     }
 })();
 
@@ -618,7 +626,7 @@ export const aliases = new Map<string, string>();
 
 export const keybinds = (() => {
     type InputKey = string;
-    type InputAction = string | Command<boolean, Stringable>;
+    type InputAction = string;
 
     return new (class InputMapper {
         // These two maps must be kept in sync!!
@@ -749,13 +757,14 @@ export const keybinds = (() => {
          */
         readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
 
-        generateExportString(): string {
-            return `${[...this._inputToAction.entries()]
-                .filter(([, actions]) => actions.size)
-                .map(
-                    ([input, actions]) => [...actions.values()].map(action => `bind ${input} "${action.toString()}"`).join(";")
-                )
-                .join(";")}`;
+        getAll(): GameSettings["binds"] {
+            const binds: GameSettings["binds"] = {};
+
+            for (const [action, bindsSet] of this._actionToInput.entries()) {
+                binds[action] = [...bindsSet];
+            }
+
+            return binds;
         }
     })();
 })();
@@ -763,6 +772,7 @@ export const keybinds = (() => {
 export function setUpBuiltIns(game: Game): void {
     setUpCommands(game);
     readySystem.markReady();
+
     gameConsole.resizeAndMove({
         dimensions: {
             width: consoleVariables.get.builtIn("cv_console_width").value,

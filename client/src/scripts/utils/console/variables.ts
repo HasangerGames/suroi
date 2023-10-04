@@ -1,4 +1,4 @@
-import { type PossibleError, type Stringable, gameConsole } from "./gameConsole";
+import { type PossibleError, type Stringable, gameConsole, type GameSettings } from "./gameConsole";
 import { defaultClientCVars, type JSONCVar } from "./defaultClientCVars";
 
 export interface CVarFlags {
@@ -17,6 +17,13 @@ export class ConVar<Value = string> {
 
     static from<Value extends Stringable>(json: JSONCVar<Value>): ConVar<Value> {
         return new ConVar<Value>(json.name, json.value, json.flags);
+    }
+
+    toJSON(): { value: Value, flags: CVarFlags } {
+        return {
+            value: this.value,
+            flags: this.flags
+        };
     }
 
     constructor(name: string, value: Value, flags?: Partial<CVarFlags>) {
@@ -163,16 +170,24 @@ export const consoleVariables = new (class {
         this._userCVars.set(cvar.name, cvar);
     }
 
-    generateExportString(): string {
-        return (
-            ([...Object.values(this._builtInCVars)] as Array<ConVar<Stringable>>)
-                .filter(cvar => cvar.flags.archive)
-                .map(cvar => `${cvar.name}=${cvar.value}`)
-        ).concat(
-            [...this._userCVars.values()]
-                .filter(cvar => cvar.flags.archive)
-                .map(cvar => `let "${cvar.name}" ${cvar.value}`)
-        ).join(";");
+    getAll(): GameSettings["variables"] {
+        const variables: GameSettings["variables"] = {};
+
+        for (const varName in this._userCVars.entries) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const cvar = this._userCVars.get(varName)!;
+            variables[varName] = { value: cvar.value, flags: cvar.flags };
+        }
+        for (const varName in this._builtInCVars) {
+            const cvarName = varName as keyof CVarTypeMapping;
+            const cvar = this._builtInCVars[cvarName];
+
+            if (cvar.value !== defaultClientCVars[cvarName].value) {
+                variables[varName] = { value: cvar.value };
+            }
+        }
+
+        return variables;
     }
 
     dump(): string {

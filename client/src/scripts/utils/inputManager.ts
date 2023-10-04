@@ -5,25 +5,19 @@ import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { actionNameToConsoleCommand, type KeybindActions } from "./localStorageHandler";
 import { consoleVariables } from "./console/variables";
 
 function fireAllEventsAtKey(input: string, down: boolean): number {
     const actions = keybinds.getActionsBoundToInput(input) ?? [];
     for (const action of actions) {
-        if (typeof action === "string") {
-            let query = action;
-            if (!down) {
-                if (query.startsWith("+")) { // Invertible action
-                    query = query.replace("+", "-");
-                } else query = ""; // If the action isn't invertible, then we do nothing
-            }
-
-            gameConsole.handleQuery(query);
-            continue;
+        let query = action;
+        if (!down) {
+            if (query.startsWith("+")) { // Invertible action
+                query = query.replace("+", "-");
+            } else query = ""; // If the action isn't invertible, then we do nothing
         }
 
-        (down ? action : (action.inverse ?? { run() { } })).run();
+        gameConsole.handleQuery(query);
     }
 
     return actions.length;
@@ -194,6 +188,8 @@ export function setupInputs(game: Game): void {
             game.playerManager.attacking = false;
         });
     }
+
+    generateBindsConfigScreen();
 }
 
 function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
@@ -259,34 +255,34 @@ export function getIconFromInputName(input: string): string {
     return name === undefined ? input : `./img/misc/${name}_icon.svg`;
 }
 
-const actionsNames: Record<keyof KeybindActions, string> = {
-    moveUp: "Move Up",
-    moveDown: "Move Down",
-    moveLeft: "Move Left",
-    moveRight: "Move Right",
+const actionsNames: Record<keyof (typeof defaultBinds), string> = {
+    "+up": "Move Up",
+    "+down": "Move Down",
+    "+left": "Move Left",
+    "+right": "Move Right",
     interact: "Interact",
-    slot1: "Equip Primary",
-    slot2: "Equip Secondary",
-    slot3: "Equip Melee",
-    lastEquippedItem: "Equip Last Weapon",
-    equipOtherGun: "Equip Other Gun",
-    swapGunSlots: "Swap Gun Slots",
-    previousItem: "Equip Previous Weapon",
-    nextItem: "Equip Next Weapon",
-    useItem: "Use Weapon",
-    dropActiveItem: "Drop Active Weapon",
+    "slot 0": "Equip Primary",
+    "slot 1": "Equip Secondary",
+    "slot 2": "Equip Melee",
+    last_item: "Equip Last Weapon",
+    other_weapon: "Equip Other Gun",
+    swap_gun_slots: "Swap Gun Slots",
+    "cycle_items -1": "Equip Previous Weapon",
+    "cycle_items 1": "Equip Next Weapon",
+    "+attack": "Use Weapon",
+    drop: "Drop Active Weapon",
     reload: "Reload",
-    previousScope: "Previous Scope",
-    nextScope: "Next Scope",
-    useGauze: "Use Gauze",
-    useMedikit: "Use Medikit",
-    useCola: "Use Cola",
-    useTablets: "Use Tablets",
-    cancelAction: "Cancel Action",
-    toggleMap: "Toggle Fullscreen Map",
-    toggleMiniMap: "Toggle Minimap",
-    emoteWheel: "Emote Wheel",
-    toggleConsole: "Toggle Console"
+    "cycle_scopes -1": "Previous Scope",
+    "cycle_scopes +1": "Next Scope",
+    "use_consumable gauze": "Use Gauze",
+    "use_consumable medikit": "Use Medikit",
+    "use_consumable cola": "Use Cola",
+    "use_consumable tablets": "Use Tablets",
+    cancel_action: "Cancel Action",
+    toggle_map: "Toggle Fullscreen Map",
+    toggle_minimap: "Toggle Minimap",
+    "+emote_wheel": "Emote Wheel",
+    toggle_console: "Toggle Console"
 };
 
 // Generate the input settings
@@ -295,8 +291,8 @@ function generateBindsConfigScreen(): void {
     keybindsContainer.html("");
 
     let activeButton: HTMLButtonElement | undefined;
-    for (const a in actionNameToConsoleCommand) {
-        const action = a as keyof KeybindActions;
+    for (const a in defaultBinds) {
+        const action = a as keyof (typeof defaultBinds);
 
         const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
 
@@ -305,7 +301,7 @@ function generateBindsConfigScreen(): void {
             text: actionsNames[action]
         }).appendTo(bindContainer);
 
-        const actions = keybinds.getInputsBoundToAction(actionNameToConsoleCommand[action]);
+        const actions = keybinds.getInputsBoundToAction(action);
 
         while (actions.length < 2) {
             actions.push("None");
@@ -341,14 +337,14 @@ function generateBindsConfigScreen(): void {
                     const key = getKeyFromInputEvent(event);
 
                     if (bind) {
-                        keybinds.remove(bind, actionNameToConsoleCommand[action]);
+                        keybinds.remove(bind, action);
                     }
 
                     if (key === "Escape" || key === "Backspace") {
                         keybinds.unbindInput(bind);
                     } else {
                         keybinds.unbindInput(key);
-                        keybinds.addActionsToInput(key, actionNameToConsoleCommand[action]);
+                        keybinds.addActionsToInput(key, action);
                     }
 
                     gameConsole.writeToLocalStorage();
@@ -374,6 +370,8 @@ function generateBindsConfigScreen(): void {
         class: "btn btn-darken btn-lg btn-danger",
         html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
     }).on("click", () => {
+        keybinds.unbindAll();
+
         for (const [action, keys] of Object.entries(defaultBinds)) {
             keybinds.addInputsToAction(action, ...keys);
         }
@@ -387,5 +385,3 @@ function generateBindsConfigScreen(): void {
         $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }
-
-generateBindsConfigScreen();

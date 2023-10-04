@@ -107,6 +107,7 @@ export function setupUI(game: Game): void {
     const settingsMenu = $("#settings-menu");
 
     usernameField.val(consoleVariables.get.builtIn("cv_player_name").value);
+
     usernameField.on("input", () => {
         // Remove non-ASCII chars
         if (!ALLOW_NON_ASCII_USERNAME_CHARS) {

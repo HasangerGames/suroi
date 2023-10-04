@@ -1,17 +1,18 @@
 import $ from "jquery";
 import { Application } from "pixi.js";
-import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
 import { setupUI } from "./ui";
-import { setUpBuiltIns } from "./utils/console/gameConsole";
+import { gameConsole, setUpBuiltIns } from "./utils/console/gameConsole";
 import { COLORS } from "./utils/constants";
 import { setupInputs } from "./utils/inputManager";
 import { loadAtlases } from "./utils/pixi";
 import { loadSounds } from "./utils/soundManager";
 import { consoleVariables } from "./utils/console/variables";
+import { portOldConfig } from "./utils/localStorageHandler";
 
 const playSoloBtn: JQuery = $("#btn-play-solo");
 
@@ -185,23 +186,24 @@ $(async(): Promise<void> => {
 
     // Initialize the Application object
 
-    const app = new Application({
+    const app = new Application<HTMLCanvasElement>({
         resizeTo: window,
         background: COLORS.water,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1
     });
+    $("#game-ui").append(app.view);
 
     await loadAtlases();
-
-    $("#game-ui").append(app.view as HTMLCanvasElement);
+    gameConsole.readFromLocalStorage();
+    portOldConfig();
 
     const game = new Game(app);
 
     loadSounds(game.soundManager);
+    setUpBuiltIns(game);
     setupUI(game);
     setupInputs(game);
-    setUpBuiltIns(game);
     enablePlayButton();
 });
