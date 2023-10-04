@@ -97,6 +97,13 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "Deepwood", position: v(0.5, 0.7) }
         ]
     },
+    singleObstacle: {
+        width: 128,
+        height: 128,
+        genCallback(map) {
+            map.generateObstacle("bollard", v(this.width / 2, this.height / 2), 0);
+        }
+    },
     debug: {
         width: 1024,
         height: 1024,

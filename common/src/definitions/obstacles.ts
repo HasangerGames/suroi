@@ -1196,6 +1196,48 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "barrel_particle"
             },
             
+        },
+        {
+            idString: "pallete",
+            name: "Pallete",
+            material: "wood",
+            health: 120,
+            hideOnMap: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10,7,v(0,0)),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "regular_crate_particle",
+                residue: "regular_crate_residue"
+            },
+            
+        }
+        ,
+        {
+            idString: "bollard",
+            name: "Bollard",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(7.5,8,v(-0.2,0)),
+                new CircleHitbox(3,v(1.3,0))
+            ]),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle",
+            },
+            
         }
     ]
 );
