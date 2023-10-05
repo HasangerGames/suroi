@@ -421,20 +421,8 @@ export class Player extends GameObject {
 
         if (weaponDef.itemType === ItemType.Gun) {
 
-            switch(weaponDef.idString) {
-                case "ak47": case "aug": case "mini14": case "m3k": case "hp18":
-                case "mosin": case "tango_51": case "sr25": case "lewis_gun": case "stoner_63":
-                case "mcx_spear": case "arx160": case "saf_200": case "g19": case "micro_uzi": case "cz75a":
-                    this.images.rightFist.setZIndex(4);
-                    this.images.leftFist.setZIndex(1);
-                    this.images.weapon.setZIndex(2);
-                    if (weaponDef.idString === "mosin" || weaponDef.idString === "lewis_gun") {this.images.leftFist.setZIndex(4) }
-                    break;
-                default:
-                    this.images.rightFist.setZIndex(1);
-                    this.images.leftFist.setZIndex(1);                    
-                    break;
-            }
+            this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1)
+            this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1)
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {

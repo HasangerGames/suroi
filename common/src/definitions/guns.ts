@@ -30,6 +30,8 @@ export type GunDefinition = ItemDefinition & {
     readonly fists: {
         readonly left: Vector
         readonly right: Vector
+        readonly leftZIndex?: number
+        readonly rightZIndex?: number
         readonly animationDuration: number
     }
 
@@ -78,6 +80,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(100, 0),
             right: v(45, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 2) },
@@ -111,6 +114,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(85, 5),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(70, 0) },
@@ -142,6 +146,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(110, 2),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(80, -6) },
@@ -179,6 +184,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(110, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 5) },
@@ -253,6 +259,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(130, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(100, 0) },
@@ -327,6 +334,8 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(115, 6),
             right: v(40, 0),
+            rightZIndex: 4,
+            leftZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 4) },
@@ -363,6 +372,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(110, -1),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 5) },
@@ -396,6 +406,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(0, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(60, 1) },
@@ -429,6 +440,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(0, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(70, 1) },
@@ -464,6 +476,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(90, 3),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(65, 0) },
@@ -538,6 +551,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(0, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         casingParticles: {
@@ -604,6 +618,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(100, 6),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(70, 0) },
@@ -638,6 +653,8 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(135, 12),
             right: v(40, 0),
+            rightZIndex: 4,
+            leftZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(112, -2) },
@@ -673,6 +690,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(95, 8),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 0) },
@@ -744,6 +762,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(110, 0),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(90, 0) },
@@ -778,6 +797,7 @@ export const Guns: GunDefinition[] = [
         fists: {
             left: v(80, 2),
             right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
         image: { position: v(80, 0) },
