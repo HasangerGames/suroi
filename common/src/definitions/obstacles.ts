@@ -1272,7 +1272,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
             ]),
             rotationMode: RotationMode.Limited,
-            noResidue: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -1310,7 +1309,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 new CircleHitbox(3.45, v(1, 0))
             ]),
             rotationMode: RotationMode.Limited,
-            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "barrier",
+            name: "Barrier",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
+                RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
+                RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
+            ]),
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             }
