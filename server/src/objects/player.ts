@@ -10,6 +10,7 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     AnimationType,
     INVENTORY_MAX_WEAPONS,
+    KillFeedMessageType,
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions
@@ -32,7 +33,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
@@ -670,16 +671,11 @@ export class Player extends GameObject {
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(
-                new KillFeedPacket(
-                    this,
-                    new KillKillFeedMessage(
-                        this,
-                        source === this ? undefined : source,
-                        weaponUsed
-                    )
-                )
-            );
+            this.game.killFeedMessages.add(new KillFeedPacket(this, KillFeedMessageType.Kill, {
+                killedBy: source === this ? undefined : source,
+                weaponUsed,
+                kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0
+            }));
         }
 
         // Destroy physics body; reset movement and attacking variables

@@ -134,20 +134,20 @@
     font-size: 14px;
     margin-inline: 2.5% !important;
     width: 45% !important;
-}
 
-.btn-bind.active {
-    outline: 5px solid $blue;
+    &.active {
+        outline: 5px solid $blue;
+    }
 }
 
 .rules-close-btn {
     position: absolute;
-    transform: translate(120px, 2px);
+    transform: translate(135px, 4px);
+    width: 25px;
+    height: 25px;
     z-index: 10;
-    border-radius: 50%;
-    background-color: rgb(247, 111, 111);
-    border: 0px;
     text-align: center;
-    width: 25px; 
-    height:25px;
+    border-radius: 50%;
+    background-color: $danger;
+    cursor: pointer;
 }
