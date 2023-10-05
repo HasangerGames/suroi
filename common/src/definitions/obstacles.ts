@@ -1268,7 +1268,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(8.3, 17.3, v(0, -3.8)),
+                RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
                 RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
             ]),
             rotationMode: RotationMode.Limited,
@@ -1306,8 +1306,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(7.5, 8, v(-0.2, 0)),
-                new CircleHitbox(3, v(1.3, 0))
+                RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
+                new CircleHitbox(3.45, v(1, 0))
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
