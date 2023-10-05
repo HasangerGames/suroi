@@ -2,6 +2,7 @@ import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinit
 import { CircleHitbox, type Hitbox, RectangleHitbox, ComplexHitbox } from "../utils/hitbox";
 import { v, type Vector } from "../utils/vector";
 import { type Variation } from "../typings";
+import { ContainerTints } from "./buildings";
 import { zIndexes } from "../constants";
 
 export type ObstacleDefinition = ObjectDefinition & {
@@ -35,6 +36,8 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
+
+    readonly tint?: number
 
     readonly isWall?: boolean
     readonly isWindow?: boolean
@@ -149,6 +152,53 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         frames: {
             particle: "rock_particle"
         }
+    };
+}
+
+function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint?: number): ObstacleDefinition {
+    let hitbox: Hitbox;
+    switch (open) {
+        case "open2":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
+            ]);
+            break;
+        case "open1":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
+                RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
+            ]);
+            break;
+        case "closed":
+        default:
+            hitbox = RectangleHitbox.fromRect(14, 28);
+            break;
+    }
+    return {
+        idString: `container_walls_${id}`,
+        name: `Container Walls ${id}`,
+        material: "metal",
+        health: 500,
+        indestructible: true,
+        noResidue: true,
+        hideOnMap: false,
+        invisible: open === "closed",
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 1.0
+        },
+        hitbox,
+        rotationMode: RotationMode.Limited,
+        isWall: true,
+        reflectBullets: true,
+        frames: {
+            base: open !== "closed" ? `container_walls_${open}` : undefined,
+            particle: "metal_particle"
+        },
+        tint
     };
 }
 
@@ -1149,14 +1199,40 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             noResidue: true,
             frames: {
                 particle: "wall_particle"
+            }
+        },
+        {
+            idString: "truck",
+            name: "Truck",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 1.0
             },
-            
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
+                RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
+                RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
+                RectangleHitbox.fromRect(4.75, 15.9, v(0, -16.65)), // Fifth wheel
+                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
+                RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
+            ]),
+            reflectBullets: true,
+            rotationMode: RotationMode.None,
+            zIndex: zIndexes.ObstaclesLayer5,
+            frames: {
+                particle: "metal_particle"
+            }
         },
         {
             idString: "trailer",
             name: "Trailer",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             hideOnMap: false,
             invisible: false,
@@ -1166,21 +1242,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(15,75,v(0, 0)),
-                RectangleHitbox.fromRect(17,10,v(0, 33))
+                RectangleHitbox.fromRect(15, 75),
+                RectangleHitbox.fromRect(17, 10, v(0, 33))
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
                 particle: "barrel_particle"
-            },
-            
+            }
         },
         {
             idString: "forklift",
             name: "Forklift",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             hideOnMap: false,
             invisible: false,
@@ -1189,17 +1264,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: RectangleHitbox.fromRect(9,17,v(0, -3.8)),
+            hitbox: RectangleHitbox.fromRect(9, 17, v(0, -3.8)),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
                 particle: "barrel_particle"
-            },
-            
+            }
         },
         {
-            idString: "pallete",
-            name: "Pallete",
+            idString: "pallet",
+            name: "Pallet",
             material: "wood",
             health: 120,
             hideOnMap: true,
@@ -1208,20 +1282,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10,7,v(0,0)),
+            hitbox: RectangleHitbox.fromRect(10, 7),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "regular_crate_particle",
                 residue: "regular_crate_residue"
-            },
-            
-        }
-        ,
+            }
+        },
         {
             idString: "bollard",
             name: "Bollard",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
@@ -1229,15 +1301,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(7.5,8,v(-0.2,0)),
-                new CircleHitbox(3,v(1.3,0))
+                RectangleHitbox.fromRect(7.5, 8, v(-0.2, 0)),
+                new CircleHitbox(3, v(1.3, 0))
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "metal_particle",
-            },
-            
-        }
+                particle: "metal_particle"
+            }
+        },
+        makeContainerWalls(1, "closed"),
+        makeContainerWalls(2, "open1", ContainerTints.Green),
+        makeContainerWalls(3, "open1", ContainerTints.Blue),
+        makeContainerWalls(4, "open2", ContainerTints.Blue),
+        makeContainerWalls(5, "open1", ContainerTints.Yellow),
+        makeContainerWalls(6, "open2", ContainerTints.Yellow)
     ]
 );

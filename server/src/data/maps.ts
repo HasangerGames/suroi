@@ -7,7 +7,7 @@ import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomPointInsideCircle } from "../../../common/src/utils/random";
-import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface MapDefinition {
@@ -53,7 +53,15 @@ export const Maps: Record<string, MapDefinition> = {
             refinery: 1,
             warehouse: 4,
             small_house: 5,
-            porta_potty: 10
+            porta_potty: 10,
+            container_3: 1,
+            container_4: 1,
+            container_5: 1,
+            container_6: 1,
+            container_7: 1,
+            container_8: 1,
+            container_9: 1,
+            container_10: 1
         },
         obstacles: {
             oil_tank: 6,
@@ -96,13 +104,6 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "Mt. Sanger", position: v(0.5, 0.3) },
             { name: "Deepwood", position: v(0.5, 0.7) }
         ]
-    },
-    singleObstacle: {
-        width: 128,
-        height: 128,
-        genCallback(map) {
-            map.generateObstacle("bollard", v(this.width / 2, this.height / 2), 0);
-        }
     },
     debug: {
         width: 1024,
@@ -246,25 +247,21 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "stark is noob", position: v(0.5, 0.5) }
         ]
     },
+    singleBuilding: {
+        width: 512,
+        height: 512,
+        genCallback(map) {
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            /*for (let i = 1; i <= 10; i++) {
+                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
+            }*/
+        }
+    },
     singleObstacle: {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("", v(this.width / 2, this.height / 2), 0);
-        }
-    },
-    refinery: {
-        width: 512,
-        height: 512,
-        genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
-        }
-    },
-    small_house: {
-        width: 512,
-        height: 512,
-        genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("truck", v(this.width / 2, this.height / 2));
         }
     }
 };

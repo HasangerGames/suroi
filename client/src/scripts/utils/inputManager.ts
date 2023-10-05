@@ -401,10 +401,10 @@ export function setupInputs(game: Game): void {
             color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
-        let rightJoyStickUsed: boolean = false
+        let rightJoyStickUsed = false;
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-            if (!rightJoyStickUsed){
+            if (!rightJoyStickUsed) {
                 game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
                     game.activePlayer.container.rotation = game.playerManager.rotation;
@@ -421,7 +421,7 @@ export function setupInputs(game: Game): void {
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
-            rightJoyStickUsed = true
+            rightJoyStickUsed = true;
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
             if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
                 game.activePlayer.container.rotation = game.playerManager.rotation;
@@ -430,7 +430,7 @@ export function setupInputs(game: Game): void {
             game.playerManager.attacking = data.distance > config.joystickSize / 3;
         });
         rightJoyStick.on("end", () => {
-            rightJoyStickUsed = false
+            rightJoyStickUsed = false;
             game.playerManager.attacking = false;
         });
     }

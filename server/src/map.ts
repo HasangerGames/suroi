@@ -267,7 +267,12 @@ export class Map {
         }
     }
 
-    getRandomPositionFor(type: ObjectType, scale = 1, orientation: Orientation = 0, getPosition?: () => Vector): Vector {
+    getRandomPositionFor(
+        type: ObjectType,
+        scale = 1,
+        orientation: Orientation = 0,
+        getPosition?: () => Vector
+    ): Vector {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
@@ -343,7 +348,13 @@ export class Map {
         return position;
     }
 
-    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, orientation: Orientation = 0, radius: number, squareRadius?: boolean): Vector {
+    getRandomPositionInRadiusFor(
+        type: ObjectType,
+        scale = 1,
+        orientation: Orientation = 0,
+        radius: number,
+        squareRadius?: boolean
+    ): Vector {
         if (radius > this.width || radius > this.height) {
             radius = Math.min(this.width, this.height);
         }

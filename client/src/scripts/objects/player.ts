@@ -129,7 +129,7 @@ export class Player extends GameObject {
             this.images.backpack,
             this.images.helmet
         );
-        this.container.eventMode = "static"
+        this.container.eventMode = "static";
 
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -169,16 +169,17 @@ export class Player extends GameObject {
                 };
             }
         });
-        this.container.on('pointerdown', (event) => {
+
+        this.container.on("pointerdown", () => {
             if (this.game.spectating && this.game.activePlayerID !== this.id) {
                 this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
             }
-        })
-        this.container.on('click', (event) => {
+        });
+        this.container.on("click", () => {
             if (this.game.spectating && this.game.activePlayerID !== this.id) {
                 this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
             }
-        })
+        });
     }
 
     override updateContainerPosition(): void {
@@ -420,7 +421,6 @@ export class Player extends GameObject {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-
             this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1)
             this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1)
             this.images.weapon.setZIndex(2);

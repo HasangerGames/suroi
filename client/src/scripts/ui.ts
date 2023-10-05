@@ -168,7 +168,7 @@ export function setupUI(game: Game): void {
     const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
-    serverSelect.on("change", (e: Event) => {
+    serverSelect.on("change", () => {
         const value = serverSelect.val() as string | undefined;
 
         if (value !== undefined) {
@@ -639,20 +639,15 @@ export function setupUI(game: Game): void {
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString
-}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString
-}.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(scope.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.playerManager.useItem(scope.idString);
+            e.stopPropagation();
+        });
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }

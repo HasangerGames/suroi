@@ -16,10 +16,10 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#gas-msg").fadeOut(500);
 
-        // Disable joystics div to click on players to spectate
-        $("#joysticks-containers").toggle(false)
+        // Disable joysticks div so you can click on players to spectate
+        $("#joysticks-containers").hide();
 
-        const gameOverScreen: JQuery = $("#game-over-overlay");
+        const gameOverScreen = $("#game-over-overlay");
 
         this.game.gameOver = true;
         const won = stream.readBoolean();

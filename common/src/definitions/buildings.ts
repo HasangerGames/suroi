@@ -18,6 +18,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     wood: {
         debugColor: 0x7f5500
+    },
+    metal: {
+        debugColor: 0x808080
     }
 };
 
@@ -43,7 +46,7 @@ interface SubBuilding {
 
 export interface BuildingDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
-    ceilingHitbox: Hitbox
+    ceilingHitbox?: Hitbox
     scopeHitbox: Hitbox
     hideOnMap?: boolean
 
@@ -54,11 +57,13 @@ export interface BuildingDefinition extends ObjectDefinition {
     floorImages: Array<{
         key: string
         position: Vector
+        tint?: number
     }>
     ceilingImages: Array<{
         key: string
         position: Vector
         residue?: string
+        tint?: number
     }>
 
     // How many walls need to be broken to destroy the ceiling
@@ -71,9 +76,67 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     groundGraphics?: Array<{
         color: number
-        bounds: Hitbox
+        hitbox: Hitbox
     }>
 }
+
+function makeContainer(id: number, tint: number, wallsID: number, open: "open2" | "open1" | "closed", damaged?: boolean): BuildingDefinition {
+    let spawnHitbox: Hitbox;
+    let ceilingHitbox: Hitbox | undefined;
+    switch (open) {
+        case "open2":
+            spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
+            ceilingHitbox = RectangleHitbox.fromRect(14, 37.9);
+            break;
+        case "open1":
+            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 7));
+            ceilingHitbox = RectangleHitbox.fromRect(14, 32.9, v(0, 5));
+            break;
+        case "closed":
+        default:
+            spawnHitbox = RectangleHitbox.fromRect(16, 30);
+            break;
+    }
+    return {
+        idString: `container_${id}`,
+        name: `Container ${id}`,
+        spawnHitbox,
+        ceilingHitbox,
+        scopeHitbox: RectangleHitbox.fromRect(14, 28),
+        floorImages: [],
+        ceilingImages: [{
+            key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
+            position: v(0, 0),
+            tint
+        }],
+        floors: [
+            {
+                type: "metal",
+                hitbox: RectangleHitbox.fromRect(14, 28)
+            }
+        ],
+        obstacles: [
+            {
+                id: `container_walls_${wallsID}`,
+                position: v(0, 0),
+                rotation: 0
+            }
+        ],
+        lootSpawners: open === "closed"
+            ? undefined
+            : [{
+                position: v(0, 0),
+                table: "ground_loot"
+            }]
+    };
+}
+export const ContainerTints = {
+    White: 0xc0c0c0,
+    Red: 0xa32900,
+    Green: 0x00a30e,
+    Blue: 0x005fa3,
+    Yellow: 0xcccc00
+};
 
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
@@ -537,15 +600,15 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         groundGraphics: [
-            { color: 0x595959, bounds: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50)) }, // base
-            { color: 0xb2b200, bounds: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
-            { color: 0x505050, bounds: new CircleHitbox(19, v(45.5, 59.1)) },
-            { color: 0xb2b200, bounds: new CircleHitbox(21, v(97, 59.1)) },
-            { color: 0x505050, bounds: new CircleHitbox(19, v(97, 59.1)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
-            { color: 0xb2b200, bounds: RectangleHitbox.fromRect(108.00, 2.00, v(69.00, 25.00)) }
+            { color: 0x595959, hitbox: RectangleHitbox.fromRect(176.00, 123.00, v(35.00, 21.50)) }, // base
+            { color: 0xb2b200, hitbox: new CircleHitbox(21, v(45.5, 59.1)) }, // circles
+            { color: 0x505050, hitbox: new CircleHitbox(19, v(45.5, 59.1)) },
+            { color: 0xb2b200, hitbox: new CircleHitbox(21, v(97, 59.1)) },
+            { color: 0x505050, hitbox: new CircleHitbox(19, v(97, 59.1)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(2.00, 81.00, v(-9.00, 42.50)) }, // roads
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(2.00, 59.00, v(16.00, 53.50)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(133.00, 2.00, v(56.50, 3.00)) },
+            { color: 0xb2b200, hitbox: RectangleHitbox.fromRect(108.00, 2.00, v(69.00, 25.00)) }
         ],
         floors: [
             {
@@ -986,5 +1049,49 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }
         ]
-    }
+    },
+    {
+        idString: "port",
+        name: "Port",
+        spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),
+        scopeHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
+        ]),
+        ceilingHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
+            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
+            RectangleHitbox.fromRect(13.00, 7.00, v(28.50, -3.50)), // door
+            new CircleHitbox(5, v(-16, 18.5)) // window
+        ]),
+        floorImages: [
+
+        ],
+        ceilingImages: [
+
+        ],
+        groundGraphics: [
+            { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) }
+        ],
+        floors: [
+
+        ],
+        obstacles: [
+
+        ],
+        subBuildings: [
+
+        ]
+    },
+    // TODO Refactor this mess
+    makeContainer(1, ContainerTints.White, 1, "closed"),
+    makeContainer(2, ContainerTints.Red, 1, "closed"),
+    makeContainer(3, ContainerTints.Green, 2, "open1"),
+    makeContainer(4, ContainerTints.Green, 2, "open1", true),
+    makeContainer(5, ContainerTints.Blue, 3, "open1"),
+    makeContainer(6, ContainerTints.Blue, 3, "open1", true),
+    makeContainer(7, ContainerTints.Blue, 4, "open2"),
+    makeContainer(8, ContainerTints.Blue, 4, "open2", true),
+    makeContainer(9, ContainerTints.Yellow, 5, "open1"),
+    makeContainer(10, ContainerTints.Yellow, 6, "open2")
 ]);
