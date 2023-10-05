@@ -1,5 +1,5 @@
 // noinspection ES6PreferShortImport
-import { Config, SpawnMode } from "./config";
+import { Config } from "./config";
 
 import type { WebSocket } from "uWebSockets.js";
 
@@ -34,6 +34,7 @@ import { type GunItem } from "./inventory/gunItem";
 import { type Emote } from "./objects/emote";
 import { Grid } from "./utils/grid";
 import { Maps } from "./data/maps";
+import { SpawnMode } from "./defaultConfig";
 
 export class Game {
     readonly _id: number;

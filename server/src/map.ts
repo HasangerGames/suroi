@@ -14,7 +14,8 @@ import { type ObstacleDefinition, RotationMode } from "../../common/src/definiti
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { Obstacle } from "./objects/obstacle";
 import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
-import { Config, SpawnMode } from "./config";
+import { Config } from "./config";
+import { SpawnMode } from "./defaultConfig";
 import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
