@@ -261,7 +261,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 128,
         height: 128,
         genCallback(map) {
-            map.generateObstacle("truck", v(this.width / 2, this.height / 2));
+            map.generateObstacle("trailer", v(this.width / 2, this.height / 2), 0);
         }
     }
 };

@@ -104,8 +104,8 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         rotationMode: RotationMode.None,
         hasLoot: true,
         frames: {
-            particle: "regular_crate_particle",
-            residue: "regular_crate_residue"
+            particle: "crate_particle",
+            residue: "crate_residue"
         }
     };
 }
@@ -1242,13 +1242,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(15, 75),
-                RectangleHitbox.fromRect(17, 10, v(0, 33))
+                RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
+                RectangleHitbox.fromRect(16.1, 6.4, v(0, -11.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(16.1, 6.4, v(0, -18.2)), // Rearmost back wheels
+                RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
+                RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1268,7 +1271,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1285,8 +1288,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(10, 7),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "regular_crate_particle",
-                residue: "regular_crate_residue"
+                particle: "crate_particle"
             }
         },
         {
