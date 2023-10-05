@@ -107,6 +107,9 @@ async function main(): Promise<void> {
         if (info === undefined) return;
 
         selectedRegion = info;
+
+        localStorageInstance.update({ region });
+
         updateServerSelector();
     });
 
