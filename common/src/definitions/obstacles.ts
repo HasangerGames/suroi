@@ -1334,6 +1334,31 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             }
         },
+        {
+            idString: "port_shed_exterior",
+            name: "Port Shed Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
+                RectangleHitbox.fromRect(1.75, 29.5, v(10.23, -1.7)), // Right wall
+                RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
+                RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
+            ]),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
         makeContainerWalls(1, "closed"),
         makeContainerWalls(2, "open1", ContainerTints.Green),
         makeContainerWalls(3, "open1", ContainerTints.Blue),
