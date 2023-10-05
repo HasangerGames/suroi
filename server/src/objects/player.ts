@@ -10,6 +10,7 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import {
     AnimationType,
     INVENTORY_MAX_WEAPONS,
+    KillFeedMessageType,
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions
@@ -23,7 +24,6 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
-import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type Action, HealingAction } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
@@ -32,7 +32,7 @@ import { MeleeItem } from "../inventory/meleeItem";
 import { Emote } from "./emote";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { removeFrom } from "../utils/misc";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Obstacle } from "./obstacle";
@@ -55,6 +55,13 @@ export class Player extends GameObject {
 
     joined = false;
     disconnected = false;
+
+    private _kills = 0;
+    get kills(): number { return this._kills; }
+    set kills(k: number) {
+        this._kills = k;
+        this.game.updateKillLeader(this);
+    }
 
     static readonly DEFAULT_MAX_HEALTH = 100;
     private _maxHealth = Player.DEFAULT_MAX_HEALTH;
@@ -112,7 +119,6 @@ export class Player extends GameObject {
 
     killedBy?: Player;
 
-    kills = 0;
     damageDone = 0;
     damageTaken = 0;
     joinTime: number;
@@ -645,6 +651,11 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead();
+        }
+
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -659,16 +670,11 @@ export class Player extends GameObject {
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(
-                new KillFeedPacket(
-                    this,
-                    new KillKillFeedMessage(
-                        this,
-                        source === this ? undefined : source,
-                        weaponUsed
-                    )
-                )
-            );
+            this.game.killFeedMessages.add(new KillFeedPacket(this, KillFeedMessageType.Kill, {
+                killedBy: source === this ? undefined : source,
+                weaponUsed,
+                kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0
+            }));
         }
 
         // Destroy physics body; reset movement and attacking variables
@@ -706,7 +712,7 @@ export class Player extends GameObject {
                     ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
                 ) continue;
 
-                if (itemType.definition.itemType === ItemType.Ammo) {
+                if (itemType.definition.itemType === ItemType.Ammo && count !== Infinity) {
                     const dropCount = Math.floor(count / 60);
 
                     for (let i = 0; i < dropCount; i++) {

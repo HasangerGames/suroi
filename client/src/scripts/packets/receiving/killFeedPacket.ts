@@ -48,18 +48,17 @@ import { UI_DEBUG_MODE } from "../../utils/constants";
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const killFeed = $("#kill-feed");
-        const killFeedItem = $("<div>");
-        killFeedItem.addClass("kill-feed-item");
+        const killFeedItem = $('<div class="kill-feed-item">');
 
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
         switch (messageType) {
             case KillFeedMessageType.Kill: {
-                const twoPartyInteraction = stream.readBoolean();
                 const killed = {
                     name: stream.readPlayerNameWithColor(),
                     id: stream.readObjectID()
                 };
 
+                const twoPartyInteraction = stream.readBoolean();
                 const killedBy = twoPartyInteraction
                     ? {
                         name: stream.readPlayerNameWithColor(),
@@ -88,7 +87,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 if (stream.readBoolean()) { // used a weapon
                     weaponUsed = stream.readObjectType<ObjectCategory.Loot, ItemDefinition>().definition;
                     if (stream.readBoolean()) { // weapon tracks killstreaks
-                        killstreak = stream.readUint8();
+                        killstreak = stream.readBits(7);
                     }
                 }
 
@@ -114,13 +113,34 @@ export class KillFeedPacket extends ReceivingPacket {
 
                 break;
             }
-            case KillFeedMessageType.Join: {
+
+            case KillFeedMessageType.KillLeaderAssigned: {
                 const name = stream.readPlayerNameWithColor();
-                const joined = stream.readBoolean();
-                killFeedItem.html(`<i class="fa-solid ${joined ? "fa-arrow-right-to-bracket" : "fa-arrow-right-from-bracket"}"></i> ${localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name} ${joined ? "joined" : "left"} the game`);
+                const kills = stream.readBits(7);
+
+                $("#kill-leader-leader").html(name);
+                $("#kill-leader-kills-counter").text(kills);
+
+                killFeedItem.html(`<i class="fa-solid fa-crown"></i> ${name} promoted to Kill Leader!`);
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderUpdated: {
+                const kills = stream.readBits(7);
+                $("#kill-leader-kills-counter").text(kills);
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderDead: {
+                $("#kill-leader-leader").text("Waiting for leader");
+                $("#kill-leader-kills-counter").text("0");
+                // noinspection HtmlUnknownTarget
+                killFeedItem.html('<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!'); // TODO Add who killed the kill leader
                 break;
             }
         }
+
+        if (messageType === KillFeedMessageType.KillLeaderUpdated) return; // Kill leader update messages don't have entries in the killfeed
 
         killFeed.prepend(killFeedItem);
         if (killFeed.children().length > 5 && !UI_DEBUG_MODE) {

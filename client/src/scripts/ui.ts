@@ -168,7 +168,7 @@ export function setupUI(game: Game): void {
     const serverSelect = $<HTMLSelectElement>("#server-select");
 
     // Select region
-    serverSelect.on("change", (e: Event) => {
+    serverSelect.on("change", () => {
         const value = serverSelect.val() as string | undefined;
 
         if (value !== undefined) {
@@ -189,8 +189,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); });
+    $("#btn-quit-game").on("click", () => { game.endGame(true); });
+    $("#btn-menu").on("click", () => { game.endGame(true); });
+    $("#btn-play-again").on("click", () => { game.endGame(false); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -606,9 +607,19 @@ export function setupUI(game: Game): void {
 
     // Hide rules button
     addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
-        $("#btn-rules").toggle(!value);
+        $("#btn-rules, #rules-close-btn").toggle(!value);
     });
-    $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
+
+    rulesBtn.toggle(!localStorageInstance.config.hideRulesButton);
+
+    // Hide option to hide rules if rules haven't been acknowledged
+    $(".checkbox-setting").has("#toggle-hide-rules").toggle(localStorageInstance.config.rulesAcknowledged);
+
+    $("#rules-close-btn").on("click", () => {
+        $("#btn-rules, #rules-close-btn").hide();
+        localStorageInstance.update({ hideRulesButton: true });
+        $("#toggle-hide-rules").prop("checked", true);
+    }).toggle(localStorageInstance.config.rulesAcknowledged && !localStorageInstance.config.hideRulesButton);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
@@ -628,20 +639,15 @@ export function setupUI(game: Game): void {
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString
-}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString
-}.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(scope.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.playerManager.useItem(scope.idString);
+            e.stopPropagation();
+        });
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }

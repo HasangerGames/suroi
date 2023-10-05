@@ -15,11 +15,16 @@ import { UpdatePacket } from "./packets/sending/updatePacket";
 import { type GameObject } from "./types/gameObject";
 
 import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
+import {
+    KILL_LEADER_MIN_KILLS,
+    KillFeedMessageType,
+    OBJECT_ID_BITS,
+    ObjectCategory,
+    TICK_SPEED
+} from "../../common/src/constants";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
-import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { v, type Vector } from "../../common/src/utils/vector";
@@ -270,6 +275,37 @@ export class Game {
         }, delay);
     }
 
+    private _killLeader: Player | undefined;
+    get killLeader(): Player | undefined { return this._killLeader; }
+
+    updateKillLeader(player: Player): void {
+        const oldKillLeader: Player | undefined = this._killLeader;
+
+        if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+            this._killLeader = player;
+
+            if (oldKillLeader !== this._killLeader) {
+                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+            }
+        }
+
+        if (player === oldKillLeader && this._killLeader !== undefined) {
+            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderUpdated));
+        }
+    }
+
+    killLeaderDead(): void {
+        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderDead));
+        let newKillLeader: Player | undefined;
+        for (const player of this.livingPlayers) {
+            if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+    }
+
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = v(0, 0);
         switch (Config.spawn.mode) {
@@ -309,7 +345,6 @@ export class Game {
         game.grid.addObject(player);
         game.fullDirtyObjects.add(player);
         game.aliveCountDirty = true;
-        game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
@@ -330,9 +365,6 @@ export class Game {
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
-        if (!player.dead) {
-            this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, false)));
-        }
         this.connectedPlayers.delete(player);
         // TODO Make it possible to spectate disconnected players
         // (currently not possible because update packets aren't sent to disconnected players)

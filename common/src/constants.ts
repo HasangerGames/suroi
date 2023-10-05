@@ -1,10 +1,11 @@
 export enum ObjectCategory {
     Player,
     Obstacle,
-    Explosion,
     DeathMarker,
     Loot,
     Building,
+    Decal,
+    Explosion,
     Emote
 }
 
@@ -33,7 +34,9 @@ export enum AnimationType {
 
 export enum KillFeedMessageType {
     Kill,
-    Join
+    KillLeaderAssigned,
+    KillLeaderDead,
+    KillLeaderUpdated
 }
 
 export enum GasState {
@@ -105,9 +108,12 @@ export const PLAYER_RADIUS = 2.25;
 export const DEFAULT_USERNAME = "Player";
 export const ALLOW_NON_ASCII_USERNAME_CHARS = false;
 
+export const KILL_LEADER_MIN_KILLS = 3;
+
 export enum zIndexes {
     Ground,
     DeadObstacles,
+    Decals,
     DeathMarkers,
     ObstaclesLayer1,
     Loot,

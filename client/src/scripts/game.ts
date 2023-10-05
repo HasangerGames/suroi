@@ -20,6 +20,7 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import {
     ObjectCategory,
     PacketType,
+    PlayerActions,
     TICK_SPEED,
     zIndexes
 } from "../../../common/src/constants";
@@ -51,13 +52,10 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { ParticleManager } from "./objects/particles";
-import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { DeathMarker } from "./objects/deathMarker";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { Scopes } from "../../../common/src/definitions/scopes";
+import { Decal } from "./objects/decal";
 
 export class Game {
     socket!: WebSocket;
@@ -164,6 +162,7 @@ export class Game {
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
+                $("#joysticks-containers").show();
             }
             this.sendPacket(new PingPacket(this.playerManager));
             this.sendPacket(new JoinPacket(this.playerManager));
@@ -238,12 +237,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) this.endGame(true);
             }
         };
     }
 
-    endGame(): void {
+    endGame(transition: boolean): void {
         clearTimeout(this.tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
@@ -254,7 +253,9 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").fadeIn();
+        $("#kill-leader-leader").text("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
+        if (transition) $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
@@ -354,21 +355,24 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id);
+                        object = new Obstacle(this, type, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(this, type as ObjectType<ObjectCategory.DeathMarker>, id);
+                        object = new DeathMarker(this, type, id);
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(this, type as ObjectType<ObjectCategory.Loot, LootDefinition>, id);
+                        object = new Loot(this, type, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(this, type as ObjectType<ObjectCategory.Building, BuildingDefinition>, id);
+                        object = new Building(this, type, id);
                         break;
+                    }
+                    case ObjectCategory.Decal: {
+                        object = new Decal(this, type, id);
                     }
                 }
             }
@@ -532,7 +536,11 @@ export class Game {
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
                                 (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
                         ) {
-                            this.playerManager.interact();
+                            if (lootDef.itemType !== ItemType.Gun) {
+                                this.playerManager.interact();
+                            } else {
+                                if (player.action.type !== PlayerActions.Reload) this.playerManager.interact();
+                            }
                         } else if (
                             (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
                             closestObject instanceof Obstacle

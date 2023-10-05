@@ -1,8 +1,8 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { DEFAULT_USERNAME, ObjectCategory, zIndexes } from "../../../../common/src/constants";
-import { ObjectType } from "../../../../common/src/utils/objectType";
+import { DEFAULT_USERNAME, type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 import { type Container, Text } from "pixi.js";
@@ -12,7 +12,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { localStorageInstance } from "../utils/localStorageHandler";
 
 export class DeathMarker extends GameObject {
-    override readonly type = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
+    declare readonly type: ObjectType<ObjectCategory.DeathMarker>;
 
     playerName!: string;
     nameColor = "#dcdcdc";
@@ -23,7 +23,7 @@ export class DeathMarker extends GameObject {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.DeathMarker>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
         this.image = new SuroiSprite("death_marker");

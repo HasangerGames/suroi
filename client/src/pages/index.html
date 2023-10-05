@@ -71,11 +71,11 @@
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-                <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
-                <div class="pulsating-circle" style="display: none"></div>
-                <span>Rules &amp; Tutorial</span>
-              </button>
-              <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
+            <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
+              <div class="pulsating-circle" style="display: none"></div>
+              <span>Rules &amp; Tutorial</span>
+            </button>
           </div>
           <div id="splash-socials">
             <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -151,7 +151,6 @@
       </div>
     </div>
     <div id="game-ui">
-      <div id="custom-cursor" style="display: none; z-index: 50; background-size: cover; background-repeat: no-repeat; pointer-events: none;"></div>
       <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
       <button class="btn btn-lg btn-primary" id="btn-reload" style="display: none"><i class="fa-solid fa-rotate-right"></i></button>
       <div id="joysticks-containers">
@@ -179,8 +178,16 @@
         </div>
       </div>
       <div class="inventory-container" id="scopes-container">
-      </div>
+    </div>
+
       <div class="ui-leaderboard">
+        <div class="ui-kill-leader" id="ui-kill-leader">
+          <div id="kill-leader-leader-container" class="kill-leader-leader-container">
+            <span id="kill-leader-leader" class="kill-leader-leader">Waiting for leader</span>
+            <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
+            <span id="kill-leader-kills-counter" class="kill-leader-kills-counter">0</span>
+          </div>
+        </div>
         <div class="counter">
           <img src="./img/misc/player_icon.svg">
           <div class="counter-text" id="ui-players-alive">1</div>
@@ -289,17 +296,13 @@
       <div id="game-over-top-screen">
         <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
         <h1 id="game-over-text" class="modal-item">You died.</h1>
-        <div id="game-over-rank-container-pc">
+        <div id="game-over-rank-container">
           <span>Rank</span>
           <span id="game-over-rank" class="modal-item"></span>
         </div>
       </div>
       <div id="game-over-screen">
         <h1 id="game-over-player-name" class="modal-item">Player</h1>
-        <div id="game-over-rank-container-mobile">
-          <span>Rank</span>
-          <span id="game-over-rank-mobile" class="modal-item"></span>
-        </div>
         <div class="modal-item" id="game-over-stats">
           <div class="stat">
             <span class="stat-name">Kills:</span>
@@ -320,7 +323,10 @@
         </div>
         <div class="modal-item">
           <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
+          </div>
         </div>
       </div>
     </div>

@@ -16,7 +16,9 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
+export class Obstacle extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>;
+
     scale!: number;
 
     image: SuroiSprite;
@@ -42,7 +44,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     particleFrames: string[] = [];
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
         this.image = new SuroiSprite(); //.setAlpha(0.5);

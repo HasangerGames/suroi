@@ -304,6 +304,7 @@ app.ws("/play", {
         if (game === undefined) return;
         userData.player = game.addPlayer(socket);
         log(`"${userData.name}" joined game #${userData.gameID}`);
+        //userData.player.sendPacket(new GameOverPacket(userData.player, false)); // uncomment to test game over screen
     },
 
     /**
