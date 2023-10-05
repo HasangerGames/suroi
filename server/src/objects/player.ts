@@ -24,7 +24,6 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
-import { KillKillFeedMessage, KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 import { type Action, HealingAction } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
