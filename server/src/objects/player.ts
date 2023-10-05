@@ -24,6 +24,7 @@ import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
+import { KillKillFeedMessage, KillLeaderDeadKillFeedMessage } from "../types/killFeedMessage";
 import { type Action, HealingAction } from "../inventory/action";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { GunItem } from "../inventory/gunItem";
@@ -712,7 +713,7 @@ export class Player extends GameObject {
                     ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
                 ) continue;
 
-                if (itemType.definition.itemType === ItemType.Ammo) {
+                if (itemType.definition.itemType === ItemType.Ammo && count !== Infinity) {
                     const dropCount = Math.floor(count / 60);
 
                     for (let i = 0; i < dropCount; i++) {

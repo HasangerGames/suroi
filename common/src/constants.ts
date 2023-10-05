@@ -1,10 +1,11 @@
 export enum ObjectCategory {
     Player,
     Obstacle,
-    Explosion,
     DeathMarker,
     Loot,
     Building,
+    Decal,
+    Explosion,
     Emote
 }
 
@@ -112,6 +113,7 @@ export const KILL_LEADER_MIN_KILLS = 3;
 export enum zIndexes {
     Ground,
     DeadObstacles,
+    Decals,
     DeathMarkers,
     ObstaclesLayer1,
     Loot,

@@ -15,7 +15,9 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 
-export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
+export class Loot extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+
     readonly images: {
         readonly background: SuroiSprite
         readonly item: SuroiSprite
@@ -29,7 +31,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
         const definition = this.type.definition;

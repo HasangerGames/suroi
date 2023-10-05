@@ -7,6 +7,7 @@ import {
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions,
+    SpectateActions,
     zIndexes
 } from "../../../../common/src/constants";
 
@@ -35,8 +36,11 @@ import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type ParticleEmitter } from "./particles";
+import { SpectatePacket } from "../packets/sending/spectatePacket";
 
-export class Player extends GameObject<ObjectCategory.Player> {
+export class Player extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Player>;
+
     name!: string;
 
     activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
@@ -108,8 +112,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
-            weapon: new SuroiSprite(),
+            helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
+            weapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0)
@@ -125,6 +129,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.backpack,
             this.images.helmet
         );
+        this.container.eventMode = "static"
+
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
 
@@ -163,6 +169,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 };
             }
         });
+        this.container.on('pointerdown', (event) => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            }
+        })
+        this.container.on('click', (event) => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            }
+        })
     }
 
     override updateContainerPosition(): void {
@@ -203,10 +219,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
 
-        if (localStorageInstance.config.showCoordinates) {
-            $("#coordinates-hud").text(`X: ${Math.round(this.position.x * 100) / 100} Y: ${Math.round(this.position.y * 100) / 100}`);
-        }
-
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
@@ -217,6 +229,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.game.map.setPosition(this.position);
             if (!localStorageInstance.config.clientSidePrediction) {
                 this.game.map.indicator.setRotation(this.rotation);
+            }
+
+            if (localStorageInstance.config.showCoordinates) {
+                $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
         if (this.oldPosition !== undefined) {
@@ -404,8 +420,21 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.leftFist.setZIndex(1);
-            this.images.rightFist.setZIndex(1);
+
+            switch(weaponDef.idString) {
+                case "ak47": case "aug": case "mini14": case "m3k": case "hp18":
+                case "mosin": case "tango_51": case "sr25": case "lewis_gun": case "stoner_63":
+                case "mcx_spear": case "arx160": case "saf_200": case "g19": case "micro_uzi": case "cz75a":
+                    this.images.rightFist.setZIndex(4);
+                    this.images.leftFist.setZIndex(1);
+                    this.images.weapon.setZIndex(2);
+                    if (weaponDef.idString === "mosin" || weaponDef.idString === "lewis_gun") {this.images.leftFist.setZIndex(4) }
+                    break;
+                default:
+                    this.images.rightFist.setZIndex(1);
+                    this.images.leftFist.setZIndex(1);                    
+                    break;
+            }
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
