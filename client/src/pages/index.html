@@ -71,11 +71,11 @@
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
             <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-            <button class="rules-close-btn" id="rules-close-btn"><i class="fa-solid fa-xmark"></i></button>
-            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
-                <div class="pulsating-circle" style="display: none"></div>
-                <span>Rules &amp; Tutorial</span>
-              </button>
+            <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
+              <div class="pulsating-circle" style="display: none"></div>
+              <span>Rules &amp; Tutorial</span>
+            </button>
           </div>
           <div id="splash-socials">
             <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -297,17 +297,13 @@
       <div id="game-over-top-screen">
         <img id="chicken-dinner" src="img/game/emotes/chicken.svg"></img>
         <h1 id="game-over-text" class="modal-item">You died.</h1>
-        <div id="game-over-rank-container-pc">
+        <div id="game-over-rank-container">
           <span>Rank</span>
           <span id="game-over-rank" class="modal-item"></span>
         </div>
       </div>
       <div id="game-over-screen">
         <h1 id="game-over-player-name" class="modal-item">Player</h1>
-        <div id="game-over-rank-container-mobile">
-          <span>Rank</span>
-          <span id="game-over-rank-mobile" class="modal-item"></span>
-        </div>
         <div class="modal-item" id="game-over-stats">
           <div class="stat">
             <span class="stat-name">Kills:</span>

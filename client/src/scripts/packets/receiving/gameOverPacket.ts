@@ -50,12 +50,6 @@ export class GameOverPacket extends ReceivingPacket {
 
         // Player rank
         const aliveCount = stream.readBits(7);
-        if (won) {
-            $("#game-over-rank").text(`#${aliveCount}`);
-            $("#game-over-rank-mobile").text(`#${aliveCount}`);
-        } else {
-            $("#game-over-rank").text(`#${aliveCount + 1}`);
-            $("#game-over-rank-mobile").text(`#${aliveCount + 1}`);
-        }
+        $("#game-over-rank").text(`#${aliveCount + (won ? 0 : 1)}`).toggleClass("won", won);
     }
 }

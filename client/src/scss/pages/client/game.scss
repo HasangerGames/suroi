@@ -149,8 +149,8 @@
 .ui-kill-leader {
     display: flex;
     position: absolute;
-    top: 16px;
-    right: 135px;
+    top: 15px;
+    right: 185px;
     margin-left: auto;
     width: max-content;
     background: $transparent_bg;
@@ -159,12 +159,13 @@
     gap: 10px;
 
     @media screen and (max-width: $screen_large) {
-        top: 5px;
+        display: none;
+        /*top: 7px;
         width: 140px;
         right: 80px;
         padding: 4px 5px 4px 8px;
         gap: 5px;
-        height: 30px;
+        height: 30px;*/
     }
 
     .kill-leader-leader-container {
@@ -172,9 +173,9 @@
         font-size: 25px;
         @include text-shadow;
 
-        @media screen and (max-width: $screen_large) {
+        /*@media screen and (max-width: $screen_large) {
             font-size: 15px;
-        }
+        }*/
     }
 
 }
@@ -258,14 +259,14 @@
                     height: 12px;
                 }
             }
-        }
 
-        .kill-feed-item.kill-feed-item-victim {
-            background-color: #cc000075;
-        }
+            .kill-feed-item-victim {
+                background-color: #cc000075;
+            }
 
-        .kill-feed-item.kill-feed-item-killer {
-            background-color: #0066cc75;
+            .kill-feed-item-killer {
+                background-color: #0066cc75;
+            }
         }
     }
 }
@@ -809,11 +810,7 @@
 
         &.has-item {
             opacity: 1;
-            background: radial-gradient(
-                circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
-            );
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
     }
 }
@@ -943,11 +940,7 @@
         height: 78px;
 
         &.has-item {
-            background: radial-gradient(
-                circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
-            );
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
 
         .item-tooltip {
@@ -1091,77 +1084,64 @@
 }
 
 #game-over-overlay {
-    align-content: center;
-    align-items: center;
-    justify-content: center;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
     width: 100vw;
     height: 100vh;
-    position: absolute;
+    z-index: 1001;
+
     background: rgba(0, 0, 0, 0.4);
-    flex-direction: column;
     @include text-shadow;
-
-    #game-over-rank-container-mobile {
-        display: none;
-        font-size: 13px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        padding: 2px;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-
-        #game-over-rank-mobile {
-            color: $orange;
-            margin-left: 10px;
-        }
-    }
 
     #chicken-dinner {
         filter: drop-shadow(0 0 0.6rem rgba(0, 0, 0, 0.8));
-        --size: 100px;
-        height: var(--size);
         width: 100%;
-        margin-top: calc(var(--size) * -1);
+        height: 100px;
+
+        @media screen and (max-width: $screen_large) {
+            height: 50px;
+        }
     }
 
     #game-over-text {
         font-size: 40px;
-        margin-top: 0px;
-        margin-bottom: 5px;
+        margin: 0 0 10px;
+        text-align: center;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 20px;
+        }
     }
 
-    #game-over-rank-container-pc {
-        display: flex;
+    #game-over-rank-container {
         font-size: 30px;
         text-align: center;
         font-weight: bold;
-        margin-bottom: 10px;
-        padding: 5px;
-        margin-left: 37%;
-        margin-right: 37%;
+        padding: 5px 15px 5px 15px;
         border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        width: max-content;
+        margin: 5px auto 15px auto;
 
-        #game-over-rank {
-            color: $orange;
-            margin-left: 10px;
-        }
-    }
-
-    @media screen and (max-width: $screen_large) {
-        #chicken-dinner {
-            --size: 50px;
-        }
-        #game-over-text {
+        @media screen and (max-width: $screen_large) {
+            margin: 0 auto 10px auto;
             font-size: 15px;
         }
-        #game-over-overlay {
-            display: flex;
-        }
-        #game-over-rank-container-pc {
-            display: none;
-        }
-        #game-over-rank-container-mobile {
-            display: block;
+
+        #game-over-rank {
+            margin-left: 10px;
+            font-size: 35px;
+
+            &.won {
+                color: $orange;
+            }
+
+            @media screen and (max-width: $screen_large) {
+                font-size: 17px;
+            }
         }
     }
 }
@@ -1179,10 +1159,6 @@
         display: inline-block;
     }
 
-    #game-over-player-name {
-        margin-bottom: 5px;
-    }
-
     .modal-item {
         margin-bottom: 0;
     }
@@ -1196,11 +1172,11 @@
     #game-over-stats {
         width: 250px;
         margin: auto;
-        padding: 20px;
-        padding-top: 0;
+        padding: 16px 20px 16px 20px;
 
         @media screen and (max-width: $screen_large) {
-            padding-bottom: 0;
+            width: 200px;
+            padding: 8px 20px 8px 20px;
         }
 
         .stat {
@@ -1208,6 +1184,10 @@
             width: 100%;
             display: flex;
             padding: 0.5rem 0;
+
+            @media screen and (max-width: $screen_large) {
+                padding: 0.25rem 0;
+            }
         }
 
         .stat-name {
@@ -1224,10 +1204,7 @@
         font-size: 12px;
         max-width: fit-content;
         width: 280px;
-
-        #game-over-stats {
-            width: 200px;
-        }
+        padding: 0.75rem;
 
         button {
             font-size: 14px;
