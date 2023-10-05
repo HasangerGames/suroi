@@ -1243,8 +1243,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox([
                 RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
-                RectangleHitbox.fromRect(16.1, 6.4, v(0, -11.2)), // Frontmost back wheels
-                RectangleHitbox.fromRect(16.1, 6.4, v(0, -18.2)), // Rearmost back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
                 RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
                 RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
             ]),
@@ -1267,7 +1267,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: RectangleHitbox.fromRect(9, 17, v(0, -3.8)),
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(8.3, 17.3, v(0, -3.8)),
+                RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
+            ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
