@@ -30,6 +30,9 @@ function disablePlayButton(text: string): void {
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(async(): Promise<void> => {
+    gameConsole.readFromLocalStorage();
+    portOldConfig();
+
     disablePlayButton("Loading...");
 
     interface RegionInfo {
@@ -111,7 +114,7 @@ $(async(): Promise<void> => {
 
         selectedRegion = info;
 
-        localStorageInstance.update({ region });
+        consoleVariables.set.builtIn("cv_region", region);
 
         updateServerSelector();
     });
@@ -199,8 +202,6 @@ $(async(): Promise<void> => {
     $("#game-ui").append(app.view);
 
     await loadAtlases();
-    gameConsole.readFromLocalStorage();
-    portOldConfig();
 
     const game = new Game(app);
 

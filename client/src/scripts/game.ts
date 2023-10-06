@@ -110,10 +110,7 @@ export class Game {
         if (!this.musicPlaying) {
             const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
 
-            if (musicVolume !== 0) {
-                this.music.play();
-            }
-
+            this.music.play();
             this.music.volume(musicVolume);
             this.musicPlaying = true;
         }

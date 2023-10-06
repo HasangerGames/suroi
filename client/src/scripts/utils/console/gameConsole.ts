@@ -213,6 +213,10 @@ export const gameConsole = new (class GameConsole {
                 }
             }
             binds = mergeDeep({}, defaultBinds, config.binds);
+
+            for (const alias in config.aliases) {
+                aliases.set(alias, config.aliases[alias]);
+            }
         }
 
         for (const command in binds) {

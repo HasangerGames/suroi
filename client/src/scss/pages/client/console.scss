@@ -1,0 +1,253 @@
+#console-container {
+    position: absolute;
+    box-sizing: border-box;
+    display: grid;
+    grid-template: 28px 1fr 24px / 1fr;
+
+    // The battle to have a higher z-index than the splash screen
+    z-index: 1000;
+    background-color: #666;
+    color: white;
+    border: 3px solid #888;
+    border-radius: 7px;
+    box-shadow: 5px 5px 5px 0px #0008;
+    resize: both;
+    overflow: hidden;
+
+    flex-shrink: 1;
+    min-width: 300px;
+    min-height: 300px;
+
+    #console-header {
+        color: #BBB;
+        background-color: #606060;
+        position: sticky;
+        left: 0;
+        top: 0;
+        font-size: 1.2em;
+        height: 28px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-color: #888;
+        border-style: none none solid none;
+        border-width: 2px;
+        user-select: none;
+        z-index: 1;
+
+        span {
+            margin: auto;
+        }
+
+        #console-close {
+            color: #BBB;
+            background-color: #555;
+            border: solid 2px #888;
+            border-radius: 4px;
+            cursor: pointer;
+            transition-duration: 200ms;
+            height: 28px;
+            width: 28px;
+
+            &:hover {
+                background-color: #d55;
+                color: #ddd;
+                border: solid 2px #a22;
+            }
+        }
+
+        &:hover {
+            cursor: grab;
+        }
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
+
+
+    #console-out {
+        background-color: #505050;
+        box-sizing: border-box;
+        overflow: auto;
+
+        &::-webkit-scrollbar {
+            width: 10px;
+
+            &-track {
+                background-color: #666;
+                border: 2px #888 solid;
+            }
+
+            &-thumb {
+                background: #aaa;
+            }
+        }
+    }
+
+    #console-in {
+        font-family: monospace;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        background-color: #555;
+        width: 100%;
+        height: 24px;
+        z-index: 1;
+        border-color: #888;
+        border-style: solid none none none;
+        box-sizing: border-box;
+        border-width: 4px;
+        resize: none;
+        outline: none;
+        color: white;
+    }
+
+    .console-entry {
+        font-family: monospace;
+        border-width: 2px;
+        padding: 1px 0;
+        border-style: solid none;
+        display: flex;
+        box-sizing: border-box;
+        word-break: break-all;
+    }
+
+    .console-entry-timestamp {
+        font-family: monospace;
+        background-color: #444;
+        margin: 0 1% 0 0;
+        padding: 0 0.5%;
+        display: flex;
+        align-items: center;
+        box-sizing: border-box;
+        word-break: keep-all;
+    }
+
+    .console-entry-log {
+        background-color: #606060;
+        border-color: #999;
+    }
+
+    .console-entry-important {
+        background-color: hsl(250, 50%, 30%);
+        border-color: hsl(250, 50%, 35%);
+        color: hsl(240, 100%, 80%);
+    }
+
+    .console-entry-warn {
+        background-color: hsl(50, 50%, 30%);
+        border-color: hsl(50, 50%, 35%);
+        color: hsl(40, 100%, 60%);
+    }
+
+    .console-entry-severe_warn {
+        background-color: hsl(40, 50%, 30%);
+        border-color: hsl(40, 50%, 35%);
+        color: hsl(30, 100%, 60%);
+    }
+
+    .console-entry-error {
+        background-color: hsl(10, 50%, 30%);
+        border-color: hsl(10, 50%, 35%);
+        color: hsl(0, 100%, 75%);
+    }
+
+    .console-entry-fatal_error {
+        background-color: hsl(310, 50%, 30%);
+        border-color: hsl(310, 50%, 35%);
+        color: hsl(300, 100%, 75%);
+        animation: fatal-error-cycle 1s infinite linear;
+    }
+
+    .console-entry-content {
+        span {
+            font-size: 0.8em;
+            margin: 0;
+        }
+
+        ul {
+            margin: 0;
+            font-size: 0.9em;
+            padding: 0 0 0 20px;
+        }
+
+        details summary {
+            cursor: pointer;
+        }
+
+        details code {
+            background-color: #444;
+            padding: 1px;
+            color: white;
+        }
+
+        details em {
+            font-size: 0.9em;
+        }
+
+        details .command-desc-arg-type {
+            color: hsl(120, 70%, 65%);
+        }
+
+        details .command-desc-noexcept {
+            font-weight: bold;
+            font-style: italic;
+            color: hsl(240, 100%, 80%);
+        }
+
+        details .command-desc-cmd-name {
+            font-weight: bold;
+            color: hsl(60, 80%, 60%);
+        }
+
+        details span.cvar-detail-archived {
+            padding: 0 1px;
+            background-color: hsl(280, 70%, 60%);
+        }
+
+        details span.cvar-detail-cheat {
+            padding: 0 1px;
+            background-color: hsl(20, 90%, 40%);
+        }
+
+        details span.cvar-detail-readonly {
+            padding: 0 1px;
+            background-color: hsl(100, 60%, 30%);
+        }
+
+        details span.cvar-detail-replicated {
+            padding: 0 1px;
+            background-color: hsl(170, 40%, 40%);
+        }
+    }
+
+    .console-detail-toggle {
+        font-family: monospace;
+        color: #AAA;
+        display: flex;
+        align-items: top;
+        margin: 0 1% 0 0;
+    }
+
+    .console-detail-toggle:hover {
+        cursor: pointer;
+    }
+
+    @keyframes fatal-error-cycle {
+
+        0%,
+        100% {
+            filter: hue-rotate(0);
+        }
+
+        25% {
+            filter: hue-rotate(20deg);
+        }
+
+        75% {
+            filter: hue-rotate(-20deg);
+        }
+    }
+}

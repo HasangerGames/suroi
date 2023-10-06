@@ -522,9 +522,9 @@ export function setupUI(game: Game): void {
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${scope.idString
-            }-slot" style="display: none;">
+}-slot" style="display: none;">
             <img class="item-image" src="./img/game/loot/${scope.idString
-            }.svg" draggable="false">
+}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -544,13 +544,13 @@ export function setupUI(game: Game): void {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
             <img class="item-image" src="./img/game/loot/${item.idString
-            }.svg" draggable="false">
+}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
                 Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-            }
+}
             </div>
         </div>`);
 

@@ -651,6 +651,7 @@ export function setUpCommands(game: Game): void {
             }
 
             keybinds.addActionsToInput(key, query);
+            gameConsole.writeToLocalStorage();
         },
         game,
         {
@@ -685,6 +686,7 @@ export function setUpCommands(game: Game): void {
             }
 
             keybinds.unbindInput(key);
+            gameConsole.writeToLocalStorage();
         },
         game,
         {
@@ -738,6 +740,8 @@ export function setUpCommands(game: Game): void {
             }
 
             aliases.set(name, query);
+
+            gameConsole.writeToLocalStorage();
         },
         game,
         {
