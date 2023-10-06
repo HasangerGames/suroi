@@ -19,13 +19,6 @@ export class ConVar<Value = string> {
         return new ConVar<Value>(json.name, json.value, json.flags);
     }
 
-    toJSON(): { value: Value, flags: CVarFlags } {
-        return {
-            value: this.value,
-            flags: this.flags
-        };
-    }
-
     constructor(name: string, value: Value, flags?: Partial<CVarFlags>) {
         this.name = name;
         this._value = value;
