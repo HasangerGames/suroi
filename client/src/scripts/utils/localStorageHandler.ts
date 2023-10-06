@@ -158,7 +158,7 @@ export function portOldConfig(): void {
                     if (action === undefined) continue;
 
                     for (const bind of binds) {
-                        if (bind) keybinds.addActionsToInput(bind, action);
+                        keybinds.addActionsToInput(bind, action);
                     }
                 }
             }
