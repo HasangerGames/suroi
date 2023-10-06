@@ -8,6 +8,8 @@ import { type Game } from "../game";
 import { v } from "../../../../common/src/utils/vector";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { GunDefinition } from "../../../../common/src/definitions/guns";
 
 class Action {
     readonly name: string;
@@ -401,10 +403,10 @@ export function setupInputs(game: Game): void {
             color: `rgba(255, 255, 255, ${config.joystickTransparency})`
         });
 
-        let rightJoyStickUsed = false;
+        let rightJoyStickUsed: boolean = false;
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-            if (!rightJoyStickUsed) {
+            if (!rightJoyStickUsed && !game.playerManager.shootOnRelease) {
                 game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
                     game.activePlayer.container.rotation = game.playerManager.rotation;
@@ -427,11 +429,28 @@ export function setupInputs(game: Game): void {
                 game.activePlayer.container.rotation = game.playerManager.rotation;
             }
             game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > config.joystickSize / 3;
+
+            if (game.activePlayer && game.activePlayer.activeItem.definition.itemType === ItemType.Gun) {
+                game.activePlayer.images.aimTrail.alpha = 1
+            }
+
+            const def = game.activePlayer?.activeItem.definition as GunDefinition
+
+            if (!def.shootOnRelease || game.activePlayer?.activeItem.definition.itemType === ItemType.Melee) {
+                navigator.vibrate?.(5)
+                game.playerManager.attacking = data.distance > config.joystickSize / 3;
+            } else {
+                game.playerManager.shootOnRelease = true
+            }
         });
         rightJoyStick.on("end", () => {
             rightJoyStickUsed = false;
-            game.playerManager.attacking = false;
+            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0
+            if (game.playerManager.shootOnRelease) {
+                game.playerManager.attacking = true;
+            } else {
+                game.playerManager.attacking = false;
+            }
         });
     }
 }

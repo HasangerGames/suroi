@@ -28,7 +28,7 @@ import { type ArmorDefinition } from "../../../../common/src/definitions/armors"
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Container } from "pixi.js";
+import { Container, ObservablePoint, Texture, TilingSprite } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
 import { Obstacle } from "./obstacle";
@@ -67,6 +67,7 @@ export class Player extends GameObject {
     damageable = true;
 
     readonly images: {
+        readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -107,6 +108,7 @@ export class Player extends GameObject {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
 
         this.images = {
+            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"),20,6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -120,6 +122,7 @@ export class Player extends GameObject {
         };
 
         this.container.addChild(
+            this.images.aimTrail,
             this.images.vest,
             this.images.body,
             this.images.leftFist,
@@ -130,6 +133,12 @@ export class Player extends GameObject {
             this.images.helmet
         );
         this.container.eventMode = "static";
+        
+        this.images.aimTrail.angle = 90
+        this.images.aimTrail.position = {x: 6000, y:-8}
+        this.images.aimTrail.alpha = 0
+        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0
+        
 
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -399,7 +408,7 @@ export class Player extends GameObject {
         }
     }
 
-    updateWeapon(): void {
+    updateWeapon(): void {        
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);

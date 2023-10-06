@@ -26,6 +26,7 @@ export type GunDefinition = ItemDefinition & {
     readonly bulletCount?: number
     readonly length: number
     readonly killstreak?: boolean
+    readonly shootOnRelease?: boolean
 
     readonly fists: {
         readonly left: Vector
@@ -331,6 +332,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 0.5,
         canQuickswitch: true,
         length: 8.7,
+        shootOnRelease: true,
         fists: {
             left: v(115, 6),
             right: v(40, 0),
@@ -369,6 +371,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 0.3,
         canQuickswitch: true,
         length: 8.2,
+        shootOnRelease: true,
         fists: {
             left: v(110, -1),
             right: v(40, 0),

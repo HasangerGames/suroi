@@ -41,6 +41,14 @@ export class PlayerManager {
         return isMobile.any && localStorageInstance.config.mobileControls;
     }
 
+    private _shootOnRelease = false;
+    get shootOnRelease(): boolean { return this._shootOnRelease; }
+    set shootOnRelease(attacking: boolean) {
+        this._shootOnRelease = attacking;
+        this.dirty.inputs = true;
+    }
+
+
     readonly movement = {
         up: false,
         left: false,
