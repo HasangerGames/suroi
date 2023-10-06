@@ -4,6 +4,7 @@ import { ObjectDefinitionsList } from "../../../../../common/src/utils/objectTyp
 import { v } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { EmoteSlot } from "../constants";
+import { generateBindsConfigScreen } from "../inputManager";
 import { type PlayerManager } from "../playerManager";
 import { type Stringable, aliases, commands, gameConsole, keybinds, type PossibleError } from "./gameConsole";
 import { ConVar, consoleVariables } from "./variables";
@@ -650,8 +651,9 @@ export function setUpCommands(game: Game): void {
                 return { err: `Expected 2 arguments, received ${arguments.length}` };
             }
 
-            keybinds.addActionsToInput(key, query);
+            keybinds.addActionsToInput(key.toUpperCase(), query);
             gameConsole.writeToLocalStorage();
+            generateBindsConfigScreen();
         },
         game,
         {
@@ -685,8 +687,9 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected an argument, received none" };
             }
 
-            keybinds.unbindInput(key);
+            keybinds.unbindInput(key.toUpperCase());
             gameConsole.writeToLocalStorage();
+            generateBindsConfigScreen();
         },
         game,
         {
@@ -710,6 +713,8 @@ export function setUpCommands(game: Game): void {
         "unbind_all",
         function(): undefined {
             keybinds.unbindAll();
+            gameConsole.writeToLocalStorage();
+            generateBindsConfigScreen();
         },
         game,
         {

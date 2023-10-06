@@ -286,7 +286,7 @@ const actionsNames: Record<keyof (typeof defaultBinds), string> = {
 };
 
 // Generate the input settings
-function generateBindsConfigScreen(): void {
+export function generateBindsConfigScreen(): void {
     const keybindsContainer = $("#tab-keybinds-content");
     keybindsContainer.html("");
 
@@ -310,7 +310,7 @@ function generateBindsConfigScreen(): void {
         const buttons = actions.map(bind => {
             return $<HTMLButtonElement>("<button/>", {
                 class: "btn btn-darken btn-lg btn-secondary btn-bind",
-                text: bind
+                text: bind !== "" ? bind : "None"
             }).appendTo(bindContainer)[0];
         });
 
@@ -334,18 +334,17 @@ function generateBindsConfigScreen(): void {
 
                 if (bindButton.classList.contains("active")) {
                     event.preventDefault();
-                    const key = getKeyFromInputEvent(event);
+                    let key = getKeyFromInputEvent(event);
 
                     if (bind) {
                         keybinds.remove(bind, action);
                     }
 
                     if (key === "Escape" || key === "Backspace") {
-                        keybinds.unbindInput(bind);
-                    } else {
-                        keybinds.unbindInput(key);
-                        keybinds.addActionsToInput(key, action);
+                        key = "";
                     }
+                    keybinds.unbindInput(key);
+                    keybinds.addActionsToInput(key, action);
 
                     gameConsole.writeToLocalStorage();
                     generateBindsConfigScreen();
