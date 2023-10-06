@@ -253,7 +253,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        align-content: start;
+        justify-content: flex-start;
 
         .crosshairs-list-item-container {
             display: flex;

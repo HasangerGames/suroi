@@ -8,7 +8,6 @@ import { ObjectType } from "../../common/src/utils/objectType";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { v, type Vector } from "../../common/src/utils/vector";
-import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
@@ -29,6 +28,8 @@ import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { removeFrom } from "./utils/misc";
+import { SpawnMode } from "./defaultConfig";
+import { Config } from "./config";
 
 export class Game {
     readonly _id: number;
