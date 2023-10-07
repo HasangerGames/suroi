@@ -1,24 +1,12 @@
-<<<<<<< HEAD
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
-import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { type ObjectType } from "../../../../../common/src/utils/objectType";
-import { type Vector } from "../../../../../common/src/utils/vector";
-import { type Orientation, type Variation } from "../../../../../common/src/typings";
-=======
-import { Container, Graphics, RenderTexture, Text, isMobile } from "pixi.js";
-import { GRID_SIZE, ObjectCategory, zIndexes } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/hitbox";
+import { Orientation, Variation } from "../../../../../common/src/typings";
+import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { Vector } from "../../../../../common/src/utils/vector";
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { COLORS, PIXI_SCALE } from "../../utils/constants";
 import { SuroiSprite } from "../../utils/pixi";
->>>>>>> master
 
 export class MapPacket extends ReceivingPacket {
     seed!: number;

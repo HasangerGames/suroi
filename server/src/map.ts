@@ -1,4 +1,4 @@
-import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
