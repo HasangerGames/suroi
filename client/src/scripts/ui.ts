@@ -14,6 +14,7 @@ import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { requestFullscreen } from "./utils/misc";
 import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
+import { gameConsole } from "./utils/console/gameConsole";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -175,9 +176,12 @@ export function setupUI(game: Game): void {
     });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
-        if (e.key === "Escape" && $("canvas").hasClass("active")) {
-            gameMenu.fadeToggle(250);
-            settingsMenu.hide();
+        if (e.key === "Escape") {
+            if ($("canvas").hasClass("active") && !gameConsole.isOpen) {
+                gameMenu.fadeToggle(250);
+                settingsMenu.hide();
+            }
+            gameConsole.isOpen = false;
         }
     });
 

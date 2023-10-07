@@ -1,3 +1,4 @@
+import { defaultBinds } from "./console/defaultClientCVars";
 import { keybinds } from "./console/gameConsole";
 import { type CVarTypeMapping, type ExtractConVarValue, consoleVariables } from "./console/variables";
 
@@ -151,7 +152,6 @@ export function portOldConfig(): void {
                 ] as Array<[keyof CVarTypeMapping, ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>]>)
                     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                     .forEach(([key, value]) => { consoleVariables.set.builtIn(key, value); });
-
                 keybinds.unbindAll();
                 for (const [key, binds] of Object.entries(config.keybinds)) {
                     const action = actionNameToConsoleCommand[key as keyof KeybindActions];
@@ -161,6 +161,7 @@ export function portOldConfig(): void {
                         keybinds.addActionsToInput(bind, action);
                     }
                 }
+                keybinds.addActionsToInput(defaultBinds.toggle_console[0], "toggle_console");
             }
         } catch (error) {
             console.error(error);

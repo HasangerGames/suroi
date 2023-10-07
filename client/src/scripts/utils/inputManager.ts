@@ -380,7 +380,7 @@ export function generateBindsConfigScreen(): void {
 
     // Change the weapons slots keybind text
     for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).slice(0, 2);
+        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).filter(a => a !== "").slice(0, 2);
         $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }

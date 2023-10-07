@@ -777,6 +777,7 @@ export function setUpCommands(game: Game): void {
         "list_binds",
         function(key) {
             const logBinds = (key: string, actions: Array<Command<boolean, Stringable> | string>): void => {
+                if (key === "") return;
                 gameConsole.log({
                     main: `Actions bound to input '${key}'`,
                     detail: actions.map(bind => bind instanceof Command ? bind.name : bind).join("\n")
