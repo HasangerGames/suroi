@@ -104,8 +104,8 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         rotationMode: RotationMode.None,
         hasLoot: true,
         frames: {
-            particle: "regular_crate_particle",
-            residue: "regular_crate_residue"
+            particle: "crate_particle",
+            residue: "crate_residue"
         }
     };
 }
@@ -1242,13 +1242,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(15, 75),
-                RectangleHitbox.fromRect(17, 10, v(0, 33))
+                RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
+                RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
+                RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1264,11 +1267,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: RectangleHitbox.fromRect(9, 17, v(0, -3.8)),
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
+                RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
+            ]),
             rotationMode: RotationMode.Limited,
-            noResidue: true,
             frames: {
-                particle: "barrel_particle"
+                particle: "metal_particle"
             }
         },
         {
@@ -1285,8 +1290,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(10, 7),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "regular_crate_particle",
-                residue: "regular_crate_residue"
+                particle: "crate_particle"
             }
         },
         {
@@ -1301,13 +1305,58 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox([
-                RectangleHitbox.fromRect(7.5, 8, v(-0.2, 0)),
-                new CircleHitbox(3, v(1.3, 0))
+                RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
+                new CircleHitbox(3.45, v(1, 0))
+            ]),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "barrier",
+            name: "Barrier",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
+                RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
+                RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
+            ]),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "port_shed_exterior",
+            name: "Port Shed Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
+                RectangleHitbox.fromRect(1.75, 29.5, v(10.23, -1.7)), // Right wall
+                RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
+                RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
             ]),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {
-                particle: "metal_particle"
+                particle: "rock_particle"
             }
         },
         {

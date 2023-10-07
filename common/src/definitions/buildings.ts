@@ -1227,6 +1227,57 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "port_shed",
+        name: "Port Shed",
+        spawnHitbox: RectangleHitbox.fromRect(27, 37, v(-0.8, 0)),
+        ceilingHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
+            new CircleHitbox(5, v(9.45, -2.6))
+        ]),
+        scopeHitbox: RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
+        floorImages: [{
+            key: "port_shed_floor",
+            position: v(0, 0)
+        }],
+        ceilingImages: [{
+            key: "port_shed_ceiling",
+            position: v(-0.8, -1.7)
+        }],
+        floors: [],
+        obstacles: [
+            {
+                id: "port_shed_exterior",
+                position: v(-0.8, 0),
+                rotation: 0
+            },
+            {
+                id: "door",
+                position: v(3.95, 12.15),
+                rotation: 0
+            },
+            {
+                id: "window",
+                position: v(9.45, -2.6),
+                rotation: 0
+            },
+            {
+                id: "bookshelf",
+                position: v(-7.75, 4.9),
+                rotation: 1
+            },
+            {
+                id: "table",
+                position: v(2.2, -10.35),
+                rotation: 1
+            },
+            {
+                id: "chair",
+                position: v(2.2, -5.5),
+                rotation: 0
+            }
+        ]
+    },
+    {
         idString: "port",
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),
