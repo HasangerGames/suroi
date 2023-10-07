@@ -1,16 +1,13 @@
-import { version } from "../../package.json";
-
-import * as Webpack from "webpack";
-import type WDS from "webpack-dev-server";
-
-import TerserPlugin from "terser-webpack-plugin";
+import { createHash, randomBytes } from "crypto";
+import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
-import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
-import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
-
 import * as path from "path";
-import { createHash, randomBytes } from "crypto";
+import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import * as Webpack from "webpack";
+import type WDS from "webpack-dev-server";
+import { version } from "../../package.json";
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration

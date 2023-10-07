@@ -1,279 +1,39 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
-
-import { absMod, angleBetween, distanceSquared } from "../../../../common/src/utils/math";
-import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../common/src/constants";
-import { type PlayerManager } from "./playerManager";
-import { defaultConfig, type KeybindActions, localStorageInstance } from "./localStorageHandler";
-import { type Game } from "../game";
+import { angleBetweenPoints, distanceSquared } from "../../../../common/src/utils/math";
 import { v } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { defaultBinds } from "./console/defaultClientCVars";
+import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { SpectatePacket } from "../packets/sending/spectatePacket";
+import { consoleVariables } from "./console/variables";
 
-class Action {
-    readonly name: string;
-    readonly on: () => void;
-    readonly off: () => void;
-    private down = false;
+function fireAllEventsAtKey(input: string, down: boolean): number {
+    const actions = keybinds.getActionsBoundToInput(input) ?? [];
+    for (const action of actions) {
+        let query = action;
+        if (!down) {
+            if (query.startsWith("+")) { // Invertible action
+                query = query.replace("+", "-");
+            } else query = ""; // If the action isn't invertible, then we do nothing
+        }
 
-    constructor(name: string, on?: () => void, off?: () => void) {
-        this.name = name;
-
-        this.on = () => {
-            if (this.down) return;
-            this.down = true;
-            on?.();
-        };
-
-        this.off = () => {
-            if (!this.down) return;
-            this.down = false;
-            off?.();
-        };
+        gameConsole.handleQuery(query);
     }
+
+    return actions.length;
 }
-
-type ConvertToAction<T extends Record<string, object | string>> = { [K in keyof T]: T[K] extends Record<string, object | string> ? ConvertToAction<T[K]> : Action };
-
-function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
-    function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
-        return new Action(
-            `move::${direction.toString()}`,
-            () => {
-                game.playerManager.movement[direction] = true;
-                game.playerManager.dirty.inputs = true;
-                if (game.spectating) {
-                    let action: SpectateActions | undefined;
-                    if (direction === "left") action = SpectateActions.SpectatePrevious;
-                    else if (direction === "right") action = SpectateActions.SpectateNext;
-                    if (action !== undefined) game.sendPacket(new SpectatePacket(game.playerManager, action));
-                }
-            },
-            () => {
-                game.playerManager.movement[direction] = false;
-                game.playerManager.dirty.inputs = true;
-            }
-        );
-    }
-
-    function generateSlotAction(slot: number): Action {
-        return new Action(
-            `inventory::slot${slot}`,
-            () => { game.playerManager.equipItem(slot); }
-        );
-    }
-
-    function generateItemCycler(step: number) {
-        return () => {
-            let index = absMod((game.playerManager.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
-
-            while (!game.playerManager.weapons[index]) {
-                index = absMod((index + step), INVENTORY_MAX_WEAPONS);
-            }
-
-            game.playerManager.equipItem(index);
-        };
-    }
-
-    return {
-        moveUp: generateMovementAction("up"),
-        moveDown: generateMovementAction("down"),
-        moveRight: generateMovementAction("right"),
-        moveLeft: generateMovementAction("left"),
-        interact: new Action(
-            "interact",
-            () => { game.playerManager.interact(); }
-        ),
-
-        slot1: generateSlotAction(0),
-        slot2: generateSlotAction(1),
-        slot3: generateSlotAction(2),
-
-        lastEquippedItem: new Action(
-            "inventory::lastEquippedItem",
-            () => {
-                game.playerManager.equipItem(game.playerManager.lastItemIndex);
-            }
-        ),
-        equipOtherGun: new Action(
-            "inventory::equipOtherGun",
-            () => {
-                let index = game.playerManager.activeItemIndex > 1
-                    ? 0
-                    : 1 - game.playerManager.activeItemIndex;
-
-                // fallback to melee if there's no weapon on the slot
-                if (game.playerManager.weapons[index] === undefined) index = 2;
-                game.playerManager.equipItem(index);
-            }
-        ),
-        swapGunSlots: new Action(
-            "inventory::swapGunSlots",
-            () => { game.playerManager.swapGunSlots(); }
-        ),
-        previousItem: new Action(
-            "inventory::previousItem",
-            generateItemCycler(-1)
-        ),
-        nextItem: new Action(
-            "inventory::nextItem",
-            generateItemCycler(1)
-        ),
-        useItem: new Action(
-            "useItem",
-            () => { game.playerManager.attacking = true; },
-            () => { game.playerManager.attacking = false; }
-        ),
-        dropActiveItem: new Action(
-            "inventory::dropActiveItem",
-            () => {
-                game.playerManager.dropItem(game.playerManager.activeItemIndex);
-            }
-        ),
-        reload: new Action(
-            "inventory::reload",
-            () => {
-                game.playerManager.reload();
-            }
-        ),
-        previousScope: new Action(
-            "inventory::previousScope",
-            () => {
-                game.playerManager.switchScope(-1);
-            }
-        ),
-        nextScope: new Action(
-            "inventory::nextScope",
-            () => {
-                game.playerManager.switchScope(1);
-            }
-        ),
-        useGauze: new Action(
-            "inventory::useGauze",
-            () => {
-                game.playerManager.useItem("gauze");
-            }
-        ),
-        useMedikit: new Action(
-            "inventory::useMediKit",
-            () => {
-                game.playerManager.useItem("medikit");
-            }
-        ),
-        useCola: new Action(
-            "inventory::useCola",
-            () => {
-                game.playerManager.useItem("cola");
-            }
-        ),
-        useTablets: new Action(
-            "inventory::useTablets",
-            () => {
-                game.playerManager.useItem("tablets");
-            }
-        ),
-        cancelAction: new Action(
-            "inventory::cancelAction",
-            () => {
-                game.playerManager.cancelAction();
-            }
-        ),
-        toggleMap: new Action(
-            "toggleMap",
-            () => {
-                game.map.toggle();
-            }
-        ),
-        toggleMiniMap: new Action(
-            "toggleMiniMap",
-            () => {
-                game.map.toggleMiniMap();
-            }
-        ),
-        emoteWheel: new Action(
-            "emoteWheel",
-            () => {
-                if (game.gameOver) return;
-                $("#emote-wheel")
-                    .css("left", `${game.playerManager.mouseX - 143}px`)
-                    .css("top", `${game.playerManager.mouseY - 143}px`)
-                    .css("background-image", 'url("./img/misc/emote_wheel.svg")')
-                    .show();
-                game.playerManager.emoteWheelActive = true;
-                game.playerManager.emoteWheelPosition = v(game.playerManager.mouseX, game.playerManager.mouseY);
-            },
-            () => {
-                $("#emote-wheel").hide();
-                switch (game.playerManager.selectedEmoteSlot) {
-                    case EmoteSlot.Top:
-                        game.playerManager.action = InputActions.TopEmoteSlot;
-                        break;
-                    case EmoteSlot.Right:
-                        game.playerManager.action = InputActions.RightEmoteSlot;
-                        break;
-                    case EmoteSlot.Bottom:
-                        game.playerManager.action = InputActions.BottomEmoteSlot;
-                        break;
-                    case EmoteSlot.Left:
-                        game.playerManager.action = InputActions.LeftEmoteSlot;
-                        break;
-                }
-                game.playerManager.dirty.inputs = true;
-                game.playerManager.emoteWheelActive = false;
-                game.playerManager.selectedEmoteSlot = EmoteSlot.None;
-            }
-        )
-    };
-}
-
-const bindings: Map<string, Action[]> = new Map<string, Action[]>();
-
-function bind(keys: string[], action: Action): void {
-    for (const key of keys) {
-        (
-            bindings.get(key) ??
-            (() => {
-                const array: Action[] = [];
-                bindings.set(key, array);
-                return array;
-            })()
-        ).push(action);
-    }
-}
-
-let actions: ConvertToAction<KeybindActions>;
 
 export function setupInputs(game: Game): void {
-    actions = generateKeybindActions(game);
-    const keybinds = localStorageInstance.config.keybinds;
-
-    for (const action in keybinds) {
-        bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
-    }
-
-    /**
-     * Fires all events attached to a certain input channel
-     * @param key The input channel to fire
-     * @param down Whether the key is being pressed down or released
-     * @returns The number of actions triggered
-     */
-    function fireAllEventsAtKey(key: string, down: boolean): number {
-        const actions = bindings.get(key);
-
-        actions?.forEach(action => {
-            down
-                ? action.on?.()
-                : action.off?.();
-        });
-
-        return actions?.length ?? 0;
-    }
-
     let mWheelStopTimer: number | undefined;
     function handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
-        if (!$("canvas").hasClass("active")) return;
-
         // Disable pointer events on mobile if mobile controls are enabled
         if (event instanceof PointerEvent && game.playerManager.isMobile) return;
+
+        // If the using is interacting with a text field or something of the sort, inputs should
+        // not be honored
+        if (document.activeElement !== document.body) {
+            return;
+        }
 
         /*
             We don't want to allow keybinds to work with modifiers, because firstly,
@@ -332,7 +92,7 @@ export function setupInputs(game: Game): void {
 
         actionsFired = fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
 
-        if (actionsFired > 0) {
+        if (actionsFired > 0 && game.gameStarted) {
             event.preventDefault();
         }
     }
@@ -355,18 +115,19 @@ export function setupInputs(game: Game): void {
         if (player.emoteWheelActive) {
             const mousePosition = v(e.clientX, e.clientY);
             if (distanceSquared(player.emoteWheelPosition, mousePosition) > 500) {
-                const angle = angleBetween(player.emoteWheelPosition, mousePosition);
+                const angle = angleBetweenPoints(player.emoteWheelPosition, mousePosition);
                 let slotName: string | undefined;
-                if (angle >= SECOND_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE) {
+
+                if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
                     player.selectedEmoteSlot = EmoteSlot.Top;
                     slotName = "top";
                 } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
                     player.selectedEmoteSlot = EmoteSlot.Right;
                     slotName = "right";
-                } else if (angle >= FIRST_EMOTE_ANGLE && angle <= THIRD_EMOTE_ANGLE) {
+                } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
                     player.selectedEmoteSlot = EmoteSlot.Bottom;
                     slotName = "bottom";
-                } else if (angle >= THIRD_EMOTE_ANGLE && angle <= SECOND_EMOTE_ANGLE) {
+                } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
                     player.selectedEmoteSlot = EmoteSlot.Left;
                     slotName = "left";
                 }
@@ -378,7 +139,7 @@ export function setupInputs(game: Game): void {
         }
 
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
+        if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
             game.activePlayer.container.rotation = player.rotation;
             game.map.indicator.rotation = player.rotation;
         }
@@ -388,11 +149,13 @@ export function setupInputs(game: Game): void {
 
     // Mobile joysticks
     if (game.playerManager.isMobile) {
-        const config = localStorageInstance.config;
+        const size = consoleVariables.get.builtIn("mb_joystick_size").value;
+        const transparency = consoleVariables.get.builtIn("mb_joystick_transparency").value;
+
         const leftJoyStick = nipplejs.create({
             zone: $("#left-joystick-container")[0],
-            size: config.joystickSize,
-            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
+            size,
+            color: `rgba(255, 255, 255, ${transparency})`
         });
 
         leftJoyStick.on("move", (_, data: JoystickOutputData) => {
@@ -400,6 +163,7 @@ export function setupInputs(game: Game): void {
             game.playerManager.movement.moving = true;
             game.playerManager.dirty.inputs = true;
         });
+
         leftJoyStick.on("end", () => {
             game.playerManager.movement.moving = false;
             game.playerManager.dirty.inputs = true;
@@ -407,22 +171,25 @@ export function setupInputs(game: Game): void {
 
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
-            size: config.joystickSize,
-            color: `rgba(255, 255, 255, ${config.joystickTransparency})`
+            size,
+            color: `rgba(255, 255, 255, ${transparency})`
         });
 
         rightJoyStick.on("move", (_, data: JoystickOutputData) => {
             game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-            if (localStorageInstance.config.clientSidePrediction && !game.gameOver && game.activePlayer) {
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
                 game.activePlayer.container.rotation = game.playerManager.rotation;
             }
             game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > config.joystickSize / 3;
+            game.playerManager.attacking = data.distance > size / 3;
         });
+
         rightJoyStick.on("end", () => {
             game.playerManager.attacking = false;
         });
     }
+
+    generateBindsConfigScreen();
 }
 
 function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
@@ -457,7 +224,7 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
 }
 
 // Nowhere else to put this…
-export function getIconFromInputName(input: string): string | undefined {
+export function getIconFromInputName(input: string): string {
     let name: string | undefined;
 
     input = input.toLowerCase();
@@ -485,45 +252,47 @@ export function getIconFromInputName(input: string): string | undefined {
         }
     }
 
-    return name === undefined ? name : `./img/misc/${name}_icon.svg`;
+    return name === undefined ? input : `./img/misc/${name}_icon.svg`;
 }
 
-const actionsNames = {
-    moveUp: "Move Up",
-    moveDown: "Move Down",
-    moveLeft: "Move Left",
-    moveRight: "Move Right",
+const actionsNames: Record<keyof (typeof defaultBinds), string> = {
+    "+up": "Move Up",
+    "+down": "Move Down",
+    "+left": "Move Left",
+    "+right": "Move Right",
     interact: "Interact",
-    slot1: "Equip Primary",
-    slot2: "Equip Secondary",
-    slot3: "Equip Melee",
-    lastEquippedItem: "Equip Last Weapon",
-    equipOtherGun: "Equip Other Gun",
-    swapGunSlots: "Swap Gun Slots",
-    previousItem: "Equip Previous Weapon",
-    nextItem: "Equip Next Weapon",
-    useItem: "Use Weapon",
-    dropActiveItem: "Drop Active Weapon",
+    "slot 0": "Equip Primary",
+    "slot 1": "Equip Secondary",
+    "slot 2": "Equip Melee",
+    last_item: "Equip Last Weapon",
+    other_weapon: "Equip Other Gun",
+    swap_gun_slots: "Swap Gun Slots",
+    "cycle_items -1": "Equip Previous Weapon",
+    "cycle_items 1": "Equip Next Weapon",
+    "+attack": "Use Weapon",
+    drop: "Drop Active Weapon",
     reload: "Reload",
-    previousScope: "Previous Scope",
-    nextScope: "Next Scope",
-    useGauze: "Use Gauze",
-    useMedikit: "Use Medikit",
-    useCola: "Use Cola",
-    useTablets: "Use Tablets",
-    cancelAction: "Cancel Action",
-    toggleMap: "Toggle Fullscreen Map",
-    toggleMiniMap: "Toggle Minimap",
-    emoteWheel: "Emote Wheel"
+    "cycle_scopes -1": "Previous Scope",
+    "cycle_scopes +1": "Next Scope",
+    "use_consumable gauze": "Use Gauze",
+    "use_consumable medikit": "Use Medikit",
+    "use_consumable cola": "Use Cola",
+    "use_consumable tablets": "Use Tablets",
+    cancel_action: "Cancel Action",
+    toggle_map: "Toggle Fullscreen Map",
+    toggle_minimap: "Toggle Minimap",
+    "+emote_wheel": "Emote Wheel",
+    toggle_console: "Toggle Console"
 };
 
 // Generate the input settings
-function generateBindsConfigScreen(): void {
+export function generateBindsConfigScreen(): void {
     const keybindsContainer = $("#tab-keybinds-content");
     keybindsContainer.html("");
 
-    for (const a in defaultConfig.keybinds) {
-        const action = a as keyof KeybindActions;
+    let activeButton: HTMLButtonElement | undefined;
+    for (const a in defaultBinds) {
+        const action = a as keyof (typeof defaultBinds);
 
         const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
 
@@ -532,53 +301,52 @@ function generateBindsConfigScreen(): void {
             text: actionsNames[action]
         }).appendTo(bindContainer);
 
-        const keybinds = localStorageInstance.config.keybinds;
-        const actionBinds = keybinds[action];
+        const actions = keybinds.getInputsBoundToAction(action);
 
-        actionBinds.forEach((bind, bindIndex) => {
-            const bindButton = $("<button/>", {
+        while (actions.length < 2) {
+            actions.push("None");
+        }
+
+        const buttons = actions.map(bind => {
+            return $<HTMLButtonElement>("<button/>", {
                 class: "btn btn-darken btn-lg btn-secondary btn-bind",
-                text: bind === "" ? "None" : bind
+                text: bind !== "" ? bind : "None"
             }).appendTo(bindContainer)[0];
+        });
 
+        actions.forEach((bind, i) => {
+            const bindButton = buttons[i];
+
+            // eslint-disable-next-line no-inner-declarations
             function setKeyBind(event: KeyboardEvent | MouseEvent | WheelEvent): void {
                 event.stopImmediatePropagation();
 
                 if (
                     event instanceof MouseEvent &&
                     event.type === "mousedown" &&
-                    event.button === 0 &&
                     !bindButton.classList.contains("active")
                 ) {
+                    activeButton?.classList.remove("active");
                     bindButton.classList.add("active");
+                    activeButton = bindButton;
                     return;
                 }
 
                 if (bindButton.classList.contains("active")) {
-                    let key = getKeyFromInputEvent(event);
                     event.preventDefault();
+                    let key = getKeyFromInputEvent(event);
 
-                    // Remove conflicting binds
-                    for (const a2 in defaultConfig.keybinds) {
-                        const action2 = a2 as keyof KeybindActions;
-                        const bindAction = keybinds[action2];
-
-                        bindAction.forEach((bind2, bindIndex2) => {
-                            if (bind2 === key) {
-                                bindAction[bindIndex2] = "";
-                            }
-                        });
+                    if (bind) {
+                        keybinds.remove(bind, action);
                     }
 
-                    // Remove binding with Escape
-                    if (key === "Escape") {
+                    if (key === "Escape" || key === "Backspace") {
                         key = "";
                     }
+                    keybinds.unbindInput(key);
+                    keybinds.addActionsToInput(key, action);
 
-                    actionBinds[bindIndex] = key;
-                    localStorageInstance.update({ keybinds });
-
-                    // Update the bindings screen
+                    gameConsole.writeToLocalStorage();
                     generateBindsConfigScreen();
                 }
             }
@@ -586,24 +354,14 @@ function generateBindsConfigScreen(): void {
             bindButton.addEventListener("keydown", setKeyBind);
             bindButton.addEventListener("mousedown", setKeyBind);
             bindButton.addEventListener("wheel", setKeyBind);
+            bindButton.addEventListener("contextmenu", e => { e.preventDefault(); });
 
             bindButton.addEventListener("scroll", evt => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 evt.stopImmediatePropagation();
             });
-
-            bindButton.addEventListener("blur", () => {
-                bindButton.classList.remove("active");
-            });
         });
-
-        if (actions !== undefined) {
-            bindings.clear();
-            for (const action in defaultConfig.keybinds) {
-                bind(keybinds[action as keyof KeybindActions], actions[action as keyof KeybindActions]);
-            }
-        }
     }
 
     // Add the reset button
@@ -611,15 +369,18 @@ function generateBindsConfigScreen(): void {
         class: "btn btn-darken btn-lg btn-danger",
         html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
     }).on("click", () => {
-        localStorageInstance.update({ keybinds: defaultConfig.keybinds });
+        keybinds.unbindAll();
+
+        for (const [action, keys] of Object.entries(defaultBinds)) {
+            keybinds.addInputsToAction(action, ...keys);
+        }
+
         generateBindsConfigScreen();
     })).appendTo(keybindsContainer);
 
     // Change the weapons slots keybind text
     for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = localStorageInstance.config.keybinds[`slot${i}` as keyof KeybindActions];
-        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.filter(bind => bind !== "").join(" / "));
+        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).filter(a => a !== "").slice(0, 2);
+        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }
-
-generateBindsConfigScreen();

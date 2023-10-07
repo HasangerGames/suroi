@@ -1,12 +1,11 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { randomUUID } from "node:crypto";
 import { SPECTATE_ACTIONS_BITS, SpectateActions } from "../../../../common/src/constants";
 import { random } from "../../../../common/src/utils/random";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
-import * as fs from "fs";
+import { ReceivingPacket } from "../../types/receivingPacket";
 import { ReportPacket } from "../sending/reportPacket";
-import { randomUUID } from "node:crypto";
 
 export class SpectatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -54,9 +53,9 @@ export class SpectatePacket extends ReceivingPacket {
                 break;
             }
             case SpectateActions.Report: {
-                if (!fs.existsSync("reports")) fs.mkdirSync("reports");
+                if (!existsSync("reports")) mkdirSync("reports");
                 const reportID = randomUUID();
-                fs.writeFileSync(`reports/${reportID}.json`, JSON.stringify({
+                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
                     ip: player.spectating?.ip,
                     name: player.spectating?.name,
                     time: player.game.now

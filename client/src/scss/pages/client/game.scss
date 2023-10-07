@@ -57,7 +57,7 @@
     top: 10px;
     left: 10px;
 
-    & > div {
+    &>div {
         margin-bottom: 10px;
     }
 
@@ -65,7 +65,7 @@
         top: 5px;
         left: 5px;
 
-        & > div {
+        &>div {
             margin-bottom: 5px;
         }
     }
@@ -302,7 +302,7 @@
     margin-left: 3px;
 }
 
-#interact-key.active + #interact-text {
+#interact-key.active+#interact-text {
     position: relative;
     top: 3px;
 }
@@ -523,7 +523,7 @@
     @media screen and (max-width: $screen_large) {
         top: 100px;
 
-        & > button {
+        &>button {
             height: fit-content;
             padding: 8px 12px;
             font-size: 14px;
@@ -756,11 +756,9 @@
 
         &.has-item {
             opacity: 1;
-            background: radial-gradient(
-                circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
-            );
+            background: radial-gradient(circle,
+                    $light_transparent_bg 0%,
+                    $transparent_bg 100%);
         }
     }
 }
@@ -890,11 +888,9 @@
         height: 78px;
 
         &.has-item {
-            background: radial-gradient(
-                circle,
-                $light_transparent_bg 0%,
-                $transparent_bg 100%
-            );
+            background: radial-gradient(circle,
+                    $light_transparent_bg 0%,
+                    $transparent_bg 100%);
         }
 
         .item-tooltip {
@@ -982,6 +978,7 @@
                     width: 50px;
                     height: 50px;
                 }
+
                 @media screen and (max-width: $screen_small) {
                     width: 40px;
                     height: 40px;
@@ -1003,7 +1000,7 @@
     //noinspection CssUnknownTarget
     background-image: url("../../../public/img/misc/emote_wheel.svg");
 
-    & > div {
+    &>div {
         width: 84px;
         height: 84px;
         position: absolute;
@@ -1098,15 +1095,19 @@
         #chicken-dinner {
             --size: 50px;
         }
+
         #game-over-text {
             font-size: 15px;
         }
+
         #game-over-overlay {
             display: flex;
         }
+
         #game-over-rank-container-pc {
             display: none;
         }
+
         #game-over-rank-container-mobile {
             display: block;
         }

@@ -1,11 +1,10 @@
-import { SendingPacket } from "../../types/sendingPacket";
-import { Player } from "../../objects/player";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
-import { type JoinKillFeedMessage, type KillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
+import { Player } from "../../objects/player";
+import { type JoinKillFeedMessage, type KillFeedMessage, type KillKillFeedMessage } from "../../types/killFeedMessage";
+import { SendingPacket } from "../../types/sendingPacket";
 
 export class KillFeedPacket extends SendingPacket {
     override readonly allocBytes = 1 << 6;

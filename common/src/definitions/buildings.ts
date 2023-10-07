@@ -1,8 +1,8 @@
 import { type Orientation, type Variation } from "../typings";
-import { type Hitbox, RectangleHitbox, ComplexHitbox, CircleHitbox } from "../utils/hitbox";
-import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
 import { randomBoolean, weightedRandom } from "../utils/random";
-import { type Vector, v } from "../utils/vector";
+import { v, type Vector } from "../utils/vector";
 
 interface BuildingObstacle {
     id: string

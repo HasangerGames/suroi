@@ -1,27 +1,22 @@
-import { type Game } from "./game";
+import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type Orientation, type Variation } from "../../common/src/typings";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../common/src/utils/hitbox";
+import { addAdjust, addOrientations } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
+import { random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { type Orientation, type Variation } from "../../common/src/typings";
-import {
-    random,
-    randomFloat,
-    randomPointInsideCircle,
-    randomRotation,
-    randomVector
-} from "../../common/src/utils/random";
-import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox, PolygonHitbox } from "../../common/src/utils/hitbox";
-import { Obstacle } from "./objects/obstacle";
-import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
-import { Config, SpawnMode } from "./config";
-import { getLootTableLoot } from "./utils/misc";
+import { Config } from "./config";
+import { SpawnMode } from "./defaultConfig";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
-import { type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { type Game } from "./game";
 import { Building } from "./objects/building";
-import { addAdjust, addOrientations } from "../../common/src/utils/math";
-import { generateTerrain, TerrainGrid } from "../../common/src/utils/mapUtils";
+import { Obstacle } from "./objects/obstacle";
+import { getLootTableLoot } from "./utils/misc";
+import { TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 
 export class Map {
     game: Game;

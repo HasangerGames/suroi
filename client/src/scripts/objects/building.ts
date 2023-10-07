@@ -1,19 +1,18 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
+import { Container } from "pixi.js";
 import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
+import { velFromAngle } from "../../../../common/src/utils/math";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import type { Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { Container } from "pixi.js";
-import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Building extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;

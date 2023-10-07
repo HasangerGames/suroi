@@ -1,11 +1,10 @@
-import type { Game } from "../game";
-
 import { ObjectCategory } from "../../../../common/src/constants";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { distance } from "../../../../common/src/utils/math";
-import { Obstacle } from "./obstacle";
-import { BULLET_COLORS, PIXI_SCALE } from "../utils/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
+import { distance } from "../../../../common/src/utils/math";
+import { type Game } from "../game";
+import { BULLET_COLORS, PIXI_SCALE } from "../utils/constants";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
 export class Bullet extends BaseBullet {
@@ -64,7 +63,12 @@ export class Bullet extends BaseBullet {
                 }
 
                 this.damagedIDs.add(object.id);
-                if (object instanceof Obstacle && (object.type.definition.noCollisions)) continue;
+
+                if (object instanceof Obstacle) {
+                    if ((this.definition.penetration?.obstacles && !object.type.definition.impenetrable) ??
+                        object.type.definition.noCollisions) continue;
+                }
+                if (this.definition.penetration?.players && object instanceof Player) continue;
 
                 this.dead = true;
                 this.position = collision.intersection.point;

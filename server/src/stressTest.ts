@@ -1,12 +1,10 @@
-import { type MessageEvent, WebSocket } from "ws";
-
+import { WebSocket, type MessageEvent } from "ws";
 import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
-
+import { Emotes } from "../../common/src/definitions/emotes";
+import { Skins } from "../../common/src/definitions/skins";
+import { ObjectType } from "../../common/src/utils/objectType";
 import { random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { Skins } from "../../common/src/definitions/skins";
-import { Emotes } from "../../common/src/definitions/emotes";
 
 const config = {
     address: "127.0.0.1:8000",

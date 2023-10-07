@@ -1,57 +1,20 @@
 import $ from "jquery";
-
-import { type Config, localStorageInstance } from "./utils/localStorageHandler";
-import { UI_DEBUG_MODE } from "./utils/constants";
-import { requestFullscreen } from "./utils/misc";
-import {
-    ALLOW_NON_ASCII_USERNAME_CHARS,
-    InputActions,
-    INVENTORY_MAX_WEAPONS,
-    SpectateActions
-} from "../../../common/src/constants";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import {
-    HealingItems,
-    HealType
-} from "../../../common/src/definitions/healingItems";
-import { Ammos } from "../../../common/src/definitions/ammos";
-import { Skins } from "../../../common/src/definitions/skins";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-
-import { SpectatePacket } from "./packets/sending/spectatePacket";
-import { type Game } from "./game";
 import { isMobile } from "pixi.js";
+import { ALLOW_NON_ASCII_USERNAME_CHARS, InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
+import { Ammos } from "../../../common/src/definitions/ammos";
+import { Emotes } from "../../../common/src/definitions/emotes";
+import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
+import { Scopes } from "../../../common/src/definitions/scopes";
+import { Skins } from "../../../common/src/definitions/skins";
 import { stripNonASCIIChars } from "../../../common/src/utils/misc";
-
-const body = $(document.body);
-export function createDropdown(selector: string): void {
-    const dropdown = {
-        main: $(`${selector} .dropdown-content`),
-        caret: $(`${selector} button i`),
-        active: false,
-        show() {
-            this.active = true;
-            this.main.addClass("active");
-            this.caret.removeClass("fa-caret-down").addClass("fa-caret-up");
-        },
-        hide() {
-            this.active = false;
-            this.main.removeClass("active");
-            this.caret.addClass("fa-caret-down").removeClass("fa-caret-up");
-        },
-        toggle() {
-            this.active
-                ? this.hide()
-                : this.show();
-        }
-    };
-    $(`${selector} button`).on("click", ev => {
-        dropdown.toggle();
-        ev.stopPropagation();
-    });
-    body.on("click", () => { dropdown.hide(); });
-}
+import { type Game } from "./game";
+import { SpectatePacket } from "./packets/sending/spectatePacket";
+import { body, createDropdown } from "./uiHelpers";
+import { UI_DEBUG_MODE } from "./utils/constants";
+import { Crosshairs, getCrosshair } from "./utils/crosshairs";
+import { requestFullscreen } from "./utils/misc";
+import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
+import { gameConsole } from "./utils/console/gameConsole";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -144,7 +107,8 @@ export function setupUI(game: Game): void {
     const gameMenu = $("#game-menu");
     const settingsMenu = $("#settings-menu");
 
-    usernameField.val(localStorageInstance.config.playerName);
+    usernameField.val(consoleVariables.get.builtIn("cv_player_name").value);
+
     usernameField.on("input", () => {
         // Remove non-ASCII chars
         if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
@@ -158,34 +122,21 @@ export function setupUI(game: Game): void {
                 )
             );
         }
-        localStorageInstance.update({
-            playerName: usernameField.val() as string
-        });
+        consoleVariables.set.builtIn("cv_player_name", usernameField.val() as string);
     });
 
     createDropdown("#server-select");
 
-    const serverSelect = $<HTMLSelectElement>("#server-select");
-
-    // Select region
-    serverSelect.on("change", (e: Event) => {
-        const value = serverSelect.val() as string | undefined;
-
-        if (value !== undefined) {
-            localStorageInstance.update({ region: value });
-        }
-    });
-
     const rulesBtn = $("#btn-rules");
 
     // Highlight rules & tutorial button for new players
-    if (!localStorageInstance.config.rulesAcknowledged) {
+    if (!consoleVariables.get.builtIn("cv_rules_acknowledged").value) {
         rulesBtn.removeClass("btn-secondary").addClass("highlighted");
     }
 
     // Event listener for rules button
     rulesBtn.on("click", () => {
-        localStorageInstance.update({ rulesAcknowledged: true });
+        consoleVariables.set.builtIn("cv_rules_acknowledged", true);
         location.href = "/rules";
     });
 
@@ -225,9 +176,12 @@ export function setupUI(game: Game): void {
     });
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
-        if (e.key === "Escape" && $("canvas").hasClass("active")) {
-            gameMenu.fadeToggle(250);
-            settingsMenu.hide();
+        if (e.key === "Escape") {
+            if ($("canvas").hasClass("active") && !gameConsole.isOpen) {
+                gameMenu.fadeToggle(250);
+                settingsMenu.hide();
+            }
+            gameConsole.isOpen = false;
         }
     });
 
@@ -276,15 +230,9 @@ export function setupUI(game: Game): void {
             `url("./img/game/skins/${skinID}_fist.svg")`
         );
     };
-    updateSplashCustomize(localStorageInstance.config.loadout.skin);
+    updateSplashCustomize(consoleVariables.get.builtIn("cv_loadout_skin").value);
     for (const skin of Skins) {
-        if (
-            skin.notInLoadout ??
-            (skin.roleRequired !== undefined &&
-                skin.roleRequired !== localStorageInstance.config.role)
-        ) {
-            continue;
-        }
+        if (skin.notInLoadout ?? (skin.roleRequired !== undefined && skin.roleRequired !== consoleVariables.get.builtIn("dv_role").value)) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -298,21 +246,16 @@ export function setupUI(game: Game): void {
   <span class="skin-name">${skin.name}</span>
 </div>`);
         skinItem.on("click", function() {
-            localStorageInstance.update({
-                loadout: {
-                    ...localStorageInstance.config.loadout,
-                    skin: skin.idString
-                }
-            });
+            consoleVariables.set.builtIn("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
         });
         $("#skins-list").append(skinItem);
     }
-    $(`#skin-${localStorageInstance.config.loadout.skin}`).addClass("selected");
+    $(`#skin-${consoleVariables.get.builtIn("cv_loadout_skin").value}`).addClass("selected");
 
     // Load emotes
-    let selectedEmoteSlot: string | undefined;
+    let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
     for (const emote of Emotes.definitions) {
         // noinspection CssUnknownTarget
         const emoteItem =
@@ -322,12 +265,7 @@ export function setupUI(game: Game): void {
 </div>`);
         emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
-            localStorageInstance.update({
-                loadout: {
-                    ...localStorageInstance.config.loadout,
-                    [`${selectedEmoteSlot}Emote`]: emote.idString
-                }
-            });
+            consoleVariables.set.builtIn(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
                 "background-image",
@@ -336,29 +274,18 @@ export function setupUI(game: Game): void {
         });
         $("#emotes-list").append(emoteItem);
     }
-    for (const slot of ["top", "right", "bottom", "left"] as Array<
-    "top" | "right" | "bottom" | "left"
-    >) {
+
+    for (const slot of ["top", "right", "bottom", "left"] as const) {
+        const emote = consoleVariables.get.builtIn(`cv_loadout_${slot}_emote`).value;
+
         $(`#emote-customize-wheel > .emote-${slot}`)
-            .css(
-                "background-image",
-                `url("./img/game/emotes/${localStorageInstance.config.loadout[`${slot}Emote`]
-                }.svg")`
-            )
+            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css(
-                        "background-image",
-                        `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`
-                    );
-                    $(".emotes-list-item-container")
-                        .removeClass("selected")
-                        .css("cursor", "pointer");
-                    $(
-                        `#emote-${localStorageInstance.config.loadout[`${slot}Emote`]
-                        }`
-                    ).addClass("selected");
+                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
+                    $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
+                    $(`#emote-${emote}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
                     $("#emote-customize-wheel").css(
@@ -374,20 +301,20 @@ export function setupUI(game: Game): void {
 
     // Load crosshairs
     function loadCrosshair(): void {
-        const { config } = localStorageInstance;
+        const size = consoleVariables.get.builtIn("cv_crosshair_size").value;
         const crosshair = getCrosshair(
-            config.loadout.crosshair,
-            config.crosshairColor,
-            config.crosshairSize,
-            config.crosshairStrokeColor,
-            config.crosshairStrokeSize
+            consoleVariables.get.builtIn("cv_loadout_crosshair").value,
+            consoleVariables.get.builtIn("cv_crosshair_color").value,
+            size,
+            consoleVariables.get.builtIn("cv_crosshair_stroke_color").value,
+            consoleVariables.get.builtIn("cv_crosshair_stroke_size").value
         );
-        const cursor = `url("${crosshair}") ${config.crosshairSize / 2} ${config.crosshairSize / 2}, crosshair`;
+        const cursor = `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
 
         $("#crosshair-image").css({
             backgroundImage: `url("${crosshair}")`,
-            width: config.crosshairSize,
-            height: config.crosshairSize
+            width: size,
+            height: size
         });
 
         $("#crosshair-preview").css({ cursor });
@@ -402,10 +329,11 @@ export function setupUI(game: Game): void {
         <div class="crosshairs-list-item"></div>
     </div>`);
 
+        const size = consoleVariables.get.builtIn("cv_crosshair_size").value;
         const backgroundImage = `url("${getCrosshair(
             crosshair.idString,
             "#fff",
-            localStorageInstance.config.crosshairSize,
+            size,
             "#0",
             0)}")`;
 
@@ -417,12 +345,7 @@ export function setupUI(game: Game): void {
         });
 
         crosshairItem.on("click", function() {
-            localStorageInstance.update({
-                loadout: {
-                    ...localStorageInstance.config.loadout,
-                    crosshair: crosshair.idString
-                }
-            });
+            consoleVariables.set.builtIn("cv_loadout_crosshair", crosshair.idString);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
@@ -430,185 +353,159 @@ export function setupUI(game: Game): void {
         $("#crosshairs-list").append(crosshairItem);
     }
 
-    $(`#crosshair-${localStorageInstance.config.loadout.crosshair}`).addClass("selected");
+    $(`#crosshair-${consoleVariables.get.builtIn("cv_loadout_crosshair").value}`).addClass("selected");
 
-    addSliderListener("#slider-crosshair-size", "crosshairSize", (value: number) => {
-        localStorageInstance.update({
-            crosshairSize: value * 20
-        });
+    addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
+        consoleVariables.set.builtIn("cv_crosshair_size", 20 * value);
         loadCrosshair();
     });
-    $("#slider-crosshair-size").val(localStorageInstance.config.crosshairSize / 20);
+    $("#slider-crosshair-size").val(consoleVariables.get.builtIn("cv_crosshair_size").value / 20);
 
-    addSliderListener("#slider-crosshair-stroke-size", "crosshairStrokeSize", () => {
+    addSliderListener("#slider-crosshair-stroke-size", "cv_crosshair_stroke_size", () => {
         loadCrosshair();
     });
-    $("#slider-crosshair-stroke-size").val(localStorageInstance.config.crosshairStrokeSize);
+    $("#slider-crosshair-stroke-size").val(consoleVariables.get.builtIn("cv_crosshair_stroke_size").value);
 
-    $("#crosshair-color-picker").on("input", (e) => {
-        localStorageInstance.update({
-            ...localStorageInstance.config,
-            crosshairColor: (e.target as HTMLInputElement).value
-        });
+    $<HTMLInputElement>("#crosshair-color-picker").on("input", e => {
+        consoleVariables.set.builtIn("cv_crosshair_color", e.target.value);
         loadCrosshair();
-    }).val(localStorageInstance.config.crosshairColor);
+    }).val(consoleVariables.get.builtIn("cv_crosshair_color").value);
 
-    $("#crosshair-stroke-picker").on("input", (e) => {
-        localStorageInstance.update({
-            ...localStorageInstance.config,
-            crosshairStrokeColor: (e.target as HTMLInputElement).value
-        });
+    $<HTMLInputElement>("#crosshair-stroke-picker").on("input", (e) => {
+        consoleVariables.set.builtIn("cv_crosshair_stroke_color", e.target.value);
         loadCrosshair();
-    }).val(localStorageInstance.config.crosshairStrokeColor);
+    }).val(consoleVariables.get.builtIn("cv_crosshair_stroke_color").value);
 
     // Disable context menu
-    $("#game-ui").on("contextmenu", (e) => {
-        e.preventDefault();
-    });
+    $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
 
     // Load settings values and event listeners
-
-    function addSliderListener(
-        elementId: string,
-        settingName: keyof Config,
-        callback?: (value: number) => void
-    ): void {
+    function addSliderListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: number) => void): void {
         const element = $(elementId)[0] as HTMLInputElement;
         if (!element) console.error("Invalid element id");
 
         element.addEventListener("input", () => {
-            const value = Number(element.value);
-            const obj: Partial<Config> = {};
-            (obj[settingName] as number) = value;
-            localStorageInstance.update(obj);
+            const value = +element.value;
+            consoleVariables.set(settingName, value);
 
             callback?.(value);
         });
 
-        element.value = (localStorageInstance.config[settingName] as number).toString();
+        element.value = (consoleVariables.get.builtIn(settingName).value as number).toString();
     }
 
-    function addCheckboxListener(
-        elementId: string,
-        settingName: keyof Config,
-        callback?: (value: boolean) => void
-    ): void {
+    function addCheckboxListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: boolean) => void): void {
         const element = $(elementId)[0] as HTMLInputElement;
 
         element.addEventListener("input", () => {
             const value = element.checked;
-            const obj: Partial<Config> = {};
-            (obj[settingName] as boolean) = value;
-            localStorageInstance.update(obj);
+            consoleVariables.set(settingName, value);
 
             callback?.(value);
         });
 
-        element.checked = localStorageInstance.config[settingName] as boolean;
+        element.checked = consoleVariables.get.builtIn(settingName).value as boolean;
     }
 
     // Scope looping toggle
-    addCheckboxListener("#toggle-scope-looping", "scopeLooping");
+    addCheckboxListener("#toggle-scope-looping", "cv_loop_scope_selection");
 
-    addCheckboxListener("#toggle-anonymous-player", "anonymousPlayers");
+    addCheckboxListener("#toggle-anonymous-player", "cv_anonymize_player_names");
 
     // Music volume
-    addSliderListener(
-        "#slider-music-volume",
-        "musicVolume",
-        (value: number) => {
-            game.music.volume(value);
-        }
-    );
+    addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
+        game.music.volume(value);
+    });
 
     // SFX volume
-    addSliderListener("#slider-sfx-volume", "sfxVolume", (value: number) => {
+    addSliderListener("#slider-sfx-volume", "cv_sfx_volume", (value: number) => {
         game.soundManager.volume = value;
     });
 
     // Master volume
-    addSliderListener(
-        "#slider-master-volume",
-        "masterVolume",
-        (value: number) => {
-            Howler.volume(value);
-        }
-    );
-    Howler.volume(localStorageInstance.config.masterVolume);
+    addSliderListener("#slider-master-volume", "cv_master_volume", (value: number) => {
+        Howler.volume(value);
+    });
+    Howler.volume(consoleVariables.get.builtIn("cv_master_volume").value);
 
     // Old menu music
-    addCheckboxListener("#toggle-old-music", "oldMenuMusic");
+    addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
 
     // Camera shake
-    addCheckboxListener("#toggle-camera-shake", "cameraShake");
+    addCheckboxListener("#toggle-camera-shake", "cv_camera_shake_fx");
 
     // FPS toggle
-    addCheckboxListener("#toggle-fps", "showFPS", (value: boolean) => {
+    addCheckboxListener("#toggle-fps", "pf_show_fps", (value: boolean) => {
         $("#fps-counter").toggle(value);
     });
-    $("#fps-counter").toggle(localStorageInstance.config.showFPS);
+    $("#fps-counter").toggle(consoleVariables.get.builtIn("pf_show_fps").value);
 
     // Ping toggle
-    addCheckboxListener("#toggle-ping", "showPing", (value: boolean) => {
+    addCheckboxListener("#toggle-ping", "pf_show_ping", (value: boolean) => {
         $("#ping-counter").toggle(value);
     });
-    $("#ping-counter").toggle(localStorageInstance.config.showPing);
+    $("#ping-counter").toggle(consoleVariables.get.builtIn("pf_show_ping").value);
 
     // Coordinates toggle
-    addCheckboxListener("#toggle-coordinates", "showCoordinates", (value: boolean) => {
+    addCheckboxListener("#toggle-coordinates", "pf_show_pos", (value: boolean) => {
         $("#coordinates-hud").toggle(value);
     });
-    $("#coordinates-hud").toggle(localStorageInstance.config.showCoordinates);
+    $("#coordinates-hud").toggle(consoleVariables.get.builtIn("pf_show_pos").value);
 
-    // Client-side prediction toggle
-    addCheckboxListener(
-        "#toggle-client-side-prediction",
-        "clientSidePrediction"
-    );
+    // Client-side prediction choice
+    {
+        const element = $("#rotation-animation-style")[0] as HTMLInputElement;
+
+        element.addEventListener("input", () => {
+            consoleVariables.set.builtIn("cv_animate_rotation", element.checked ? "client" : "wait_for_server");
+        });
+
+        element.checked = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
+    }
 
     // Text kill feed toggle
-    addCheckboxListener("#toggle-text-kill-feed", "textKillFeed");
+    {
+        const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
+
+        element.addEventListener("input", () => {
+            consoleVariables.set.builtIn("cv_killfeed_style", element.checked ? "text" : "icon");
+        });
+
+        element.checked = consoleVariables.get.builtIn("cv_killfeed_style").value === "text";
+    }
 
     // Rotation smoothing toggle
-    addCheckboxListener("#toggle-rotation-smoothing", "rotationSmoothing");
+    addCheckboxListener("#toggle-rotation-smoothing", "cv_rotation_smoothing");
 
     // Movement smoothing toggle
-    addCheckboxListener("#toggle-movement-smoothing", "movementSmoothing");
+    addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
 
     // Mobile controls stuff
-    addCheckboxListener("#toggle-mobile-controls", "mobileControls");
-    addSliderListener("#slider-joystick-size", "joystickSize");
-    addSliderListener("#slider-joystick-transparency", "joystickTransparency");
+    addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");
+    addSliderListener("#slider-joystick-size", "mb_joystick_size");
+    addSliderListener("#slider-joystick-transparency", "mb_joystick_transparency");
 
     // Minimap stuff
-    addSliderListener(
-        "#slider-minimap-transparency",
-        "minimapTransparency",
-        () => {
-            game.map.updateTransparency();
-        }
-    );
+    addSliderListener("#slider-minimap-transparency", "cv_minimap_transparency", () => {
+        game.map.updateTransparency();
+    });
 
-    addSliderListener(
-        "#slider-big-map-transparency",
-        "bigMapTransparency",
-        () => {
-            game.map.updateTransparency();
-        }
-    );
+    addSliderListener("#slider-big-map-transparency", "cv_map_transparency", () => {
+        game.map.updateTransparency();
+    });
 
-    addCheckboxListener("#toggle-hide-minimap", "minimapMinimized", () => {
+    addCheckboxListener("#toggle-hide-minimap", "cv_minimap_minimized", () => {
         game.map.toggleMiniMap(true);
     });
 
     // Leave warning
-    addCheckboxListener("#toggle-leave-warning", "leaveWarning");
+    addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
     // Hide rules button
-    addCheckboxListener("#toggle-hide-rules", "hideRulesButton", (value: boolean) => {
+    addCheckboxListener("#toggle-hide-rules", "cv_rules_acknowledged", (value: boolean) => {
         $("#btn-rules").toggle(!value);
     });
-    $("#btn-rules").toggle(!localStorageInstance.config.hideRulesButton);
+    $("#btn-rules").toggle(!consoleVariables.get.builtIn("cv_rules_acknowledged").value);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
@@ -702,15 +599,11 @@ export function setupUI(game: Game): void {
             .css("top", "50%")
             .css("left", "50%")
             .css("transform", "translate(-50%, -50%)");
-        $("#btn-emotes")
-            .show()
-            .on("click", () => {
-                $("#emote-wheel").show();
-            });
-        const createEmoteWheelListener = (
-            slot: string,
-            action: InputActions
-        ): void => {
+        $("#btn-emotes").show().on("click", () => {
+            $("#emote-wheel").show();
+        });
+
+        const createEmoteWheelListener = (slot: string, action: InputActions): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
                 game.playerManager.action = action;
@@ -732,11 +625,7 @@ export function setupUI(game: Game): void {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if (
-            $("canvas").hasClass("active") &&
-            localStorageInstance.config.leaveWarning &&
-            !game.gameOver
-        ) {
+        if ($("canvas").hasClass("active") && consoleVariables.get.builtIn("cv_leave_warning").value && !game.gameOver) {
             e.preventDefault();
         }
     });

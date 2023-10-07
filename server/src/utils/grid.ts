@@ -1,6 +1,6 @@
 import { type RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { clamp } from "../../../common/src/utils/math";
-import { type Vector, v } from "../../../common/src/utils/vector";
+import { v, type Vector } from "../../../common/src/utils/vector";
 import { type GameObject } from "../types/gameObject";
 
 export class Grid {

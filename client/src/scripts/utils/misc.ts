@@ -1,5 +1,5 @@
-import { random } from "../../../../common/src/utils/random";
 import { normalizeAngle } from "../../../../common/src/utils/math";
+import { random } from "../../../../common/src/utils/random";
 
 export function orientationToRotation(orientation: number): number {
     return -normalizeAngle(orientation * (Math.PI / 2));

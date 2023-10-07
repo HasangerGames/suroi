@@ -1,31 +1,27 @@
-import {
-    v,
-    vAdd,
-    type Vector,
-    vMul,
-    vSub,
-    vLength,
-    vDiv,
-    vDot,
-    vNormalizeSafe,
-    vNormalize,
-    vLengthSqr
-} from "./vector";
-
-import { type Orientation } from "../typings";
-import { type Hitbox, RectangleHitbox } from "./hitbox";
 import { type ObstacleDefinition } from "../definitions/obstacles";
+import { type Orientation } from "../typings";
+import { RectangleHitbox, type Hitbox } from "./hitbox";
+import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
 
 /**
- * Calculate the angle between two vectors
- * @param a The first vector
- * @param b The second vector
- * @returns The angle, in radians, between the two vectors
+ * Draws a line between two points and returns that line's angle
+ * @param a The first point, used as the head of the vector
+ * @param b The second point, used as the tail of the vector
+ * @returns The angle, in radians, of the line going from b to a
  */
-export function angleBetween(a: Vector, b: Vector): number {
+export function angleBetweenPoints(a: Vector, b: Vector): number {
     const dy = a.y - b.y;
     const dx = a.x - b.x;
     return Math.atan2(dy, dx);
+}
+
+/**
+ * Returns the angle between two vectors
+ * @param a The first vector
+ * @param b The second vector
+ */
+export function angleBetweenVectors(a: Vector, b: Vector): number {
+    return Math.acos((a.x * b.x + a.y * b.y) / Math.sqrt(distanceSquared(v(0, 0), a) * distanceSquared(v(0, 0), b)));
 }
 
 /**

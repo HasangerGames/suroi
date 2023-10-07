@@ -1,36 +1,19 @@
-import { Config } from "./config";
-import { version } from "../../package.json";
-
-import {
-    App,
-    DEDICATED_COMPRESSOR_256KB,
-    type HttpResponse,
-    SSLApp,
-    type WebSocket,
-    type HttpRequest
-} from "uWebSockets.js";
+import { existsSync, readFile, writeFileSync } from "fs";
+import { URLSearchParams } from "node:url";
 import sanitizeHtml from "sanitize-html";
-
+import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
+import { ALLOW_NON_ASCII_USERNAME_CHARS, DEFAULT_USERNAME, PLAYER_NAME_MAX_LENGTH, PacketType } from "../../common/src/constants";
+import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { version } from "../../package.json";
+import { Config } from "./config";
 import { Game } from "./game";
-import type { Player } from "./objects/player";
-
+import { type Player } from "./objects/player";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
-
-import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import {
-    ALLOW_NON_ASCII_USERNAME_CHARS,
-    DEFAULT_USERNAME,
-    PacketType,
-    PLAYER_NAME_MAX_LENGTH
-} from "../../common/src/constants";
-import { hasBadWords } from "./utils/badWordFilter";
-import { URLSearchParams } from "node:url";
-import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
-import { existsSync, readFile, writeFileSync } from "fs";
+import { hasBadWords } from "./utils/badWordFilter";
 
 /**
  * Apply CORS headers to a response.
@@ -317,6 +300,7 @@ app.ws("/play", {
             const packetType = stream.readPacketType();
             const player = socket.getUserData().player;
             if (player === undefined) return;
+
             switch (packetType) {
                 case PacketType.Join: {
                     new JoinPacket(player).deserialize(stream);
@@ -328,10 +312,6 @@ app.ws("/play", {
                 }
                 case PacketType.Ping: {
                     new PingedPacket(player).deserialize(stream);
-                    break;
-                }
-                case PacketType.Item: {
-                    new ItemPacket(player).deserialize(stream);
                     break;
                 }
                 case PacketType.Spectate: {

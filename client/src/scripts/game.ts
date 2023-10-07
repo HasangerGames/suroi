@@ -1,65 +1,54 @@
 import $ from "jquery";
 
-import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import {
-    GameOverPacket,
-    gameOverScreenTimeout
-} from "./packets/receiving/gameOverPacket";
-import { KillPacket } from "./packets/receiving/killPacket";
-import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
-import { PingedPacket } from "./packets/receiving/pingedPacket";
-import { PingPacket } from "./packets/sending/pingPacket";
-
-import { Player } from "./objects/player";
-import { type SendingPacket } from "./types/sendingPacket";
-import { type GameObject } from "./types/gameObject";
-import { type Bullet } from "./objects/bullet";
-
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import {
-    ObjectCategory,
-    PacketType,
-    TICK_SPEED,
-    zIndexes
-} from "../../../common/src/constants";
-
-import { PlayerManager } from "./utils/playerManager";
-import { MapPacket } from "./packets/receiving/mapPacket";
-import { enablePlayButton } from "./main";
-import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { ReportPacket } from "./packets/receiving/reportPacket";
-import { JoinPacket } from "./packets/sending/joinPacket";
-import { localStorageInstance } from "./utils/localStorageHandler";
-import { Obstacle } from "./objects/obstacle";
-import { Loot } from "./objects/loot";
-import { InputPacket } from "./packets/sending/inputPacket";
-
-import { type CollisionRecord, circleCollision, distanceSquared } from "../../../common/src/utils/math";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Building } from "./objects/building";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { getIconFromInputName } from "./utils/inputManager";
 import { Container, type Application } from "pixi.js";
+import { ObjectCategory, PacketType, TICKS_PER_SECOND, zIndexes } from "../../../common/src/constants";
+import { Scopes } from "../../../common/src/definitions/scopes";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { circleCollision, distanceSquared, type CollisionRecord } from "../../../common/src/utils/math";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ObjectPool } from "../../../common/src/utils/objectPool";
+import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { enablePlayButton } from "./main";
+import { Building } from "./objects/building";
+import { type Bullet } from "./objects/bullet";
+import { DeathMarker } from "./objects/deathMarker";
+import { Loot } from "./objects/loot";
+import { Obstacle } from "./objects/obstacle";
+import { ParticleManager } from "./objects/particles";
+import { Player } from "./objects/player";
+import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
+import { JoinedPacket } from "./packets/receiving/joinedPacket";
+import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { KillPacket } from "./packets/receiving/killPacket";
+import { MapPacket } from "./packets/receiving/mapPacket";
+import { PickupPacket } from "./packets/receiving/pickupPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { ReportPacket } from "./packets/receiving/reportPacket";
+import { UpdatePacket } from "./packets/receiving/updatePacket";
+import { InputPacket } from "./packets/sending/inputPacket";
+import { JoinPacket } from "./packets/sending/joinPacket";
+import { PingPacket } from "./packets/sending/pingPacket";
 import { Camera } from "./rendering/camera";
-import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
+import { type GameObject } from "./types/gameObject";
+import { type SendingPacket } from "./types/sendingPacket";
+import { keybinds } from "./utils/console/gameConsole";
+import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { getIconFromInputName } from "./utils/inputManager";
+import { PlayerManager } from "./utils/playerManager";
+import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
-import { ParticleManager } from "./objects/particles";
-import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { DeathMarker } from "./objects/deathMarker";
-import { Scopes } from "../../../common/src/definitions/scopes";
+import { consoleVariables } from "./utils/console/variables";
 import { Decal } from "./objects/decal";
 
 export class Game {
     socket!: WebSocket;
 
-    objects = new ObjectPool<GameObject>();
-    players = new ObjectPool<Player>();
-    loots = new Set<Loot>();
-    bullets = new Set<Bullet>();
+    readonly objects = new ObjectPool<GameObject>();
+    readonly players = new ObjectPool<Player>();
+    readonly loots = new Set<Loot>();
+    readonly bullets = new Set<Bullet>();
 
     activePlayerID = -1;
 
@@ -72,39 +61,30 @@ export class Game {
     spectating = false;
     error = false;
 
-    playerManager = new PlayerManager(this);
+    private _playerManager = new PlayerManager(this);
+    get playerManager(): PlayerManager { return this._playerManager; }
 
     lastPingDate = Date.now();
 
-    tickTimeoutID: number | undefined;
+    private _tickTimeoutID: number | undefined;
 
     gas!: Gas;
 
-    pixi: Application;
-
-    soundManager = new SoundManager();
-
-    particleManager = new ParticleManager(this);
-
-    map: Minimap;
-
-    camera: Camera;
+    readonly pixi: Application;
+    readonly soundManager = new SoundManager();
+    readonly particleManager = new ParticleManager(this);
+    readonly map: Minimap;
+    readonly camera: Camera;
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
     playersContainer = new Container();
     bulletsContainer = new Container();
 
-    music = new Howl({
-        src: localStorageInstance.config.oldMenuMusic
-            ? "./audio/music/old_menu_music.mp3"
-            : "./audio/music/menu_music.mp3",
-        loop: true
-    });
-
+    readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
     musicPlaying = false;
 
-    tweens = new Set<Tween<unknown>>();
+    readonly tweens = new Set<Tween<unknown>>();
 
     constructor(pixi: Application) {
         this.pixi = pixi;
@@ -119,7 +99,7 @@ export class Game {
         this.bulletsContainer.zIndex = zIndexes.Bullets;
 
         setInterval(() => {
-            if (localStorageInstance.config.showFPS) {
+            if (consoleVariables.get.builtIn("pf_show_fps").value) {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
@@ -127,8 +107,10 @@ export class Game {
         window.addEventListener("resize", this.resize.bind(this));
 
         if (!this.musicPlaying) {
+            const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
+
             this.music.play();
-            this.music.volume(localStorageInstance.config.musicVolume);
+            this.music.volume(musicVolume);
             this.musicPlaying = true;
         }
     }
@@ -157,15 +139,15 @@ export class Game {
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
             }
-            this.sendPacket(new PingPacket(this.playerManager));
-            this.sendPacket(new JoinPacket(this.playerManager));
+            this.sendPacket(new PingPacket(this._playerManager));
+            this.sendPacket(new JoinPacket(this._playerManager));
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
             this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
 
             this.map.indicator.setFrame("player_indicator");
 
-            this.tickTimeoutID = window.setInterval(this.tick.bind(this), TICK_SPEED);
+            this._tickTimeoutID = window.setInterval(this.tick.bind(this), TICKS_PER_SECOND);
         };
 
         // Handle incoming messages
@@ -173,7 +155,7 @@ export class Game {
             const stream = new SuroiBitStream(message.data);
             switch (stream.readPacketType()) {
                 case PacketType.Joined: {
-                    new JoinedPacket(this.playerManager).deserialize(stream);
+                    new JoinedPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Map: {
@@ -183,34 +165,34 @@ export class Game {
                     break;
                 }
                 case PacketType.Update: {
-                    const packet = new UpdatePacket(this.playerManager);
+                    const packet = new UpdatePacket(this._playerManager);
                     packet.deserialize(stream);
                     this.processUpdate(packet);
                     break;
                 }
                 case PacketType.GameOver: {
-                    new GameOverPacket(this.playerManager).deserialize(stream);
+                    new GameOverPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Kill: {
-                    new KillPacket(this.playerManager).deserialize(stream);
+                    new KillPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.KillFeed: {
-                    new KillFeedPacket(this.playerManager).deserialize(stream);
+                    new KillFeedPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Pickup: {
-                    new PickupPacket(this.playerManager).deserialize(stream);
+                    new PickupPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.Report: {
-                    new ReportPacket(this.playerManager).deserialize(stream);
+                    new ReportPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 // TODO: maybe disconnect players that haven't sent a ping in a while?
                 case PacketType.Ping: {
-                    new PingedPacket(this.playerManager).deserialize(stream);
+                    new PingedPacket(this._playerManager).deserialize(stream);
                     break;
                 }
             }
@@ -238,7 +220,7 @@ export class Game {
     }
 
     endGame(): void {
-        clearTimeout(this.tickTimeoutID);
+        clearTimeout(this._tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
             this.soundManager.stop(this.activePlayer.actionSound);
@@ -266,11 +248,11 @@ export class Game {
 
         this.camera.zoom = Scopes[0].zoomLevel;
 
-        this.playerManager = new PlayerManager(this);
+        this._playerManager = new PlayerManager(this);
 
         if (!this.musicPlaying) {
             this.music.stop().play();
-            this.music.volume(localStorageInstance.config.musicVolume);
+            this.music.volume(consoleVariables.get.builtIn("cv_music_volume").value);
             this.musicPlaying = true;
         }
     }
@@ -302,15 +284,13 @@ export class Game {
         if (!this.gameStarted) return;
         const delta = this.pixi.ticker.deltaMS;
 
-        if (localStorageInstance.config.movementSmoothing) {
+        if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
             for (const player of this.players) {
                 player.updateContainerPosition();
                 if (
-                    localStorageInstance.config.rotationSmoothing &&
-                    !(player.isActivePlayer && localStorageInstance.config.clientSidePrediction)
-                ) {
-                    player.updateContainerRotation();
-                }
+                    consoleVariables.get.builtIn("cv_rotation_smoothing").value &&
+                    !(player.isActivePlayer && consoleVariables.get.builtIn("cv_animate_rotation").value === "client")
+                ) player.updateContainerRotation();
             }
 
             for (const loot of this.loots) loot.updateContainerPosition();
@@ -339,6 +319,7 @@ export class Game {
     processUpdate(updateData: UpdatePacket): void {
         for (const { id, type, data } of updateData.fullDirtyObjects) {
             let object: GameObject | undefined = this.objects.get(id);
+
             if (object === undefined || object.destroyed) {
                 switch (type.category) {
                     case ObjectCategory.Player: {
@@ -368,9 +349,10 @@ export class Game {
                     }
                 }
             }
+
             if (object) {
                 this.objects.add(object);
-                object?.updateFromData(data);
+                object.updateFromData(data);
             }
         }
 
@@ -386,8 +368,10 @@ export class Game {
                 console.warn(`Trying to delete unknown object with ID ${id}`);
                 continue;
             }
+
             object.destroy();
             this.objects.delete(object);
+
             if (object instanceof Player) {
                 this.players.delete(object);
             } else if (object instanceof Loot) {
@@ -397,7 +381,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string => localStorageInstance.config.keybinds.interact[0];
+        const getPickupBind = (): string => getIconFromInputName(keybinds.getInputsBoundToAction("interact")[0]);
 
         let skipLootCheck = true;
 
@@ -438,9 +422,9 @@ export class Game {
         return (): void => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
 
-            if (this.playerManager.dirty.inputs) {
-                this.playerManager.dirty.inputs = false;
-                this.sendPacket(new InputPacket(this.playerManager));
+            if (this._playerManager.dirty.inputs) {
+                this._playerManager.dirty.inputs = false;
+                this.sendPacket(new InputPacket(this._playerManager));
             }
 
             // Only run interact message and loot checks every other tick
@@ -469,7 +453,7 @@ export class Game {
                     if (dist < minDist && circleCollision(player.position, 3, object.position, object.hitbox.radius)) {
                         minDist = dist;
                         closestObject = object;
-                        canInteract = closestObject.canInteract(this.playerManager);
+                        canInteract = closestObject.canInteract(this._playerManager);
                     }
                 } else if (object instanceof Building) {
                     if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
@@ -515,7 +499,7 @@ export class Game {
                         $("#interact-text").text(interactText);
                     };
 
-                    if (this.playerManager.isMobile) {
+                    if (this._playerManager.isMobile) {
                         const lootDef = closestObject.type.definition;
 
                         // Autoloot
@@ -526,9 +510,9 @@ export class Game {
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
-                                (lootDef.itemType === ItemType.Gun && (!this.playerManager.weapons[0] || !this.playerManager.weapons[1])))
+                                (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1])))
                         ) {
-                            this.playerManager.interact();
+                            this._playerManager.interact();
                         } else if (
                             (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
                             closestObject instanceof Obstacle

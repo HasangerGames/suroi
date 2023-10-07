@@ -1,39 +1,35 @@
 // noinspection ES6PreferShortImport
-import { Config, SpawnMode } from "./config";
-
-import type { WebSocket } from "uWebSockets.js";
-
-import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
-import { Map } from "./map";
-import { Gas } from "./gas";
-
-import { Player } from "./objects/player";
-import { Explosion } from "./objects/explosion";
-import { removeFrom } from "./utils/misc";
-
-import { UpdatePacket } from "./packets/sending/updatePacket";
-import { type GameObject } from "./types/gameObject";
-
-import { log } from "../../common/src/utils/misc";
-import { OBJECT_ID_BITS, ObjectCategory, TICK_SPEED } from "../../common/src/constants";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import { KillFeedPacket } from "./packets/sending/killFeedPacket";
-import { JoinKillFeedMessage } from "./types/killFeedMessage";
-import { random, randomPointInsideCircle } from "../../common/src/utils/random";
-import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { v, type Vector } from "../../common/src/utils/vector";
-import { distanceSquared } from "../../common/src/utils/math";
-import { MapPacket } from "./packets/sending/mapPacket";
-import { Loot } from "./objects/loot";
-import { IDAllocator } from "./utils/idAllocator";
+import { type WebSocket } from "uWebSockets.js";
+import { OBJECT_ID_BITS, ObjectCategory, TICKS_PER_SECOND } from "../../common/src/constants";
 import { type LootDefinition } from "../../common/src/definitions/loots";
-import { GameOverPacket } from "./packets/sending/gameOverPacket";
+import { distanceSquared } from "../../common/src/utils/math";
+import { log } from "../../common/src/utils/misc";
+import { ObjectType } from "../../common/src/utils/objectType";
+import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { type GunItem } from "./inventory/gunItem";
-import { type Emote } from "./objects/emote";
-import { Grid } from "./utils/grid";
+import { v, type Vector } from "../../common/src/utils/vector";
 import { Maps } from "./data/maps";
+import { Gas } from "./gas";
+import { type GunItem } from "./inventory/gunItem";
+import { Map } from "./map";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
+import { type Emote } from "./objects/emote";
+import { Explosion } from "./objects/explosion";
+import { Loot } from "./objects/loot";
+import { Player } from "./objects/player";
+import { GameOverPacket } from "./packets/sending/gameOverPacket";
+import { JoinedPacket } from "./packets/sending/joinedPacket";
+import { KillFeedPacket } from "./packets/sending/killFeedPacket";
+import { MapPacket } from "./packets/sending/mapPacket";
+import { UpdatePacket } from "./packets/sending/updatePacket";
+import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
+import { type GameObject } from "./types/gameObject";
+import { JoinKillFeedMessage } from "./types/killFeedMessage";
+import { Grid } from "./utils/grid";
+import { IDAllocator } from "./utils/idAllocator";
+import { removeFrom } from "./utils/misc";
+import { SpawnMode } from "./defaultConfig";
+import { Config } from "./config";
 
 export class Game {
     readonly _id: number;
@@ -97,7 +93,7 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    tickDelta = 1000 / TICK_SPEED;
+    tickDelta = 1000 / TICKS_PER_SECOND;
 
     updateObjects = false;
 
@@ -117,7 +113,7 @@ export class Game {
         this.allowJoin = true;
 
         // Start the tick loop
-        this.tick(TICK_SPEED);
+        this.tick(TICKS_PER_SECOND);
     }
 
     tick(delay: number): void {
@@ -262,11 +258,11 @@ export class Game {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
                 log(`Game #${this._id} average ms/tick: ${mspt}`, true);
-                log(`Load: ${((mspt / TICK_SPEED) * 100).toFixed(1)}%`);
+                log(`Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, TICK_SPEED - tickTime));
+            this.tick(Math.max(0, TICKS_PER_SECOND - tickTime));
         }, delay);
     }
 

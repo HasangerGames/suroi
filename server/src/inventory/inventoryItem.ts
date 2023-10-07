@@ -1,8 +1,8 @@
-import { type WearerAttributes, type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ItemDefinition, type ItemType, type WearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { type Player } from "../objects/player";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
