@@ -437,7 +437,6 @@ export function setupInputs(game: Game): void {
             const def = game.activePlayer?.activeItem.definition as GunDefinition
 
             if (!def.shootOnRelease || game.activePlayer?.activeItem.definition.itemType === ItemType.Melee) {
-                navigator.vibrate?.(5)
                 game.playerManager.attacking = data.distance > config.joystickSize / 3;
             } else {
                 game.playerManager.shootOnRelease = true

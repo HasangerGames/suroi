@@ -1310,6 +1310,78 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             }
         },
+        {
+            idString: "port_warehouse_windows",
+            name: "Port warehouse windows",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible:true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 24),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+            }
+        },
+        {
+            idString: "port_warehouse_wall_short",
+            name: "Port warehouse short wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible:true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 14.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+            }
+        },
+        {
+            idString: "port_warehouse_wall_long",
+            name: "Port warehouse long wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible:true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 32.2),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+            }
+        },
+        {
+            idString: "port_warehouse_wall_superlong",
+            name: "Port warehouse long super wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible:true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 56),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+            }
+        },
         makeContainerWalls(1, "closed"),
         makeContainerWalls(2, "open1", ContainerTints.Green),
         makeContainerWalls(3, "open1", ContainerTints.Blue),
