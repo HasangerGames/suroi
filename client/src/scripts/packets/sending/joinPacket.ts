@@ -6,16 +6,19 @@ import { type Config, localStorageInstance } from "../../utils/localStorageHandl
 import { ObjectType } from "../../../../../common/src/utils/objectType";
 
 export class JoinPacket extends SendingPacket {
-    override readonly allocBytes = 8;
+    override readonly allocBytes = 24;
     override readonly type = PacketType.Join;
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
+        stream.writePlayerName(localStorageInstance.config.playerName);
+
         stream.writeBoolean(this.playerManager.isMobile);
+
         const writeLoadoutItem = (propertyName: keyof Config["loadout"], category = ObjectCategory.Emote): void => {
             stream.writeObjectTypeNoCategory(ObjectType.fromString(category, localStorageInstance.config.loadout[propertyName]));
         };
-
         writeLoadoutItem("skin", ObjectCategory.Loot);
         writeLoadoutItem("topEmote");
         writeLoadoutItem("rightEmote");

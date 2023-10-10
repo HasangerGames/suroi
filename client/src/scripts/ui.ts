@@ -4,7 +4,6 @@ import { type Config, localStorageInstance } from "./utils/localStorageHandler";
 import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
 import { requestFullscreen } from "./utils/misc";
 import {
-    ALLOW_NON_ASCII_USERNAME_CHARS,
     InputActions,
     INVENTORY_MAX_WEAPONS,
     SpectateActions
@@ -17,7 +16,6 @@ import { Emotes } from "../../../common/src/definitions/emotes";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { isMobile } from "pixi.js";
-import { stripNonASCIIChars } from "../../../common/src/utils/misc";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -115,16 +113,17 @@ export function setupUI(game: Game): void {
 
     usernameField.val(localStorageInstance.config.playerName);
     usernameField.on("input", () => {
-        // Remove non-ASCII chars
-        if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
-            usernameField.val(stripNonASCIIChars(
-                // Replace fancy quotes & dashes first, so they don't get stripped out
-                (usernameField.val() as string)
-                    .replaceAll(/[\u201c\u201d\u201f]/g, '"')
-                    .replaceAll(/[\u2018\u2019\u201b]/g, "'")
-                    .replaceAll(/[\u2013\u2014]/g, "-")
-            ));
-        }
+        usernameField.val(
+            (usernameField.val() as string)
+                // Replace fancy quotes & dashes, so they don't get stripped out
+                .replaceAll(/[\u201c\u201d\u201f]/g, '"')
+                .replaceAll(/[\u2018\u2019\u201b]/g, "'")
+                .replaceAll(/[\u2013\u2014]/g, "-")
+                // Strip out non-ASCII chars
+                // eslint-disable-next-line no-control-regex
+                .replace(/[^\x00-\xFF]/g, "")
+        );
+
         localStorageInstance.update({ playerName: usernameField.val() as string });
     });
 

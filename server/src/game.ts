@@ -301,23 +301,19 @@ export class Game {
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player): void {
-        const game = player.game;
-
-        game.livingPlayers.add(player);
-        game.spectatablePlayers.push(player);
-        game.connectedPlayers.add(player);
-        game.grid.addObject(player);
-        game.fullDirtyObjects.add(player);
-        game.aliveCountDirty = true;
-        game.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
+        this.livingPlayers.add(player);
+        this.spectatablePlayers.push(player);
+        this.connectedPlayers.add(player);
+        this.grid.addObject(player);
+        this.fullDirtyObjects.add(player);
+        this.aliveCountDirty = true;
+        this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendData(this.mapPacketStream);
 
-        setTimeout(() => {
-            player.disableInvulnerability();
-        }, 5000);
+        setTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
@@ -325,6 +321,8 @@ export class Game {
                 this.gas.advanceGas();
             }, 5000);
         }
+
+        log(`"${player.name}" joined game #${this.id}`);
     }
 
     removePlayer(player: Player): void {

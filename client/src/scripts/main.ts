@@ -43,7 +43,7 @@ async function main(): Promise<void> {
                 const role = localStorageInstance.config.role;
                 const nameColor = localStorageInstance.config.nameColor;
                 const lobbyClearing = localStorageInstance.config.lobbyClearing;
-                let address = `${data.address}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
+                let address = `${data.address}/play?gameID=${data.gameID}`;
 
                 if (devPass) address += `&password=${devPass}`;
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
