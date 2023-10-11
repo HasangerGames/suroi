@@ -1,31 +1,17 @@
 import $ from "jquery";
-
-import { type Config, localStorageInstance } from "./utils/localStorageHandler";
-import { HIDE_DEV_REGION, UI_DEBUG_MODE } from "./utils/constants";
+import { UI_DEBUG_MODE } from "./utils/constants";
 import { requestFullscreen } from "./utils/misc";
-import {
-    InputActions,
-    INVENTORY_MAX_WEAPONS,
-    SpectateActions
-} from "../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { isMobile } from "pixi.js";
-import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
-import { isMobile } from "pixi.js";
-import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
-import { Scopes } from "../../../common/src/definitions/scopes";
 import { Skins } from "../../../common/src/definitions/skins";
-import { type Game } from "./game";
-import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { body, createDropdown } from "./uiHelpers";
-import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
 import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
 import { gameConsole } from "./utils/console/gameConsole";
 

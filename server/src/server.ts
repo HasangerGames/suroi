@@ -12,26 +12,15 @@ import {
 
 import { existsSync, readFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
-import sanitizeHtml from "sanitize-html";
-import { App, DEDICATED_COMPRESSOR_256KB, SSLApp, type HttpRequest, type HttpResponse, type WebSocket } from "uWebSockets.js";
-import { ALLOW_NON_ASCII_USERNAME_CHARS, DEFAULT_USERNAME, PLAYER_NAME_MAX_LENGTH, PacketType } from "../../common/src/constants";
-import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
+import { PacketType } from "../../common/src/constants";
+import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { version } from "../../package.json";
-import { Config } from "./config";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
-
-import { log } from "../../common/src/utils/misc";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { PacketType } from "../../common/src/constants";
-import { URLSearchParams } from "node:url";
-import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
-import { hasBadWords } from "./utils/badWordFilter";
 
 /**
  * Apply CORS headers to a response.
@@ -276,11 +265,11 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
-        playerCount++;
         const data = socket.getUserData();
-        const game = games[userData.gameID];
+        const game = games[data.gameID];
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
+        playerCount++;
     },
 
     /**

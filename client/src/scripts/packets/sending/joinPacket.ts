@@ -11,7 +11,7 @@ export class JoinPacket extends SendingPacket {
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        stream.writePlayerName(localStorageInstance.config.playerName);
+        stream.writePlayerName(consoleVariables.get.builtIn("cv_player_name").value);
 
         stream.writeBoolean(this.playerManager.isMobile);
 
@@ -21,7 +21,6 @@ export class JoinPacket extends SendingPacket {
         ): void => {
             stream.writeObjectTypeNoCategory(ObjectType.fromString(category, consoleVariables.get.builtIn(propertyName).value as string));
         };
-
         writeLoadoutItem("cv_loadout_skin", ObjectCategory.Loot);
         writeLoadoutItem("cv_loadout_top_emote");
         writeLoadoutItem("cv_loadout_right_emote");
