@@ -5,12 +5,16 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type CVarTypeMapping, consoleVariables } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
-    override readonly allocBytes = 8;
+    override readonly allocBytes = 24;
     override readonly type = PacketType.Join;
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
+        stream.writePlayerName(localStorageInstance.config.playerName);
+
         stream.writeBoolean(this.playerManager.isMobile);
+
         const writeLoadoutItem = (
             propertyName: keyof CVarTypeMapping,
             category = ObjectCategory.Emote

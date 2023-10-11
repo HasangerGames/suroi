@@ -1,3 +1,15 @@
+import { Config } from "./config";
+import { version } from "../../package.json";
+
+import {
+    App,
+    DEDICATED_COMPRESSOR_256KB,
+    type HttpRequest,
+    type HttpResponse,
+    SSLApp,
+    type WebSocket
+} from "uWebSockets.js";
+
 import { existsSync, readFile, writeFileSync } from "fs";
 import { URLSearchParams } from "node:url";
 import sanitizeHtml from "sanitize-html";
@@ -12,6 +24,12 @@ import { type Player } from "./objects/player";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
+
+import { log } from "../../common/src/utils/misc";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { PacketType } from "../../common/src/constants";
+import { URLSearchParams } from "node:url";
+import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
 import { hasBadWords } from "./utils/badWordFilter";
 
@@ -143,7 +161,6 @@ app.get("/api/bannedIPs", (res, req) => {
 export interface PlayerContainer {
     gameID: number
     player?: Player
-    name: string
     ip: string | undefined
     role?: string
     isDev: boolean
@@ -209,27 +226,6 @@ app.ws("/play", {
         }
 
         //
-        // Name
-        //
-        let name = searchParams.get("name");
-        name = decodeURIComponent(name ?? "").trim();
-
-        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0) name = DEFAULT_USERNAME;
-        else {
-            if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
-
-            if (Config.censorUsernames && hasBadWords(name)) name = DEFAULT_USERNAME;
-            else {
-                name = sanitizeHtml(name, {
-                    allowedTags: [],
-                    allowedAttributes: {}
-                });
-
-                if (name.trim().length === 0) name = DEFAULT_USERNAME;
-            }
-        }
-
-        //
         // Role
         //
         const password = searchParams.get("password");
@@ -260,7 +256,6 @@ app.ws("/play", {
         const userData: PlayerContainer = {
             gameID,
             player: undefined,
-            name,
             ip,
             role,
             isDev,
@@ -282,11 +277,10 @@ app.ws("/play", {
      */
     open(socket: WebSocket<PlayerContainer>) {
         playerCount++;
-        const userData = socket.getUserData();
+        const data = socket.getUserData();
         const game = games[userData.gameID];
         if (game === undefined) return;
-        userData.player = game.addPlayer(socket);
-        log(`"${userData.name}" joined game #${userData.gameID}`);
+        data.player = game.addPlayer(socket);
     },
 
     /**
@@ -329,13 +323,14 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close(socket: WebSocket<PlayerContainer>) {
+        const data = socket.getUserData();
+        if (Config.protection) simultaneousConnections[data.ip as string]--;
+        const game = games[data.gameID];
+        const player = data.player;
+        if (game === undefined || player === undefined) return;
         playerCount--;
-        const p = socket.getUserData();
-        if (Config.protection) simultaneousConnections[p.ip as string]--;
-        log(`"${p.name}" left game #${p.gameID}`);
-        const game = games[p.gameID];
-        if (game === undefined || p.player === undefined) return;
-        game.removePlayer(p.player);
+        log(`"${player.name}" left game #${data.gameID}`);
+        game.removePlayer(player);
     }
 });
 
