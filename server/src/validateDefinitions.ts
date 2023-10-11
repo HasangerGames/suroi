@@ -1,6 +1,7 @@
+import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
-import { type ArmorDefinition, Armors } from "../../common/src/definitions/armors";
+import { Armors, type ArmorDefinition } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
 import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
@@ -14,19 +15,15 @@ import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles"
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
-import {
-    type BulletDefinition,
-    type ItemDefinition,
-    type ObjectDefinition,
-    type ObjectDefinitions,
-    type WearerAttributes
-} from "../../common/src/utils/objectDefinitions";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { type BulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
+import { Config as ServerConfig } from "./config";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
+import { GasMode, SpawnMode } from "./defaultConfig";
+import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 const tester = (() => {
     const errors: Array<[string, string]> = [];
@@ -40,7 +37,7 @@ const tester = (() => {
         assert(condition: boolean, errorMessage: string, errorPath: string): void {
             if (!condition) errors.push([errorPath, errorMessage]);
         },
-        assertNoDuplicateIdStrings(collection: ObjectDefinition[], collectionName: string, errorPath: string): void {
+        assertNoDuplicateIDStrings(collection: ObjectDefinition[], collectionName: string, errorPath: string): void {
             const dupes: Record<string, number> = {};
             const set = new Set<string>();
             let foundDupes = false;
@@ -701,11 +698,11 @@ function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinit
 }
 
 logger.indent("Validating ammo types", () => {
-    tester.assertNoDuplicateIdStrings(Ammos, "Ammos", "ammos");
+    tester.assertNoDuplicateIDStrings(Ammos, "Ammos", "ammos");
 });
 
 logger.indent("Validating armors", () => {
-    tester.assertNoDuplicateIdStrings(Armors, "Armors", "armors");
+    tester.assertNoDuplicateIDStrings(Armors, "Armors", "armors");
 });
 
 logger.indent("Validating armor definitions", () => {
@@ -734,20 +731,20 @@ logger.indent("Validating armor definitions", () => {
     logger.indent("Validating helmet definitions", () => {
         const errorPath = tester.createPath("armors", "helmets");
 
-        tester.assertNoDuplicateIdStrings(Helmets, "Helmets", errorPath);
+        tester.assertNoDuplicateIDStrings(Helmets, "Helmets", errorPath);
         Helmets.forEach(validateArmorDefinition.bind(null, errorPath));
     });
 
     logger.indent("Validating vest definitions", () => {
         const errorPath = tester.createPath("armors", "vests");
 
-        tester.assertNoDuplicateIdStrings(Vests, "Vests", errorPath);
+        tester.assertNoDuplicateIDStrings(Vests, "Vests", errorPath);
         Vests.forEach(validateArmorDefinition.bind(null, errorPath));
     });
 });
 
 logger.indent("Validating backpack definitions", () => {
-    tester.assertNoDuplicateIdStrings(Backpacks, "Backpacks", "backpacks");
+    tester.assertNoDuplicateIDStrings(Backpacks, "Backpacks", "backpacks");
 
     for (const backpack of Backpacks) {
         const errorPath = tester.createPath("backpacks", `backpack '${backpack.idString}'`);
@@ -844,7 +841,7 @@ function validateHitbox(baseErrorPath: string, hitbox: Hitbox): void {
 }
 
 logger.indent("Validating building definitions", () => {
-    tester.assertNoDuplicateIdStrings(Buildings.definitions, "Buildings", "buildings");
+    tester.assertNoDuplicateIDStrings(Buildings.definitions, "Buildings", "buildings");
 
     for (const building of Buildings.definitions) {
         logger.indent(`Validating '${building.idString}'`, () => {
@@ -1021,10 +1018,10 @@ logger.indent("Validating building definitions", () => {
 });
 
 logger.indent("Validating emotes", () => {
-    tester.assertNoDuplicateIdStrings(Emotes.definitions, "Emotes", "emotes");
+    tester.assertNoDuplicateIDStrings(Emotes.definitions, "Emotes", "emotes");
 });
 
-function validateBalistics(baseErrorPath: string, ballistics: BulletDefinition): void {
+function validateBallistics(baseErrorPath: string, ballistics: BulletDefinition): void {
     tester.assertIsRealNumber({
         obj: ballistics,
         field: "damage",
@@ -1093,7 +1090,7 @@ function validateBalistics(baseErrorPath: string, ballistics: BulletDefinition):
 }
 
 logger.indent("Validating explosions", () => {
-    tester.assertNoDuplicateIdStrings(Explosions.definitions, "Explosions", "explosions");
+    tester.assertNoDuplicateIDStrings(Explosions.definitions, "Explosions", "explosions");
 
     for (const explosion of Explosions.definitions) {
         const errorPath = tester.createPath("explosions", `explosion '${explosion.idString}'`);
@@ -1167,7 +1164,7 @@ logger.indent("Validating explosions", () => {
 
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                validateBalistics(errorPath2, explosion.ballistics);
+                validateBallistics(errorPath2, explosion.ballistics);
             });
 
             tester.assertIsNaturalFiniteNumber({
@@ -1180,7 +1177,7 @@ logger.indent("Validating explosions", () => {
 });
 
 logger.indent("Validating guns", () => {
-    tester.assertNoDuplicateIdStrings(Guns, "Guns", "guns");
+    tester.assertNoDuplicateIDStrings(Guns, "Guns", "guns");
 
     for (const gun of Guns) {
         const errorPath = tester.createPath("guns", `gun '${gun.idString}'`);
@@ -1295,16 +1292,16 @@ logger.indent("Validating guns", () => {
                 }
             });
 
-            if (gun.particles !== undefined) {
+            if (gun.casingParticles !== undefined) {
                 logger.indent("Validating particles", () => {
                     const errorPath2 = tester.createPath(errorPath, "particles");
-                    validateVector(errorPath2, gun.particles!.position);
+                    validateVector(errorPath2, gun.casingParticles!.position);
                 });
             }
 
             logger.indent("Validating ballistics", () => {
                 const errorPath2 = tester.createPath(errorPath, "ballistics");
-                validateBalistics(errorPath2, gun.ballistics);
+                validateBallistics(errorPath2, gun.ballistics);
             });
 
             if (gun.fireMode === FireMode.Burst) {
@@ -1331,7 +1328,7 @@ logger.indent("Validating guns", () => {
 });
 
 logger.indent("Validating healing items", () => {
-    tester.assertNoDuplicateIdStrings(HealingItems, "HealingItems", "healing items");
+    tester.assertNoDuplicateIDStrings(HealingItems, "HealingItems", "healing items");
 
     for (const healingItem of HealingItems) {
         const errorPath = tester.createPath("healing items", `healing item '${healingItem.idString}'`);
@@ -1353,11 +1350,11 @@ logger.indent("Validating healing items", () => {
 });
 
 logger.indent("Validating loots", () => {
-    tester.assertNoDuplicateIdStrings(Loots.definitions, "Loots", "loots");
+    tester.assertNoDuplicateIDStrings(Loots.definitions, "Loots", "loots");
 });
 
 logger.indent("Validating melees", () => {
-    tester.assertNoDuplicateIdStrings(Melees, "Melees", "melees");
+    tester.assertNoDuplicateIDStrings(Melees, "Melees", "melees");
 
     for (const melee of Melees) {
         const errorPath = tester.createPath("melees", `melee '${melee.idString}'`);
@@ -1466,7 +1463,7 @@ logger.indent("Validating melees", () => {
 });
 
 logger.indent("Validating obstacles", () => {
-    tester.assertNoDuplicateIdStrings(Obstacles.definitions, "Obstacles", "obstacles");
+    tester.assertNoDuplicateIDStrings(Obstacles.definitions, "Obstacles", "obstacles");
 
     for (const obstacle of Obstacles.definitions) {
         const errorPath = tester.createPath("obstacles", `obstacle '${obstacle.idString}'`);
@@ -1534,10 +1531,10 @@ logger.indent("Validating obstacles", () => {
                 });
             }
 
-            if (obstacle.depth) {
+            if (obstacle.zIndex) {
                 tester.assertIsFiniteRealNumber({
                     obj: obstacle,
-                    field: "depth",
+                    field: "zIndex",
                     baseErrorPath: errorPath
                 });
             }
@@ -1555,7 +1552,7 @@ logger.indent("Validating obstacles", () => {
 });
 
 logger.indent("Validating scopes", () => {
-    tester.assertNoDuplicateIdStrings(Scopes, "Scopes", "scopes");
+    tester.assertNoDuplicateIDStrings(Scopes, "Scopes", "scopes");
 
     for (const scope of Scopes) {
         const errorPath = tester.createPath("scopes", `scope '${scope.idString}'`);
@@ -1571,7 +1568,94 @@ logger.indent("Validating scopes", () => {
 });
 
 logger.indent("Validating skins", () => {
-    tester.assertNoDuplicateIdStrings(Skins, "Skins", "skins");
+    tester.assertNoDuplicateIDStrings(Skins, "Skins", "skins");
+});
+
+logger.indent("Validating configurations", () => {
+    logger.indent("Validating server config", () => {
+        const errorPath = tester.createPath("configs", "server config");
+
+        if (ServerConfig.spawn.mode === SpawnMode.Radius) {
+            tester.assertIsFiniteRealNumber({
+                obj: ServerConfig.spawn,
+                field: "radius",
+                baseErrorPath: errorPath
+            });
+        }
+
+        if (ServerConfig.gas.mode === GasMode.Debug) {
+            tester.assertIsPositiveReal({
+                obj: ServerConfig.gas,
+                field: "overrideDuration",
+                baseErrorPath: errorPath
+            });
+        }
+
+        tester.assertReferenceExistsObject({
+            obj: ServerConfig,
+            field: "mapName",
+            collection: Maps,
+            collectionName: "maps",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsNaturalNumber({
+            obj: ServerConfig,
+            field: "playerLimit",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsPositiveFiniteReal({
+            obj: ServerConfig,
+            field: "movementSpeed",
+            baseErrorPath: errorPath
+        });
+
+        if (ServerConfig.protection) {
+            logger.indent("Validating protection settings", () => {
+                const protection = ServerConfig.protection!;
+                const errorPath2 = tester.createPath(errorPath, "protection settings");
+
+                tester.assertIsNaturalFiniteNumber({
+                    obj: protection,
+                    field: "maxSimultaneousConnections",
+                    baseErrorPath: errorPath2
+                });
+
+                if (protection.maxJoinAttempts) {
+                    tester.assertIsNaturalFiniteNumber({
+                        obj: protection.maxJoinAttempts,
+                        field: "count",
+                        baseErrorPath: errorPath2
+                    });
+
+                    tester.assertIsPositiveFiniteReal({
+                        obj: protection.maxJoinAttempts,
+                        field: "duration",
+                        baseErrorPath: errorPath2
+                    });
+                }
+
+                tester.assertIsPositiveReal({
+                    obj: protection,
+                    field: "refreshDuration",
+                    baseErrorPath: errorPath2
+                });
+            });
+        }
+    });
+
+    logger.indent("Validating client config", () => {
+        const errorPath = tester.createPath("configs", "client config");
+
+        tester.assertReferenceExistsObject({
+            obj: ClientConfig,
+            field: "defaultRegion",
+            collection: ClientConfig.regions,
+            collectionName: "regions",
+            baseErrorPath: errorPath
+        });
+    });
 });
 
 logger.print();

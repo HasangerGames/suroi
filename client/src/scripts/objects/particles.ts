@@ -1,8 +1,8 @@
-import { type Vector, vAdd, vMul, vDiv } from "../../../../common/src/utils/vector";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { type Game } from "../game";
-import { random, randomRotation } from "../../../../common/src/utils/random";
 import { lerp } from "../../../../common/src/utils/math";
+import { random, randomRotation } from "../../../../common/src/utils/random";
+import { vAdd, vDiv, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class ParticleManager {
     particles = new Set<Particle>();
@@ -71,7 +71,7 @@ export interface ParticleOptions {
     position: Vector
     speed: Vector
     lifeTime: number
-    depth: number
+    zIndex: number
     scale?: ParticleProperty
     alpha?: ParticleProperty
     rotation?: ParticleProperty
@@ -97,7 +97,7 @@ export class Particle {
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
         this.image = new SuroiSprite(frame);
-        this.image.setDepth(options.depth);
+        this.image.setZIndex(options.zIndex);
 
         this.scale = typeof options.scale === "number" ? options.scale : 1;
         this.alpha = typeof options.alpha === "number" ? options.alpha : 1;

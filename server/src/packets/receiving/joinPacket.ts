@@ -1,12 +1,11 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../../common/src/constants";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { Config } from "../../config";
 import { hasBadWords } from "../../utils/badWordFilter";
 import sanitizeHtml from "sanitize-html";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {

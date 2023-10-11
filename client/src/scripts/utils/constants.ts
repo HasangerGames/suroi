@@ -1,6 +1,5 @@
 import { Color } from "pixi.js";
 
-export const HIDE_DEV_REGION = false;
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
 
@@ -20,6 +19,14 @@ export const COLORS = {
     water: new Color("hsl(211, 63%, 42%)"),
     gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
     beach: new Color("hsl(40, 39%, 55%)")
+};
+
+export const BULLET_COLORS: Record<string, number> = {
+    "9mm": 0xffff80,
+    "12g": 0xffc8c8,
+    "556mm": 0x80ff80,
+    "762mm": 0x80ffff,
+    shrapnel: 0x1d1d1d
 };
 
 export const PIXI_SCALE = 20;

@@ -1,9 +1,9 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
+import { DEFAULT_USERNAME } from "../../../../../common/src/constants";
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { ReceivingPacket } from "../../types/receivingPacket";
+import { consoleVariables } from "../../utils/console/variables";
 import { formatDate } from "../../utils/misc";
-import { localStorageInstance } from "../../utils/localStorageHandler";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -21,8 +21,7 @@ export class GameOverPacket extends ReceivingPacket {
         const won = stream.readBoolean();
 
         if (!won) {
-            $("#btn-spectate").show();
-            $("#btn-spectate").removeClass("btn-disabled");
+            $("#btn-spectate").removeClass("btn-disabled").show();
             this.game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
         } else {
             $("#btn-spectate").hide();
@@ -30,7 +29,8 @@ export class GameOverPacket extends ReceivingPacket {
         $("#chicken-dinner").toggle(won);
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
-        $("#game-over-player-name").html(stream.readPlayerNameWithColor());
+        const name = stream.readPlayerNameWithColor();
+        $("#game-over-player-name").html(consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : name);
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());
@@ -38,18 +38,23 @@ export class GameOverPacket extends ReceivingPacket {
         const timeString = formatDate(stream.readUint16());
 
         $("#game-over-time").text(timeString);
+
         if (won) {
             const game = this.game;
-            game.music.play();
+            const volume = consoleVariables.get.builtIn("cv_music_volume").value;
+            if (volume) {
+                game.music.play();
+            }
             game.music.loop();
-            game.music.volume(localStorageInstance.config.musicVolume);
+            game.music.volume(volume);
             game.musicPlaying = true;
         }
+
         gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
 
         // Player rank
-        const aliveCount = stream.readBits(7);
-        if (won) $("#game-over-rank").text(`#${aliveCount}`);
-        else $("#game-over-rank").text(`#${aliveCount + 1}`);
+        const text = `#${(won ? 0 : stream.readBits(7)) + 1}`;
+        $("#game-over-rank").text(text);
+        $("#game-over-rank-mobile").text(text);
     }
 }

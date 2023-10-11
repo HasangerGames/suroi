@@ -1,13 +1,12 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { COLORS, PIXI_SCALE } from "../../utils/constants";
-import { Container, Graphics, isMobile, RenderTexture, Text } from "pixi.js";
-import { GRID_SIZE, ObjectCategory } from "../../../../../common/src/constants";
-import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
+import { Container, Graphics, RenderTexture, Text, isMobile } from "pixi.js";
+import { GRID_SIZE, ObjectCategory, zIndexes } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { SuroiSprite } from "../../utils/pixi";
+import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
 import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/hitbox";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { ReceivingPacket } from "../../types/receivingPacket";
+import { COLORS, PIXI_SCALE } from "../../utils/constants";
+import { SuroiSprite } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -29,7 +28,7 @@ export class MapPacket extends ReceivingPacket {
         graphics.drawRect(0, 0, width * PIXI_SCALE, height * PIXI_SCALE);
         graphics.fill.color = COLORS.grass.toNumber();
         graphics.drawRect(GRID_SIZE * PIXI_SCALE, GRID_SIZE * PIXI_SCALE, (width - GRID_SIZE * 2) * PIXI_SCALE, (height - GRID_SIZE * 2) * PIXI_SCALE);
-        graphics.zIndex = -10;
+        graphics.zIndex = zIndexes.Ground;
 
         mapGraphics.beginFill();
         mapGraphics.fill.color = COLORS.water.toNumber();
@@ -177,7 +176,7 @@ export class MapPacket extends ReceivingPacket {
 
             const text = new Text(name, {
                 fill: "white",
-                fontFamily: "Inter",
+                fontFamily: "Inter, sans-serif",
                 fontWeight: "600",
                 stroke: "black",
                 strokeThickness: 2,

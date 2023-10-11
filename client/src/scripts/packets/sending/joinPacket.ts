@@ -1,9 +1,8 @@
-import { SendingPacket } from "../../types/sendingPacket";
-
 import { ObjectCategory, PacketType } from "../../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type Config, localStorageInstance } from "../../utils/localStorageHandler";
 import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { SendingPacket } from "../../types/sendingPacket";
+import { type CVarTypeMapping, consoleVariables } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
     override readonly allocBytes = 24;
@@ -16,13 +15,17 @@ export class JoinPacket extends SendingPacket {
 
         stream.writeBoolean(this.playerManager.isMobile);
 
-        const writeLoadoutItem = (propertyName: keyof Config["loadout"], category = ObjectCategory.Emote): void => {
-            stream.writeObjectTypeNoCategory(ObjectType.fromString(category, localStorageInstance.config.loadout[propertyName]));
+        const writeLoadoutItem = (
+            propertyName: keyof CVarTypeMapping,
+            category = ObjectCategory.Emote
+        ): void => {
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(category, consoleVariables.get.builtIn(propertyName).value as string));
         };
-        writeLoadoutItem("skin", ObjectCategory.Loot);
-        writeLoadoutItem("topEmote");
-        writeLoadoutItem("rightEmote");
-        writeLoadoutItem("bottomEmote");
-        writeLoadoutItem("leftEmote");
+
+        writeLoadoutItem("cv_loadout_skin", ObjectCategory.Loot);
+        writeLoadoutItem("cv_loadout_top_emote");
+        writeLoadoutItem("cv_loadout_right_emote");
+        writeLoadoutItem("cv_loadout_bottom_emote");
+        writeLoadoutItem("cv_loadout_left_emote");
     }
 }

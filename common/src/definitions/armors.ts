@@ -1,7 +1,7 @@
+import { type ArmorType } from "../constants";
 import { type ItemDefinition, type ItemType } from "../utils/objectDefinitions";
 import { Helmets } from "./helmets";
 import { Vests } from "./vests";
-import { type ArmorType } from "../constants";
 
 export interface ArmorDefinition extends ItemDefinition {
     readonly itemType: ItemType.Armor

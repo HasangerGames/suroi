@@ -1,21 +1,19 @@
-import { type Game } from "../game";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import {
-    INVENTORY_MAX_WEAPONS, ObjectCategory, InputActions
-} from "../../../../common/src/constants";
-import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { localStorageInstance } from "./localStorageHandler";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { ItemPacket } from "../packets/sending/itemPacket";
-import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
-import { Ammos } from "../../../../common/src/definitions/ammos";
-import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
-import { v } from "../../../../common/src/utils/vector";
-import { absMod } from "../../../../common/src/utils/math";
 import { isMobile } from "pixi.js";
+import { INVENTORY_MAX_WEAPONS, InputActions, ObjectCategory } from "../../../../common/src/constants";
+import { Ammos } from "../../../../common/src/definitions/ammos";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { absMod, clamp } from "../../../../common/src/utils/math";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { v } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { consoleVariables } from "../utils/console/variables";
+import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 
 /**
  * This class manages the active player data and inventory
@@ -37,17 +35,52 @@ export class PlayerManager {
     adrenaline = 0;
 
     get isMobile(): boolean {
-        return isMobile.any && localStorageInstance.config.mobileControls;
+        return isMobile.any && consoleVariables.get.builtIn("mb_controls_enabled").value;
     }
 
-    readonly movement = {
-        up: false,
-        left: false,
-        down: false,
-        right: false,
-        // mobile
-        moving: false
-    };
+    readonly movement = (() => {
+        let up = false;
+        let left = false;
+        let down = false;
+        let right = false;
+        let moving = false;
+
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const T = this;
+
+        return {
+            get up() { return up; },
+            set up(u: boolean) {
+                up = u;
+                T.dirty.inputs = true;
+            },
+
+            get left() { return left; },
+            set left(l: boolean) {
+                left = l;
+                T.dirty.inputs = true;
+            },
+
+            get down() { return down; },
+            set down(d: boolean) {
+                down = d;
+                T.dirty.inputs = true;
+            },
+
+            get right() { return right; },
+            set right(r: boolean) {
+                right = r;
+                T.dirty.inputs = true;
+            },
+
+            get moving() { return moving; },
+            set moving(m: boolean) {
+                moving = m;
+                T.dirty.inputs = true;
+            }
+
+        };
+    })();
 
     // had to put it here because it's not a boolean
     // and inputManager assumes all keys of `movement` are booleans
@@ -68,9 +101,16 @@ export class PlayerManager {
 
     rotation = 0;
 
-    action = InputActions.None;
-    itemToSwitch = 0;
-    itemToDrop = 0;
+    private _action = InputActions.None;
+    get action(): InputActions { return this._action; }
+    set action(value) {
+        this._action = value;
+        this.dirty.inputs = true;
+    }
+
+    itemToSwitch = -1;
+    itemToDrop = -1;
+    consumableToConsume = "";
 
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }
@@ -85,24 +125,7 @@ export class PlayerManager {
 
     readonly itemKills: Array<number | undefined> = new Array(INVENTORY_MAX_WEAPONS).fill(undefined);
 
-    // Shove it
-    /* eslint-disable @typescript-eslint/indent */
-    readonly items: Record<string, number> = {
-        gauze: 0,
-        medikit: 0,
-        cola: 0,
-        tablets: 0,
-        "12g": 0,
-        "556mm": 0,
-        "762mm": 0,
-        "9mm": 0,
-        power_cell: 0,
-        "1x_scope": 1,
-        "2x_scope": 0,
-        "4x_scope": 0,
-        "8x_scope": 0,
-        "15x_scope": 0
-    };
+    readonly items: Record<string, number> = {};
 
     scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
 
@@ -123,74 +146,62 @@ export class PlayerManager {
     equipItem(i: number): void {
         this.action = InputActions.EquipItem;
         this.itemToSwitch = i;
-        this.dirty.inputs = true;
     }
 
     dropItem(i: number): void {
         this.action = InputActions.DropItem;
         this.itemToDrop = i;
-        this.dirty.inputs = true;
     }
 
     swapGunSlots(): void {
         this.action = InputActions.SwapGunSlots;
-        this.dirty.inputs = true;
     }
 
     interact(): void {
         this.action = InputActions.Interact;
-        this.dirty.inputs = true;
     }
 
     reload(): void {
         this.action = InputActions.Reload;
-        this.dirty.inputs = true;
     }
 
     cancelAction(): void {
         this.action = InputActions.Cancel;
-        this.dirty.inputs = true;
     }
 
     useItem(item: string): void {
-        this.game.sendPacket(new ItemPacket(this, ObjectType.fromString(ObjectCategory.Loot, item)));
+        this.action = InputActions.UseConsumableItem;
+        this.consumableToConsume = item;
     }
 
-    switchScope(direction: number): void {
+    cycleScope(offset: number): void {
         const scopeId = Scopes.indexOf(this.scope.definition);
         let scopeString = this.scope.idString;
         let searchIndex = scopeId;
-        if (localStorageInstance.config.scopeLooping) {
-            while (true) {
-                searchIndex = absMod(searchIndex + direction, Scopes.length);
-                const scopeCandidate = Scopes[searchIndex].idString;
-                if (this.items[scopeCandidate]) {
-                    scopeString = scopeCandidate;
-                    break;
-                }
-            }
-        } else {
-            while (true) {
-                searchIndex = searchIndex + direction;
-                if (searchIndex >= Scopes.length) {
-                    searchIndex = Scopes.length - 1;
-                    break;
-                }
-                if (searchIndex < 0) {
-                    searchIndex = 0;
-                }
-                const scopeCandidate = Scopes[searchIndex].idString;
-                if (this.items[scopeCandidate]) {
-                    scopeString = scopeCandidate;
-                    break;
-                }
+
+        let iterationCount = 0;
+        // Prevent possible infinite loops
+        while (iterationCount++ < 100) {
+            searchIndex = consoleVariables.get.builtIn("cv_loop_scope_selection").value
+                ? absMod(searchIndex + offset, Scopes.length)
+                : clamp(0, Scopes.length - 1, searchIndex + offset);
+
+            const scopeCandidate = Scopes[searchIndex].idString;
+            if (this.items[scopeCandidate]) {
+                scopeString = scopeCandidate;
+                break;
             }
         }
+
         if (scopeString !== this.scope.idString) this.useItem(scopeString);
     }
 
     constructor(game: Game) {
         this.game = game;
+
+        for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
+            this.items[item.idString] = 0;
+        }
     }
 
     private _updateActiveWeaponUi(): void {

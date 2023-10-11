@@ -1,30 +1,28 @@
+import $ from "jquery";
+import { GasState, ObjectCategory } from "../../../../../common/src/constants";
+import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
+import { lerp, vecLerp } from "../../../../../common/src/utils/math";
+import type { ObjectType } from "../../../../../common/src/utils/objectType";
+import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { vClone } from "../../../../../common/src/utils/vector";
+import { Bullet } from "../../objects/bullet";
 import { explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
-import { Bullet } from "../../objects/bullet";
-
 import { ReceivingPacket } from "../../types/receivingPacket";
-
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import type { ObjectType } from "../../../../../common/src/utils/objectType";
-import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import { UI_DEBUG_MODE } from "../../utils/constants";
-import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
-import { PlayerManager } from "../../utils/playerManager";
-import $ from "jquery";
-import { vClone } from "../../../../../common/src/utils/vector";
-import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 import { formatDate } from "../../utils/misc";
+import { PlayerManager } from "../../utils/playerManager";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
     // eslint-disable-next-line yoda
     if (0 < value && value <= 1) return 1;
-    return value;
+    return Math.round(value);
 }
 
 function safeRound(value: number): number {
-    return adjustForLowValues(Math.round(value));
+    return adjustForLowValues(value);
 }
 
 export class UpdatePacket extends ReceivingPacket {

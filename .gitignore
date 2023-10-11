@@ -11,7 +11,14 @@ server/bannedIPs.json
 .idea
 .DS_Store
 .vscode
+*.kate-swp
+.history
 
 # try to prevent chpster moments from happening
 *.desktop
 *.css
+
+
+# config files
+client/src/scripts/config.ts
+server/src/config.ts

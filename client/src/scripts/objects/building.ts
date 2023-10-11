@@ -1,22 +1,21 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
-import { type ObjectCategory } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type Hitbox } from "../../../../common/src/utils/hitbox";
+import { Container } from "pixi.js";
+import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
 import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
+import { velFromAngle } from "../../../../common/src/utils/math";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import type { Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { Container } from "pixi.js";
-import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 
 export class Building extends GameObject {
-    declare type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+    declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
     ceilingContainer: Container;
 
@@ -32,12 +31,12 @@ export class Building extends GameObject {
 
     floorHitboxes: Hitbox[] = [];
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
-        const definition = type.definition;
+        const definition = this.type.definition;
 
-        this.container.zIndex = -1;
+        this.container.zIndex = zIndexes.Ground;
 
         for (const image of definition.floorImages) {
             const sprite = new SuroiSprite(image.key);
@@ -46,7 +45,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = 9;
+        this.ceilingContainer.zIndex = zIndexes.BuildingsCeiling;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 
@@ -75,7 +74,7 @@ export class Building extends GameObject {
                     frames: `${this.type.idString}_particle`,
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     position: this.ceilingHitbox.randomPoint(),
-                    depth: 10,
+                    zIndex: 10,
                     lifeTime: 2000,
                     rotation: {
                         start: randomRotation(),
@@ -92,7 +91,7 @@ export class Building extends GameObject {
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = -0.1;
+            this.ceilingContainer.zIndex = zIndexes.DeadObstacles;
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue`));

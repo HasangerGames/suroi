@@ -1,22 +1,22 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
-import type { ObjectCategory } from "../../../../common/src/constants";
-import type { ObjectType } from "../../../../common/src/utils/objectType";
-
-import type { ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import type { Orientation, Variation } from "../../../../common/src/typings";
-import { orientationToRotation } from "../utils/misc";
-import type { Hitbox } from "../../../../common/src/utils/hitbox";
+import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
+import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { type Variation, type Orientation } from "../../../../common/src/typings";
+import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { orientationToRotation } from "../utils/misc";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefinition> {
+export class Obstacle extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>;
+
     scale!: number;
 
     image: SuroiSprite;
@@ -42,7 +42,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
 
     particleFrames: string[] = [];
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
         this.image = new SuroiSprite(); //.setAlpha(0.5);
@@ -146,7 +146,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
-                    depth: (definition.depth ?? 0) + 1,
+                    zIndex: (definition.zIndex ?? zIndexes.ObstaclesLayer1) + 1,
                     lifeTime: 1500,
                     rotation: {
                         start: randomRotation(),
@@ -166,7 +166,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
                 }));
             }
         }
-        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
+        this.container.zIndex = this.dead ? zIndexes.DeadObstacles : definition.zIndex ?? zIndexes.ObstaclesLayer1;
 
         if (!this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -185,7 +185,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.image.setFrame(`${texture}`);
 
         this.container.rotation = this.rotation;
-        this.container.zIndex = this.dead ? 0 : definition.depth ?? 0;
 
         this.isNew = false;
 
@@ -208,7 +207,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle, ObstacleDefini
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            depth: Math.max((this.type.definition.depth ?? 0) + 1, 4),
+            zIndex: Math.max((this.type.definition.zIndex ?? zIndexes.Players) + 1, 4),
             lifeTime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },

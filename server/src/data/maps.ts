@@ -1,13 +1,13 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
-import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomPointInsideCircle } from "../../../common/src/utils/random";
-import { type Vector, v, vAdd, vClone } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 
 interface MapDefinition {
@@ -52,7 +52,7 @@ export const Maps: Record<string, MapDefinition> = {
         buildings: {
             refinery: 1,
             warehouse: 4,
-            house: 4,
+            small_house: 5,
             porta_potty: 10
         },
         obstacles: {
@@ -246,11 +246,11 @@ export const Maps: Record<string, MapDefinition> = {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
         }
     },
-    singleObstacle: {
-        width: 128,
-        height: 128,
+    small_house: {
+        width: 512,
+        height: 512,
         genCallback(map) {
-            map.generateObstacle("gold_rock", v(64, 64));
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
         }
     }
 };

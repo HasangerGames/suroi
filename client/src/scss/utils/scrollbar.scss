@@ -1,9 +1,11 @@
 // Chromium
-::-webkit-scrollbar {
+.persistent-scrollbar ::-webkit-scrollbar {
     width: 5px;
+
     &-track {
         background: transparent;
     }
+
     &-thumb {
         background: #ccc;
         border-radius: 10px;
@@ -11,6 +13,6 @@
 }
 
 // Firefox
-* {
+.persistent-scrollbar {
     scrollbar-color: #ccc transparent;
 }

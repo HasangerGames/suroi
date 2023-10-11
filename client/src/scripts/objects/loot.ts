@@ -1,21 +1,22 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
-import { ArmorType, type ObjectCategory } from "../../../../common/src/constants";
-import type { ObjectType } from "../../../../common/src/utils/objectType";
-import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
-import type { LootDefinition } from "../../../../common/src/definitions/loots";
-import { type PlayerManager } from "../utils/playerManager";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { ArmorType, zIndexes, type ObjectCategory } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector } from "../../../../common/src/utils/vector";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { type PlayerManager } from "../utils/playerManager";
+import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
+export class Loot extends GameObject {
+    declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+
     readonly images: {
         readonly background: SuroiSprite
         readonly item: SuroiSprite
@@ -29,7 +30,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, id: number) {
+    constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
         const definition = this.type.definition;
@@ -43,7 +44,7 @@ export class Loot extends GameObject<ObjectCategory.Loot, LootDefinition> {
 
         this.container.addChild(this.images.background, this.images.item);
 
-        this.container.zIndex = 1;
+        this.container.zIndex = zIndexes.Loot;
 
         // Set the loot texture based on the type
         let backgroundTexture: string | undefined;

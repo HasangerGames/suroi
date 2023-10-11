@@ -1,8 +1,8 @@
-import { type Container, Graphics } from "pixi.js";
-import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { GasState, TICK_SPEED } from "../../../../common/src/constants";
-import { COLORS } from "../utils/constants";
+import { Graphics, type Container } from "pixi.js";
+import { GasState, TICKS_PER_SECOND, zIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
+import { v, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { COLORS } from "../utils/constants";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;
@@ -31,7 +31,7 @@ export class Gas {
 
         this.graphics = new Graphics();
 
-        this.graphics.zIndex = 99;
+        this.graphics.zIndex = zIndexes.Gas;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay
@@ -61,7 +61,7 @@ export class Gas {
         let position: Vector;
         let radius: number;
         if (this.state === GasState.Advancing) {
-            const interpFactor = clamp((Date.now() - this.lastUpdateTime) / TICK_SPEED, 0, 1);
+            const interpFactor = clamp((Date.now() - this.lastUpdateTime) / TICKS_PER_SECOND, 0, 1);
             position = vecLerp(this.lastPosition, this.position, interpFactor);
             radius = lerp(this.lastRadius, this.radius, interpFactor);
         } else {

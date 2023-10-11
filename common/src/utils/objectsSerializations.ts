@@ -1,4 +1,4 @@
-import { ANIMATION_TYPE_BITS, type AnimationType, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../constants";
+import { ANIMATION_TYPE_BITS, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions, type AnimationType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { type LootDefinition } from "../definitions/loots";
 import { type ObstacleDefinition } from "../definitions/obstacles";
@@ -84,6 +84,13 @@ export interface ObjectsNetData {
         position: Vector
         rotation: number
     })
+    //
+    // Decal Data
+    //
+    [ObjectCategory.Decal]: {
+        position: Vector
+        rotation: number
+    }
     //
     // Explosion Data
     //
@@ -317,6 +324,27 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         }
     },
     //
+    // Decal Serialization
+    //
+    [ObjectCategory.Decal]: {
+        serializePartial(stream, data): void {
+            stream.writePosition(data.position);
+            stream.writeRotation(data.rotation, 8);
+        },
+        serializeFull(stream, data): void {
+            this.serializePartial(stream, data);
+        },
+        deserializePartial(stream) {
+            return {
+                position: stream.readPosition(),
+                rotation: stream.readRotation(8)
+            };
+        },
+        deserializeFull(stream, type) {
+            return this.deserializePartial(stream, type);
+        }
+    },
+    //
     // Explosion Serialization
     //
     [ObjectCategory.Explosion]: {
@@ -332,7 +360,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         },
         deserializeFull(stream, type) {
-            return this.deserializeFull(stream, type);
+            return this.deserializePartial(stream, type);
         }
     },
     //
@@ -351,7 +379,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
         },
         deserializeFull(stream, type) {
-            return this.deserializeFull(stream, type);
+            return this.deserializePartial(stream, type);
         }
     }
 };

@@ -1,15 +1,13 @@
-import { version } from "../../package.json";
-
-import * as Webpack from "webpack";
-import type WDS from "webpack-dev-server";
-
+import { createHash, randomBytes } from "crypto";
+import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
-import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
-import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
-
 import * as path from "path";
-import { createHash, randomBytes } from "crypto";
+import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import * as Webpack from "webpack";
+import type WDS from "webpack-dev-server";
+import { version } from "../../package.json";
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
@@ -26,7 +24,7 @@ const config: Configuration = {
         rules: path.resolve(__dirname, "../src/rules.ts")
     },
 
-    devtool: "source-map",
+    stats: "minimal",
 
     resolve: { extensions: [".js", ".ts"] },
 
@@ -217,8 +215,28 @@ const config: Configuration = {
                 }
             }
         },
+        usedExports: true,
         minimizer: [
-            "...",
+            new TerserPlugin({
+                terserOptions: {
+                    output: { comments: false },
+                    compress: {
+                        passes: 3,
+                        pure_getters: true,
+                        unsafe: true
+                    },
+                    ecma: undefined,
+                    parse: { html5_comments: false },
+                    mangle: true,
+                    module: false,
+                    toplevel: false,
+                    nameCache: undefined,
+                    ie8: false,
+                    keep_classnames: false,
+                    keep_fnames: false,
+                    safari10: false
+                }
+            }),
             new CSSMinimizerPlugin({ minimizerOptions: { preset: ["default", { discardComments: { removeAll: true } }] } })
         ]
     },

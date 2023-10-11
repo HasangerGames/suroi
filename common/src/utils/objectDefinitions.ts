@@ -4,16 +4,19 @@
  */
 export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readonly bitCount: number;
-    readonly definitions: T[];
+    readonly definitions: T[] = [];
     readonly idStringToNumber: Record<string, number> = {};
 
     constructor(definitions: T[]) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
-        this.definitions = definitions;
 
-        for (let i = 0; i < definitions.length; i++) {
-            this.idStringToNumber[definitions[i].idString] = i;
+        for (let i = 0, l = definitions.length; i < l; i++) {
+            this.idStringToNumber[(this.definitions[i] = definitions[i]).idString] = i;
         }
+    }
+
+    getByIdString(id: string): T {
+        return this.definitions[this.idStringToNumber[id]];
     }
 }
 
@@ -58,6 +61,8 @@ export interface BulletDefinition {
     readonly tracerOpacity?: number
     readonly tracerWidth?: number
     readonly tracerLength?: number
+    readonly tracerColor?: number
+    readonly tracerImage?: string
     readonly variance?: number
     readonly shrapnel?: boolean
 }

@@ -1,18 +1,18 @@
 import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { GunItem } from "./gunItem";
-import { MeleeItem } from "./meleeItem";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
-import { type InventoryItem } from "./inventoryItem";
 import { HealingAction } from "./action";
-import { type HealingItemDefinition, HealingItems, HealType } from "../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type ScopeDefinition, Scopes } from "../../../common/src/definitions/scopes";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { type AmmoDefinition, Ammos } from "../../../common/src/definitions/ammos";
+import { GunItem } from "./gunItem";
+import { type InventoryItem } from "./inventoryItem";
+import { MeleeItem } from "./meleeItem";
 
 /**
  * A class representing a player's inventory
@@ -23,28 +23,7 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    // Shove it
-    /* eslint-disable @typescript-eslint/indent */
-    readonly items: Record<string, number> = [HealingItems, Ammos, Scopes]
-        .flat()
-        .reduce<Record<string, number>>(
-            (acc, cur) => {
-                let amount = 0;
-
-                if (cur.itemType === ItemType.Ammo && cur.ephemeral) {
-                    amount = Infinity;
-                }
-
-                if (cur.itemType === ItemType.Scope && cur.giveByDefault) {
-                    amount = 1;
-                }
-
-                acc[cur.idString] = amount;
-
-                return acc;
-            },
-            {}
-        );
+    readonly items: Record<string, number> = {};
 
     helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
     vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
@@ -167,6 +146,17 @@ export class Inventory {
      */
     constructor(owner: Player) {
         this.owner = owner;
+
+        for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
+            let amount = 0;
+            if (item.itemType === ItemType.Ammo && item.ephemeral) {
+                amount = Infinity;
+            }
+            if (item.itemType === ItemType.Scope && item.giveByDefault) {
+                amount = 1;
+            }
+            this.items[item.idString] = amount;
+        }
     }
 
     /**
@@ -211,7 +201,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-        [this._weapons[1], this._weapons[0]];
+            [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;

@@ -3,6 +3,7 @@
 
 @import "./client/splash.scss";
 @import "./client/game.scss";
+@import "./client/console.scss";
 @import "./dialog.scss";
 
 
@@ -37,7 +38,7 @@ body {
         margin: .7rem 0;
     }
 
-    .modal-item > button {
+    .modal-item>button {
         margin: .2rem 0;
         width: 100%;
         display: inline-block;
