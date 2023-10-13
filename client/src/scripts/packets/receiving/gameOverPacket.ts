@@ -33,7 +33,11 @@ export class GameOverPacket extends ReceivingPacket {
         $("#game-over-player-name").html(consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : name);
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
-        $("#game-over-damage-taken").text(stream.readUint16());
+        $("#game-over-damage-taken").text(function() {
+            var damage = stream.readUint16();
+            return (damage == 99) ? 100 : damage;
+        });
+
 
         const timeString = formatDate(stream.readUint16());
 
