@@ -24,8 +24,6 @@ const config: Configuration = {
         rules: path.resolve(__dirname, "../src/rules.ts")
     },
 
-    stats: "minimal",
-
     resolve: { extensions: [".js", ".ts"] },
 
     module: {
@@ -71,21 +69,6 @@ const config: Configuration = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
-            },
-            {
-                test: /\.(ogg|mp3|wav)$/i,
-                type: "asset/resource",
-                generator: { filename: "audio/[name].[contenthash:8][ext]" }
-            },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: "asset/resource",
-                generator: { filename: "img/[name].[contenthash:8][ext]" }
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: "asset/resource",
-                generator: { filename: "fonts/[name].[contenthash:8][ext]" }
             }
         ]
     },
@@ -200,7 +183,6 @@ const config: Configuration = {
             }],
             compilerOptions: { margin: 4 }
         }),
-        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 
@@ -241,7 +223,8 @@ const config: Configuration = {
         ]
     },
 
-    performance: { hints: false }
+    performance: { hints: false },
+    stats: "minimal"
 };
 
 export default config;
