@@ -37,6 +37,7 @@ export class Bullet extends BaseBullet {
     readonly shooter: GameObject;
 
     constructor(game: Game, source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions) {
+        options.rotation = normalizeAngle(options.rotation);
         const variance = source.type.definition.ballistics.variance;
         const bulletOptions: BulletOptions = {
             ...options,
@@ -115,7 +116,7 @@ export class Bullet extends BaseBullet {
     reflect(normal: Vector): void {
         const normalAngle = Math.atan2(normal.y, normal.x);
 
-        const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
+        const rotation = this.rotation + (normalAngle - this.rotation) * 2;
 
         // move it a bit so it won't collide again with the same hitbox
         const position = vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation)));
