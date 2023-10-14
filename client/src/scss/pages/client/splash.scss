@@ -358,6 +358,8 @@
 
 #splash-options {
     width: 100%;
+    position: relative;
+    z-index: 1;
 
     #username-input {
         background: white;
@@ -484,8 +486,6 @@
 }
 
 #splash-socials {
-    position: relative;
-    z-index: -1;
     margin-top: 14px;
     display: flex;
     justify-content: center;
