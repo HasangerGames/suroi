@@ -1,18 +1,17 @@
 import $ from "jquery";
+import { UI_DEBUG_MODE } from "./utils/constants";
+import { requestFullscreen } from "./utils/misc";
+import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
+import { Scopes } from "../../../common/src/definitions/scopes";
+import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { isMobile } from "pixi.js";
-import { ALLOW_NON_ASCII_USERNAME_CHARS, InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import { Skins } from "../../../common/src/definitions/skins";
-import { stripNonASCIIChars } from "../../../common/src/utils/misc";
-import { type Game } from "./game";
 import { SpectatePacket } from "./packets/sending/spectatePacket";
+import { type Game } from "./game";
+import { Skins } from "../../../common/src/definitions/skins";
 import { body, createDropdown } from "./uiHelpers";
-import { UI_DEBUG_MODE } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { requestFullscreen } from "./utils/misc";
 import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
 import { gameConsole } from "./utils/console/gameConsole";
 
@@ -110,18 +109,17 @@ export function setupUI(game: Game): void {
     usernameField.val(consoleVariables.get.builtIn("cv_player_name").value);
 
     usernameField.on("input", () => {
-        // Remove non-ASCII chars
-        if (!ALLOW_NON_ASCII_USERNAME_CHARS) {
-            usernameField.val(
-                stripNonASCIIChars(
-                    // Replace fancy quotes & dashes first, so they don't get stripped out
-                    (usernameField.val() as string)
-                        .replaceAll(/[\u201c\u201d\u201f]/g, '"')
-                        .replaceAll(/[\u2018\u2019\u201b]/g, "'")
-                        .replaceAll(/[\u2013\u2014]/g, "-")
-                )
-            );
-        }
+        usernameField.val(
+            (usernameField.val() as string)
+                // Replace fancy quotes & dashes, so they don't get stripped out
+                .replaceAll(/[\u201c\u201d\u201f]/g, '"')
+                .replaceAll(/[\u2018\u2019\u201b]/g, "'")
+                .replaceAll(/[\u2013\u2014]/g, "-")
+                // Strip out non-ASCII chars
+                // eslint-disable-next-line no-control-regex
+                .replace(/[^\x00-\xFF]/g, "")
+        );
+
         consoleVariables.set.builtIn("cv_player_name", usernameField.val() as string);
     });
 

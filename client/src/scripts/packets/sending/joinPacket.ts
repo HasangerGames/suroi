@@ -5,19 +5,22 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type CVarTypeMapping, consoleVariables } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
-    override readonly allocBytes = 8;
+    override readonly allocBytes = 24;
     override readonly type = PacketType.Join;
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
+        stream.writePlayerName(consoleVariables.get.builtIn("cv_player_name").value);
+
         stream.writeBoolean(this.playerManager.isMobile);
+
         const writeLoadoutItem = (
             propertyName: keyof CVarTypeMapping,
             category = ObjectCategory.Emote
         ): void => {
             stream.writeObjectTypeNoCategory(ObjectType.fromString(category, consoleVariables.get.builtIn(propertyName).value as string));
         };
-
         writeLoadoutItem("cv_loadout_skin", ObjectCategory.Loot);
         writeLoadoutItem("cv_loadout_top_emote");
         writeLoadoutItem("cv_loadout_right_emote");

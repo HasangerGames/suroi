@@ -125,7 +125,7 @@ $(async(): Promise<void> => {
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
             if (data.success) {
-                let address = `ws${urlPart}/play?gameID=${data.gameID}&name=${encodeURIComponent($("#username-input").val() as string)}`;
+                let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
                 const devPass = consoleVariables.get.builtIn("dv_password").value;
                 const role = consoleVariables.get.builtIn("dv_role").value;

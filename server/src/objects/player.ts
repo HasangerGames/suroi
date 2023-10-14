@@ -259,7 +259,7 @@ export class Player extends GameObject {
 
         const userData = socket.getUserData();
         this.socket = socket;
-        this.name = userData.name;
+        this.name = "Player";
         this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
