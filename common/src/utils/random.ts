@@ -91,6 +91,6 @@ export class SeededRandom {
     get(min = 0, max = 1): number {
         this.rng = this.rng * 16807 % 2147483647;
         const t = this.rng / 2147483647;
-        return lerp(t, min, max);
+        return lerp(min, max, t);
     }
 }

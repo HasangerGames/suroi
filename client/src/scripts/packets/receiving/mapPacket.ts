@@ -1,12 +1,12 @@
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
-import { Orientation, Variation } from "../../../../../common/src/typings";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type Orientation, type Variation } from "../../../../../common/src/typings";
+import { River } from "../../../../../common/src/utils/mapUtils";
+import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { Vector } from "../../../../../common/src/utils/vector";
+import { type Vector } from "../../../../../common/src/utils/vector";
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { SuroiSprite } from "../../utils/pixi";
 
 export class MapPacket extends ReceivingPacket {
     seed!: number;
@@ -15,7 +15,9 @@ export class MapPacket extends ReceivingPacket {
     oceanSize!: number;
     beachSize!: number;
 
-    obstacles: Array<{
+    readonly rivers: River[] = [];
+
+    readonly obstacles: Array<{
         type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>
         position: Vector
         rotation: number
@@ -23,14 +25,14 @@ export class MapPacket extends ReceivingPacket {
         variation?: Variation
     }> = [];
 
-    buildings: Array<{
+    readonly buildings: Array<{
         type: ObjectType<ObjectCategory.Building, BuildingDefinition>
         position: Vector
         orientation: Orientation
         rotation: number
     }> = [];
 
-    places: Array<{
+    readonly places: Array<{
         position: Vector
         name: string
     }> = [];
@@ -41,6 +43,21 @@ export class MapPacket extends ReceivingPacket {
         this.height = stream.readUint16();
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
+
+        const riverCount = stream.readBits(4);
+        for (let i = 0; i < riverCount; i++) {
+            const width = stream.readUint8();
+
+            const pointsCount = stream.readUint8();
+
+            const points = new Array<Vector>(pointsCount);
+
+            for (let i = 0; i < pointsCount; i++) {
+                points[i] = stream.readPosition();
+            }
+
+            this.rivers.push(new River(width, points));
+        }
 
         const numObstacles = stream.readBits(11);
 

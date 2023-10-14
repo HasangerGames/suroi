@@ -1,7 +1,7 @@
-import { type Hitbox, RectangleHitbox } from "./hitbox";
-import { clamp } from "./math";
+import { type Hitbox, RectangleHitbox, PolygonHitbox } from "./hitbox";
+import { angleBetweenPoints, angleBetweenVectors, clamp } from "./math";
 import { SeededRandom } from "./random";
-import { type Vector, v, vClone } from "./vector";
+import { type Vector, v, vClone, vAdd, vRotate, vSub, vMul } from "./vector";
 
 export function jaggedRectangle(hitbox: RectangleHitbox,
     spacing: number,
@@ -30,32 +30,6 @@ export function jaggedRectangle(hitbox: RectangleHitbox,
     return points;
 }
 
-export function generateTerrain(width: number, height: number, oceanSize: number, beachSize: number, seed: number): {
-    beachPoints: Vector[]
-    grassPoints: Vector[]
-} {
-    const beachPadding = oceanSize + beachSize;
-
-    const random = new SeededRandom(seed);
-
-    const spacing = 16;
-    const variation = 8;
-
-    const beachHitbox = new RectangleHitbox(v(oceanSize, oceanSize),
-        v(width - oceanSize, height - oceanSize));
-
-    const grassHitbox = new RectangleHitbox(v(beachPadding, beachPadding),
-        v(width - beachPadding, height - beachPadding));
-
-    const beachPoints = jaggedRectangle(beachHitbox, spacing, variation, random);
-    const grassPoints = jaggedRectangle(grassHitbox, spacing, variation, random);
-
-    return {
-        beachPoints,
-        grassPoints
-    };
-}
-
 export interface FloorDefinition {
     debugColor: number
     speedMultiplier?: number
@@ -78,11 +52,111 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     water: {
         debugColor: 0x0055ff,
-        speedMultiplier: 0.8,
+        speedMultiplier: 0.7,
         overlay: true,
         particles: true
     }
 };
+
+export class River {
+    width: number;
+    points: Vector[];
+    constructor(width: number, points: Vector[]) {
+        this.width = width;
+        this.points = points;
+    }
+}
+
+export function generateTerrain(
+    width: number,
+    height: number,
+    oceanSize: number,
+    beachSize: number,
+    seed: number,
+    rivers: River[]): {
+        beach: PolygonHitbox
+        grass: PolygonHitbox
+        rivers: Array<{
+            water: PolygonHitbox
+            bank: PolygonHitbox
+        }>
+    } {
+    // generate beanch and grass
+    const beachPadding = oceanSize + beachSize;
+
+    const random = new SeededRandom(seed);
+
+    const spacing = 16;
+    const variation = 8;
+
+    const beachHitbox = new RectangleHitbox(v(oceanSize, oceanSize),
+        v(width - oceanSize, height - oceanSize));
+
+    const grassHitbox = new RectangleHitbox(v(beachPadding, beachPadding),
+        v(width - beachPadding, height - beachPadding));
+
+    const beach = new PolygonHitbox(jaggedRectangle(beachHitbox, spacing, variation, random));
+    const grass = new PolygonHitbox(jaggedRectangle(grassHitbox, spacing, variation, random));
+
+    const generatedRivers: ReturnType<typeof generateTerrain>["rivers"] = [];
+
+    const halfPI = Math.PI / 2;
+
+    for (const river of rivers) {
+        const getRiverPolygon = (width: number): PolygonHitbox => {
+            const temp = v(width, 0);
+
+            // first loop, add points from start to end
+            const points: Vector[] = [];
+            for (let i = 1; i < river.points.length - 1; i++) {
+                const prev = river.points[i - 1];
+                const current = river.points[i];
+                const next = river.points[i + 1];
+
+                const prevCurrent = vSub(prev, current);
+                const nextCurrent = vSub(next, current);
+
+                const angleToDivide = angleBetweenVectors(prevCurrent, nextCurrent);
+                const angle = angleToDivide / 2 + angleBetweenPoints(current, prev);
+
+                points.push(vAdd(current, vRotate(temp, angle)));
+            }
+
+            // second loop, same thing but reverse and with inverted point
+            for (let i = river.points.length - 2; i > 0; i--) {
+                const prev = river.points[i - 1];
+                const current = river.points[i];
+                const next = river.points[i + 1];
+
+                const prevCurrent = vSub(prev, current);
+                const nextCurrent = vSub(next, current);
+
+                const angleToDivide = angleBetweenVectors(prevCurrent, nextCurrent);
+                const angle = angleToDivide / 2 + angleBetweenPoints(current, prev);
+
+                points.push(vSub(current, vRotate(temp, angle)));
+            }
+            // add last point
+            const point = river.points[0];
+            const angle = angleBetweenPoints(point, river.points[1]);
+            points.push(vAdd(point, vRotate(temp, angle - halfPI)));
+
+            return new PolygonHitbox(points);
+        };
+
+        generatedRivers.push({
+            water: getRiverPolygon(river.width / 2),
+            // todo: hardcoded bank width
+            bank: getRiverPolygon((river.width / 2) + 15)
+        });
+    }
+
+    return {
+        beach,
+        grass,
+        rivers: generatedRivers
+    };
+}
 
 // a grid used to store floor types
 export class TerrainGrid {

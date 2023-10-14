@@ -264,5 +264,11 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
         }
+    },
+    river: {
+        width: 1344,
+        height: 1344,
+        oceanSize: 144,
+        beachSize: 32
     }
 };

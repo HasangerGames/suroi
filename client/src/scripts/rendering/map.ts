@@ -7,9 +7,9 @@ import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
 import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
-import { MapPacket } from "../packets/receiving/mapPacket";
+import { type MapPacket } from "../packets/receiving/mapPacket";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { addAdjust } from "../../../../common/src/utils/math";
 
 export class Minimap {
@@ -86,20 +86,22 @@ export class Minimap {
         const width = this.width = mapPacket.width;
         const height = this.height = mapPacket.height;
 
-        const { beachPoints, grassPoints } = generateTerrain(width,
+        const terrain = generateTerrain(
+            width,
             height,
             mapPacket.oceanSize,
             mapPacket.beachSize,
-            mapPacket.seed);
+            mapPacket.seed,
+            mapPacket.rivers);
 
         this.terrainGrid = new TerrainGrid(width, height);
 
         // Draw the terrain graphics
         const terrainGraphics = new Graphics();
         const mapGraphics = new Graphics();
-        mapGraphics.beginFill(COLORS.grass);
-        mapGraphics.drawRect(0, 0, width, height);
-        mapGraphics.endFill();
+
+        const beachPoints = terrain.beach.points;
+        const grassPoints = terrain.grass.points;
 
         const drawTerrain = (ctx: Graphics, scale: number): void => {
             ctx.zIndex = zIndexes.Ground;
@@ -108,22 +110,40 @@ export class Minimap {
             ctx.fill.color = COLORS.water.toNumber();
             ctx.drawRect(0, 0, width * scale, height * scale);
 
+            const radius = 20 * scale;
+
             const beach = scale === 1 ? beachPoints : beachPoints.map(point => vMul(point, scale));
             // The grass is a hole in the map shape, the background clear color is the grass color
             ctx.beginHole();
-            ctx.drawRoundedShape?.(beach, 20 * scale);
+            ctx.drawRoundedShape?.(beach, radius);
             ctx.endHole();
 
             ctx.fill.color = COLORS.beach.toNumber();
 
-            ctx.drawRoundedShape?.(beach, 20 * scale);
+            ctx.drawRoundedShape?.(beach, radius);
 
             ctx.beginHole();
 
             const grass = scale === 1 ? grassPoints : grassPoints.map(point => vMul(point, scale));
-            ctx.drawRoundedShape?.(grass, 20 * scale);
+            ctx.drawRoundedShape?.(grass, radius);
 
             ctx.endHole();
+
+            for (const river of terrain.rivers) {
+                const bank = river.bank.points;
+
+                ctx.fill.color = COLORS.riverBank.toNumber();
+
+                ctx.drawPolygon(scale === 1 ? bank : bank.map(point => vMul(point, scale)));
+            }
+
+            for (const river of terrain.rivers) {
+                const water = river.water.points;
+
+                ctx.fill.color = COLORS.water.toNumber();
+
+                ctx.drawPolygon(scale === 1 ? water : water.map(point => vMul(point, scale)));
+            }
 
             ctx.lineStyle({
                 color: 0x000000,
@@ -215,8 +235,12 @@ export class Minimap {
         }
         mapRender.sortChildren();
 
-        this.terrainGrid.addFloor("grass", new PolygonHitbox(grassPoints));
-        this.terrainGrid.addFloor("sand", new PolygonHitbox(beachPoints));
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("water", river.water);
+        }
+
+        this.terrainGrid.addFloor("grass", terrain.grass);
+        this.terrainGrid.addFloor("sand", terrain.beach);
 
         // Render all obstacles and buildings to a texture
         const renderTexture = RenderTexture.create({
@@ -224,6 +248,9 @@ export class Minimap {
             height,
             resolution: isMobile.any ? 1 : 2
         });
+
+        renderTexture.baseTexture.clearColor = COLORS.grass;
+
         this.game.pixi.renderer.render(mapRender, { renderTexture });
         this.sprite.texture.destroy(true);
         this.sprite.texture = renderTexture;
@@ -260,6 +287,21 @@ export class Minimap {
             for (const [hitbox, type] of this.terrainGrid.floors) {
                 drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
             }
+
+            for (const river of mapPacket.rivers) {
+                const points = river.points.map(point => vMul(point, PIXI_SCALE));
+                debugGraphics.lineStyle({
+                    width: 10,
+                    color: 0
+                })
+                    .moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
+                    const point = points[i];
+                    debugGraphics.lineTo(point.x, point.y);
+                }
+                debugGraphics.endFill();
+            }
+
             this.game.camera.container.addChild(debugGraphics);
         }
     }

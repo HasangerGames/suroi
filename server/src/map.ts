@@ -3,11 +3,11 @@ import { type BuildingDefinition } from "../../common/src/definitions/buildings"
 import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../common/src/utils/hitbox";
-import { addAdjust, addOrientations } from "../../common/src/utils/math";
+import { addAdjust, addOrientations, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
+import { SeededRandom, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config } from "./config";
 import { SpawnMode } from "./defaultConfig";
 import { LootTables } from "./data/lootTables";
@@ -16,7 +16,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
-import { TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
+import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 
 export class Map {
     game: Game;
@@ -36,6 +36,8 @@ export class Map {
         position: Vector
     }> = [];
 
+    readonly rivers: River[] = [];
+
     terrainGrid: TerrainGrid;
 
     constructor(game: Game, mapName: string) {
@@ -53,14 +55,37 @@ export class Map {
 
         this.terrainGrid = new TerrainGrid(this.width, this.height);
 
-        const { beachPoints, grassPoints } = generateTerrain(this.width,
+        const randomGenerator = new SeededRandom(this.seed);
+
+        const riverPoints: Vector[] = [
+            v(500, 400),
+            v(500, 500),
+            v(500, 600),
+            v(600, 600),
+            v(650, 600)
+        ];
+        // riverPoints.push(v(this.oceanSize, this.oceanSize + 100));
+
+        const lastAngle = 0.5;
+        // for (let i = 1; i < 25; i++) {
+        //     const lastPoint = riverPoints[i - 1];
+        //
+        //     const angle = lastAngle + randomGenerator.get(-1, 1);
+        //
+        //     const length = randomGenerator.get(50, 80);
+        //
+        //     const point = velFromAngle(angle, length);
+        //     riverPoints.push(vAdd(lastPoint, point));
+        // }
+
+        this.rivers.push(new River(40, riverPoints));
+
+        const terrain = generateTerrain(this.width,
             this.height,
             this.oceanSize,
             this.beachSize,
-            this.seed);
-
-        const beachHitbox = new PolygonHitbox(beachPoints);
-        const grassHitbox = new PolygonHitbox(grassPoints);
+            this.seed,
+            this.rivers);
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 
@@ -72,13 +97,9 @@ export class Map {
         ]);
 
         // Generate buildings
-
         for (const building in mapDefinition.buildings) {
             this.generateBuildings(building, mapDefinition.buildings[building]);
         }
-
-        this.terrainGrid.addFloor("grass", grassHitbox);
-        this.terrainGrid.addFloor("sand", beachHitbox);
 
         // Generate Obstacles
         for (const obstacle in mapDefinition.specialObstacles) {
@@ -111,6 +132,13 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
+
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("water", river.water);
+        }
+
+        this.terrainGrid.addFloor("grass", terrain.grass);
+        this.terrainGrid.addFloor("sand", terrain.beach);
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {

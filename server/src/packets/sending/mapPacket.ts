@@ -30,6 +30,16 @@ export class MapPacket extends SendingPacket {
         stream.writeUint16(map.oceanSize);
         stream.writeUint16(map.beachSize);
 
+        stream.writeBits(map.rivers.length, 4);
+        for (const river of map.rivers) {
+            stream.writeUint8(river.width);
+
+            stream.writeUint8(river.points.length);
+            for (const point of river.points) {
+                stream.writePosition(point);
+            }
+        }
+
         const objects: Obstacle[] | Building[] = [...this.game.staticObjects].filter(object => {
             return (object instanceof Obstacle || object instanceof Building) && !object.definition.hideOnMap;
         }) as Obstacle[] | Building[];
