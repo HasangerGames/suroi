@@ -793,6 +793,41 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "ab47",
+        name: "AB-47",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 90,
+        capacity: 30,
+        reloadTime: 2.5,
+        fireDelay: 85,
+        switchDelay: 500,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 150,
+        fireMode: FireMode.Auto,
+        shotSpread: 1.34,
+        moveSpread: 2.66,
+        length: 8.9,
+        fists: {
+            left: v(122, -3),
+            right: v(62, 0),
+            animationDuration: 100
+        },
+        image: { position: v(90, 2) },
+        casingParticles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 21,
+            obstacleMultiplier: 2,
+            speed: 0.39,
+            maxDistance: 320,
+            tracerWidth: 1.5,
+            tracerLength: 2.25
+        }
+    },
+    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
