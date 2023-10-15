@@ -5,7 +5,7 @@ import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../common/src/utils/objectType";
-import { randomFloat } from "../../../common/src/utils/random";
+import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
@@ -99,6 +99,7 @@ export class GunItem extends InventoryItem {
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
         const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+
         let position = vAdd(owner.position, rotated);
 
         const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
@@ -116,15 +117,23 @@ export class GunItem extends InventoryItem {
         const limit = definition.bulletCount ?? 1;
 
         for (let i = 0; i < limit; i++) {
-            const rotation = normalizeAngle(
-                owner.rotation + Math.PI / 2 +
+            this.owner.game.addBullet(
+                this,
+                this.owner,
+                {
+                    position: definition.jitterRadius
+                        ? vAdd(position, randomPointInsideCircle(v(0, 0), definition.jitterRadius))
+                        : position,
+                    rotation: normalizeAngle(
+                        owner.rotation + Math.PI / 2 +
                 (
                     definition.consistentPatterning === true
                         ? i / limit - 0.5
                         : randomFloat(-1, 1)
                 ) * spread
+                    )
+                }
             );
-            this.owner.game.addBullet(this, this.owner, { position, rotation });
         }
 
         owner.recoil.active = true;

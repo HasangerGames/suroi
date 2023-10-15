@@ -20,6 +20,7 @@ export type GunDefinition = ItemDefinition & {
     readonly recoilDuration: number
     readonly shotSpread: number
     readonly moveSpread: number // Added to shotSpread if the player is moving
+    readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
     readonly canQuickswitch?: boolean
@@ -173,6 +174,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 5,
         moveSpread: 2,
+        jitterRadius: 1.25,
         canQuickswitch: true,
         bulletCount: 9,
         length: 11,
@@ -209,6 +211,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 11,
         moveSpread: 3,
+        jitterRadius: 2.75,
         canQuickswitch: true,
         bulletCount: 10,
         length: 10.6,
@@ -248,6 +251,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 18,
         shotSpread: 30,
         moveSpread: 7,
+        jitterRadius: 3,
         canQuickswitch: true,
         length: 10.2,
         fists: {
@@ -285,6 +289,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         shotSpread: 11,
         moveSpread: 3,
+        jitterRadius: 3,
         canQuickswitch: true,
         length: 5.7,
         fists: {
