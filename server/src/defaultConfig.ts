@@ -44,7 +44,12 @@ export interface ConfigType {
     /**
      * The maximum number of players allowed to join a game.
      */
-    readonly playerLimit: number
+    readonly maxPlayersPerGame: number
+
+    /**
+     * The maximum number of concurrent games.
+     */
+    readonly maxGames: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
@@ -134,7 +139,8 @@ export const DefaultConfig = {
 
     spawn: { mode: SpawnMode.Random },
 
-    playerLimit: 80,
+    maxPlayersPerGame: 80,
+    maxGames: 3,
 
     gas: { mode: GasMode.Normal },
 

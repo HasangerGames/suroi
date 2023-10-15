@@ -48,9 +48,9 @@ const app = Config.ssl
 const games: Array<Game | undefined> = [];
 createNewGame(0);
 
-export function createNewGame(id: number): void {
+function createNewGame(id: number): void {
     if (games[id] === undefined || games[id]?.stopped) {
-        log(`Creating new game with ID #${id}`);
+        log(`Game #${id} | Creating...`);
         games[id] = new Game(id);
     }
 }
@@ -66,15 +66,12 @@ export function endGame(id: number): void {
         player.socket.close();
     }
     games[id] = undefined;
-    log(`Game #${id} ended`);
+    log(`Game #${id} | Ended`);
 }
 
-export function allowJoin(gameID: number): boolean {
+function allowJoin(gameID: number): boolean {
     const game = games[gameID];
-    if (game !== undefined) {
-        return game.allowJoin && game.aliveCount < Config.playerLimit;
-    }
-    return false;
+    return game !== undefined && game.allowJoin && game.aliveCount < Config.maxPlayersPerGame;
 }
 
 const decoder = new TextDecoder();
@@ -118,17 +115,16 @@ app.get("/api/getGame", async(res, req) => {
     } else if (rateLimitedIPs.has(ip)) {
         response = { success: false, message: "rateLimited" };
     } else {
-        let gameID: number | undefined;
-        if (allowJoin(0)) {
-            gameID = 0;
-        } else if (allowJoin(1)) {
-            gameID = 1;
-        } else {
-            response = { success: false };
+        let foundGame = false;
+        for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+            if (games[gameID] === undefined) createNewGame(gameID);
+            if (allowJoin(gameID)) {
+                response = { success: true, gameID };
+                foundGame = true;
+                break;
+            }
         }
-        if (gameID !== undefined) {
-            response = { success: true, gameID };
-        }
+        if (!foundGame) response = { success: false };
     }
 
     if (!aborted) {
@@ -207,9 +203,8 @@ app.ws("/play", {
         // Validate game ID
         //
         let gameID = Number(searchParams.get("gameID"));
-        if (gameID < 0 || gameID > 1) gameID = 0;
-        const game = games[gameID];
-        if (game === undefined || !allowJoin(gameID)) {
+        if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
+        if (!allowJoin(gameID)) {
             forbidden(res);
             return;
         }
@@ -318,7 +313,7 @@ app.ws("/play", {
         const player = data.player;
         if (game === undefined || player === undefined) return;
         playerCount--;
-        log(`"${player.name}" left game #${data.gameID}`);
+        log(`Game #${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
     }
 });
@@ -334,8 +329,8 @@ app.listen(Config.host, Config.port, (): void => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log(`Suroi Server v${version}`, true);
-    log(`Listening on ${Config.host}:${Config.port}`, true);
+    log(`Suroi Server v${version}`);
+    log(`Listening on ${Config.host}:${Config.port}`);
     log("Press Ctrl+C to exit.");
 
     const protection = Config.protection;
