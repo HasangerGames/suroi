@@ -15,7 +15,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
         }
     }
 
-    getByIdString(id: string): T {
+    getByIDString(id: string): T {
         return this.definitions[this.idStringToNumber[id]];
     }
 }

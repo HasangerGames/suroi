@@ -229,9 +229,28 @@
         display: flex;
         flex-direction: column;
         width: 320px;
+        position: relative;
+
+        &.disabled {
+            .modal-item {
+                pointer-events: none;
+                filter: blur(5px);
+            }
+
+            #crosshair-controls-disabled {
+                display: block !important;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                font-size: 22px;
+                @include text-shadow;
+            }
+        }
 
         .modal-item {
-            margin-top: 0!important;
+            margin-top: 0 !important;
         }
     }
 
@@ -436,6 +455,7 @@
         margin: 0.2em;
         font-weight: bold;
         font-size: 16px;
+        @include text-shadow;
     }
 
     .modal-item {
@@ -453,6 +473,7 @@
         }
 
         .range-input-value {
+            @include text-shadow;
             float: right;
         }
     }
