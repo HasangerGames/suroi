@@ -97,7 +97,7 @@ export class Map {
             }
         }
 
-        log(`Map generation took ${Date.now() - mapStartTime}ms`);
+        log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
     generateBuildings(idString: string, count: number): void {
