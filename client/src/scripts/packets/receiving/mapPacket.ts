@@ -1,5 +1,5 @@
 import { Container, Graphics, isMobile, RenderTexture, Text } from "pixi.js";
-import { GRID_SIZE, ObjectCategory, zIndexes } from "../../../../../common/src/constants";
+import { GRID_SIZE, ObjectCategory, ZIndexes } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
 import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
 import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/hitbox";
@@ -28,7 +28,7 @@ export class MapPacket extends ReceivingPacket {
         graphics.drawRect(0, 0, width * PIXI_SCALE, height * PIXI_SCALE);
         graphics.fill.color = COLORS.grass.toNumber();
         graphics.drawRect(GRID_SIZE * PIXI_SCALE, GRID_SIZE * PIXI_SCALE, (width - GRID_SIZE * 2) * PIXI_SCALE, (height - GRID_SIZE * 2) * PIXI_SCALE);
-        graphics.zIndex = zIndexes.Ground;
+        graphics.zIndex = ZIndexes.Ground;
 
         mapGraphics.beginFill();
         mapGraphics.fill.color = COLORS.water.toNumber();

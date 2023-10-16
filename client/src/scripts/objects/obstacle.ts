@@ -1,4 +1,4 @@
-import { type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -146,7 +146,7 @@ export class Obstacle extends GameObject {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
-                    zIndex: (definition.zIndex ?? zIndexes.ObstaclesLayer1) + 1,
+                    zIndex: (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1,
                     lifeTime: 1500,
                     rotation: {
                         start: randomRotation(),
@@ -166,7 +166,7 @@ export class Obstacle extends GameObject {
                 }));
             }
         }
-        this.container.zIndex = this.dead ? zIndexes.DeadObstacles : definition.zIndex ?? zIndexes.ObstaclesLayer1;
+        this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
         if (!this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
@@ -207,7 +207,7 @@ export class Obstacle extends GameObject {
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            zIndex: Math.max((this.type.definition.zIndex ?? zIndexes.Players) + 1, 4),
+            zIndex: Math.max((this.type.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifeTime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },

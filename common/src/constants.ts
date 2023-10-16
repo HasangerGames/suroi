@@ -105,7 +105,7 @@ export const PLAYER_RADIUS = 2.25;
 
 export const DEFAULT_USERNAME = "Player";
 
-export enum zIndexes {
+export enum ZIndexes {
     Ground,
     DeadObstacles,
     Decals,

@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition, FloorTypes } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
@@ -36,7 +36,7 @@ export class Building extends GameObject {
 
         const definition = this.type.definition;
 
-        this.container.zIndex = zIndexes.Ground;
+        this.container.zIndex = ZIndexes.Ground;
 
         for (const image of definition.floorImages) {
             const sprite = new SuroiSprite(image.key);
@@ -45,7 +45,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = zIndexes.BuildingsCeiling;
+        this.ceilingContainer.zIndex = ZIndexes.BuildingsCeiling;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 
@@ -91,7 +91,7 @@ export class Building extends GameObject {
                 this.playSound("ceiling_collapse", 0.5, 96);
             }
             this.ceilingTween?.kill();
-            this.ceilingContainer.zIndex = zIndexes.DeadObstacles;
+            this.ceilingContainer.zIndex = ZIndexes.DeadObstacles;
             this.ceilingContainer.alpha = 1;
 
             this.ceilingContainer.addChild(new SuroiSprite(`${this.type.idString}_residue`));
