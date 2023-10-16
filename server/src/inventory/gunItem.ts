@@ -98,7 +98,9 @@ export class GunItem extends InventoryItem {
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
 
-        const rotated = vRotate(v(definition.length, 0), owner.rotation); // player radius + gun length
+        const jitter = definition.jitterRadius ?? 0;
+
+        const rotated = vRotate(v(definition.length + jitter, 0), owner.rotation); // player radius + gun length
 
         let position = vAdd(owner.position, rotated);
 
@@ -109,7 +111,7 @@ export class GunItem extends InventoryItem {
                 if (intersection === null) continue;
 
                 if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
-                    position = vSub(intersection.point, vRotate(v(0.2, 0), owner.rotation));
+                    position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
                 }
             }
         }
