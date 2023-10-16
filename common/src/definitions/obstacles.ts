@@ -433,6 +433,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "metal_particle"
             },
+            zIndex: ZIndexes.ObstaclesLayer1 - 3,
             reflectBullets: true
         },
         makeHouseWall("1", RectangleHitbox.fromRect(9, 2)),
