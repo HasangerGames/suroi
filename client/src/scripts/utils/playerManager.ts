@@ -1,11 +1,11 @@
 import { isMobile } from "pixi.js";
-import { INVENTORY_MAX_WEAPONS, InputActions, ObjectCategory } from "../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";

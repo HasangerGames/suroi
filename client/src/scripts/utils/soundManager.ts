@@ -4,7 +4,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
-import { v, vLength, vSub, type Vector } from "../../../../common/src/utils/vector";
+import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { consoleVariables } from "./console/variables";
 
 export interface Sound {

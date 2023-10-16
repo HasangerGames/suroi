@@ -1,4 +1,4 @@
-import { WebSocket, type MessageEvent } from "ws";
+import { type MessageEvent, WebSocket } from "ws";
 import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";

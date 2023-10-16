@@ -1,4 +1,4 @@
-import { INVENTORY_MAX_WEAPONS, InputActions, ObjectCategory } from "../../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../../common/src/constants";
 import { absMod } from "../../../../../common/src/utils/math";
 import { ObjectDefinitionsList } from "../../../../../common/src/utils/objectType";
 import { v } from "../../../../../common/src/utils/vector";
@@ -6,8 +6,8 @@ import { type Game } from "../../game";
 import { EmoteSlot } from "../constants";
 import { generateBindsConfigScreen } from "../inputManager";
 import { type PlayerManager } from "../playerManager";
-import { type Stringable, aliases, commands, gameConsole, keybinds, type PossibleError } from "./gameConsole";
-import { ConVar, consoleVariables } from "./variables";
+import { aliases, commands, gameConsole, keybinds, type PossibleError, type Stringable } from "./gameConsole";
+import { consoleVariables, ConVar } from "./variables";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 

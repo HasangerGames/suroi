@@ -1,7 +1,7 @@
-import { Graphics, type Container } from "pixi.js";
+import { type Container, Graphics } from "pixi.js";
 import { GasState, TICKS_PER_SECOND, zIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
-import { v, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { COLORS } from "../utils/constants";
 
 const kOverdraw = 100 * 1000;

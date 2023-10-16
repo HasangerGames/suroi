@@ -2,7 +2,7 @@ import { GasState } from "../../common/src/constants";
 import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
-import { type Vector, v, vClone } from "../../common/src/utils/vector";
+import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";

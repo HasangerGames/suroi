@@ -1,7 +1,7 @@
-import { Container, Graphics, RenderTexture, Text, isMobile } from "pixi.js";
+import { Container, Graphics, isMobile, RenderTexture, Text } from "pixi.js";
 import { GRID_SIZE, ObjectCategory, zIndexes } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
 import { CircleHitbox, RectangleHitbox } from "../../../../../common/src/utils/hitbox";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";

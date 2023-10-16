@@ -1,4 +1,4 @@
-import { ArmorType, zIndexes, type ObjectCategory } from "../../../../common/src/constants";
+import { ArmorType, type ObjectCategory, zIndexes } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
@@ -10,7 +10,7 @@ import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type PlayerManager } from "../utils/playerManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 

@@ -1,11 +1,11 @@
-import { TICKS_PER_SECOND, type ObjectCategory } from "../../../common/src/constants";
+import { type ObjectCategory, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { normalizeAngle } from "../../../common/src/utils/math";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { randomFloat } from "../../../common/src/utils/random";
-import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector, vMul } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { type GameObject } from "../types/gameObject";

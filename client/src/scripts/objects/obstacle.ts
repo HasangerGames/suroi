@@ -1,6 +1,6 @@
-import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory, zIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
-import { type Variation, type Orientation } from "../../../../common/src/typings";
+import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
@@ -11,7 +11,7 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Obstacle extends GameObject {

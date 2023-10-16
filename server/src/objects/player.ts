@@ -1,5 +1,11 @@
 import type { WebSocket } from "uWebSockets.js";
-import { AnimationType, INVENTORY_MAX_WEAPONS, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
+import {
+    AnimationType,
+    INVENTORY_MAX_WEAPONS,
+    ObjectCategory,
+    PLAYER_RADIUS,
+    PlayerActions
+} from "../../../common/src/constants";
 import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
@@ -7,14 +13,14 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { clamp } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, type Action } from "../inventory/action";
+import { type Action, HealingAction } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";

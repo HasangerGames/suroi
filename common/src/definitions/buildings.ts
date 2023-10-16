@@ -1,6 +1,6 @@
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { randomBoolean, weightedRandom } from "../utils/random";
 import { v, type Vector } from "../utils/vector";
 

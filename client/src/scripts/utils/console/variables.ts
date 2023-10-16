@@ -1,4 +1,4 @@
-import { type PossibleError, type Stringable, gameConsole, type GameSettings } from "./gameConsole";
+import { gameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 import { defaultClientCVars, type JSONCVar } from "./defaultClientCVars";
 
 export interface CVarFlags {

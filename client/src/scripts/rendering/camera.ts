@@ -1,6 +1,6 @@
-import { Container, type Application } from "pixi.js";
+import { type Application, Container } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { consoleVariables } from "../utils/console/variables";
 import { EaseFunctions, Tween } from "../utils/tween";

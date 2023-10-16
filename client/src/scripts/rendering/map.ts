@@ -1,6 +1,6 @@
-import { Container, Graphics, LINE_CAP, Sprite, Texture, isMobile } from "pixi.js";
-import { GRID_SIZE, GasState } from "../../../../common/src/constants";
-import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { Container, Graphics, isMobile, LINE_CAP, Sprite, Texture } from "pixi.js";
+import { GasState, GRID_SIZE } from "../../../../common/src/constants";
+import { v, vClone, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite } from "../utils/pixi";

@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { TICKS_PER_SECOND, type ObjectCategory } from "../../../../common/src/constants";
+import { type ObjectCategory, TICKS_PER_SECOND } from "../../../../common/src/constants";
 import { vecLerp } from "../../../../common/src/utils/math";
 import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";

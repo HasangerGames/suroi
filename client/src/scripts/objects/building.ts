@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
-import { zIndexes, type ObjectCategory } from "../../../../common/src/constants";
-import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { type BuildingDefinition, FloorTypes } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { velFromAngle } from "../../../../common/src/utils/math";
@@ -11,7 +11,7 @@ import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Building extends GameObject {

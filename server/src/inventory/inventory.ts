@@ -1,10 +1,10 @@
 import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
-import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
+import { type AmmoDefinition, Ammos } from "../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { type ScopeDefinition, Scopes } from "../../../common/src/definitions/scopes";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";

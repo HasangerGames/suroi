@@ -1,12 +1,18 @@
 import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { addAdjust, addOrientations } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import {
+    random,
+    randomFloat,
+    randomPointInsideCircle,
+    randomRotation,
+    randomVector
+} from "../../common/src/utils/random";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { LootTables } from "./data/lootTables";

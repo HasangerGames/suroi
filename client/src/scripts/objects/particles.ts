@@ -1,6 +1,6 @@
 import { lerp } from "../../../../common/src/utils/math";
 import { random, randomRotation } from "../../../../common/src/utils/random";
-import { vAdd, vDiv, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { vAdd, vDiv, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 

@@ -1,10 +1,10 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
-import { RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { ItemType, type ItemDefinition } from "../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { random } from "../../../common/src/utils/random";

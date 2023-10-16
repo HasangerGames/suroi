@@ -5,13 +5,19 @@ import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
+import {
+    circleCircleIntersection,
+    clamp,
+    distance,
+    distanceSquared,
+    velFromAngle
+} from "../../../common/src/utils/math";
 import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { v, vAdd, vClone, vMul, vSub, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector, vMul, vSub } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { PickupPacket } from "../packets/sending/pickupPacket";

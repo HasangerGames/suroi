@@ -3,7 +3,7 @@ import { mergeDeep } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
 import { type Command, setUpCommands } from "./commands";
 import { defaultBinds, defaultClientCVars } from "./defaultClientCVars";
-import { type CVarFlags, type CVarTypeMapping, ConVar, consoleVariables } from "./variables";
+import { consoleVariables, ConVar, type CVarFlags, type CVarTypeMapping } from "./variables";
 
 enum MessageType {
     Log = "log",

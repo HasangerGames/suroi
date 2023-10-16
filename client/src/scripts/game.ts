@@ -1,9 +1,9 @@
 import $ from "jquery";
-import { Container, type Application } from "pixi.js";
+import { type Application, Container } from "pixi.js";
 import { ObjectCategory, PacketType, TICKS_PER_SECOND, zIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { circleCollision, distanceSquared, type CollisionRecord } from "../../../common/src/utils/math";
+import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";

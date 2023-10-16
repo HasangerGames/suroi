@@ -1,7 +1,7 @@
 import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
-import { Armors, type ArmorDefinition } from "../../common/src/definitions/armors";
+import { type ArmorDefinition, Armors } from "../../common/src/definitions/armors";
 import { Backpacks } from "../../common/src/definitions/backpacks";
 import { Buildings, FloorTypes } from "../../common/src/definitions/buildings";
 import { Emotes } from "../../common/src/definitions/emotes";
@@ -15,8 +15,14 @@ import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles"
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { type BulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
+import {
+    type BulletDefinition,
+    type ItemDefinition,
+    type ObjectDefinition,
+    type ObjectDefinitions,
+    type WearerAttributes
+} from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { Config as ServerConfig, GasMode, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";

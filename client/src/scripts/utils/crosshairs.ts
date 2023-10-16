@@ -1,4 +1,4 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions } from "../../../../common/src/utils/objectDefinitions";
 
 export interface CrosshairDefinition extends ObjectDefinition {
     readonly svg: string
