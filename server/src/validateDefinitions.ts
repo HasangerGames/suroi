@@ -1601,7 +1601,13 @@ logger.indent("Validating configurations", () => {
 
         tester.assertIsNaturalNumber({
             obj: ServerConfig,
-            field: "playerLimit",
+            field: "maxPlayersPerGame",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsNaturalNumber({
+            obj: ServerConfig,
+            field: "maxGames",
             baseErrorPath: errorPath
         });
 
