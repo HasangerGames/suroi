@@ -1,4 +1,3 @@
-// noinspection ES6PreferShortImport
 import { type WebSocket } from "uWebSockets.js";
 import { OBJECT_ID_BITS, ObjectCategory, TICKS_PER_SECOND } from "../../common/src/constants";
 import { type LootDefinition } from "../../common/src/definitions/loots";
@@ -28,8 +27,7 @@ import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { removeFrom } from "./utils/misc";
-import { SpawnMode } from "./defaultConfig";
-import { Config } from "./config";
+import { Config, SpawnMode } from "./config";
 
 export class Game {
     readonly _id: number;

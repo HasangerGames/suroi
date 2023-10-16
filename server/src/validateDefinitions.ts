@@ -18,11 +18,10 @@ import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { type BulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { Config as ServerConfig } from "./config";
+import { Config as ServerConfig, GasMode, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
-import { GasMode, SpawnMode } from "./defaultConfig";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 const tester = (() => {

@@ -3,9 +3,8 @@ import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/ma
 import { log } from "../../common/src/utils/misc";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { type Vector, v, vClone } from "../../common/src/utils/vector";
-import { Config } from "./config";
+import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
-import { GasMode } from "./defaultConfig";
 import { type Game } from "./game";
 
 export class Gas {
