@@ -144,14 +144,14 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 4,
         moveSpread: 7,
-        length: 7.2,
+        length: 6.7,
         fists: {
-            left: v(115, -2),
+            left: v(105, -2),
             right: v(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(85, -4) },
+        image: { position: v(75, -4) },
         casingParticles: {
             position: v(4, 0.5)
         },
@@ -805,14 +805,14 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 1,
         moveSpread: 2.5,
-        length: 7.9,
+        length: 7.4,
         fists: {
-            left: v(105, -2),
+            left: v(96, -2),
             right: v(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(94, 0) },
+        image: { position: v(85, 0) },
         casingParticles: {
             position: v(5, 0.5)
         },
