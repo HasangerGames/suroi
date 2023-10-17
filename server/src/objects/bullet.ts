@@ -1,17 +1,17 @@
-import { Player } from "./player";
-import { type Game } from "../game";
-import { normalizeAngle } from "../../../common/src/utils/math";
-import { GunItem } from "../inventory/gunItem";
-import { vAdd, vMul, type Vector, v } from "../../../common/src/utils/vector";
-import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
-import { Obstacle } from "./obstacle";
-import { type GameObject } from "../types/gameObject";
-import { type ObjectCategory, TICK_SPEED } from "../../../common/src/constants";
-import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ObjectCategory, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { type Explosion } from "./explosion";
+import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
+import { RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { normalizeAngle } from "../../../common/src/utils/math";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 import { randomFloat } from "../../../common/src/utils/random";
+import { v, vAdd, type Vector, vMul } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GunItem } from "../inventory/gunItem";
+import { type GameObject } from "../types/gameObject";
+import { type Explosion } from "./explosion";
+import { Obstacle } from "./obstacle";
+import { Player } from "./player";
 
 type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
 
@@ -52,10 +52,10 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICK_SPEED)));
+        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICKS_PER_SECOND)));
 
         const objects = this.game.grid.intersectsRect(lineRect);
-        const collisions = this.updateAndGetCollisions(TICK_SPEED, objects);
+        const collisions = this.updateAndGetCollisions(TICKS_PER_SECOND, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds

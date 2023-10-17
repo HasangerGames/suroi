@@ -1,14 +1,13 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-import { type Player } from "../../objects/player";
-import { GunItem } from "../../inventory/gunItem";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { Loot } from "../../objects/loot";
-import { distanceSquared } from "../../../../common/src/utils/math";
+import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory } from "../../../../common/src/constants";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { INPUT_ACTIONS_BITS, InputActions } from "../../../../common/src/constants";
+import { distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { GunItem } from "../../inventory/gunItem";
+import { Loot } from "../../objects/loot";
 import { Obstacle } from "../../objects/obstacle";
+import { type Player } from "../../objects/player";
+import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -38,6 +37,9 @@ export class InputPacket extends ReceivingPacket {
         }
 
         switch (stream.readBits(INPUT_ACTIONS_BITS)) {
+            case InputActions.UseConsumableItem:
+                player.inventory.useItem(stream.readObjectTypeNoCategory(ObjectCategory.Loot).idString);
+                break;
             case InputActions.EquipItem:
                 player.action?.cancel();
                 player.inventory.setActiveWeaponIndex(stream.readBits(2));

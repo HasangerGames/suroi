@@ -1,16 +1,13 @@
-import { version } from "../../package.json";
-
-import * as Webpack from "webpack";
-import type WDS from "webpack-dev-server";
-
-import TerserPlugin from "terser-webpack-plugin";
+import { createHash, randomBytes } from "crypto";
+import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
 import HTMLWebpackPlugin from "html-webpack-plugin";
 import MiniCSSExtractPlugin from "mini-css-extract-plugin";
-import CSSMinimizerPlugin from "css-minimizer-webpack-plugin";
-import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
-
 import * as path from "path";
-import { createHash, randomBytes } from "crypto";
+import { SpritesheetWebpackPlugin } from "spritesheet-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
+import * as Webpack from "webpack";
+import type WDS from "webpack-dev-server";
+import { version } from "../../package.json";
 
 interface Configuration extends Webpack.Configuration {
     devServer?: WDS.Configuration
@@ -26,8 +23,6 @@ const config: Configuration = {
         news: path.resolve(__dirname, "../src/news.ts"),
         rules: path.resolve(__dirname, "../src/rules.ts")
     },
-
-    stats: "minimal",
 
     resolve: { extensions: [".js", ".ts"] },
 
@@ -74,21 +69,6 @@ const config: Configuration = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [MiniCSSExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"]
-            },
-            {
-                test: /\.(ogg|mp3|wav)$/i,
-                type: "asset/resource",
-                generator: { filename: "audio/[name].[contenthash:8][ext]" }
-            },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: "asset/resource",
-                generator: { filename: "img/[name].[contenthash:8][ext]" }
-            },
-            {
-                test: /\.(woff|woff2|eot|ttf|otf)$/i,
-                type: "asset/resource",
-                generator: { filename: "fonts/[name].[contenthash:8][ext]" }
             }
         ]
     },
@@ -203,7 +183,6 @@ const config: Configuration = {
             }],
             compilerOptions: { margin: 4 }
         }),
-        new MiniCSSExtractPlugin({ filename: "css/[name].[contenthash:8].css" }),
         new Webpack.ProvidePlugin({ $: "jquery" })
     ],
 
@@ -244,7 +223,8 @@ const config: Configuration = {
         ]
     },
 
-    performance: { hints: false }
+    performance: { hints: false },
+    stats: "minimal"
 };
 
 export default config;

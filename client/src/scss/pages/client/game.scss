@@ -474,7 +474,7 @@
         0% {background-color: #000000;}
         50% {background-color: #ff0000;}
         100% {background-color: #000000;}
-    } 
+    }
 
 }
 
@@ -601,6 +601,7 @@
     #kill-msg-player-name {
         font-weight: bold;
         color: $orange;
+        @include text-shadow;
     }
 
     #kill-msg-kills {
@@ -1028,6 +1029,7 @@
                     width: 50px;
                     height: 50px;
                 }
+
                 @media screen and (max-width: $screen_small) {
                     width: 40px;
                     height: 40px;

@@ -3,6 +3,35 @@ import { type Vector } from "../../common/src/utils/vector";
 export enum SpawnMode { Random, Fixed, Center, Radius }
 export enum GasMode { Normal, Debug, Disabled }
 
+export const Config = {
+    host: "127.0.0.1",
+    port: 8000,
+
+    mapName: "main",
+
+    spawn: { mode: SpawnMode.Random },
+
+    maxPlayersPerGame: 80,
+    maxGames: 3,
+
+    gas: { mode: GasMode.Normal },
+
+    movementSpeed: 0.77,
+
+    censorUsernames: true,
+
+    roles: {
+        dev: { password: "dev" },
+        artist: { password: "artist", noPrivileges: true },
+        hasanger: { password: "hasanger" },
+        leia: { password: "leia" },
+        katie: { password: "katie" },
+        eipi: { password: "eipi" },
+        "123op": { password: "123op" },
+        radians: { password: "radians" }
+    }
+} satisfies ConfigType as ConfigType;
+
 export interface ConfigType {
     readonly host: string
     readonly port: number
@@ -44,7 +73,12 @@ export interface ConfigType {
     /**
      * The maximum number of players allowed to join a game.
      */
-    readonly playerLimit: number
+    readonly maxPlayersPerGame: number
+
+    /**
+     * The maximum number of concurrent games.
+     */
+    readonly maxGames: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
@@ -125,32 +159,3 @@ export interface ConfigType {
      */
     readonly disableLobbyClearing?: boolean
 }
-
-export const Config = {
-    host: "127.0.0.1",
-    port: 8000,
-
-    mapName: "singleBuilding",
-
-    spawn: { mode: SpawnMode.Center },
-
-    playerLimit: 80,
-
-    gas: { mode: GasMode.Normal },
-
-    movementSpeed: 0.77,
-
-    censorUsernames: true,
-
-    roles: {
-        dev: { password: "dev" },
-        artist: { password: "artist", noPrivileges: true },
-        hasanger: { password: "hasanger" },
-        leia: { password: "leia" },
-        limenade: { password: "limenade" },
-        katie: { password: "katie" },
-        eipi: { password: "eipi" },
-        "123op": { password: "123op" },
-        radians: { password: "radians" }
-    }
-} satisfies ConfigType as ConfigType;

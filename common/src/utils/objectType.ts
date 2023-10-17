@@ -1,10 +1,10 @@
+import { ObjectCategory } from "../constants";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { Obstacles } from "../definitions/obstacles";
 import { Explosions } from "../definitions/explosions";
 import { Loots } from "../definitions/loots";
 import { Buildings } from "../definitions/buildings";
 import { Emotes } from "../definitions/emotes";
-import { ObjectCategory } from "../constants";
 import { Decals } from "../definitions/decals";
 
 export const ObjectDefinitionsList: Record<ObjectCategory, ObjectDefinitions | undefined> = {
@@ -47,13 +47,12 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
 
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
-            throw new Error(`No definitions found for object category: ${category} (object ID = ${idNumber})`);
+            throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idNumber})`);
         }
 
-        let definition = definitions.definitions[type.idNumber];
+        const definition = definitions.definitions[type.idNumber];
         if (definition === undefined) {
-            console.warn(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
-            definition = definitions.definitions[0];
+            throw new Error(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
         }
 
         type.idString = definition.idString;

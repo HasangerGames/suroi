@@ -1,8 +1,8 @@
-import { LootTiers, type WeightedItem } from "../data/lootTables";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectCategory } from "../../../common/src/constants";
-import { weightedRandom } from "../../../common/src/utils/random";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { weightedRandom } from "../../../common/src/utils/random";
+import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export class LootItem {
     idString: string;

@@ -1,8 +1,8 @@
-import { type WearerAttributes, type ItemDefinition, type ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { type Player } from "../objects/player";
 import { ObjectCategory } from "../../../common/src/constants";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ItemDefinition, type ItemType, type WearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { type Player } from "../objects/player";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
@@ -85,7 +85,7 @@ export abstract class InventoryItem {
      * @param idString The `idString` of an item in the item schema that will be represented by this instance
      * @param owner The `Player` this item belongs to
      */
-    constructor(idString: string, owner: Player) {
+    protected constructor(idString: string, owner: Player) {
         this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
         this.category = this.type.definition.itemType;
         this.owner = owner;

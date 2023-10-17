@@ -1,25 +1,23 @@
-import { type Game } from "../game";
-
-import { GameObject } from "../types/gameObject";
-import { getLootTableLoot, type LootItem } from "../utils/misc";
-
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { vAdd, type Vector } from "../../../common/src/utils/vector";
-import { angleBetween, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
 import { ObjectCategory } from "../../../common/src/constants";
-import { type Orientation, type Variation } from "../../../common/src/typings";
-import { LootTables } from "../data/lootTables";
-import { random } from "../../../common/src/utils/random";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
+import { type Orientation, type Variation } from "../../../common/src/typings";
+import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
 import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
-import { Player } from "./player";
-import { type Building } from "./building";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { ObjectType } from "../../../common/src/utils/objectType";
+import { random } from "../../../common/src/utils/random";
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { vAdd, type Vector } from "../../../common/src/utils/vector";
+import { LootTables } from "../data/lootTables";
+import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { GameObject } from "../types/gameObject";
+import { getLootTableLoot, type LootItem } from "../utils/misc";
+import { type Building } from "./building";
+import { Player } from "./player";
 
 export class Obstacle extends GameObject {
     health: number;
@@ -160,7 +158,7 @@ export class Obstacle extends GameObject {
                 else lootPos = this.loot.length > 1 ? this.hitbox.randomPoint() : this.position;
                 const loot = this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), lootPos, item.count);
                 if (source.position !== undefined || position !== undefined) {
-                    loot.push(angleBetween(this.position, position ?? source.position), 7);
+                    loot.push(angleBetweenPoints(this.position, position ?? source.position), 7);
                 }
             }
 

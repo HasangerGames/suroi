@@ -10,12 +10,12 @@
  */
 
 export interface NewsPost {
-    date: number
-    author: string
-    title: string
-    bannerImage?: string
-    content: string
-    longContent?: string
+    readonly date: number
+    readonly author: string
+    readonly title: string
+    readonly bannerImage?: string
+    readonly content: string
+    readonly longContent?: string
 }
 
 export function processPost(post: NewsPost): string {

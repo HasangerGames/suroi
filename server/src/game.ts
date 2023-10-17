@@ -1,44 +1,39 @@
-// noinspection ES6PreferShortImport
-import { Config, SpawnMode } from "./config";
-
-import type { WebSocket } from "uWebSockets.js";
-
-import { allowJoin, createNewGame, endGame, type PlayerContainer } from "./server";
-import { Map } from "./map";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Gas } from "./gas";
-
+import { Grid } from "./utils/grid";
+import { type GameObject } from "./types/gameObject";
+import { type Obstacle } from "./objects/obstacle";
+import { type Building } from "./objects/building";
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
-import { removeFrom } from "./utils/misc";
-
-import { UpdatePacket } from "./packets/sending/updatePacket";
-import { type GameObject } from "./types/gameObject";
-
-import { log } from "../../common/src/utils/misc";
-import {
-    KILL_LEADER_MIN_KILLS,
-    KillFeedMessageType,
-    OBJECT_ID_BITS,
-    ObjectCategory,
-    TICK_SPEED
-} from "../../common/src/constants";
-import { ObjectType } from "../../common/src/utils/objectType";
+import { Loot } from "./objects/loot";
+import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
+import {
+    KILL_LEADER_MIN_KILLS,
+    KillFeedMessageType, OBJECT_ID_BITS,
+    ObjectCategory,
+    TICKS_PER_SECOND
+} from "../../common/src/constants";
+import { Maps } from "./data/maps";
+import { Config, SpawnMode } from "./config";
+import { Map } from "./map";
+import { MapPacket } from "./packets/sending/mapPacket";
+import { UpdatePacket } from "./packets/sending/updatePacket";
+import { endGame, type PlayerContainer } from "./server";
+import { GameOverPacket } from "./packets/sending/gameOverPacket";
+import { log } from "../../common/src/utils/misc";
+import { type WebSocket } from "uWebSockets.js";
+import { ObjectType } from "../../common/src/utils/objectType";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
-import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
-import { MapPacket } from "./packets/sending/mapPacket";
-import { Loot } from "./objects/loot";
-import { IDAllocator } from "./utils/idAllocator";
+import { JoinedPacket } from "./packets/sending/joinedPacket";
+import { removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
-import { GameOverPacket } from "./packets/sending/gameOverPacket";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { type GunItem } from "./inventory/gunItem";
-import { type Emote } from "./objects/emote";
-import { Grid } from "./utils/grid";
-import { Maps } from "./data/maps";
+import { IDAllocator } from "./utils/idAllocator";
 
 export class Game {
     readonly _id: number;
@@ -52,23 +47,17 @@ export class Game {
      */
     private readonly mapPacketStream: SuroiBitStream;
 
-    /**
-     * The value of `Date.now()`, as of the start of the tick.
-     */
-    _now = Date.now();
-    get now(): number { return this._now; }
+    gas: Gas;
 
-    /**
-     * A Set of all the static objects in the world
-     */
-    readonly staticObjects = new Set<GameObject>();
     readonly grid: Grid;
-
-    aliveCountDirty = false;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
     readonly deletedObjects = new Set<GameObject>();
+
+    updateObjects = false;
+
+    readonly minimapObjects = new Set<Obstacle | Building>();
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
@@ -77,6 +66,7 @@ export class Game {
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
     readonly emotes: Set<Emote> = new Set<Emote>();
+
     /**
      * All bullets that currently exist
      */
@@ -98,13 +88,17 @@ export class Game {
 
     startTimeoutID?: NodeJS.Timeout;
 
-    gas: Gas;
+    aliveCountDirty = false;
+
+    /**
+     * The value of `Date.now()`, as of the start of the tick.
+     */
+    _now = Date.now();
+    get now(): number { return this._now; }
 
     tickTimes: number[] = [];
 
-    tickDelta = 1000 / TICK_SPEED;
-
-    updateObjects = false;
+    tickDelta = 1000 / TICKS_PER_SECOND;
 
     constructor(id: number) {
         this._id = id;
@@ -122,7 +116,7 @@ export class Game {
         this.allowJoin = true;
 
         // Start the tick loop
-        this.tick(TICK_SPEED);
+        this.tick(TICKS_PER_SECOND);
     }
 
     tick(delay: number): void {
@@ -250,11 +244,7 @@ export class Game {
                 // End the game in 1 second
                 this.allowJoin = false;
                 this.over = true;
-                setTimeout(() => {
-                    endGame(this._id); // End this game
-                    const otherID = this._id === 0 ? 1 : 0; // == 1 - this.id
-                    if (!allowJoin(otherID)) createNewGame(this._id); // Create a new game if the other game isn't allowing players to join
-                }, 1000);
+                setTimeout(() => endGame(this._id), 1000);
             }
 
             // Record performance and start the next tick
@@ -266,12 +256,11 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                log(`Game #${this._id} average ms/tick: ${mspt}`, true);
-                log(`Load: ${((mspt / TICK_SPEED) * 100).toFixed(1)}%`);
+                log(`Game #${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, TICK_SPEED - tickTime));
+            this.tick(Math.max(0, TICKS_PER_SECOND - tickTime));
         }, delay);
     }
 
@@ -337,22 +326,18 @@ export class Game {
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player): void {
-        const game = player.game;
-
-        game.livingPlayers.add(player);
-        game.spectatablePlayers.push(player);
-        game.connectedPlayers.add(player);
-        game.grid.addObject(player);
-        game.fullDirtyObjects.add(player);
-        game.aliveCountDirty = true;
+        this.livingPlayers.add(player);
+        this.spectatablePlayers.push(player);
+        this.connectedPlayers.add(player);
+        this.grid.addObject(player);
+        this.fullDirtyObjects.add(player);
+        this.aliveCountDirty = true;
 
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
         player.sendData(this.mapPacketStream);
 
-        setTimeout(() => {
-            player.disableInvulnerability();
-        }, 5000);
+        setTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
@@ -360,6 +345,8 @@ export class Game {
                 this.gas.advanceGas();
             }, 5000);
         }
+
+        log(`Game #${this.id} | "${player.name}" joined`);
     }
 
     removePlayer(player: Player): void {

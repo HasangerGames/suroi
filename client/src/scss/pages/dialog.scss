@@ -74,6 +74,7 @@
             display: flex;
             @include text-shadow;
         }
+
         .dialog-close-btn {
             margin-left: auto;
             text-align: center;
@@ -106,7 +107,6 @@
         align-items: center;
         flex-wrap: wrap;
         height: 100%;
-        overflow-y: scroll;
 
         .skins-list-item-container {
             width: 140px;
@@ -229,9 +229,28 @@
         display: flex;
         flex-direction: column;
         width: 320px;
+        position: relative;
+
+        &.disabled {
+            .modal-item {
+                pointer-events: none;
+                filter: blur(5px);
+            }
+
+            #crosshair-controls-disabled {
+                display: block !important;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                font-size: 22px;
+                @include text-shadow;
+            }
+        }
 
         .modal-item {
-            margin-top: 0!important;
+            margin-top: 0 !important;
         }
     }
 
@@ -252,7 +271,8 @@
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        align-content: start;
+        justify-content: flex-start;
+        align-content: flex-start;
 
         .crosshairs-list-item-container {
             display: flex;
@@ -304,7 +324,7 @@
             height: 191px;
             background-size: contain;
 
-            & > div {
+            &>div {
                 width: 56px;
                 height: 56px;
                 background-size: contain;
@@ -337,7 +357,7 @@
             width: 143px;
             height: 143px;
 
-            & > div {
+            &>div {
                 width: 42px;
                 height: 42px;
             }
@@ -394,6 +414,17 @@
 
     #settings-tabs {
         background: $transparent_bg;
+
+        #tab-keybinds-content .modal-item:not(:last-child) {
+            div.settings-title {
+                width: 100%;
+            }
+
+            button.btn-bind {
+                width: 45%;
+                margin-inline: 2.5%;
+            }
+        }
     }
 
     #customize-tabs {
@@ -408,7 +439,7 @@
             background: #49993e;
         }
 
-        & > img {
+        &>img {
             position: relative;
             top: 3px;
             margin-right: 5px;
@@ -424,6 +455,7 @@
         margin: 0.2em;
         font-weight: bold;
         font-size: 16px;
+        @include text-shadow;
     }
 
     .modal-item {
@@ -441,6 +473,7 @@
         }
 
         .range-input-value {
+            @include text-shadow;
             float: right;
         }
     }
