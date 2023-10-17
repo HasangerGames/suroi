@@ -280,8 +280,9 @@ export const Maps: Record<string, MapDefinition> = {
                 (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
                 player.inventory.items[gun.ammoType] = Infinity;
                 player.disableInvulnerability();
-                setInterval(() => player.activeItem.useItem(), 30);
+                //setInterval(() => player.activeItem.useItem(), 30);
                 map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.idString), v(16, 32 + (16 * i)));
+                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.ammoType), v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
             }
         }
