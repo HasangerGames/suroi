@@ -1,15 +1,14 @@
-import { type Game } from "../game";
-
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
-import { type ObjectCategory, TICK_SPEED } from "../../../../common/src/constants";
-import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { Container, Graphics } from "pixi.js";
-import { type Sound } from "../utils/soundManager";
+import { type ObjectCategory, TICKS_PER_SECOND } from "../../../../common/src/constants";
 import { vecLerp } from "../../../../common/src/utils/math";
-import { toPixiCoords } from "../utils/pixi";
+import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
+import { toPixiCoords } from "../utils/pixi";
+import { type Sound } from "../utils/soundManager";
 
 export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
     id: number;
@@ -36,7 +35,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
-        const interpFactor = (Date.now() - this.lastPositionChange) / TICK_SPEED;
+        const interpFactor = (Date.now() - this.lastPositionChange) / TICKS_PER_SECOND;
         this.container.position = toPixiCoords(vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
@@ -56,7 +55,7 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
-        const interpFactor = (Date.now() - this.lastRotationChange) / TICK_SPEED;
+        const interpFactor = (Date.now() - this.lastRotationChange) / TICKS_PER_SECOND;
 
         const interpolated = vecLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 

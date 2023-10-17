@@ -1,29 +1,23 @@
+import { type Orientation } from "../typings";
 import {
-    vClone,
-    v,
-    type Vector, vSub, vMul, vAdd
-} from "./vector";
-import {
+    addAdjust,
+    circleCircleIntersection,
     circleCollision,
     type CollisionRecord,
+    distanceSquared,
     distanceToCircle,
     distanceToRectangle,
-    rectangleCollision,
-    rectRectCollision,
-    rectangleDistanceToRectangle,
-    addAdjust,
-    lineIntersectsRect,
-    lineIntersectsCircle,
     type IntersectionResponse,
-    distanceSquared,
+    lineIntersectsCircle,
+    lineIntersectsRect,
+    rectangleCollision,
+    rectangleDistanceToRectangle,
     rectCircleIntersection,
-    circleCircleIntersection
+    rectRectCollision,
+    transformRectangle
 } from "./math";
-
-import { transformRectangle } from "./math";
-
-import { type Orientation } from "../typings";
 import { random, randomFloat, randomPointInsideCircle } from "./random";
+import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
 export abstract class Hitbox {
     /**

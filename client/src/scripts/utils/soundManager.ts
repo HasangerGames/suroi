@@ -1,21 +1,21 @@
 import { Howl } from "howler";
-import { Materials } from "../../../../common/src/definitions/obstacles";
-import { Guns } from "../../../../common/src/definitions/guns";
 import { FloorTypes } from "../../../../common/src/definitions/buildings";
+import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { v, vSub, type Vector, vLength } from "../../../../common/src/utils/vector";
-import { localStorageInstance } from "./localStorageHandler";
+import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
+import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
+import { consoleVariables } from "./console/variables";
 
 export interface Sound {
-    name: string
-    id: number
+    readonly name: string
+    readonly id: number
 }
 
 export class SoundManager {
     sounds: Record<string, Howl>;
 
-    volume = localStorageInstance.config.sfxVolume;
+    volume = consoleVariables.get.builtIn("cv_sfx_volume").value;
 
     position = v(0, 0);
 
@@ -45,6 +45,7 @@ export class SoundManager {
                 volume = scaledVolume * baseVolume;
                 stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
             }
+
             if (volume > 0) {
                 id = sound.play();
                 sound.volume(volume, id);
@@ -53,6 +54,7 @@ export class SoundManager {
         } else {
             console.warn(`Sound with name "${name}" not found.`);
         }
+
         return {
             name,
             id

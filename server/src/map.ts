@@ -1,8 +1,11 @@
-import { type Game } from "./game";
+import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
+import { type Orientation, type Variation } from "../../common/src/typings";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
+import { addAdjust, addOrientations } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { v, vClone, type Vector } from "../../common/src/utils/vector";
-import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     random,
     randomFloat,
@@ -10,17 +13,14 @@ import {
     randomRotation,
     randomVector
 } from "../../common/src/utils/random";
-import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
-import { Obstacle } from "./objects/obstacle";
-import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
+import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
-import { getLootTableLoot } from "./utils/misc";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
-import { type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { type Game } from "./game";
 import { Building } from "./objects/building";
-import { addAdjust, addOrientations } from "../../common/src/utils/math";
+import { Obstacle } from "./objects/obstacle";
+import { getLootTableLoot } from "./utils/misc";
 
 export class Map {
     game: Game;
@@ -102,7 +102,7 @@ export class Map {
             }
         }
 
-        log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
+        log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
     generateBuildings(idString: string, count: number): void {
@@ -172,7 +172,7 @@ export class Map {
             }
         }
 
-        this.game.staticObjects.add(building);
+        if (!definition.hideOnMap) this.game.minimapObjects.add(building);
         this.game.grid.addObject(building);
         return building;
     }
@@ -242,8 +242,7 @@ export class Map {
             lootSpawnOffset,
             parentBuilding
         );
-        this.game.staticObjects.add(obstacle);
-
+        if (!definition.hideOnMap) this.game.minimapObjects.add(obstacle);
         this.game.grid.addObject(obstacle);
         return obstacle;
     }

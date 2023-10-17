@@ -9,6 +9,10 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
+import { Guns } from "../../../common/src/definitions/guns";
+import { Player } from "../objects/player";
+import { type PlayerContainer } from "../server";
+import { type WebSocket } from "uWebSockets.js";
 
 interface MapDefinition {
     readonly width: number
@@ -262,6 +266,18 @@ export const Maps: Record<string, MapDefinition> = {
         height: 128,
         genCallback(map) {
             map.generateObstacle("port_warehouse_wall_superlong", v(this.width / 2, this.height / 2));
+        }
+    },
+    guns_test: {
+        width: 64,
+        height: 48 + (16 * Guns.length),
+        genCallback(map) {
+            for (let i = 0; i < Guns.length; i++) {
+                const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(32, 32 + (16 * i)));
+                player.inventory.addOrReplaceWeapon(0, Guns[i].idString);
+                player.disableInvulnerability();
+                map.game.grid.addObject(player);
+            }
         }
     }
 };

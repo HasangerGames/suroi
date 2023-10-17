@@ -1,7 +1,7 @@
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-import { type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
@@ -20,7 +20,7 @@ export class Decal extends GameObject {
 
         this.image = new SuroiSprite(def.image ?? def.idString);
         this.container.addChild(this.image);
-        this.container.zIndex = def.zIndex ?? zIndexes.Decals;
+        this.container.zIndex = def.zIndex ?? ZIndexes.Decals;
         this.container.scale.set(def.scale ?? 1);
     }
 

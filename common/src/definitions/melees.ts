@@ -1,6 +1,6 @@
+import { type FireMode } from "../constants";
 import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
-import { type FireMode } from "../constants";
 
 export interface MeleeDefinition extends ItemDefinition {
     readonly itemType: ItemType.Melee

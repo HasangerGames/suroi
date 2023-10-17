@@ -1,8 +1,16 @@
-import { BaseTexture, Sprite, type SpriteSheetJson, Spritesheet, Texture, type Graphics, type ColorSource } from "pixi.js";
+import {
+    BaseTexture,
+    type ColorSource,
+    type Graphics,
+    Sprite,
+    Spritesheet,
+    type SpriteSheetJson,
+    Texture
+} from "pixi.js";
+import { Buildings } from "../../../../common/src/definitions/buildings";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { Buildings } from "../../../../common/src/definitions/buildings";
 
 declare const ATLAS_HASH: string;
 
@@ -16,7 +24,6 @@ async function loadImage(key: string, path: string): Promise<void> {
 export async function loadAtlases(): Promise<void> {
     for (const atlas of ["main"]) {
         const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
-
         const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
 
         console.log(`Loading atlas: ${location.toString()}${path}.png`);
@@ -47,8 +54,7 @@ export class SuroiSprite extends Sprite {
         let texture: Texture | undefined;
 
         if (frame) {
-            if (!textures[frame]) frame = "_missing_texture.svg";
-            texture = textures[frame];
+            texture = textures[frame] ?? textures["_missing_texture.svg"];
         }
         super(texture);
 
@@ -57,8 +63,7 @@ export class SuroiSprite extends Sprite {
     }
 
     setFrame(frame: string): SuroiSprite {
-        if (!textures[frame]) frame = "_missing_texture.svg";
-        this.texture = textures[frame];
+        this.texture = textures[frame] ?? textures["_missing_texture.svg"];
         return this;
     }
 

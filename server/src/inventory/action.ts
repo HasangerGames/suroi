@@ -1,5 +1,5 @@
 import { type ObjectCategory, PlayerActions } from "../../../common/src/constants";
-import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealType } from "../../../common/src/definitions/healingItems";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";

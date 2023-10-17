@@ -1,6 +1,6 @@
+import { FireMode } from "../constants";
 import { type BulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
-import { FireMode } from "../constants";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
@@ -20,6 +20,7 @@ export type GunDefinition = ItemDefinition & {
     readonly recoilDuration: number
     readonly shotSpread: number
     readonly moveSpread: number // Added to shotSpread if the player is moving
+    readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
     readonly canQuickswitch?: boolean
@@ -179,6 +180,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 5,
         moveSpread: 2,
+        jitterRadius: 1.25,
         canQuickswitch: true,
         bulletCount: 9,
         length: 8.1,
@@ -216,6 +218,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 11,
         moveSpread: 3,
+        jitterRadius: 2.75,
         canQuickswitch: true,
         bulletCount: 10,
         length: 10.6,
@@ -255,6 +258,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 18,
         shotSpread: 30,
         moveSpread: 7,
+        jitterRadius: 3,
         canQuickswitch: true,
         length: 8.5,
         fists: {
@@ -293,6 +297,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         shotSpread: 11,
         moveSpread: 3,
+        jitterRadius: 3,
         canQuickswitch: true,
         length: 5.7,
         fists: {
@@ -345,7 +350,7 @@ export const Guns: GunDefinition[] = [
             position: v(4, 0.6)
         },
         ballistics: {
-            damage: 64,
+            damage: 70,
             obstacleMultiplier: 1,
             speed: 0.33,
             maxDistance: 250,
@@ -383,7 +388,7 @@ export const Guns: GunDefinition[] = [
             position: v(4, 0.6)
         },
         ballistics: {
-            damage: 78,
+            damage: 84,
             obstacleMultiplier: 1,
             speed: 0.4,
             maxDistance: 280,
@@ -562,7 +567,7 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(70, 0) },
         ballistics: {
-            damage: 9,
+            damage: 7.75,
             obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 85

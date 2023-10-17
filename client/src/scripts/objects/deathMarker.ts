@@ -1,15 +1,13 @@
-import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
-
-import { DEFAULT_USERNAME, type ObjectCategory, zIndexes } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-
 import { type Container, Text } from "pixi.js";
-import { Tween } from "../utils/tween";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { DEFAULT_USERNAME, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { localStorageInstance } from "../utils/localStorageHandler";
+import { type Vector } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { consoleVariables } from "../utils/console/variables";
+import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { Tween } from "../utils/tween";
 
 export class DeathMarker extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.DeathMarker>;
@@ -27,7 +25,8 @@ export class DeathMarker extends GameObject {
         super(game, type, id);
 
         this.image = new SuroiSprite("death_marker");
-        this.playerNameText = new Text(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : "",
+        this.playerNameText = new Text(
+            consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
@@ -35,12 +34,13 @@ export class DeathMarker extends GameObject {
                 dropShadowBlur: 2,
                 dropShadowDistance: 2,
                 dropShadowColor: 0
-            });
+            }
+        );
         this.playerNameText.y = 95;
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-        this.container.zIndex = zIndexes.DeathMarkers;
+        this.container.zIndex = ZIndexes.DeathMarkers;
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {

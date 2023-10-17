@@ -1,10 +1,9 @@
-import { ReceivingPacket } from "../../types/receivingPacket";
-
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import $ from "jquery";
-import { formatDate } from "../../utils/misc";
-import { localStorageInstance } from "../../utils/localStorageHandler";
 import { DEFAULT_USERNAME } from "../../../../../common/src/constants";
+import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { ReceivingPacket } from "../../types/receivingPacket";
+import { consoleVariables } from "../../utils/console/variables";
+import { formatDate } from "../../utils/misc";
 
 export let gameOverScreenTimeout: NodeJS.Timeout | undefined;
 
@@ -34,7 +33,7 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
         const name = stream.readPlayerNameWithColor();
-        $("#game-over-player-name").html(localStorageInstance.config.anonymousPlayers ? DEFAULT_USERNAME : name);
+        $("#game-over-player-name").html(consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : name);
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());
@@ -42,14 +41,19 @@ export class GameOverPacket extends ReceivingPacket {
         const timeString = formatDate(stream.readUint16());
 
         $("#game-over-time").text(timeString);
+
         if (won) {
             const game = this.game;
-            game.music.play();
+            const volume = consoleVariables.get.builtIn("cv_music_volume").value;
+            if (volume) {
+                game.music.play();
+            }
             game.music.loop();
-            game.music.volume(localStorageInstance.config.musicVolume);
+            game.music.volume(volume);
             game.musicPlaying = true;
         }
-        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(800), 500);
+
+        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
         const aliveCount = stream.readBits(7);

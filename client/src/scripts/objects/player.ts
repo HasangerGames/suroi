@@ -1,41 +1,37 @@
-import { type Game } from "../game";
-
-import { localStorageInstance } from "../utils/localStorageHandler";
-
+import { Container } from "pixi.js";
 import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions,
-    SpectateActions,
-    zIndexes
+    PlayerActions, SpectateActions,
+    ZIndexes
 } from "../../../../common/src/constants";
-
-import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
-import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { angleBetween, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
-
-import type { MeleeDefinition } from "../../../../common/src/definitions/melees";
-import type { GunDefinition } from "../../../../common/src/definitions/guns";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { Helmets } from "../../../../common/src/definitions/helmets";
-import { Vests } from "../../../../common/src/definitions/vests";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
+import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
+import { Helmets } from "../../../../common/src/definitions/helmets";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
+import { Vests } from "../../../../common/src/definitions/vests";
+import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
+import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../../common/src/utils/objectType";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
+import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Container, ObservablePoint, Texture, TilingSprite } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
-import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
-import { Obstacle } from "./obstacle";
-import { GameObject } from "../types/gameObject";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
+import { consoleVariables } from "../utils/console/variables";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
 
 export class Player extends GameObject {
@@ -146,7 +142,7 @@ export class Player extends GameObject {
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
-        this.emoteContainer.zIndex = zIndexes.Emotes;
+        this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
 
         this.updateFistsPosition(false);
@@ -164,7 +160,7 @@ export class Player extends GameObject {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    zIndex: zIndexes.Players,
+                    zIndex: ZIndexes.Players,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -203,7 +199,7 @@ export class Player extends GameObject {
         if (weaponDef.casingParticles !== undefined) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.ammoType}_particle`,
-                zIndex: zIndexes.Players,
+                zIndex: ZIndexes.Players,
                 position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
@@ -228,23 +224,23 @@ export class Player extends GameObject {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
-
         this.hitbox.position = this.position;
 
         if (this.isActivePlayer) {
-            if (!localStorageInstance.config.movementSmoothing) {
+            if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
                 this.game.camera.position = toPixiCoords(this.position);
             }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
-            if (!localStorageInstance.config.clientSidePrediction) {
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
                 this.game.map.indicator.setRotation(this.rotation);
             }
 
-            if (localStorageInstance.config.showCoordinates) {
+            if (consoleVariables.get.builtIn("pf_show_pos").value) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
+
         if (this.oldPosition !== undefined) {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
             if (this.distSinceLastFootstep > 7) {
@@ -262,11 +258,12 @@ export class Player extends GameObject {
 
         this.rotation = data.rotation;
 
-        if (!localStorageInstance.config.clientSidePrediction ||
-            !(localStorageInstance.config.clientSidePrediction && this.isActivePlayer && !this.game.spectating)
+        const rotationStyleIsClient = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
+        if (!rotationStyleIsClient ||
+            !(rotationStyleIsClient && this.isActivePlayer && !this.game.spectating)
         ) this.container.rotation = this.rotation;
 
-        if (this.isNew || !localStorageInstance.config.movementSmoothing) {
+        if (this.isNew || !consoleVariables.get.builtIn("cv_movement_smoothing").value) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
@@ -596,7 +593,7 @@ export class Player extends GameObject {
                         })
                         .slice(0, Math.min(damagedObjects.length, weaponDef.maxTargets))
                         // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
-                        .forEach(target => target.hitEffect(position, angleBetween(this.position, position)));
+                        .forEach(target => target.hitEffect(position, angleBetweenPoints(this.position, position)));
                 }, 50);
 
                 break;
@@ -669,7 +666,7 @@ export class Player extends GameObject {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
-            zIndex: zIndexes.Players + 1,
+            zIndex: ZIndexes.Players + 1,
             position,
             lifeTime: 1000,
             scale: {
