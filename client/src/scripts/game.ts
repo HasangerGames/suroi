@@ -496,10 +496,9 @@ export class Game {
                             !(differences.object || differences.offset)
                         ) return;
 
-                        let interactText = "";
-                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
-                        interactText += closestObject.type.definition.name;
-                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
+                        let interactText;
+                        if (closestObject instanceof Obstacle) interactText = closestObject.door?.offset === 0 ? "Open Door" : "Close Door";
+                        else interactText = `${closestObject.type.definition.name}${closestObject.count > 1 ? ` (${closestObject.count})` : ""}`;
                         $("#interact-text").text(interactText);
                     };
 
