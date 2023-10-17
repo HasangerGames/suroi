@@ -1,9 +1,8 @@
+import * as path from "path";
+import MiniCSSExtractPlugin from "mini-css-extract-plugin";
+import { DefinePlugin } from "webpack";
 import merge from "webpack-merge";
 import common from "./webpack.common";
-
-import { DefinePlugin } from "webpack";
-
-import * as path from "path";
 
 const config = merge(common, {
     mode: "development",
@@ -11,7 +10,7 @@ const config = merge(common, {
 
     output: {
         path: path.resolve(__dirname, "../dist"),
-        filename: "js/[name].[chunkhash:8].js"
+        filename: "js/[name].js"
     },
 
     devServer: {
@@ -31,8 +30,29 @@ const config = merge(common, {
         port: 3000
     },
 
+    module: {
+        rules: [
+            {
+                test: /\.(ogg|mp3|wav)$/i,
+                type: "asset/resource",
+                generator: { filename: "audio/[name].[ext]" }
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: "asset/resource",
+                generator: { filename: "img/[name].[ext]" }
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/i,
+                type: "asset/resource",
+                generator: { filename: "fonts/[name].[ext]" }
+            }
+        ]
+    },
+
     plugins: [
-        new DefinePlugin({ API_URL: "\"http://127.0.0.1:8000/api\"" })
+        new DefinePlugin({ API_URL: "\"http://127.0.0.1:8000/api\"" }),
+        new MiniCSSExtractPlugin({ filename: "css/[name].css" })
     ]
 });
 

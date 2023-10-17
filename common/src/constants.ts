@@ -20,7 +20,6 @@ export enum PacketType {
     KillFeed,
     Pickup,
     Ping,
-    Item,
     Spectate,
     Report
 }
@@ -59,6 +58,7 @@ export enum InputActions {
     Interact,
     Reload,
     Cancel,
+    UseConsumableItem,
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
@@ -100,17 +100,16 @@ export const INVENTORY_MAX_WEAPONS = 3;
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
 export const PLAYER_NAME_MAX_LENGTH = 16;
-export const TICK_SPEED = 30;
+export const TICKS_PER_SECOND = 30;
 export const GRID_SIZE = 16;
 
 export const PLAYER_RADIUS = 2.25;
 
 export const DEFAULT_USERNAME = "Player";
-export const ALLOW_NON_ASCII_USERNAME_CHARS = false;
 
 export const KILL_LEADER_MIN_KILLS = 3;
 
-export enum zIndexes {
+export enum ZIndexes {
     Ground,
     DeadObstacles,
     Decals,

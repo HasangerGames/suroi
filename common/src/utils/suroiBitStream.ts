@@ -1,10 +1,4 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-
-import { type Vector } from "./vector";
-import { ObjectType, ObjectDefinitionsList } from "./objectType";
-
-import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
-
 import {
     MAX_OBJECT_SCALE,
     MIN_OBJECT_SCALE,
@@ -18,6 +12,9 @@ import {
 } from "../constants";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
+import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
+import { ObjectDefinitionsList, ObjectType } from "./objectType";
+import { type Vector } from "./vector";
 import { RotationMode } from "../definitions/obstacles";
 
 export class SuroiBitStream extends BitStream {
@@ -308,7 +305,7 @@ export class SuroiBitStream extends BitStream {
      * @param name The player name.
      */
     writePlayerName(name: string): void {
-        this.writeUTF8String(name, PLAYER_NAME_MAX_LENGTH);
+        this.writeASCIIString(name, PLAYER_NAME_MAX_LENGTH);
     }
 
     /**
@@ -316,7 +313,7 @@ export class SuroiBitStream extends BitStream {
      * @return The player name.
      */
     readPlayerName(): string {
-        return this.readUTF8String(PLAYER_NAME_MAX_LENGTH);
+        return this.readASCIIString(PLAYER_NAME_MAX_LENGTH);
     }
 
     /**

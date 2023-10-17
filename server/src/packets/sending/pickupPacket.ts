@@ -1,10 +1,9 @@
-import { SendingPacket } from "../../types/sendingPacket";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type ObjectCategory, PacketType } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
-import { type Player } from "../../objects/player";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { type Player } from "../../objects/player";
+import { SendingPacket } from "../../types/sendingPacket";
 
 export class PickupPacket extends SendingPacket {
     override readonly allocBytes = 3;

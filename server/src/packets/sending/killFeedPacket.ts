@@ -1,11 +1,10 @@
-import { SendingPacket } from "../../types/sendingPacket";
-import { Player } from "../../objects/player";
-
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
+import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { Player } from "../../objects/player";
+import { SendingPacket } from "../../types/sendingPacket";
 
 interface KillFeedPacketOptions {
     killedBy?: Player | "gas"

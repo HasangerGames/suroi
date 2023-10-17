@@ -1,4 +1,10 @@
-import { ANIMATION_TYPE_BITS, type AnimationType, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions } from "../constants";
+import {
+    ANIMATION_TYPE_BITS,
+    type AnimationType,
+    ObjectCategory,
+    PLAYER_ACTIONS_BITS,
+    PlayerActions
+} from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { type LootDefinition } from "../definitions/loots";
 import { type ObstacleDefinition } from "../definitions/obstacles";

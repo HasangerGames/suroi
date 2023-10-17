@@ -1,25 +1,29 @@
-import { type Game } from "../game";
-
-import { GameObject } from "../types/gameObject";
-
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { v, vAdd, vMul, type Vector, vClone, vSub } from "../../../common/src/utils/vector";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
-import { type Player } from "./player";
-import { PickupPacket } from "../packets/sending/pickupPacket";
-import { ArmorType, TICK_SPEED, ObjectCategory, PlayerActions } from "../../../common/src/constants";
-import { GunItem } from "../inventory/gunItem";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
+import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { Obstacle } from "./obstacle";
-import { circleCircleIntersection, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
-import { randomRotation } from "../../../common/src/utils/random";
+import {
+    circleCircleIntersection,
+    clamp,
+    distance,
+    distanceSquared,
+    velFromAngle
+} from "../../../common/src/utils/math";
+import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { randomRotation } from "../../../common/src/utils/random";
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { v, vAdd, vClone, type Vector, vMul, vSub } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GunItem } from "../inventory/gunItem";
+import { PickupPacket } from "../packets/sending/pickupPacket";
+import { GameObject } from "../types/gameObject";
+import { Obstacle } from "./obstacle";
+import { type Player } from "./player";
 
 export class Loot extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
@@ -63,7 +67,7 @@ export class Loot extends GameObject {
         this.game.grid.removeObject(this);
         if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
             this.velocity = vMul(this.velocity, 0.9);
-            const velocity = vMul(this.velocity, 1 / TICK_SPEED);
+            const velocity = vMul(this.velocity, 1 / TICKS_PER_SECOND);
             velocity.x = clamp(velocity.x, -1, 1);
             velocity.y = clamp(velocity.y, -1, 1);
             this.position = vAdd(this.position, velocity);

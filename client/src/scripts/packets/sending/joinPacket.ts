@@ -1,25 +1,30 @@
-import { SendingPacket } from "../../types/sendingPacket";
-
 import { ObjectCategory, PacketType } from "../../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
-import { type Config, localStorageInstance } from "../../utils/localStorageHandler";
 import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { SendingPacket } from "../../types/sendingPacket";
+import { consoleVariables, type CVarTypeMapping } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
-    override readonly allocBytes = 8;
+    override readonly allocBytes = 24;
     override readonly type = PacketType.Join;
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        stream.writeBoolean(this.playerManager.isMobile);
-        const writeLoadoutItem = (propertyName: keyof Config["loadout"], category = ObjectCategory.Emote): void => {
-            stream.writeObjectTypeNoCategory(ObjectType.fromString(category, localStorageInstance.config.loadout[propertyName]));
-        };
 
-        writeLoadoutItem("skin", ObjectCategory.Loot);
-        writeLoadoutItem("topEmote");
-        writeLoadoutItem("rightEmote");
-        writeLoadoutItem("bottomEmote");
-        writeLoadoutItem("leftEmote");
+        stream.writePlayerName(consoleVariables.get.builtIn("cv_player_name").value);
+
+        stream.writeBoolean(this.playerManager.isMobile);
+
+        const writeLoadoutItem = (
+            propertyName: keyof CVarTypeMapping,
+            category = ObjectCategory.Emote
+        ): void => {
+            stream.writeObjectTypeNoCategory(ObjectType.fromString(category, consoleVariables.get.builtIn(propertyName).value as string));
+        };
+        writeLoadoutItem("cv_loadout_skin", ObjectCategory.Loot);
+        writeLoadoutItem("cv_loadout_top_emote");
+        writeLoadoutItem("cv_loadout_right_emote");
+        writeLoadoutItem("cv_loadout_bottom_emote");
+        writeLoadoutItem("cv_loadout_left_emote");
     }
 }

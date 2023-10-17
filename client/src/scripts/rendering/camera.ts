@@ -1,9 +1,9 @@
 import { type Application, Container } from "pixi.js";
-import { type Vector, v, vAdd, vMul, vAdd2 } from "../../../../common/src/utils/vector";
-import { EaseFunctions, Tween } from "../utils/tween";
-import { type Game } from "../game";
 import { randomFloat } from "../../../../common/src/utils/random";
-import { localStorageInstance } from "../utils/localStorageHandler";
+import { v, vAdd, vAdd2, type Vector, vMul } from "../../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { consoleVariables } from "../utils/console/variables";
+import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Camera {
     pixi: Application;
@@ -71,7 +71,7 @@ export class Camera {
     }
 
     shake(duration: number, intensity: number): void {
-        if (!localStorageInstance.config.cameraShake) return;
+        if (!consoleVariables.get.builtIn("cv_camera_shake_fx").value) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;

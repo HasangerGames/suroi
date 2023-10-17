@@ -1,10 +1,10 @@
-import { Container, Graphics, LINE_CAP, Sprite, Texture, isMobile } from "pixi.js";
+import { Container, Graphics, isMobile, LINE_CAP, Sprite, Texture } from "pixi.js";
+import { GasState, GRID_SIZE } from "../../../../common/src/constants";
+import { v, vClone, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { localStorageInstance } from "../utils/localStorageHandler";
-import { type Vector, v, vClone, vMul } from "../../../../common/src/utils/vector";
+import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite } from "../utils/pixi";
 import { Gas } from "./gas";
-import { GRID_SIZE, GasState } from "../../../../common/src/constants";
 
 export class Minimap {
     container = new Container();
@@ -56,21 +56,20 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (localStorageInstance.config.minimapMinimized) this.toggleMiniMap();
+        if (consoleVariables.get.builtIn("cv_minimap_minimized").value) this.toggleMiniMap();
 
         this.indicator.scale.set(0.1);
 
         this.sprite.position.set(-this.oceanPadding);
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
-        $("#minimap-border").on("click", (e) => {
-            if (isMobile.any) {
-                this.switchToBigMap();
-                e.stopImmediatePropagation();
-            }
+        $("#minimap-border").on("click", e => {
+            if (!isMobile.any) return;
+            this.switchToBigMap();
+            e.stopImmediatePropagation();
         });
 
-        $("#btn-close-minimap").on("pointerdown", (e) => {
+        $("#btn-close-minimap").on("pointerdown", e => {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
@@ -204,7 +203,7 @@ export class Minimap {
     }
 
     updateTransparency(): void {
-        this.container.alpha = localStorageInstance.config[this.expanded ? "bigMapTransparency" : "minimapTransparency"];
+        this.container.alpha = consoleVariables.get.builtIn(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency").value;
     }
 
     toggleMiniMap(noSwitchToggle = false): void {
@@ -213,7 +212,7 @@ export class Minimap {
         this.switchToSmallMap();
         this.container.visible = this.visible;
         $("#minimap-border").toggle(this.visible);
-        localStorageInstance.update({ minimapMinimized: !this.visible });
+        consoleVariables.set.builtIn("cv_minimap_minimized", !this.visible);
         if (!noSwitchToggle) {
             $("#toggle-hide-minimap").prop("checked", !this.visible);
         }

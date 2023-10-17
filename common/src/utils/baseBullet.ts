@@ -1,11 +1,11 @@
-import { distanceSquared } from "./math";
-import { type Vector, v, vAdd, vMul, vClone } from "./vector";
-import { type GunDefinition } from "../definitions/guns";
-import { type ObjectType } from "./objectType";
 import { type ObjectCategory } from "../constants";
-import { type Hitbox } from "./hitbox";
 import { type ExplosionDefinition } from "../definitions/explosions";
+import { type GunDefinition } from "../definitions/guns";
+import { type Hitbox } from "./hitbox";
+import { distanceSquared } from "./math";
 import { type BulletDefinition } from "./objectDefinitions";
+import { type ObjectType } from "./objectType";
+import { v, vAdd, vClone, type Vector, vMul } from "./vector";
 
 export interface BulletOptions {
     position: Vector

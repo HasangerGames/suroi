@@ -4,33 +4,23 @@ import { version } from "../../package.json";
 import {
     App,
     DEDICATED_COMPRESSOR_256KB,
+    type HttpRequest,
     type HttpResponse,
     SSLApp,
-    type WebSocket,
-    type HttpRequest
+    type WebSocket
 } from "uWebSockets.js";
-import sanitizeHtml from "sanitize-html";
 
+import { existsSync, readFile, writeFileSync } from "fs";
+import { URLSearchParams } from "node:url";
+import { PacketType } from "../../common/src/constants";
+import { log } from "../../common/src/utils/misc";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Game } from "./game";
-import type { Player } from "./objects/player";
-
+import { type Player } from "./objects/player";
 import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
-
-import { log, stripNonASCIIChars } from "../../common/src/utils/misc";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import {
-    ALLOW_NON_ASCII_USERNAME_CHARS,
-    DEFAULT_USERNAME,
-    PacketType,
-    PLAYER_NAME_MAX_LENGTH
-} from "../../common/src/constants";
-import { hasBadWords } from "./utils/badWordFilter";
-import { URLSearchParams } from "node:url";
-import { ItemPacket } from "./packets/receiving/itemPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
-import { existsSync, readFile, writeFileSync } from "fs";
 
 /**
  * Apply CORS headers to a response.
@@ -58,9 +48,9 @@ const app = Config.ssl
 const games: Array<Game | undefined> = [];
 createNewGame(0);
 
-export function createNewGame(id: number): void {
+function createNewGame(id: number): void {
     if (games[id] === undefined || games[id]?.stopped) {
-        log(`Creating new game with ID #${id}`);
+        log(`Game #${id} | Creating...`);
         games[id] = new Game(id);
     }
 }
@@ -76,15 +66,12 @@ export function endGame(id: number): void {
         player.socket.close();
     }
     games[id] = undefined;
-    log(`Game #${id} ended`);
+    log(`Game #${id} | Ended`);
 }
 
-export function allowJoin(gameID: number): boolean {
+function allowJoin(gameID: number): boolean {
     const game = games[gameID];
-    if (game !== undefined) {
-        return game.allowJoin && game.aliveCount < Config.playerLimit;
-    }
-    return false;
+    return game !== undefined && game.allowJoin && game.aliveCount < Config.maxPlayersPerGame;
 }
 
 const decoder = new TextDecoder();
@@ -128,17 +115,16 @@ app.get("/api/getGame", async(res, req) => {
     } else if (rateLimitedIPs.has(ip)) {
         response = { success: false, message: "rateLimited" };
     } else {
-        let gameID: number | undefined;
-        if (allowJoin(0)) {
-            gameID = 0;
-        } else if (allowJoin(1)) {
-            gameID = 1;
-        } else {
-            response = { success: false };
+        let foundGame = false;
+        for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+            if (games[gameID] === undefined) createNewGame(gameID);
+            if (allowJoin(gameID)) {
+                response = { success: true, gameID };
+                foundGame = true;
+                break;
+            }
         }
-        if (gameID !== undefined) {
-            response = { success: true, gameID };
-        }
+        if (!foundGame) response = { success: false };
     }
 
     if (!aborted) {
@@ -160,7 +146,6 @@ app.get("/api/bannedIPs", (res, req) => {
 export interface PlayerContainer {
     gameID: number
     player?: Player
-    name: string
     ip: string | undefined
     role?: string
     isDev: boolean
@@ -218,32 +203,10 @@ app.ws("/play", {
         // Validate game ID
         //
         let gameID = Number(searchParams.get("gameID"));
-        if (gameID < 0 || gameID > 1) gameID = 0;
-        const game = games[gameID];
-        if (game === undefined || !allowJoin(gameID)) {
+        if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
+        if (!allowJoin(gameID)) {
             forbidden(res);
             return;
-        }
-
-        //
-        // Name
-        //
-        let name = searchParams.get("name");
-        name = decodeURIComponent(name ?? "").trim();
-
-        if (name.length > PLAYER_NAME_MAX_LENGTH || name.length === 0) name = DEFAULT_USERNAME;
-        else {
-            if (!ALLOW_NON_ASCII_USERNAME_CHARS) name = stripNonASCIIChars(name);
-
-            if (Config.censorUsernames && hasBadWords(name)) name = DEFAULT_USERNAME;
-            else {
-                name = sanitizeHtml(name, {
-                    allowedTags: [],
-                    allowedAttributes: {}
-                });
-
-                if (name.trim().length === 0) name = DEFAULT_USERNAME;
-            }
         }
 
         //
@@ -277,7 +240,6 @@ app.ws("/play", {
         const userData: PlayerContainer = {
             gameID,
             player: undefined,
-            name,
             ip,
             role,
             isDev,
@@ -298,12 +260,11 @@ app.ws("/play", {
      * @param socket The socket being opened.
      */
     open(socket: WebSocket<PlayerContainer>) {
-        playerCount++;
-        const userData = socket.getUserData();
-        const game = games[userData.gameID];
+        const data = socket.getUserData();
+        const game = games[data.gameID];
         if (game === undefined) return;
-        userData.player = game.addPlayer(socket);
-        log(`"${userData.name}" joined game #${userData.gameID}`);
+        data.player = game.addPlayer(socket);
+        playerCount++;
         //userData.player.sendPacket(new GameOverPacket(userData.player, false)); // uncomment to test game over screen
     },
 
@@ -318,6 +279,7 @@ app.ws("/play", {
             const packetType = stream.readPacketType();
             const player = socket.getUserData().player;
             if (player === undefined) return;
+
             switch (packetType) {
                 case PacketType.Join: {
                     new JoinPacket(player).deserialize(stream);
@@ -329,10 +291,6 @@ app.ws("/play", {
                 }
                 case PacketType.Ping: {
                     new PingedPacket(player).deserialize(stream);
-                    break;
-                }
-                case PacketType.Item: {
-                    new ItemPacket(player).deserialize(stream);
                     break;
                 }
                 case PacketType.Spectate: {
@@ -350,13 +308,14 @@ app.ws("/play", {
      * @param socket The socket being closed.
      */
     close(socket: WebSocket<PlayerContainer>) {
+        const data = socket.getUserData();
+        if (Config.protection) simultaneousConnections[data.ip as string]--;
+        const game = games[data.gameID];
+        const player = data.player;
+        if (game === undefined || player === undefined) return;
         playerCount--;
-        const p = socket.getUserData();
-        if (Config.protection) simultaneousConnections[p.ip as string]--;
-        log(`"${p.name}" left game #${p.gameID}`);
-        const game = games[p.gameID];
-        if (game === undefined || p.player === undefined) return;
-        game.removePlayer(p.player);
+        log(`Game #${data.gameID} | "${player.name}" left`);
+        game.removePlayer(player);
     }
 });
 
@@ -371,8 +330,8 @@ app.listen(Config.host, Config.port, (): void => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log(`Suroi Server v${version}`, true);
-    log(`Listening on ${Config.host}:${Config.port}`, true);
+    log(`Suroi Server v${version}`);
+    log(`Listening on ${Config.host}:${Config.port}`);
     log("Press Ctrl+C to exit.");
 
     const protection = Config.protection;

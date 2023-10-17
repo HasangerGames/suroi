@@ -1,14 +1,13 @@
-import { GameObject } from "../types/gameObject";
-
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { ObjectCategory } from "../../../common/src/constants";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { type Game } from "../game";
-import { type Vector } from "../../../common/src/utils/vector";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
-import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type Orientation } from "../../../common/src/typings";
+import { type Hitbox } from "../../../common/src/utils/hitbox";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { type Vector } from "../../../common/src/utils/vector";
+import { type Game } from "../game";
+import { GameObject } from "../types/gameObject";
 
 export class Building extends GameObject {
     readonly definition: BuildingDefinition;

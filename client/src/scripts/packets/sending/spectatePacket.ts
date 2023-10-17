@@ -1,7 +1,6 @@
-import { SendingPacket } from "../../types/sendingPacket";
-
 import { PacketType, SPECTATE_ACTIONS_BITS, type SpectateActions } from "../../../../../common/src/constants";
-import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { SendingPacket } from "../../types/sendingPacket";
 import { type PlayerManager } from "../../utils/playerManager";
 
 export class SpectatePacket extends SendingPacket {

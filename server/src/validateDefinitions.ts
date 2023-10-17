@@ -1,3 +1,4 @@
+import { Config as ClientConfig } from "../../client/src/scripts/config";
 import { FireMode } from "../../common/src/constants";
 import { Ammos } from "../../common/src/definitions/ammos";
 import { type ArmorDefinition, Armors } from "../../common/src/definitions/armors";
@@ -23,10 +24,11 @@ import {
     type WearerAttributes
 } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
-import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
+import { Config as ServerConfig, GasMode, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
+import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 const tester = (() => {
     const errors: Array<[string, string]> = [];
@@ -1572,6 +1574,99 @@ logger.indent("Validating scopes", () => {
 
 logger.indent("Validating skins", () => {
     tester.assertNoDuplicateIDStrings(Skins, "Skins", "skins");
+});
+
+logger.indent("Validating configurations", () => {
+    logger.indent("Validating server config", () => {
+        const errorPath = tester.createPath("configs", "server config");
+
+        if (ServerConfig.spawn.mode === SpawnMode.Radius) {
+            tester.assertIsFiniteRealNumber({
+                obj: ServerConfig.spawn,
+                field: "radius",
+                baseErrorPath: errorPath
+            });
+        }
+
+        if (ServerConfig.gas.mode === GasMode.Debug) {
+            tester.assertIsPositiveReal({
+                obj: ServerConfig.gas,
+                field: "overrideDuration",
+                baseErrorPath: errorPath
+            });
+        }
+
+        tester.assertReferenceExistsObject({
+            obj: ServerConfig,
+            field: "mapName",
+            collection: Maps,
+            collectionName: "maps",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsNaturalNumber({
+            obj: ServerConfig,
+            field: "maxPlayersPerGame",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsNaturalNumber({
+            obj: ServerConfig,
+            field: "maxGames",
+            baseErrorPath: errorPath
+        });
+
+        tester.assertIsPositiveFiniteReal({
+            obj: ServerConfig,
+            field: "movementSpeed",
+            baseErrorPath: errorPath
+        });
+
+        if (ServerConfig.protection) {
+            logger.indent("Validating protection settings", () => {
+                const protection = ServerConfig.protection!;
+                const errorPath2 = tester.createPath(errorPath, "protection settings");
+
+                tester.assertIsNaturalFiniteNumber({
+                    obj: protection,
+                    field: "maxSimultaneousConnections",
+                    baseErrorPath: errorPath2
+                });
+
+                if (protection.maxJoinAttempts) {
+                    tester.assertIsNaturalFiniteNumber({
+                        obj: protection.maxJoinAttempts,
+                        field: "count",
+                        baseErrorPath: errorPath2
+                    });
+
+                    tester.assertIsPositiveFiniteReal({
+                        obj: protection.maxJoinAttempts,
+                        field: "duration",
+                        baseErrorPath: errorPath2
+                    });
+                }
+
+                tester.assertIsPositiveReal({
+                    obj: protection,
+                    field: "refreshDuration",
+                    baseErrorPath: errorPath2
+                });
+            });
+        }
+    });
+
+    logger.indent("Validating client config", () => {
+        const errorPath = tester.createPath("configs", "client config");
+
+        tester.assertReferenceExistsObject({
+            obj: ClientConfig,
+            field: "defaultRegion",
+            collection: ClientConfig.regions,
+            collectionName: "regions",
+            baseErrorPath: errorPath
+        });
+    });
 });
 
 logger.print();
