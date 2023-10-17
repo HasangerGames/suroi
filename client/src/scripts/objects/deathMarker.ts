@@ -1,5 +1,5 @@
 import { type Container, Text } from "pixi.js";
-import { DEFAULT_USERNAME, type ObjectCategory, zIndexes } from "../../../../common/src/constants";
+import { DEFAULT_USERNAME, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
@@ -40,7 +40,7 @@ export class DeathMarker extends GameObject {
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-        this.container.zIndex = zIndexes.DeathMarkers;
+        this.container.zIndex = ZIndexes.DeathMarkers;
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {

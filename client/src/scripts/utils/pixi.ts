@@ -1,7 +1,15 @@
-import { BaseTexture, Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type SpriteSheetJson } from "pixi.js";
+import {
+    BaseTexture,
+    type ColorSource,
+    type Graphics,
+    Sprite,
+    Spritesheet,
+    type SpriteSheetJson,
+    Texture
+} from "pixi.js";
 import { Buildings } from "../../../../common/src/definitions/buildings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
-import { vMul, type Vector } from "../../../../common/src/utils/vector";
+import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
 declare const ATLAS_HASH: string;

@@ -1,18 +1,18 @@
 import { isMobile } from "pixi.js";
-import { INVENTORY_MAX_WEAPONS, InputActions, ObjectCategory } from "../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "../utils/console/variables";
+import { consoleVariables } from "./console/variables";
 import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
 
 /**

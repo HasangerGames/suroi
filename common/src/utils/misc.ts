@@ -1,9 +1,6 @@
-export function log(message: string, noLine = false): void {
+export function log(message: string): void {
     const date = new Date();
-    const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
-
-    console.log(`${dateString} ${message}`);
-    if (!noLine) console.log(`${dateString} ===========================`);
+    console.log(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}] ${message}`);
 }
 
 export function isObject(item: unknown): item is Record<string, unknown> {

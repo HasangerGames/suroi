@@ -1,6 +1,6 @@
 import { defaultBinds } from "./console/defaultClientCVars";
 import { keybinds } from "./console/gameConsole";
-import { type CVarTypeMapping, type ExtractConVarValue, consoleVariables } from "./console/variables";
+import { consoleVariables, type CVarTypeMapping, type ExtractConVarValue } from "./console/variables";
 
 /* eslint-disable @typescript-eslint/indent */
 export type KeybindActions = Record<

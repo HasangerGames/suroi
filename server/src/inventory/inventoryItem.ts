@@ -85,7 +85,7 @@ export abstract class InventoryItem {
      * @param idString The `idString` of an item in the item schema that will be represented by this instance
      * @param owner The `Player` this item belongs to
      */
-    constructor(idString: string, owner: Player) {
+    protected constructor(idString: string, owner: Player) {
         this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
         this.category = this.type.definition.itemType;
         this.owner = owner;

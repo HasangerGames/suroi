@@ -4,7 +4,8 @@ import { Obstacles } from "../definitions/obstacles";
 import { Explosions } from "../definitions/explosions";
 import { Loots } from "../definitions/loots";
 import { Buildings } from "../definitions/buildings";
-import { Emotes } from "../definitions/emotes"; import { Decals } from "../definitions/decals";
+import { Emotes } from "../definitions/emotes";
+import { Decals } from "../definitions/decals";
 
 export const ObjectDefinitionsList: Record<ObjectCategory, ObjectDefinitions | undefined> = {
     [ObjectCategory.Player]: undefined,

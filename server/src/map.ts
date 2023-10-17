@@ -1,15 +1,21 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
 import { addAdjust, addOrientations, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { SeededRandom, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import {
+    SeededRandom,
+    random,
+    randomFloat,
+    randomPointInsideCircle,
+    randomRotation,
+    randomVector
+} from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
-import { Config } from "./config";
-import { SpawnMode } from "./defaultConfig";
+import { Config, SpawnMode } from "./config";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -57,26 +63,20 @@ export class Map {
 
         const randomGenerator = new SeededRandom(this.seed);
 
-        const riverPoints: Vector[] = [
-            v(500, 400),
-            v(500, 500),
-            v(500, 600),
-            v(600, 600),
-            v(650, 600)
-        ];
-        // riverPoints.push(v(this.oceanSize, this.oceanSize + 100));
+        const riverPoints: Vector[] = [];
+        riverPoints.push(v(this.oceanSize, this.oceanSize + 100));
 
         const lastAngle = 0.5;
-        // for (let i = 1; i < 25; i++) {
-        //     const lastPoint = riverPoints[i - 1];
-        //
-        //     const angle = lastAngle + randomGenerator.get(-1, 1);
-        //
-        //     const length = randomGenerator.get(50, 80);
-        //
-        //     const point = velFromAngle(angle, length);
-        //     riverPoints.push(vAdd(lastPoint, point));
-        // }
+        for (let i = 1; i < 25; i++) {
+            const lastPoint = riverPoints[i - 1];
+
+            const angle = lastAngle + randomGenerator.get(-1, 1);
+
+            const length = randomGenerator.get(50, 80);
+
+            const point = velFromAngle(angle, length);
+            riverPoints.push(vAdd(lastPoint, point));
+        }
 
         this.rivers.push(new River(40, riverPoints));
 
@@ -153,7 +153,7 @@ export class Map {
             }
         }
 
-        log(`Map generation took ${Date.now() - mapStartTime}ms`, true);
+        log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
     generateBuildings(idString: string, count: number): void {
@@ -228,7 +228,7 @@ export class Map {
             this.terrainGrid.addFloor(floor.type, hitbox);
         }
 
-        this.game.staticObjects.add(building);
+        if (!definition.hideOnMap) this.game.minimapObjects.add(building);
         this.game.grid.addObject(building);
         return building;
     }
@@ -298,8 +298,7 @@ export class Map {
             lootSpawnOffset,
             parentBuilding
         );
-        this.game.staticObjects.add(obstacle);
-
+        if (!definition.hideOnMap) this.game.minimapObjects.add(obstacle);
         this.game.grid.addObject(obstacle);
         return obstacle;
     }

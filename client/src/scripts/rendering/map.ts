@@ -1,7 +1,8 @@
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import "@pixi/graphics-extras";
-import { GRID_SIZE, GasState, zIndexes } from "../../../../common/src/constants";
+import { GRID_SIZE, GasState, ZIndexes } from "../../../../common/src/constants";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
+
 import { type Game } from "../game";
 import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
@@ -104,7 +105,7 @@ export class Minimap {
         const grassPoints = terrain.grass.points;
 
         const drawTerrain = (ctx: Graphics, scale: number): void => {
-            ctx.zIndex = zIndexes.Ground;
+            ctx.zIndex = ZIndexes.Ground;
             ctx.beginFill();
 
             ctx.fill.color = COLORS.water.toNumber();
@@ -203,7 +204,7 @@ export class Minimap {
             const image = new SuroiSprite(`${textureId}`);
             image.setVPos(obstacle.position).setRotation(obstacle.rotation);
             image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
-            image.setZIndex(definition.zIndex ?? zIndexes.ObstaclesLayer1);
+            image.setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
             mapRender.addChild(image);
         }
 
@@ -215,7 +216,7 @@ export class Minimap {
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
                 sprite.setRotation(building.rotation);
-                sprite.setZIndex(zIndexes.Ground);
+                sprite.setZIndex(ZIndexes.Ground);
                 mapRender.addChild(sprite);
             }
 
@@ -225,7 +226,7 @@ export class Minimap {
                 sprite.scale.set(1 / PIXI_SCALE);
                 mapRender.addChild(sprite);
                 sprite.setRotation(building.rotation);
-                sprite.setZIndex(zIndexes.BuildingsCeiling);
+                sprite.setZIndex(ZIndexes.BuildingsCeiling);
             }
 
             for (const floor of definition.floors) {

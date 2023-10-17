@@ -5,7 +5,7 @@ import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/m
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, type Vector, vRotate } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "../types/gameObject";
 import { Loot } from "./loot";

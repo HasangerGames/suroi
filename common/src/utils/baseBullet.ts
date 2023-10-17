@@ -5,7 +5,7 @@ import { type Hitbox } from "./hitbox";
 import { distanceSquared } from "./math";
 import { type BulletDefinition } from "./objectDefinitions";
 import { type ObjectType } from "./objectType";
-import { v, vAdd, vClone, vMul, type Vector } from "./vector";
+import { v, vAdd, vClone, type Vector, vMul } from "./vector";
 
 export interface BulletOptions {
     position: Vector

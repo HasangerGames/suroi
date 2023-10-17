@@ -1,4 +1,4 @@
-import { WebSocket, type MessageEvent } from "ws";
+import { type MessageEvent, WebSocket } from "ws";
 import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
@@ -46,10 +46,13 @@ class Bot {
 
     disconnect = false;
 
+    id: number;
+
     ws: WebSocket;
 
     constructor(id: number) {
-        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}&name=BOT_${id}`);
+        this.id = id;
+        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}`);
 
         this.ws.addEventListener("error", console.error);
 
@@ -78,8 +81,9 @@ class Bot {
 
     join(): void {
         this.connected = true;
-        const stream = SuroiBitStream.alloc(8);
+        const stream = SuroiBitStream.alloc(24);
         stream.writePacketType(PacketType.Join);
+        stream.writePlayerName(`BOT_${this.id}`);
         stream.writeBoolean(false); // is mobile
         // loadout
         const skin = skins[random(0, skins.length)];

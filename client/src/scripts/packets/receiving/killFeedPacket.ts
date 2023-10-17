@@ -1,5 +1,10 @@
 import $ from "jquery";
-import { DEFAULT_USERNAME, KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, type ObjectCategory } from "../../../../../common/src/constants";
+import {
+    DEFAULT_USERNAME,
+    KILL_FEED_MESSAGE_TYPE_BITS,
+    KillFeedMessageType,
+    type ObjectCategory
+} from "../../../../../common/src/constants";
 import { type ItemDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";

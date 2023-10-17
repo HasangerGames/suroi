@@ -2,8 +2,7 @@ import { ObjectCategory, PacketType } from "../../../../common/src/constants";
 import { RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
-import { Building } from "../../objects/building";
-import { Obstacle } from "../../objects/obstacle";
+import { type Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
@@ -40,13 +39,9 @@ export class MapPacket extends SendingPacket {
             }
         }
 
-        const objects: Obstacle[] | Building[] = [...this.game.staticObjects].filter(object => {
-            return (object instanceof Obstacle || object instanceof Building) && !object.definition.hideOnMap;
-        }) as Obstacle[] | Building[];
+        stream.writeBits(this.game.minimapObjects.size, 11);
 
-        stream.writeBits(objects.length, 11);
-
-        for (const object of objects) {
+        for (const object of this.game.minimapObjects) {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 

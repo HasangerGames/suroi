@@ -1,26 +1,32 @@
 import { Container } from "pixi.js";
-import { AnimationType, ObjectCategory, PLAYER_RADIUS, PlayerActions, zIndexes } from "../../../../common/src/constants";
+import {
+    AnimationType,
+    ObjectCategory,
+    PLAYER_RADIUS,
+    PlayerActions,
+    ZIndexes
+} from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
 import { Helmets } from "../../../../common/src/definitions/helmets";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ItemType, type ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { consoleVariables } from "../utils/console/variables";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
@@ -131,7 +137,7 @@ export class Player extends GameObject {
         this.emoteContainer = new Container();
         this.game.camera.container.addChild(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
-        this.emoteContainer.zIndex = zIndexes.Emotes;
+        this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
 
         this.updateFistsPosition(false);
@@ -149,7 +155,7 @@ export class Player extends GameObject {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
                     lifeTime: 1000,
-                    zIndex: zIndexes.Players,
+                    zIndex: ZIndexes.Players,
                     rotation: 0,
                     alpha: {
                         start: 1,
@@ -179,7 +185,7 @@ export class Player extends GameObject {
         if (weaponDef.casingParticles !== undefined) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.ammoType}_particle`,
-                zIndex: zIndexes.Players,
+                zIndex: ZIndexes.Players,
                 position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
@@ -250,7 +256,7 @@ export class Player extends GameObject {
                     const origin = this.hitbox.randomPoint();
                     const options = {
                         frames: "ripple_particle",
-                        zIndex: zIndexes.Ground,
+                        zIndex: ZIndexes.Ground,
                         position: origin,
                         lifeTime: 1000,
                         speed: v(0, 0)

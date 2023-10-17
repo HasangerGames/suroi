@@ -1,4 +1,4 @@
-import { ObjectDefinitions, type BulletDefinition, type ObjectDefinition } from "../utils/objectDefinitions";
+import { type BulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
