@@ -172,7 +172,7 @@ export class Map {
             }
         }
 
-        this.game.staticObjects.add(building);
+        if (!definition.hideOnMap) this.game.minimapObjects.add(building);
         this.game.grid.addObject(building);
         return building;
     }
@@ -242,8 +242,7 @@ export class Map {
             lootSpawnOffset,
             parentBuilding
         );
-        this.game.staticObjects.add(obstacle);
-
+        if (!definition.hideOnMap) this.game.minimapObjects.add(obstacle);
         this.game.grid.addObject(obstacle);
         return obstacle;
     }

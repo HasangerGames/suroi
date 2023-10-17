@@ -28,6 +28,8 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { removeFrom } from "./utils/misc";
 import { Config, SpawnMode } from "./config";
+import { type Obstacle } from "./objects/obstacle";
+import { type Building } from "./objects/building";
 
 export class Game {
     readonly _id: number;
@@ -41,23 +43,17 @@ export class Game {
      */
     private readonly mapPacketStream: SuroiBitStream;
 
-    /**
-     * The value of `Date.now()`, as of the start of the tick.
-     */
-    _now = Date.now();
-    get now(): number { return this._now; }
+    gas: Gas;
 
-    /**
-     * A Set of all the static objects in the world
-     */
-    readonly staticObjects = new Set<GameObject>();
     readonly grid: Grid;
-
-    aliveCountDirty = false;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
     readonly deletedObjects = new Set<GameObject>();
+
+    updateObjects = false;
+
+    readonly minimapObjects = new Set<Obstacle | Building>();
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
@@ -66,6 +62,7 @@ export class Game {
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
     readonly emotes: Set<Emote> = new Set<Emote>();
+
     /**
      * All bullets that currently exist
      */
@@ -87,13 +84,17 @@ export class Game {
 
     startTimeoutID?: NodeJS.Timeout;
 
-    gas: Gas;
+    aliveCountDirty = false;
+
+    /**
+     * The value of `Date.now()`, as of the start of the tick.
+     */
+    _now = Date.now();
+    get now(): number { return this._now; }
 
     tickTimes: number[] = [];
 
     tickDelta = 1000 / TICKS_PER_SECOND;
-
-    updateObjects = false;
 
     constructor(id: number) {
         this._id = id;
