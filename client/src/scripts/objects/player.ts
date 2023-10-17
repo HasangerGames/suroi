@@ -1,9 +1,10 @@
-import { Container } from "pixi.js";
+import { Container, Texture, TilingSprite } from "pixi.js";
 import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions, SpectateActions,
+    PlayerActions,
+    SpectateActions,
     ZIndexes
 } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -26,7 +27,6 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { Container, ObservablePoint, Texture, TilingSprite } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
@@ -104,7 +104,7 @@ export class Player extends GameObject {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
 
         this.images = {
-            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"),20,6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
+            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -129,12 +129,11 @@ export class Player extends GameObject {
             this.images.helmet
         );
         this.container.eventMode = "static";
-        
-        this.images.aimTrail.angle = 90
-        this.images.aimTrail.position = {x: 6000, y:-8}
-        this.images.aimTrail.alpha = 0
-        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0
-        
+
+        this.images.aimTrail.angle = 90;
+        this.images.aimTrail.position = v(6000, -8);
+        this.images.aimTrail.alpha = 0;
+        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -405,7 +404,7 @@ export class Player extends GameObject {
         }
     }
 
-    updateWeapon(): void {        
+    updateWeapon(): void {
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
@@ -427,8 +426,8 @@ export class Player extends GameObject {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1)
-            this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1)
+            this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1);
+            this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1);
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {

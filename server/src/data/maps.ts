@@ -13,6 +13,7 @@ import { Guns } from "../../../common/src/definitions/guns";
 import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type WebSocket } from "uWebSockets.js";
+import { type GunItem } from "../inventory/gunItem";
 
 interface MapDefinition {
     readonly width: number
@@ -274,8 +275,13 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             for (let i = 0; i < Guns.length; i++) {
                 const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(32, 32 + (16 * i)));
-                player.inventory.addOrReplaceWeapon(0, Guns[i].idString);
+                const gun = Guns[i];
+                player.inventory.addOrReplaceWeapon(0, gun.idString);
+                (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
+                player.inventory.items[gun.ammoType] = Infinity;
                 player.disableInvulnerability();
+                setInterval(() => player.activeItem.useItem(), 30);
+                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.idString), v(16, 32 + (16 * i)));
                 map.game.grid.addObject(player);
             }
         }

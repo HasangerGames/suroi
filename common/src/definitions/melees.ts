@@ -48,10 +48,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 125,
             randomFist: true,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(75, 10),
-            useRight: v(75, -10)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(75, -10),
+            useRight: v(75, 10)
         }
     },
     {
@@ -68,10 +68,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 150,
             randomFist: false,
-            left: v(45, 0),
-            right: v(55, -15),
-            useLeft: v(0, -50),
-            useRight: v(-20, -35)
+            left: v(55, -15),
+            right: v(45, 0),
+            useLeft: v(-20, -35),
+            useRight: v(0, -50)
         },
         image: {
             position: v(35, 45),
@@ -95,10 +95,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 100,
             randomFist: false,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(70, 20),
-            useRight: v(38, -35)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(70, 20)
         },
         image: {
             position: v(62, 42),
@@ -152,10 +152,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 150,
             randomFist: false,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(120, 20),
-            useRight: v(38, -35)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(120, 20)
         },
         image: {
             position: v(102, 35),

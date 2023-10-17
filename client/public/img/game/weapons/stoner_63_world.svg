@@ -1,342 +1,431 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Generator: Adobe Illustrator 27.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-
 <svg
-   version="1.1"
    id="Layer_1"
-   x="0px"
-   y="0px"
-   viewBox="0 0 129 37"
-   xml:space="preserve"
+   data-name="Layer 1"
+   viewBox="0 0 129.13999 37.139998"
+   version="1.1"
    sodipodi:docname="stoner_63_world.svg"
-   width="129"
-   height="37"
-   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   width="129.14"
+   height="37.139999"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-   id="defs4" /><sodipodi:namedview
-   id="namedview4"
-   pagecolor="#505050"
-   bordercolor="#eeeeee"
-   borderopacity="1"
-   inkscape:showpageshadow="0"
-   inkscape:pageopacity="0"
-   inkscape:pagecheckerboard="0"
-   inkscape:deskcolor="#505050"
-   inkscape:zoom="1.7234375"
-   inkscape:cx="58.31369"
-   inkscape:cy="13.055304"
-   inkscape:window-width="1920"
-   inkscape:window-height="1009"
-   inkscape:window-x="1912"
-   inkscape:window-y="-8"
-   inkscape:window-maximized="1"
-   inkscape:current-layer="Layer_1" />&#10;<style
-   type="text/css"
-   id="style1">&#10;	&#10;		.st0{fill:url(#rect16004_00000008108161965046874460000005308840572095917451_);stroke:#191815;stroke-width:3;stroke-linejoin:round;}&#10;	&#10;		.st1{fill:url(#rect16004-6_00000183949437997166292030000017586060926138621625_);stroke:#191815;stroke-width:3;stroke-linejoin:round;}&#10;	.st2{fill:#4E4A41;stroke:#191815;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}&#10;	.st3{fill:#615C51;stroke:#1A1915;stroke-width:3;stroke-linecap:round;}&#10;	.st4{fill:#3D3E42;stroke:#161719;stroke-width:3;stroke-linejoin:round;}&#10;	.st5{fill:#403D36;stroke:#37352E;stroke-width:3;stroke-linejoin:round;}&#10;	.st6{fill:none;stroke:#4F4E4C;stroke-width:3;stroke-linecap:round;}&#10;	.st7{fill:#5E5D5A;stroke:#181816;stroke-width:3;stroke-linejoin:round;}&#10;	.st8{fill:#191716;}&#10;	.st9{fill:#4E4A41;stroke:#181816;stroke-width:3;stroke-linejoin:round;}&#10;	.st10{fill:#4E4A41;stroke:#191816;stroke-width:3;stroke-linejoin:round;}&#10;	.st11{fill:#676159;stroke:#191816;stroke-width:3;stroke-linejoin:round;}&#10;	.st12{fill:#4E4A41;stroke:#1A1915;stroke-width:3;stroke-linejoin:round;}&#10;	.st13{fill:#373430;stroke:#191716;stroke-width:3;stroke-linejoin:round;}&#10;</style>&#10;<linearGradient
-   id="rect16004_00000127742010639237724980000000792672489513743009_"
-   gradientUnits="userSpaceOnUse"
-   x1="-1210.9132"
-   y1="732.78363"
-   x2="-1189.4071"
-   y2="732.78363"
-   gradientTransform="matrix(0,-1,-1,0,788.27301,-1189.0274)">&#10;	<stop
-   offset="0.3257"
-   style="stop-color:#AD9C71"
-   id="stop1" />&#10;	<stop
-   offset="1"
-   style="stop-color:#4E4A41"
-   id="stop2" />&#10;</linearGradient>&#10;<path
-   id="rect16004"
-   style="fill:url(#rect16004_00000127742010639237724980000000792672489513743009_);stroke:#191815;stroke-width:3;stroke-linejoin:round"
-   d="M 49.100006,16.8 V 5.7 c 0,-2.3 1.2,-4.2 2.8,-4.2 v 0 h 7.1 c 1.6,0 2.9,2 2.9,4.4 v 10.6 c 0,2.4 -1.3,4.4 -2.9,4.4 h -7.2 c -1.5,-0.1 -2.7,-1.9 -2.7,-4.1 z" />&#10;<linearGradient
-   id="rect16004-6_00000078045954658310548070000002163696898439592120_"
-   gradientUnits="userSpaceOnUse"
-   x1="718.15448"
-   y1="3702.2927"
-   x2="739.66058"
-   y2="3702.2927"
-   gradientTransform="matrix(0,1,1,0,-3646.9212,-703.0689)">&#10;	<stop
-   offset="0.3257"
-   style="stop-color:#AD9C71"
-   id="stop3" />&#10;	<stop
-   offset="1"
-   style="stop-color:#4E4A41"
-   id="stop4" />&#10;</linearGradient>&#10;<path
-   id="rect16004-6"
-   style="fill:url(#rect16004-6_00000078045954658310548070000002163696898439592120_);stroke:#191815;stroke-width:3;stroke-linejoin:round"
-   d="m 61.800006,20.2 v 11.1 c 0,2.3 -1.2,4.2 -2.8,4.2 0,0 0,0 0,0 h -7.1 c -1.6,0 -2.9,-2 -2.9,-4.4 0,0 0,0 0,0 V 20.5 c 0,-2.4 1.3,-4.4 2.9,-4.4 v 0 h 7.2 c 1.5,0 2.7,1.8 2.7,4.1 z" />&#10;<rect
-   id="rect305-7"
-   x="97.800018"
-   y="15.599994"
-   class="st2"
-   width="24.200001"
-   height="5" />&#10;<path
-   id="path313-5"
-   class="st3"
-   d="m 119.30001,15.5 c -0.3,0 -0.5,0.3 -0.5,0.7 v 3.7 c 0,0.3 0.2,0.6 0.5,0.6 h 7.7 c 0.3,0 0.5,-0.3 0.5,-0.6 v -1 h -2.8 v -1.7 h 2.8 v -1 c 0,-0.3 -0.2,-0.6 -0.5,-0.6 h -7.7 z" />&#10;<rect
-   id="rect1351"
-   x="1.5"
-   y="13.899997"
-   class="st4"
-   width="55.700001"
-   height="8.1999998" />&#10;<g
-   id="g7218"
-   transform="matrix(1.0010588,0,0,0.77991076,-267.96245,-428.49236)">&#10;	<rect
-   id="rect7023"
-   x="334.5"
-   y="562.40002"
-   class="st5"
-   width="27.299999"
-   height="5.6999998" />&#10;	<line
-   id="line420-4"
-   class="st6"
-   x1="336.20001"
-   y1="561.90002"
-   x2="336.20001"
-   y2="565.20001" />&#10;	<line
-   id="line422-8"
-   class="st6"
-   x1="340.20001"
-   y1="561.90002"
-   x2="340.20001"
-   y2="565.20001" />&#10;	<line
-   id="line424-5"
-   class="st6"
-   x1="344.10001"
-   y1="561.90002"
-   x2="344.10001"
-   y2="565.20001" />&#10;	<line
-   id="line426-8"
-   class="st6"
-   x1="348.10001"
-   y1="561.90002"
-   x2="348.10001"
-   y2="565.20001" />&#10;	<line
-   id="line428-3"
-   class="st6"
-   x1="352"
-   y1="561.90002"
-   x2="352"
-   y2="565.20001" />&#10;	<line
-   id="line430-0"
-   class="st6"
-   x1="356"
-   y1="561.90002"
-   x2="356"
-   y2="565.20001" />&#10;	<line
-   id="line438-5"
-   class="st6"
-   x1="359.89999"
-   y1="562"
-   x2="359.89999"
-   y2="565.29999" />&#10;</g>&#10;<g
-   id="g7205"
-   transform="matrix(1.0010588,0,0,0.77991076,-267.96245,-428.49236)">&#10;	<rect
-   id="rect7023-8"
-   x="334.39999"
-   y="577.59998"
-   class="st5"
-   width="27.299999"
-   height="5.6999998" />&#10;	<line
-   id="line420-4-2"
-   class="st6"
-   x1="336.10001"
-   y1="580.40002"
-   x2="336.10001"
-   y2="583.70001" />&#10;	<line
-   id="line422-8-2"
-   class="st6"
-   x1="340.10001"
-   y1="580.40002"
-   x2="340.10001"
-   y2="583.70001" />&#10;	<line
-   id="line424-5-7"
-   class="st6"
-   x1="344"
-   y1="580.40002"
-   x2="344"
-   y2="583.70001" />&#10;	<line
-   id="line426-8-1"
-   class="st6"
-   x1="348"
-   y1="580.40002"
-   x2="348"
-   y2="583.70001" />&#10;	<line
-   id="line428-3-5"
-   class="st6"
-   x1="351.89999"
-   y1="580.40002"
-   x2="351.89999"
-   y2="583.59998" />&#10;	<line
-   id="line430-0-2"
-   class="st6"
-   x1="355.89999"
-   y1="580.40002"
-   x2="355.89999"
-   y2="583.59998" />&#10;	<line
-   id="line438-5-1"
-   class="st6"
-   x1="359.79999"
-   y1="580.5"
-   x2="359.79999"
-   y2="583.70001" />&#10;</g>&#10;<path
-   id="rect6067"
-   class="st7"
-   d="m 28.100006,11.3 v 3.1 h 32.9 v 7.9 h -33 v 3.1 h 65.1 V 24 h 1.8 V 12.6 h -1.7 v -1.3 z" />&#10;<path
-   id="path325-9"
-   class="st8"
-   d="m 89.700006,16.8 v 2.5 c 0,1 -0.7,1 -0.7,1 0,0 -0.4,0.1 -0.7,-0.5 -0.3,-0.6 -1,-0.4 -1,-0.4 -1.8,0.7 -5,0.9 -5,0.9 0,0 -1.9,0.2 -4,-0.7 -0.9,-0.4 -1.5,-0.4 -1.8,-0.4 -0.2,0 -0.4,0.2 -0.5,0.4 -0.1,0.1 -0.2,0.4 -0.6,0.5 -0.6,0.3 -0.7,-0.3 -0.7,-0.3 v -3.6 c 0,0 0.1,-0.6 0.7,-0.3 0.4,0.2 0.5,0.4 0.6,0.5 0.1,0.3 0.3,0.4 0.5,0.4 0.3,0 0.9,0 1.8,-0.4 2.1,-0.9 4,-0.7 4,-0.7 0,0 3.2,0.1 5,0.9 0,0 0.7,0.2 1,-0.4 0.3,-0.6 0.7,-0.5 0.7,-0.5 0,0 0.7,0.1 0.7,1.1 z" />&#10;<path
-   id="rect1405"
-   class="st9"
-   d="m 27.900006,13.2 h 36.1 v 10.1 h -36.1 z" />&#10;<path
-   id="rect1405-9-5"
-   class="st10"
-   d="m 55.300006,16.1 h 5.5 v 4.3 h -5.5 z" />&#10;<path
-   id="rect2237"
-   class="st11"
-   d="m 45.500006,14.7 -1.7,0.6 h -8.7 v 5.8 h 8.9 l 1.5,0.6 v 0 h 11.6 v -7 h -11.6 z" />&#10;<g
-   id="g7369"
-   transform="matrix(1.0010588,0,0,-0.47799064,-287.42206,-12.76247)">&#10;	<ellipse
-   id="circle377-4"
-   class="st8"
-   cx="356.29999"
-   cy="-55.400002"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle379-6"
-   class="st8"
-   cx="361.29999"
-   cy="-55.400002"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle381-4"
-   class="st8"
-   cx="366.20001"
-   cy="-55.400002"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle383-6"
-   class="st8"
-   cx="371.10001"
-   cy="-55.400002"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle385-4"
-   class="st8"
-   cx="376"
-   cy="-55.400002"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle393-0"
-   class="st8"
-   cx="358.89999"
-   cy="-53.299999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle395-0"
-   class="st8"
-   cx="363.79999"
-   cy="-53.299999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle397-9"
-   class="st8"
-   cx="368.79999"
-   cy="-53.299999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle399-3"
-   class="st8"
-   cx="373.70001"
-   cy="-53.299999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle409-9"
-   class="st8"
-   cx="353.89999"
-   cy="-52.900002"
-   rx="0.69999999"
-   ry="0.5" />&#10;</g>&#10;<g
-   id="g7369-4"
-   transform="matrix(1.0010588,0,0,0.47799064,-289.5258,-302.53428)">&#10;	<ellipse
-   id="circle377-4-8"
-   class="st8"
-   cx="358"
-   cy="680.70001"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle379-6-5"
-   class="st8"
-   cx="362.89999"
-   cy="680.70001"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle381-4-5"
-   class="st8"
-   cx="367.79999"
-   cy="680.70001"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle383-6-5"
-   class="st8"
-   cx="372.79999"
-   cy="680.70001"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle385-4-4"
-   class="st8"
-   cx="377.70001"
-   cy="680.70001"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle393-0-2"
-   class="st8"
-   cx="360.60001"
-   cy="682.79999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle395-0-4"
-   class="st8"
-   cx="365.5"
-   cy="682.79999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle397-9-5"
-   class="st8"
-   cx="370.39999"
-   cy="682.79999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle399-3-8"
-   class="st8"
-   cx="375.29999"
-   cy="682.79999"
-   rx="1.2"
-   ry="0.69999999" />&#10;	<ellipse
-   id="circle409-9-3"
-   class="st8"
-   cx="355.5"
-   cy="683.20001"
-   rx="0.69999999"
-   ry="0.5" />&#10;</g>&#10;<rect
-   id="rect7574"
-   x="95.700012"
-   y="14.500003"
-   class="st12"
-   width="5.4000001"
-   height="7.4000001" />&#10;<rect
-   id="rect7574-5"
-   x="108.80002"
-   y="13.000003"
-   class="st12"
-   width="2.5999999"
-   height="10" />&#10;<rect
-   id="rect7620"
-   x="89.899994"
-   y="17.500004"
-   class="st13"
-   width="4.9000001"
-   height="0.89999998" />&#10;</svg>
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview59"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="10.307442"
+     inkscape:cx="64.516494"
+     inkscape:cy="18.530301"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+      .cls-1 {
+        fill: #191716;
+      }
+
+      .cls-2 {
+        fill: #373430;
+        stroke: #191716;
+        stroke-width: 1.5px;
+      }
+
+      .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9 {
+        stroke-linejoin: round;
+      }
+
+      .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-11 {
+        stroke-width: 3px;
+      }
+
+      .cls-3, .cls-4, .cls-9 {
+        fill: #4e4a41;
+      }
+
+      .cls-3, .cls-5 {
+        stroke: #181816;
+      }
+
+      .cls-4, .cls-11 {
+        stroke: #1a1915;
+      }
+
+      .cls-5 {
+        fill: #5e5d5a;
+      }
+
+      .cls-6 {
+        fill: #3d3e42;
+        stroke: #161719;
+      }
+
+      .cls-7 {
+        fill: #403d36;
+        stroke: #37352e;
+      }
+
+      .cls-8 {
+        fill: #676159;
+        stroke: #191816;
+      }
+
+      .cls-9 {
+        stroke: #191815;
+      }
+
+      .cls-9, .cls-10, .cls-11 {
+        stroke-linecap: round;
+      }
+
+      .cls-10 {
+        fill: none;
+        stroke: #4f4e4c;
+      }
+
+      .cls-11 {
+        fill: #615c51;
+      }
+    </style>
+  </defs>
+  <path
+     id="rect16004"
+     class="cls-3"
+     d="M 49.14,16.87 V 5.74 c 0,-2.34 1.25,-4.24 2.79,-4.24 v 0 c 0,0 7.08,0 7.08,0 1.61,0 2.91,1.98 2.91,4.41 v 10.6 c 0,2.44 -1.3,4.41 -2.91,4.41 h -7.2 c -1.48,0 -2.67,-1.82 -2.67,-4.06 z" />
+  <path
+     id="rect16004-6"
+     class="cls-3"
+     d="M 61.8,20.27 V 31.4 c 0,2.34 -1.25,4.24 -2.79,4.24 v 0 c 0,0 -7.08,0 -7.08,0 -1.61,0 -2.91,-1.98 -2.91,-4.41 v 0 -10.6 c 0,-2.44 1.3,-4.41 2.91,-4.41 h 7.2 c 1.48,0 2.67,1.82 2.67,4.06 z" />
+  <rect
+     id="rect305-7"
+     class="cls-9"
+     x="97.889999"
+     y="15.64"
+     width="24.18"
+     height="4.98" />
+  <path
+     id="path313-5"
+     class="cls-11"
+     d="m 119.38,15.62 c -0.29,0 -0.54,0.29 -0.54,0.65 v 3.74 c 0,0.34 0.22,0.63 0.54,0.63 h 7.72 c 0.29,0 0.54,-0.26 0.54,-0.63 v -0.97 h -2.8 v -1.81 h 2.8 v -0.99 c 0,-0.34 -0.22,-0.63 -0.54,-0.63 h -7.72 z" />
+  <rect
+     id="rect1351"
+     class="cls-6"
+     x="1.5"
+     y="13.93"
+     width="55.709999"
+     height="8.2200003" />
+  <g
+     id="g7218">
+    <rect
+       id="rect7023"
+       class="cls-7"
+       x="66.949997"
+       y="10.2"
+       width="27.299999"
+       height="4.4200001" />
+    <line
+       id="line420-4"
+       class="cls-10"
+       x1="68.639999"
+       y1="9.8199997"
+       x2="68.639999"
+       y2="12.39" />
+    <line
+       id="line422-8"
+       class="cls-10"
+       x1="72.599998"
+       y1="9.8199997"
+       x2="72.599998"
+       y2="12.39" />
+    <line
+       id="line424-5"
+       class="cls-10"
+       x1="76.559998"
+       y1="9.8199997"
+       x2="76.559998"
+       y2="12.39" />
+    <line
+       id="line426-8"
+       class="cls-10"
+       x1="80.519997"
+       y1="9.8199997"
+       x2="80.519997"
+       y2="12.39" />
+    <line
+       id="line428-3"
+       class="cls-10"
+       x1="84.470001"
+       y1="9.8100004"
+       x2="84.470001"
+       y2="12.36" />
+    <line
+       id="line430-0"
+       class="cls-10"
+       x1="88.43"
+       y1="9.8100004"
+       x2="88.43"
+       y2="12.36" />
+    <line
+       id="line438-5"
+       class="cls-10"
+       x1="92.389999"
+       y1="9.8900003"
+       x2="92.389999"
+       y2="12.44" />
+  </g>
+  <g
+     id="g7205">
+    <rect
+       id="rect7023-8"
+       class="cls-7"
+       x="66.839996"
+       y="22.059999"
+       width="27.299999"
+       height="4.4200001" />
+    <line
+       id="line420-4-2"
+       class="cls-10"
+       x1="68.540001"
+       y1="24.24"
+       x2="68.540001"
+       y2="26.799999" />
+    <line
+       id="line422-8-2"
+       class="cls-10"
+       x1="72.5"
+       y1="24.24"
+       x2="72.5"
+       y2="26.799999" />
+    <line
+       id="line424-5-7"
+       class="cls-10"
+       x1="76.449997"
+       y1="24.24"
+       x2="76.449997"
+       y2="26.799999" />
+    <line
+       id="line426-8-1"
+       class="cls-10"
+       x1="80.410004"
+       y1="24.24"
+       x2="80.410004"
+       y2="26.799999" />
+    <line
+       id="line428-3-5"
+       class="cls-10"
+       x1="84.370003"
+       y1="24.23"
+       x2="84.370003"
+       y2="26.780001" />
+    <line
+       id="line430-0-2"
+       class="cls-10"
+       x1="88.330002"
+       y1="24.23"
+       x2="88.330002"
+       y2="26.780001" />
+    <line
+       id="line438-5-1"
+       class="cls-10"
+       x1="92.279999"
+       y1="24.309999"
+       x2="92.279999"
+       y2="26.860001" />
+  </g>
+  <path
+     id="rect6067"
+     class="cls-5"
+     d="m 28.1,11.34 v 3.07 h 32.87 v 7.95 H 27.96 v 3.07 h 65.05 v -1.4 h 1.82 V 12.66 H 93.15 V 11.33 H 28.1 Z" />
+  <path
+     id="path325-9"
+     class="cls-1"
+     d="m 89.77,16.87 v 2.51 c 0,1.03 -0.72,1.01 -0.72,1.01 0,0 -0.42,0.08 -0.74,-0.52 -0.33,-0.59 -0.99,-0.36 -0.99,-0.36 -1.83,0.71 -5,0.86 -5,0.86 0,0 -1.95,0.19 -4.03,-0.67 -0.92,-0.38 -1.46,-0.44 -1.78,-0.4 -0.2,0.02 -0.39,0.19 -0.5,0.42 -0.06,0.13 -0.21,0.36 -0.6,0.54 -0.63,0.31 -0.7,-0.29 -0.7,-0.29 v -3.69 c 0,0 0.07,-0.61 0.7,-0.29 0.4,0.19 0.54,0.4 0.6,0.54 0.11,0.25 0.3,0.4 0.5,0.42 0.32,0.04 0.86,-0.02 1.78,-0.4 2.08,-0.86 4.03,-0.67 4.03,-0.67 0,0 3.17,0.15 5,0.86 0,0 0.66,0.23 0.99,-0.36 0.33,-0.59 0.74,-0.52 0.74,-0.52 0,0 0.72,-0.02 0.72,1.01 z" />
+  <path
+     id="rect1405"
+     class="cls-3"
+     d="M 27.96,13.29 H 64.02 V 23.4 H 27.96 Z" />
+  <path
+     id="rect2237"
+     class="cls-8"
+     d="m 45.51,14.81 -1.74,0.64 h -8.71 v 5.81 h 8.91 l 1.54,0.56 v 0.03 H 57.07 V 14.82 H 45.51 c 0,0 0,0 0,0 z" />
+  <g
+     id="g7369">
+    <ellipse
+       id="circle377-4"
+       class="cls-1"
+       cx="69.32"
+       cy="13.78"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle379-6"
+       class="cls-1"
+       cx="74.25"
+       cy="13.78"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle381-4"
+       class="cls-1"
+       cx="79.160004"
+       cy="13.78"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle383-6"
+       class="cls-1"
+       cx="84.089996"
+       cy="13.78"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle385-4"
+       class="cls-1"
+       cx="89"
+       cy="13.78"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle393-0"
+       class="cls-1"
+       cx="71.919998"
+       cy="12.8"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle395-0"
+       class="cls-1"
+       cx="76.830002"
+       cy="12.8"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle397-9"
+       class="cls-1"
+       cx="81.779999"
+       cy="12.8"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle399-3"
+       class="cls-1"
+       cx="86.690002"
+       cy="12.8"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle409-9"
+       class="cls-1"
+       cx="66.839996"
+       cy="12.6"
+       rx="0.74000001"
+       ry="0.46000001" />
+  </g>
+  <g
+     id="g7369-4">
+    <ellipse
+       id="circle377-4-8"
+       class="cls-1"
+       cx="68.889999"
+       cy="22.92"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle379-6-5"
+       class="cls-1"
+       cx="73.82"
+       cy="22.92"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle381-4-5"
+       class="cls-1"
+       cx="78.730003"
+       cy="22.92"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle383-6-5"
+       class="cls-1"
+       cx="83.660004"
+       cy="22.92"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle385-4-4"
+       class="cls-1"
+       cx="88.57"
+       cy="22.92"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle393-0-2"
+       class="cls-1"
+       cx="71.489998"
+       cy="23.9"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle395-0-4"
+       class="cls-1"
+       cx="76.400002"
+       cy="23.9"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle397-9-5"
+       class="cls-1"
+       cx="81.349998"
+       cy="23.9"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle399-3-8"
+       class="cls-1"
+       cx="86.260002"
+       cy="23.9"
+       rx="1.17"
+       ry="0.73000002" />
+    <ellipse
+       id="circle409-9-3"
+       class="cls-1"
+       cx="66.410004"
+       cy="24.1"
+       rx="0.74000001"
+       ry="0.46000001" />
+  </g>
+  <rect
+     id="rect7574"
+     class="cls-4"
+     x="95.760002"
+     y="14.61"
+     width="5.4099998"
+     height="7.4099998" />
+  <rect
+     id="rect7574-5"
+     class="cls-4"
+     x="108.85"
+     y="13.07"
+     width="2.5799999"
+     height="10.03" />
+  <rect
+     id="rect7620"
+     class="cls-2"
+     x="89.889999"
+     y="17.610001"
+     width="4.9499998"
+     height="0.94999999" />
+</svg>
