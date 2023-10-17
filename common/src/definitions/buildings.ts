@@ -574,6 +574,182 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "port_warehouse",
+        name: "Port Warehouse",
+        spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
+        ceilingHitbox: RectangleHitbox.fromRect(60.00, 120.00),
+        scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
+        floorImages: [{
+            key: "port_warehouse_floor",
+            position: v(0, 0)
+        }],
+        ceilingImages: [{
+            key: "port_warehouse_ceiling",
+            position: v(0, 0),
+        }],
+        floors: [
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(40.00, 76.00)
+            }
+        ],
+        obstacles: [
+            {
+                id: "port_warehouse_wall_short",
+                position: v(29.3, -51),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_short",
+                position: v(-29.3, -51),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_windows",
+                position: v(-29.3, -30.3),
+                rotation: 0,
+                scale: 1.076
+            },
+            // {
+            //     id: "port_warehouse_windows",
+            //     position: v(29.3, -30.3),
+            //     rotation: 0,
+            //     scale: 1.076
+            // },
+            {
+                id: "port_warehouse_wall_long",
+                position: v(29.3, 0),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_long",
+                position: v(-29.3, 0),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_short",
+                position: v(20.4, 16.3),
+                rotation: 1,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_short",
+                position: v(-20.4, 16.3),
+                rotation: 1,
+                scale: 1.076
+            },
+            // {
+            //     id: "port_warehouse_windows",
+            //     position: v(-29.3, 30.4),
+            //     rotation: 0,
+            //     scale: 1.076
+            // },
+            {
+                id: "port_warehouse_windows",
+                position: v(29.3, 30.4),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_short",
+                position: v(29.3, 51),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_short",
+                position: v(-29.3, 51),
+                rotation: 0,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_superlong",
+                position: v(0, -59.5),
+                rotation: 1,
+                scale: 1.076
+            },
+            {
+                id: "port_warehouse_wall_superlong",
+                position: v(0, 59.5),
+                rotation: 1,
+                scale: 1.076
+            },
+            {
+                id: "super_barrel",
+                position: v(-10, -52)
+            },
+            {
+                id: "regular_crate",
+                position: v(-22, -52)
+            },
+            {
+                id: "forklift",
+                position: v(15,-52),
+                rotation: 3
+            },
+            {
+                id: "regular_crate",
+                position: v(-22, -10)
+            },
+            {
+                id: "regular_crate",
+                position: v(-20, 0)
+            },
+            {
+                id: "regular_crate",
+                position: v(-22, 10)
+            },
+            {
+                id: "forklift",
+                position: v(-8, -2),
+                rotation: 2
+            },
+            {
+                // TODO: better way of adding random obstacles
+                get id() {
+                    return weightedRandom(["regular_crate", "flint_crate"], [0.3, 1]);
+                },
+                position: v(-11, 50)
+            },
+            {
+                id: "regular_crate",
+                position: v(-22, 52)
+            },
+            {
+                id: "barrel",
+                position: v(1, 52)
+            },
+            {
+                id: "super_barrel",
+                position: v(10, 48)
+            },
+            {
+                id: "barrel",
+                position: v(25, 52)
+            },
+            {
+                id: "barrel",
+                position: v(17, 5)
+            },
+            {
+                id: "barrel",
+                position: v(24, 0)
+            },
+            {
+                id: "box",
+                position: v(24, 9)
+            },
+            {
+                id: "box",
+                position: v(19, 12)
+            }
+        ],
+    },
+    {
         idString: "refinery",
         name: "Refinery",
         spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),

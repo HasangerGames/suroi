@@ -26,6 +26,7 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { Container, ObservablePoint, Texture, TilingSprite } from "pixi.js";
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
@@ -62,6 +63,7 @@ export class Player extends GameObject {
     damageable = true;
 
     readonly images: {
+        readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -102,6 +104,7 @@ export class Player extends GameObject {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
 
         this.images = {
+            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"),20,6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -115,6 +118,7 @@ export class Player extends GameObject {
         };
 
         this.container.addChild(
+            this.images.aimTrail,
             this.images.vest,
             this.images.body,
             this.images.leftFist,
@@ -125,6 +129,12 @@ export class Player extends GameObject {
             this.images.helmet
         );
         this.container.eventMode = "static";
+        
+        this.images.aimTrail.angle = 90
+        this.images.aimTrail.position = {x: 6000, y:-8}
+        this.images.aimTrail.alpha = 0
+        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0
+        
 
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -395,7 +405,7 @@ export class Player extends GameObject {
         }
     }
 
-    updateWeapon(): void {
+    updateWeapon(): void {        
         const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
@@ -417,20 +427,8 @@ export class Player extends GameObject {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            switch (weaponDef.idString) {
-                case "ak47": case "aug": case "mini14": case "m3k": case "hp18":
-                case "mosin": case "tango_51": case "sr25": case "lewis_gun": case "stoner_63":
-                case "mcx_spear": case "arx160": case "saf_200": case "g19": case "micro_uzi": case "cz75a":
-                    this.images.rightFist.setZIndex(4);
-                    this.images.leftFist.setZIndex(1);
-                    this.images.weapon.setZIndex(2);
-                    if (weaponDef.idString === "mosin" || weaponDef.idString === "lewis_gun") this.images.leftFist.setZIndex(4);
-                    break;
-                default:
-                    this.images.rightFist.setZIndex(1);
-                    this.images.leftFist.setZIndex(1);
-                    break;
-            }
+            this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1)
+            this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1)
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
