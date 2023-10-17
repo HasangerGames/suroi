@@ -21,6 +21,7 @@ import { Maps } from "./data/maps";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Building } from "./objects/building";
 import { addAdjust, addOrientations } from "../../common/src/utils/math";
+import { Decal } from "./objects/decal";
 
 export class Map {
     game: Game;
@@ -172,6 +173,10 @@ export class Map {
             }
         }
 
+        if (definition.decals) {
+            for (const decal of definition.decals) {
+                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));            }
+        }
         this.game.staticObjects.add(building);
         this.game.grid.addObject(building);
         return building;

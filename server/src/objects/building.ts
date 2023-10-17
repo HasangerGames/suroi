@@ -15,7 +15,7 @@ export class Building extends GameObject {
 
     readonly spawnHitbox: Hitbox;
 
-    readonly scopeHitbox: Hitbox;
+    readonly scopeHitbox?: Hitbox;
 
     private _wallsToDestroy?: number;
 
@@ -34,7 +34,9 @@ export class Building extends GameObject {
 
         this.hitbox = this.spawnHitbox;
 
-        this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
+        if (this.definition.scopeHitbox !== undefined) {
+            this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
+        }
     }
 
     override damage(): void {

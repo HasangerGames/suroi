@@ -44,13 +44,22 @@ interface SubBuilding {
     orientation?: Orientation
 }
 
+interface BuildingDecal {
+    id: string
+    position: Vector
+    rotation?: number
+    scale?: number
+}
+
 export interface BuildingDefinition extends ObjectDefinition {
     spawnHitbox: Hitbox
     ceilingHitbox?: Hitbox
-    scopeHitbox: Hitbox
+    ceilingZIndex?: number
+    scopeHitbox?: Hitbox
     hideOnMap?: boolean
 
     obstacles: BuildingObstacle[]
+    decals?: BuildingDecal[]
     lootSpawners?: LootSpawner[]
     subBuildings?: SubBuilding[]
 
@@ -577,7 +586,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_warehouse",
         name: "Port Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        ceilingHitbox: RectangleHitbox.fromRect(60.00, 120.00),
+        ceilingHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(60.00, 120.00),
+            RectangleHitbox.fromRect(12, 30, v(29.3, -30.3)),
+            RectangleHitbox.fromRect(12, 30, v(29.3, 30.4))
+        ]),
         scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
         floorImages: [{
             key: "port_warehouse_floor",
@@ -585,7 +598,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         ceilingImages: [{
             key: "port_warehouse_ceiling",
-            position: v(0, 0),
+            position: v(0, 0)
         }],
         floors: [
             {
@@ -642,18 +655,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 1,
                 scale: 1.076
             },
-            // {
-            //     id: "port_warehouse_windows",
-            //     position: v(-29.3, 30.4),
-            //     rotation: 0,
-            //     scale: 1.076
-            // },
             {
                 id: "port_warehouse_windows",
-                position: v(29.3, 30.4),
+                position: v(-29.3, 30.4),
                 rotation: 0,
                 scale: 1.076
             },
+            // {
+            //     id: "port_warehouse_windows",
+            //     position: v(29.3, 30.4),
+            //     rotation: 0,
+            //     scale: 1.076
+            // },
             {
                 id: "port_warehouse_wall_short",
                 position: v(29.3, 51),
@@ -688,7 +701,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "forklift",
-                position: v(15,-52),
+                position: v(15, -52),
                 rotation: 3
             },
             {
@@ -747,7 +760,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "box",
                 position: v(19, 12)
             }
-        ],
+        ]
     },
     {
         idString: "refinery",
@@ -1227,6 +1240,26 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ]
     },
     {
+        idString: "crane",
+        name: "Crane",
+        spawnHitbox: RectangleHitbox.fromRect(100, 220, v(0, 0)),
+        floorImages: [],
+        ceilingImages: [{
+            key: "crane_ceiling",
+            position: v(55.9, 0)
+        }
+        ],
+        ceilingZIndex: 100,
+        floors: [],
+        obstacles: [
+            {
+                id: "crane_base",
+                position: v(0, 0),
+                scale: 1.07
+            }
+        ]
+    },
+    {
         idString: "port_shed",
         name: "Port Shed",
         spawnHitbox: RectangleHitbox.fromRect(27, 37, v(-0.8, 0)),
@@ -1277,39 +1310,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ]
     },
-    {
-        idString: "port",
-        name: "Port",
-        spawnHitbox: RectangleHitbox.fromRect(184.00, 131.00, v(35.00, 21.50)),
-        scopeHitbox: new ComplexHitbox([
-            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
-            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
-        ]),
-        ceilingHitbox: new ComplexHitbox([
-            RectangleHitbox.fromRect(33.50, 72.00, v(-32.75, 0.00)),
-            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
-            RectangleHitbox.fromRect(13.00, 7.00, v(28.50, -3.50)), // door
-            new CircleHitbox(5, v(-16, 18.5)) // window
-        ]),
-        floorImages: [
-
-        ],
-        ceilingImages: [
-
-        ],
-        groundGraphics: [
-            { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) }
-        ],
-        floors: [
-
-        ],
-        obstacles: [
-
-        ],
-        subBuildings: [
-
-        ]
-    },
     // TODO Refactor this mess
     makeContainer(1, ContainerTints.White, 1, "closed"),
     makeContainer(2, ContainerTints.Red, 1, "closed"),
@@ -1320,5 +1320,698 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     makeContainer(7, ContainerTints.Blue, 4, "open2"),
     makeContainer(8, ContainerTints.Blue, 4, "open2", true),
     makeContainer(9, ContainerTints.Yellow, 5, "open1"),
-    makeContainer(10, ContainerTints.Yellow, 6, "open2")
+    makeContainer(10, ContainerTints.Yellow, 6, "open2"),
+    {
+        idString:"container_11",
+        name: "Invisible Container",
+        spawnHitbox: RectangleHitbox.fromRect(16, 30),
+        floorImages: [],
+        ceilingImages: [],
+        obstacles: [],
+        subBuildings: [],
+        floors: []
+    },
+    {
+        idString: "ship",
+        name: "Ship",
+        spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
+        ceilingHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
+            RectangleHitbox.fromRect(10, 13, v(35, -73)),
+            RectangleHitbox.fromRect(10, 19, v(-17, -63)),
+
+            RectangleHitbox.fromRect(60, 25, v(8, 96))
+        ]),
+        scopeHitbox: new ComplexHitbox([
+            RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
+            RectangleHitbox.fromRect(60, 25, v(8, 96))
+        ]),
+        floorImages: [
+            {
+                key: "ship_floor",
+                position: v(0, 0)
+            },
+            {
+                key: "ship_tango_room_floor",
+                position: v(9, 95)
+            }
+        ],
+        ceilingImages: [
+            {
+                key: "ship_cabin_roof",
+                position: v(4, -68)
+            },
+            {
+                key: "ship_tango_room_roof",
+                position: v(8.5, 103.3)
+            }
+        ],
+        obstacles: [
+            { id: "ship", position: v(0, 0) },
+            { id: "ship_thing_1", position: v(-14, -111), scale: 1.07 },
+            { id: "generator", position: v(-5, 77), scale: 1.07 },
+            { id: "barrel", position: v(-2, 68) },
+            {
+                get id() {
+                    return weightedRandom(["barrel", "super_barrel"], [1, 1]);
+                },
+                position: v(-6, 60)
+            },
+            { id: "regular_crate", position: v(20, 75) },
+            { id: "regular_crate", position: v(23, 63) },
+
+            { id: "regular_crate", position: v(4, -68) },
+
+            { id: "ship_cabin_windows", position: v(3.9, -51), rotation: 1, scale: 1.07 },
+            { id: "ship_small_wall", position: v(-23.6, -58.6), rotation: 0, scale: 1.07 },
+            { id: "ship_medium_wall", position: v(31.5, -60.5), rotation: 0, scale: 1.07 },
+            { id: "ship_exterior_long_wall", position: v(41, -65.6), rotation: 0, scale: 1.07 },
+            { id: "ship_exterior_small_wall", position: v(37.15, -82), rotation: 1, scale: 1.07 },
+            { id: "ship_tiny_wall", position: v(31.5, -84.8), rotation: 0, scale: 1.07 },
+            { id: "ship_long_wall", position: v(9.2, -89.5), rotation: 1, scale: 1.07 },
+            { id: "ship_medium_wall2", position: v(-13.1, -77.8), rotation: 0, scale: 1.07 },
+            { id: "ship_exterior_medium_wall", position: v(-23.6, -77.8), rotation: 0, scale: 1.07 }
+
+        ],
+        subBuildings: [
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(19, -67),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(-15, 20),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(-16, -20),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(-31, -20),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(16, -22),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(15, 22),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(-1, 22),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(16, -110),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                position: v(31, -110),
+                orientation: 0
+            }
+        ],
+        floors: [
+
+        ]
+    },
+    {
+        idString: "port",
+        name: "Port",
+        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(50, 0)),
+        floorImages: [
+
+        ],
+        ceilingImages: [
+
+        ],
+        groundGraphics: [
+            { color: 0x626262, hitbox: RectangleHitbox.fromRect(315, 425, v(0, 0)) },
+            { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
+
+            // Road Lines
+            { color: 0xffff00, hitbox: RectangleHitbox.fromRect(1.2476, 340.443, v(155.28, -37.84)) },
+
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 105.9294, v(-26.25, -28.92)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(117.5118, 1.53195, v(31.75, 23.32)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 164.3926, v(89.73, 105.48)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(39.00715, 1.53195, v(71, 186.96)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 125.15, v(52.01, 125.13)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(79.62335, 1.53195, v(12.97, 63.32)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 28.7803, v(-26.08, 77)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(8.85475, 1.53195, v(-22.42, 92.04)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(8.4059, 1.52505, v(-22.16, 112.58)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 41.4343, v(-26.08, 132.54)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(8.8755, 1.53195, v(-22.39, 152.49)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(8.4059, 1.53195, v(-22.13, 173.03)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 15.5026, v(-26.02, 180.02)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(39.05895, 1.53195, v(-45.09, 187)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 14.80615, v(-63.85, 180.36)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(9.6335, 1.53195, v(-67.9, 173.31)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(9.6278, 1.55265, v(-67.9, 152.66)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 40.41345, v(-63.85, 133.1)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(9.622, 1.53195, v(-67.9, 113.66)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(9.62375, 1.53195, v(-67.9, 92.26)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 125.33895, v(-63.85, 30.35)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(90.9875, 1.53195, v(-108.58, -31.94)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(45.67215, 1.53195, v(-131.27, -77.39)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-129.44, -165.98)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-103.91, -166.1)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-77.74, -165.82)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-50.76, -166.28)) },
+        ],
+        floors: [],
+        decals: [
+            // Group 1
+            {
+                id: "container_mark",
+                position: v(37.52, -184.72),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(51.98, -184.73),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(37.83, -157.25),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(52.23, -157.25),
+                rotation: 0
+            },
+            // Group 2
+            {
+                id: "container_mark",
+                position: v(98.38, -184.09),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(112.84, -184.09),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(98.69, -156.62),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(113.09, -156.62),
+                rotation: 0
+            },
+            // Group 3
+            {
+                id: "container_mark",
+                position: v(45.04, -110.4),
+                rotation: 1
+            },
+            {
+                id: "container_mark",
+                position: v(45.04, -96.9),
+                rotation: 1
+            },
+            {
+                id: "container_mark",
+                position: v(45.04, -83.32),
+                rotation: 1
+            },
+            // Group 4
+            {
+                id: "container_mark",
+                position: v(110, -110.4),
+                rotation: 1
+            },
+            {
+                id: "container_mark",
+                position: v(110, -96.9),
+                rotation: 1
+            },
+            {
+                id: "container_mark",
+                position: v(110, -83.32),
+                rotation: 1
+            },
+            // Group 5
+            {
+                id: "container_mark",
+                position: v(6.21, -45.74),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(20.57, -45.74),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(35.03, -45.74),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(6.21, -18.22),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(20.88, -18.22),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(35.28, -18.22),
+                rotation: 0
+            },
+            // Group 6
+            {
+                id: "container_mark",
+                position: v(104.35, -18.42),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(119.01, -18.42),
+                rotation: 0
+            },
+            // Group 7
+            {
+                id: "container_mark",
+                position: v(116.82, 83),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(131.21, 83),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(116.82, 110.65),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(131.21, 110.65),
+                rotation: 0
+            },
+            // Group 8
+            {
+                id: "container_mark",
+                position: v(116.79, 150.27),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(131.18, 150.27),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(116.59, 178.02),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(130.97, 178.02),
+                rotation: 0
+            },
+            // Group 9
+            {
+                id: "container_mark",
+                position: v(-128.55, 25.76),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(-128.55, 40.31),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(-128.55, 55.18),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position:v(-101.15, 55.18),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position: v(-101.15, 40.44),
+                rotation: 0
+            },
+            {
+                id: "container_mark",
+                position:  v(-101.15, 25.67),
+                rotation: 0
+            },
+            {
+                id: "floor_oil_01",
+                position: v(-50.76, -140.28)
+            },
+            {
+                id: "floor_oil_02",
+                position: v(50, -130.4)
+            },
+            {
+                id: "floor_oil_03",
+                position: v(-40, -85)
+            },
+            {
+                id: "floor_oil_02",
+                position: v(100, -55)
+            },
+            {
+                id: "floor_oil_06",
+                position: v(35, 5)
+            },
+            {
+                id: "floor_oil_07",
+                position: v(-35, 40)
+            },
+            {
+                id: "floor_oil_04",
+                position: v(-95, -10)
+            },
+            {
+                id: "floor_oil_03",
+                position: v(-35, 190)
+            },
+            {
+                id: "floor_oil_02",
+                position: v(65, 115)
+            },
+            {
+                id: "floor_oil_05",
+                position: v(120, 55)
+            },
+            
+        ],
+        obstacles: [
+            { id: "barrier", position: v(-111.03, -53.92), rotation: 0 },
+
+            { id: "forklift", position: v(-47.33, 82.5), rotation: 0 },
+            { id: "pallet", position: v(-47.3, 94.99), rotation: 0 },
+            { id: "box", position: v(-50.13, 94.43), rotation: 0 },
+
+            { id: "forklift", position: v(115.62, -65.16), rotation: 3 },
+            { id: "pallet", position: v(103, -65.16), rotation: 3 },
+            { id: "box", position: v(105, -67), rotation: 3 },
+            { id: "box", position: v(105, -62), rotation: 3 },
+            { id: "box", position: v(100, -67), rotation: 3 },
+
+            { id: "forklift", position: v(-10.34, -100.2), rotation: 0 },
+            { id: "super_barrel", position: v(1, -107) },
+            { id: "regular_crate", position: v(10, -100) },
+
+            { id: "forklift", position: v(51.85, 123.47), rotation: 2 },
+
+            { id: "barrel", position: v(-107.03, -21.1) },
+            { id: "barrel", position: v(-97.03, -13.1) },
+            { id: "super_barrel", position: v(-85.03, -16.1) },
+            { id: "barrel", position: v(-85.03, -7.1) },
+            { id: "barrel", position: v(-75.03, -1.1) },
+            { id: "regular_crate", position: v(-97.03, -2.1) },
+            { id: "barrel", position: v(-107, 4) },
+            { id: "regular_crate", position: v(-85.03, 4) },
+
+            { id: "trailer", position: v(-40, 140), rotation: 0 },
+
+            // Parked trucks (from left to right)
+            { id: "truck", position: v(-141.63, -178.02), rotation: 2 },
+            { id: "trailer", position: v(-141.63, -147), rotation: 2 },
+
+            { id: "truck", position: v(-115.02, -179.26), rotation: 2 },
+
+            { id: "truck", position: v(-89, -147.99), rotation: 0 },
+            { id: "trailer", position: v(-89, -178), rotation: 0 },
+
+            { id: "trailer", position: v(-36.19, -175.77), rotation: 0 },
+
+            // Porta potty top loot
+            { id: "regular_crate", position: v(-7, -200.2) },
+            { id: "super_barrel", position: v(-10, -190.2) },
+
+            { id: "regular_crate", position: v(25, -178.2) },
+
+            // Other stuff idk
+            { id: "regular_crate", position: v(-19, -35) },
+            { id: "barrel", position: v(-10, -20) },
+
+            { id: "barrel", position: v(5, 14) },
+            {
+                get id() {
+                    return weightedRandom(["aegis_crate", "flint_crate"], [1, 1]);
+                },
+                position: v(15, 14)
+            },
+            { id: "super_barrel", position: v(25, 11) },
+
+            {
+                get id() {
+                    return weightedRandom(["aegis_crate", "flint_crate"], [1, 1]);
+                },
+                position: v(90, -32)
+            },
+            {
+                get id() {
+                    return weightedRandom(["barrel", "super_barrel"], [1, 1]);
+                },
+                position: v(85, -42)
+            },
+
+            { id: "barrel", position: v(125, 20) },
+            { id: "regular_crate", position: v(120, 30) },
+            { id: "regular_crate", position: v(130, 35) },
+            { id: "barrel", position: v(112, 45) },
+            { id: "super_barrel", position: v(125, 48) },
+            { id: "barrel", position: v(135, 55) },
+            { id: "barrel", position: v(120, 58) },
+            { id: "barrel", position: v(108, 60) },
+
+            { id: "barrel", position: v(105, 105) },
+
+            { id: "regular_crate", position: v(103, 187) },
+            { id: "barrel", position: v(99, 198) },
+            { id: "regular_crate", position: v(110, 200) },
+
+            { id: "regular_crate", position: v(-60, 200) },
+            { id: "regular_crate", position: v(-50, 195) },
+
+            { id: "barrel", position: v(-150, 192) },
+            { id: "regular_crate", position: v(-140, 190) },
+            { id: "barrel", position: v(-140, 200) },
+
+            { id: "regular_crate", position: v(-140, 80) },
+
+            { id: "regular_crate", position: v(100, -125) },
+            { id: "barrel", position: v(110, -130) },
+
+            { id: "regular_crate", position: v(90, -90) },
+            { id: "barrel", position: v(80, -90) },
+            { id: "super_barrel", position: v(85, -100) },
+
+            ...Array.from(
+                { length: 11 },
+                (_, i) => ({
+                    id: "inner_concrete_wall_1",
+                    position: v(-26.23, -204 + 11.6 * i),
+                    rotation: 1,
+                    scale: 1.07
+                })
+            ),
+            ...Array.from(
+                { length: 4 },
+                (_, i) => ({
+                    id: "inner_concrete_wall_1",
+                    position: v(-148 + 11.6 * i, -82.4),
+                    rotation: 0,
+                    scale: 1.07
+                })
+            ),
+
+            ...(() => Array.from(
+                { length: 8 },
+                (_, i) => ({
+                    id: "bollard",
+                    position: v(152.79, 115.23 - (45.54 * i)),
+                    rotation: 0
+                })
+            ))()
+
+        ],
+        subBuildings: [
+            { id: "ship", position: v(205, -50) },
+            { id: "crane", position: v(100, -95) },
+
+            { id: "porta_potty", position: v(171.2, -12.34), orientation: 1 },
+            { id: "porta_potty", position: v(151.2, -12.34), orientation: 1 },
+            { id: "porta_potty", position: v(131.2, -12.34), orientation: 1 },
+            { id: "port_shed", position: v(15.68, -136.56), orientation: 1 },
+            { id: "port_warehouse", position: v(-10, -132), orientation: 2 },
+            { id: "port_warehouse", position: v(-100, 132) },
+
+            // Containers on trucks
+            { id: "container_2", position: v(-40, 140) },
+            { id: "container_2", position: v(-36.19, -175.77) },
+            { id: "container_1", position: v(-141.63, -147) },
+
+            // Top left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(37.52, -184.72),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(51.98, -184.73),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(37.83, -157.25),
+                orientation: 0
+            },
+            // Top Right
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(98.38, -184.09),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(112.84, -184.09),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(113.09, -156.62),
+                orientation: 0
+            },
+            //Top middle left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-96.9, -45.04),
+                orientation: 3
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(83.32, 45.04),
+                orientation: 1
+            },
+            //Top middle right
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-96.9, -110),
+                orientation: 3
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(110.4, 110),
+                orientation: 1
+            },
+            // Top down left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(20.57, -45.74),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(6.21, -18.22),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(20.88, -18.22),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(35.28, -18.22),
+                orientation: 0
+            },
+            // Top down right
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(119.01, -18.42),
+                orientation: 0
+            },
+            // Bottom top left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(116.82, 83),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(131.21, 83),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(131.21, 110.65),
+                orientation: 0
+            },
+
+            // Bottom bottom left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(116.79, 150.27),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(130.97, 178.02),
+                orientation: 0
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(116.59, 178.02),
+                orientation: 0
+            },
+            //left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-25.76, -128.55),
+                orientation: 1
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-40.31, -128.55),
+                orientation: 1
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-55.18, -128.55),
+                orientation: 1
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-55.18, -101.15),
+                orientation: 1
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-25.67, -101.15),
+                orientation: 1
+            }
+        ]
+    }
+
 ]);

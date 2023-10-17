@@ -8,12 +8,14 @@ import { FloorTypes, type BuildingDefinition } from "../../../../common/src/defi
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { Container } from "pixi.js";
+import { Container, Renderer, Sprite, Texture } from "pixi.js";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { velFromAngle } from "../../../../common/src/utils/math";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { Obstacle } from "./obstacle";
+import { Graphics, GenerateTextureSystem } from "pixi.js"
 
 export class Building extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -47,7 +49,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = zIndexes.BuildingsCeiling;
+        this.ceilingContainer.zIndex = definition.ceilingZIndex ?? zIndexes.BuildingsCeiling;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 
@@ -146,11 +148,12 @@ export class Building extends GameObject {
             drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
                 this.debugGraphics);
-
-            drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.buildingZoomCeiling,
-                this.debugGraphics);
-
+            
+            if (definition.scopeHitbox !== undefined) {
+                drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.debugGraphics);
+            }
             for (const floor of definition.floors) {
                 drawHitbox(floor.hitbox.transform(this.position, 1, this.orientation), FloorTypes[floor.type].debugColor, this.debugGraphics);
             }
