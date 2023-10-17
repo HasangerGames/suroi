@@ -56,7 +56,6 @@ export class GameOverPacket extends ReceivingPacket {
         gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
-        const aliveCount = stream.readBits(7);
-        $("#game-over-rank").text(`#${aliveCount + (won ? 0 : 1)}`).toggleClass("won", won);
+        $("#game-over-rank").text(`#${1 + (won ? 0 : stream.readBits(7))}`).toggleClass("won", won);
     }
 }
