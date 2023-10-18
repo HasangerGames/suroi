@@ -293,7 +293,9 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "15x_scope");
+        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
+        //this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "15x_scope");
+        //this.inventory.items["15x_scope"] = 1;
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -418,7 +420,6 @@ export class Player extends GameObject {
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
         this.game.grid.addObject(this);
 
-        this.inventory.items["15x_scope"] = 1;
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
