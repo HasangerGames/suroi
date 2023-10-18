@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
-import { type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type BuildingDefinition, FloorTypes } from "../../../../common/src/definitions/buildings";
+import { ZIndexes, type ObjectCategory } from "../../../../common/src/constants";
+import { FloorTypes, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { velFromAngle } from "../../../../common/src/utils/math";
@@ -9,10 +9,13 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
+
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
+
+
 
 export class Building extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
@@ -46,7 +49,7 @@ export class Building extends GameObject {
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = ZIndexes.BuildingsCeiling;
+        this.ceilingContainer.zIndex = definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
         this.game.camera.container.addChild(this.ceilingContainer);
     }
 
@@ -145,11 +148,12 @@ export class Building extends GameObject {
             drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
                 this.debugGraphics);
-
-            drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.buildingZoomCeiling,
-                this.debugGraphics);
-
+            
+            if (definition.scopeHitbox !== undefined) {
+                drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.debugGraphics);
+            }
             for (const floor of definition.floors) {
                 drawHitbox(floor.hitbox.transform(this.position, 1, this.orientation), FloorTypes[floor.type].debugColor, this.debugGraphics);
             }

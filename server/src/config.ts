@@ -7,9 +7,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "singleBuilding",
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.Center },
 
     maxPlayersPerGame: 80,
     maxGames: 3,

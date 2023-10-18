@@ -1,7 +1,7 @@
 export interface WeightedLoot { item: string, count?: number, weight: number }
 export interface WeightedTier { tier: string, weight: number }
 export type WeightedItem = WeightedLoot | WeightedTier;
-export interface LootTable { min: number, max: number, loot: WeightedItem[] }
+export interface LootTable { min: number, max: number, count?: number, loot: WeightedItem[] }
 
 export const LootTables: Record<string, LootTable> = {
     ground_loot: {
@@ -54,12 +54,22 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "melee", weight: 1 }
         ]
     },
+    tango_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "tango_51", weight: 50 },
+            { item: "tango_51", count: 2, weight: 20 },
+            { item: "tango_51", count: 3, weight: 2.5 },
+            { item: "tango_51", count: 4, weight: 0.001 },
+            { item: "tango_51", count: 5, weight: 0.0000001 }
+        ]
+    },
     gold_rock: {
         min: 1,
         max: 1,
         loot: [
-            { item: "mosin", weight: 1 },
-            { item: "tango_51", weight: 0.1 }
+            { item: "mosin", weight: 1 }
         ]
     },
     blueberry_bush: {
