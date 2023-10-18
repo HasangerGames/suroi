@@ -1664,32 +1664,32 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "container_mark",
                 position: v(-128.55, 25.76),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 40.31),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 55.18),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "container_mark",
                 position:v(-101.15, 55.18),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 40.44),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "container_mark",
                 position:  v(-101.15, 25.67),
-                rotation: 0
+                rotation: 1
             },
             {
                 id: "floor_oil_01",

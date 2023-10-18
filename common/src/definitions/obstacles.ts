@@ -1693,7 +1693,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10, 7),
+            hitbox: RectangleHitbox.fromRect(0, 0),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "crate_particle"
