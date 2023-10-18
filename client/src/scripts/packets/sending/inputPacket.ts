@@ -23,8 +23,8 @@ export class InputPacket extends SendingPacket {
 
         stream.writeBoolean(player.attacking);
         if (this.game.playerManager.shootOnRelease) {
-            player.attacking = false
-            this.game.playerManager.shootOnRelease = false
+            player.attacking = false;
+            this.game.playerManager.shootOnRelease = false;
         }
         stream.writeBoolean(player.turning);
         if (player.turning) {

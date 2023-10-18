@@ -1366,7 +1366,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: Infinity,
             hideOnMap: true,
-            indestructible:true,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1375,7 +1375,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(1.5, 24),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "barrel_particle",
+                particle: "barrel_particle"
             }
         },
         {
@@ -1384,7 +1384,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: Infinity,
             hideOnMap: true,
-            indestructible:true,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1393,7 +1393,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(1.5, 14.5),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "barrel_particle",
+                particle: "barrel_particle"
             }
         },
         {
@@ -1402,7 +1402,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: Infinity,
             hideOnMap: true,
-            indestructible:true,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1411,7 +1411,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(1.5, 32.2),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "barrel_particle",
+                particle: "barrel_particle"
             }
         },
         {
@@ -1420,7 +1420,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: Infinity,
             hideOnMap: true,
-            indestructible:true,
+            indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1429,7 +1429,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(1.5, 56),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "barrel_particle",
+                particle: "barrel_particle"
             }
         },
         makeContainerWalls(1, "closed"),

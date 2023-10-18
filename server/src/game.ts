@@ -265,7 +265,7 @@ export class Game {
     }
 
     private _killLeader: Player | undefined;
-    get killLeader() { return this._killLeader; }
+    get killLeader(): Player | undefined { return this._killLeader; }
 
     updateKillLeader(player: Player): void {
         const oldKillLeader: Player | undefined = this._killLeader;

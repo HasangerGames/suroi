@@ -585,7 +585,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         ceilingImages: [{
             key: "port_warehouse_ceiling",
-            position: v(0, 0),
+            position: v(0, 0)
         }],
         floors: [
             {
@@ -688,7 +688,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "forklift",
-                position: v(15,-52),
+                position: v(15, -52),
                 rotation: 3
             },
             {
@@ -747,7 +747,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 id: "box",
                 position: v(19, 12)
             }
-        ],
+        ]
     },
     {
         idString: "refinery",
