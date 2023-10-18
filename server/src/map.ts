@@ -19,7 +19,7 @@ import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
 
 export class Map {
-    game: Game;
+    readonly game: Game;
 
     readonly width: number;
     readonly height: number;
