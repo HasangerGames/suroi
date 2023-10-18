@@ -82,11 +82,7 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
                 destroy: 0.5
             },
             hitbox: RectangleHitbox.fromRect(9.2, 9.2),
-            hasLoot: true,
-            frames: {
-                particle: "crate_particle",
-                residue: "crate_residue"
-            }
+            hasLoot: true
         },
         ...options
     };
@@ -324,7 +320,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         makeCrate("regular_crate", "Regular Crate", {
-            rotationMode: RotationMode.Binary
+            rotationMode: RotationMode.Binary,
+            frames: {
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
+            }
         }),
         makeCrate("flint_crate", "Flint Crate", {
             rotationMode: RotationMode.None,
