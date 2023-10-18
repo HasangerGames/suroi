@@ -1367,6 +1367,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            {id:"tango_crate", position: v(9, 95.5), rotation: 0, scale: 0.90},
+            {id: "super_barrel", position: v(-12, 89)},
+            {id: "box", position: v(30, 87) },
+            {id: "box", position: v(33, 92) },
+            {id: "box", position: v(-12, 103) },
+
             { id: "ship", position: v(0, 0) },
             { id: "ship_thing_1", position: v(-14, -111), scale: 1.07 },
             { id: "generator", position: v(-5, 77), scale: 1.07 },
@@ -1380,7 +1386,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "regular_crate", position: v(20, 75) },
             { id: "regular_crate", position: v(23, 63) },
 
-            { id: "regular_crate", position: v(4, -68) },
+            { id: "panel_with_a_button", position: v(25.3, -55.7), rotation: 2 },
+            { id: "panel_without_button_small", position: v(16.6, -55.7), rotation: 2 },
+            { id: "panel_without_button", position: v(7.8, -55.7), rotation: 2 },
+            { id: "panel_with_the_button_pressed", position: v(-2.7, -55.7), rotation: 2 },
+            {id: "regular_crate", position: v(-7, -83)},
+            {id: "barrel", position: v(2, -84)},
 
             { id: "ship_cabin_windows", position: v(3.9, -51), rotation: 1, scale: 1.07 },
             { id: "ship_small_wall", position: v(-23.6, -58.6), rotation: 0, scale: 1.07 },
@@ -1871,39 +1882,54 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "container_2", position: v(-36.19, -175.77) },
             { id: "container_1", position: v(-141.63, -147) },
 
-            // Top left
+            // Group 1
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(37.52, -184.72),
-                orientation: 0
+                position: v(-37.52, 184.72),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(51.98, -184.73),
-                orientation: 0
+                position: v(-51.98, 184.73),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(37.83, -157.25),
                 orientation: 0
             },
-            // Top Right
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(98.38, -184.09),
+                position: v(51.98, -157.25),
                 orientation: 0
+            },
+            // Group 2
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-98.38, 184.09),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(112.84, -184.09),
-                orientation: 0
+                position: v(-112.84, 184.09),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(113.09, -156.62),
                 orientation: 0
             },
-            //Top middle left
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(98.38, -156.62),
+                orientation: 0
+            },
+            // Group 3 
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-110.4, -45.04),
+                orientation: 3
+            },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(-96.9, -45.04),
@@ -1914,7 +1940,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(83.32, 45.04),
                 orientation: 1
             },
-            //Top middle right
+            // Group 4
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(110.4, 110),
+                orientation: 1
+            },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(-96.9, -110),
@@ -1922,14 +1953,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(110.4, 110),
+                position: v(83.32, 110),
                 orientation: 1
             },
-            // Top down left
+            // Group 5
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(20.57, -45.74),
-                orientation: 0
+                position: v(-6.21, 45.74),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-20.57, 45.74),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-35.28, 45.74),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
@@ -1946,17 +1987,27 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(35.28, -18.22),
                 orientation: 0
             },
-            // Top down right
+            // Group 6
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(104.35, -18.42),
+                orientation: 0
+            },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(119.01, -18.42),
                 orientation: 0
             },
-            // Bottom top left
+            // Group 7
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(116.82, 83),
-                orientation: 0
+                position: v(-116.82, -83),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-131.21, -83),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
@@ -1969,11 +2020,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 orientation: 0
             },
 
-            // Bottom bottom left
+            // Group 8
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(116.79, 150.27),
-                orientation: 0
+                position: v(-116.79, -150.27),
+                orientation: 2
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-131.18, -150.27),
+                orientation: 2
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
@@ -1985,25 +2041,30 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(116.59, 178.02),
                 orientation: 0
             },
-            //left
+            // Group 9
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(-25.76, -128.55),
-                orientation: 1
+                position: v(25.76, 128.55),
+                orientation: 3
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(-40.31, -128.55),
-                orientation: 1
+                position: v(40.31, 128.55),
+                orientation: 3
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(-55.18, -128.55),
-                orientation: 1
+                position: v(55.18, 128.55),
+                orientation: 3
             },
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(-55.18, -101.15),
+                orientation: 1
+            },
+            {
+                get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                position: v(-40.31, -101.15),
                 orientation: 1
             },
             {

@@ -5,70 +5,19 @@ import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { SpectatePacket } from "../packets/sending/spectatePacket";
+import { consoleVariables } from "./console/variables";
+import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { GunDefinition } from "../../../../common/src/definitions/guns";
 
-class Action {
-    readonly name: string;
-    readonly on: () => void;
-    readonly off: () => void;
-    private down = false;
-
-    constructor(name: string, on?: () => void, off?: () => void) {
-        this.name = name;
-
-        this.on = () => {
-            if (this.down) return;
-            this.down = true;
-            on?.();
-        };
-
-        this.off = () => {
-            if (!this.down) return;
-            this.down = false;
-            off?.();
-        };
-    }
-}
-
-type ConvertToAction<T extends Record<string, object | string>> = { [K in keyof T]: T[K] extends Record<string, object | string> ? ConvertToAction<T[K]> : Action };
-
-function generateKeybindActions(game: Game): ConvertToAction<KeybindActions> {
-    function generateMovementAction(direction: keyof PlayerManager["movement"]): Action {
-        return new Action(
-            `move::${direction.toString()}`,
-            () => {
-                game.playerManager.movement[direction] = true;
-                game.playerManager.dirty.inputs = true;
-                if (game.spectating) {
-                    let action: SpectateActions | undefined;
-                    if (direction === "left") action = SpectateActions.SpectatePrevious;
-                    else if (direction === "right") action = SpectateActions.SpectateNext;
-                    if (action !== undefined) game.sendPacket(new SpectatePacket(game.playerManager, action));
-                }
-            },
-            () => {
-                game.playerManager.movement[direction] = false;
-                game.playerManager.dirty.inputs = true;
-            }
-        );
-    }
-
-    function generateSlotAction(slot: number): Action {
-        return new Action(
-            `inventory::slot${slot}`,
-            () => { game.playerManager.equipItem(slot); }
-        );
-    }
-
-    function generateItemCycler(step: number) {
-        return () => {
-            let index = absMod((game.playerManager.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
-
-            while (!game.playerManager.weapons[index]) {
-                index = absMod((index + step), INVENTORY_MAX_WEAPONS);
-            }
+function fireAllEventsAtKey(input: string, down: boolean): number {
+    const actions = keybinds.getActionsBoundToInput(input) ?? [];
+    for (const action of actions) {
+        let query = action;
+        if (!down) {
+            if (query.startsWith("+")) { // Invertible action
+                query = query.replace("+", "-");
+            } else query = ""; // If the action isn't invertible, then we do nothing
+        }
 
         gameConsole.handleQuery(query);
     }
@@ -246,26 +195,22 @@ export function setupInputs(game: Game): void {
             game.playerManager.turning = true;
 
             if (game.activePlayer && game.activePlayer.activeItem.definition.itemType === ItemType.Gun) {
-                game.activePlayer.images.aimTrail.alpha = 1
+                game.activePlayer.images.aimTrail.alpha = 1;
             }
 
-            const def = game.activePlayer?.activeItem.definition as GunDefinition
+            const def = game.activePlayer?.activeItem.definition as GunDefinition;
 
             if (!def.shootOnRelease || game.activePlayer?.activeItem.definition.itemType === ItemType.Melee) {
-                game.playerManager.attacking = data.distance > config.joystickSize / 3;
+                game.playerManager.attacking = data.distance > consoleVariables.get.builtIn("mb_joystick_size").value / 3;
             } else {
-                game.playerManager.shootOnRelease = true
+                game.playerManager.shootOnRelease = true;
             }
         });
 
         rightJoyStick.on("end", () => {
             rightJoyStickUsed = false;
-            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0
-            if (game.playerManager.shootOnRelease) {
-                game.playerManager.attacking = true;
-            } else {
-                game.playerManager.attacking = false;
-            }
+            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+            game.playerManager.attacking = game.playerManager.shootOnRelease;
         });
     }
 

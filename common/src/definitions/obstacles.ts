@@ -1257,6 +1257,96 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         {
+            idString: "tango_crate",
+            name: "Tango crate",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(15,6.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "crate_residue"
+            },
+            hasLoot: true
+        },
+        {
+            idString: "panel_with_a_button",
+            name: "Pannel with a button",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            },
+        },
+        {
+            idString: "panel_with_the_button_pressed",
+            name: "Pannel with the button pressed",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            },
+        },
+        {
+            idString: "panel_without_button_small",
+            name: "Pannel without button small",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(7,7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            },
+        },
+        {
+            idString: "panel_without_button",
+            name: "Pannel without button",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            },
+        },
+        {
             idString: "crane_base",
             name: "crane base",
             material: "metal",
