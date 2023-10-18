@@ -1266,7 +1266,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(15,6.5),
+            hitbox: RectangleHitbox.fromRect(15, 6.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "furniture_particle",
@@ -1285,12 +1285,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "barrel_particle",
                 residue: "crate_residue"
-            },
+            }
         },
         {
             idString: "panel_with_the_button_pressed",
@@ -1303,12 +1303,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "barrel_particle",
                 residue: "crate_residue"
-            },
+            }
         },
         {
             idString: "panel_without_button_small",
@@ -1321,12 +1321,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(7,7.5),
+            hitbox: RectangleHitbox.fromRect(7, 7.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "barrel_particle",
                 residue: "crate_residue"
-            },
+            }
         },
         {
             idString: "panel_without_button",
@@ -1339,12 +1339,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(10.5,7.5),
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "barrel_particle",
                 residue: "crate_residue"
-            },
+            }
         },
         {
             idString: "crane_base",

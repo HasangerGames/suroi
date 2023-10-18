@@ -1322,7 +1322,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     makeContainer(9, ContainerTints.Yellow, 5, "open1"),
     makeContainer(10, ContainerTints.Yellow, 6, "open2"),
     {
-        idString:"container_11",
+        idString: "container_11",
         name: "Invisible Container",
         spawnHitbox: RectangleHitbox.fromRect(16, 30),
         floorImages: [],
@@ -1367,11 +1367,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            {id:"tango_crate", position: v(9, 95.5), rotation: 0, scale: 0.90},
-            {id: "super_barrel", position: v(-12, 89)},
-            {id: "box", position: v(30, 87) },
-            {id: "box", position: v(33, 92) },
-            {id: "box", position: v(-12, 103) },
+            { id: "tango_crate", position: v(9, 95.5), rotation: 0, scale: 0.90 },
+            { id: "super_barrel", position: v(-12, 89) },
+            { id: "box", position: v(30, 87) },
+            { id: "box", position: v(33, 92) },
+            { id: "box", position: v(-12, 103) },
 
             { id: "ship", position: v(0, 0) },
             { id: "ship_thing_1", position: v(-14, -111), scale: 1.07 },
@@ -1390,8 +1390,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { id: "panel_without_button_small", position: v(16.6, -55.7), rotation: 2 },
             { id: "panel_without_button", position: v(7.8, -55.7), rotation: 2 },
             { id: "panel_with_the_button_pressed", position: v(-2.7, -55.7), rotation: 2 },
-            {id: "regular_crate", position: v(-7, -83)},
-            {id: "barrel", position: v(2, -84)},
+            { id: "regular_crate", position: v(-7, -83) },
+            { id: "barrel", position: v(2, -84) },
 
             { id: "ship_cabin_windows", position: v(3.9, -51), rotation: 1, scale: 1.07 },
             { id: "ship_small_wall", position: v(-23.6, -58.6), rotation: 0, scale: 1.07 },
@@ -1498,7 +1498,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-129.44, -165.98)) },
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-103.91, -166.1)) },
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-77.74, -165.82)) },
-            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-50.76, -166.28)) },
+            { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-50.76, -166.28)) }
         ],
         floors: [],
         decals: [
@@ -1678,7 +1678,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "container_mark",
-                position:v(-101.15, 55.18),
+                position: v(-101.15, 55.18),
                 rotation: 1
             },
             {
@@ -1688,7 +1688,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 id: "container_mark",
-                position:  v(-101.15, 25.67),
+                position: v(-101.15, 25.67),
                 rotation: 1
             },
             {
@@ -1730,8 +1730,8 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 id: "floor_oil_05",
                 position: v(120, 55)
-            },
-            
+            }
+
         ],
         obstacles: [
             { id: "barrier", position: v(-111.03, -53.92), rotation: 0 },
@@ -1924,7 +1924,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(98.38, -156.62),
                 orientation: 0
             },
-            // Group 3 
+            // Group 3
             {
                 get id() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
                 position: v(-110.4, -45.04),

@@ -23,7 +23,6 @@ import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
 
-
 export class Map {
     game: Game;
 
@@ -176,7 +175,8 @@ export class Map {
 
         if (definition.decals) {
             for (const decal of definition.decals) {
-                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));            }
+                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));
+            }
         }
         this.game.minimapObjects.add(building);
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
