@@ -188,23 +188,21 @@ export class Minimap {
 
         this.game.camera.container.addChild(terrainGraphics);
 
-        // draw the minimap obstacles
+        // Draw the minimap obstacles
         const mapRender = new Container();
         mapRender.addChild(mapGraphics);
 
         for (const obstacle of mapPacket.obstacles) {
             const definition = obstacle.type.definition;
 
-            let textureId = definition.idString;
+            let texture = definition.frames?.base ?? definition.idString;
+            if (obstacle.variation) texture += `_${obstacle.variation + 1}`;
 
-            if (obstacle.variation) {
-                textureId += `_${obstacle.variation + 1}`;
-            }
-            // Create the object image
-            const image = new SuroiSprite(`${textureId}`);
+            const image = new SuroiSprite(texture);
             image.setVPos(obstacle.position).setRotation(obstacle.rotation);
             image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
             image.setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+            if (definition.tint) image.setTint(definition.tint);
             mapRender.addChild(image);
         }
 
@@ -217,6 +215,7 @@ export class Minimap {
                 sprite.scale.set(1 / PIXI_SCALE);
                 sprite.setRotation(building.rotation);
                 sprite.setZIndex(ZIndexes.Ground);
+                if (image.tint !== undefined) sprite.setTint(image.tint);
                 mapRender.addChild(sprite);
             }
 
@@ -224,9 +223,10 @@ export class Minimap {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
-                mapRender.addChild(sprite);
                 sprite.setRotation(building.rotation);
                 sprite.setZIndex(ZIndexes.BuildingsCeiling);
+                if (image.tint !== undefined) sprite.setTint(image.tint);
+                mapRender.addChild(sprite);
             }
 
             for (const floor of definition.floors) {

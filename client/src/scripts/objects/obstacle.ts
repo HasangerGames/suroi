@@ -177,12 +177,14 @@ export class Obstacle extends GameObject {
 
         this.image.setVisible(!(this.dead && !!definition.noResidue));
 
-        let texture = definition.frames?.base ?? `${definition.idString}`;
-        if (this.dead) texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+        let texture;
+        if (!this.dead) texture = definition.frames?.base ?? `${definition.idString}`;
+        else texture = definition.frames?.residue ?? `${definition.idString}_residue`;
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
+
         // Update the obstacle image
-        this.image.setFrame(`${texture}`);
+        this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 

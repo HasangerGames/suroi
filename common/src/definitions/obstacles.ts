@@ -172,6 +172,7 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
             hitbox = RectangleHitbox.fromRect(14, 28);
             break;
     }
+    const invisible = open === "closed";
     return {
         idString: `container_walls_${id}`,
         name: `Container Walls ${id}`,
@@ -179,8 +180,8 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         health: 500,
         indestructible: true,
         noResidue: true,
-        hideOnMap: false,
-        invisible: open === "closed",
+        hideOnMap: invisible,
+        invisible,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
