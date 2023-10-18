@@ -1,7 +1,7 @@
-import { type Hitbox, RectangleHitbox, PolygonHitbox } from "./hitbox";
-import { angleBetweenPoints, angleBetweenVectors, clamp } from "./math";
-import { SeededRandom } from "./random";
-import { type Vector, v, vClone, vAdd, vRotate, vSub } from "./vector";
+import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
+import { angleBetweenPoints, clamp } from "./math";
+import { SeededRandom, randomFloat } from "./random";
+import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
 export function jaggedRectangle(hitbox: RectangleHitbox,
     spacing: number,
@@ -62,8 +62,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
 };
 
 export class River {
-    width: number;
-    points: Vector[];
+    readonly width: number;
+    readonly points: Vector[];
+
     constructor(width: number, points: Vector[]) {
         this.width = width;
         this.points = points;
@@ -76,15 +77,16 @@ export function generateTerrain(
     oceanSize: number,
     beachSize: number,
     seed: number,
-    rivers: River[]): {
-        beach: PolygonHitbox
-        grass: PolygonHitbox
-        rivers: Array<{
-            water: PolygonHitbox
-            bank: PolygonHitbox
+    rivers: River[]
+): {
+        readonly beach: PolygonHitbox
+        readonly grass: PolygonHitbox
+        readonly rivers: Array<{
+            readonly water: PolygonHitbox
+            readonly bank: PolygonHitbox
         }>
     } {
-    // generate beanch and grass
+    // generate beach and grass
     const beachPadding = oceanSize + beachSize;
 
     const random = new SeededRandom(seed);
@@ -92,41 +94,59 @@ export function generateTerrain(
     const spacing = 16;
     const variation = 8;
 
-    const beachHitbox = new RectangleHitbox(v(oceanSize, oceanSize),
-        v(width - oceanSize, height - oceanSize));
+    const beachHitbox = new RectangleHitbox(
+        v(oceanSize, oceanSize),
+        v(width - oceanSize, height - oceanSize)
+    );
 
-    const grassHitbox = new RectangleHitbox(v(beachPadding, beachPadding),
-        v(width - beachPadding, height - beachPadding));
+    const grassHitbox = new RectangleHitbox(
+        v(beachPadding, beachPadding),
+        v(width - beachPadding, height - beachPadding)
+    );
 
     const beach = new PolygonHitbox(jaggedRectangle(beachHitbox, spacing, variation, random));
     const grass = new PolygonHitbox(jaggedRectangle(grassHitbox, spacing, variation, random));
 
     const generatedRivers: ReturnType<typeof generateTerrain>["rivers"] = [];
 
-    const halfPI = Math.PI / 2;
-
     for (const river of rivers) {
         const getRiverPolygon = (width: number): PolygonHitbox => {
-            const temp = v(width, 0);
-
             // first loop, add points from start to end
             const points: Vector[] = [];
-            for (let i = 1; i < river.points.length - 1; i++) {
+            for (let i = 1, l = river.points.length - 1; i < l; i++) {
                 const prev = river.points[i - 1];
                 const current = river.points[i];
                 const next = river.points[i + 1];
 
-                const prevCurrent = vSub(prev, current);
-                const nextCurrent = vSub(next, current);
+                const prevCurrent = vSub(current, prev);
+                const nextCurrent = vSub(current, next);
 
-                const angleToDivide = angleBetweenVectors(prevCurrent, nextCurrent);
-                const angle = angleToDivide / 2 + angleBetweenPoints(current, prev);
+                const prevAngle = angleBetweenPoints(v(0, 0), prevCurrent);
+                const nextAngle = angleBetweenPoints(v(0, 0), nextCurrent);
 
-                points.push(vAdd(current, vRotate(temp, angle)));
+                const angleToDivide = Math.abs(prevAngle - nextAngle);
+                const angle = angleToDivide / 2 + (
+                    prevAngle > nextAngle // convex check
+                        ? angleBetweenPoints(current, next)
+                        : angleBetweenPoints(prev, current)
+                );
+
+                points.push(
+                    vAdd(
+                        current,
+                        vRotate(
+                            v(
+                                randomFloat(0.9, 1.1) * width,
+                                0
+                            ),
+                            angle
+                        )
+                    )
+                );
             }
 
             // second loop, same thing but reverse and with inverted point
-            for (let i = river.points.length - 2; i > 0; i--) {
+            for (let l = river.points.length, i = l - 2; i > 0; i--) {
                 const prev = river.points[i - 1];
                 const current = river.points[i];
                 const next = river.points[i + 1];
@@ -134,15 +154,29 @@ export function generateTerrain(
                 const prevCurrent = vSub(prev, current);
                 const nextCurrent = vSub(next, current);
 
-                const angleToDivide = angleBetweenVectors(prevCurrent, nextCurrent);
-                const angle = angleToDivide / 2 + angleBetweenPoints(current, prev);
+                const prevAngle = angleBetweenPoints(v(0, 0), prevCurrent);
+                const nextAngle = angleBetweenPoints(v(0, 0), nextCurrent);
 
-                points.push(vSub(current, vRotate(temp, angle)));
+                const angleToDivide = Math.abs(prevAngle - nextAngle);
+                const angle = angleToDivide / 2 + (
+                    prevAngle > nextAngle // convex check
+                        ? angleBetweenPoints(current, next)
+                        : angleBetweenPoints(prev, current)
+                );
+
+                points.push(
+                    vSub(
+                        current,
+                        vRotate(
+                            v(
+                                randomFloat(0.9, 1.1) * width,
+                                0
+                            ),
+                            angle
+                        )
+                    )
+                );
             }
-            // add last point
-            const point = river.points[0];
-            const angle = angleBetweenPoints(point, river.points[1]);
-            points.push(vAdd(point, vRotate(temp, angle - halfPI)));
 
             return new PolygonHitbox(points);
         };
@@ -150,7 +184,7 @@ export function generateTerrain(
         generatedRivers.push({
             water: getRiverPolygon(river.width / 2),
             // todo: hardcoded bank width
-            bank: getRiverPolygon((river.width / 2) + 15)
+            bank: getRiverPolygon(river.width / 2 + 15)
         });
     }
 

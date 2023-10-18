@@ -1,19 +1,7 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
-import { type Hitbox, RectangleHitbox } from "./hitbox";
-import {
-    v,
-    vAdd,
-    vDiv,
-    vDot,
-    type Vector,
-    vLength,
-    vLengthSqr,
-    vMul,
-    vNormalize,
-    vNormalizeSafe,
-    vSub
-} from "./vector";
+import { RectangleHitbox, type Hitbox } from "./hitbox";
+import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
 
 /**
  * Draws a line between two points and returns that line's angle
