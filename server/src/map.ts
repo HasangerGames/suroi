@@ -1,8 +1,8 @@
 import { GRID_SIZE, ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
+import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { addAdjust, addOrientations } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
@@ -19,6 +19,7 @@ import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
+import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
 
@@ -172,6 +173,12 @@ export class Map {
             }
         }
 
+        if (definition.decals) {
+            for (const decal of definition.decals) {
+                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));
+            }
+        }
+        this.game.minimapObjects.add(building);
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
         this.game.grid.addObject(building);
         return building;

@@ -414,6 +414,7 @@ export class Player extends GameObject {
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
         this.game.grid.addObject(this);
 
+        this.inventory.items["15x_scope"] = 1;
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
@@ -446,9 +447,11 @@ export class Player extends GameObject {
         let isInsideBuilding = false;
         for (const object of this.nearObjects) {
             if (object instanceof Building && !object.dead) {
-                if (object.scopeHitbox.collidesWith(this.hitbox)) {
-                    isInsideBuilding = true;
-                    break;
+                if (object.scopeHitbox !== undefined) {
+                    if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                        isInsideBuilding = true;
+                        break;
+                    }
                 }
             }
         }
