@@ -1,9 +1,10 @@
-import { Container } from "pixi.js";
+import { Container, Texture, TilingSprite } from "pixi.js";
 import {
     AnimationType,
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions,
+    SpectateActions,
     ZIndexes
 } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
@@ -24,13 +25,14 @@ import { random, randomBoolean, randomFloat, randomVector } from "../../../../co
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { consoleVariables } from "../utils/console/variables";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
+import { consoleVariables } from "../utils/console/variables";
+import { SpectatePacket } from "../packets/sending/spectatePacket";
 import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 
 export class Player extends GameObject {
@@ -62,6 +64,7 @@ export class Player extends GameObject {
     damageable = true;
 
     readonly images: {
+        readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
@@ -106,13 +109,14 @@ export class Player extends GameObject {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
 
         this.images = {
+            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
-            helmet: new SuroiSprite().setPos(-5, 0).setVisible(false).setZIndex(6),
-            weapon: new SuroiSprite(),
+            helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
+            weapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
@@ -120,6 +124,7 @@ export class Player extends GameObject {
         };
 
         this.container.addChild(
+            this.images.aimTrail,
             this.images.vest,
             this.images.body,
             this.images.waterOverlay,
@@ -130,6 +135,12 @@ export class Player extends GameObject {
             this.images.backpack,
             this.images.helmet
         );
+        this.container.eventMode = "static";
+
+        this.images.aimTrail.angle = 90;
+        this.images.aimTrail.position = v(6000, -8);
+        this.images.aimTrail.alpha = 0;
+        if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
         this.game.camera.container.removeChild(this.container);
         this.game.playersContainer.addChild(this.container);
@@ -167,6 +178,17 @@ export class Player extends GameObject {
                     },
                     speed: v(randomFloat(-1, 1), -3)
                 };
+            }
+        });
+
+        this.container.on("pointerdown", () => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            }
+        });
+        this.container.on("click", () => {
+            if (this.game.spectating && this.game.activePlayerID !== this.id) {
+                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
             }
         });
 
@@ -460,8 +482,8 @@ export class Player extends GameObject {
         }
 
         if (weaponDef.itemType === ItemType.Gun) {
-            this.images.leftFist.setZIndex(1);
-            this.images.rightFist.setZIndex(1);
+            this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1);
+            this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1);
             this.images.weapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
@@ -700,7 +722,7 @@ export class Player extends GameObject {
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
-            zIndex: 4,
+            zIndex: ZIndexes.Players + 1,
             position,
             lifeTime: 1000,
             scale: {

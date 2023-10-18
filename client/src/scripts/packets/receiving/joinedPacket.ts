@@ -13,6 +13,16 @@ export class JoinedPacket extends ReceivingPacket {
             }
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
+
+            const hasKillLeader = stream.readBoolean();
+            let name: string | undefined;
+            let kills: number | undefined;
+            if (hasKillLeader) {
+                name = stream.readPlayerNameWithColor();
+                kills = stream.readBits(7);
+            }
+            $("#killLeader-leader").html(name ?? "Waiting for leader");
+            $("#killLeader-kills-counter").text(kills ?? "0");
         }
     }
 }

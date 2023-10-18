@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="281.17801"
+   height="559.30804"
+   viewBox="0 0 74.395013 147.98359"
+   version="1.1"
+   id="svg4538"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="container_walls.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview4540"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     units="px"
+     height="559.30802px"
+     width="281.17801px"
+     inkscape:zoom="1.5518659"
+     inkscape:cx="212.00286"
+     inkscape:cy="296.41737"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs4535" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#ffffff;fill-opacity:0.996951;stroke-width:4.29746;stroke-linecap:square;stroke-linejoin:bevel"
+       id="rect847"
+       width="74.395538"
+       height="147.98358"
+       x="0"
+       y="0" />
+    <g
+       id="g834"
+       transform="matrix(1,0,0,-1.0000001,0,147.98357)">
+      <g
+         id="g826">
+        <path
+           id="rect1077"
+           style="fill:#a1a1a1;fill-opacity:1;stroke:none;stroke-width:0.941159;stroke-linecap:square;stroke-linejoin:bevel"
+           d="M 0,0 V 147.98356 H 7.6004931 66.794981 74.395475 V 0 H 64.678314 V 138.45025 H 9.7171598 V 0 Z"
+           sodipodi:nodetypes="ccccccccccc" />
+        <path
+           id="rect1343"
+           style="fill:#e0e0e0;fill-opacity:1;stroke:none;stroke-width:0.749469;stroke-linecap:square;stroke-linejoin:bevel"
+           d="m 2.4072841,2.3618535 v 139.9941965 3.2225 H 68.673098 71.988607 V 142.35605 2.3618535 H 67.085598 V 140.76855 H 7.310293 V 2.3618535 Z"
+           sodipodi:nodetypes="cccccccccccc" />
+      </g>
+    </g>
+  </g>
+</svg>

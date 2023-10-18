@@ -67,6 +67,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setTint(tint: ColorSource): SuroiSprite {
+        this.tint = tint;
+        return this;
+    }
+
     setAnchor(anchor: Vector): SuroiSprite {
         this.anchor.copyFrom(anchor);
         return this;

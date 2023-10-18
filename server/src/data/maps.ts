@@ -9,6 +9,11 @@ import { ObjectType } from "../../../common/src/utils/objectType";
 import { randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
+import { Guns } from "../../../common/src/definitions/guns";
+import { Player } from "../objects/player";
+import { type PlayerContainer } from "../server";
+import { type WebSocket } from "uWebSockets.js";
+import { type GunItem } from "../inventory/gunItem";
 
 interface MapDefinition {
     readonly width: number
@@ -57,7 +62,15 @@ export const Maps: Record<string, MapDefinition> = {
             refinery: 1,
             warehouse: 4,
             small_house: 5,
-            porta_potty: 10
+            porta_potty: 10,
+            container_3: 1,
+            container_4: 1,
+            container_5: 1,
+            container_6: 1,
+            container_7: 1,
+            container_8: 1,
+            container_9: 1,
+            container_10: 1
         },
         obstacles: {
             oil_tank: 6,
@@ -247,22 +260,54 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "stark is noob", position: v(0.5, 0.5) }
         ]
     },
-    refinery: {
+    singleBuilding: {
         width: 512,
         height: 512,
         beachSize: 16,
         oceanSize: 16,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            /*for (let i = 1; i <= 10; i++) {
+                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
+            }*/
+        }
+    },
+    singleObstacle: {
+        width: 128,
+        height: 128,
+        beachSize: 16,
+        oceanSize: 16,
+        genCallback(map) {
+            map.generateObstacle("panel_without_button", v(this.width / 2, this.height / 2));
         }
     },
     small_house: {
-        beachSize: 16,
-        oceanSize: 16,
         width: 512,
         height: 512,
+        beachSize: 16,
+        oceanSize: 16,
         genCallback(map) {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
+        }
+    },
+    guns_test: {
+        width: 64,
+        height: 48 + (16 * Guns.length),
+        beachSize: 8,
+        oceanSize: 8,
+        genCallback(map) {
+            for (let i = 0; i < Guns.length; i++) {
+                const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(32, 32 + (16 * i)));
+                const gun = Guns[i];
+                player.inventory.addOrReplaceWeapon(0, gun.idString);
+                (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
+                player.inventory.items[gun.ammoType] = Infinity;
+                player.disableInvulnerability();
+                //setInterval(() => player.activeItem.useItem(), 30);
+                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.idString), v(16, 32 + (16 * i)));
+                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.ammoType), v(16, 32 + (16 * i)), Infinity);
+                map.game.grid.addObject(player);
+            }
         }
     },
     river: {

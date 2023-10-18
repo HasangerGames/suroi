@@ -7,12 +7,12 @@ import { addAdjust, addOrientations, velFromAngle } from "../../common/src/utils
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
 import {
-    SeededRandom,
     random,
     randomFloat,
     randomPointInsideCircle,
     randomRotation,
-    randomVector
+    randomVector,
+    SeededRandom
 } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
@@ -22,7 +22,8 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
-import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
+import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
+import { Decal } from "./objects/decal";
 
 export class Map {
     game: Game;
@@ -223,6 +224,12 @@ export class Map {
             }
         }
 
+        if (definition.decals) {
+            for (const decal of definition.decals) {
+                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));
+            }
+        }
+
         for (const floor of definition.floors) {
             const hitbox = floor.hitbox.transform(position, 1, orientation);
             this.terrainGrid.addFloor(floor.type, hitbox);
@@ -322,7 +329,12 @@ export class Map {
         }
     }
 
-    getRandomPositionFor(type: ObjectType, scale = 1, orientation: Orientation = 0, getPosition?: () => Vector): Vector {
+    getRandomPositionFor(
+        type: ObjectType,
+        scale = 1,
+        orientation: Orientation = 0,
+        getPosition?: () => Vector
+    ): Vector {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
@@ -401,7 +413,13 @@ export class Map {
         return position;
     }
 
-    getRandomPositionInRadiusFor(type: ObjectType, scale = 1, orientation: Orientation = 0, radius: number, squareRadius?: boolean): Vector {
+    getRandomPositionInRadiusFor(
+        type: ObjectType,
+        scale = 1,
+        orientation: Orientation = 0,
+        radius: number,
+        squareRadius?: boolean
+    ): Vector {
         if (radius > this.width || radius > this.height) {
             radius = Math.min(this.width, this.height);
         }

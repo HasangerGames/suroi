@@ -1,6 +1,6 @@
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../../common/src/typings";
 import { River } from "../../../../../common/src/utils/mapUtils";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";

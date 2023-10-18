@@ -69,7 +69,7 @@ export class Minimap {
 
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
-        $("#minimap-border").on("click", e => {
+        this.borderContainer.on("click", e => {
             if (!isMobile.any) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
@@ -410,9 +410,10 @@ export class Minimap {
     switchToBigMap(): void {
         this.expanded = true;
         this.container.visible = true;
-        $("#minimap-border").hide();
+        this.borderContainer.hide();
         $("#scopes-container").hide();
         $("#gas-msg-info").hide();
+        $("#ui-kill-leader").hide();
         $("#btn-close-minimap").show();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();
@@ -425,12 +426,13 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+        $("#ui-kill-leader").show();
         $("#kill-counter").hide();
         if (!this.visible) {
             this.container.visible = false;
             return;
         }
-        $("#minimap-border").show();
+        this.borderContainer.show();
         this.resize();
     }
 
@@ -443,7 +445,7 @@ export class Minimap {
 
         this.switchToSmallMap();
         this.container.visible = this.visible;
-        $("#minimap-border").toggle(this.visible);
+        this.borderContainer.toggle(this.visible);
         consoleVariables.set.builtIn("cv_minimap_minimized", !this.visible);
         if (!noSwitchToggle) {
             $("#toggle-hide-minimap").prop("checked", !this.visible);

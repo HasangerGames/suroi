@@ -184,6 +184,8 @@ export class Obstacle extends GameObject {
         // Update the obstacle image
         this.image.setFrame(`${texture}`);
 
+        if (definition.tint !== undefined) this.image.setTint(definition.tint);
+
         this.container.rotation = this.rotation;
 
         this.isNew = false;

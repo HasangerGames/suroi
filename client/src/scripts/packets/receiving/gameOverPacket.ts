@@ -15,7 +15,10 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#gas-msg").fadeOut(500);
 
-        const gameOverScreen: JQuery = $("#game-over-overlay");
+        // Disable joysticks div so you can click on players to spectate
+        $("#joysticks-containers").hide();
+
+        const gameOverScreen = $("#game-over-overlay");
 
         this.game.gameOver = true;
         const won = stream.readBoolean();
@@ -50,11 +53,9 @@ export class GameOverPacket extends ReceivingPacket {
             game.musicPlaying = true;
         }
 
-        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(1000), 3000);
+        gameOverScreenTimeout = setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
-        const text = `#${(won ? 0 : stream.readBits(7)) + 1}`;
-        $("#game-over-rank").text(text);
-        $("#game-over-rank-mobile").text(text);
+        $("#game-over-rank").text(`#${1 + (won ? 0 : stream.readBits(7))}`).toggleClass("won", won);
     }
 }

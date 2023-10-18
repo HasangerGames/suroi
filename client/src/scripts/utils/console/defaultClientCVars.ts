@@ -144,6 +144,11 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         value: true,
         flags: { archive: true, readonly: false, cheat: false }
     },
+    cv_hide_rules_button: {
+        name: "cv_hide_rules_button",
+        value: true,
+        flags: { archive: true, readonly: false, cheat: false }
+    },
     cv_console_width: {
         name: "cv_console_width",
         value: window.innerWidth / 2,
