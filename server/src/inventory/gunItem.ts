@@ -2,7 +2,7 @@ import { clearTimeout } from "timers";
 import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../common/src/utils/objectType";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
@@ -119,7 +119,6 @@ export class GunItem extends InventoryItem {
         const limit = definition.bulletCount ?? 1;
 
         for (let i = 0; i < limit; i++) {
-
             this.owner.game.addBullet(
                 this,
                 this.owner,
@@ -134,7 +133,6 @@ export class GunItem extends InventoryItem {
                         ) * spread
                 }
             );
-
         }
 
         owner.recoil.active = true;
