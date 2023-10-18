@@ -1,6 +1,6 @@
-export interface WeightedLoot { item: string, count?: number, weight: number }
-export interface WeightedTier { tier: string, weight: number }
-export type WeightedItem = WeightedLoot | WeightedTier;
+export type WeightedItem =
+    ({ item: string } | { tier: string }) &
+    { count?: number, separate?: boolean, weight: number };
 export interface LootTable { min: number, max: number, loot: WeightedItem[] }
 
 export const LootTables: Record<string, LootTable> = {
@@ -192,7 +192,7 @@ export const LootTables: Record<string, LootTable> = {
     }
 };
 
-export const LootTiers: Record<string, WeightedLoot[]> = {
+export const LootTiers: Record<string, WeightedItem[]> = {
     guns: [
         { item: "g19", weight: 2 },
         { item: "mp40", weight: 1.75 },

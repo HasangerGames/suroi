@@ -16,12 +16,25 @@ export class LootItem {
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];
 
-    interface TempLootItem { item: string, count?: number, isTier: boolean }
+    const items: WeightedItem[] = [];
+    const weights: number[] = [];
+    for (const item of loots) {
+        for (let i = 0; i < (item?.separate ? (item?.count ?? 1) : 1); i++) {
+            items.push(item);
+            weights.push(item.weight);
+        }
+    }
 
-    const addLoot = (type: string, count: number): void => {
-        if (type === "nothing") return;
+    const selectedItem = weightedRandom<WeightedItem>(items, weights);
 
-        loot.push(new LootItem(type, count));
+    if ("tier" in selectedItem) {
+        loot = loot.concat(getLootTableLoot(LootTiers[selectedItem.tier]));
+    } else {
+        const type = selectedItem.item;
+
+        if (type === "nothing") return loot;
+
+        loot.push(new LootItem(type, selectedItem.count ?? 1));
 
         const definition = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, type).definition;
         if (definition === undefined) {
@@ -31,24 +44,6 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
         if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
             loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
         }
-    };
-
-    const items: TempLootItem[] = [];
-    const weights: number[] = [];
-    for (const item of loots) {
-        items.push({
-            item: "tier" in item ? item.tier : item.item,
-            count: "count" in item ? item.count : undefined,
-            isTier: "tier" in item
-        });
-        weights.push(item.weight);
-    }
-    const selectedItem = weightedRandom<TempLootItem>(items, weights);
-
-    if (selectedItem.isTier) {
-        loot = loot.concat(getLootTableLoot(LootTiers[selectedItem.item]));
-    } else {
-        addLoot(selectedItem.item, selectedItem.count ?? 1);
     }
 
     return loot;
