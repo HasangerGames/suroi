@@ -1,7 +1,7 @@
 import { type Hitbox, RectangleHitbox, PolygonHitbox } from "./hitbox";
 import { angleBetweenPoints, angleBetweenVectors, clamp } from "./math";
 import { SeededRandom } from "./random";
-import { type Vector, v, vClone, vAdd, vRotate, vSub, vMul } from "./vector";
+import { type Vector, v, vClone, vAdd, vRotate, vSub } from "./vector";
 
 export function jaggedRectangle(hitbox: RectangleHitbox,
     spacing: number,
@@ -49,6 +49,9 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     sand: {
         debugColor: 0xff5500
+    },
+    metal: {
+        debugColor: 0x808080
     },
     water: {
         debugColor: 0x0055ff,

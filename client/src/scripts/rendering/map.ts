@@ -169,7 +169,7 @@ export class Minimap {
                 if (definition.groundGraphics) {
                     for (const ground of definition.groundGraphics) {
                         ctx.beginFill(ground.color);
-                        const hitbox = ground.bounds.transform(building.position, 1, building.orientation);
+                        const hitbox = ground.hitbox.transform(building.position, 1, building.orientation);
                         if (hitbox instanceof RectangleHitbox) {
                             const width = hitbox.max.x - hitbox.min.x;
                             const height = hitbox.max.y - hitbox.min.y;

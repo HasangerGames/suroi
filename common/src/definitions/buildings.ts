@@ -9,21 +9,6 @@ export interface FloorDefinition {
     debugColor: number
 }
 
-export const FloorTypes: Record<string, FloorDefinition> = {
-    grass: {
-        debugColor: 0x005500
-    },
-    stone: {
-        debugColor: 0x121212
-    },
-    wood: {
-        debugColor: 0x7f5500
-    },
-    metal: {
-        debugColor: 0x808080
-    }
-};
-
 interface BuildingObstacle {
     id: string
     position: Vector

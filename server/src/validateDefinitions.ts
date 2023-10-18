@@ -28,11 +28,7 @@ import { Config as ServerConfig, GasMode, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
-<<<<<<< HEAD
 import { FloorTypes } from "../../common/src/utils/mapUtils";
-import { GasMode, SpawnMode } from "./defaultConfig";
-=======
->>>>>>> origin/master
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 const tester = (() => {
@@ -859,7 +855,7 @@ logger.indent("Validating building definitions", () => {
 
             validateHitbox(errorPath, building.spawnHitbox);
             if (building.ceilingHitbox !== undefined) validateHitbox(errorPath, building.ceilingHitbox);
-            validateHitbox(errorPath, building.scopeHitbox);
+            if (building.scopeHitbox !== undefined) validateHitbox(errorPath, building.scopeHitbox);
 
             if (building.obstacles.length) {
                 logger.indent("Validating custom obstacles", () => {
