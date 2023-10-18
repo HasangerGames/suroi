@@ -146,7 +146,7 @@
     }
 }
 
-.ui-kill-leader {
+#ui-kill-leader {
     display: flex;
     position: absolute;
     top: 15px;
@@ -168,7 +168,7 @@
         height: 30px;*/
     }
 
-    .kill-leader-leader-container {
+    #kill-leader-leader-container {
         font-weight: bold;
         font-size: 25px;
         @include text-shadow;
