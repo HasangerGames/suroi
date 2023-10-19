@@ -37,6 +37,12 @@ export enum ItemType {
     Skin
 }
 
+export enum ObstacleSpecialRoles {
+    Door,
+    Wall,
+    Window
+}
+
 export const LootRadius: Record<ItemType, number> = {
     [ItemType.Gun]: 3.4,
     [ItemType.Ammo]: 2,
