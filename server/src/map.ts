@@ -441,7 +441,7 @@ export class Map {
             }
 
             for (const river of this.riverSpawnHitboxes) {
-                if (river.collidesWith(rectHitbox) || river.isPointInside(position)) {
+                if (river.isPointInside(position) || river.collidesWith(rectHitbox)) {
                     collided = true;
                     break;
                 }
