@@ -205,7 +205,8 @@ export const LootTables: Record<string, LootTable> = {
 export const LootTiers: Record<string, WeightedItem[]> = {
     guns: [
         { item: "g19", weight: 2 },
-        { item: "mp40", weight: 1.75 },
+        { item: "m1895", weight: 1.75 },
+        { item: "mp40", weight: 1.7 },
         { item: "saf_200", weight: 1.5 },
         { item: "cz75a", weight: 1.5 },
         { item: "hp18", weight: 1.25 },
@@ -272,6 +273,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "vss", weight: 0.55 },
         { item: "m16a4", weight: 0.5 },
         { item: "g19", weight: 0.45 },
+        { item: "m1895", weight: 0.45 },
         { item: "sr25", weight: 0.35 },
         { item: "mini14", weight: 0.35 },
         { item: "lewis_gun", weight: 0.35 },

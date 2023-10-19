@@ -398,6 +398,41 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "m1895",
+        name: "M1895",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 28,
+        fireDelay: 375,
+        switchDelay: 250,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 135,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 3,
+        length: 5.1,
+        fists: {
+            left: v(40, 0),
+            right: v(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(70, 0) },
+        casingParticles: {
+            position: v(3.5, 0.5)
+        },
+        capacity: 7,
+        reloadTime: 2.1,
+        ballistics: {
+            damage: 24.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            maxDistance: 160
+        }
+    },
+    {
         idString: "g19",
         name: "G19",
         itemType: ItemType.Gun,
