@@ -114,7 +114,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 10,
         length: 6.6,
         fists: {
-            left: v(90, -5),
+            left: v(98, -5),
             right: v(40, 0),
             rightZIndex: 4,
             animationDuration: 100
