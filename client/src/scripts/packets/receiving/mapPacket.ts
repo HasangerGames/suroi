@@ -15,26 +15,27 @@ export class MapPacket extends ReceivingPacket {
     oceanSize!: number;
     beachSize!: number;
 
-    readonly rivers: River[] = [];
+    private _rivers!: River[];
+    get rivers(): River[] { return this._rivers; }
 
     readonly obstacles: Array<{
-        type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>
-        position: Vector
-        rotation: number
-        scale: number
-        variation?: Variation
+        readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>
+        readonly position: Vector
+        readonly rotation: number
+        readonly scale: number
+        readonly variation?: Variation
     }> = [];
 
     readonly buildings: Array<{
-        type: ObjectType<ObjectCategory.Building, BuildingDefinition>
-        position: Vector
-        orientation: Orientation
-        rotation: number
+        readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>
+        readonly position: Vector
+        readonly orientation: Orientation
+        readonly rotation: number
     }> = [];
 
     readonly places: Array<{
-        position: Vector
-        name: string
+        readonly position: Vector
+        readonly name: string
     }> = [];
 
     override deserialize(stream: SuroiBitStream): void {
@@ -44,20 +45,13 @@ export class MapPacket extends ReceivingPacket {
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
 
-        const riverCount = stream.readBits(4);
-        for (let i = 0; i < riverCount; i++) {
-            const width = stream.readUint8();
-
-            const pointsCount = stream.readUint8();
-
-            const points = new Array<Vector>(pointsCount);
-
-            for (let i = 0; i < pointsCount; i++) {
-                points[i] = stream.readPosition();
-            }
-
-            this.rivers.push(new River(width, points));
-        }
+        this._rivers = Array.from(
+            { length: stream.readBits(4) },
+            () => new River(
+                (stream.readUint8()),
+                Array.from({ length: stream.readUint8() }, () => stream.readPosition())
+            )
+        );
 
         const numObstacles = stream.readBits(11);
 

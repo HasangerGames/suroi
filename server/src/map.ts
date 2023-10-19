@@ -1,32 +1,25 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
+import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../../common/src/utils/hitbox";
-import { addAdjust, addOrientations, velFromAngle } from "../../common/src/utils/math";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
+import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import {
-    random,
-    randomFloat,
-    randomPointInsideCircle,
-    randomRotation,
-    randomVector,
-    SeededRandom
-} from "../../common/src/utils/random";
+import { SeededRandom, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { LootTables } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
+import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { getLootTableLoot } from "./utils/misc";
-import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
-import { Decal } from "./objects/decal";
 
 export class Map {
-    game: Game;
+    readonly game: Game;
 
     readonly width: number;
     readonly height: number;
@@ -39,11 +32,11 @@ export class Map {
     readonly seed: number;
 
     readonly places: Array<{
-        name: string
-        position: Vector
+        readonly name: string
+        readonly position: Vector
     }> = [];
 
-    readonly rivers: River[] = [];
+    readonly rivers: River[];
 
     terrainGrid: TerrainGrid;
 
@@ -64,29 +57,47 @@ export class Map {
 
         const randomGenerator = new SeededRandom(this.seed);
 
-        const riverPoints: Vector[] = [];
-        riverPoints.push(v(this.oceanSize, this.oceanSize + 100));
+        this.rivers = Array.from(
+            { length: 3 },
+            () => {
+                const horizontal = randomBoolean();
+                const riverPoints: Vector[] = [];
+                const origin = v(
+                    horizontal ? randomSign() * this.oceanSize : randomFloat(this.oceanSize, this.width - this.oceanSize),
+                    horizontal ? randomFloat(this.oceanSize, this.height - this.oceanSize) : randomSign() * this.oceanSize
+                );
+                riverPoints.push(origin);
 
-        const lastAngle = 0.5;
-        for (let i = 1; i < 25; i++) {
-            const lastPoint = riverPoints[i - 1];
+                /**
+                 * This dictates the general angle the river takes, which ensures it ends on the other side of the map
+                 */
+                const mainAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), origin) + randomGenerator.get(-0.5, 0.5);
+                //fixme hardcoded constant
+                for (let i = 1; i < 25; i++) {
+                    riverPoints[i] = vAdd(
+                        riverPoints[i - 1],
+                        velFromAngle(
+                            mainAngle + randomGenerator.get(-0.65, 0.65),
+                            randomGenerator.get(50, 80)
+                        )
+                    );
+                }
 
-            const angle = lastAngle + randomGenerator.get(-1, 1);
+                return new River(
+                    randomGenerator.get(30, 60),
+                    riverPoints
+                );
+            }
+        );
 
-            const length = randomGenerator.get(50, 80);
-
-            const point = velFromAngle(angle, length);
-            riverPoints.push(vAdd(lastPoint, point));
-        }
-
-        this.rivers.push(new River(40, riverPoints));
-
-        const terrain = generateTerrain(this.width,
+        const terrain = generateTerrain(
+            this.width,
             this.height,
             this.oceanSize,
             this.beachSize,
             this.seed,
-            this.rivers);
+            this.rivers
+        );
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 

@@ -14,16 +14,24 @@ export function randomFloat(min: number, max: number): number {
  * Generate a random integer.
  * @param min The minimum value that can be generated.
  * @param max The maximum value that can be generated.
+ * @returns A random integer between `min` and `max`
  */
 export function random(min: number, max: number): number {
     return Math.floor(randomFloat(min, max + 1));
 }
 
 /**
- * @return A random boolean.
+ * @returns A random boolean.
  */
 export function randomBoolean(): boolean {
     return Math.random() < 0.5;
+}
+
+/**
+ * @returns Either `-1` or `1`
+ */
+export function randomSign(): -1 | 1 {
+    return randomBoolean() ? -1 : 1;
 }
 
 /**

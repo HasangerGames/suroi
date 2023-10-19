@@ -1,17 +1,16 @@
-import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import "@pixi/graphics-extras";
+import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import { GRID_SIZE, GasState, ZIndexes } from "../../../../common/src/constants";
+import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
+import { addAdjust } from "../../../../common/src/utils/math";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
-
 import { type Game } from "../game";
+import { type MapPacket } from "../packets/receiving/mapPacket";
 import { consoleVariables } from "../utils/console/variables";
+import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
-import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
-import { type MapPacket } from "../packets/receiving/mapPacket";
-import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
-import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { addAdjust } from "../../../../common/src/utils/math";
 
 export class Minimap {
     container = new Container();
@@ -93,7 +92,8 @@ export class Minimap {
             mapPacket.oceanSize,
             mapPacket.beachSize,
             mapPacket.seed,
-            mapPacket.rivers);
+            mapPacket.rivers
+        );
 
         this.terrainGrid = new TerrainGrid(width, height);
 
@@ -156,6 +156,7 @@ export class Minimap {
                 ctx.moveTo(x * scale, 0);
                 ctx.lineTo(x * scale, height * scale);
             }
+
             for (let y = 0; y <= height; y += GRID_SIZE) {
                 ctx.moveTo(0, y * scale);
                 ctx.lineTo(width * scale, y * scale);
@@ -291,15 +292,17 @@ export class Minimap {
 
             for (const river of mapPacket.rivers) {
                 const points = river.points.map(point => vMul(point, PIXI_SCALE));
+
                 debugGraphics.lineStyle({
                     width: 10,
                     color: 0
-                })
-                    .moveTo(points[0].x, points[0].y);
-                for (let i = 1; i < points.length; i++) {
+                });
+
+                for (let i = 0, l = points.length; i < l; i++) {
                     const point = points[i];
-                    debugGraphics.lineTo(point.x, point.y);
+                    debugGraphics[i ? "lineTo" : "moveTo"](point.x, point.y);
                 }
+
                 debugGraphics.endFill();
             }
 
