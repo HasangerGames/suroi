@@ -25,8 +25,8 @@ export class Obstacle extends GameObject {
 
     damageable = true;
 
-    isDoor?: boolean;
-    door?: {
+    readonly isDoor: boolean;
+    readonly door?: {
         closedHitbox?: Hitbox
         openHitbox?: Hitbox
         openAltHitbox?: Hitbox
@@ -48,12 +48,13 @@ export class Obstacle extends GameObject {
         this.image = new SuroiSprite(); //.setAlpha(0.5);
         this.container.addChild(this.image);
 
-        const definition = this.type.definition;
-
-        this.isDoor = this.type.definition.isDoor;
-        if (this.isDoor) {
+        // eslint-disable-next-line no-cond-assign
+        if (this.isDoor = definition.role === ObstacleSpecialRoles.Door) {
             this.door = { offset: 0 };
-            this.image.anchor.set(0, 0.5);
+
+            if (definition.operationStyle !== "slide") {
+                this.image.anchor.set(0, 0.5);
+            }
         }
 
         if (definition.invisible) this.container.visible = false;
@@ -81,49 +82,98 @@ export class Obstacle extends GameObject {
 
         this.scale = data.scale;
 
-        if (definition.isDoor && this.door && this.isNew) {
+        if (definition.role === ObstacleSpecialRoles.Door && this.door && this.isNew) {
             let offsetX: number;
             let offsetY: number;
-            if (definition.hingeOffset) {
-                offsetX = definition.hingeOffset.x * PIXI_SCALE;
-                offsetY = definition.hingeOffset.y * PIXI_SCALE;
-            } else {
-                offsetX = offsetY = 0;
+            switch (definition.operationStyle) {
+                case "slide": {
+                    offsetX = offsetY = 0;
+                    break;
+                }
+                case "swivel":
+                default: {
+                    offsetX = definition.hingeOffset.x * PIXI_SCALE;
+                    offsetY = definition.hingeOffset.y * PIXI_SCALE;
+                    break;
+                }
             }
+
             this.image.setPos(this.image.x + offsetX, this.image.y + offsetY);
 
             this.rotation = orientationToRotation(this.orientation);
-
             this.hitbox = this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
-            ({ openHitbox: this.door.openHitbox, openAltHitbox: this.door.openAltHitbox } = calculateDoorHitboxes(definition, this.position, this.orientation));
+            (
+                {
+                    openHitbox: this.door.openHitbox,
+                    //@ts-expect-error if an attribute is missing in a destructuring assignment,
+                    // it just becomes undefined, which is what we want
+                    openAltHitbox: this.door.openAltHitbox
+                } = calculateDoorHitboxes(definition, this.position, this.orientation)
+            );
             this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
 
-        if (definition.isDoor && this.door !== undefined && data.door) {
+        if (definition.role === ObstacleSpecialRoles.Door && this.door !== undefined && data.door) {
             const offset = data.door.offset;
 
             if (offset !== this.door.offset) {
                 this.door.offset = offset;
-                if (!this.isNew) {
-                    if (offset === 0) this.playSound("door_close", 0.3, 48);
-                    else this.playSound("door_open", 0.3, 48);
-                    // eslint-disable-next-line no-new
-                    new Tween(this.game, {
-                        target: this.image,
-                        to: { rotation: orientationToRotation(offset) },
-                        duration: 150
-                    });
+                if (this.isNew) {
+                    if (definition.operationStyle !== "slide") {
+                        this.image.setRotation(orientationToRotation(this.door.offset));
+                    } else {
+                        this.image.position = v(
+                            offset ? PIXI_SCALE * (definition.slideFactor ?? 1) * ((definition.hitbox as RectangleHitbox).min.x - (definition.hitbox as RectangleHitbox).max.x) : 0,
+                            0
+                        );
+                    }
                 } else {
-                    this.image.setRotation(orientationToRotation(this.door.offset));
+                    this.playSound(
+                        offset === 0 ? "door_close" : "door_open",
+                        0.3,
+                        48
+                    );
+
+                    if (definition.operationStyle !== "slide") {
+                        // eslint-disable-next-line no-new
+                        new Tween(
+                            this.game,
+                            {
+                                target: this.image,
+                                to: { rotation: orientationToRotation(offset) },
+                                duration: 150
+                            }
+                        );
+                    } else {
+                        // eslint-disable-next-line no-new
+                        new Tween(
+                            this.game,
+                            {
+                                target: this.image.position,
+                                to: {
+                                    x: offset ? PIXI_SCALE * (definition.slideFactor ?? 1) * ((definition.hitbox as RectangleHitbox).min.x - (definition.hitbox as RectangleHitbox).max.x) : 0,
+                                    y: 0
+                                },
+                                duration: 150
+                            }
+                        );
+                    }
                 }
 
-                if (this.door.offset === 1) {
-                    this.door.hitbox = this.door.openHitbox?.clone();
-                } else if (this.door.offset === 3) {
-                    this.door.hitbox = this.door.openAltHitbox?.clone();
-                } else {
-                    this.door.hitbox = this.door.closedHitbox?.clone();
+                let backupHitbox = this.door.closedHitbox?.clone();
+                switch (this.door.offset) {
+                    case 1: {
+                        backupHitbox = this.door.openHitbox?.clone();
+                        break;
+                    }
+                    case 3: {
+                        backupHitbox = this.door.openAltHitbox?.clone();
+                        break;
+                    }
                 }
+
+                this.door.hitbox = backupHitbox;
+
                 if (this.door.hitbox) this.hitbox = this.door.hitbox;
             }
         }
@@ -135,11 +185,13 @@ export class Obstacle extends GameObject {
             this.dead = data.dead;
             if (!this.isNew) {
                 this.playSound(`${definition.material}_destroyed`, 0.2, 96);
+
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
                     this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}`);
                 }
+
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
 
@@ -190,11 +242,28 @@ export class Obstacle extends GameObject {
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
-            drawHitbox(this.hitbox, definition.noCollisions ? HITBOX_COLORS.obstacleNoCollision : HITBOX_COLORS.obstacle, this.debugGraphics);
+            drawHitbox(
+                this.hitbox,
+                definition.noCollisions === true || this.dead
+                    ? HITBOX_COLORS.obstacleNoCollision
+                    : HITBOX_COLORS.obstacle,
+                this.debugGraphics
+            );
+
+            if (definition.role === ObstacleSpecialRoles.Door && definition.operationStyle !== "slide") {
+                drawHitbox(
+                    new CircleHitbox(0.2, addAdjust(this.position, definition.hingeOffset, this.orientation)),
+                    HITBOX_COLORS.obstacleNoCollision,
+                    this.debugGraphics
+                );
+            }
+
             if (definition.spawnHitbox) {
-                drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                drawHitbox(
+                    definition.spawnHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.spawnHitbox,
-                    this.debugGraphics);
+                    this.debugGraphics
+                );
             }
         }
     }

@@ -35,15 +35,27 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
-
-    readonly isWall?: boolean
-    readonly isWindow?: boolean
-} & ({
-    readonly isDoor: true
-    readonly hingeOffset: Vector
-} | {
-    readonly isDoor?: false
-});
+} & (
+    (
+        {
+            readonly role: ObstacleSpecialRoles.Door
+        } & (
+            {
+                readonly operationStyle?: "swivel"
+                readonly hingeOffset: Vector
+            } | {
+                readonly operationStyle: "slide"
+                /**
+                 * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+                 * 0.5 means it'll be displaced by half its width, etc
+                 */
+                readonly slideFactor?: number
+            }
+        )
+    ) | {
+        readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
+    }
+);
 
 export const Materials: string[] = [
     "tree",
@@ -60,9 +72,22 @@ export const Materials: string[] = [
 ];
 
 export enum RotationMode {
+    /**
+     * Allows rotation in any direction (within the limits of the bit stream's encoding capabilities)
+     */
     Full,
+    /**
+     * Allows rotation in the four cardinal directions: up, right, down and left
+     */
     Limited,
+    /**
+     * Allows rotation in two directions: a "normal" direction and a "flipped" direction; for example,
+     * up and down, or left and right
+     */
     Binary,
+    /**
+     * Disabled rotation
+     */
     None
 }
 
@@ -124,7 +149,7 @@ function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition
         frames: {
             particle: "wall_particle"
         },
-        isWall: true
+        role: ObstacleSpecialRoles.Wall
     };
 }
 
@@ -143,7 +168,7 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         },
         hitbox,
         rotationMode: RotationMode.Limited,
-        isWall: true,
+        role: ObstacleSpecialRoles.Wall,
         particleVariations: 2,
         variations,
         frames: {
@@ -542,7 +567,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(10.15, 1.60, v(-0.44, 0.00)),
             rotationMode: RotationMode.Limited,
             noResidue: true,
-            isDoor: true,
+            role: ObstacleSpecialRoles.Door,
             hingeOffset: v(-5.5, 0),
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
@@ -730,7 +755,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: RectangleHitbox.fromRect(1.80, 9.40),
             zIndex: ZIndexes.ObstaclesLayer2,
             rotationMode: RotationMode.Limited,
-            isWindow: true
+            role: ObstacleSpecialRoles.Window
         },
         {
             idString: "bed",
@@ -818,7 +843,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(12.80, 1.60, v(0.00, 0.00)),
             rotationMode: RotationMode.Limited,
-            isWall: true,
+            role: ObstacleSpecialRoles.Wall,
             frames: {
                 particle: "porta_potty_wall_particle"
             }
@@ -837,7 +862,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(9.20, 1.40, v(-0.80, 0.00)),
             rotationMode: RotationMode.Limited,
-            isDoor: true,
+            role: ObstacleSpecialRoles.Door,
             hingeOffset: v(-5.5, 0)
         },
         {
@@ -854,7 +879,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(3.00, 1.60, v(0.00, 0.00)),
             rotationMode: RotationMode.Limited,
-            isWall: true,
+            role: ObstacleSpecialRoles.Wall,
             frames: {
                 particle: "porta_potty_wall_particle"
             }
@@ -873,7 +898,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(19.20, 1.90, v(0.00, 1.25)),
             rotationMode: RotationMode.Limited,
-            isWall: true,
+            role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
                 particle: "porta_potty_wall_particle"
@@ -893,7 +918,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(19.20, 1.70, v(0.00, -1.15)),
             rotationMode: RotationMode.Limited,
-            isWall: true,
+            role: ObstacleSpecialRoles.Wall,
             zIndex: ZIndexes.ObstaclesLayer2,
             frames: {
                 particle: "porta_potty_wall_particle"
