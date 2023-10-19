@@ -1,13 +1,28 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
+import {
+    CircleHitbox,
+    ComplexHitbox,
+    type Hitbox,
+    type PolygonHitbox,
+    RectangleHitbox
+} from "../../common/src/utils/hitbox";
+import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
-import { SeededRandom, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "../../common/src/utils/random";
+import {
+    random,
+    randomBoolean,
+    randomFloat,
+    randomPointInsideCircle,
+    randomRotation,
+    randomSign,
+    randomVector,
+    SeededRandom
+} from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { LootTables } from "./data/lootTables";
@@ -37,6 +52,8 @@ export class Map {
     }> = [];
 
     readonly rivers: River[];
+
+    readonly riverSpawnHitboxes: PolygonHitbox[];
 
     terrainGrid: TerrainGrid;
 
@@ -99,6 +116,15 @@ export class Map {
             this.rivers
         );
 
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("water", river.water);
+        }
+
+        this.terrainGrid.addFloor("grass", terrain.grass);
+        this.terrainGrid.addFloor("sand", terrain.beach);
+
+        this.riverSpawnHitboxes = terrain.riverSpawnHitboxes;
+
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 
         this.beachHitbox = new ComplexHitbox([
@@ -144,13 +170,6 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
-
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("water", river.water);
-        }
-
-        this.terrainGrid.addFloor("grass", terrain.grass);
-        this.terrainGrid.addFloor("sand", terrain.beach);
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
@@ -405,18 +424,26 @@ export class Map {
             position = getPosition();
 
             const hitbox = initialHitbox.transform(position, scale, orientation);
+            const rectHitbox = hitbox.toRectangle();
 
             if (hitbox.collidesWith(this.beachHitbox)) {
                 collided = true;
                 continue;
             }
 
-            for (const object of this.game.grid.intersectsRect(hitbox.toRectangle())) {
+            for (const object of this.game.grid.intersectsRect(rectHitbox)) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;
                         break;
                     }
+                }
+            }
+
+            for (const river of this.riverSpawnHitboxes) {
+                if (river.collidesWith(rectHitbox) || river.isPointInside(position)) {
+                    collided = true;
+                    break;
                 }
             }
         }

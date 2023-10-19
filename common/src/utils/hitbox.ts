@@ -15,7 +15,7 @@ import {
     rectCircleIntersection,
     rectRectCollision,
     transformRectangle,
-    distance
+    distance, rectPolyCollision
 } from "./math";
 import { random, randomFloat, randomPointInsideCircle } from "./random";
 import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
@@ -361,7 +361,8 @@ export class PolygonHitbox extends Hitbox {
     }
 
     collidesWith(that: Hitbox): boolean {
-        throw new Error("Not Implemented");
+        if (that instanceof RectangleHitbox) return rectPolyCollision(that.min, that.max, this.points);
+        else throw new Error("Not Implemented");
     }
 
     resolveCollision(that: Hitbox): void {

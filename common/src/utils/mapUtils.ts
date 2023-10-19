@@ -85,6 +85,7 @@ export function generateTerrain(
             readonly water: PolygonHitbox
             readonly bank: PolygonHitbox
         }>
+        readonly riverSpawnHitboxes: PolygonHitbox[]
     } {
     // generate beach and grass
     const beachPadding = oceanSize + beachSize;
@@ -108,6 +109,7 @@ export function generateTerrain(
     const grass = new PolygonHitbox(jaggedRectangle(grassHitbox, spacing, variation, random));
 
     const generatedRivers: ReturnType<typeof generateTerrain>["rivers"] = [];
+    const riverSpawnHitboxes: PolygonHitbox[] = [];
 
     for (const river of rivers) {
         const getRiverPolygon = (width: number): PolygonHitbox => {
@@ -186,12 +188,14 @@ export function generateTerrain(
             // todo: hardcoded bank width
             bank: getRiverPolygon(river.width / 2 + 15)
         });
+        riverSpawnHitboxes.push(getRiverPolygon(river.width / 2 + 20));
     }
 
     return {
         beach,
         grass,
-        rivers: generatedRivers
+        rivers: generatedRivers,
+        riverSpawnHitboxes
     };
 }
 
