@@ -261,10 +261,10 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     singleBuilding: {
-        width: 512,
-        height: 512,
-        beachSize: 16,
-        oceanSize: 16,
+        width: 1024,
+        height: 1024,
+        beachSize: 32,
+        oceanSize: 32,
         genCallback(map) {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
             /*for (let i = 1; i <= 10; i++) {

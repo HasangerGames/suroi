@@ -1,6 +1,6 @@
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { angleBetweenPoints, clamp } from "./math";
-import { SeededRandom, randomFloat } from "./random";
+import { SeededRandom } from "./random";
 import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
 export function jaggedRectangle(hitbox: RectangleHitbox,
@@ -63,10 +63,12 @@ export const FloorTypes: Record<string, FloorDefinition> = {
 
 export class River {
     readonly width: number;
+    readonly bankWidth: number;
     readonly points: Vector[];
 
-    constructor(width: number, points: Vector[]) {
+    constructor(width: number, bankWidth: number, points: Vector[]) {
         this.width = width;
+        this.bankWidth = bankWidth;
         this.points = points;
     }
 }
@@ -112,9 +114,24 @@ export function generateTerrain(
     const riverSpawnHitboxes: PolygonHitbox[] = [];
 
     for (const river of rivers) {
+        // TODO Refactor this mess
         const getRiverPolygon = (width: number): PolygonHitbox => {
-            // first loop, add points from start to end
             const points: Vector[] = [];
+
+            points.push(
+                vAdd(
+                    river.points[0],
+                    vRotate(
+                        v(
+                            width + 10,
+                            0
+                        ),
+                        angleBetweenPoints(river.points[0], river.points[1]) + Math.PI / 2
+                    )
+                )
+            );
+
+            // first loop, add points from start to end
             for (let i = 1, l = river.points.length - 1; i < l; i++) {
                 const prev = river.points[i - 1];
                 const current = river.points[i];
@@ -138,7 +155,7 @@ export function generateTerrain(
                         current,
                         vRotate(
                             v(
-                                randomFloat(0.9, 1.1) * width,
+                                width,
                                 0
                             ),
                             angle
@@ -146,6 +163,32 @@ export function generateTerrain(
                     )
                 );
             }
+
+            points.push(
+                vAdd(
+                    river.points[river.points.length - 1],
+                    vRotate(
+                        v(
+                            width + 10,
+                            0
+                        ),
+                        angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) + Math.PI / 2
+                    )
+                )
+            );
+
+            points.push(
+                vAdd(
+                    river.points[river.points.length - 1],
+                    vRotate(
+                        v(
+                            width + 10,
+                            0
+                        ),
+                        angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) - Math.PI / 2
+                    )
+                )
+            );
 
             // second loop, same thing but reverse and with inverted point
             for (let l = river.points.length, i = l - 2; i > 0; i--) {
@@ -171,7 +214,7 @@ export function generateTerrain(
                         current,
                         vRotate(
                             v(
-                                randomFloat(0.9, 1.1) * width,
+                                width,
                                 0
                             ),
                             angle
@@ -180,15 +223,27 @@ export function generateTerrain(
                 );
             }
 
+            points.push(
+                vAdd(
+                    river.points[0],
+                    vRotate(
+                        v(
+                            width + 10,
+                            0
+                        ),
+                        angleBetweenPoints(river.points[0], river.points[1]) - Math.PI / 2
+                    )
+                )
+            );
+
             return new PolygonHitbox(points);
         };
 
         generatedRivers.push({
             water: getRiverPolygon(river.width / 2),
-            // todo: hardcoded bank width
-            bank: getRiverPolygon(river.width / 2 + 15)
+            bank: getRiverPolygon(river.width / 2 + river.bankWidth)
         });
-        riverSpawnHitboxes.push(getRiverPolygon(river.width / 2 + 20));
+        riverSpawnHitboxes.push(getRiverPolygon(river.width / 2 + river.bankWidth * 2));
     }
 
     return {

@@ -32,6 +32,7 @@ export class MapPacket extends SendingPacket {
         stream.writeBits(map.rivers.length, 4);
         for (const river of map.rivers) {
             stream.writeUint8(river.width);
+            stream.writeUint8(river.bankWidth);
 
             stream.writeUint8(river.points.length);
             for (const point of river.points) {

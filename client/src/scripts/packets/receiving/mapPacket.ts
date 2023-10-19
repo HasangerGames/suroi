@@ -48,7 +48,8 @@ export class MapPacket extends ReceivingPacket {
         this._rivers = Array.from(
             { length: stream.readBits(4) },
             () => new River(
-                (stream.readUint8()),
+                stream.readUint8(),
+                stream.readUint8(),
                 Array.from({ length: stream.readUint8() }, () => stream.readPosition())
             )
         );
