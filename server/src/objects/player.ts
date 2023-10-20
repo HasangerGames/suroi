@@ -14,13 +14,13 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, type Action, ReloadAction } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
@@ -38,6 +38,7 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { ObjectType } from "../../../common/src/utils/objectType";
+import { Scopes } from "../../../common/src/definitions/scopes";
 
 export class Player extends GameObject {
     readonly type = ObjectCategory.Player;
@@ -307,8 +308,8 @@ export class Player extends GameObject {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
-        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
-        //this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "15x_scope");
+        this.inventory.scope = reifyDefinition("1x_scope", Scopes);
+        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
         //this.inventory.items["15x_scope"] = 1;
 
         // Inventory preset
@@ -784,8 +785,8 @@ export class Player extends GameObject {
             );
         }
 
-        this.inventory.helmet = this.inventory.vest = undefined;
-        this.inventory.backpack = Loots.getByIDString<BackpackDefinition>("bag");
+        //@ts-expect-error they're dead so does it matter
+        this.inventory.helmet = this.inventory.vest = this.inventory.backpack = undefined;
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
