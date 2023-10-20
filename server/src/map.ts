@@ -41,7 +41,7 @@ export class Map {
     readonly oceanSize: number;
     readonly beachSize: number;
 
-    readonly beachHitbox: Hitbox;
+    readonly oceanHitbox: Hitbox;
 
     readonly seed: number;
 
@@ -71,7 +71,7 @@ export class Map {
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 
-        this.beachHitbox = new ComplexHitbox([
+        this.oceanHitbox = new ComplexHitbox([
             new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
             new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
             new RectangleHitbox(v(this.width - beachPadding, 0), v(this.width, this.height)),
@@ -83,31 +83,36 @@ export class Map {
         const randomGenerator = new SeededRandom(this.seed);
 
         let hasWideRiver = false;
+
+        const mapRect = new RectangleHitbox(
+            v(mapDefinition.oceanSize, mapDefinition.oceanSize),
+            v(this.width - mapDefinition.oceanSize, this.height - mapDefinition.oceanSize)
+        )
+
         this.rivers = Array.from(
             { length: 3 },
             () => {
+
                 const riverPoints: Vector[] = [];
-                /*const padding = mapDefinition.oceanSize - 10;
+
+                const padding = mapDefinition.oceanSize - 10;
                 let start: Vector;
-                let end: Vector;
+
                 const horizontal = randomBoolean();
                 const reverse = randomBoolean();
-                /* eslint-disable one-var
-                const halfWidth = this.width / 2, halfHeight = this.height / 2;
+
+                const halfWidth = this.width / 2;
+                const halfHeight = this.height / 2;
                 const width = this.width - padding, height = this.height - padding;
                 if (horizontal) {
                     const topHalf = randomFloat(padding, halfHeight);
                     const bottomHalf = randomFloat(halfHeight, height);
                     start = v(padding, reverse ? bottomHalf : topHalf);
-                    end = v(this.width - padding, reverse ? topHalf : bottomHalf);
                 } else {
                     const leftHalf = randomFloat(padding, halfWidth);
                     const rightHalf = randomFloat(halfWidth, width);
                     start = v(reverse ? rightHalf : leftHalf, padding);
-                    end = v(reverse ? leftHalf : rightHalf, this.height - padding);
-                }*/
-
-                const start = this.beachHitbox.randomPoint();
+                }
 
                 riverPoints.push(start);
 
@@ -116,10 +121,12 @@ export class Map {
 
                 for (
                     let i = 1, angle = mainAngle + randomGenerator.get(-maxDeviation, maxDeviation);
-                    (i < 5 || !new CircleHitbox(0, riverPoints[i - 1]).collidesWith(this.beachHitbox)) && i < 50;
+                    i < 50;
                     i++, angle = angle + randomGenerator.get(-maxDeviation, maxDeviation)
                 ) {
                     riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
+
+                    if (!mapRect.isPointInside(riverPoints[i])) break;
                 }
 
                 /*const maxMainDeviation = 0.65;
@@ -459,7 +466,7 @@ export class Map {
             const hitbox = initialHitbox.transform(position, scale, orientation);
             const rectHitbox = hitbox.toRectangle();
 
-            if (hitbox.collidesWith(this.beachHitbox)) {
+            if (hitbox.collidesWith(this.oceanHitbox)) {
                 collided = true;
                 continue;
             }

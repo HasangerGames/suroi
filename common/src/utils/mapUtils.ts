@@ -1,5 +1,5 @@
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { angleBetweenPoints, clamp } from "./math";
+import { angleBetweenPoints, clamp, distanceSquared } from "./math";
 import { SeededRandom } from "./random";
 import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
@@ -81,14 +81,14 @@ export function generateTerrain(
     seed: number,
     rivers: River[]
 ): {
-        readonly beach: PolygonHitbox
-        readonly grass: PolygonHitbox
-        readonly rivers: Array<{
-            readonly water: PolygonHitbox
-            readonly bank: PolygonHitbox
-        }>
-        readonly riverSpawnHitboxes: PolygonHitbox[]
-    } {
+    readonly beach: PolygonHitbox
+    readonly grass: PolygonHitbox
+    readonly rivers: Array<{
+        readonly water: PolygonHitbox
+        readonly bank: PolygonHitbox
+    }>
+    readonly riverSpawnHitboxes: PolygonHitbox[]
+} {
     // generate beach and grass
     const beachPadding = oceanSize + beachSize;
 
@@ -122,15 +122,30 @@ export function generateTerrain(
                 vAdd(
                     river.points[0],
                     vRotate(
-                        v(
-                            width + 10,
-                            0
-                        ),
+                        v(width + 10, 0),
                         angleBetweenPoints(river.points[0], river.points[1]) + Math.PI / 2
                     )
                 )
             );
 
+            // TODO: ray cast to find an intersection position instead
+            const findClosestBeachPoint = (i: number): void => {
+                const pos = points[i];
+
+                let dist = Number.MAX_VALUE;
+                let closestPoint = v(0, 0);
+
+                for (const point of beach.points) {
+                    const newDist = distanceSquared(pos, point);
+                    if (newDist < dist) {
+                        closestPoint = point;
+                        dist = newDist;
+                    }
+                }
+
+                points[i] = closestPoint;
+            };
+            findClosestBeachPoint(0);
             // first loop, add points from start to end
             for (let i = 1, l = river.points.length - 1; i < l; i++) {
                 const prev = river.points[i - 1];
@@ -154,10 +169,7 @@ export function generateTerrain(
                     vAdd(
                         current,
                         vRotate(
-                            v(
-                                width,
-                                0
-                            ),
+                            v(width, 0),
                             angle
                         )
                     )
@@ -168,10 +180,7 @@ export function generateTerrain(
                 vAdd(
                     river.points[river.points.length - 1],
                     vRotate(
-                        v(
-                            width + 10,
-                            0
-                        ),
+                        v(width + 10, 0),
                         angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) + Math.PI / 2
                     )
                 )
@@ -181,15 +190,13 @@ export function generateTerrain(
                 vAdd(
                     river.points[river.points.length - 1],
                     vRotate(
-                        v(
-                            width + 10,
-                            0
-                        ),
+                        v(width + 10, 0),
                         angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) - Math.PI / 2
                     )
                 )
             );
-
+            findClosestBeachPoint(points.length - 2);
+            findClosestBeachPoint(points.length - 1);
             // second loop, same thing but reverse and with inverted point
             for (let l = river.points.length, i = l - 2; i > 0; i--) {
                 const prev = river.points[i - 1];
@@ -213,10 +220,7 @@ export function generateTerrain(
                     vSub(
                         current,
                         vRotate(
-                            v(
-                                width,
-                                0
-                            ),
+                            v(width, 0),
                             angle
                         )
                     )
@@ -227,14 +231,12 @@ export function generateTerrain(
                 vAdd(
                     river.points[0],
                     vRotate(
-                        v(
-                            width + 10,
-                            0
-                        ),
+                        v(width + 10, 0),
                         angleBetweenPoints(river.points[0], river.points[1]) - Math.PI / 2
                     )
                 )
             );
+            findClosestBeachPoint(points.length - 1);
 
             return new PolygonHitbox(points);
         };
