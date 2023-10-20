@@ -36,13 +36,12 @@ export class MapPacket extends SendingPacket {
             stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
-            switch (object.type.category) {
-                case ObjectCategory.Obstacle: {
-                    const obstacle = object as Obstacle;
-                    stream.writeScale(obstacle.maxScale);
-                    stream.writeObstacleRotation(object.rotation, obstacle.definition.rotationMode);
-                    if (obstacle.definition.variations !== undefined) {
-                        stream.writeVariation(obstacle.variation);
+            switch (true) {
+                case object instanceof Obstacle: {
+                    stream.writeScale(object.maxScale);
+                    stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
+                    if (object.definition.variations !== undefined) {
+                        stream.writeVariation(object.variation);
                     }
                     break;
                 }

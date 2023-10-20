@@ -21,25 +21,34 @@ export function explosion(game: Game, type: ObjectType<ObjectCategory.Explosion,
 
     /* eslint-disable no-new */
 
-    new Tween(game, {
-        target: image.scale,
-        to: { x: definition.animation.scale, y: definition.animation.scale },
-        duration: definition.animation.duration,
-        ease: EaseFunctions.expoOut
-    });
-
-    new Tween(game, {
-        target: image,
-        to: { alpha: 0 },
-        duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
-        ease: EaseFunctions.expoOut,
-        onComplete: () => {
-            image.destroy();
+    new Tween(
+        game,
+        {
+            target: image.scale,
+            to: { x: definition.animation.scale, y: definition.animation.scale },
+            duration: definition.animation.duration,
+            ease: EaseFunctions.expoOut
         }
-    });
+    );
+
+    new Tween(
+        game,
+        {
+            target: image,
+            to: { alpha: 0 },
+            duration: definition.animation.duration * 1.5, // the alpha animation is a bit longer so it looks nicer
+            ease: EaseFunctions.expoOut,
+            onComplete: () => {
+                image.destroy();
+            }
+        }
+    );
 
     if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
         game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
-        if (definition.sound !== undefined) game.soundManager.play(definition.sound, position, 0.4);
+
+        if (definition.sound !== undefined) {
+            game.soundManager.play(definition.sound, position, 0.4);
+        }
     }
 }

@@ -11,7 +11,7 @@ export const HITBOX_COLORS = {
     buildingScopeCeiling: new Color("cyan"),
     loot: new Color("magenta"),
     player: new Color("blue"),
-    playerWeapon: new Color("red")
+    playerWeapon: new Color("lime")
 };
 
 export const COLORS = {

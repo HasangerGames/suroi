@@ -1,4 +1,3 @@
-import { ObjectCategory } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
@@ -43,7 +42,6 @@ export class Bullet extends BaseBullet {
         }
 
         if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
-
         if (this.definition.tracerColor) tint = this.definition.tracerColor;
 
         this.image.tint = tint;
@@ -65,8 +63,10 @@ export class Bullet extends BaseBullet {
                 this.damagedIDs.add(object.id);
 
                 if (object instanceof Obstacle) {
-                    if ((this.definition.penetration?.obstacles && !object.type.definition.impenetrable) ??
-                        object.type.definition.noCollisions) continue;
+                    if (
+                        (this.definition.penetration?.obstacles && !object.definition.impenetrable) ??
+                        object.definition.noCollisions
+                    ) continue;
                 }
                 if (this.definition.penetration?.players && object instanceof Player) continue;
 

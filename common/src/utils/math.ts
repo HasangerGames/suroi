@@ -180,7 +180,7 @@ export function velFromAngle(angle: number, multiplier = 1): Vector {
     };
 }
 
-export interface CollisionRecord { collided: boolean, distance: number }
+export interface CollisionRecord { readonly collided: boolean, readonly distance: number }
 
 /**
  * Determine the distance between two circles
@@ -251,7 +251,7 @@ export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
  * Add a Vector to another one and rotate it by the given orientation
  * @param position1 The initial Vector
  * @param position2 The Vector to add to the first one
- * @param orientation The orientation to rotate it
+ * @param orientation The orientation to rotate the second vector by
  * @return A new Vector
  */
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
@@ -285,7 +285,7 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
  * @param orientation The orientation to rotate it
  * @return A new Rectangle transformed by the given position and orientation
  */
-export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { min: Vector, max: Vector } {
+export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { readonly min: Vector, readonly max: Vector } {
     min = vMul(min, scale);
     max = vMul(max, scale);
     if (orientation !== 0) {
@@ -338,7 +338,7 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
     return null;
 }
 
-export type IntersectionResponse = { point: Vector, normal: Vector } | null;
+export type IntersectionResponse = { readonly point: Vector, readonly normal: Vector } | null;
 
 /**
  * Checks if a line intersects a circle
@@ -443,7 +443,7 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     };
 }
 
-export type CollisionResponse = { dir: Vector, pen: number } | null;
+export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
 
 export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vector, rad1: number): CollisionResponse {
     const r = rad0 + rad1;

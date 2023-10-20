@@ -15,14 +15,27 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
         }
     }
 
-    getByIDString(id: string): T {
-        return this.definitions[this.idStringToNumber[id]];
+    getByIDString<U extends T = T>(id: ReferenceTo<T>): U {
+        return this.definitions[this.idStringToNumber[id]] as U;
     }
 }
 
 export interface ObjectDefinition {
     readonly idString: string
     readonly name: string
+}
+
+/**
+ * Semantically equivalent to `string`, this type is more to convey an intent
+ */
+export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idString"];
+
+export function reifyDefinition<T extends ObjectDefinition, U extends T = T>(definition: U | ReferenceTo<U>, collection: ObjectDefinitions<T> | T[]): U {
+    switch (true) {
+        case typeof definition !== "string": return definition;
+        case Array.isArray(collection): return collection.find(def => def.idString === definition) as U;
+        default: return collection.getByIDString<U>(definition);
+    }
 }
 
 // expand this as needed
@@ -59,7 +72,6 @@ export interface BulletDefinition {
     readonly obstacleMultiplier: number
     readonly speed: number
     readonly maxDistance: number
-    // fixme doesn't work right now
     readonly penetration?: {
         readonly players?: boolean
         readonly obstacles?: boolean

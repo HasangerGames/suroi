@@ -1,12 +1,12 @@
 import { GasState } from "../../../common/src/constants";
 
 export interface GasStage {
-    state: GasState
-    duration: number
-    oldRadius: number
-    newRadius: number
-    dps: number
-    preventJoin?: boolean
+    readonly state: GasState
+    readonly duration: number
+    readonly oldRadius: number
+    readonly newRadius: number
+    readonly dps: number
+    readonly preventJoin?: boolean
 }
 
 export const GasStages: GasStage[] = [

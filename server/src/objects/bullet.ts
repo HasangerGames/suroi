@@ -109,22 +109,24 @@ export class Bullet extends BaseBullet {
                 }
             }
         }
+
         return records;
     }
 
     reflect(normal: Vector): void {
-        const normalAngle = Math.atan2(normal.y, normal.x);
-
-        const rotation = normalizeAngle(this.rotation + (normalAngle - this.rotation) * 2);
+        const rotation = normalizeAngle(2 * Math.atan2(normal.y, normal.x) - this.rotation);
 
         // move it a bit so it won't collide again with the same hitbox
-        const position = vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation)));
 
-        this.game.addBullet(this.sourceGun, this.shooter, {
-            position,
-            rotation,
-            reflectionCount: this.reflectionCount + 1,
-            variance: this.variance
-        });
+        this.game.addBullet(
+            this.sourceGun,
+            this.shooter,
+            {
+                position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
+                rotation,
+                reflectionCount: this.reflectionCount + 1,
+                variance: this.variance
+            }
+        );
     }
 }

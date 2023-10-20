@@ -1,6 +1,5 @@
-import { type Container, Text } from "pixi.js";
-import { DEFAULT_USERNAME, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { Text, type Container } from "pixi.js";
+import { DEFAULT_USERNAME, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -62,16 +61,23 @@ export class DeathMarker extends GameObject {
         if (data.isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(this.game, {
-                target: this.container.scale,
-                to: { x: 1, y: 1 },
-                duration: 400
-            });
-            this.alphaAnim = new Tween(this.game, {
-                target: this.container,
-                to: { alpha: 1 },
-                duration: 400
-            });
+            this.scaleAnim = new Tween(
+                this.game,
+                {
+                    target: this.container.scale,
+                    to: { x: 1, y: 1 },
+                    duration: 400
+                }
+            );
+
+            this.alphaAnim = new Tween(
+                this.game,
+                {
+                    target: this.container,
+                    to: { alpha: 1 },
+                    duration: 400
+                }
+            );
         }
     }
 

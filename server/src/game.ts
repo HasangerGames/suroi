@@ -1,20 +1,25 @@
 import { type WebSocket } from "uWebSockets.js";
 import { OBJECT_ID_BITS, ObjectCategory, TICKS_PER_SECOND } from "../../common/src/constants";
-import { type LootDefinition } from "../../common/src/definitions/loots";
+import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
+import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
 import { distanceSquared } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
+import { reifyDefinition, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { v, type Vector } from "../../common/src/utils/vector";
+import { Config, SpawnMode } from "./config";
 import { Maps } from "./data/maps";
 import { Gas } from "./gas";
 import { type GunItem } from "./inventory/gunItem";
 import { Map } from "./map";
+import { type Building } from "./objects/building";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { Loot } from "./objects/loot";
+import { type Obstacle } from "./objects/obstacle";
 import { Player } from "./objects/player";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
@@ -27,9 +32,6 @@ import { JoinKillFeedMessage } from "./types/killFeedMessage";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { removeFrom } from "./utils/misc";
-import { Config, SpawnMode } from "./config";
-import { type Obstacle } from "./objects/obstacle";
-import { type Building } from "./objects/building";
 
 export class Game {
     readonly _id: number;
@@ -375,6 +377,7 @@ export class Game {
             shooter,
             options
         );
+
         this.bullets.add(bullet);
         this.newBullets.add(bullet);
 

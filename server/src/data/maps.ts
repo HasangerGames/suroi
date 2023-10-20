@@ -1,7 +1,7 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
-import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
-import { Obstacles } from "../../../common/src/definitions/obstacles";
+import { Loots } from "../../../common/src/definitions/loots";
+import { Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -39,8 +39,8 @@ interface MapDefinition {
     readonly loots?: Record<string, number>
 
     readonly places?: Array<{
-        name: string
-        position: Vector
+        readonly name: string
+        readonly position: Vector
     }>
 
     // Custom callback to generate stuff
@@ -112,13 +112,29 @@ export const Maps: Record<string, MapDefinition> = {
             const buildingPos = v(200, map.height - 200);
             const buildingStartPos = vClone(buildingPos);
 
-            for (const building of Buildings.definitions.filter(definition => definition.idString !== "porta_potty")) {
-                for (let orientation = 0; orientation < 4; orientation++) {
-                    map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
-                    buildingPos.y -= 100;
+            const max = {
+                [RotationMode.Limited]: 4,
+                [RotationMode.Binary]: 2,
+                [RotationMode.None]: 1
+            };
+
+            for (const building of Buildings.definitions) {
+                for (
+                    let orientation = 0, limit = max[building.rotationMode ?? RotationMode.Limited];
+                    orientation < limit;
+                    orientation++
+                ) {
+                    map.generateBuilding(
+                        building.idString,
+                        buildingPos,
+                        (building.rotationMode === RotationMode.Binary ? 2 : 1) * orientation as Orientation
+                    );
+
+                    buildingPos.y -= 125;
                 }
+
                 buildingPos.y = buildingStartPos.y;
-                buildingPos.x += 100;
+                buildingPos.x += 125;
             }
 
             // Generate all obstacles
@@ -139,7 +155,7 @@ export const Maps: Record<string, MapDefinition> = {
             // Generate all Loots
             const itemPos = v(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 511);
+                map.game.addLoot(item, itemPos, 511);
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -149,10 +165,12 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "[object Object]", position: v(0.2, 0.2) },
-            { name: "Kernel Panic", position: v(0.8, 0.8) },
-            { name: "undefined Forest", position: v(0.5, 0.3) },
-            { name: "Memory Leak", position: v(0.5, 0.7) }
+            { name: "[object Object]", position: v(0.8, 0.7) },
+            { name: "Kernel Panic", position: v(0.6, 0.8) },
+            { name: "NullPointerException", position: v(0.7, 0.3) },
+            { name: "undefined Forest", position: v(0.3, 0.2) },
+            { name: "seg. fault\n(core dumped)", position: v(0.3, 0.7) },
+            { name: "Can't read props of null", position: v(0.4, 0.5) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -183,7 +201,10 @@ export const Maps: Record<string, MapDefinition> = {
                     map.game.addLoot(itemType, itemPos, Infinity);
 
                     itemPos.x += xOff;
-                    if ((xOff > 0 && itemPos.x > startPos.x + width) || (xOff < 0 && itemPos.x < startPos.x - width)) {
+                    if (
+                        (xOff > 0 && itemPos.x > startPos.x + width) ||
+                        (xOff < 0 && itemPos.x < startPos.x - width)
+                    ) {
                         itemPos.x = startPos.x;
                         itemPos.y -= yOff;
                     }
@@ -237,9 +258,18 @@ export const Maps: Record<string, MapDefinition> = {
             };
 
             for (const obstacle in randomObstacles) {
-                const obstacleType = ObjectType.fromString(ObjectCategory.Obstacle, obstacle);
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
-                    map.generateObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
+                    map.generateObstacle(
+                        obstacle,
+                        map.getRandomPositionFor(
+                            ObjectType.fromString(ObjectCategory.Obstacle, obstacle),
+                            1,
+                            0,
+                            getPos
+                        ),
+                        0,
+                        1
+                    );
                 }
             }
         },

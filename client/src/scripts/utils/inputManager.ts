@@ -143,6 +143,7 @@ export function setupInputs(game: Game): void {
             game.activePlayer.container.rotation = player.rotation;
             game.map.indicator.rotation = player.rotation;
         }
+
         player.turning = true;
         player.dirty.inputs = true;
     });
@@ -224,10 +225,10 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
 }
 
 // Nowhere else to put this…
-export function getIconFromInputName(input: string): string {
+export function getIconFromInputName(input: string): string | undefined {
     let name: string | undefined;
 
-    input = input.toLowerCase();
+    const copy = input.toLowerCase();
     if (
         [
             "mouse",
@@ -243,16 +244,16 @@ export function getIconFromInputName(input: string): string {
             "backspace",
             "escape",
             "space"
-        ].some(query => input.startsWith(query))
+        ].some(query => copy.startsWith(query))
     ) {
-        if (input === "meta") { // "meta" means different things depending on the OS
+        if (copy === "meta") { // "meta" means different things depending on the OS
             name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
         } else {
-            name = input.toLowerCase().replace(/ /g, "");
+            name = copy.replace(/ /g, "");
         }
     }
 
-    return name === undefined ? input : `./img/misc/${name}_icon.svg`;
+    return name === undefined ? name : `./img/misc/${name}_icon.svg`;
 }
 
 const actionsNames: Record<keyof (typeof defaultBinds), string> = {
@@ -288,7 +289,20 @@ const actionsNames: Record<keyof (typeof defaultBinds), string> = {
 // Generate the input settings
 export function generateBindsConfigScreen(): void {
     const keybindsContainer = $("#tab-keybinds-content");
-    keybindsContainer.html("");
+    keybindsContainer.html("").append(
+        $("<div>",
+            {
+                class: "modal-item",
+                id: "keybind-clear-tooltip"
+            }
+        ).append(
+            "To remove a keybind, press the keybind and then press either ",
+            $("<kbd>").text("Escape"),
+            " or ",
+            $("<kbd>").text("Backspace"),
+            "."
+        )
+    );
 
     let activeButton: HTMLButtonElement | undefined;
     for (const a in defaultBinds) {
@@ -343,6 +357,7 @@ export function generateBindsConfigScreen(): void {
                     if (key === "Escape" || key === "Backspace") {
                         key = "";
                     }
+
                     keybinds.unbindInput(key);
                     keybinds.addActionsToInput(key, action);
 
@@ -379,8 +394,8 @@ export function generateBindsConfigScreen(): void {
     })).appendTo(keybindsContainer);
 
     // Change the weapons slots keybind text
-    for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).filter(a => a !== "").slice(0, 2);
-        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
+    for (let i = 0; i < 3; i++) {
+        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
+        $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }

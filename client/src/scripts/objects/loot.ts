@@ -1,16 +1,15 @@
-import { ArmorType, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ArmorType, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { ItemType, LootRadius, reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type PlayerManager } from "../utils/playerManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 

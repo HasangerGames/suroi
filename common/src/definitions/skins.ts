@@ -4,7 +4,6 @@ export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
     readonly notInLoadout?: boolean
     readonly roleRequired?: string
-    readonly noDrop?: boolean
 }
 
 export const Skins: SkinDefinition[] = [

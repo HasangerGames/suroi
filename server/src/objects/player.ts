@@ -113,7 +113,7 @@ export class Player extends GameObject {
     kills = 0;
     damageDone = 0;
     damageTaken = 0;
-    joinTime: number;
+    readonly joinTime: number;
 
     lastInteractionTime = Date.now();
 
@@ -184,7 +184,7 @@ export class Player extends GameObject {
         return this.inventory.activeWeaponIndex;
     }
 
-    animation = {
+    readonly animation = {
         type: AnimationType.None,
         // This boolean is flipped when an animation plays
         // when its changed the client plays the animation
@@ -196,7 +196,7 @@ export class Player extends GameObject {
     /**
      * Objects the player can see
      */
-    visibleObjects = new Set<GameObject>();
+    readonly visibleObjects = new Set<GameObject>();
     /**
      * Objects the player can see with a 1x scope
      */
@@ -204,15 +204,15 @@ export class Player extends GameObject {
     /**
      * Objects that need to be partially updated
      */
-    partialDirtyObjects = new Set<GameObject>();
+    readonly partialDirtyObjects = new Set<GameObject>();
     /**
      * Objects that need to be fully updated
      */
-    fullDirtyObjects = new Set<GameObject>();
+    readonly fullDirtyObjects = new Set<GameObject>();
     /**
      * Objects that need to be deleted
      */
-    deletedObjects = new Set<GameObject>();
+    readonly deletedObjects = new Set<GameObject>();
     /**
      * Ticks since last visible objects update
      */
@@ -221,13 +221,13 @@ export class Player extends GameObject {
     /**
      * Emotes being sent to the player this tick
      */
-    emotes = new Set<Emote>();
+    readonly emotes = new Set<Emote>();
 
     private _zoom!: number;
     xCullDist!: number;
     yCullDist!: number;
 
-    socket: WebSocket<PlayerContainer>;
+    readonly socket: WebSocket<PlayerContainer>;
 
     fullUpdate = true;
 
@@ -237,9 +237,9 @@ export class Player extends GameObject {
     spectators = new Set<Player>();
     lastSpectateActionTime = 0;
 
-    role: string | undefined;
-    isDev: boolean;
-    nameColor: string;
+    readonly role?: string;
+    readonly isDev: boolean;
+    readonly nameColor: string;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -256,6 +256,8 @@ export class Player extends GameObject {
     effectiveSwitchDelay = 0;
 
     isInsideBuilding = false;
+
+    floor = "water";
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
@@ -285,7 +287,6 @@ export class Player extends GameObject {
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
-        this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "1x_scope");
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -300,16 +301,18 @@ export class Player extends GameObject {
 
             this.inventory.items["2x_scope"] = 1;
             this.inventory.items["4x_scope"] = 1;
-            this.inventory.scope = ObjectType.fromString(ObjectCategory.Loot, "4x_scope");
+            this.inventory.scope = "4x_scope";
         }
 
-        /*const giveWeapon = (idString: string, index: number): void => {
+        /*
+        const giveWeapon = (idString: string, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };*/
+        };
+        */
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
@@ -329,6 +332,7 @@ export class Player extends GameObject {
 
     set zoom(zoom: number) {
         if (this._zoom === zoom) return;
+
         this._zoom = zoom;
         this.xCullDist = this._zoom * 1.8;
         this.yCullDist = this._zoom * 1.35;
@@ -377,12 +381,13 @@ export class Player extends GameObject {
             }
         }
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *            // Base speed
-            recoilMultiplier *                          // Recoil from items
-            (this.action?.speedMultiplier ?? 1) *       // Speed modifier from performing actions
-            (1 + (this.adrenaline / 1000)) *            // Linear speed boost from adrenaline
-            this.activeItemDefinition.speedMultiplier * // Active item speed modifier
-            this.modifiers.baseSpeed;                   // Current on-wearer modifier
+        const speed = Config.movementSpeed *                // Base speed
+            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Floor multiplier
+            recoilMultiplier *                              // Recoil from items
+            (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
+            (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
+            this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
+            this.modifiers.baseSpeed;                       // Current on-wearer modifier
 
         // remove it from the grid and re-insert after finishing calculating the new position
         this.game.grid.removeObject(this);
@@ -413,6 +418,10 @@ export class Player extends GameObject {
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
             this.game.partialDirtyObjects.add(this);
+
+            if (this.isMoving) {
+                this.floor = this.game.map.terrainGrid.getFloor(this.position);
+            }
         }
 
         // Drain adrenaline
@@ -447,6 +456,7 @@ export class Player extends GameObject {
                 }
             }
         }
+
         if (isInsideBuilding && !this.isInsideBuilding) {
             this.zoom = 48;
         } else if (!this.isInsideBuilding) {
@@ -462,9 +472,8 @@ export class Player extends GameObject {
             this.game.removePlayer(this);
             return;
         }
-        if (this.spectating !== undefined) {
-            this.spectating.spectators.delete(this);
-        }
+
+        this.spectating?.spectators.delete(this);
         this.spectating = spectating;
         spectating.spectators.add(this);
 
@@ -493,13 +502,14 @@ export class Player extends GameObject {
 
     updateVisibleObjects(): void {
         this.ticksSinceLastUpdate = 0;
-        const minX = this.position.x - this.xCullDist;
-        const minY = this.position.y - this.yCullDist;
-        const maxX = this.position.x + this.xCullDist;
-        const maxY = this.position.y + this.yCullDist;
-        const rect = new RectangleHitbox(v(minX, minY), v(maxX, maxY));
 
-        const newVisibleObjects = this.game.grid.intersectsRect(rect);
+        const newVisibleObjects = this.game.grid.intersectsRect(
+            RectangleHitbox.fromRect(
+                2 * this.xCullDist,
+                2 * this.yCullDist,
+                this.position
+            )
+        );
 
         for (const object of this.visibleObjects) {
             if (!newVisibleObjects.has(object)) {
@@ -723,10 +733,30 @@ export class Player extends GameObject {
         }
 
         // Drop equipment
-        if (this.inventory.helmet && this.inventory.helmet.definition.noDrop !== true) this.game.addLoot(this.inventory.helmet, this.position);
-        if (this.inventory.vest && this.inventory.vest.definition.noDrop !== true) this.game.addLoot(this.inventory.vest, this.position);
-        if (!this.inventory.backpack.definition.noDrop) this.game.addLoot(this.inventory.backpack, this.position);
-        if (this.loadout.skin.definition.notInLoadout) this.game.addLoot(this.loadout.skin, this.position);
+        if (this.inventory.helmet && this.inventory.helmet.noDrop !== true) {
+            this.game.addLoot(
+                this.inventory.helmet,
+                this.position
+            );
+        }
+        if (this.inventory.vest && this.inventory.vest.noDrop !== true) {
+            this.game.addLoot(
+                this.inventory.vest,
+                this.position
+            );
+        }
+        if (!this.inventory.backpack.noDrop) {
+            this.game.addLoot(
+                this.inventory.backpack,
+                this.position
+            );
+        }
+        if (this.loadout.skin.notInLoadout) {
+            this.game.addLoot(
+                this.loadout.skin,
+                this.position
+            );
+        }
 
         this.inventory.helmet = this.inventory.vest = undefined;
         this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
@@ -762,17 +792,20 @@ export class Player extends GameObject {
             animation: this.animation,
             fullUpdate: true,
             invulnerable: this.invulnerable,
-            helmet: this.inventory.helmet ? this.inventory.helmet.definition.level : 0,
-            vest: this.inventory.vest ? this.inventory.vest.definition.level : 0,
-            backpack: this.inventory.backpack.definition.level,
+            helmet: this.inventory.helmet?.level ?? 0,
+            vest: this.inventory.vest?.level ?? 0,
+            backpack: this.inventory.backpack.level,
             skin: this.loadout.skin,
             activeItem: this.activeItem.type,
             action: {
                 seq: this.actionSeq,
-                type: this.action ? this.action.type : PlayerActions.None
+                ...(() => {
+                    return this.action instanceof HealingAction
+                        ? { type: PlayerActions.UseItem, item: this.action.item }
+                        : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
+                })()
             }
         };
-        if (this.action instanceof HealingAction) data.action.item = this.action.item;
 
         ObjectSerializations[ObjectCategory.Player].serializeFull(stream, data);
     }
