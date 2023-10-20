@@ -567,8 +567,8 @@ export function calculateDoorHitboxes<
     position: Vector,
     rotation: Orientation
 ): U extends "slide"
-    ? { readonly openHitbox: Hitbox }
-    : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox } {
+        ? { readonly openHitbox: Hitbox }
+        : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox } {
     if (!(definition.hitbox instanceof RectangleHitbox) || definition.role !== ObstacleSpecialRoles.Door) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }

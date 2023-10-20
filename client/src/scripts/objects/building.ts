@@ -20,7 +20,6 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
     readonly definition: Def;
 
-
     readonly ceilingContainer: Container;
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
@@ -37,11 +36,13 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
         this.container.zIndex = ZIndexes.Ground;
 
-        for (const image of definition.floorImages) {
-            const sprite = new SuroiSprite(image.key);
-            sprite.setVPos(toPixiCoords(image.position));
-            if (image.tint !== undefined) sprite.setTint(image.tint);
-            this.container.addChild(sprite);
+        if (definition.floorImages) {
+            for (const image of definition.floorImages) {
+                const sprite = new SuroiSprite(image.key);
+                sprite.setVPos(toPixiCoords(image.position));
+                if (image.tint !== undefined) sprite.setTint(image.tint);
+                this.container.addChild(sprite);
+            }
         }
 
         this.ceilingContainer = new Container();
@@ -74,7 +75,7 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         if (data.dead) {
             if (!this.dead && !this.isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${this.type.idString}_particle`,
+                    frames: `${this.definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: 10,
                     lifeTime: 2000,

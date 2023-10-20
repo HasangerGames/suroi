@@ -2,14 +2,9 @@ import { clearTimeout } from "timers";
 import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-<<<<<<< HEAD
 import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-=======
-import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
->>>>>>> 4d5ad952 (refactor: largely remove ObjectType)
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";

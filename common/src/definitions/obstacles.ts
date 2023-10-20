@@ -31,8 +31,6 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly noMeleeCollision?: boolean
     readonly reflectBullets?: boolean
 
-    readonly tint?: string
-
     readonly frames?: {
         readonly base?: string
         readonly particle?: string
@@ -40,27 +38,26 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
     readonly tint?: number
 } & (
-        (
+    (
+        {
+            readonly role: ObstacleSpecialRoles.Door
+        } & (
             {
-                readonly role: ObstacleSpecialRoles.Door
-            } & (
-                {
-                    readonly operationStyle?: "swivel"
-                    readonly hingeOffset: Vector
-                } | {
-                    readonly operationStyle: "slide"
-                    /**
+                readonly operationStyle?: "swivel"
+                readonly hingeOffset: Vector
+            } | {
+                readonly operationStyle: "slide"
+                /**
                      * Determines how much the door slides. 1 means it'll be displaced by its entire width,
                      * 0.5 means it'll be displaced by half its width, etc
                      */
-                    readonly slideFactor?: number
-                }
-            )
-        ) | {
-            readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
-        }
-    );
-
+                readonly slideFactor?: number
+            }
+        )
+    ) | {
+        readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
+    }
+);
 
 export const Materials: string[] = [
     "tree",
@@ -182,17 +179,17 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
     let hitbox: Hitbox;
     switch (open) {
         case "open2":
-            hitbox = new ComplexHitbox([
+            hitbox = new ComplexHitbox(
                 RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
                 RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
-            ]);
+            );
             break;
         case "open1":
-            hitbox = new ComplexHitbox([
+            hitbox = new ComplexHitbox(
                 RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
                 RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
                 RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
-            ]);
+            );
             break;
         case "closed":
         default:
@@ -216,7 +213,7 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         },
         hitbox,
         rotationMode: RotationMode.Limited,
-        isWall: true,
+        role: ObstacleSpecialRoles.Wall,
         reflectBullets: true,
         frames: {
             base: open !== "closed" ? `container_walls_${open}` : undefined,
@@ -1243,7 +1240,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 1.0
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
                 RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
                 RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
@@ -1251,7 +1248,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Frontmost back wheels
                 RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
                 RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
-            ]),
+            ),
             reflectBullets: true,
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.ObstaclesLayer3,
@@ -1272,13 +1269,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
                 RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Frontmost back wheels
                 RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
                 RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
                 RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
-            ]),
+            ),
             rotationMode: RotationMode.Limited,
             zIndex: ZIndexes.ObstaclesLayer4,
             noResidue: true,
@@ -1387,7 +1384,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
 
                 // Bottom Bottom left
                 RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectanle
@@ -1467,7 +1464,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.3, 1.8, v(29.6, 99.5)),
                 RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5))// Top Wheels
 
-            ]),
+            ),
             rotationMode: RotationMode.None,
             frames: {
                 particle: "metal_particle"
@@ -1522,7 +1519,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "metal_particle"
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(1, 220, v(48, -20)), // Right wall
 
                 RectangleHitbox.fromRect(1, 66, v(-31, 4.8)), // Left wall (middle)
@@ -1537,7 +1534,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(14.7, 30, v(-24.5, 98)),
                 RectangleHitbox.fromRect(12, 30, v(41.3, 98))
 
-            ])
+            )
         },
         {
             idString: "ship_cabin_windows",
@@ -1703,10 +1700,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
                 RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
-            ]),
+            ),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1741,10 +1738,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
                 new CircleHitbox(3.45, v(1, 0))
-            ]),
+            ),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1761,11 +1758,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
                 RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
                 RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
-            ]),
+            ),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1784,12 +1781,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox([
+            hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
                 RectangleHitbox.fromRect(1.75, 29.5, v(10.23, -1.7)), // Right wall
                 RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
                 RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
-            ]),
+            ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {

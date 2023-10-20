@@ -1,8 +1,9 @@
-import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
-import { type Obstacle } from "../../objects/obstacle";
+import { Building } from "../../objects/building";
+import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {

@@ -3,13 +3,13 @@ import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { type Explosion } from "../../objects/explosion";
 import { Player } from "../../objects/player";
 import { SendingPacket } from "../../types/sendingPacket";
 
 interface KillFeedPacketOptions {
     killedBy?: Player | "gas"
-    weaponUsed?: GunItem | MeleeItem | ObjectType
+    weaponUsed?: GunItem | MeleeItem | Explosion
     kills: number
 }
 

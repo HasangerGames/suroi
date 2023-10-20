@@ -22,7 +22,6 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
     readonly spawnHitbox: Hitbox;
     readonly hitbox: Hitbox;
 
-
     private _wallsToDestroy?: number;
 
     //@ts-expect-error it makes the typings work :3

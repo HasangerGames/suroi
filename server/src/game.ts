@@ -31,9 +31,11 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { removeFrom } from "./utils/misc";
-import { type LootDefinition } from "../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
+import { type ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
+import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 
 export class Game {
     readonly _id: number;

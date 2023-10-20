@@ -15,9 +15,10 @@ import {
     rectCircleIntersection,
     rectRectCollision,
     transformRectangle,
-    distance, rectPolyCollision
+    distance,
+    rectPolyCollision
 } from "./math";
-import { random, randomFloat, randomPointInsideCircle } from "./random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
 export abstract class Hitbox {
@@ -87,7 +88,7 @@ export class CircleHitbox extends Hitbox {
         this.radius = radius;
     }
 
-    collidesWith(that: Hitbox): boolean {
+    override collidesWith(that: Hitbox): boolean {
         if (that instanceof CircleHitbox) {
             return circleCollision(that.position, that.radius, this.position, this.radius);
         } else if (that instanceof RectangleHitbox) {
@@ -96,16 +97,20 @@ export class CircleHitbox extends Hitbox {
             return that.collidesWith(this);
         }
 
-        throw new Error("Invalid hitbox object");
+        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
     }
 
-    resolveCollision(that: Hitbox): void {
+    override resolveCollision(that: Hitbox): void {
         if (that instanceof RectangleHitbox) {
             const collision = rectCircleIntersection(that.min, that.max, this.position, this.radius);
-            if (collision) this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+            if (collision) {
+                this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+            }
         } else if (that instanceof CircleHitbox) {
             const collision = circleCircleIntersection(this.position, this.radius, that.position, that.radius);
-            if (collision) this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+            if (collision) {
+                this.position = vSub(this.position, vMul(collision.dir, collision.pen));
+            }
         } else if (that instanceof ComplexHitbox) {
             for (const hitbox of that.hitboxes) {
                 this.resolveCollision(hitbox);
@@ -113,41 +118,41 @@ export class CircleHitbox extends Hitbox {
         }
     }
 
-    distanceTo(that: Hitbox): CollisionRecord {
+    override distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToCircle(that.position, that.radius, this.position, this.radius);
         } else if (that instanceof RectangleHitbox) {
             return distanceToRectangle(that.min, that.max, this.position, this.radius);
         }
 
-        throw new Error("Invalid hitbox object");
+        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
     }
 
-    clone(): CircleHitbox {
+    override clone(): CircleHitbox {
         return new CircleHitbox(this.radius, vClone(this.position));
     }
 
-    transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
+    override transform(position: Vector, scale = 1, orientation = 0 as Orientation): CircleHitbox {
         return new CircleHitbox(this.radius * scale, addAdjust(position, this.position, orientation));
     }
 
-    scale(scale: number): void {
+    override scale(scale: number): void {
         this.radius *= scale;
     }
 
-    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsCircle(a, b, this.position, this.radius);
     }
 
-    randomPoint(): Vector {
+    override randomPoint(): Vector {
         return randomPointInsideCircle(this.position, this.radius);
     }
 
-    toRectangle(): RectangleHitbox {
+    override toRectangle(): RectangleHitbox {
         return new RectangleHitbox(v(this.position.x - this.radius, this.position.y - this.radius), v(this.position.x + this.radius, this.position.y + this.radius));
     }
 
-    isPointInside(point: Vector): boolean {
+    override isPointInside(point: Vector): boolean {
         return distance(point, this.position) < this.radius;
     }
 }
@@ -165,18 +170,27 @@ export class RectangleHitbox extends Hitbox {
 
     static fromLine(a: Vector, b: Vector): RectangleHitbox {
         return new RectangleHitbox(
-            v(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y),
-            v(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y));
+            v(
+                Math.min(a.x, b.x),
+                Math.min(a.y, b.y)
+            ),
+            v(
+                Math.max(a.x, b.x),
+                Math.max(a.y, b.y)
+            )
+        );
     }
 
     static fromRect(width: number, height: number, pos = v(0, 0)): RectangleHitbox {
         const size = v(width / 2, height / 2);
-        const min = vSub(pos, size);
-        const max = vAdd(pos, size);
-        return new RectangleHitbox(min, max);
+
+        return new RectangleHitbox(
+            vSub(pos, size),
+            vAdd(pos, size)
+        );
     }
 
-    collidesWith(that: Hitbox): boolean {
+    override collidesWith(that: Hitbox): boolean {
         if (that instanceof CircleHitbox) {
             return rectangleCollision(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
@@ -188,56 +202,57 @@ export class RectangleHitbox extends Hitbox {
         return false;
     }
 
-    resolveCollision(that: Hitbox): void {
+    override resolveCollision(that: Hitbox): void {
         if (that instanceof CircleHitbox) {
             return that.resolveCollision(this);
         }
+
         throw new Error("Not Implemented");
     }
 
-    distanceTo(that: Hitbox): CollisionRecord {
+    override distanceTo(that: Hitbox): CollisionRecord {
         if (that instanceof CircleHitbox) {
             return distanceToRectangle(this.min, this.max, that.position, that.radius);
         } else if (that instanceof RectangleHitbox) {
             return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max);
         }
 
-        throw new Error("Invalid hitbox object");
+        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
     }
 
-    clone(): RectangleHitbox {
+    override clone(): RectangleHitbox {
         return new RectangleHitbox(vClone(this.min), vClone(this.max));
     }
 
-    transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
+    override transform(position: Vector, scale = 1, orientation = 0 as Orientation): RectangleHitbox {
         const rect = transformRectangle(position, this.min, this.max, scale, orientation);
 
         return new RectangleHitbox(rect.min, rect.max);
     }
 
-    scale(scale: number): void {
+    override scale(scale: number): void {
         const centerX = (this.min.x + this.max.x) / 2;
         const centerY = (this.min.y + this.max.y) / 2;
         this.min = v((this.min.x - centerX) * scale + centerX, (this.min.y - centerY) * scale + centerY);
         this.max = v((this.max.x - centerX) * scale + centerX, (this.max.y - centerY) * scale + centerY);
     }
 
-    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         return lineIntersectsRect(a, b, this.min, this.max);
     }
 
-    randomPoint(): Vector {
+    override randomPoint(): Vector {
         return {
             x: randomFloat(this.min.x, this.max.x),
             y: randomFloat(this.min.y, this.max.y)
         };
     }
 
-    toRectangle(): RectangleHitbox {
+    override toRectangle(): RectangleHitbox {
         return this.clone();
     }
 
-    isPointInside(point: Vector): boolean {
+    override isPointInside(point: Vector): boolean {
         return point.x > this.min.x && point.y > this.min.y && point.x < this.max.x && point.y < this.max.y;
     }
 }
@@ -246,26 +261,24 @@ export class ComplexHitbox extends Hitbox {
     position = v(0, 0);
     hitboxes: Array<RectangleHitbox | CircleHitbox>;
 
-    constructor(hitBoxes: Array<RectangleHitbox | CircleHitbox>) {
+    constructor(...hitboxes: Array<RectangleHitbox | CircleHitbox>) {
         super();
-        this.hitboxes = hitBoxes;
+        this.hitboxes = hitboxes;
     }
 
-    collidesWith(that: Hitbox): boolean {
-        for (const hitbox of this.hitboxes) {
-            if (hitbox.collidesWith(that)) return true;
-        }
-        return false;
+    override collidesWith(that: Hitbox): boolean {
+        return this.hitboxes.some(hitbox => hitbox.collidesWith(that));
     }
 
-    resolveCollision(that: Hitbox): void {
+    override resolveCollision(that: Hitbox): void {
         if (that instanceof CircleHitbox) {
             return that.resolveCollision(this);
         }
+
         throw new Error("Not Implemented");
     }
 
-    distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+    override distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
         let distance = Number.MAX_VALUE;
         let record: CollisionRecord;
 
@@ -295,25 +308,23 @@ export class ComplexHitbox extends Hitbox {
         return record!;
     }
 
-    clone(): ComplexHitbox {
-        return new ComplexHitbox(this.hitboxes);
+    override clone(): ComplexHitbox {
+        return new ComplexHitbox(...this.hitboxes);
     }
 
-    transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
+    override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
         this.position = position;
-        const hitBoxes: Array<RectangleHitbox | CircleHitbox> = [];
-        for (const hitbox of this.hitboxes) {
-            hitBoxes.push(hitbox.transform(position, scale, orientation));
-        }
-        return new ComplexHitbox(hitBoxes);
+        return new ComplexHitbox(
+            ...this.hitboxes.map(hitbox => hitbox.transform(position, scale, orientation))
+        );
     }
 
-    scale(scale: number): void {
+    override scale(scale: number): void {
         for (const hitbox of this.hitboxes) hitbox.scale(scale);
     }
 
-    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
-        const intersections: Array<{ point: Vector, normal: Vector }> = [];
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        const intersections: Array<{ readonly point: Vector, readonly normal: Vector }> = [];
 
         // get the closest intersection point from the start of the line
         for (const hitbox of this.hitboxes) {
@@ -321,17 +332,14 @@ export class ComplexHitbox extends Hitbox {
             if (intersection) intersections.push(intersection);
         }
 
-        intersections.sort((c, d) => {
-            return distanceSquared(c.point, a) - distanceSquared(d.point, a);
-        });
-        return intersections[0] ?? null;
+        return intersections.sort((c, d) => distanceSquared(c.point, a) - distanceSquared(d.point, a))[0] ?? null;
     }
 
-    randomPoint(): Vector {
-        return this.hitboxes[random(0, this.hitboxes.length - 1)].randomPoint();
+    override randomPoint(): Vector {
+        return pickRandomInArray(this.hitboxes).randomPoint();
     }
 
-    toRectangle(): RectangleHitbox {
+    override toRectangle(): RectangleHitbox {
         const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
         const max = v(0, 0);
         for (const hitbox of this.hitboxes) {
@@ -341,10 +349,11 @@ export class ComplexHitbox extends Hitbox {
             max.x = Math.max(max.x, toRect.max.x);
             max.y = Math.max(max.y, toRect.max.y);
         }
+
         return new RectangleHitbox(min, max);
     }
 
-    isPointInside(point: Vector): boolean {
+    override isPointInside(point: Vector): boolean {
         for (const hitbox of this.hitboxes) {
             if (hitbox.isPointInside(point)) return true;
         }
@@ -360,55 +369,51 @@ export class PolygonHitbox extends Hitbox {
         this.points = points;
     }
 
-    collidesWith(that: Hitbox): boolean {
+    override collidesWith(that: Hitbox): boolean {
         if (that instanceof RectangleHitbox) return rectPolyCollision(that.min, that.max, this.points);
-        else throw new Error("Not Implemented");
-    }
-
-    resolveCollision(that: Hitbox): void {
         throw new Error("Not Implemented");
     }
 
-    distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+    override resolveCollision(that: Hitbox): void {
         throw new Error("Not Implemented");
     }
 
-    clone(): PolygonHitbox {
+    override distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+        throw new Error("Not Implemented");
+    }
+
+    override clone(): PolygonHitbox {
         return new PolygonHitbox(this.points);
     }
 
-    transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): PolygonHitbox {
-        const points: Vector[] = [];
-        for (const point of this.points) {
-            const newPoint = vMul(addAdjust(point, position, orientation ?? 0), scale ?? 1);
-            points.push(newPoint);
-        }
-        return new PolygonHitbox(points);
+    override transform(position: Vector, scale: number = 1, orientation: Orientation = 0): PolygonHitbox {
+        return new PolygonHitbox(
+            this.points.map(point => vMul(addAdjust(position, point, orientation), scale))
+        );
     }
 
-    scale(scale: number): void {
-        for (let i = 0; i < this.points.length; i++) {
+    override scale(scale: number): void {
+        for (let i = 0, length = this.points.length; i < length; i++) {
             this.points[i] = vMul(this.points[i], scale);
         }
     }
 
-    intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         throw new Error("Not Implemented");
     }
 
-    randomPoint(): Vector {
+    override randomPoint(): Vector {
+        const rect = this.toRectangle();
         let point: Vector;
 
-        const rect = this.toRectangle();
-
-        point = rect.randomPoint();
-
-        while (!this.isPointInside(point)) point = rect.randomPoint();
+        do {
+            point = rect.randomPoint();
+        } while (!this.isPointInside(point));
 
         return point;
     }
 
-    toRectangle(): RectangleHitbox {
+    override toRectangle(): RectangleHitbox {
         const min = v(Number.MAX_VALUE, Number.MAX_VALUE);
         const max = v(0, 0);
         for (const point of this.points) {
@@ -417,25 +422,26 @@ export class PolygonHitbox extends Hitbox {
             max.x = Math.max(max.x, point.x);
             max.y = Math.max(max.y, point.y);
         }
+
         return new RectangleHitbox(min, max);
     }
 
-    isPointInside(point: Vector): boolean {
-        const { x } = point;
-        const { y } = point;
+    override isPointInside(point: Vector): boolean {
+        const { x, y } = point;
         let inside = false;
         const count = this.points.length;
+        // take first and last
+        // then take second and second last
+        // so on
         for (let i = 0, j = count - 1; i < count; j = i++) {
-            const xi = this.points[i].x;
-            const yi = this.points[i].y;
-            const xj = this.points[j].x;
-            const yj = this.points[j].y;
+            const { x: xi, y: yi } = this.points[i];
+            const { x: xj, y: yj } = this.points[j];
 
-            const intersect = (yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi;
-            if (intersect) {
+            if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) {
                 inside = !inside;
             }
         }
+
         return inside;
     }
 }

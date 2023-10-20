@@ -55,8 +55,8 @@ export interface BuildingDefinition extends ObjectDefinition {
         readonly position: Vector
         readonly residue?: string
         readonly tint?: number
-        readonly ceilingZIndex?: number
     }>
+    readonly ceilingZIndex?: number
 
     // How many walls need to be broken to destroy the ceiling
     readonly wallsToDestroy?: number
@@ -571,11 +571,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_warehouse",
         name: "Port Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        ceilingHitbox: new ComplexHitbox([
+        ceilingHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(60.00, 120.00),
             RectangleHitbox.fromRect(12, 30, v(29.3, -30.3)),
             RectangleHitbox.fromRect(12, 30, v(29.3, 30.4))
-        ]),
+        ),
         scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
         floorImages: [{
             key: "port_warehouse_floor",
@@ -1248,10 +1248,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_shed",
         name: "Port Shed",
         spawnHitbox: RectangleHitbox.fromRect(27, 37, v(-0.8, 0)),
-        ceilingHitbox: new ComplexHitbox([
+        ceilingHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
             new CircleHitbox(5, v(9.45, -2.6))
-        ]),
+        ),
         scopeHitbox: RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
         floorImages: [{
             key: "port_shed_floor",
@@ -1320,17 +1320,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
-        ceilingHitbox: new ComplexHitbox([
+        ceilingHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
             RectangleHitbox.fromRect(10, 13, v(35, -73)),
             RectangleHitbox.fromRect(10, 19, v(-17, -63)),
 
             RectangleHitbox.fromRect(60, 25, v(8, 96))
-        ]),
-        scopeHitbox: new ComplexHitbox([
+        ),
+        scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
             RectangleHitbox.fromRect(60, 25, v(8, 96))
-        ]),
+        ),
         floorImages: [
             {
                 key: "ship_floor",

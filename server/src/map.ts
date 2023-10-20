@@ -1,5 +1,6 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { Decals } from "../../common/src/definitions/decals";
 import { type ObstacleDefinition, RotationMode, Obstacles } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import {
@@ -11,7 +12,8 @@ import {
 } from "../../common/src/utils/hitbox";
 import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
-import { ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
+import { log } from "../../common/src/utils/misc";
+import { type ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
 import {
     pickRandomInArray,
@@ -72,12 +74,12 @@ export class Map {
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 
-        this.beachHitbox = new ComplexHitbox([
+        this.beachHitbox = new ComplexHitbox(
             new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
             new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
             new RectangleHitbox(v(this.width - beachPadding, 0), v(this.width, this.height)),
             new RectangleHitbox(v(0, this.height - beachPadding), v(this.width, this.height))
-        ]);
+        );
 
         this.terrainGrid = new TerrainGrid(this.width, this.height);
 
@@ -309,13 +311,15 @@ export class Map {
 
         if (definition.decals) {
             for (const decal of definition.decals) {
-                this.game.grid.addObject(new Decal(this.game, ObjectType.fromString(ObjectCategory.Decal, decal.id), addAdjust(position, decal.position, orientation), decal.rotation));
+                this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), decal.rotation));
             }
         }
 
-        for (const floor of definition.floors) {
-            const hitbox = floor.hitbox.transform(position, 1, orientation);
-            this.terrainGrid.addFloor(floor.type, hitbox);
+        if (definition.floors) {
+            for (const floor of definition.floors) {
+                const hitbox = floor.hitbox.transform(position, 1, orientation);
+                this.terrainGrid.addFloor(floor.type, hitbox);
+            }
         }
 
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
@@ -334,7 +338,6 @@ export class Map {
         const type = ObjectType.fromString(ObjectCategory.Obstacle, definition.idString);
 
         for (let i = 0; i < count; i++) {
-            const definition: ObstacleDefinition = type.definition;
             if (Math.random() < (spawnProbability ??= 1)) {
                 const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
                 const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
@@ -397,7 +400,7 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const loot = getLootTableLoot(LootTables[table].loot);
 
-            const position = this.getRandomPositionFor(ObjectType.categoryOnly(ObjectCategory.Loot));
+            const position = this.getRandomPositionFor(ObjectType.fromString(ObjectCategory.Loot, loot[0].idString));
 
             for (const item of loot) {
                 this.game.addLoot(

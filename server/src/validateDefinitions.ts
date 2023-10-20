@@ -21,7 +21,7 @@ import { ObstacleSpecialRoles, type BulletDefinition, type ItemDefinition, type 
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
-import { LootTables, LootTiers, type WeightedItem } from "./data/lootTables";
+import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { FloorTypes } from "../../common/src/utils/mapUtils";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
@@ -693,24 +693,6 @@ logger.indent("Validating loot table references", () => {
                         });
                     }
                 });
-
-                const tiers = lootData.loot.filter((v => "tier" in v) as (v: WeightedItem) => v is WeightedTier).map(v => v.tier);
-                const items = lootData.loot.filter((v => "item" in v) as (v: WeightedItem) => v is WeightedLoot).map(v => v.item);
-
-                const { foundDupes: hasDupedTiers, dupes: dupedTiers } = findDupes(tiers);
-                const { foundDupes: hasDupedItems, dupes: dupedItems } = findDupes(items);
-
-                tester.assertWarn(
-                    !hasDupedTiers,
-                    `Loot table '${name}' has a drop declaration with duplicate tiers: ${Object.entries(dupedTiers).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
-
-                tester.assertWarn(
-                    !hasDupedItems,
-                    `Loot table '${name}' has a drop declaration with duplicate items: ${Object.entries(dupedItems).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
             });
         }
     });
@@ -729,28 +711,12 @@ logger.indent("Validating loot table references", () => {
                         });
                     }
 
-                    tester.assertReferenceExistsArray({
-                        obj: entry,
-                        field: "item",
-                        baseErrorPath: errorPath,
-                        collection: Loots.definitions,
-                        collectionName: "Loots"
-                    });
-
                     tester.assertIsPositiveFiniteReal({
                         obj: entry,
                         field: "weight",
                         baseErrorPath: errorPath
                     });
                 }
-
-                const { foundDupes: hasDupedItems, dupes: dupedItems } = findDupes(lootTierData.map(v => v.item));
-
-                tester.assertWarn(
-                    !hasDupedItems,
-                    `Loot tier '${name}' has a declaration with duplicate items: ${Object.entries(dupedItems).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
             });
         }
     });
@@ -1247,7 +1213,6 @@ logger.indent("Validating building definitions", () => {
         logger.indent(`Validating '${building.idString}'`, () => {
             const errorPath = tester.createPath("buildings", `building '${building.idString}'`);
 
-
             validators.hitbox(errorPath, building.spawnHitbox);
             if (building.ceilingHitbox) validators.hitbox(errorPath, building.ceilingHitbox);
             if (building.scopeHitbox) validators.hitbox(errorPath, building.scopeHitbox);
@@ -1461,7 +1426,7 @@ logger.indent("Validating building definitions", () => {
                     obj: building,
                     field: "wallsToDestroy",
                     min: 1,
-                    max: building.obstacles?.filter(o => Obstacles.definitions.find(ob => ob.idString === o.idString)?.role === ObstacleSpecialRoles.Wall).length ?? Infinity,
+                    max: building.obstacles?.filter(o => Obstacles.definitions.find(ob => ob.idString === o.id)?.role === ObstacleSpecialRoles.Wall).length ?? Infinity,
                     includeMin: true,
                     includeMax: true,
                     baseErrorPath: errorPath

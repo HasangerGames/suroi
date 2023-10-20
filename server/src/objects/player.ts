@@ -37,7 +37,6 @@ import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { Scopes } from "../../../common/src/definitions/scopes";
 
 export class Player extends GameObject {

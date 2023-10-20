@@ -1,4 +1,3 @@
-
 import { Container, Texture, TilingSprite } from "pixi.js";
 import {
     AnimationType,
@@ -10,17 +9,17 @@ import {
 } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Helmets } from "../../../../common/src/definitions/helmets";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ItemType, ItemDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
@@ -33,10 +32,8 @@ import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
 import { consoleVariables } from "../utils/console/variables";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
-import { ObjectType } from "../../../../common/src/utils/objectType";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-
+import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -125,7 +122,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
         this.container.addChild(
@@ -196,7 +193,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
             }
         });
-
     }
 
     override updateContainerPosition(): void {
@@ -452,18 +448,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (anim) {
             this.anims.leftFistAnim = new Tween(
                 this.game, {
-                target: this.images.leftFist,
-                to: { x: fists.left.x, y: fists.left.y },
-                duration: fists.animationDuration
-            }
+                    target: this.images.leftFist,
+                    to: { x: fists.left.x, y: fists.left.y },
+                    duration: fists.animationDuration
+                }
             );
 
             this.anims.rightFistAnim = new Tween(
                 this.game, {
-                target: this.images.rightFist,
-                to: { x: fists.right.x, y: fists.right.y },
-                duration: fists.animationDuration
-            }
+                    target: this.images.rightFist,
+                    to: { x: fists.right.x, y: fists.right.y },
+                    duration: fists.animationDuration
+                }
             );
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
@@ -489,7 +485,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
 
-            if (this.activeItem.idNumber !== this.oldItem) {
+            if (this.activeItem !== this.oldItem) {
                 this.anims.muzzleFlashFadeAnim?.kill();
                 this.anims.muzzleFlashRecoilAnim?.kill();
                 this.images.muzzleFlash.alpha = 0;

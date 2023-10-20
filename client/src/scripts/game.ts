@@ -42,6 +42,9 @@ import { type Tween } from "./utils/tween";
 import { consoleVariables } from "./utils/console/variables";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { keybinds } from "./utils/console/gameConsole";
+import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 
 export class Game {
     socket!: WebSocket;
@@ -331,7 +334,7 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, (type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>).definition, id);
+                        object = new Obstacle(this, type.definition as ObstacleDefinition, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
@@ -339,16 +342,16 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(this, (type as ObjectType<ObjectCategory.Loot, LootDefinition>).definition, id);
+                        object = new Loot(this, type.definition as LootDefinition, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(this, (type as ObjectType<ObjectCategory.Building, BuildingDefinition>).definition, id);
+                        object = new Building(this, type.definition as BuildingDefinition, id);
                         break;
                     }
                     case ObjectCategory.Decal: {
-                        object = new Decal(this, (type as ObjectType<ObjectCategory.Decal>).definition, id);
+                        object = new Decal(this, type.definition, id);
                         break;
                     }
                 }

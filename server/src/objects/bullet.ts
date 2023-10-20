@@ -23,7 +23,7 @@ export interface DamageRecord {
 
 export interface ServerBulletOptions {
     readonly position: Vector
-    readonly rotation: number
+    rotation: number
     readonly reflectionCount?: number
     readonly variance?: number
 }
@@ -34,21 +34,15 @@ export class Bullet extends BaseBullet {
     readonly sourceGun: Weapon;
     readonly shooter: GameObject;
 
-<<<<<<< HEAD
-    constructor(game: Game, source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions) {
-        options.rotation = normalizeAngle(options.rotation);
-        const variance = source.type.definition.ballistics.variance;
-        const bulletOptions: BulletOptions = {
-=======
     constructor(
         game: Game,
         source: Weapon,
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
+        options.rotation = normalizeAngle(options.rotation);
         const variance = source.definition.ballistics.variance;
         super({
->>>>>>> 4d5ad952 (refactor: largely remove ObjectType)
             ...options,
             source: source.definition,
             sourceID: shooter.id,
