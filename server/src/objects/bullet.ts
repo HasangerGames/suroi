@@ -110,6 +110,7 @@ export class Bullet extends BaseBullet {
                 }
             }
         }
+
         return records;
     }
 
@@ -118,14 +119,16 @@ export class Bullet extends BaseBullet {
 
         const rotation = this.rotation + (normalAngle - this.rotation) * 2;
 
-        // move it a bit so it won't collide again with the same hitbox
-        const position = vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation)));
-
-        this.game.addBullet(this.sourceGun, this.shooter, {
-            position,
-            rotation,
-            reflectionCount: this.reflectionCount + 1,
-            variance: this.variance
-        });
+        this.game.addBullet(
+            this.sourceGun,
+            this.shooter,
+            {
+                // move it a bit so it won't collide again with the same hitbox
+                position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
+                rotation,
+                reflectionCount: this.reflectionCount + 1,
+                variance: this.variance
+            }
+        );
     }
 }

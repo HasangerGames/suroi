@@ -58,10 +58,9 @@ export class KillFeedPacket extends ReceivingPacket {
                         killstreak = stream.readBits(7);
                     }
                 }
-
-                /* eslint-disable @typescript-eslint/no-non-null-assertion */
                 const gasKill = stream.readBoolean();
 
+                /* eslint-disable @typescript-eslint/no-non-null-assertion */
                 switch (consoleVariables.get.builtIn("cv_killfeed_style").value) {
                     case "text": {
                         const message = twoPartyInteraction

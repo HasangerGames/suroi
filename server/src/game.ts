@@ -406,6 +406,7 @@ export class Game {
             shooter,
             options
         );
+
         this.bullets.add(bullet);
         this.newBullets.add(bullet);
 

@@ -19,9 +19,9 @@ export const ObjectDefinitionsList: Record<ObjectCategory, ObjectDefinitions | u
 };
 
 export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
-    category: T;
-    idNumber: number;
-    idString: string;
+    readonly category: T;
+    readonly idNumber: number;
+    readonly idString: string;
 
     private constructor(category: T, idNumber: number, idString: string) {
         this.category = category;
@@ -43,20 +43,17 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
     }
 
     static fromNumber<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T, idNumber: number): ObjectType<T, U> {
-        const type = new ObjectType<T, U>(category, idNumber, "");
-
         const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
         if (definitions === undefined) {
             throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idNumber})`);
         }
 
-        const definition = definitions.definitions[type.idNumber];
+        const definition = definitions.definitions[idNumber];
         if (definition === undefined) {
             throw new Error(`ID number out of range (ID = ${idNumber}, category = ${ObjectCategory[category]})`);
         }
 
-        type.idString = definition.idString;
-        return type;
+        return new ObjectType<T, U>(category, idNumber, definition.idString);
     }
 
     static fromString<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T, idString: string): ObjectType<T, U> {
@@ -64,6 +61,7 @@ export class ObjectType<T extends ObjectCategory = ObjectCategory, U extends Obj
         if (definitions === undefined) {
             throw new Error(`No definitions found for object category: ${ObjectCategory[category]} (object ID = ${idString})`);
         }
+
         return new ObjectType<T, U>(category, definitions.idStringToNumber[idString], idString);
     }
 }

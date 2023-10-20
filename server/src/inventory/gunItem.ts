@@ -97,22 +97,29 @@ export class GunItem extends InventoryItem {
         this._lastUse = owner.game.now;
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
-
         const jitter = definition.jitterRadius ?? 0;
 
-        const rotated = vRotate(v(definition.length + jitter, 0), owner.rotation); // player radius + gun length
+        let position = vAdd(
+            owner.position,
+            vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
+        );
 
-        let position = vAdd(owner.position, rotated);
+        for (
+            const object of
+            this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+        ) {
+            if (
+                object.dead ||
+                object.hitbox === undefined ||
+                !(object instanceof Obstacle) ||
+                object.definition.noCollisions === true
+            ) continue;
 
-        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
-        for (const object of objects) {
-            if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
-                const intersection = object.hitbox.intersectsLine(owner.position, position);
-                if (intersection === null) continue;
+            const intersection = object.hitbox.intersectsLine(owner.position, position);
+            if (intersection === null) continue;
 
-                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
-                    position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
-                }
+            if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
+                position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
             }
         }
 
@@ -123,8 +130,8 @@ export class GunItem extends InventoryItem {
                 this,
                 this.owner,
                 {
-                    position: definition.jitterRadius
-                        ? vAdd(position, randomPointInsideCircle(v(0, 0), definition.jitterRadius))
+                    position: jitter
+                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
                         (definition.consistentPatterning === true

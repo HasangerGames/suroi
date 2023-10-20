@@ -12,6 +12,7 @@ import { enablePlayButton } from "./main";
 import { Building } from "./objects/building";
 import { type Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
+import { Decal } from "./objects/decal";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { ParticleManager } from "./objects/particles";
@@ -79,8 +80,8 @@ export class Game {
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
-    playersContainer = new Container();
-    bulletsContainer = new Container();
+    readonly playersContainer = new Container();
+    readonly bulletsContainer = new Container();
 
     readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
     musicPlaying = false;
@@ -93,7 +94,6 @@ export class Game {
         this.pixi.ticker.add(this.render.bind(this));
 
         this.camera = new Camera(this);
-
         this.map = new Minimap(this);
 
         this.playersContainer.zIndex = ZIndexes.Players;
@@ -512,13 +512,19 @@ export class Game {
 
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
-                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
-                                (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1])))
+                            (
+                                (lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
+                                (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1]))
+                            )
                         ) {
                             // TODO Needs testing
                             if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.playerManager.interact();
                         } else if (
-                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
+                            (
+                                closestObject instanceof Loot &&
+                                "itemType" in lootDef &&
+                                (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)
+                            ) ||
                             closestObject instanceof Obstacle
                         ) {
                             prepareInteractText();

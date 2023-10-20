@@ -89,6 +89,10 @@ export function weightedRandom<T>(items: T[], weights: number[]): T {
     return items[i];
 }
 
+export function pickRandomInArray<T>(items: T[]): T {
+    return items[Math.floor(Math.random() * items.length)];
+}
+
 export class SeededRandom {
     rng = 0;
 

@@ -1,11 +1,11 @@
 import { isMobile } from "pixi.js";
-import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../../common/src/utils/objectType";
@@ -19,7 +19,7 @@ import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
  * This class manages the active player data and inventory
  */
 export class PlayerManager {
-    game: Game;
+    readonly game: Game;
 
     name!: string;
 
@@ -207,7 +207,14 @@ export class PlayerManager {
         this.game = game;
 
         for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
-            this.items[item.idString] = 0;
+            let amount = 0;
+
+            switch (true) {
+                case item.itemType === ItemType.Ammo && item.ephemeral: amount = Infinity; break;
+                case item.itemType === ItemType.Scope && item.giveByDefault: amount = 1; break;
+            }
+
+            this.items[item.idString] = amount;
         }
     }
 
@@ -290,21 +297,26 @@ export class PlayerManager {
         const inventoryDirty = stream.readBoolean();
         if (inventoryDirty) {
             const backpackLevel = stream.readBits(2);
-            const readInventoryCount = (): number => stream.readBoolean() ? stream.readBits(9) : 0;
+            const scopeNames = Scopes.map(sc => sc.idString);
+            const adjustItemUi = (itemName: string, count: number): void => {
+                const num = count;
+                this.items[itemName] = num;
 
-            for (const item in this.items) {
-                const num = readInventoryCount();
-                this.items[item] = num;
+                $(`#${itemName}-count`).text(num);
 
-                $(`#${item}-count`).text(num);
-
-                const itemSlot = $(`#${item}-slot`);
-                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
+                const itemSlot = $(`#${itemName}-slot`);
+                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[itemName]);
                 itemSlot.toggleClass("has-item", num > 0);
 
-                if (item.includes("scope") && !UI_DEBUG_MODE) {
+                if (scopeNames.includes(itemName) && !UI_DEBUG_MODE) {
                     itemSlot.toggle(num > 0).removeClass("active");
                 }
+            };
+
+            const amount = stream.readBoolean() ? 0 : undefined;
+            //             ^^^^^^^^^^^^^^^^^^^^^^^^ Dead owner => everything is 0
+            for (const item in this.items) {
+                adjustItemUi(item, amount ?? (stream.readBoolean() ? stream.readBits(9) : 0));
             }
 
             this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);

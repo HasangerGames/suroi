@@ -1,26 +1,26 @@
-import { type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { Obstacles, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
-import { type Hitbox } from "../../../../common/src/utils/hitbox";
-import { calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { addAdjust, calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
+import { ObstacleSpecialRoles, reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
-import { type Vector } from "../../../../common/src/utils/vector";
+import { v, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Obstacle extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>;
 
+
     scale!: number;
 
-    image: SuroiSprite;
-
+    readonly image: SuroiSprite;
     variation?: Variation;
 
     damageable = true;
@@ -37,15 +37,15 @@ export class Obstacle extends GameObject {
     isNew = true;
 
     hitbox!: Hitbox;
+    orientation: Orientation = 0;
 
-    orientation!: Orientation;
+    readonly particleFrames: string[];
 
-    particleFrames: string[] = [];
 
     constructor(game: Game, type: ObjectType, id: number) {
         super(game, type, id);
 
-        this.image = new SuroiSprite(); //.setAlpha(0.5);
+        this.image = new SuroiSprite()/* .setAlpha(0.5) */;
         this.container.addChild(this.image);
 
         // eslint-disable-next-line no-cond-assign
@@ -62,13 +62,9 @@ export class Obstacle extends GameObject {
         // If there are multiple particle variations, generate a list of variation image names
         const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
 
-        if (definition.particleVariations) {
-            for (let i = 0; i < definition.particleVariations; i++) {
-                this.particleFrames.push(`${particleImage}_${i + 1}`);
-            }
-        } else {
-            this.particleFrames.push(`${particleImage}`);
-        }
+        this.particleFrames = definition.particleVariations !== undefined
+            ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
+            : [particleImage];
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
@@ -240,6 +236,8 @@ export class Obstacle extends GameObject {
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
+        if (definition.tint !== undefined) this.image.setTint(definition.tint);
+
         this.container.rotation = this.rotation;
 
         this.isNew = false;
@@ -273,18 +271,16 @@ export class Obstacle extends GameObject {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(`${this.type.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
-
-        const particleAngle = angle + randomFloat(-0.3, 0.3);
+        this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
             position,
-            zIndex: Math.max((this.type.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
             lifeTime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
-            speed: velFromAngle(particleAngle, randomFloat(2.5, 4.5))
+            speed: velFromAngle((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
         });
     }
 

@@ -21,28 +21,28 @@ import { Player } from "./player";
 
 export class Obstacle extends GameObject {
     health: number;
-    maxHealth: number;
-    maxScale: number;
+    readonly maxHealth: number;
+    readonly maxScale: number;
 
     readonly damageable = true;
     collidable: boolean;
 
-    variation: Variation;
+    readonly variation: Variation;
 
-    spawnHitbox: Hitbox;
+    readonly spawnHitbox: Hitbox;
 
-    loot: LootItem[] = [];
+    readonly loot: LootItem[] = [];
+    readonly lootSpawnOffset?: Vector;
 
-    definition: ObstacleDefinition;
+    readonly definition: Def;
 
-    lootSpawnOffset?: Vector;
-
-    isDoor: boolean;
+    readonly isDoor: boolean;
     door?: {
+        operationStyle: NonNullable<(ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]>
         open: boolean
         closedHitbox: Hitbox
         openHitbox: Hitbox
-        openAltHitbox: Hitbox
+        openAltHitbox?: Hitbox
         offset: number
     };
 
@@ -75,11 +75,7 @@ export class Obstacle extends GameObject {
 
         this.health = this.maxHealth = definition.health;
 
-        let hitboxRotation: Orientation = 0;
-
-        if (this.definition.rotationMode === RotationMode.Limited) {
-            hitboxRotation = rotation as Orientation;
-        }
+        const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? rotation as Orientation : 0;
 
         this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
 
@@ -88,19 +84,17 @@ export class Obstacle extends GameObject {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            const lootTable = LootTables[this.type.idString];
-            const count = random(lootTable.min, lootTable.max);
+            const lootTable = LootTables[this.definition.idString];
+            const drops = lootTable.loot;
 
-            for (let i = 0; i < count; i++) {
-                this.loot = this.loot.concat(getLootTableLoot(lootTable.loot));
-            }
+            this.loot = Array.from(
+                { length: random(lootTable.min, lootTable.max) },
+                () => getLootTableLoot(drops)
+            ).flat();
         }
 
         if (definition.spawnWithLoot) {
-            const lootTable = LootTables[this.type.idString];
-            const items = getLootTableLoot(lootTable.loot);
-
-            for (const item of items) {
+            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot)) {
                 this.game.addLoot(
                     ObjectType.fromString(ObjectCategory.Loot, item.idString),
                     this.position,

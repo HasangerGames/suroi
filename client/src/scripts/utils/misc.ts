@@ -13,12 +13,11 @@ export function randomKillWord(): string {
 
 export function requestFullscreen(): void {
     const elem = document.documentElement;
-    if (elem.requestFullscreen) {
+
+    if (typeof elem.requestFullscreen === "function") {
         void elem.requestFullscreen().catch();
-    } else { // @ts-expect-error shut up eslint
-        if (elem.webkitRequestFullScreen) { // @ts-expect-error shut up eslint
-            void elem.webkitRequestFullScreen().catch();
-        }
+    } else if (typeof elem.webkitRequestFullScreen === "function") {
+        void elem.webkitRequestFullScreen().catch();
     }
 }
 

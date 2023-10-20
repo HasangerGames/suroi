@@ -1,13 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { weightedRandom } from "../../../common/src/utils/random";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export class LootItem {
-    idString: string;
-    count: number;
-    constructor(idString: string, count: number) {
+    readonly idString: ReferenceTo<LootDefinition>;
+    readonly count: number;
+
+    constructor(idString: ReferenceTo<LootDefinition>, count: number) {
         this.idString = idString;
         this.count = count;
     }
@@ -36,7 +36,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
 
         loot.push(new LootItem(type, selectedItem.count ?? 1));
 
-        const definition = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, type).definition;
+        const definition = Loots.getByIDString(type);
         if (definition === undefined) {
             throw new Error(`Unknown loot item: ${type}`);
         }
