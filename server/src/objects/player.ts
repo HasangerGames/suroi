@@ -766,18 +766,21 @@ export class Player extends GameObject {
                 this.position
             );
         }
+
         if (this.inventory.vest && this.inventory.vest.noDrop !== true) {
             this.game.addLoot(
                 this.inventory.vest,
                 this.position
             );
         }
-        if (!this.inventory.backpack.noDrop) {
+
+        if (this.inventory.backpack && this.inventory.backpack?.noDrop !== true) {
             this.game.addLoot(
                 this.inventory.backpack,
                 this.position
             );
         }
+
         if (this.loadout.skin.notInLoadout) {
             this.game.addLoot(
                 this.loadout.skin,
@@ -785,7 +788,6 @@ export class Player extends GameObject {
             );
         }
 
-        //@ts-expect-error they're dead so does it matter
         this.inventory.helmet = this.inventory.vest = this.inventory.backpack = undefined;
 
         // Create death marker
@@ -821,7 +823,7 @@ export class Player extends GameObject {
             invulnerable: this.invulnerable,
             helmet: this.inventory.helmet?.level ?? 0,
             vest: this.inventory.vest?.level ?? 0,
-            backpack: this.inventory.backpack.level,
+            backpack: this.inventory.backpack?.level ?? 0,
             skin: this.loadout.skin,
             activeItem: this.activeItem.definition,
             action: {

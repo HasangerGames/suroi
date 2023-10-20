@@ -118,7 +118,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
             case ItemType.Ammo: {
                 const idString = this.definition.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = inventory.backpack.maxCapacity[idString];
+                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Melee: {
@@ -137,7 +137,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
                 return false;
             }
             case ItemType.Backpack: {
-                return this.definition.level > inventory.backpack.level;
+                return this.definition.level > (inventory.backpack?.level ?? 0);
             }
             case ItemType.Scope: {
                 return inventory.items[this.definition.idString] === 0;
@@ -181,7 +181,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
             case ItemType.Ammo: {
                 const idString = this.definition.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = inventory.backpack.maxCapacity[idString];
+                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
 
                 if (currentCount + 1 <= maxCapacity) {
                     if (currentCount + this.count <= maxCapacity) {
@@ -211,7 +211,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
                 break;
             }
             case ItemType.Backpack: {
-                if (player.inventory.backpack.level > 0) createNewItem(player.inventory.backpack);
+                if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = this.definition;
 
                 player.fullDirtyObjects.add(player);
