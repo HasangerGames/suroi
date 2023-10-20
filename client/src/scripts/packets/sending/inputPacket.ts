@@ -41,8 +41,9 @@ export class InputPacket extends SendingPacket {
                 break;
             }
             case InputActions.UseConsumableItem: {
-                stream.writeUint8(Loots.idStringToNumber[player.consumableToConsume]);
-                player.consumableToConsume = "";
+                stream.writeUint8(Loots.idStringToNumber[player.consumableToConsume?.idString ?? ""]);
+                //                    we're in big trouble if the nullish coalescing triggers ^^^^^
+                player.consumableToConsume = undefined;
                 break;
             }
         }

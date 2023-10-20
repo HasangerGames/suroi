@@ -3,11 +3,11 @@ import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/cons
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { HealingItems } from "../../../../common/src/definitions/healingItems";
+import { HealingItems, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -109,7 +109,7 @@ export class PlayerManager {
 
     itemToSwitch = -1;
     itemToDrop = -1;
-    consumableToConsume = "";
+    consumableToConsume?: HealingItemDefinition | ScopeDefinition;
 
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }
@@ -168,7 +168,7 @@ export class PlayerManager {
         this.action = InputActions.Cancel;
     }
 
-    useItem(item: string): void {
+    useItem(item: HealingItemDefinition | ScopeDefinition): void {
         this.action = InputActions.UseConsumableItem;
         this.consumableToConsume = item;
     }
@@ -192,7 +192,7 @@ export class PlayerManager {
             }
         }
 
-        if (scopeString !== this.scope.idString) this.useItem(scopeString);
+        if (scopeString !== this.scope.idString) this.useItem(reifyDefinition<ScopeDefinition>(scopeString, Scopes));
     }
 
     constructor(game: Game) {
