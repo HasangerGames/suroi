@@ -38,8 +38,10 @@ import { getIconFromInputName } from "./utils/inputManager";
 import { PlayerManager } from "./utils/playerManager";
 import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
-import { consoleVariables } from "./utils/console/variables";
-import { Decal } from "./objects/decal";
+import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 
 export class Game {
     socket!: WebSocket;
@@ -50,7 +52,6 @@ export class Game {
     readonly bullets = new Set<Bullet>();
 
     activePlayerID = -1;
-
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
@@ -160,7 +161,9 @@ export class Game {
                     break;
                 }
                 case PacketType.Map: {
-                    new MapPacket(this._playerManager).deserialize(stream);
+                    const mapPacket = new MapPacket(this.playerManager);
+                    mapPacket.deserialize(stream);
+                    this.map.updateFromPacket(mapPacket);
                     break;
                 }
                 case PacketType.Update: {

@@ -28,11 +28,16 @@ export class Map {
     readonly width: number;
     readonly height: number;
 
+    readonly oceanSize: number;
+    readonly beachSize: number;
+
     readonly beachHitbox: Hitbox;
 
+    readonly seed = random(0, 2 ** 31);
+
     readonly places: Array<{
-        name: string
-        position: Vector
+        readonly name: string
+        readonly position: Vector
     }> = [];
 
     constructor(game: Game, mapName: string) {
@@ -43,16 +48,32 @@ export class Map {
 
         this.width = mapDefinition.width;
         this.height = mapDefinition.height;
+        this.oceanSize = mapDefinition.oceanSize;
+        this.beachSize = mapDefinition.beachSize;
 
-        this.beachHitbox = new ComplexHitbox([
-            new RectangleHitbox(v(0, 0), v(GRID_SIZE, this.height)),
-            new RectangleHitbox(v(0, 0), v(this.width, GRID_SIZE)),
-            new RectangleHitbox(v(this.width - GRID_SIZE, 0), v(this.width, this.height)),
-            new RectangleHitbox(v(0, this.height - GRID_SIZE), v(this.width, this.height))
-        ]);
+        this.terrainGrid = new TerrainGrid(this.width, this.height);
+
+        const { beachPoints, grassPoints } = generateTerrain(
+            this.width,
+            this.height,
+            this.oceanSize,
+            this.beachSize,
+            this.seed
+        );
+
+        const beachHitbox = new PolygonHitbox(...beachPoints);
+        const grassHitbox = new PolygonHitbox(...grassPoints);
+
+        const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
+
+        this.beachHitbox = new ComplexHitbox(
+            new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
+            new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
+            new RectangleHitbox(v(this.width - beachPadding, 0), v(this.width, this.height)),
+            new RectangleHitbox(v(0, this.height - beachPadding), v(this.width, this.height))
+        );
 
         // Generate buildings
-
         for (const building in mapDefinition.buildings) {
             this.generateBuildings(building, mapDefinition.buildings[building]);
         }
@@ -93,7 +114,8 @@ export class Map {
             for (const place of mapDefinition.places) {
                 const position = v(
                     this.width * (place.position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (place.position.y + randomFloat(-0.04, 0.04)));
+                    this.height * (place.position.y + randomFloat(-0.04, 0.04))
+                );
 
                 this.places.push({
                     name: place.name,
@@ -101,6 +123,9 @@ export class Map {
                 });
             }
         }
+
+        this.terrainGrid.addFloor("grass", grassHitbox);
+        this.terrainGrid.addFloor("sand", beachHitbox);
 
         log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }

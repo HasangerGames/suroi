@@ -1,22 +1,23 @@
-import { Container, Graphics, isMobile, LINE_CAP, Sprite, Texture } from "pixi.js";
-import { GasState, GRID_SIZE } from "../../../../common/src/constants";
-import { v, vClone, type Vector, vMul } from "../../../../common/src/utils/vector";
+import "@pixi/graphics-extras";
+import { Container, Graphics, isMobile, LINE_CAP, RenderTexture, Sprite, Text, Texture } from "pixi.js";
+import { GasState, GRID_SIZE, ZIndexes } from "../../../../common/src/constants";
+import { CircleHitbox, PolygonHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
+import { FloorTypes, generateTerrain, TerrainGrid } from "../../../../common/src/utils/mapUtils";
+import { addAdjust } from "../../../../common/src/utils/math";
+import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { type MapPacket } from "../packets/receiving/mapPacket";
 import { consoleVariables } from "../utils/console/variables";
-import { SuroiSprite } from "../utils/pixi";
+import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { drawHitbox, SuroiSprite } from "../utils/pixi";
 import { Gas } from "./gas";
 
 export class Minimap {
     container = new Container();
-
     game: Game;
-
     expanded = false;
-
     visible = true;
-
     mask = new Graphics();
-
     position = v(0, 0);
     lastPosition = v(0, 0);
 
@@ -25,25 +26,22 @@ export class Minimap {
     gasRadius = 0;
     gasGraphics = new Graphics();
 
-    objectsContainer = new Container();
+    readonly objectsContainer = new Container();
 
-    sprite = new Sprite(Texture.EMPTY);
-
-    indicator = new SuroiSprite("player_indicator.svg");
+    readonly sprite = new Sprite(Texture.EMPTY);
+    readonly indicator = new SuroiSprite("player_indicator.svg");
 
     width = 0;
     height = 0;
-
-    oceanPadding = GRID_SIZE * 10;
 
     minimapWidth = 0;
     minimapHeight = 0;
 
     margins = v(0, 0);
 
-    gas = new Gas(1, this.objectsContainer);
-
-    placesContainer = new Container();
+    readonly gas = new Gas(1, this.objectsContainer);
+    readonly placesContainer = new Container();
+    terrainGrid: TerrainGrid;
 
     constructor(game: Game) {
         this.game = game;
@@ -60,7 +58,6 @@ export class Minimap {
 
         this.indicator.scale.set(0.1);
 
-        this.sprite.position.set(-this.oceanPadding);
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         $("#minimap-border").on("click", e => {
@@ -73,17 +70,212 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
+
+        this.terrainGrid = new TerrainGrid(0, 0);
+    }
+
+    updateFromPacket(mapPacket: MapPacket): void {
+        const width = this.width = mapPacket.width;
+        const height = this.height = mapPacket.height;
+
+        const { beachPoints, grassPoints } = generateTerrain(
+            width,
+            height,
+            mapPacket.oceanSize,
+            mapPacket.beachSize,
+            mapPacket.seed
+        );
+
+        this.terrainGrid = new TerrainGrid(width, height);
+
+        // Draw the terrain graphics
+        const terrainGraphics = new Graphics();
+        const mapGraphics = new Graphics();
+        mapGraphics.beginFill(COLORS.grass);
+        mapGraphics.drawRect(0, 0, width, height);
+        mapGraphics.endFill();
+
+        const drawTerrain = (ctx: Graphics, scale: number): void => {
+            ctx.zIndex = ZIndexes.Ground;
+            ctx.beginFill();
+
+            ctx.fill.color = COLORS.water.toNumber();
+            ctx.drawRect(0, 0, width * scale, height * scale);
+
+            const beach = scale === 1 ? beachPoints : beachPoints.map(point => vMul(point, scale));
+            // The grass is a hole in the map shape, the background clear color is the grass color
+            ctx.beginHole();
+            ctx.drawRoundedShape?.(beach, 20 * scale);
+            ctx.endHole();
+
+            ctx.fill.color = COLORS.beach.toNumber();
+
+            ctx.drawRoundedShape?.(beach, 20 * scale);
+
+            ctx.beginHole();
+
+            const grass = scale === 1 ? grassPoints : grassPoints.map(point => vMul(point, scale));
+            ctx.drawRoundedShape?.(grass, 20 * scale);
+
+            ctx.endHole();
+
+            ctx.lineStyle({
+                color: 0x000000,
+                alpha: 0.25,
+                width: 2
+            });
+
+            for (let x = 0; x <= width; x += GRID_SIZE) {
+                ctx.moveTo(x * scale, 0);
+                ctx.lineTo(x * scale, height * scale);
+            }
+
+            for (let y = 0; y <= height; y += GRID_SIZE) {
+                ctx.moveTo(0, y * scale);
+                ctx.lineTo(width * scale, y * scale);
+            }
+
+            ctx.endFill();
+            ctx.lineStyle();
+
+            for (const building of mapPacket.buildings) {
+                const definition = building.type;
+                if (definition.groundGraphics) {
+                    for (const ground of definition.groundGraphics) {
+                        ctx.beginFill(ground.color);
+
+                        const hitbox = ground.hitbox.transform(building.position, 1, building.orientation);
+                        if (hitbox instanceof RectangleHitbox) {
+                            const width = hitbox.max.x - hitbox.min.x;
+                            const height = hitbox.max.y - hitbox.min.y;
+                            ctx.drawRect(hitbox.min.x * scale, hitbox.min.y * scale, width * scale, height * scale);
+                        } else if (hitbox instanceof CircleHitbox) {
+                            ctx.arc(hitbox.position.x * scale, hitbox.position.y * scale, hitbox.radius * scale, 0, Math.PI * 2);
+                        }
+                        ctx.closePath();
+                        ctx.endFill();
+                    }
+                }
+            }
+        };
+        drawTerrain(terrainGraphics, PIXI_SCALE);
+        drawTerrain(mapGraphics, 1);
+
+        this.game.camera.container.addChild(terrainGraphics);
+
+        // draw the minimap obstacles
+        const mapRender = new Container();
+        mapRender.addChild(mapGraphics);
+
+        for (const obstacle of mapPacket.obstacles) {
+            const definition = obstacle.type;
+
+            let textureId = definition.idString;
+            if (obstacle.variation) {
+                textureId += `_${obstacle.variation + 1}`;
+            }
+
+            // Create the object image
+            const image = new SuroiSprite(`${textureId}`)
+                .setVPos(obstacle.position).setRotation(obstacle.rotation)
+                .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+
+            image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
+            mapRender.addChild(image);
+        }
+
+        for (const building of mapPacket.buildings) {
+            const definition = building.type;
+
+            for (const image of definition.floorImages ?? []) {
+                const sprite = new SuroiSprite(image.key)
+                    .setVPos(addAdjust(building.position, image.position, building.orientation))
+                    .setRotation(building.rotation)
+                    .setZIndex(ZIndexes.Ground);
+
+                sprite.scale.set(1 / PIXI_SCALE);
+                mapRender.addChild(sprite);
+            }
+
+            for (const image of definition.ceilingImages ?? []) {
+                const sprite = new SuroiSprite(image.key)
+                    .setVPos(addAdjust(building.position, image.position, building.orientation))
+                    .setRotation(building.rotation)
+                    .setZIndex(ZIndexes.BuildingsCeiling);
+
+                sprite.scale.set(1 / PIXI_SCALE);
+                mapRender.addChild(sprite);
+            }
+
+            for (const floor of definition.floors ?? []) {
+                const hitbox = floor.hitbox.transform(building.position, 1, building.orientation);
+                this.terrainGrid.addFloor(floor.type, hitbox);
+            }
+        }
+        mapRender.sortChildren();
+
+        this.terrainGrid.addFloor("grass", new PolygonHitbox(...grassPoints));
+        this.terrainGrid.addFloor("sand", new PolygonHitbox(...beachPoints));
+
+        // Render all obstacles and buildings to a texture
+        const renderTexture = RenderTexture.create({
+            width,
+            height,
+            resolution: isMobile.any ? 1 : 2
+        });
+        this.game.pixi.renderer.render(mapRender, { renderTexture });
+        this.sprite.texture.destroy(true);
+        this.sprite.texture = renderTexture;
+        mapRender.destroy({
+            children: true,
+            texture: false
+        });
+
+        // Add the places
+        this.placesContainer.removeChildren();
+        for (const place of mapPacket.places) {
+            const text = new Text(place.name, {
+                fill: "white",
+                fontFamily: "Inter",
+                fontWeight: "600",
+                stroke: "black",
+                strokeThickness: 2,
+                fontSize: 18,
+                dropShadow: true,
+                dropShadowAlpha: 0.8,
+                dropShadowColor: "black",
+                dropShadowBlur: 2
+            });
+            text.alpha = 0.7;
+            text.anchor.set(0.5);
+            text.position.copyFrom(place.position);
+            this.placesContainer.addChild(text);
+        }
+        this.resize();
+
+        if (HITBOX_DEBUG_MODE) {
+            const debugGraphics = new Graphics();
+            debugGraphics.zIndex = 99;
+            for (const [hitbox, type] of this.terrainGrid.floors) {
+                drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
+            }
+            this.game.camera.container.addChild(debugGraphics);
+        }
     }
 
     update(): void {
         this.gas.updateFrom(this.game.gas);
         this.gas.update();
         // only re-render gas line and circle if something changed
-        if ((this.position.x === this.lastPosition.x &&
-            this.position.y === this.lastPosition.y &&
-            this.gas.newRadius === this.gasRadius &&
-            this.gas.newPosition.x === this.gasPos.x &&
-            this.gas.newPosition.y === this.gasPos.y) || this.gas.state === GasState.Inactive) return;
+        if (
+            (
+                this.position.x === this.lastPosition.x &&
+                this.position.y === this.lastPosition.y &&
+                this.gas.newRadius === this.gasRadius &&
+                this.gas.newPosition.x === this.gasPos.x &&
+                this.gas.newPosition.y === this.gasPos.y
+            ) || this.gas.state === GasState.Inactive
+        ) return;
 
         this.lastPosition = this.position;
         this.gasPos = this.gas.newPosition;
@@ -114,10 +306,10 @@ export class Minimap {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
             const smallestDim = Math.min(screenHeight, screenWidth);
-            this.container.scale.set(smallestDim / (this.height + this.oceanPadding));
+            this.container.scale.set(smallestDim / this.height);
             // noinspection JSSuspiciousNameCombination
-            this.minimapWidth = (this.sprite.width - this.oceanPadding) * this.container.scale.x;
-            this.minimapHeight = (this.sprite.height - this.oceanPadding) * this.container.scale.y;
+            this.minimapWidth = this.sprite.width * this.container.scale.x;
+            this.minimapHeight = this.sprite.height * this.container.scale.y;
             this.margins = v(screenWidth / 2 - (this.minimapWidth / 2), screenHeight / 2 - (this.minimapHeight / 2));
 
             const closeButton = $("#btn-close-minimap");
@@ -164,7 +356,7 @@ export class Minimap {
     updatePosition(): void {
         if (this.expanded) {
             this.container.position.set(window.innerWidth / 2, window.innerHeight / 2 - this.minimapHeight / 2);
-            this.objectsContainer.position.set(-this.width / 2, this.oceanPadding / 2);
+            this.objectsContainer.position.set(-this.width / 2, 0);
             return;
         }
         const pos = vClone(this.position);

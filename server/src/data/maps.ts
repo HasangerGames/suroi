@@ -13,6 +13,8 @@ import { type Map } from "../map";
 interface MapDefinition {
     readonly width: number
     readonly height: number
+    readonly oceanSize: number
+    readonly beachSize: number
     readonly buildings?: Record<string, number>
     readonly obstacles?: Record<string, number>
 
@@ -47,8 +49,10 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
-        width: 1024,
-        height: 1024,
+        width: 1344,
+        height: 1344,
+        oceanSize: 144,
+        beachSize: 32,
         buildings: {
             refinery: 1,
             warehouse: 4,
@@ -89,21 +93,23 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Banana", position: v(0.14, 0.12) },
-            { name: "Takedown", position: v(0.14, 0.88) },
-            { name: "Lavlandet", position: v(0.88, 0.12) },
-            { name: "Noskin Narrows", position: v(0.82, 0.88) },
-            { name: "Mt. Sanger", position: v(0.5, 0.3) },
-            { name: "Deepwood", position: v(0.5, 0.7) }
+            { name: "Banana", position: v(0.23, 0.2) },
+            { name: "Takedown", position: v(0.23, 0.8) },
+            { name: "Lavlandet", position: v(0.75, 0.2) },
+            { name: "Noskin Narrows", position: v(0.72, 0.8) },
+            { name: "Mt. Sanger", position: v(0.5, 0.35) },
+            { name: "Deepwood", position: v(0.5, 0.65) }
         ]
     },
     debug: {
         width: 1024,
         height: 1024,
+        beachSize: 16,
+        oceanSize: 160,
         genCallback: (map: Map) => {
-            // Generate all Buildings
+            // Generate all buildings
 
-            const buildingPos = v(map.width / 2, map.height / 2 - 50);
+            const buildingPos = v(200, map.height - 200);
             const buildingStartPos = vClone(buildingPos);
 
             for (const building of Buildings.definitions.filter(definition => definition.idString !== "porta_potty")) {
@@ -115,8 +121,8 @@ export const Maps: Record<string, MapDefinition> = {
                 buildingPos.x += 100;
             }
 
-            // Generate all Obstacles
-            const obstaclePos = v(map.width / 2 - 140, map.height / 2);
+            // Generate all obstacles
+            const obstaclePos = v(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
@@ -153,6 +159,8 @@ export const Maps: Record<string, MapDefinition> = {
     arena: {
         width: 512,
         height: 512,
+        beachSize: 16,
+        oceanSize: 80,
         genCallback: (map: Map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
@@ -239,18 +247,13 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "stark is noob", position: v(0.5, 0.5) }
         ]
     },
-    refinery: {
-        width: 512,
-        height: 512,
+    single: {
+        width: 300,
+        height: 300,
+        beachSize: 16,
+        oceanSize: 16,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "refinery"), v(this.width / 2, this.height / 2), 0);
-        }
-    },
-    small_house: {
-        width: 512,
-        height: 512,
-        genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("small_house", v(this.width / 2, this.height / 2), 0);
         }
     }
 };

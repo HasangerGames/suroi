@@ -97,6 +97,11 @@ export class SuroiSprite extends Sprite {
         return this;
     }
 
+    setTint(tint: ColorSource): SuroiSprite {
+        this.tint = tint;
+        return this;
+    }
+
     setZIndex(zIndex: number): SuroiSprite {
         this.zIndex = zIndex;
         return this;
@@ -112,13 +117,15 @@ export function toPixiCoords(pos: Vector): Vector {
     return vMul(pos, PIXI_SCALE);
 }
 
-export function drawHitbox(hitbox: Hitbox, color: ColorSource, graphics: Graphics): Graphics {
+export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSource, graphics: T): T {
     graphics.lineStyle({
         color,
         width: 2
     });
+
     graphics.beginFill();
     graphics.fill.alpha = 0;
+
     if (hitbox instanceof RectangleHitbox) {
         const min = toPixiCoords(hitbox.min);
         const max = toPixiCoords(hitbox.max);
@@ -132,7 +139,10 @@ export function drawHitbox(hitbox: Hitbox, color: ColorSource, graphics: Graphic
         graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
     } else if (hitbox instanceof ComplexHitbox) {
         for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
+    } else if (hitbox instanceof PolygonHitbox) {
+        graphics.drawPolygon(hitbox.points.map(point => toPixiCoords(point)));
     }
+
     graphics.closePath().endFill();
 
     return graphics;

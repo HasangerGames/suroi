@@ -1,15 +1,16 @@
-import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
-import { type Obstacle } from "../../objects/obstacle";
+import { Building } from "../../objects/building";
+import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
     override readonly type = PacketType.Map;
 
-    game: Game;
+    readonly game: Game;
 
     constructor(game: Game) {
         // This packet is only created a single time and this.player is never used
@@ -23,8 +24,11 @@ export class MapPacket extends SendingPacket {
 
         const map = this.game.map;
 
+        stream.writeUint32(map.seed);
         stream.writeUint16(map.width);
         stream.writeUint16(map.height);
+        stream.writeUint16(map.oceanSize);
+        stream.writeUint16(map.beachSize);
 
         stream.writeBits(this.game.minimapObjects.size, 11);
 

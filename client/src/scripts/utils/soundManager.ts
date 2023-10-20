@@ -1,8 +1,8 @@
 import { Howl } from "howler";
-import { FloorTypes } from "../../../../common/src/definitions/buildings";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { clamp } from "../../../../common/src/utils/math";
 import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { consoleVariables } from "./console/variables";

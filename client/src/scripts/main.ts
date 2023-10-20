@@ -194,7 +194,7 @@ $(async(): Promise<void> => {
 
     const app = new Application<HTMLCanvasElement>({
         resizeTo: window,
-        background: COLORS.water,
+        background: COLORS.grass,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1
