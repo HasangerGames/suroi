@@ -242,11 +242,12 @@ export class Player extends GameObject {
     private _action?: Action | undefined;
     get action(): Action | undefined { return this._action; }
     set action(value: Action | undefined) {
+        const wasReload = this._action?.type === PlayerActions.Reload;
         this._action = value;
 
         // The action slot is now free, meaning our player isn't doing anything
-        // Let's try reloading our empty gun then
-        if (value === undefined && this.activeItem instanceof GunItem && this.activeItem.ammo <= 0) {
+        // Let's try reloading our empty gun then, unless we just cancelled a reload
+        if (!wasReload && value === undefined && this.activeItem instanceof GunItem && this.activeItem.ammo <= 0) {
             this._action = new ReloadAction(this, this.activeItem);
         }
     }
