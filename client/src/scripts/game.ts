@@ -39,7 +39,6 @@ import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
-import { Decal } from "./objects/decal";
 import { consoleVariables } from "./utils/console/variables";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
 import { keybinds } from "./utils/console/gameConsole";
@@ -385,7 +384,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string => getIconFromInputName(keybinds.getInputsBoundToAction("interact")[0]);
+        const getPickupBind = (): string => keybinds.getInputsBoundToAction("interact")[0];
 
         let skipLootCheck = true;
 

@@ -236,9 +236,11 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
             case event.deltaZ > 0: { key = "MWheelForwards"; break; }
             case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
         }
+
         if (key === "") {
             console.error("An unrecognized scroll wheel event was received: ", event);
         }
+
         return key;
     }
 

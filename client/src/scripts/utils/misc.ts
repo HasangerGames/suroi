@@ -11,6 +11,13 @@ export function randomKillWord(): string {
     return killWords[random(0, killWords.length - 1)];
 }
 
+declare global {
+    interface Element {
+        requestFullscreen: (options?: FullscreenOptions) => Promise<void>
+        webkitRequestFullScreen?: (options?: FullscreenOptions) => Promise<void>
+    }
+}
+
 export function requestFullscreen(): void {
     const elem = document.documentElement;
 

@@ -16,18 +16,18 @@ import { Player } from "./player";
 type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
 
 export interface DamageRecord {
-    object: Obstacle | Player
-    damage: number
-    weapon: Weapon
-    source: GameObject
-    position: Vector
+    readonly object: Obstacle | Player
+    readonly damage: number
+    readonly weapon: Weapon
+    readonly source: GameObject
+    readonly position: Vector
 }
 
 export interface ServerBulletOptions {
-    position: Vector
-    rotation: number
-    reflectionCount?: number
-    variance?: number
+    readonly position: Vector
+    readonly rotation: number
+    readonly reflectionCount?: number
+    readonly variance?: number
 }
 
 export class Bullet extends BaseBullet {
@@ -82,6 +82,7 @@ export class Bullet extends BaseBullet {
                     source: this.shooter,
                     position: collision.intersection.point
                 });
+
                 if (this.definition.penetration?.players) continue;
                 this.dead = true;
                 break;
