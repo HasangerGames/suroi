@@ -1,7 +1,7 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { type BuildingDefinition, Buildings } from "../../common/src/definitions/buildings";
 import { Decals } from "../../common/src/definitions/decals";
-import { type ObstacleDefinition, RotationMode, Obstacles } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     CircleHitbox,
@@ -135,7 +135,7 @@ export class Map {
                 const wide = !hasWideRiver && randomBoolean();
                 if (wide) hasWideRiver = true;
                 return new River(
-                    wide ? randomGenerator.get(60, 70) : randomGenerator.get(20, 30),
+                    wide ? randomGenerator.get(50, 60) : randomGenerator.get(20, 30),
                     wide ? 15 : 9,
                     riverPoints
                 );
@@ -159,6 +159,42 @@ export class Map {
         this.terrainGrid.addFloor("sand", terrain.beach);
 
         this.riverSpawnHitboxes = terrain.riverSpawnHitboxes;
+
+        // TODO Make a specialBuildings property
+        if (mapName === "main") {
+            const width = this.width; const height = this.height; const shoreDist = 285; const sideDist = 1024;
+            const initialHitbox = Buildings.getByIDString("port").spawnHitbox;
+            let collided = true;
+            let position: Vector | undefined;
+            let orientation: Orientation | undefined;
+            for (let attempts = 0; collided && attempts < 200; attempts++) {
+                orientation = random(0, 3) as Orientation;
+                switch (orientation) {
+                    case 0:
+                        position = v(width - shoreDist, randomFloat(sideDist, height - sideDist));
+                        break;
+                    case 1:
+                        position = v(randomFloat(sideDist, width - sideDist), shoreDist);
+                        break;
+                    case 2:
+                        position = v(shoreDist, randomFloat(sideDist, height - sideDist));
+                        break;
+                    case 3:
+                        position = v(randomFloat(sideDist, width - sideDist), height - shoreDist);
+                        break;
+                }
+
+                collided = false;
+                const hitbox = initialHitbox.transform(position, 1, orientation);
+                for (const river of this.riverSpawnHitboxes) {
+                    if (river.isPointInside(position) || river.collidesWith(hitbox)) {
+                        collided = true;
+                        break;
+                    }
+                }
+            }
+            if (position !== undefined && orientation !== undefined) this.generateBuilding("port", position, orientation);
+        }
 
         // Generate buildings
         for (const building in mapDefinition.buildings) {

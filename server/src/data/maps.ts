@@ -56,7 +56,7 @@ export const Maps: Record<string, MapDefinition> = {
     main: {
         width: 1344,
         height: 1344,
-        oceanSize: 144,
+        oceanSize: 128,
         beachSize: 32,
         buildings: {
             refinery: 1,
