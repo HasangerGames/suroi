@@ -16,7 +16,7 @@ export function explosion(game: Game, definition: ExplosionDefinition | Referenc
     image.tint = definition.animation.tint;
     image.setVPos(pixiPos);
 
-    game.camera.container.addChild(image);
+    game.camera.addObject(image);
 
     /* eslint-disable no-new */
 

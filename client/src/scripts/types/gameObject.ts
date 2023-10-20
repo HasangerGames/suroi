@@ -70,12 +70,12 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
         this.container = new Container();
 
-        this.game.camera.container.addChild(this.container);
+        this.game.camera.addObject(this.container);
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics = new Graphics();
             this.debugGraphics.zIndex = 999;
-            this.game.camera.container.addChild(this.debugGraphics);
+            this.game.camera.addObject(this.debugGraphics);
         }
     }
 

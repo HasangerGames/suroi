@@ -374,11 +374,11 @@ export class PolygonHitbox extends Hitbox {
         throw new Error("Not Implemented");
     }
 
-    override resolveCollision(that: Hitbox): void {
+    override resolveCollision(_that: Hitbox): void {
         throw new Error("Not Implemented");
     }
 
-    override distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+    override distanceTo(_that: CircleHitbox | RectangleHitbox): CollisionRecord {
         throw new Error("Not Implemented");
     }
 
@@ -398,7 +398,7 @@ export class PolygonHitbox extends Hitbox {
         }
     }
 
-    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+    override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {
         throw new Error("Not Implemented");
     }
 

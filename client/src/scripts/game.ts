@@ -107,8 +107,6 @@ export class Game {
             }
         }, 500);
 
-        window.addEventListener("resize", this.resize.bind(this));
-
         if (!this.musicPlaying) {
             const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
 
@@ -147,7 +145,7 @@ export class Game {
             this.sendPacket(new JoinPacket(this._playerManager));
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
-            this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
+            this.camera.addObject(this.playersContainer, this.bulletsContainer);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -280,10 +278,6 @@ export class Game {
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
-    }
-
-    resize(): void {
-        this.camera.resize();
     }
 
     render(): void {
