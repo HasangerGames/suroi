@@ -549,7 +549,7 @@ export function setupUI(game: Game): void {
         </div>`);
 
         $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.playerManager.useItem(scope.idString);
+            game.playerManager.useItem(scope);
             e.stopPropagation();
         });
         if (UI_DEBUG_MODE) {
@@ -570,7 +570,7 @@ export function setupUI(game: Game): void {
         </div>`);
 
         $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.playerManager.useItem(item.idString);
+            game.playerManager.useItem(item);
             e.stopPropagation();
         });
     }
