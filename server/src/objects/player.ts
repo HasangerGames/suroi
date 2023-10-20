@@ -1,6 +1,5 @@
 import { type WebSocket } from "uWebSockets.js";
 import { AnimationType, INVENTORY_MAX_WEAPONS, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
@@ -15,7 +14,7 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, type Action, ReloadAction } from "../inventory/action";
+import { HealingAction, ReloadAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
@@ -767,8 +766,8 @@ export class Player extends GameObject {
             );
         }
 
-        this.inventory.helmet = this.inventory.vest = undefined;
-        this.inventory.backpack = Loots.getByIDString<BackpackDefinition>("bag");
+        //@ts-expect-error they're dead so does it matter
+        this.inventory.helmet = this.inventory.vest = this.inventory.backpack = undefined;
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
