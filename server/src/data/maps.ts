@@ -294,7 +294,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("port", v(this.width / 2, this.height / 2), 0);
             /*for (let i = 1; i <= 10; i++) {
                 map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
             }*/
@@ -315,7 +315,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 16,
         oceanSize: 16,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("small_house", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {
@@ -332,8 +332,8 @@ export const Maps: Record<string, MapDefinition> = {
                 player.inventory.items[gun.ammoType] = Infinity;
                 player.disableInvulnerability();
                 //setInterval(() => player.activeItem.useItem(), 30);
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.idString), v(16, 32 + (16 * i)));
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.ammoType), v(16, 32 + (16 * i)), Infinity);
+                map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
+                map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
             }
         }
