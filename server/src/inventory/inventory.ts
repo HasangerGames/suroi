@@ -30,7 +30,7 @@ export class Inventory {
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
-    backpack: BackpackDefinition = Loots.getByIDString("bag");
+    backpack?: BackpackDefinition = Loots.getByIDString("bag");
 
     private _scope!: ScopeDefinition;
 
@@ -313,7 +313,7 @@ export class Inventory {
             */
             const overAmount = reifyDefinition<AmmoDefinition>(ammoType, Ammos).ephemeral === true || this.owner.dead
                 ? 0
-                : this.items[ammoType] - this.backpack.maxCapacity[ammoType];
+                : this.items[ammoType] - (this.backpack?.maxCapacity[ammoType] ?? 0);
 
             if (overAmount > 0) {
                 this.items[ammoType] -= overAmount;
@@ -465,7 +465,7 @@ export class Inventory {
         stream.writeBoolean(inventoryDirty);
         if (inventoryDirty) {
             this.owner.dirty.inventory = false;
-            stream.writeBits(this.backpack.level, 2);
+            stream.writeBits(this.backpack?.level ?? 0, 2);
             stream.writeBoolean(this.owner.dead); // if the owner is dead, then everything is 0
 
             if (!this.owner.dead) {
