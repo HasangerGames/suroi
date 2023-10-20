@@ -32,9 +32,8 @@ export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idSt
 
 export function reifyDefinition<T extends ObjectDefinition, U extends T = T>(definition: U | ReferenceTo<U>, collection: ObjectDefinitions<T> | T[]): U {
     if (typeof definition !== "string") return definition;
-    if (Array.isArray(collection)) return collection.find(def => def.idString === definition) as U
+    if (Array.isArray(collection)) return collection.find(def => def.idString === definition) as U;
     return collection.getByIDString<U>(definition);
-
 }
 
 // expand this as needed

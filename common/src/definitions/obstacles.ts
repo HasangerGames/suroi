@@ -48,9 +48,9 @@ export type ObstacleDefinition = ObjectDefinition & {
             } | {
                 readonly operationStyle: "slide"
                 /**
-                     * Determines how much the door slides. 1 means it'll be displaced by its entire width,
-                     * 0.5 means it'll be displaced by half its width, etc
-                     */
+                         * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+                         * 0.5 means it'll be displaced by half its width, etc
+                         */
                 readonly slideFactor?: number
             }
         )
@@ -1262,8 +1262,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
-            hideOnMap: false,
-            invisible: false,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

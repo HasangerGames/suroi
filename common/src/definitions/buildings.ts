@@ -97,7 +97,6 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         spawnHitbox,
         ceilingHitbox,
         scopeHitbox: RectangleHitbox.fromRect(14, 28),
-        floorImages: [],
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
@@ -1228,14 +1227,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "crane",
         name: "Crane",
         spawnHitbox: RectangleHitbox.fromRect(100, 220, v(0, 0)),
-        floorImages: [],
         ceilingImages: [{
             key: "crane_ceiling",
             position: v(55.9, 0)
         }
         ],
         ceilingZIndex: 100,
-        floors: [],
         obstacles: [
             {
                 id: "crane_base",
@@ -1261,7 +1258,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "port_shed_ceiling",
             position: v(-0.8, -1.7)
         }],
-        floors: [],
         obstacles: [
             {
                 id: "port_shed_exterior",
@@ -1309,12 +1305,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "container_11",
         name: "Invisible Container",
-        spawnHitbox: RectangleHitbox.fromRect(16, 30),
-        floorImages: [],
-        ceilingImages: [],
-        obstacles: [],
-        subBuildings: [],
-        floors: []
+        spawnHitbox: RectangleHitbox.fromRect(16, 30)
     },
     {
         idString: "ship",
@@ -1435,21 +1426,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(31, -110),
                 orientation: 0
             }
-        ],
-        floors: [
-
         ]
     },
     {
         idString: "port",
         name: "Port",
         spawnHitbox: RectangleHitbox.fromRect(430, 425, v(50, 0)),
-        floorImages: [
-
-        ],
-        ceilingImages: [
-
-        ],
         groundGraphics: [
             { color: 0x626262, hitbox: RectangleHitbox.fromRect(315, 425, v(0, 0)) },
             { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
@@ -1485,7 +1467,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-77.74, -165.82)) },
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-50.76, -166.28)) }
         ],
-        floors: [],
         decals: [
             // Group 1
             {
