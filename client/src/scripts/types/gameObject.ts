@@ -1,8 +1,6 @@
 import { Container, Graphics } from "pixi.js";
-import { type ObjectCategory, TICKS_PER_SECOND } from "../../../../common/src/constants";
+import { TICKS_PER_SECOND, type ObjectCategory } from "../../../../common/src/constants";
 import { vecLerp } from "../../../../common/src/utils/math";
-import { type ObjectDefinition } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -10,9 +8,9 @@ import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
 
-export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition> {
+export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
-    type: ObjectType<T, U>;
+    abstract readonly type: Cat;
 
     readonly game: Game;
 
@@ -66,9 +64,8 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
 
     readonly container: Container;
 
-    protected constructor(game: Game, type: ObjectType<T, U>, id: number) {
+    protected constructor(game: Game, id: number) {
         this.game = game;
-        this.type = type;
         this.id = id;
 
         this.container = new Container();
@@ -94,5 +91,5 @@ export abstract class GameObject<T extends ObjectCategory = ObjectCategory, U ex
         return this.game.soundManager.play(key, this.position, fallOff, maxDistance);
     }
 
-    abstract updateFromData(data: ObjectsNetData[T]): void;
+    abstract updateFromData(data: ObjectsNetData[Cat]): void;
 }

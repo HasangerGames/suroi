@@ -1,19 +1,21 @@
-import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
-import { type AmmoDefinition, Ammos } from "../../../common/src/definitions/ammos";
+import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type HealingItemDefinition, HealingItems, HealType } from "../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ScopeDefinition, Scopes } from "../../../common/src/definitions/scopes";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
+import { ItemType, reifyDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
 import { type InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
+
+type ReifiableItem = GunItem | MeleeItem | GunDefinition | MeleeDefinition | ReferenceTo<GunDefinition> | ReferenceTo<MeleeDefinition>;
 
 /**
  * A class representing a player's inventory
@@ -26,17 +28,21 @@ export class Inventory {
 
     readonly items: Record<string, number> = {};
 
-    helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
-    vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
-    backpack: ObjectType<ObjectCategory.Loot, BackpackDefinition> = ObjectType.fromString(ObjectCategory.Loot, "bag");
+    helmet?: ArmorDefinition;
+    vest?: ArmorDefinition;
+    backpack: BackpackDefinition = Loots.getByIDString("bag");
 
-    private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+    private _scope!: ScopeDefinition;
 
-    get scope(): ObjectType<ObjectCategory.Loot, ScopeDefinition> {
+    get scope(): ScopeDefinition {
         return this._scope;
     }
 
-    set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
+    set scope(scope: ScopeDefinition | ReferenceTo<ScopeDefinition>) {
+        if (typeof scope === "string") {
+            scope = Loots.getByIDString<ScopeDefinition>(scope);
+        }
+
         this._scope = scope;
         this.owner.dirty.inventory = true;
     }
@@ -61,7 +67,11 @@ export class Inventory {
      */
     private _activeWeaponIndex = 2;
 
-    private _reloadTimeoutID: NodeJS.Timeout | undefined;
+    /**
+     * A reference to the timeout object responsible for scheduling the action
+     * of reloading, kept here in case said action needs to be cancelled
+     */
+    private _reloadTimeoutID?: NodeJS.Timeout;
 
     /**
      * Returns the index pointing to the active weapon
@@ -180,8 +190,9 @@ export class Inventory {
      * @param item The item to convert
      * @returns The corresponding `InventoryItem` subclass
      */
-    private _reifyItem(item: GunItem | MeleeItem | string): GunItem | MeleeItem | undefined {
+    private _reifyItem(item: ReifiableItem): GunItem | MeleeItem | undefined {
         if (item instanceof GunItem || item instanceof MeleeItem) return item;
+        const definition = reifyDefinition<LootDefinition, GunDefinition | MeleeDefinition>(item, Loots);
 
         return new ({
             [ItemType.Gun]: GunItem,
@@ -206,7 +217,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-            [this._weapons[1], this._weapons[0]];
+        [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -218,7 +229,7 @@ export class Inventory {
      * @param item The item to add
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    addOrReplaceWeapon(slot: number, item: GunItem | MeleeItem | string): void {
+    addOrReplaceWeapon(slot: number, item: ReifiableItem): void {
         this.owner.game.fullDirtyObjects.add(this.owner);
 
         /**
@@ -252,7 +263,7 @@ export class Inventory {
      * @param item The item to add
      * @returns The slot in which the item was added, or `-1` if it could not be added
      */
-    appendWeapon(item: GunItem | MeleeItem | string): number {
+    appendWeapon(item: ReifiableItem): number {
         for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
             if (this._weapons[slot] === undefined) {
                 this._setWeapon(slot, this._reifyItem(item));
@@ -368,7 +379,7 @@ export class Inventory {
      * @returns The item that was previously located in the slot, if any
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    private _setWeapon(slot: number, item: GunItem | MeleeItem | undefined): GunItem | MeleeItem | undefined {
+    private _setWeapon(slot: number, item?: GunItem | MeleeItem): GunItem | MeleeItem | undefined {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set weapon in invalid slot '${slot}'`);
 
         const old = this._weapons[slot];
@@ -396,24 +407,21 @@ export class Inventory {
     useItem(itemString: string): void {
         if (!this.items[itemString]) return;
 
-        const item = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, itemString);
-        const definition = item.definition;
+        const definition = Loots.getByIDString(itemString);
 
         switch (definition.itemType) {
             case ItemType.Healing: {
                 // Already consuming something else
                 if (this.owner.action instanceof HealingAction) return;
 
-                const definition = item.definition as HealingItemDefinition;
-
                 if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
                 if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
-                this.owner.executeAction(new HealingAction(this.owner, item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>));
+                this.owner.executeAction(new HealingAction(this.owner, itemString));
                 break;
             }
             case ItemType.Scope: {
-                this.scope = item as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+                this.scope = itemString;
                 break;
             }
         }
@@ -431,7 +439,7 @@ export class Inventory {
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
-                    stream.writeObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(item.type);
+                    stream.writeUint8(Loots.idStringToNumber[item.definition.idString]);
                     // TODO: find a better place to send this stuff
                     if (item instanceof GunItem) {
                         stream.writeUint8(item.ammo);
@@ -457,12 +465,16 @@ export class Inventory {
         stream.writeBoolean(inventoryDirty);
         if (inventoryDirty) {
             this.owner.dirty.inventory = false;
-            stream.writeBits(this.backpack.definition.level, 2);
-            for (const count of Object.values(this.items)) {
-                stream.writeBoolean(count > 0); // Has item
-                if (count > 0) stream.writeBits(count, 9);
+            stream.writeBits(this.backpack.level, 2);
+            stream.writeBoolean(this.owner.dead); // if the owner is dead, then everything is 0
+
+            if (!this.owner.dead) {
+                for (const count of Object.values(this.items)) {
+                    stream.writeBoolean(count > 0); // Has item
+                    if (count > 0) stream.writeBits(count, 9);
+                }
             }
-            stream.writeObjectTypeNoCategory(this.scope);
+            stream.writeUint8(Scopes.indexOf(this._scope));
         }
     }
 }

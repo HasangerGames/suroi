@@ -4,7 +4,7 @@ import { Buildings, type BuildingDefinition } from "../../../../common/src/defin
 import { type Orientation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { velFromAngle } from "../../../../common/src/utils/math";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import type { Game } from "../game";
@@ -14,27 +14,24 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Building extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
+export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject<ObjectCategory.Building> {
+    override readonly type = ObjectCategory.Building;
 
-    ceilingContainer: Container;
+    readonly definition: Def;
 
-    ceilingHitbox!: Hitbox;
+    readonly ceilingContainer: Container;
+    ceilingHitbox?: Hitbox;
+    ceilingTween?: Tween<Container>;
 
     orientation!: Orientation;
 
-    ceilingTween?: Tween<Container>;
-
     ceilingVisible = true;
-
     isNew = true;
 
-    floorHitboxes: Hitbox[] = [];
+    constructor(game: Game, definition: Def | ReferenceTo<Def>, id: number) {
+        super(game, id);
 
-    constructor(game: Game, type: ObjectType, id: number) {
-        super(game, type, id);
-
-        const definition = this.type.definition;
+        this.definition = definition = reifyDefinition(definition, Buildings);
 
         this.container.zIndex = ZIndexes.Ground;
 
@@ -70,7 +67,7 @@ export class Building extends GameObject {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Building]): void {
-        const definition = this.type.definition;
+        const definition = this.definition;
 
         if (data.dead) {
             if (!this.dead && !this.isNew) {

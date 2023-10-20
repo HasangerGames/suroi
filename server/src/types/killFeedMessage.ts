@@ -1,7 +1,7 @@
 import { KillFeedMessageType } from "../../../common/src/constants";
-import { type ObjectType } from "../../../common/src/utils/objectType";
 import { GunItem } from "../inventory/gunItem";
 import { MeleeItem } from "../inventory/meleeItem";
+import { type Explosion } from "../objects/explosion";
 import { type Player } from "../objects/player";
 
 export abstract class KillFeedMessage {
@@ -24,14 +24,16 @@ export class KillKillFeedMessage extends KillFeedMessage {
     override readonly type = KillFeedMessageType.Kill;
     readonly killed: Player;
     readonly killedBy?: Player | "gas";
-    readonly weaponUsed?: GunItem | MeleeItem | ObjectType;
+    readonly weaponUsed?: GunItem | MeleeItem | Explosion;
     readonly kills: number;
 
-    constructor(killed: Player, killedBy?: Player | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType) {
+    constructor(killed: Player, killedBy?: Player | "gas", weaponUsed?: GunItem | MeleeItem | Explosion) {
         super();
         this.killed = killed;
         this.killedBy = killedBy;
         this.weaponUsed = weaponUsed;
-        this.kills = (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0;
+        this.kills = (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true
+            ? weaponUsed.stats.kills
+            : 0;
     }
 }

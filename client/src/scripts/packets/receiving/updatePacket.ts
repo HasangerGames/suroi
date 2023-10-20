@@ -1,6 +1,8 @@
 import $ from "jquery";
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
+import { Explosions, type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
+import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
@@ -206,24 +208,19 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                const source = stream.readObjectType() as Bullet["source"];
-                const position = stream.readPosition();
-                const rotation = stream.readRotation(16);
-                const variance = stream.readFloat(0, 1, 4);
-                const reflectionCount = stream.readBits(2);
-                const sourceID = stream.readObjectID();
-
-                const bullet = new Bullet(game, {
-                    source,
-                    position,
-                    rotation,
-                    reflectionCount,
-                    sourceID,
-                    variance
-                });
-
-                game.bullets.add(bullet);
+                game.bullets.add(
+                    new Bullet(
+                        game,
+                        {
+                            source: stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition,
+                            position: stream.readPosition(),
+                            rotation: stream.readRotation(16),
+                            variance: stream.readFloat(0, 1, 4),
+                            reflectionCount: stream.readBits(2),
+                            sourceID: stream.readObjectID()
+                        }
+                    )
+                );
             }
         }
 
@@ -233,7 +230,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    stream.readObjectTypeNoCategory(ObjectCategory.Explosion),
+                    Explosions.definitions[stream.readUint8()],
                     stream.readPosition()
                 );
             }
@@ -243,9 +240,8 @@ export class UpdatePacket extends ReceivingPacket {
         if (emotesDirty) {
             const emoteCount = stream.readBits(7);
             for (let i = 0; i < emoteCount; i++) {
-                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
-                const playerID = stream.readObjectID();
-                const player = game.objects.get(playerID);
+                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote).definition;
+                const player = game.objects.get(stream.readObjectID());
                 if (player instanceof Player) player.emote(emoteType);
             }
         }

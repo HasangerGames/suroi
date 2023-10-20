@@ -357,8 +357,22 @@ export class Game {
         } catch (e) { }
     }
 
-    addLoot(type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number): Loot {
-        const loot = new Loot(this, type, position, count);
+    /**
+     * Adds a `Loot` item to the game world
+     * @param definition The type of loot to add. Prefer passing `LootDefinition` if possible
+     * @param position The position to spawn this loot at
+     * @param count Optionally define an amount of this loot (note that this does not equate spawning
+     * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
+     * @returns The created loot object
+     */
+    addLoot<Def extends LootDefinition = LootDefinition>(definition: Def | ReferenceTo<Def>, position: Vector, count?: number): Loot<Def> {
+        const loot = new Loot<Def>(
+            this,
+            reifyDefinition(definition, Loots),
+            position,
+            count
+        );
+
         this.loot.add(loot);
         this.grid.addObject(loot);
         return loot;
@@ -384,8 +398,8 @@ export class Game {
         return bullet;
     }
 
-    addExplosion(type: string, position: Vector, source: GameObject): Explosion {
-        const explosion = new Explosion(this, ObjectType.fromString(ObjectCategory.Explosion, type), position, source);
+    addExplosion(type: ReferenceTo<ExplosionDefinition> | ExplosionDefinition, position: Vector, source: GameObject): Explosion {
+        const explosion = new Explosion(this, type, position, source);
         this.explosions.add(explosion);
         return explosion;
     }

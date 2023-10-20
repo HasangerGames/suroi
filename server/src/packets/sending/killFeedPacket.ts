@@ -1,4 +1,5 @@
-import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
+import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
@@ -42,7 +43,14 @@ export class KillFeedPacket extends SendingPacket {
                     const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
                     const shouldTrackStats = canTrackStats && weaponUsed.definition.killstreak === true;
 
-                    stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
+                    stream.writeObjectType(
+                        ObjectType.fromString(
+                            canTrackStats
+                                ? ObjectCategory.Loot
+                                : ObjectCategory.Explosion,
+                            weaponUsed.definition.idString
+                        )
+                    );
                     stream.writeBoolean(shouldTrackStats);
                     if (shouldTrackStats) {
                         stream.writeUint8(killMessage.kills);

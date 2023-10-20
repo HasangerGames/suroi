@@ -1,14 +1,20 @@
-import { type ObjectCategory } from "../../../common/src/constants";
-import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectCategory } from "../../../common/src/constants";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "./player";
 
-export class Emote {
-    type: ObjectType<ObjectCategory.Emote, EmoteDefinition>;
-    player: Player;
+export class Emote<Def extends EmoteDefinition = EmoteDefinition> {
+    readonly type = ObjectCategory.Emote;
+    readonly definition: Def;
+    createObjectType(): ObjectType<ObjectCategory.Emote, Def> {
+        return ObjectType.fromString(this.type, this.definition.idString);
+    }
 
-    constructor(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>, player: Player) {
-        this.type = type;
+    readonly player: Player;
+
+    constructor(definition: ReferenceTo<Def> | Def, player: Player) {
+        this.definition = typeof definition === "string" ? (definition = Emotes.getByIDString<Def>(definition)) : definition;
         this.player = player;
     }
 }
