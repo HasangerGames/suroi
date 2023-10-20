@@ -239,6 +239,7 @@ export class Minimap {
 
         for (const river of terrain.rivers) {
             this.terrainGrid.addFloor("water", river.water);
+            this.terrainGrid.addFloor("sand", river.bank);
         }
 
         this.terrainGrid.addFloor("grass", terrain.grass);

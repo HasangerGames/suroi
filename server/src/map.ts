@@ -87,12 +87,11 @@ export class Map {
         const mapRect = new RectangleHitbox(
             v(mapDefinition.oceanSize, mapDefinition.oceanSize),
             v(this.width - mapDefinition.oceanSize, this.height - mapDefinition.oceanSize)
-        )
+        );
 
         this.rivers = Array.from(
             { length: 3 },
             () => {
-
                 const riverPoints: Vector[] = [];
 
                 const padding = mapDefinition.oceanSize - 10;
@@ -103,7 +102,8 @@ export class Map {
 
                 const halfWidth = this.width / 2;
                 const halfHeight = this.height / 2;
-                const width = this.width - padding, height = this.height - padding;
+                const width = this.width - padding;
+                const height = this.height - padding;
                 if (horizontal) {
                     const topHalf = randomFloat(padding, halfHeight);
                     const bottomHalf = randomFloat(halfHeight, height);
@@ -128,23 +128,6 @@ export class Map {
 
                     if (!mapRect.isPointInside(riverPoints[i])) break;
                 }
-
-                /*const maxMainDeviation = 0.65;
-                const maxSubDeviation = 0.5;
-
-                for (
-                    let i = 1, angle = mainAngle + randomGenerator.get(-maxMainDeviation, maxMainDeviation);
-                    (i < 5 || !new CircleHitbox(0, riverPoints[i - 1]).collidesWith(this.beachHitbox)) && i < 50;
-                    i++, angle = clamp(
-                        angle + randomGenerator.get(-maxSubDeviation, maxSubDeviation),
-                        mainAngle - maxMainDeviation,
-                        mainAngle + maxMainDeviation
-                    )
-                ) {
-                    riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
-                }*/
-
-                //riverPoints.push(end);
 
                 const wide = !hasWideRiver && randomBoolean();
                 if (wide) hasWideRiver = true;
