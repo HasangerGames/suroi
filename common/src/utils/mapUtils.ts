@@ -81,14 +81,14 @@ export function generateTerrain(
     seed: number,
     rivers: River[]
 ): {
-    readonly beach: PolygonHitbox
-    readonly grass: PolygonHitbox
-    readonly rivers: Array<{
-        readonly water: PolygonHitbox
-        readonly bank: PolygonHitbox
-    }>
-    readonly riverSpawnHitboxes: PolygonHitbox[]
-} {
+        readonly beach: PolygonHitbox
+        readonly grass: PolygonHitbox
+        readonly rivers: Array<{
+            readonly water: PolygonHitbox
+            readonly bank: PolygonHitbox
+        }>
+        readonly riverSpawnHitboxes: PolygonHitbox[]
+    } {
     // generate beach and grass
     const beachPadding = oceanSize + beachSize;
 
