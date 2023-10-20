@@ -104,6 +104,17 @@ export class Minimap {
         const beachPoints = terrain.beach.points;
         const grassPoints = terrain.grass.points;
 
+        // drawn map borders
+        const margin = 5120;
+        const realWidth = width * PIXI_SCALE;
+        const realHeight = height * PIXI_SCALE;
+        terrainGraphics.beginFill(COLORS.border);
+        terrainGraphics.drawRect(-margin, -margin, realWidth + margin * 2, margin);
+        terrainGraphics.drawRect(-margin, realHeight, realWidth + margin * 2, margin);
+        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + margin * 2);
+        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + margin * 2);
+        terrainGraphics.endFill();
+
         const drawTerrain = (ctx: Graphics, scale: number): void => {
             ctx.zIndex = ZIndexes.Ground;
             ctx.beginFill();
@@ -187,7 +198,7 @@ export class Minimap {
         drawTerrain(terrainGraphics, PIXI_SCALE);
         drawTerrain(mapGraphics, 1);
 
-        this.game.camera.container.addChild(terrainGraphics);
+        this.game.camera.addObject(terrainGraphics);
 
         // Draw the minimap obstacles
         const mapRender = new Container();
@@ -307,7 +318,7 @@ export class Minimap {
                 debugGraphics.endFill();
             }
 
-            this.game.camera.container.addChild(debugGraphics);
+            this.game.camera.addObject(debugGraphics);
         }
     }
 

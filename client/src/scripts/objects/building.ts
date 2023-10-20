@@ -47,7 +47,7 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
         this.ceilingContainer = new Container();
         this.ceilingContainer.zIndex = definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
-        this.game.camera.container.addChild(this.ceilingContainer);
+        this.game.camera.addObject(this.ceilingContainer);
     }
 
     toggleCeiling(visible: boolean): void {

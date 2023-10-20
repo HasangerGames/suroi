@@ -148,7 +148,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.playersContainer.addChild(this.container);
 
         this.emoteContainer = new Container();
-        this.game.camera.container.addChild(this.emoteContainer);
+        this.game.camera.addObject(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
         this.emoteContainer.zIndex = ZIndexes.Emotes;
         this.emoteContainer.visible = false;
