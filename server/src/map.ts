@@ -10,14 +10,7 @@ import {
     RectangleHitbox
 } from "../../common/src/utils/hitbox";
 import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
-import {
-    addAdjust,
-    addOrientations,
-    angleBetweenPoints,
-    clamp,
-    distance,
-    velFromAngle
-} from "../../common/src/utils/math";
+import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
 import { ObjectType } from "../../common/src/utils/objectType";
 import {
@@ -94,12 +87,12 @@ export class Map {
             { length: 3 },
             () => {
                 const riverPoints: Vector[] = [];
-                const padding = mapDefinition.oceanSize - 10;
+                /*const padding = mapDefinition.oceanSize - 10;
                 let start: Vector;
                 let end: Vector;
                 const horizontal = randomBoolean();
                 const reverse = randomBoolean();
-                /* eslint-disable one-var */
+                /* eslint-disable one-var
                 const halfWidth = this.width / 2, halfHeight = this.height / 2;
                 const width = this.width - padding, height = this.height - padding;
                 if (horizontal) {
@@ -112,26 +105,39 @@ export class Map {
                     const rightHalf = randomFloat(halfWidth, width);
                     start = v(reverse ? rightHalf : leftHalf, padding);
                     end = v(reverse ? leftHalf : rightHalf, this.height - padding);
-                }
+                }*/
+
+                const start = this.beachHitbox.randomPoint();
 
                 riverPoints.push(start);
 
-                const numPoints = 25;
-                const mainAngle = angleBetweenPoints(end, start); // This dictates the general angle the river takes, which ensures it ends on the other side of the map
-                const dist = distance(end, start);
-                const step = dist / numPoints;
-                const maxMainDeviation = 0.65;
+                const mainAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), start);
+                const maxDeviation = 0.5;
+
+                for (
+                    let i = 1, angle = mainAngle + randomGenerator.get(-maxDeviation, maxDeviation);
+                    (i < 5 || !new CircleHitbox(0, riverPoints[i - 1]).collidesWith(this.beachHitbox)) && i < 50;
+                    i++, angle = angle + randomGenerator.get(-maxDeviation, maxDeviation)
+                ) {
+                    riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
+                }
+
+                /*const maxMainDeviation = 0.65;
                 const maxSubDeviation = 0.5;
 
                 for (
                     let i = 1, angle = mainAngle + randomGenerator.get(-maxMainDeviation, maxMainDeviation);
-                    i < numPoints;
-                    i++, angle = clamp(angle + randomGenerator.get(-maxSubDeviation, maxSubDeviation), mainAngle - maxMainDeviation, mainAngle + maxMainDeviation)
+                    (i < 5 || !new CircleHitbox(0, riverPoints[i - 1]).collidesWith(this.beachHitbox)) && i < 50;
+                    i++, angle = clamp(
+                        angle + randomGenerator.get(-maxSubDeviation, maxSubDeviation),
+                        mainAngle - maxMainDeviation,
+                        mainAngle + maxMainDeviation
+                    )
                 ) {
-                    riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, step));
-                }
+                    riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
+                }*/
 
-                riverPoints.push(end);
+                //riverPoints.push(end);
 
                 const wide = !hasWideRiver && randomBoolean();
                 if (wide) hasWideRiver = true;
