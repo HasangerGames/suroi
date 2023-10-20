@@ -11,6 +11,7 @@ export class JoinedPacket extends ReceivingPacket {
                 const emoteType = stream.readObjectTypeNoCategory(ObjectCategory.Emote);
                 $(`#emote-wheel > ${emoteSelectors[i]}`).css("background-image", `url("./img/game/emotes/${emoteType.idString}.svg")`);
             }
+
             $("canvas").addClass("active");
             $("#splash-ui").fadeOut(enablePlayButton);
         }

@@ -34,6 +34,7 @@ import { Minimap } from "./rendering/map";
 import { type GameObject } from "./types/gameObject";
 import { type SendingPacket } from "./types/sendingPacket";
 import { keybinds } from "./utils/console/gameConsole";
+import { consoleVariables } from "./utils/console/variables";
 import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { getIconFromInputName } from "./utils/inputManager";
 import { PlayerManager } from "./utils/playerManager";
@@ -383,7 +384,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string => getIconFromInputName(keybinds.getInputsBoundToAction("interact")[0]);
+        const getPickupBind = (): string => keybinds.getInputsBoundToAction("interact")[0];
 
         let skipLootCheck = true;
 
