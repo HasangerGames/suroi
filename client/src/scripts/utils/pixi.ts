@@ -1,12 +1,4 @@
-import {
-    BaseTexture,
-    type ColorSource,
-    type Graphics,
-    Sprite,
-    Spritesheet,
-    type SpriteSheetJson,
-    Texture
-} from "pixi.js";
+import { BaseTexture, Sprite, Spritesheet, Texture, type ColorSource, type Graphics, type SpriteSheetJson } from "pixi.js";
 import { Buildings } from "../../../../common/src/definitions/buildings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
@@ -33,16 +25,18 @@ export async function loadAtlases(): Promise<void> {
         await spriteSheet.parse();
 
         for (const frame in spriteSheet.textures) {
-            const frameName = frame.replace(/(.svg|.png)/, "");
-            if (textures[frameName]) console.warn(`Duplicated atlas frame key: ${frame}`);
+            const frameName = frame.replace(/(\.svg|\.png)/, "");
+            if (frameName in textures) console.warn(`Duplicated atlas frame key: ${frame}`);
             textures[frameName] = spriteSheet.textures[frame];
         }
     }
+
     for (const building of Buildings.definitions) {
-        for (const image of building.floorImages) {
+        for (const image of building.floorImages ?? []) {
             await loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
         }
-        for (const image of building.ceilingImages) {
+
+        for (const image of building.ceilingImages ?? []) {
             await loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
             if (image.residue) await loadImage(image.residue, require(`/public/img/buildings/${image.residue}.svg`));
         }

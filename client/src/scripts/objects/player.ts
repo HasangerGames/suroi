@@ -9,40 +9,40 @@ import {
 } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
+import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Helmets } from "../../../../common/src/definitions/helmets";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { Vests } from "../../../../common/src/definitions/vests";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { type ItemDefinition, ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../../common/src/utils/objectType";
+import { ItemType, type ReferenceTo, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
 import { consoleVariables } from "../utils/console/variables";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
-import { FloorTypes } from "../../../../common/src/utils/mapUtils";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 
-export class Player extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Player>;
+export class Player extends GameObject<ObjectCategory.Player> {
+    override readonly type = ObjectCategory.Player;
 
     name!: string;
 
-    activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
+    activeItem = Loots.getByIDString("fists");
 
-    oldItem = this.activeItem.idNumber;
+    oldItem = this.activeItem;
 
     isNew = true;
 
@@ -58,7 +58,7 @@ export class Player extends GameObject {
     action = {
         type: PlayerActions.None,
         seq: 0,
-        item: undefined as undefined | ObjectType<ObjectCategory.Loot, HealingItemDefinition>
+        item: undefined as undefined | HealingItemDefinition
     };
 
     damageable = true;
@@ -81,14 +81,16 @@ export class Player extends GameObject {
     readonly emoteContainer: Container;
     healingParticlesEmitter: ParticleEmitter;
 
-    emoteAnim?: Tween<Container>;
-    emoteHideAnim?: Tween<Container>;
+    readonly anims: {
+        emoteAnim?: Tween<Container>
+        emoteHideAnim?: Tween<Container>
 
-    leftFistAnim?: Tween<SuroiSprite>;
-    rightFistAnim?: Tween<SuroiSprite>;
-    weaponAnim?: Tween<SuroiSprite>;
-    muzzleFlashFadeAnim?: Tween<SuroiSprite>;
-    muzzleFlashRecoilAnim?: Tween<SuroiSprite>;
+        leftFistAnim?: Tween<SuroiSprite>
+        rightFistAnim?: Tween<SuroiSprite>
+        weaponAnim?: Tween<SuroiSprite>
+        muzzleFlashFadeAnim?: Tween<SuroiSprite>
+        muzzleFlashRecoilAnim?: Tween<SuroiSprite>
+    } = {};
 
     _emoteHideTimeoutID?: NodeJS.Timeout;
 
@@ -106,7 +108,7 @@ export class Player extends GameObject {
     waterOverlayAnim?: Tween<SuroiSprite>;
 
     constructor(game: Game, id: number) {
-        super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
+        super(game, id);
 
         this.images = {
             aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
@@ -120,7 +122,7 @@ export class Player extends GameObject {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
-            waterOverlay: new SuroiSprite("water_overlay").setVisible(false)
+            waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water)
         };
 
         this.container.addChild(
@@ -159,8 +161,8 @@ export class Player extends GameObject {
             active: false,
             spawnOptions: () => {
                 let frame = "";
-                if (this.action.item?.definition.itemType === ItemType.Healing) {
-                    frame = HealType[this.action.item.definition.healType].toLowerCase();
+                if (this.action.item?.itemType === ItemType.Healing) {
+                    frame = HealType[this.action.item.healType].toLowerCase();
                 }
                 return {
                     frames: `${frame}_particle`,
@@ -181,18 +183,14 @@ export class Player extends GameObject {
             }
         });
 
-        this.container.on("pointerdown", () => {
-            if (this.game.spectating && this.game.activePlayerID !== this.id) {
-                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
-            }
-        });
-        this.container.on("click", () => {
-            if (this.game.spectating && this.game.activePlayerID !== this.id) {
-                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
-            }
-        });
+        const sendSpectatePacket = (): void => {
+            if (!this.game.spectating || this.game.activePlayerID === this.id) return;
 
-        this.images.waterOverlay.tint = COLORS.water;
+            this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+        };
+
+        this.container.on("pointerdown", sendSpectatePacket);
+        this.container.on("click", sendSpectatePacket);
     }
 
     override updateContainerPosition(): void {
@@ -201,7 +199,7 @@ export class Player extends GameObject {
     }
 
     spawnCasingParticles(): void {
-        const weaponDef = this.activeItem.definition as GunDefinition;
+        const weaponDef = this.activeItem as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         if (weaponDef.casingParticles !== undefined) {
@@ -275,11 +273,10 @@ export class Player extends GameObject {
                 this.distSinceLastFootstep = 0;
 
                 if (FloorTypes[floorType].particles) {
-                    const origin = this.hitbox.randomPoint();
                     const options = {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
-                        position: origin,
+                        position: this.hitbox.randomPoint(),
                         lifeTime: 1000,
                         speed: v(0, 0)
                     };
@@ -334,10 +331,10 @@ export class Player extends GameObject {
         if (data.fullUpdate) {
             this.container.alpha = data.invulnerable ? 0.5 : 1;
 
-            this.oldItem = this.activeItem.idNumber;
+            this.oldItem = this.activeItem;
             this.activeItem = data.activeItem;
             if (this.isActivePlayer && !UI_DEBUG_MODE) {
-                $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
+                $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
             }
 
             const skinID = data.skin.idString;
@@ -349,26 +346,29 @@ export class Player extends GameObject {
             this.vestLevel = data.vest;
             this.backpackLevel = data.backpack;
 
-            if (this.action.type !== data.action.type || this.action.seq !== data.action.seq) {
+            const action = data.action;
+
+            if (this.action.type !== action.type || this.action.seq !== action.seq) {
                 let actionTime = 0;
                 let actionSoundName = "";
                 let actionName = "";
                 this.healingParticlesEmitter.active = false;
-                switch (data.action.type) {
+
+                switch (action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
                     case PlayerActions.Reload: {
-                        const weaponDef = (this.activeItem.definition as GunDefinition);
+                        const weaponDef = (this.activeItem as GunDefinition);
                         actionName = "Reloading...";
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${this.activeItem.idString}_reload`;
-                        actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
+                        actionTime = (this.activeItem as GunDefinition).reloadTime;
                         break;
                     }
                     case PlayerActions.UseItem: {
-                        const itemDef = (data.action.item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>).definition;
+                        const itemDef = action.item;
                         actionName = `${itemDef.useText} ${itemDef.name}`;
                         actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
@@ -376,6 +376,7 @@ export class Player extends GameObject {
                         break;
                     }
                 }
+
                 if (this.isActivePlayer) {
                     if (actionName) {
                         $("#action-name").text(actionName);
@@ -389,9 +390,8 @@ export class Player extends GameObject {
                 }
                 if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
             }
-            this.action.type = data.action.type;
-            this.action.seq = data.action.seq;
-            this.action.item = data.action.item;
+            //@ts-expect-error 'item' not existing is okay
+            this.action = action;
 
             this.updateEquipment();
 
@@ -406,25 +406,30 @@ export class Player extends GameObject {
 
             drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
 
-            switch (this.activeItem.definition.itemType) {
+            switch (this.activeItem.itemType) {
                 case ItemType.Gun: {
-                    const weaponDef = this.activeItem.definition as GunDefinition;
                     ctx.lineStyle({
                         color: HITBOX_COLORS.playerWeapon,
                         width: 4
                     });
                     ctx.moveTo(this.container.position.x, this.container.position.y);
-                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(weaponDef.length, 0), this.rotation)));
+                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(this.activeItem.length, 0), this.rotation)));
                     ctx.lineTo(lineEnd.x, lineEnd.y);
                     ctx.endFill();
                     break;
                 }
                 case ItemType.Melee: {
-                    const weaponDef = this.activeItem.definition as MeleeDefinition;
-                    const rotated = vRotate(weaponDef.offset, this.rotation);
-                    const position = vAdd(this.position, rotated);
-                    const hitbox = new CircleHitbox(weaponDef.radius, position);
-                    drawHitbox(hitbox, HITBOX_COLORS.playerWeapon, ctx);
+                    drawHitbox(
+                        new CircleHitbox(
+                            this.activeItem.radius,
+                            vAdd(
+                                this.position,
+                                vRotate(this.activeItem.offset, this.rotation)
+                            )
+                        ),
+                        HITBOX_COLORS.playerWeapon,
+                        ctx
+                    );
                     break;
                 }
             }
@@ -432,23 +437,28 @@ export class Player extends GameObject {
     }
 
     updateFistsPosition(anim: boolean): void {
-        this.leftFistAnim?.kill();
-        this.rightFistAnim?.kill();
-        this.weaponAnim?.kill();
+        this.anims.leftFistAnim?.kill();
+        this.anims.rightFistAnim?.kill();
+        this.anims.weaponAnim?.kill();
 
-        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
         if (anim) {
-            this.leftFistAnim = new Tween(this.game, {
-                target: this.images.leftFist,
-                to: { x: fists.left.x, y: fists.left.y },
-                duration: fists.animationDuration
-            });
-            this.rightFistAnim = new Tween(this.game, {
-                target: this.images.rightFist,
-                to: { x: fists.right.x, y: fists.right.y },
-                duration: fists.animationDuration
-            });
+            this.anims.leftFistAnim = new Tween(
+                this.game, {
+                    target: this.images.leftFist,
+                    to: { x: fists.left.x, y: fists.left.y },
+                    duration: fists.animationDuration
+                }
+            );
+
+            this.anims.rightFistAnim = new Tween(
+                this.game, {
+                    target: this.images.rightFist,
+                    to: { x: fists.right.x, y: fists.right.y },
+                    duration: fists.animationDuration
+                }
+            );
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
             this.images.rightFist.setPos(fists.right.x, fists.right.y);
@@ -456,12 +466,12 @@ export class Player extends GameObject {
 
         if (weaponDef.image) {
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
-            this.images.weapon.setAngle(weaponDef.image.angle);
+            this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
         }
     }
 
     updateWeapon(): void {
-        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
@@ -471,11 +481,11 @@ export class Player extends GameObject {
                 this.images.weapon.setFrame(`${weaponDef.idString}_world`);
             }
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
-            this.images.weapon.setAngle(weaponDef.image.angle);
+            this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
 
-            if (this.activeItem.idNumber !== this.oldItem) {
-                this.muzzleFlashFadeAnim?.kill();
-                this.muzzleFlashRecoilAnim?.kill();
+            if (this.activeItem !== this.oldItem) {
+                this.anims.muzzleFlashFadeAnim?.kill();
+                this.anims.muzzleFlashRecoilAnim?.kill();
                 this.images.muzzleFlash.alpha = 0;
                 if (this.isActivePlayer) this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
@@ -535,18 +545,18 @@ export class Player extends GameObject {
         container.css("visibility", level > 0 ? "visible" : "hidden");
     }
 
-    emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
-        this.emoteAnim?.kill();
-        this.emoteHideAnim?.kill();
+    emote(type: EmoteDefinition | ReferenceTo<EmoteDefinition>): void {
+        this.anims.emoteAnim?.kill();
+        this.anims.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.playSound("emote", 0.4, 128);
-        this.images.emoteImage.setFrame(`${type.idString}`);
+        this.images.emoteImage.setFrame(`${reifyDefinition(type, Emotes).idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
         this.emoteContainer.alpha = 0;
 
-        this.emoteAnim = new Tween(this.game, {
+        this.anims.emoteAnim = new Tween(this.game, {
             target: this.emoteContainer,
             to: { alpha: 1 },
             duration: 250,
@@ -557,7 +567,7 @@ export class Player extends GameObject {
         });
 
         this._emoteHideTimeoutID = setTimeout(() => {
-            this.emoteHideAnim = new Tween(this.game, {
+            this.anims.emoteHideAnim = new Tween(this.game, {
                 target: this.emoteContainer,
                 to: { alpha: 0 },
                 duration: 200,
@@ -575,7 +585,7 @@ export class Player extends GameObject {
         switch (anim) {
             case AnimationType.Melee: {
                 this.updateFistsPosition(false);
-                const weaponDef = this.activeItem.definition as MeleeDefinition;
+                const weaponDef = this.activeItem as MeleeDefinition;
                 if (weaponDef.fists.useLeft === undefined) break;
 
                 let altFist = Math.random() < 0.5;
@@ -584,7 +594,7 @@ export class Player extends GameObject {
                 const duration = weaponDef.fists.animationDuration;
 
                 if (!weaponDef.fists.randomFist || !altFist) {
-                    this.leftFistAnim = new Tween(this.game, {
+                    this.anims.leftFistAnim = new Tween(this.game, {
                         target: this.images.leftFist,
                         to: { x: weaponDef.fists.useLeft.x, y: weaponDef.fists.useLeft.y },
                         duration,
@@ -593,7 +603,7 @@ export class Player extends GameObject {
                     });
                 }
                 if (altFist) {
-                    this.rightFistAnim = new Tween(this.game, {
+                    this.anims.rightFistAnim = new Tween(this.game, {
                         target: this.images.rightFist,
                         to: { x: weaponDef.fists.useRight.x, y: weaponDef.fists.useRight.y },
                         duration,
@@ -603,7 +613,7 @@ export class Player extends GameObject {
                 }
 
                 if (weaponDef.image !== undefined) {
-                    this.weaponAnim = new Tween(this.game, {
+                    this.anims.weaponAnim = new Tween(this.game, {
                         target: this.images.weapon,
                         to: {
                             x: weaponDef.image.usePosition.x,
@@ -642,8 +652,8 @@ export class Player extends GameObject {
 
                     damagedObjects
                         .sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                            if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return Infinity;
-                            if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -Infinity;
+                            if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
+                            if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
                             return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
                         })
@@ -655,13 +665,13 @@ export class Player extends GameObject {
                 break;
             }
             case AnimationType.Gun: {
-                const weaponDef = this.activeItem.definition as GunDefinition;
+                const weaponDef = this.activeItem as GunDefinition;
                 this.playSound(`${weaponDef.idString}_fire`, 0.5);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);
                     const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
-                    this.weaponAnim = new Tween(this.game, {
+                    this.anims.weaponAnim = new Tween(this.game, {
                         target: this.images.weapon,
                         to: { x: weaponDef.image.position.x - recoilAmount },
                         duration: 50,
@@ -670,41 +680,56 @@ export class Player extends GameObject {
 
                     if (!weaponDef.noMuzzleFlash) {
                         const muzzleFlash = this.images.muzzleFlash;
+                        const scale = randomFloat(0.75, 1);
+
                         muzzleFlash.x = weaponDef.length * PIXI_SCALE;
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
-                        const scale = randomFloat(0.75, 1);
                         muzzleFlash.scale = v(scale, scale * (randomBoolean() ? 1 : -1));
                         muzzleFlash.rotation += Math.PI * 2;
-                        this.muzzleFlashFadeAnim?.kill();
-                        this.muzzleFlashRecoilAnim?.kill();
-                        this.muzzleFlashFadeAnim = new Tween(this.game, {
-                            target: muzzleFlash,
-                            to: { alpha: 0 },
-                            duration: 100,
-                            onComplete: () => muzzleFlash.setVisible(false)
-                        });
-                        this.muzzleFlashRecoilAnim = new Tween(this.game, {
-                            target: muzzleFlash,
-                            to: { x: muzzleFlash.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
-                        });
+
+                        this.anims.muzzleFlashFadeAnim?.kill();
+                        this.anims.muzzleFlashRecoilAnim?.kill();
+                        this.anims.muzzleFlashFadeAnim = new Tween(
+                            this.game,
+                            {
+                                target: muzzleFlash,
+                                to: { alpha: 0 },
+                                duration: 100,
+                                onComplete: () => muzzleFlash.setVisible(false)
+                            }
+                        );
+
+                        this.anims.muzzleFlashRecoilAnim = new Tween(
+                            this.game,
+                            {
+                                target: muzzleFlash,
+                                to: { x: muzzleFlash.x - recoilAmount },
+                                duration: 50,
+                                yoyo: true
+                            }
+                        );
                     }
 
-                    this.leftFistAnim = new Tween(this.game, {
-                        target: this.images.leftFist,
-                        to: { x: weaponDef.fists.left.x - recoilAmount },
-                        duration: 50,
-                        yoyo: true
-                    });
+                    this.anims.leftFistAnim = new Tween(
+                        this.game,
+                        {
+                            target: this.images.leftFist,
+                            to: { x: weaponDef.fists.left.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
 
-                    this.rightFistAnim = new Tween(this.game, {
-                        target: this.images.rightFist,
-                        to: { x: weaponDef.fists.right.x - recoilAmount },
-                        duration: 50,
-                        yoyo: true
-                    });
+                    this.anims.rightFistAnim = new Tween(
+                        this.game,
+                        {
+                            target: this.images.rightFist,
+                            to: { x: weaponDef.fists.right.x - recoilAmount },
+                            duration: 50,
+                            yoyo: true
+                        }
+                    );
 
                     if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                 }
@@ -744,13 +769,13 @@ export class Player extends GameObject {
         if (this.isActivePlayer) $("#action-container").hide();
         clearTimeout(this._emoteHideTimeoutID);
         this.waterOverlayAnim?.kill();
-        this.emoteHideAnim?.kill();
-        this.emoteAnim?.kill();
+        this.anims.emoteHideAnim?.kill();
+        this.anims.emoteAnim?.kill();
         this.emoteContainer.destroy();
-        this.leftFistAnim?.kill();
-        this.rightFistAnim?.kill();
-        this.weaponAnim?.kill();
-        this.muzzleFlashFadeAnim?.kill();
-        this.muzzleFlashRecoilAnim?.kill();
+        this.anims.leftFistAnim?.kill();
+        this.anims.rightFistAnim?.kill();
+        this.anims.weaponAnim?.kill();
+        this.anims.muzzleFlashFadeAnim?.kill();
+        this.anims.muzzleFlashRecoilAnim?.kill();
     }
 }

@@ -1,6 +1,9 @@
-import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../../common/src/constants";
+import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
+import { type LootDefinition, Loots } from "../../../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
 import { absMod } from "../../../../../common/src/utils/math";
-import { ObjectDefinitionsList } from "../../../../../common/src/utils/objectType";
+import { reifyDefinition, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { EmoteSlot } from "../constants";
@@ -413,7 +416,7 @@ export function setUpCommands(game: Game): void {
         }
     );
 
-    Command.createCommand<string>(
+    Command.createCommand<ReferenceTo<HealingItemDefinition>>(
         "use_consumable",
         function(idString) {
             // This is technically unneeded, since "undefined in {}" returns false, but
@@ -422,11 +425,11 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected a string argument, received nothing." };
             }
 
-            if (!(idString in (ObjectDefinitionsList[ObjectCategory.Loot]?.idStringToNumber ?? {}))) {
+            if (!(HealingItems as Array<HealingItemDefinition | ScopeDefinition>).concat(Scopes).some(h => h.idString === idString)) {
                 return { err: `No consumable with idString '${idString}' exists.` };
             }
 
-            game.playerManager.useItem(idString);
+            game.playerManager.useItem(reifyDefinition<LootDefinition, HealingItemDefinition | ScopeDefinition>(idString, Loots));
         },
         game,
         {

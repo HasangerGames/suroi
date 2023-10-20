@@ -100,13 +100,13 @@ export function vDot(a: Vector, b: Vector): number {
     return a.x * b.x + a.y * b.y;
 }
 
-export function vNormalizeSafe(a: Vector, b?: Vector): Vector {
-    b = b ?? v(1.0, 0.0);
+export function vNormalizeSafe(a: Vector, fallback?: Vector): Vector {
+    fallback ??= v(1.0, 0.0);
     const eps = 0.000001;
     const len = vLength(a);
     return {
-        x: len > eps ? a.x / len : b.x,
-        y: len > eps ? a.y / len : b.y
+        x: len > eps ? a.x / len : fallback.x,
+        y: len > eps ? a.y / len : fallback.y
     };
 }
 

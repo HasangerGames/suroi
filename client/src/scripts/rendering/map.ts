@@ -210,7 +210,7 @@ export class Minimap {
         for (const building of mapPacket.buildings) {
             const definition = building.type.definition;
 
-            for (const image of definition.floorImages) {
+            for (const image of definition.floorImages ?? []) {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
@@ -220,7 +220,7 @@ export class Minimap {
                 mapRender.addChild(sprite);
             }
 
-            for (const image of definition.ceilingImages) {
+            for (const image of definition.ceilingImages ?? []) {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
@@ -230,7 +230,7 @@ export class Minimap {
                 mapRender.addChild(sprite);
             }
 
-            for (const floor of definition.floors) {
+            for (const floor of definition.floors ?? []) {
                 const hitbox = floor.hitbox.transform(building.position, 1, building.orientation);
                 this.terrainGrid.addFloor(floor.type, hitbox);
             }

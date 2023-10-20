@@ -1,9 +1,9 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface DecalDefinition extends ObjectDefinition {
-    image?: string
-    scale?: number
-    zIndex?: number
+    readonly image?: string
+    readonly scale?: number
+    readonly zIndex?: number
 }
 
 export const Decals = new ObjectDefinitions<DecalDefinition>(
@@ -44,5 +44,5 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
             idString: "container_mark",
             name: "Container mark"
         }
-
-    ]);
+    ]
+);

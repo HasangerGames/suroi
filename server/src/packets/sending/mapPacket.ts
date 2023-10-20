@@ -1,8 +1,9 @@
-import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
-import { type Obstacle } from "../../objects/obstacle";
+import { Building } from "../../objects/building";
+import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
@@ -43,20 +44,19 @@ export class MapPacket extends SendingPacket {
         stream.writeBits(this.game.minimapObjects.size, 11);
 
         for (const object of this.game.minimapObjects) {
-            stream.writeObjectType(object.type);
+            stream.writeObjectType(object.createObjectType());
             stream.writePosition(object.position);
 
-            switch (object.type.category) {
-                case ObjectCategory.Obstacle: {
-                    const obstacle = object as Obstacle;
-                    stream.writeScale(obstacle.maxScale);
-                    stream.writeObstacleRotation(object.rotation, obstacle.definition.rotationMode);
-                    if (obstacle.definition.variations !== undefined) {
-                        stream.writeVariation(obstacle.variation);
+            switch (true) {
+                case object instanceof Obstacle: {
+                    stream.writeScale(object.maxScale);
+                    stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
+                    if (object.definition.variations !== undefined) {
+                        stream.writeVariation(object.variation);
                     }
                     break;
                 }
-                case ObjectCategory.Building:
+                case object instanceof Building:
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }

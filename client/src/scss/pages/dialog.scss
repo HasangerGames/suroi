@@ -415,14 +415,22 @@
     #settings-tabs {
         background: $transparent_bg;
 
-        #tab-keybinds-content .modal-item:not(:last-child) {
-            div.settings-title {
-                width: 100%;
+        #tab-keybinds-content {
+            #keybind-clear-tooltip {
+                border: 2px solid gray;
+                padding: 3px;
+                background-color: lighten($transparent_bg, 30%);
             }
+            
+            .modal-item:not(:last-child) {
+                div.settings-title {
+                    width: 100%;
+                }
 
-            button.btn-bind {
-                width: 45%;
-                margin-inline: 2.5%;
+                button.btn-bind {
+                    width: 45%;
+                    margin-inline: 2.5%;
+                }
             }
         }
     }
@@ -468,7 +476,8 @@
             margin-top: 1em;
         }
 
-        input[type="checkbox"], input[type="color"] {
+        input[type="checkbox"],
+        input[type="color"] {
             float: right;
         }
 

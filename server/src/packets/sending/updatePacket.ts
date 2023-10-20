@@ -98,7 +98,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.fullDirtyObjects.size);
 
             for (const fullObject of player.fullDirtyObjects) {
-                stream.writeObjectType(fullObject.type);
+                stream.writeObjectType(fullObject.createObjectType());
                 stream.writeObjectID(fullObject.id);
                 fullObject.serializeFull(stream);
             }
@@ -110,7 +110,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.partialDirtyObjects.size);
 
             for (const partialObject of player.partialDirtyObjects) {
-                stream.writeObjectType(partialObject.type);
+                stream.writeObjectType(partialObject.createObjectType());
                 stream.writeObjectID(partialObject.id);
                 partialObject.serializePartial(stream);
             }
@@ -132,7 +132,7 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeObjectType(bullet.source);
+                stream.writeObjectType(bullet.sourceObjectType);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
                 stream.writeFloat(bullet.variance, 0, 1, 4);
@@ -154,7 +154,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeBits(player.emotes.size, 7);
 
             for (const emote of player.emotes) {
-                stream.writeObjectTypeNoCategory(emote.type);
+                stream.writeObjectTypeNoCategory(emote.createObjectType());
                 stream.writeObjectID(emote.player.id);
             }
 
