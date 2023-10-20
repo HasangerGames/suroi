@@ -649,26 +649,45 @@ logger.indent("Validating loot table references", () => {
                     const errorPath2 = tester.createPath(errorPath, "drop declaration");
 
                     for (const entry of lootData.loot) {
-                        if ("item" in entry) {
-                            tester.assertNoPointlessValue({
+                        tester.assertNoPointlessValue({
+                            obj: entry,
+                            field: "count",
+                            defaultValue: 1,
+                            baseErrorPath: errorPath
+                        });
+
+                        if (entry.count !== undefined) {
+                            tester.assertIntAndInBounds({
                                 obj: entry,
                                 field: "count",
-                                defaultValue: 1,
-                                baseErrorPath: errorPath
+                                min: 1,
+                                max: Infinity,
+                                includeMin: true,
+                                includeMax: true,
+                                baseErrorPath: errorPath2
                             });
+                        }
 
-                            if (entry.count !== undefined) {
-                                tester.assertIntAndInBounds({
-                                    obj: entry,
-                                    field: "count",
-                                    min: 0,
-                                    max: Infinity,
-                                    includeMin: true,
-                                    includeMax: true,
-                                    baseErrorPath: errorPath2
-                                });
-                            }
+                        tester.assertNoPointlessValue({
+                            obj: entry,
+                            field: "spawnSeparately",
+                            defaultValue: false,
+                            baseErrorPath: errorPath
+                        });
 
+                        tester.assertWarn(
+                            entry.spawnSeparately !== true || entry.count !== 1,
+                            "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+                            errorPath2
+                        );
+
+                        tester.assertIsPositiveFiniteReal({
+                            obj: entry,
+                            field: "weight",
+                            baseErrorPath: errorPath2
+                        });
+
+                        if ("item" in entry) {
                             tester.assertReferenceExistsArray({
                                 obj: entry,
                                 field: "item",
@@ -685,12 +704,6 @@ logger.indent("Validating loot table references", () => {
                                 collectionName: "LootTiers"
                             });
                         }
-
-                        tester.assertIsPositiveFiniteReal({
-                            obj: entry,
-                            field: "weight",
-                            baseErrorPath: errorPath2
-                        });
                     }
                 });
             });

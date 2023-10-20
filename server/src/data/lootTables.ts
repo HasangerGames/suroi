@@ -1,6 +1,16 @@
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+
 export type WeightedItem =
-    ({ item: string } | { tier: string }) &
-    { count?: number, separate?: boolean, weight: number };
+    (
+        { readonly item: ReferenceTo<LootDefinition> } |
+        { readonly tier: string }
+    ) &
+    {
+        readonly count?: number
+        readonly spawnSeparately?: boolean
+        readonly weight: number
+    };
 export interface LootTable { min: number, max: number, loot: WeightedItem[] }
 
 export const LootTables: Record<string, LootTable> = {
@@ -58,11 +68,11 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "tango_51", weight: 50 },
-            { item: "tango_51", count: 2, weight: 20 },
-            { item: "tango_51", count: 3, weight: 2.5 },
-            { item: "tango_51", count: 4, weight: 0.001 },
-            { item: "tango_51", count: 5, weight: 0.0000001 }
+            { item: "tango_51", spawnSeparately: true, weight: 50 },
+            { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
+            { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
+            { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
+            { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
         ]
     },
     gold_rock: {

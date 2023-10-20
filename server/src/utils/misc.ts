@@ -16,33 +16,35 @@ export class LootItem {
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];
 
-    const items: WeightedItem[] = [];
+    const items: Array<WeightedItem[] | WeightedItem> = [];
     const weights: number[] = [];
     for (const item of loots) {
-        for (let i = 0; i < (item?.separate ? (item?.count ?? 1) : 1); i++) {
-            items.push(item);
-            weights.push(item.weight);
-        }
+        items.push(
+            item.spawnSeparately && (item.count ?? 1) > 1
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                ? new Array<WeightedItem>(item.count!).fill(item)
+                : item
+        );
+        weights.push(item.weight);
     }
 
-    const selectedItem = weightedRandom<WeightedItem>(items, weights);
+    const selectedItem = weightedRandom<WeightedItem | WeightedItem[]>(items, weights);
 
-    if ("tier" in selectedItem) {
-        loot = loot.concat(getLootTableLoot(LootTiers[selectedItem.tier]));
-    } else {
-        const type = selectedItem.item;
+    for (const selection of [selectedItem].flat()) {
+        if ("tier" in selection) {
+            loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
+        } else {
+            const item = selection.item;
+            loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
-        if (type === "nothing") return loot;
+            const definition = Loots.getByIDString(item);
+            if (definition === undefined) {
+                throw new Error(`Unknown loot item: ${item}`);
+            }
 
-        loot.push(new LootItem(type, selectedItem.count ?? 1));
-
-        const definition = Loots.getByIDString(type);
-        if (definition === undefined) {
-            throw new Error(`Unknown loot item: ${type}`);
-        }
-
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
-            loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+            if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
+                loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+            }
         }
     }
 

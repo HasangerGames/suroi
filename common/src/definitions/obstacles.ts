@@ -204,8 +204,8 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         health: 500,
         indestructible: true,
         noResidue: true,
-        hideOnMap: invisible,
-        invisible,
+        hideOnMap: invisible || undefined,
+        invisible: invisible || undefined,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -1245,7 +1245,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
                 RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
                 RectangleHitbox.fromRect(4.75, 15.9, v(0, -16.65)), // Fifth wheel
-                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Front-most back wheels
                 RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
                 RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
             ),
@@ -1269,7 +1269,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
-                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Front-most back wheels
                 RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
                 RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
                 RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
@@ -1301,7 +1301,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_with_a_button",
-            name: "Pannel with a button",
+            name: "Panel with a button",
             material: "metal",
             health: Infinity,
             indestructible: true,
@@ -1319,7 +1319,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_with_the_button_pressed",
-            name: "Pannel with the button pressed",
+            name: "Panel with the button pressed",
             material: "metal",
             health: Infinity,
             indestructible: true,
@@ -1337,7 +1337,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_without_button_small",
-            name: "Pannel without button small",
+            name: "Panel without button small",
             material: "metal",
             health: Infinity,
             indestructible: true,
@@ -1355,7 +1355,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "panel_without_button",
-            name: "Pannel without button",
+            name: "Panel without button",
             material: "metal",
             health: Infinity,
             indestructible: true,
@@ -1385,74 +1385,74 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new ComplexHitbox(
 
                 // Bottom Bottom left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, 62.9 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, 62.8 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 88.6 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 88.6 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, 92.6 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, 92.6 + 0.6)), // Bottom Wheels
 
                 // Top Bottom left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 29.5 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 18.5 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 29.5 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 18.5 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, 14.7 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 40.4 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 40.4 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, 44.4 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, 44.4 + 0.6)), // Bottom Wheels
 
                 // Bottom Bottom Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, 77.7 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 66.7 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, 77.7 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 66.7 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, 62.9 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, 62.8 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 88.6 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 88.6 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, 92.6 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, 92.6 + 0.6)), // Bottom Wheels
 
                 // Top Bottom Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, 29.5 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 18.5 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, 29.5 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 18.5 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, 14.7 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, 14.7 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, 40.4 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 40.4 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, 44.4 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, 44.4 + 0.6)), // Bottom Wheels
 
                 // Bottom Top left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -82.2 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -71.2 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -82.2 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -71.2 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, -67.4 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, -67.3 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -93.1 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -93.1 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, -97.1 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, -97.1 + 0.6)), // Bottom Wheels
 
                 // Top Top left
-                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -34 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -23 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -34 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -23 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, -19.2 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -44.9 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -44.9 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(-30.8, -48.9 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(-28.5, -48.9 + 0.6)), // Bottom Wheels
 
                 // Bottom Top Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, -82.2 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -71.2 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, -82.2 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -71.2 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, -67.4 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, -67.3 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -93.1 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -93.1 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, -97.1 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, -97.1 + 0.6)), // Bottom Wheels
 
                 // Top Top Right
-                RectangleHitbox.fromRect(6, 15.5, v(29.6, -34 + 0.6)), // Middle Big rectanle
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -23 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, -34 + 0.6)), // Middle Big rectangle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -23 + 0.6)), // Top Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, -19.2 + 0.6)), // Top Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, -19.2 + 0.6)), // Top Wheels
-                RectangleHitbox.fromRect(5.45, 6, v(29.6, -44.9 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -44.9 + 0.6)), // Bottom Small rectangle
                 RectangleHitbox.fromRect(2, 1.8, v(30.8, -48.9 + 0.6)), // Bottom Wheels
                 RectangleHitbox.fromRect(2, 1.8, v(28.5, -48.9 + 0.6)), // Bottom Wheels
 
@@ -1553,7 +1553,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_exterior_long_wall",
-            name: "Ship exteropr long wall",
+            name: "Ship exterior long wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1570,7 +1570,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_exterior_medium_wall",
-            name: "Ship exteropr medium wall",
+            name: "Ship exterior medium wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1587,7 +1587,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_exterior_small_wall",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1604,7 +1604,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_tiny_wall",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1621,7 +1621,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_small_wall",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1638,7 +1638,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_medium_wall",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1655,7 +1655,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_medium_wall2",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,
@@ -1672,7 +1672,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "ship_long_wall",
-            name: "Ship exteropr small wall",
+            name: "Ship exterior small wall",
             material: "metal",
             health: 150,
             indestructible: true,

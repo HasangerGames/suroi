@@ -183,16 +183,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         });
 
-        this.container.on("pointerdown", () => {
-            if (this.game.spectating && this.game.activePlayerID !== this.id) {
-                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
-            }
-        });
-        this.container.on("click", () => {
-            if (this.game.spectating && this.game.activePlayerID !== this.id) {
-                this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
-            }
-        });
+        const sendSpectatePacket = (): void => {
+            if (!this.game.spectating || this.game.activePlayerID === this.id) return;
+
+            this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+        };
+
+        this.container.on("pointerdown", sendSpectatePacket);
+        this.container.on("click", sendSpectatePacket);
     }
 
     override updateContainerPosition(): void {
