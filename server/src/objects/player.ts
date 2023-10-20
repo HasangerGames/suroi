@@ -15,7 +15,7 @@ import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, type Action } from "../inventory/action";
+import { HealingAction, type Action, ReloadAction } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
@@ -228,7 +228,17 @@ export class Player extends GameObject {
 
     fullUpdate = true;
 
-    action: Action | undefined;
+    private _action?: Action | undefined;
+    get action(): Action | undefined { return this._action; }
+    set action(value: Action | undefined) {
+        this._action = value;
+
+        // The action slot is now free, meaning our player isn't doing anything
+        // Let's try reloading our empty gun then
+        if (value === undefined && this.activeItem instanceof GunItem && this.activeItem.ammo <= 0) {
+            this._action = new ReloadAction(this, this.activeItem);
+        }
+    }
 
     spectating?: Player;
     spectators = new Set<Player>();
