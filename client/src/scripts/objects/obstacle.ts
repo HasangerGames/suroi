@@ -14,9 +14,10 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Obstacle extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>;
+export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject<ObjectCategory.Obstacle> {
+    override readonly type = ObjectCategory.Obstacle;
 
+    readonly definition: Def;
 
     scale!: number;
 
@@ -41,9 +42,10 @@ export class Obstacle extends GameObject {
 
     readonly particleFrames: string[];
 
+    constructor(game: Game, definition: Def | ReferenceTo<Def>, id: number) {
+        super(game, id);
 
-    constructor(game: Game, type: ObjectType, id: number) {
-        super(game, type, id);
+        this.definition = definition = reifyDefinition<ObstacleDefinition, Def>(definition, Obstacles);
 
         this.image = new SuroiSprite()/* .setAlpha(0.5) */;
         this.container.addChild(this.image);
@@ -68,7 +70,7 @@ export class Obstacle extends GameObject {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
-        const definition = this.type.definition;
+        const definition = this.definition;
         if (data.fullUpdate) {
             this.position = data.position;
             this.rotation = data.rotation.rotation;

@@ -43,7 +43,7 @@ export class MapPacket extends SendingPacket {
         stream.writeBits(this.game.minimapObjects.size, 11);
 
         for (const object of this.game.minimapObjects) {
-            stream.writeObjectType(object.type);
+            stream.writeObjectType(object.createObjectType());
             stream.writePosition(object.position);
 
             switch (true) {
@@ -55,7 +55,7 @@ export class MapPacket extends SendingPacket {
                     }
                     break;
                 }
-                case ObjectCategory.Building:
+                case object instanceof Building:
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }

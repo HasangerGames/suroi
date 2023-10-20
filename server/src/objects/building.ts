@@ -2,16 +2,21 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../common/src/typings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-export class Building extends GameObject {
-    readonly definition: BuildingDefinition;
+export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject {
+    override readonly type = ObjectCategory.Building;
+    override createObjectType(): ObjectType<this["type"], Def> {
+        return ObjectType.fromString(this.type, this.definition.idString);
+    }
 
+    readonly definition: Def;
 
     readonly scopeHitbox?: Hitbox;
     readonly spawnHitbox: Hitbox;
@@ -23,10 +28,10 @@ export class Building extends GameObject {
     //@ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation: Orientation) {
-        super(game, type, position);
+    constructor(game: Game, definition: ReferenceTo<Def> | Def, position: Vector, orientation: Orientation) {
+        super(game, position);
 
-        this.definition = type.definition;
+        this.definition = typeof definition === "string" ? (definition = Buildings.getByIDString<Def>(definition)) : definition;
 
         this.rotation = orientation;
         this._wallsToDestroy = definition.wallsToDestroy;

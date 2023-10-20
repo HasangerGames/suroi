@@ -1,6 +1,6 @@
-import { type ObjectCategory, PlayerActions } from "../../../common/src/constants";
-import { type HealingItemDefinition, HealType } from "../../../common/src/definitions/healingItems";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { PlayerActions } from "../../../common/src/constants";
+import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { type ReferenceTo, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 
@@ -65,11 +65,11 @@ export class HealingAction extends Action {
     private readonly _type = PlayerActions.UseItem;
     get type(): PlayerActions.UseItem { return this._type; }
 
-    readonly item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>;
+    readonly item: HealingItemDefinition;
     override readonly speedMultiplier = 0.5;
 
-    constructor(player: Player, item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>) {
-        const itemDef = item.definition;
+    constructor(player: Player, item: ReferenceTo<HealingItemDefinition> | HealingItemDefinition) {
+        const itemDef = item = reifyDefinition(item, HealingItems);
         super(player, itemDef.useTime);
         this.item = item;
     }
@@ -77,17 +77,14 @@ export class HealingAction extends Action {
     execute(): void {
         super.execute();
 
-        const items = this.player.inventory.items;
-        const itemDef = this.item.definition;
+        this.player.inventory.items[this.item.idString]--;
 
-        items[itemDef.idString] -= 1;
-
-        switch (itemDef.healType) {
+        switch (this.item.healType) {
             case HealType.Health:
-                this.player.health += itemDef.restoreAmount;
+                this.player.health += this.item.restoreAmount;
                 break;
             case HealType.Adrenaline:
-                this.player.adrenaline += itemDef.restoreAmount;
+                this.player.adrenaline += this.item.restoreAmount;
                 break;
         }
         this.player.dirty.inventory = true;

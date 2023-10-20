@@ -1,10 +1,15 @@
 import { clearTimeout } from "timers";
-import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
+import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
+<<<<<<< HEAD
 import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectType } from "../../../common/src/utils/objectType";
+=======
+import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+>>>>>>> 4d5ad952 (refactor: largely remove ObjectType)
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
@@ -15,11 +20,8 @@ import { InventoryItem } from "./inventoryItem";
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItem {
+export class GunItem extends InventoryItem<GunDefinition> {
     declare readonly category: ItemType.Gun;
-    declare readonly type: ObjectType<ObjectCategory.Loot, GunDefinition>;
-
-    readonly definition: GunDefinition;
 
     ammo = 0;
 
@@ -39,14 +41,12 @@ export class GunItem extends InventoryItem {
      * @param owner The `Player` that owns this gun
      * @throws {TypeError} If the `idString` given does not point to a definition for a gun
      */
-    constructor(idString: string, owner: Player) {
+    constructor(idString: ReferenceTo<GunDefinition>, owner: Player) {
         super(idString, owner);
 
         if (this.category !== ItemType.Gun) {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
-
-        this.definition = this.type.definition;
     }
 
     /**
@@ -135,9 +135,8 @@ export class GunItem extends InventoryItem {
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
                         (definition.consistentPatterning === true
-                            ? i / limit - 0.5
-                            : randomFloat(-1, 1)
-                        ) * spread
+                            ? 2 * (i / limit - 0.5)
+                            : randomFloat(-1, 1)) * spread
                 }
             );
         }

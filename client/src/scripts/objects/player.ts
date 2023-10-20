@@ -38,14 +38,14 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 
 
-export class Player extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Player>;
+export class Player extends GameObject<ObjectCategory.Player> {
+    override readonly type = ObjectCategory.Player;
 
     name!: string;
 
-    activeItem = ObjectType.fromString<ObjectCategory.Loot, ItemDefinition>(ObjectCategory.Loot, "fists");
+    activeItem = Loots.getByIDString("fists");
 
-    oldItem = this.activeItem.idNumber;
+    oldItem = this.activeItem;
 
     isNew = true;
 
@@ -61,7 +61,7 @@ export class Player extends GameObject {
     action = {
         type: PlayerActions.None,
         seq: 0,
-        item: undefined as undefined | ObjectType<ObjectCategory.Loot, HealingItemDefinition>
+        item: undefined as undefined | HealingItemDefinition
     };
 
     damageable = true;
@@ -111,7 +111,7 @@ export class Player extends GameObject {
     waterOverlayAnim?: Tween<SuroiSprite>;
 
     constructor(game: Game, id: number) {
-        super(game, ObjectType.categoryOnly(ObjectCategory.Player), id);
+        super(game, id);
 
         this.images = {
             aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
@@ -164,8 +164,8 @@ export class Player extends GameObject {
             active: false,
             spawnOptions: () => {
                 let frame = "";
-                if (this.action.item?.definition.itemType === ItemType.Healing) {
-                    frame = HealType[this.action.item.definition.healType].toLowerCase();
+                if (this.action.item?.itemType === ItemType.Healing) {
+                    frame = HealType[this.action.item.healType].toLowerCase();
                 }
                 return {
                     frames: `${frame}_particle`,
@@ -205,7 +205,7 @@ export class Player extends GameObject {
     }
 
     spawnCasingParticles(): void {
-        const weaponDef = this.activeItem.definition as GunDefinition;
+        const weaponDef = this.activeItem as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         if (weaponDef.casingParticles !== undefined) {
@@ -337,10 +337,10 @@ export class Player extends GameObject {
         if (data.fullUpdate) {
             this.container.alpha = data.invulnerable ? 0.5 : 1;
 
-            this.oldItem = this.activeItem.idNumber;
+            this.oldItem = this.activeItem;
             this.activeItem = data.activeItem;
             if (this.isActivePlayer && !UI_DEBUG_MODE) {
-                $("#weapon-ammo-container").toggle(this.activeItem.definition.itemType === ItemType.Gun);
+                $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
             }
 
             const skinID = data.skin.idString;
@@ -352,26 +352,29 @@ export class Player extends GameObject {
             this.vestLevel = data.vest;
             this.backpackLevel = data.backpack;
 
-            if (this.action.type !== data.action.type || this.action.seq !== data.action.seq) {
+            const action = data.action;
+
+            if (this.action.type !== action.type || this.action.seq !== action.seq) {
                 let actionTime = 0;
                 let actionSoundName = "";
                 let actionName = "";
                 this.healingParticlesEmitter.active = false;
-                switch (data.action.type) {
+
+                switch (action.type) {
                     case PlayerActions.None:
                         if (this.isActivePlayer) $("#action-container").hide().stop();
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
                     case PlayerActions.Reload: {
-                        const weaponDef = (this.activeItem.definition as GunDefinition);
+                        const weaponDef = (this.activeItem as GunDefinition);
                         actionName = "Reloading...";
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${this.activeItem.idString}_reload`;
-                        actionTime = (this.activeItem.definition as GunDefinition).reloadTime;
+                        actionTime = (this.activeItem as GunDefinition).reloadTime;
                         break;
                     }
                     case PlayerActions.UseItem: {
-                        const itemDef = (data.action.item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>).definition;
+                        const itemDef = action.item;
                         actionName = `${itemDef.useText} ${itemDef.name}`;
                         actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
@@ -393,9 +396,8 @@ export class Player extends GameObject {
                 }
                 if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
             }
-            this.action.type = data.action.type;
-            this.action.seq = data.action.seq;
-            this.action.item = data.action.item;
+            //@ts-expect-error 'item' not existing is okay
+            this.action = action;
 
             this.updateEquipment();
 
@@ -410,25 +412,30 @@ export class Player extends GameObject {
 
             drawHitbox(this.hitbox, HITBOX_COLORS.player, ctx);
 
-            switch (this.activeItem.definition.itemType) {
+            switch (this.activeItem.itemType) {
                 case ItemType.Gun: {
-                    const weaponDef = this.activeItem.definition as GunDefinition;
                     ctx.lineStyle({
                         color: HITBOX_COLORS.playerWeapon,
                         width: 4
                     });
                     ctx.moveTo(this.container.position.x, this.container.position.y);
-                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(weaponDef.length, 0), this.rotation)));
+                    const lineEnd = toPixiCoords(vAdd(this.position, vRotate(v(this.activeItem.length, 0), this.rotation)));
                     ctx.lineTo(lineEnd.x, lineEnd.y);
                     ctx.endFill();
                     break;
                 }
                 case ItemType.Melee: {
-                    const weaponDef = this.activeItem.definition as MeleeDefinition;
-                    const rotated = vRotate(weaponDef.offset, this.rotation);
-                    const position = vAdd(this.position, rotated);
-                    const hitbox = new CircleHitbox(weaponDef.radius, position);
-                    drawHitbox(hitbox, HITBOX_COLORS.playerWeapon, ctx);
+                    drawHitbox(
+                        new CircleHitbox(
+                            this.activeItem.radius,
+                            vAdd(
+                                this.position,
+                                vRotate(this.activeItem.offset, this.rotation)
+                            )
+                        ),
+                        HITBOX_COLORS.playerWeapon,
+                        ctx
+                    );
                     break;
                 }
             }
@@ -440,7 +447,7 @@ export class Player extends GameObject {
         this.anims.rightFistAnim?.kill();
         this.anims.weaponAnim?.kill();
 
-        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
         if (anim) {
             this.anims.leftFistAnim = new Tween(
@@ -470,7 +477,7 @@ export class Player extends GameObject {
     }
 
     updateWeapon(): void {
-        const weaponDef = this.activeItem.definition as GunDefinition | MeleeDefinition;
+        const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
@@ -544,12 +551,12 @@ export class Player extends GameObject {
         container.css("visibility", level > 0 ? "visible" : "hidden");
     }
 
-    emote(type: ObjectType<ObjectCategory.Emote, EmoteDefinition>): void {
+    emote(type: EmoteDefinition | ReferenceTo<EmoteDefinition>): void {
         this.anims.emoteAnim?.kill();
         this.anims.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.playSound("emote", 0.4, 128);
-        this.images.emoteImage.setFrame(`${type.idString}`);
+        this.images.emoteImage.setFrame(`${reifyDefinition(type, Emotes).idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);
@@ -584,7 +591,7 @@ export class Player extends GameObject {
         switch (anim) {
             case AnimationType.Melee: {
                 this.updateFistsPosition(false);
-                const weaponDef = this.activeItem.definition as MeleeDefinition;
+                const weaponDef = this.activeItem as MeleeDefinition;
                 if (weaponDef.fists.useLeft === undefined) break;
 
                 let altFist = Math.random() < 0.5;
@@ -651,8 +658,8 @@ export class Player extends GameObject {
 
                     damagedObjects
                         .sort((a: Player | Obstacle, b: Player | Obstacle): number => {
-                            if (a instanceof Obstacle && a.type.definition.noMeleeCollision) return Infinity;
-                            if (b instanceof Obstacle && b.type.definition.noMeleeCollision) return -Infinity;
+                            if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
+                            if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
                             return a.hitbox.distanceTo(this.hitbox).distance - b.hitbox.distanceTo(this.hitbox).distance;
                         })
@@ -664,7 +671,7 @@ export class Player extends GameObject {
                 break;
             }
             case AnimationType.Gun: {
-                const weaponDef = this.activeItem.definition as GunDefinition;
+                const weaponDef = this.activeItem as GunDefinition;
                 this.playSound(`${weaponDef.idString}_fire`, 0.5);
 
                 if (weaponDef.itemType === ItemType.Gun) {

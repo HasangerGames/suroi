@@ -1,4 +1,5 @@
-import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory } from "../../../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions, PlayerActions } from "../../../../common/src/constants";
+import { Loots } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -38,7 +39,7 @@ export class InputPacket extends ReceivingPacket {
 
         switch (stream.readBits(INPUT_ACTIONS_BITS)) {
             case InputActions.UseConsumableItem:
-                player.inventory.useItem(stream.readObjectTypeNoCategory(ObjectCategory.Loot).idString);
+                player.inventory.useItem(Loots.definitions[stream.readUint8()].idString);
                 break;
             case InputActions.EquipItem: {
                 const target = stream.readBits(2);
@@ -86,7 +87,7 @@ export class InputPacket extends ReceivingPacket {
                     // the thing that happens when you try pick up
                     const closestObject = getClosestObject(object => {
                         if (!(object instanceof Loot)) return false;
-                        const itemType = object.type.definition.itemType;
+                        const itemType = object.definition.itemType;
                         return itemType !== ItemType.Gun && itemType !== ItemType.Melee;
                     });
 

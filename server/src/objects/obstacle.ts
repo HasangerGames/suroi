@@ -1,25 +1,31 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
-import { type ObstacleDefinition, RotationMode } from "../../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
-import { type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { type ItemDefinition, ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { CircleHitbox, RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
+import { ItemType, ObstacleSpecialRoles, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
+import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { vAdd, type Vector } from "../../../common/src/utils/vector";
 import { LootTables } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
+import { InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { GameObject } from "../types/gameObject";
 import { getLootTableLoot, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
+import { type Explosion } from "./explosion";
 import { Player } from "./player";
 
-export class Obstacle extends GameObject {
+export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject {
+    override readonly type = ObjectCategory.Obstacle;
+    override createObjectType(): ObjectType<this["type"], Def> {
+        return ObjectType.fromString(this.type, this.definition.idString);
+    }
+
     health: number;
     readonly maxHealth: number;
     readonly maxScale: number;
@@ -52,7 +58,7 @@ export class Obstacle extends GameObject {
 
     constructor(
         game: Game,
-        type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+        definition: Def,
         position: Vector,
         rotation: number,
         scale: number,
@@ -60,7 +66,7 @@ export class Obstacle extends GameObject {
         lootSpawnOffset?: Vector,
         parentBuilding?: Building
     ) {
-        super(game, type, position);
+        super(game, position);
 
         this.rotation = rotation;
         this.scale = this.maxScale = scale;
@@ -70,15 +76,13 @@ export class Obstacle extends GameObject {
 
         this.parentBuilding = parentBuilding;
 
-        const definition = type.definition;
-        this.definition = definition;
+        this.definition = reifyDefinition(definition, Obstacles);
 
         this.health = this.maxHealth = definition.health;
 
         const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? rotation as Orientation : 0;
 
         this.hitbox = definition.hitbox.transform(this.position, this.scale, hitboxRotation);
-
         this.spawnHitbox = (definition.spawnHitbox ?? definition.hitbox).transform(this.position, this.scale, hitboxRotation);
 
         this.collidable = !definition.noCollisions;
@@ -96,7 +100,7 @@ export class Obstacle extends GameObject {
         if (definition.spawnWithLoot) {
             for (const item of getLootTableLoot(LootTables[this.definition.idString].loot)) {
                 this.game.addLoot(
-                    ObjectType.fromString(ObjectCategory.Loot, item.idString),
+                    item.idString,
                     this.position,
                     item.count
                 );
@@ -119,15 +123,15 @@ export class Obstacle extends GameObject {
         }
     }
 
-    override damage(amount: number, source: GameObject, weaponUsed?: ObjectType | GunItem | MeleeItem, position?: Vector): void {
+    override damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion, position?: Vector): void {
         const definition = this.definition;
 
         if (this.health === 0 || definition.indestructible) return;
 
-        const weaponDef = weaponUsed?.definition as ItemDefinition;
+        const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
             definition.impenetrable &&
-            !(weaponDef.itemType === ItemType.Melee && (weaponDef as MeleeDefinition).piercingMultiplier)
+            !(weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined)
         ) {
             return;
         }

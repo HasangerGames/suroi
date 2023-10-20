@@ -24,21 +24,19 @@ export class Bullet extends BaseBullet {
             .setVPos(toPixiCoords(this.position));
 
         this.tracerLength = this.definition.tracerLength ?? 1;
-
         this.maxLength = this.image.width * this.tracerLength;
-
         this.image.scale.set(0, this.definition.tracerWidth ?? 1);
-
         this.image.anchor.set(1, 0.5);
-
         this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
 
         let tint = 0xffffff;
 
         const source = this.source;
-        if (source.category === ObjectCategory.Loot &&
-            BULLET_COLORS[source.definition.ammoType]) {
-            tint = BULLET_COLORS[source.definition.ammoType];
+        if (
+            "ammoType" in source &&
+            source.ammoType in BULLET_COLORS
+        ) {
+            tint = BULLET_COLORS[source.ammoType];
         }
 
         if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;

@@ -6,21 +6,21 @@ import {
     PLAYER_RADIUS,
     PlayerActions
 } from "../../../common/src/constants";
-import { type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp } from "../../../common/src/utils/math";
-import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { type Action, HealingAction } from "../inventory/action";
+import { HealingAction, type Action } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
@@ -33,22 +33,24 @@ import { GameObject } from "../types/gameObject";
 import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
-import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
+import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
+import { ObjectType } from "../../../common/src/utils/objectType";
 
 export class Player extends GameObject {
-    hitbox: CircleHitbox;
+    readonly type = ObjectCategory.Player;
+    readonly hitbox: CircleHitbox;
 
     readonly damageable = true;
 
     name: string;
-    ip: string | undefined;
+    readonly ip?: string;
 
     readonly loadout: {
-        skin: ObjectType<ObjectCategory.Loot, SkinDefinition>
-        readonly emotes: Array<ObjectType<ObjectCategory.Emote, EmoteDefinition>>
+        skin: SkinDefinition
+        readonly emotes: EmoteDefinition[]
     };
 
     joined = false;
@@ -182,7 +184,7 @@ export class Player extends GameObject {
 
     readonly inventory = new Inventory(this);
 
-    get activeItem(): InventoryItem {
+    get activeItem(): InventoryItem<LootDefinition> {
         return this.inventory.activeWeapon;
     }
 
@@ -266,7 +268,7 @@ export class Player extends GameObject {
     floor = "water";
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
-        super(game, ObjectType.categoryOnly(ObjectCategory.Player), position);
+        super(game, position);
 
         const userData = socket.getUserData();
         this.socket = socket;
@@ -277,12 +279,12 @@ export class Player extends GameObject {
         this.nameColor = userData.nameColor;
 
         this.loadout = {
-            skin: ObjectType.fromString(ObjectCategory.Loot, "forest_camo"),
+            skin: Loots.getByIDString<SkinDefinition>("forest_camo"),
             emotes: [
-                ObjectType.fromString(ObjectCategory.Emote, "happy_face"),
-                ObjectType.fromString(ObjectCategory.Emote, "thumbs_up"),
-                ObjectType.fromString(ObjectCategory.Emote, "suroi_logo"),
-                ObjectType.fromString(ObjectCategory.Emote, "sad_face")
+                Emotes.getByIDString("happy_face"),
+                Emotes.getByIDString("thumbs_up"),
+                Emotes.getByIDString("suroi_logo"),
+                Emotes.getByIDString("sad_face")
             ]
         };
 
@@ -351,7 +353,7 @@ export class Player extends GameObject {
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
-        return this.activeItem.type.definition as MeleeDefinition | GunDefinition;
+        return this.activeItem.definition as MeleeDefinition | GunDefinition;
     }
 
     give(idString: string): void {
@@ -472,7 +474,7 @@ export class Player extends GameObject {
         if (isInsideBuilding && !this.isInsideBuilding) {
             this.zoom = 48;
         } else if (!this.isInsideBuilding) {
-            this.zoom = this.inventory.scope.definition.zoomLevel;
+            this.zoom = this.inventory.scope.zoomLevel;
         }
         this.isInsideBuilding = isInsideBuilding;
 
@@ -571,12 +573,12 @@ export class Player extends GameObject {
         return amount;
     }
 
-    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+    override damage(amount: number, source?: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion): void {
         if (this.invulnerable) return;
 
         // Reductions are merged additively
         amount *= 1 - (
-            (this.inventory.helmet?.definition.damageReduction ?? 0) + (this.inventory.vest?.definition.damageReduction ?? 0)
+            (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
         );
 
         amount = this._clampDamageAmount(amount);
@@ -587,7 +589,7 @@ export class Player extends GameObject {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
@@ -664,7 +666,7 @@ export class Player extends GameObject {
     }
 
     // dies of death
-    die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+    die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
         // Remove player from kill leader
         if (this === this.game.killLeader) {
             this.game.killLeaderDead();
@@ -718,28 +720,29 @@ export class Player extends GameObject {
         // Drop inventory items
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
+            const def = Loots.getByIDString(item);
 
             if (count > 0) {
-                const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item);
                 if (
-                    itemType.definition.noDrop === true ||
-                    ("ephemeral" in itemType.definition && itemType.definition.ephemeral)
+                    def.noDrop === true ||
+                    ("ephemeral" in def && def.ephemeral)
                 ) continue;
 
-                if (itemType.definition.itemType === ItemType.Ammo && count !== Infinity) {
-                    const dropCount = Math.floor(count / 60);
+                if (def.itemType === ItemType.Ammo && count !== Infinity) {
+                    const maxCountPerPacket = 60;
 
-                    for (let i = 0; i < dropCount; i++) {
-                        this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, 60);
-                    }
-                    if (count % 60 !== 0) {
-                        this.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), this.position, count % 60);
-                        this.inventory.items[item] = 0;
-                        continue;
-                    }
+                    let left = count;
+                    let subtractAmount = 0;
+
+                    do {
+                        left -= subtractAmount = Math.min(left, maxCountPerPacket);
+                        this.game.addLoot(item, this.position, subtractAmount);
+                    } while (left > 0);
+
+                    continue;
                 }
 
-                this.game.addLoot(itemType, this.position, count);
+                this.game.addLoot(item, this.position, count);
                 this.inventory.items[item] = 0;
             }
         }
@@ -771,7 +774,7 @@ export class Player extends GameObject {
         }
 
         this.inventory.helmet = this.inventory.vest = undefined;
-        this.inventory.backpack = ObjectType.fromString(ObjectCategory.Loot, "bag");
+        this.inventory.backpack = Loots.getByIDString<BackpackDefinition>("bag");
 
         // Create death marker
         const deathMarker = new DeathMarker(this);
@@ -808,7 +811,7 @@ export class Player extends GameObject {
             vest: this.inventory.vest?.level ?? 0,
             backpack: this.inventory.backpack.level,
             skin: this.loadout.skin,
-            activeItem: this.activeItem.type,
+            activeItem: this.activeItem.definition,
             action: {
                 seq: this.actionSeq,
                 ...(() => {

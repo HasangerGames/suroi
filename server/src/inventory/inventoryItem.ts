@@ -1,6 +1,6 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ItemDefinition, type ItemType, type WearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { Loots } from "../../../common/src/definitions/loots";
+import { type ReferenceTo, type ItemDefinition, type ItemType, type WearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { type Player } from "../objects/player";
 
@@ -8,7 +8,7 @@ import { type Player } from "../objects/player";
  * Represents some item in the player's inventory *that can be equipped*
  * @abstract
  */
-export abstract class InventoryItem {
+export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition> {
     /**
      * The category of item this is, either melee or gun
      */
@@ -16,11 +16,14 @@ export abstract class InventoryItem {
     /**
      * The `ObjectType` instance associated with this item
      */
-    readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+    readonly definition: Def;
     /**
      * The player this item belongs to
      */
     readonly owner: Player;
+    createObjectType(): ObjectType<ObjectCategory.Loot, Def> {
+        return ObjectType.fromString(ObjectCategory.Loot, this.definition.idString);
+    }
 
     readonly _modifiers = {
         // Multiplicative
@@ -31,8 +34,6 @@ export abstract class InventoryItem {
         // Additive
         minAdrenaline: 0
     };
-
-    abstract readonly definition: ItemDefinition;
 
     private _isActive = false;
 
@@ -82,12 +83,12 @@ export abstract class InventoryItem {
 
     /**
      * Creates a new `InventoryItem` given a string and a player
-     * @param idString The `idString` of an item in the item schema that will be represented by this instance
+     * @param definition The definition of an item in the item schema
+     * that will be represented by this instance
      * @param owner The `Player` this item belongs to
      */
-    protected constructor(idString: string, owner: Player) {
-        this.type = ObjectType.fromString(ObjectCategory.Loot, idString);
-        this.category = this.type.definition.itemType;
+    protected constructor(definition: ReferenceTo<Def>, owner: Player) {
+        this.category = (this.definition = reifyDefinition<ItemDefinition, Def>(definition, Loots)).itemType;
         this.owner = owner;
     }
 

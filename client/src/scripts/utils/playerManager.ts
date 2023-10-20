@@ -8,7 +8,6 @@ import { Loots, type LootDefinition } from "../../../../common/src/definitions/l
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -134,9 +133,9 @@ export class PlayerManager {
 
     readonly items: Record<string, number> = {};
 
-    scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+    scope!: ScopeDefinition;
 
-    readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
+    readonly weapons = new Array<LootDefinition | undefined>(INVENTORY_MAX_WEAPONS);
 
     readonly weaponsAmmo = new Array<number>(INVENTORY_MAX_WEAPONS);
 
@@ -182,7 +181,7 @@ export class PlayerManager {
     }
 
     cycleScope(offset: number): void {
-        const scopeId = Scopes.indexOf(this.scope.definition);
+        const scopeId = Scopes.indexOf(this.scope);
         let scopeString = this.scope.idString;
         let searchIndex = scopeId;
 
@@ -219,14 +218,14 @@ export class PlayerManager {
     }
 
     private _updateActiveWeaponUi(): void {
-        if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
+        if (!(this.weapons[this.activeItemIndex]?.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
             $("#weapon-ammo-container").hide();
         } else {
             $("#weapon-ammo-container").show();
             const ammo = this.weaponsAmmo[this.activeItemIndex];
             $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
 
-            const ammoType = (this.weapons[this.activeItemIndex]?.definition as GunDefinition).ammoType;
+            const ammoType = (this.weapons[this.activeItemIndex] as GunDefinition).ammoType;
             let totalAmmo: number | string = this.items[ammoType];
 
             for (const ammo of Ammos) {
@@ -258,14 +257,13 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
+                    const item = Loots.definitions[stream.readUint8()];
 
                     this.weapons[i] = item;
-                    container.children(".item-name").text(item.definition.name);
-                    const itemDef = item.definition;
-                    container.children(".item-image").attr("src", `./img/game/weapons/${itemDef.idString}.svg`).show();
+                    container.children(".item-name").text(item.name);
+                    container.children(".item-image").attr("src", `./img/game/weapons/${item.idString}.svg`).show();
 
-                    if (itemDef.itemType === ItemType.Gun) {
+                    if (item.itemType === ItemType.Gun) {
                         const ammo = stream.readUint8();
                         this.weaponsAmmo[i] = ammo;
 
@@ -319,7 +317,7 @@ export class PlayerManager {
                 adjustItemUi(item, amount ?? (stream.readBoolean() ? stream.readBits(9) : 0));
             }
 
-            this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
+            this.scope = Scopes[stream.readUint8()];
             $(`#${this.scope.idString}-slot`).addClass("active");
         }
 

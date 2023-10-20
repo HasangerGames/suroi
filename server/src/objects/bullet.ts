@@ -1,19 +1,17 @@
-import { type ObjectCategory, TICKS_PER_SECOND } from "../../../common/src/constants";
-import { type ExplosionDefinition } from "../../../common/src/definitions/explosions";
-import { BaseBullet, type BulletOptions } from "../../../common/src/utils/baseBullet";
+import { TICKS_PER_SECOND } from "../../../common/src/constants";
+import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { normalizeAngle } from "../../../common/src/utils/math";
-import { type ObjectType } from "../../../common/src/utils/objectType";
 import { randomFloat } from "../../../common/src/utils/random";
-import { v, vAdd, type Vector, vMul } from "../../../common/src/utils/vector";
+import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GunItem } from "../inventory/gunItem";
+import { type GunItem } from "../inventory/gunItem";
 import { type GameObject } from "../types/gameObject";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-type Weapon = GunItem | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
+type Weapon = GunItem | Explosion;
 
 export interface DamageRecord {
     readonly object: Obstacle | Player
@@ -33,19 +31,29 @@ export interface ServerBulletOptions {
 export class Bullet extends BaseBullet {
     readonly game: Game;
 
-    readonly sourceGun: GunItem | Explosion;
+    readonly sourceGun: Weapon;
     readonly shooter: GameObject;
 
+<<<<<<< HEAD
     constructor(game: Game, source: GunItem | Explosion, shooter: GameObject, options: ServerBulletOptions) {
         options.rotation = normalizeAngle(options.rotation);
         const variance = source.type.definition.ballistics.variance;
         const bulletOptions: BulletOptions = {
+=======
+    constructor(
+        game: Game,
+        source: Weapon,
+        shooter: GameObject,
+        options: ServerBulletOptions
+    ) {
+        const variance = source.definition.ballistics.variance;
+        super({
+>>>>>>> 4d5ad952 (refactor: largely remove ObjectType)
             ...options,
-            source: source.type,
+            source: source.definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
-        };
-        super(bulletOptions);
+        });
 
         this.game = game;
         this.sourceGun = source;
@@ -71,14 +79,14 @@ export class Bullet extends BaseBullet {
 
         for (const collision of collisions) {
             const object = collision.object;
-            const weapon = this.sourceGun instanceof GunItem ? this.sourceGun : this.sourceGun.type;
+
             if (object instanceof Player) {
                 this.position = collision.intersection.point;
                 this.damagedIDs.add(object.id);
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1),
-                    weapon,
+                    weapon: this.sourceGun,
                     source: this.shooter,
                     position: collision.intersection.point
                 });
@@ -86,12 +94,14 @@ export class Bullet extends BaseBullet {
                 if (this.definition.penetration?.players) continue;
                 this.dead = true;
                 break;
-            } else if (object instanceof Obstacle) {
+            }
+
+            if (object instanceof Obstacle) {
                 this.damagedIDs.add(object.id);
                 records.push({
                     object,
                     damage: this.definition.damage / (this.reflectionCount + 1) * this.definition.obstacleMultiplier,
-                    weapon,
+                    weapon: this.sourceGun,
                     source: this.shooter,
                     position: collision.intersection.point
                 });

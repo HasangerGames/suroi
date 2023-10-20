@@ -331,24 +331,25 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, type, id);
+                        object = new Obstacle(this, (type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>).definition, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(this, type, id);
+                        object = new DeathMarker(this, id);
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(this, type, id);
+                        object = new Loot(this, (type as ObjectType<ObjectCategory.Loot, LootDefinition>).definition, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(this, type, id);
+                        object = new Building(this, (type as ObjectType<ObjectCategory.Building, BuildingDefinition>).definition, id);
                         break;
                     }
                     case ObjectCategory.Decal: {
-                        object = new Decal(this, type, id);
+                        object = new Decal(this, (type as ObjectType<ObjectCategory.Decal>).definition, id);
+                        break;
                     }
                 }
             }
@@ -495,14 +496,15 @@ export class Game {
                             !(differences.object || differences.offset)
                         ) return;
 
-                        let interactText;
-                        if (closestObject instanceof Obstacle) interactText = closestObject.door?.offset === 0 ? "Open Door" : "Close Door";
-                        else interactText = `${closestObject.type.definition.name}${closestObject.count > 1 ? ` (${closestObject.count})` : ""}`;
+                        let interactText = "";
+                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                        interactText += closestObject.definition.name;
+                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
                     };
 
                     if (this._playerManager.isMobile) {
-                        const lootDef = closestObject.type.definition;
+                        const lootDef = closestObject.definition;
 
                         // Autoloot
                         if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {

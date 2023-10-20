@@ -1,6 +1,6 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
-import { type BuildingDefinition } from "../../common/src/definitions/buildings";
-import { type ObstacleDefinition, RotationMode } from "../../common/src/definitions/obstacles";
+import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
+import { type ObstacleDefinition, RotationMode, Obstacles } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
 import {
     CircleHitbox,
@@ -11,9 +11,10 @@ import {
 } from "../../common/src/utils/hitbox";
 import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
-import { log } from "../../common/src/utils/misc";
+import { ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
 import {
+    pickRandomInArray,
     random,
     randomBoolean,
     randomFloat,
@@ -220,14 +221,18 @@ export class Map {
         log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
-    generateBuildings(idString: string, count: number): void {
-        const type = ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, idString);
+    generateBuildings(
+        definition: BuildingDefinition | ReferenceTo<BuildingDefinition>,
+        count: number
+    ): void {
+        definition = reifyDefinition(definition, Buildings);
         const rotationMode = definition.rotationMode ?? RotationMode.Limited;
 
         for (let i = 0; i < count; i++) {
             const orientation = Map.getRandomBuildingOrientation(rotationMode);
 
             this.generateBuilding(
+                definition,
                 this.getRandomPositionFor(
                     ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, definition.idString),
                     1,
@@ -238,20 +243,21 @@ export class Map {
         }
     }
 
-    generateBuilding(type: ObjectType<ObjectCategory.Building, BuildingDefinition>, position: Vector, orientation?: Orientation): Building {
-
-        const building = new Building(this.game, type, vClone(position), orientation);
-
-        const definition = type.definition;
+    generateBuilding(
+        definition: BuildingDefinition | ReferenceTo<BuildingDefinition>,
+        position: Vector,
+        orientation?: Orientation
+    ): Building {
+        definition = reifyDefinition(definition, Buildings);
         orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode ?? RotationMode.Limited);
 
-        const obstacleType = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, obstacleData.id);
+        const building = new Building(this.game, definition, vClone(position), orientation);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.getByIDString(obstacleData.idString);
+            const obstacleDef = Obstacles.getByIDString(obstacleData.id);
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
-            if (obstacleType.definition.rotationMode === RotationMode.Limited) {
+            if (obstacleDef.rotationMode === RotationMode.Limited) {
                 obstacleRotation = addOrientations(orientation, obstacleRotation as Orientation);
             }
 
@@ -260,8 +266,8 @@ export class Map {
             if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(v(0, 0), obstacleData.lootSpawnOffset, orientation);
 
             this.generateObstacle(
-                obstacleType,
-                obstaclePos,
+                obstacleDef,
+                addAdjust(position, obstacleData.position, orientation),
                 obstacleRotation,
                 obstacleData.scale ?? 1,
                 obstacleData.variation,
@@ -291,7 +297,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                subBuilding.idString,
+                subBuilding.id,
                 addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
@@ -318,21 +324,21 @@ export class Map {
     }
 
     generateObstacles(
-        idString: string,
+        definition: ReferenceTo<ObstacleDefinition> | ObstacleDefinition,
         count: number,
         spawnProbability?: number,
         radius?: number,
         squareRadius?: boolean
     ): void {
-        const type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, idString);
+        definition = reifyDefinition(definition, Obstacles);
+        const type = ObjectType.fromString(ObjectCategory.Obstacle, definition.idString);
 
         for (let i = 0; i < count; i++) {
             const definition: ObstacleDefinition = type.definition;
             if (Math.random() < (spawnProbability ??= 1)) {
                 const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-                const variation: Variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-
-                const rotation = this.getRandomRotation(definition.rotationMode);
+                const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+                const rotation = Map.getRandomRotation(definition.rotationMode);
 
                 let orientation: Orientation = 0;
 
@@ -345,13 +351,13 @@ export class Map {
                     position = this.getRandomPositionInRadiusFor(type, scale, orientation, radius, squareRadius);
                 }
 
-                this.generateObstacle(type, position, undefined, scale, variation);
+                this.generateObstacle(definition, position, undefined, scale, variation);
             }
         }
     }
 
     generateObstacle(
-        type: string | ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+        definition: ReferenceTo<ObstacleDefinition> | ObstacleDefinition,
         position: Vector,
         rotation?: number,
         scale?: number,
@@ -359,22 +365,18 @@ export class Map {
         lootSpawnOffset?: Vector,
         parentBuilding?: Building
     ): Obstacle {
-        if (typeof type === "string") {
-            type = ObjectType.fromString<ObjectCategory.Obstacle, ObstacleDefinition>(ObjectCategory.Obstacle, type);
-        }
-
-        const definition: ObstacleDefinition = type.definition;
+        definition = reifyDefinition(definition, Obstacles);
 
         scale ??= randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
         if (variation === undefined && definition.variations) {
             variation = random(0, definition.variations - 1) as Variation;
         }
 
-        if (rotation === undefined) rotation = this.getRandomRotation(definition.rotationMode);
+        rotation ??= Map.getRandomRotation(definition.rotationMode);
 
-        const obstacle: Obstacle = new Obstacle(
+        const obstacle = new Obstacle(
             this.game,
-            type,
+            definition,
             vClone(position),
             rotation,
             scale,
@@ -399,7 +401,7 @@ export class Map {
 
             for (const item of loot) {
                 this.game.addLoot(
-                    ObjectType.fromString(ObjectCategory.Loot, item.idString),
+                    item.idString,
                     position,
                     item.count
                 );

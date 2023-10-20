@@ -202,16 +202,14 @@ export const Maps: Record<string, MapDefinition> = {
                 const itemPos = vClone(startPos);
 
                 for (const item of Loots.definitions) {
-                    const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item.idString);
-                    const def = itemType.definition;
+                    if (
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop === true) ||
+                        "ephemeral" in item ||
+                        (item.itemType === ItemType.Backpack && item.level === 0) ||
+                        item.itemType === ItemType.Skin
+                    ) continue;
 
-                    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-                    if (((def.itemType === ItemType.Melee || def.itemType === ItemType.Scope) && def.noDrop) ||
-                        "ephemeral" in def ||
-                        (def.itemType === ItemType.Backpack && def.level === 0) ||
-                        def.itemType === ItemType.Skin) continue;
-
-                    map.game.addLoot(itemType, itemPos, Infinity);
+                    map.game.addLoot(item, itemPos, Infinity);
 
                     itemPos.x += xOff;
                     if (

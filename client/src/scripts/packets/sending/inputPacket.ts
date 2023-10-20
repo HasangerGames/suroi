@@ -1,5 +1,5 @@
-import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../../../../common/src/constants";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { INPUT_ACTIONS_BITS, InputActions, PacketType } from "../../../../../common/src/constants";
+import { Loots } from "../../../../../common/src/definitions/loots";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -45,7 +45,7 @@ export class InputPacket extends SendingPacket {
                 break;
             }
             case InputActions.UseConsumableItem: {
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, player.consumableToConsume));
+                stream.writeUint8(Loots.idStringToNumber[player.consumableToConsume]);
                 player.consumableToConsume = "";
                 break;
             }
