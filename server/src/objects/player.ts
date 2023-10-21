@@ -327,7 +327,6 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*
         const giveWeapon = (idString: string, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
@@ -335,7 +334,7 @@ export class Player extends GameObject {
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
         };
-        */
+        giveWeapon("tango_51", 0);
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;

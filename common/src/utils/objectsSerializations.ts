@@ -192,7 +192,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Obstacle]: {
         serializePartial(stream, data): void {
-            if (data.definition.idString === "generator") console.log(data.activated);
             stream.writeScale(data.scale);
             stream.writeBoolean(data.dead);
             if (data.definition.role === ObstacleSpecialRoles.Door && data.door) {

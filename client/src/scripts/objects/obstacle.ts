@@ -227,7 +227,6 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
         this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
-        if (definition.idString === "generator") console.log(data.activated);
         if (!this.activated && data.activated) {
             this.activated = true;
             let firstRun = !this.isNew;
