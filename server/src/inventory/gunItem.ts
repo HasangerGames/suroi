@@ -100,7 +100,7 @@ export class GunItem extends InventoryItem {
 
         const jitter = definition.jitterRadius ?? 0;
 
-        const rotated = vRotate(v(definition.length + jitter, 0), owner.rotation); // player radius + gun length
+        const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
 
         let position = vAdd(owner.position, rotated);
 
