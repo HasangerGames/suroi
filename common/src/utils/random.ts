@@ -1,5 +1,5 @@
 import { lerp } from "./math";
-import { v, type Vector } from "./vector";
+import { type Vector } from "./vector";
 
 /**
  * Generate a random floating-point value.
@@ -57,22 +57,17 @@ export function randomRotation(): number {
 
 /**
  * Generate a random point inside of a circle.
- * @link https://stackoverflow.com/a/51727716/5905216
  * @param position The center of the circle.
  * @param radius The radius of the circle.
  * A vector representation of the randomized point.
  */
 export function randomPointInsideCircle(position: Vector, radius: number): Vector {
-    let x: number,
-        y: number;
-
-    do {
-        x = 2 * Math.random() - 1.0; // range [-1, +1)
-        y = 2 * Math.random() - 1.0;
-    } while ((x * x + y * y) >= 1); // check unit circle
-
-    // scale and translate the points
-    return v(x * radius + position.x, y * radius + position.y);
+    const angle = randomFloat(0, Math.PI * 2);
+    const length = randomFloat(0, radius);
+    return {
+        x: position.x + (Math.cos(angle) * length),
+        y: position.y + (Math.sin(angle) * length)
+    };
 }
 
 /**
