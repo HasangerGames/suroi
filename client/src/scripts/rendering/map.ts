@@ -236,7 +236,7 @@ export class Minimap {
                 sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
                 sprite.scale.set(1 / PIXI_SCALE);
                 sprite.setRotation(building.rotation);
-                sprite.setZIndex(ZIndexes.BuildingsCeiling);
+                sprite.setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 mapRender.addChild(sprite);
             }

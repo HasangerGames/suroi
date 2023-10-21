@@ -111,8 +111,8 @@ export const KILL_LEADER_MIN_KILLS = 3;
 
 export enum ZIndexes {
     Ground,
-    DeadObstacles,
     Decals,
+    DeadObstacles,
     DeathMarkers,
     /**
      * This is the default layer for obstacles

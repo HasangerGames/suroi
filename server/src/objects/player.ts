@@ -308,8 +308,8 @@ export class Player extends GameObject {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = reifyDefinition("1x_scope", Scopes);
-        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
-        //this.inventory.items["15x_scope"] = 1;
+        this.inventory.scope = reifyDefinition("15x_scope", Scopes);
+        this.inventory.items["15x_scope"] = 1;
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {

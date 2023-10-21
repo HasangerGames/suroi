@@ -20,6 +20,7 @@ interface MapDefinition {
     readonly height: number
     readonly oceanSize: number
     readonly beachSize: number
+    readonly rivers?: number
     readonly buildings?: Record<string, number>
     readonly obstacles?: Record<string, number>
 
@@ -58,6 +59,7 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1344,
         oceanSize: 128,
         beachSize: 32,
+        rivers: 3,
         buildings: {
             refinery: 1,
             warehouse: 4,
@@ -294,10 +296,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port", v(this.width / 2, this.height / 2), 0);
-            /*for (let i = 1; i <= 10; i++) {
-                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
-            }*/
+            map.generateBuilding("ship", v(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -307,15 +306,6 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 16,
         genCallback(map) {
             map.generateObstacle("panel_without_button", v(this.width / 2, this.height / 2));
-        }
-    },
-    small_house: {
-        width: 512,
-        height: 512,
-        beachSize: 16,
-        oceanSize: 16,
-        genCallback(map) {
-            map.generateBuilding("small_house", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {

@@ -1,19 +1,20 @@
 import {
     ANIMATION_TYPE_BITS,
+    type AnimationType,
     ObjectCategory,
     PLAYER_ACTIONS_BITS,
-    PlayerActions,
-    type AnimationType
+    PlayerActions
 } from "../constants";
-import { HealingItems, type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots, type LootDefinition } from "../definitions/loots";
-import { type ObstacleDefinition } from "../definitions/obstacles";
-import { Skins, type SkinDefinition } from "../definitions/skins";
+import { type HealingItemDefinition, HealingItems } from "../definitions/healingItems";
+import { type LootDefinition, Loots } from "../definitions/loots";
+import { type ObstacleDefinition, RotationMode } from "../definitions/obstacles";
+import { type SkinDefinition, Skins } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { type ObjectType } from "./objectType";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
+import { type DecalDefinition } from "../definitions/decals";
 
 export interface ObjectsNetData {
     //
@@ -101,6 +102,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Decal]: {
         position: Vector
         rotation: number
+        definition: DecalDefinition
     }
     //
     // Explosion Data
@@ -335,15 +337,16 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 8);
+            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Full);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
         },
-        deserializePartial(stream) {
+        deserializePartial(stream, type) {
             return {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(8)
+                rotation: stream.readObstacleRotation((type.definition as DecalDefinition).rotationMode ?? RotationMode.Full).rotation,
+                definition: type.definition as DecalDefinition
             };
         },
         deserializeFull(stream, type) {

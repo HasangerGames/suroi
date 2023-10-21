@@ -1463,7 +1463,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5))// Top Wheels
 
             ),
-            rotationMode: RotationMode.None,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             }
@@ -1524,14 +1525,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
                 RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
 
-                RectangleHitbox.fromRect(32, 2, v(32, 83.5)), //bottom
-                RectangleHitbox.fromRect(33, 2, v(-14.2, 83.5)), //bottom
+                RectangleHitbox.fromRect(32, 1, v(32, 82.5)), //bottom
+                RectangleHitbox.fromRect(33, 1, v(-14.2, 82.5)), //bottom
                 RectangleHitbox.fromRect(80, 1, v(8, -128)), //top
 
-                RectangleHitbox.fromRect(80, 25, v(8, 119.5)),
+                RectangleHitbox.fromRect(80, 25, v(8, 118.5)),
                 RectangleHitbox.fromRect(14.7, 30, v(-24.5, 98)),
                 RectangleHitbox.fromRect(12, 30, v(41.3, 98))
-
             )
         },
         {

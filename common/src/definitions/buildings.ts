@@ -5,6 +5,7 @@ import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinit
 import { randomBoolean, weightedRandom } from "../utils/random";
 import { v, type Vector } from "../utils/vector";
 import { type RotationMode } from "./obstacles";
+import { ZIndexes } from "../constants";
 
 interface BuildingObstacle {
     readonly id: string
@@ -584,12 +585,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             key: "port_warehouse_ceiling",
             position: v(0, 0)
         }],
-        floors: [
-            {
-                type: "stone",
-                hitbox: RectangleHitbox.fromRect(40.00, 76.00)
-            }
-        ],
         obstacles: [
             {
                 id: "port_warehouse_wall_short",
@@ -1226,18 +1221,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "crane",
         name: "Crane",
-        spawnHitbox: RectangleHitbox.fromRect(100, 220, v(0, 0)),
-        ceilingImages: [{
-            key: "crane_ceiling",
-            position: v(55.9, 0)
-        }
+        spawnHitbox: RectangleHitbox.fromRect(210, 220, v(55, 0)),
+        ceilingHitbox: RectangleHitbox.fromRect(210, 220, v(55, 0)),
+        ceilingImages: [
+            {
+                key: "crane_ceiling",
+                position: v(55.9, -60)
+            },
+            {
+                key: "crane_ceiling",
+                position: v(55.9, 60)
+            }
         ],
-        ceilingZIndex: 100,
+        ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
         obstacles: [
             {
                 id: "crane_base",
                 position: v(0, 0),
-                scale: 1.07
+                scale: 1.07,
+                rotation: 0
             }
         ]
     },
@@ -1329,7 +1331,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "ship_tango_room_floor",
-                position: v(9, 95)
+                position: v(9, 93.8)
             }
         ],
         ceilingImages: [
@@ -1340,6 +1342,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             {
                 key: "ship_tango_room_roof",
                 position: v(8.5, 103.3)
+            }
+        ],
+        floors: [
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(82, 260, v(8.5, 0))
+            },
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, -33.7))
+            },
+            {
+                type: "stone",
+                hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, 43))
             }
         ],
         obstacles: [
@@ -1467,6 +1483,10 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-77.74, -165.82)) },
             { color: 0xe6e6e6, hitbox: RectangleHitbox.fromRect(1.53195, 85.47215, v(-50.76, -166.28)) }
         ],
+        floors: [{
+            type: "stone",
+            hitbox: RectangleHitbox.fromRect(315, 425, v(0, 0))
+        }],
         decals: [
             // Group 1
             {

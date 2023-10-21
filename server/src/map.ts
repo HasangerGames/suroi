@@ -93,7 +93,7 @@ export class Map {
         );
 
         this.rivers = Array.from(
-            { length: 3 },
+            { length: mapDefinition.rivers ?? 0 },
             () => {
                 const riverPoints: Vector[] = [];
 
