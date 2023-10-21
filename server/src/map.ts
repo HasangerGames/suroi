@@ -154,7 +154,9 @@ export class Map {
         for (const river of terrain.rivers) {
             this.terrainGrid.addFloor("water", river.water);
         }
-
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("sand", river.bank);
+        }
         this.terrainGrid.addFloor("grass", terrain.grass);
         this.terrainGrid.addFloor("sand", terrain.beach);
 
