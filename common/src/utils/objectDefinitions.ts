@@ -51,7 +51,8 @@ export enum ItemType {
 export enum ObstacleSpecialRoles {
     Door,
     Wall,
-    Window
+    Window,
+    Activatable
 }
 
 export const LootRadius: Record<ItemType, number> = {

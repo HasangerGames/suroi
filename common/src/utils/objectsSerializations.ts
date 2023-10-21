@@ -51,6 +51,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Obstacle]: {
         scale: number
         dead: boolean
+        activated?: boolean
         definition: ObstacleDefinition
         door?: {
             offset: number
@@ -191,10 +192,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Obstacle]: {
         serializePartial(stream, data): void {
+            if (data.definition.idString === "generator") console.log(data.activated);
             stream.writeScale(data.scale);
             stream.writeBoolean(data.dead);
             if (data.definition.role === ObstacleSpecialRoles.Door && data.door) {
                 stream.writeBits(data.door.offset, 2);
+            } else if (data.definition.role === ObstacleSpecialRoles.Activatable) {
+                stream.writeBoolean(data.activated ?? false);
             }
         },
         serializeFull(stream, data): void {
@@ -219,6 +223,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 data.door = {
                     offset: stream.readBits(2)
                 };
+            } else if (definition.role === ObstacleSpecialRoles.Activatable) {
+                data.activated = stream.readBoolean();
             }
 
             return data;

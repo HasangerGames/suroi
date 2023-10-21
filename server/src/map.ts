@@ -295,7 +295,7 @@ export class Map {
 
             if (obstacleData.lootSpawnOffset) lootSpawnOffset = addAdjust(v(0, 0), obstacleData.lootSpawnOffset, orientation);
 
-            this.generateObstacle(
+            const obstacle = this.generateObstacle(
                 obstacleDef,
                 addAdjust(position, obstacleData.position, orientation),
                 obstacleRotation,
@@ -304,6 +304,7 @@ export class Map {
                 lootSpawnOffset,
                 building
             );
+            if (obstacleData.id === "vault_door") this.game.vaultDoor = obstacle; //fixme idString check
         }
 
         for (const lootData of definition.lootSpawners ?? []) {

@@ -41,6 +41,9 @@ export type ObstacleDefinition = ObjectDefinition & {
     (
         {
             readonly role: ObstacleSpecialRoles.Door
+            readonly locked?: boolean
+            readonly openOnce?: boolean
+            readonly animationDuration?: number
         } & (
             {
                 readonly operationStyle?: "swivel"
@@ -48,13 +51,16 @@ export type ObstacleDefinition = ObjectDefinition & {
             } | {
                 readonly operationStyle: "slide"
                 /**
-                         * Determines how much the door slides. 1 means it'll be displaced by its entire width,
-                         * 0.5 means it'll be displaced by half its width, etc
-                         */
+                 * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+                 * 0.5 means it'll be displaced by half its width, etc
+                 */
                 readonly slideFactor?: number
             }
         )
     ) | {
+        readonly role: ObstacleSpecialRoles.Activatable
+        readonly activator?: string
+    } | {
         readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
     }
 );
@@ -622,6 +628,30 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer3,
             frames: {
                 particle: "furniture_particle"
+            }
+        },
+        {
+            idString: "vault_door",
+            name: "Vault Door",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 1
+            },
+            reflectBullets: true,
+            hitbox: RectangleHitbox.fromRect(12.8, 1.9, v(0.9, -0.7)),
+            rotationMode: RotationMode.None,
+            role: ObstacleSpecialRoles.Door,
+            locked: true,
+            openOnce: true,
+            animationDuration: 2000,
+            hingeOffset: v(-5.5, -1),
+            zIndex: ZIndexes.ObstaclesLayer3,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {
@@ -1293,17 +1323,13 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(15, 6.5),
             rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle",
-                residue: "crate_residue"
-            },
             hasLoot: true
         },
         {
             idString: "panel_with_a_button",
             name: "Panel with a button",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
@@ -1321,7 +1347,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "panel_with_the_button_pressed",
             name: "Panel with the button pressed",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
@@ -1339,7 +1365,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "panel_without_button_small",
             name: "Panel without button small",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
@@ -1357,7 +1383,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "panel_without_button",
             name: "Panel without button",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
@@ -1480,10 +1506,12 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            rotationMode: RotationMode.None,
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
+            role: ObstacleSpecialRoles.Activatable,
+            activator: "gas_can",
             hitbox: RectangleHitbox.fromRect(9, 7)
         },
         {
@@ -1497,7 +1525,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            rotationMode: RotationMode.None,
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
@@ -1514,7 +1542,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            rotationMode: RotationMode.None,
+            rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
             },
@@ -1525,8 +1553,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
                 RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
 
-                RectangleHitbox.fromRect(32, 1, v(32, 82.5)), //bottom
-                RectangleHitbox.fromRect(33, 1, v(-14.2, 82.5)), //bottom
+                RectangleHitbox.fromRect(32, 1, v(32, 82.7)), //bottom
+                RectangleHitbox.fromRect(33, 1, v(-14.2, 82.7)), //bottom
                 RectangleHitbox.fromRect(80, 1, v(8, -128)), //top
 
                 RectangleHitbox.fromRect(80, 25, v(8, 118.5)),
@@ -1795,9 +1823,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_warehouse_windows",
             name: "Port warehouse windows",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             hideOnMap: true,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1813,9 +1842,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_warehouse_wall_short",
             name: "Port warehouse short wall",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             hideOnMap: true,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1831,9 +1861,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_warehouse_wall_long",
             name: "Port warehouse long wall",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             hideOnMap: true,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1849,9 +1880,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "port_warehouse_wall_superlong",
             name: "Port warehouse long super wall",
             material: "metal",
-            health: Infinity,
+            health: 1000,
             hideOnMap: true,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

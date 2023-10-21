@@ -14,6 +14,13 @@ export type WeightedItem =
 export interface LootTable { min: number, max: number, loot: WeightedItem[] }
 
 export const LootTables: Record<string, LootTable> = {
+    gas_can: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "gas_can", weight: 1 }
+        ]
+    },
     ground_loot: {
         min: 1,
         max: 1,

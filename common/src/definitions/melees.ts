@@ -28,6 +28,7 @@ export interface MeleeDefinition extends ItemDefinition {
         readonly angle?: number
         readonly useAngle?: number
         readonly lootScale?: number
+        readonly separateWorldImage?: boolean
     }
     readonly fireMode?: FireMode
 }
@@ -134,6 +135,34 @@ export const Melees: MeleeDefinition[] = [
             angle: 50,
             useAngle: 10,
             lootScale: 0.6
+        }
+    },
+    {
+        idString: "gas_can",
+        name: "Gas Can",
+        itemType: ItemType.Melee,
+        damage: 22,
+        obstacleMultiplier: 1,
+        radius: 1.75,
+        offset: v(3.1, 0.5),
+        cooldown: 250,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        image: {
+            position: v(54, 35),
+            usePosition: v(91, 10),
+            angle: 0,
+            useAngle: 0,
+            lootScale: 0.8,
+            separateWorldImage: true
+        },
+        fists: {
+            animationDuration: 150,
+            randomFist: false,
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(75, 10)
         }
     },
     {
