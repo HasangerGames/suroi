@@ -1,9 +1,8 @@
-import { type MessageEvent, WebSocket } from "ws";
-import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
+import { WebSocket, type MessageEvent } from "ws";
+import { INPUT_ACTIONS_BITS, InputActions, PacketType } from "../../common/src/constants";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { random, randomBoolean } from "../../common/src/utils/random";
+import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 
 const config = {
@@ -17,12 +16,6 @@ const skins: string[] = [];
 
 for (const skin of Skins) {
     if (!skin.notInLoadout && !skin.roleRequired) skins.push(skin.idString);
-}
-
-const emotes: string[] = [];
-
-for (const emote of Emotes.definitions) {
-    emotes.push(emote.idString);
 }
 
 const bots = new Set<Bot>();
@@ -87,12 +80,12 @@ class Bot {
         stream.writeBoolean(false); // is mobile
         // loadout
         const skin = skins[random(0, skins.length)];
-        const emote = (): string => emotes[random(0, emotes.length)];
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, skin));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
+        const emote = (): number => Emotes.idStringToNumber[pickRandomInArray(Emotes.definitions).idString];
+        stream.writeUint8(Skins.findIndex(s => s.idString === skin));
+        stream.writeUint8(emote());
+        stream.writeUint8(emote());
+        stream.writeUint8(emote());
+        stream.writeUint8(emote());
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 

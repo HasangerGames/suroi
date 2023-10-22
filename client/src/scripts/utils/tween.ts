@@ -75,12 +75,14 @@ export class Tween<T> {
             }
             return;
         }
+
         for (const key in this.startValues) {
             const startValue = this.startValues[key];
             const endValue = this.endValues[key];
             const interpFactor = (now - this.startTime) / this.duration;
-            (this.target[key as keyof T] as number) = lerp(startValue, endValue, this.ease ? this.ease(interpFactor) : interpFactor);
+            (this.target[key as keyof T] as number) = lerp(startValue, endValue, (this.ease ?? (t => t))(interpFactor));
         }
+
         this.onUpdate?.();
     }
 

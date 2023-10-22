@@ -1,6 +1,6 @@
-import { type ObjectCategory, PacketType } from "../../../../common/src/constants";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { PacketType } from "../../../../common/src/constants";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { SendingPacket } from "../../types/sendingPacket";
@@ -8,15 +8,15 @@ import { SendingPacket } from "../../types/sendingPacket";
 export class PickupPacket extends SendingPacket {
     override readonly allocBytes = 3;
     override readonly type = PacketType.Pickup;
-    readonly itemType: ObjectType<ObjectCategory.Loot, LootDefinition>;
+    readonly itemType: ReferenceTo<LootDefinition>;
 
-    constructor(player: Player, itemType: ObjectType<ObjectCategory.Loot, LootDefinition>) {
+    constructor(player: Player, itemType: ReferenceTo<LootDefinition>) {
         super(player);
         this.itemType = itemType;
     }
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        stream.writeObjectTypeNoCategory(this.itemType);
+        stream.writeUint8(Loots.idStringToNumber[this.itemType]);
     }
 }

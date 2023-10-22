@@ -337,14 +337,18 @@ export function setupUI(game: Game): void {
         const crosshairItem = $(`
     <div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
         <div class="crosshairs-list-item"></div>
-    </div>`);
-
-        const size = consoleVariables.get.builtIn("cv_crosshair_size").value;
-        const backgroundImage = `url("${getCrosshair(crosshair.idString, "#fff", size, "#000", 0)}")`;
+    </div>`
+        );
 
         // This method sucks but it's the only way to do it without breaking the crosshair image
         crosshairItem.find(".crosshairs-list-item").css({
-            backgroundImage,
+            backgroundImage: `url("${getCrosshair(
+                crosshair.idString,
+                "#fff",
+                consoleVariables.get.builtIn("cv_crosshair_size").value,
+                "#0",
+                0
+            )}")`,
             "background-size": "contain",
             "background-repeat": "no-repeat"
         });
@@ -545,7 +549,7 @@ export function setupUI(game: Game): void {
         </div>`);
 
         $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.playerManager.useItem(scope.idString);
+            game.playerManager.useItem(scope);
             e.stopPropagation();
         });
         if (UI_DEBUG_MODE) {
@@ -566,7 +570,7 @@ export function setupUI(game: Game): void {
         </div>`);
 
         $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
-            game.playerManager.useItem(item.idString);
+            game.playerManager.useItem(item);
             e.stopPropagation();
         });
     }

@@ -114,7 +114,7 @@ export const Guns: GunDefinition[] = [
         moveSpread: 10,
         length: 6.6,
         fists: {
-            left: v(90, -5),
+            left: v(98, -5),
             right: v(40, 0),
             rightZIndex: 4,
             animationDuration: 100
@@ -288,9 +288,8 @@ export const Guns: GunDefinition[] = [
         ammoSpawnAmount: 10,
         capacity: 2,
         reloadTime: 2.6,
-        singleReload: false,
         fireDelay: 175,
-        switchDelay: 200,
+        switchDelay: 250,
         speedMultiplier: 0.95,
         recoilMultiplier: 0.8,
         recoilDuration: 100,
@@ -395,6 +394,41 @@ export const Guns: GunDefinition[] = [
             maxDistance: 280,
             tracerWidth: 1.6,
             tracerLength: 3.5
+        }
+    },
+    {
+        idString: "m1895",
+        name: "M1895",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 28,
+        fireDelay: 375,
+        switchDelay: 250,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 135,
+        fireMode: FireMode.Single,
+        shotSpread: 2,
+        moveSpread: 3,
+        length: 5.1,
+        fists: {
+            left: v(40, 0),
+            right: v(40, 0),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(70, 0) },
+        casingParticles: {
+            position: v(3.5, 0.5)
+        },
+        capacity: 7,
+        reloadTime: 2.1,
+        ballistics: {
+            damage: 24.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.26,
+            maxDistance: 160
         }
     },
     {
@@ -594,15 +628,16 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 2,
-        length: 10.1,
+        length: 6.9,
         fists: {
-            left: v(140, -5),
-            right: v(65, 0),
+            left: v(103, -2),
+            right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(100, 0) },
+        image: { position: v(83, -3) },
         casingParticles: {
-            position: v(3.5, 0.5)
+            position: v(4, 0.6)
         },
         ballistics: {
             damage: 11,
@@ -825,6 +860,9 @@ export const Guns: GunDefinition[] = [
             tracerLength: 1.5
         }
     },
+
+    // only dev weapons below this point
+
     {
         idString: "deathray",
         name: "Death Ray",
@@ -843,7 +881,6 @@ export const Guns: GunDefinition[] = [
         moveSpread: 0.1,
         canQuickswitch: true,
         killstreak: true,
-        bulletCount: 1,
         length: 9.7,
         fists: {
             left: v(135, -6),
@@ -852,6 +889,10 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 0) },
         noMuzzleFlash: true,
+        casingParticles: {
+            position: v(0, 0),
+            spawnOnReload: true
+        },
         ballistics: {
             damage: 800,
             obstacleMultiplier: 2,

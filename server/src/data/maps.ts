@@ -1,7 +1,7 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
-import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
-import { Obstacles } from "../../../common/src/definitions/obstacles";
+import { Loots } from "../../../common/src/definitions/loots";
+import { Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
@@ -18,6 +18,9 @@ import { type GunItem } from "../inventory/gunItem";
 interface MapDefinition {
     readonly width: number
     readonly height: number
+    readonly oceanSize: number
+    readonly beachSize: number
+    readonly rivers?: number
     readonly buildings?: Record<string, number>
     readonly obstacles?: Record<string, number>
 
@@ -42,8 +45,8 @@ interface MapDefinition {
     readonly loots?: Record<string, number>
 
     readonly places?: Array<{
-        name: string
-        position: Vector
+        readonly name: string
+        readonly position: Vector
     }>
 
     // Custom callback to generate stuff
@@ -52,8 +55,11 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
-        width: 1024,
-        height: 1024,
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: 3,
         buildings: {
             refinery: 1,
             warehouse: 4,
@@ -102,30 +108,48 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Banana", position: v(0.14, 0.12) },
-            { name: "Takedown", position: v(0.14, 0.88) },
-            { name: "Lavlandet", position: v(0.88, 0.12) },
-            { name: "Noskin Narrows", position: v(0.82, 0.88) },
-            { name: "Mt. Sanger", position: v(0.5, 0.3) },
-            { name: "Deepwood", position: v(0.5, 0.7) }
+            { name: "Banana", position: v(0.23, 0.2) },
+            { name: "Takedown", position: v(0.23, 0.8) },
+            { name: "Lavlandet", position: v(0.75, 0.2) },
+            { name: "Noskin Narrows", position: v(0.72, 0.8) },
+            { name: "Mt. Sanger", position: v(0.5, 0.35) },
+            { name: "Deepwood", position: v(0.5, 0.65) }
         ]
     },
     debug: {
         width: 1024,
         height: 1024,
+        beachSize: 16,
+        oceanSize: 160,
         genCallback: (map: Map) => {
             // Generate all Buildings
 
             const buildingPos = v(map.width / 2, map.height / 2 - 50);
             const buildingStartPos = vClone(buildingPos);
 
-            for (const building of Buildings.definitions.filter(definition => definition.idString !== "porta_potty")) {
-                for (let orientation = 0; orientation < 4; orientation++) {
-                    map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, building.idString), buildingPos, orientation as Orientation);
-                    buildingPos.y -= 100;
+            const max = {
+                [RotationMode.Limited]: 4,
+                [RotationMode.Binary]: 2,
+                [RotationMode.None]: 1
+            };
+
+            for (const building of Buildings.definitions) {
+                for (
+                    let orientation = 0, limit = max[building.rotationMode ?? RotationMode.Limited];
+                    orientation < limit;
+                    orientation++
+                ) {
+                    map.generateBuilding(
+                        building.idString,
+                        buildingPos,
+                        (building.rotationMode === RotationMode.Binary ? 2 : 1) * orientation as Orientation
+                    );
+
+                    buildingPos.y -= 125;
                 }
+
                 buildingPos.y = buildingStartPos.y;
-                buildingPos.x += 100;
+                buildingPos.x += 125;
             }
 
             // Generate all Obstacles
@@ -146,7 +170,7 @@ export const Maps: Record<string, MapDefinition> = {
             // Generate all Loots
             const itemPos = v(map.width / 2, map.height / 2);
             for (const item of Loots.definitions) {
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item.idString), itemPos, 511);
+                map.game.addLoot(item, itemPos, 511);
 
                 itemPos.x += 10;
                 if (itemPos.x > map.width / 2 + 100) {
@@ -156,16 +180,20 @@ export const Maps: Record<string, MapDefinition> = {
             }
         },
         places: [
-            { name: "[object Object]", position: v(0.2, 0.2) },
-            { name: "Kernel Panic", position: v(0.8, 0.8) },
-            { name: "undefined Forest", position: v(0.5, 0.3) },
-            { name: "Memory Leak", position: v(0.5, 0.7) }
+            { name: "[object Object]", position: v(0.8, 0.7) },
+            { name: "Kernel Panic", position: v(0.6, 0.8) },
+            { name: "NullPointerException", position: v(0.7, 0.3) },
+            { name: "undefined Forest", position: v(0.3, 0.2) },
+            { name: "seg. fault\n(core dumped)", position: v(0.3, 0.7) },
+            { name: "Can't read props of null", position: v(0.4, 0.5) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
     arena: {
         width: 512,
         height: 512,
+        beachSize: 16,
+        oceanSize: 80,
         genCallback: (map: Map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
@@ -176,19 +204,20 @@ export const Maps: Record<string, MapDefinition> = {
                 const itemPos = vClone(startPos);
 
                 for (const item of Loots.definitions) {
-                    const itemType = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item.idString);
-                    const def = itemType.definition;
+                    if (
+                        ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop === true) ||
+                        "ephemeral" in item ||
+                        (item.itemType === ItemType.Backpack && item.level === 0) ||
+                        item.itemType === ItemType.Skin
+                    ) continue;
 
-                    /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-                    if (((def.itemType === ItemType.Melee || def.itemType === ItemType.Scope) && def.noDrop) ||
-                        "ephemeral" in def ||
-                        (def.itemType === ItemType.Backpack && def.level === 0) ||
-                        def.itemType === ItemType.Skin) continue;
-
-                    map.game.addLoot(itemType, itemPos, Infinity);
+                    map.game.addLoot(item, itemPos, Infinity);
 
                     itemPos.x += xOff;
-                    if ((xOff > 0 && itemPos.x > startPos.x + width) || (xOff < 0 && itemPos.x < startPos.x - width)) {
+                    if (
+                        (xOff > 0 && itemPos.x > startPos.x + width) ||
+                        (xOff < 0 && itemPos.x < startPos.x - width)
+                    ) {
                         itemPos.x = startPos.x;
                         itemPos.y -= yOff;
                     }
@@ -242,9 +271,18 @@ export const Maps: Record<string, MapDefinition> = {
             };
 
             for (const obstacle in randomObstacles) {
-                const obstacleType = ObjectType.fromString(ObjectCategory.Obstacle, obstacle);
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
-                    map.generateObstacle(obstacle, map.getRandomPositionFor(obstacleType, 1, 0, getPos), 0, 1);
+                    map.generateObstacle(
+                        obstacle,
+                        map.getRandomPositionFor(
+                            ObjectType.fromString(ObjectCategory.Obstacle, obstacle),
+                            1,
+                            0,
+                            getPos
+                        ),
+                        0,
+                        1
+                    );
                 }
             }
         },
@@ -253,25 +291,28 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     singleBuilding: {
-        width: 512,
-        height: 512,
+        width: 1024,
+        height: 1024,
+        beachSize: 32,
+        oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "port"), v(this.width / 2, this.height / 2), 0);
-            /*for (let i = 1; i <= 10; i++) {
-                map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, `container_${i}`), v(256 + 20 * i, 256), 0);
-            }*/
+            map.generateBuilding("port", v(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
         width: 128,
         height: 128,
+        beachSize: 16,
+        oceanSize: 16,
         genCallback(map) {
-            map.generateObstacle("panel_without_button", v(this.width / 2, this.height / 2));
+            map.generateObstacle("vault_door", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {
         width: 64,
         height: 48 + (16 * Guns.length),
+        beachSize: 8,
+        oceanSize: 8,
         genCallback(map) {
             for (let i = 0; i < Guns.length; i++) {
                 const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(32, 32 + (16 * i)));
@@ -281,10 +322,16 @@ export const Maps: Record<string, MapDefinition> = {
                 player.inventory.items[gun.ammoType] = Infinity;
                 player.disableInvulnerability();
                 //setInterval(() => player.activeItem.useItem(), 30);
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.idString), v(16, 32 + (16 * i)));
-                map.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, gun.ammoType), v(16, 32 + (16 * i)), Infinity);
+                map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
+                map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
             }
         }
+    },
+    river: {
+        width: 1344,
+        height: 1344,
+        oceanSize: 144,
+        beachSize: 32
     }
 };

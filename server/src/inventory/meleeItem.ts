@@ -1,8 +1,7 @@
-import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
+import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { vAdd, vRotate } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
@@ -12,11 +11,8 @@ import { InventoryItem } from "./inventoryItem";
 /**
  * A class representing a melee weapon
  */
-export class MeleeItem extends InventoryItem {
+export class MeleeItem extends InventoryItem<MeleeDefinition> {
     declare readonly category: ItemType.Melee;
-    declare readonly type: ObjectType<ObjectCategory.Loot, MeleeDefinition>;
-
-    readonly definition: MeleeDefinition;
 
     private _autoUseTimeoutID: NodeJS.Timeout | undefined;
 
@@ -26,14 +22,12 @@ export class MeleeItem extends InventoryItem {
      * @param owner The `Player` that owns this melee weapon
      * @throws {TypeError} If the `idString` given does not point to a definition for a melee weapon
      */
-    constructor(idString: string, owner: Player) {
+    constructor(idString: ReferenceTo<MeleeDefinition>, owner: Player) {
         super(idString, owner);
 
         if (this.category !== ItemType.Melee) {
             throw new TypeError(`Attempted to create a Melee object based on a definition for a non-melee object (Received a ${this.category as unknown as string} definition)`);
         }
-
-        this.definition = this.type.definition;
     }
 
     /**
@@ -85,11 +79,11 @@ export class MeleeItem extends InventoryItem {
 
                 const targetLimit = Math.min(damagedObjects.length, definition.maxTargets);
                 for (let i = 0; i < targetLimit; i++) {
-                    const closestObject: GameObject = damagedObjects[i];
+                    const closestObject = damagedObjects[i];
                     let multiplier = 1;
 
                     if (closestObject instanceof Obstacle) {
-                        multiplier = definition.piercingMultiplier && closestObject.definition.impenetrable
+                        multiplier = definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
                             ? definition.piercingMultiplier
                             : definition.obstacleMultiplier;
                     }

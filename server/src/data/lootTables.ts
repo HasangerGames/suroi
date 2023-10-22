@@ -1,9 +1,26 @@
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+
 export type WeightedItem =
-    ({ item: string } | { tier: string }) &
-    { count?: number, separate?: boolean, weight: number };
+    (
+        { readonly item: ReferenceTo<LootDefinition> } |
+        { readonly tier: string }
+    ) &
+    {
+        readonly count?: number
+        readonly spawnSeparately?: boolean
+        readonly weight: number
+    };
 export interface LootTable { min: number, max: number, loot: WeightedItem[] }
 
 export const LootTables: Record<string, LootTable> = {
+    gas_can: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "gas_can", weight: 1 }
+        ]
+    },
     ground_loot: {
         min: 1,
         max: 1,
@@ -58,11 +75,11 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "tango_51", weight: 50 },
-            { item: "tango_51", count: 2, weight: 20 },
-            { item: "tango_51", count: 3, weight: 2.5 },
-            { item: "tango_51", count: 4, weight: 0.001 },
-            { item: "tango_51", count: 5, weight: 0.0000001 }
+            { item: "tango_51", spawnSeparately: true, weight: 50 },
+            { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
+            { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
+            { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
+            { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
         ]
     },
     gold_rock: {
@@ -205,7 +222,8 @@ export const LootTables: Record<string, LootTable> = {
 export const LootTiers: Record<string, WeightedItem[]> = {
     guns: [
         { item: "g19", weight: 2 },
-        { item: "mp40", weight: 1.75 },
+        { item: "m1895", weight: 1.75 },
+        { item: "mp40", weight: 1.7 },
         { item: "saf_200", weight: 1.5 },
         { item: "cz75a", weight: 1.5 },
         { item: "hp18", weight: 1.25 },
@@ -272,6 +290,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "vss", weight: 0.55 },
         { item: "m16a4", weight: 0.5 },
         { item: "g19", weight: 0.45 },
+        { item: "m1895", weight: 0.45 },
         { item: "sr25", weight: 0.35 },
         { item: "mini14", weight: 0.35 },
         { item: "lewis_gun", weight: 0.35 },

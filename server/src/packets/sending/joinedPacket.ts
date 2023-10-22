@@ -1,4 +1,5 @@
 import { PacketType } from "../../../../common/src/constants";
+import { Emotes } from "../../../../common/src/definitions/emotes";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -9,7 +10,7 @@ export class JoinedPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         for (let i = 0; i < this.player.loadout.emotes.length; i++) {
-            stream.writeObjectTypeNoCategory(this.player.loadout.emotes[i]);
+            stream.writeUint8(Emotes.idStringToNumber[this.player.loadout.emotes[i].idString]);
         }
         const killLeader = this.player.game.killLeader;
         const hasKillLeader = killLeader !== undefined;

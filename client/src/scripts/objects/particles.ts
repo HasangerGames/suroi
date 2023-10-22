@@ -5,8 +5,8 @@ import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class ParticleManager {
-    particles = new Set<Particle>();
-    emitters = new Set<ParticleEmitter>();
+    readonly particles = new Set<Particle>();
+    readonly emitters = new Set<ParticleEmitter>();
 
     game: Game;
 
@@ -40,7 +40,7 @@ export class ParticleManager {
     spawnParticle(options: ParticleOptions): Particle {
         const particle = new Particle(options);
         this.particles.add(particle);
-        this.game.camera.container.addChild(particle.image);
+        this.game.camera.addObject(particle.image);
         return particle;
     }
 
@@ -61,38 +61,42 @@ export class ParticleManager {
 }
 
 export type ParticleProperty = {
-    start: number
-    end: number
-    ease?: (x: number) => number
+    readonly start: number
+    readonly end: number
+    readonly ease?: (x: number) => number
 } | number;
 
 export interface ParticleOptions {
-    frames: string | string[]
-    position: Vector
-    speed: Vector
-    lifeTime: number
-    zIndex: number
-    scale?: ParticleProperty
-    alpha?: ParticleProperty
-    rotation?: ParticleProperty
+    readonly frames: string | string[]
+    readonly position: Vector
+    readonly speed: Vector
+    readonly lifeTime: number
+    readonly zIndex: number
+    readonly scale?: ParticleProperty
+    readonly alpha?: ParticleProperty
+    readonly rotation?: ParticleProperty
 }
 
 export class Particle {
     position: Vector;
-    image: SuroiSprite;
+    readonly image: SuroiSprite;
 
-    spawnTime = Date.now();
-    deathTime: number;
+    private readonly _spawnTime = Date.now();
+    get spawnTime(): number { return this._spawnTime; }
+
+    private readonly _deathTime = Date.now();
+    get deathTime(): number { return this._deathTime; }
+
     dead = false;
 
-    options: ParticleOptions;
+    readonly options: ParticleOptions;
 
-    scale = 1;
-    alpha = 1;
-    rotation = 0;
+    scale: number;
+    alpha: number;
+    rotation: number;
 
     constructor(options: ParticleOptions) {
-        this.deathTime = this.spawnTime + options.lifeTime;
+        this._deathTime = this._spawnTime + options.lifeTime;
         this.position = options.position;
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
@@ -112,24 +116,23 @@ export class Particle {
 
         const now = Date.now();
         let interpFactor: number;
-        if (now >= this.deathTime) {
+        if (now >= this._deathTime) {
             this.dead = true;
             interpFactor = 1;
         } else {
-            interpFactor = (now - this.spawnTime) / options.lifeTime;
+            interpFactor = (now - this._spawnTime) / options.lifeTime;
         }
 
-        // i was too lazy to figure out a better way of doing that lol...
-        if (typeof options.scale === "object" && "start" in options.scale) {
-            this.scale = lerp(options.scale.start, options.scale.end, options.scale.ease ? options.scale.ease(interpFactor) : interpFactor);
+        if (typeof options.scale === "object") {
+            this.scale = lerp(options.scale.start, options.scale.end, (options.scale.ease ?? (t => t))(interpFactor));
         }
 
-        if (typeof options.alpha === "object" && "start" in options.alpha) {
-            this.alpha = lerp(options.alpha.start, options.alpha.end, options.alpha.ease ? options.alpha.ease(interpFactor) : interpFactor);
+        if (typeof options.alpha === "object") {
+            this.alpha = lerp(options.alpha.start, options.alpha.end, (options.alpha.ease ?? (t => t))(interpFactor));
         }
 
-        if (typeof options.rotation === "object" && "start" in options.rotation) {
-            this.rotation = lerp(options.rotation.start, options.rotation.end, options.rotation.ease ? options.rotation.ease(interpFactor) : interpFactor);
+        if (typeof options.rotation === "object") {
+            this.rotation = lerp(options.rotation.start, options.rotation.end, (options.rotation.ease ?? (t => t))(interpFactor));
         }
 
         this.image.position.copyFrom(toPixiCoords(this.position));
@@ -139,17 +142,19 @@ export class Particle {
 }
 
 export interface EmitterOptions {
-    delay: number
-    active: boolean
-    spawnOptions: () => ParticleOptions
+    readonly delay: number
+    readonly active: boolean
+    readonly spawnOptions: () => ParticleOptions
 }
 
 export class ParticleEmitter {
+    private _dead = false;
+    get dead(): boolean { return this._dead; }
+
     lastSpawn = 0;
-    dead = false;
-    delay: number;
+    readonly delay: number;
     active: boolean;
-    spawnOptions: () => ParticleOptions;
+    readonly spawnOptions: () => ParticleOptions;
 
     constructor(options: EmitterOptions) {
         this.delay = options.delay;
@@ -158,6 +163,6 @@ export class ParticleEmitter {
     }
 
     destroy(): void {
-        this.dead = true;
+        this._dead = true;
     }
 }
