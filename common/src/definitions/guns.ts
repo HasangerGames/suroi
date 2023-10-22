@@ -180,7 +180,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 5,
         moveSpread: 2,
-        jitterRadius: 1.25,
+        jitterRadius: 0.5,
         canQuickswitch: true,
         bulletCount: 9,
         length: 7.7,
@@ -218,7 +218,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 11,
         moveSpread: 3,
-        jitterRadius: 2.75,
+        jitterRadius: 1.25,
         canQuickswitch: true,
         bulletCount: 10,
         length: 7.9,
@@ -259,7 +259,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 18,
         shotSpread: 30,
         moveSpread: 7,
-        jitterRadius: 3,
+        jitterRadius: 1.5,
         canQuickswitch: true,
         length: 8,
         fists: {
@@ -297,7 +297,7 @@ export const Guns: GunDefinition[] = [
         bulletCount: 10,
         shotSpread: 11,
         moveSpread: 3,
-        jitterRadius: 3,
+        jitterRadius: 1.5,
         canQuickswitch: true,
         length: 6,
         fists: {
@@ -388,7 +388,7 @@ export const Guns: GunDefinition[] = [
             position: v(4, 0.6)
         },
         ballistics: {
-            damage: 84,
+            damage: 79,
             obstacleMultiplier: 1,
             speed: 0.4,
             maxDistance: 280,
