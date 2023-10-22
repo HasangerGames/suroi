@@ -648,7 +648,7 @@ logger.indent("Validating loot table references", () => {
                 logger.indent("Validating drop declaration", () => {
                     const errorPath2 = tester.createPath(errorPath, "drop declaration");
 
-                    for (const entry of lootData.loot) {
+                    for (const entry of lootData.loot.flat()) {
                         tester.assertNoPointlessValue({
                             obj: entry,
                             field: "count",
@@ -1533,6 +1533,13 @@ logger.indent("Validating decals", () => {
                 obj: decal,
                 field: "scale",
                 defaultValue: 1,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: decal,
+                field: "rotationMode",
+                defaultValue: RotationMode.Limited,
                 baseErrorPath: errorPath
             });
 

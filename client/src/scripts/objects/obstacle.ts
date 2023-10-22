@@ -14,6 +14,7 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
+import { ParticleEmitter } from "./particles";
 
 export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -38,6 +39,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
     };
 
     isNew = true;
+    explosiveEmitter?: ParticleEmitter;
 
     activated?: boolean;
 
@@ -71,6 +73,22 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         this.particleFrames = definition.particleVariations !== undefined
             ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
             : [particleImage];
+
+        if (definition.explosion !== undefined) {
+            this.explosiveEmitter = this.game.particleManager.addEmitter(new ParticleEmitter({
+                delay: 250,
+                active: false,
+                spawnOptions: () => ({
+                    frames: "smoke_particle",
+                    position: this.position,
+                    zIndex: ZIndexes.Players,
+                    lifeTime: 800,
+                    scale: { start: randomFloat(0.5, 0.7), end: randomFloat(1.6, 2) },
+                    alpha: { start: 0.9, end: 0.3 },
+                    speed: velFromAngle((randomFloat(0, 2 * Math.PI)), randomFloat(0.5, 4))
+                })
+            }));
+        }
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
@@ -83,6 +101,10 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
 
         this.scale = data.scale;
+
+        if (definition.explosion !== undefined && this.explosiveEmitter && (this.scale - definition.scale.destroy) / (definition.scale.spawnMin - definition.scale.destroy) <= 0.3 && !this.dead) {
+            this.explosiveEmitter.active = true;
+        }
 
         if (definition.role === ObstacleSpecialRoles.Door && this.door && this.isNew) {
             let offsetX: number;
@@ -198,6 +220,11 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
 
+                if (this.explosiveEmitter) {
+                    this.explosiveEmitter.active = false;
+                    this.explosiveEmitter.destroy();
+                }
+
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
@@ -309,5 +336,6 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
     destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.explosiveEmitter?.destroy();
     }
 }

@@ -11,7 +11,7 @@ export type WeightedItem =
         readonly spawnSeparately?: boolean
         readonly weight: number
     };
-export interface LootTable { min: number, max: number, loot: WeightedItem[] }
+export interface LootTable { min: number, max: number, loot: WeightedItem[] | WeightedItem[][] }
 
 export const LootTables: Record<string, LootTable> = {
     gas_can: {
@@ -75,11 +75,18 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { item: "tango_51", spawnSeparately: true, weight: 50 },
-            { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
-            { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
-            { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
-            { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+            [
+                { item: "4x_scope", weight: 1 },
+                { item: "8x_scope", weight: 0.1 },
+                { item: "15x_scope", weight: 0.0025 }
+            ],
+            [
+                { item: "tango_51", spawnSeparately: true, weight: 50 },
+                { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
+                { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
+                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
+                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+            ]
         ]
     },
     gold_rock: {
@@ -254,7 +261,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "2x_scope", weight: 1 },
         { item: "4x_scope", weight: 0.5 },
         { item: "8x_scope", weight: 0.1 },
-        { item: "15x_scope", weight: 0.0025 }
+        { item: "15x_scope", weight: 0.00025 }
     ],
     equipment: [
         { item: "hard_hat", weight: 1 },
@@ -309,7 +316,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "2x_scope", weight: 1 },
         { item: "4x_scope", weight: 0.45 },
         { item: "8x_scope", weight: 0.1 },
-        { item: "15x_scope", weight: 0.05 }
+        { item: "15x_scope", weight: 0.005 }
     ],
     special_equipment: [
         { item: "hard_hat", weight: 1 },

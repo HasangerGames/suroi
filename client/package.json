@@ -61,11 +61,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.4.2",
-    "@pixi/graphics-extras": "^7.3.0",
-    "@pixi/compressed-textures": "^7.3.1",
+    "@pixi/graphics-extras": "^7.3.2",
+    "@pixi/compressed-textures": "^7.3.2",
     "howler": "^2.2.4",
     "jquery": "^3.7.1",
     "nipplejs": "^0.10.1",
-    "pixi.js": "^7.3.1"
+    "pixi.js": "7.3.2"
   }
 }

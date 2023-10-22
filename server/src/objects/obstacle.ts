@@ -9,7 +9,7 @@ import { ObjectSerializations } from "../../../common/src/utils/objectsSerializa
 import { random } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { vAdd, type Vector } from "../../../common/src/utils/vector";
-import { LootTables } from "../data/lootTables";
+import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
@@ -92,8 +92,8 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.definition.idString];
-            const drops = lootTable.loot;
-
+            const drops = lootTable.loot.flat();
+            
             this.loot = Array.from(
                 { length: random(lootTable.min, lootTable.max) },
                 () => getLootTableLoot(drops)
@@ -101,7 +101,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot)) {
+            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot.flat())) {
                 this.game.addLoot(
                     item.idString,
                     this.position,

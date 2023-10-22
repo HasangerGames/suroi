@@ -1,4 +1,4 @@
-import { v, type Vector } from "../../common/src/utils/vector";
+import { type Vector } from "../../common/src/utils/vector";
 
 export enum SpawnMode {
     Random,
