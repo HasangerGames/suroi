@@ -18,10 +18,10 @@ import { orientationToRotation } from "../utils/misc";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
+import { ParticleEmitter } from "./particles";
 
 export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
-import { ParticleEmitter } from "./particles";
 
     readonly definition: Def;
 
@@ -43,9 +43,7 @@ import { ParticleEmitter } from "./particles";
     };
 
     isNew = true;
-    explosiveEmitter: ParticleEmitter
-
-    activated?: boolean;
+    explosiveEmitter?: ParticleEmitter;
 
     activated?: boolean;
 
@@ -80,20 +78,21 @@ import { ParticleEmitter } from "./particles";
             ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
             : [particleImage];
 
-            
-        this.explosiveEmitter = this.game.particleManager.addEmitter(new ParticleEmitter({
-            delay: 250,
-            active: false,
-            spawnOptions: () => ({
-                frames: 'smoke_particle',
-                position: this.position,
-                zIndex: ZIndexes.Players,
-                lifeTime: 800,
-                scale: { start: randomFloat(0.5, 0.7), end: randomFloat(1.6, 2) },
-                alpha: { start: 0.9, end: 0.3 },
-                speed: velFromAngle((randomFloat(0, 2*Math.PI)), randomFloat(0.5, 4))
-            })
-        }));
+        if (definition.explosion !== undefined) {
+            this.explosiveEmitter = this.game.particleManager.addEmitter(new ParticleEmitter({
+                delay: 250,
+                active: false,
+                spawnOptions: () => ({
+                    frames: "smoke_particle",
+                    position: this.position,
+                    zIndex: ZIndexes.Players,
+                    lifeTime: 800,
+                    scale: { start: randomFloat(0.5, 0.7), end: randomFloat(1.6, 2) },
+                    alpha: { start: 0.9, end: 0.3 },
+                    speed: velFromAngle((randomFloat(0, 2 * Math.PI)), randomFloat(0.5, 4))
+                })
+            }));
+        }
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
@@ -107,11 +106,7 @@ import { ParticleEmitter } from "./particles";
 
         this.scale = data.scale;
 
-        if (definition.explosion !== undefined && (this.scale - definition.scale.destroy)/(definition.scale.spawnMin-definition.scale.destroy) <= 0.3 && !this.dead) {
-            this.explosiveEmitter.active = true;
-        }
-
-        if (definition.explosion !== undefined && (this.scale - definition.scale.destroy)/(definition.scale.spawnMin-definition.scale.destroy) <= 0.3 && !this.dead) {
+        if (definition.explosion !== undefined && this.explosiveEmitter && (this.scale - definition.scale.destroy) / (definition.scale.spawnMin - definition.scale.destroy) <= 0.3 && !this.dead) {
             this.explosiveEmitter.active = true;
         }
 
@@ -229,8 +224,10 @@ import { ParticleEmitter } from "./particles";
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
 
-                this.explosiveEmitter.active = false;
-                this.explosiveEmitter.destroy();
+                if (this.explosiveEmitter) {
+                    this.explosiveEmitter.active = false;
+                    this.explosiveEmitter.destroy();
+                }
 
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
@@ -341,5 +338,6 @@ import { ParticleEmitter } from "./particles";
     destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.explosiveEmitter?.destroy();
     }
 }

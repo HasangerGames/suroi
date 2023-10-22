@@ -27,7 +27,7 @@ import {
 } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
-import { LootTables } from "./data/lootTables";
+import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
@@ -314,7 +314,7 @@ export class Map {
             for (
                 const item of Array.from(
                     { length: random(table.min, table.max) },
-                    () => getLootTableLoot(drops)
+                    () => getLootTableLoot(drops as WeightedItem[]) // fixme This will break if multiple tables are specified
                 ).flat()
             ) {
                 this.game.addLoot(
@@ -427,7 +427,7 @@ export class Map {
         }
 
         for (let i = 0; i < count; i++) {
-            const loot = getLootTableLoot(LootTables[table].loot);
+            const loot = getLootTableLoot(LootTables[table].loot as WeightedItem[]); // fixme This will break if multiple tables are specified
 
             const position = this.getRandomPositionFor(ObjectType.fromString(ObjectCategory.Loot, loot[0].idString));
 
