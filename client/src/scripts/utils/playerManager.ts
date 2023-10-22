@@ -37,13 +37,6 @@ export class PlayerManager {
         return isMobile.any && consoleVariables.get.builtIn("mb_controls_enabled").value;
     }
 
-    private _shootOnRelease = false;
-    get shootOnRelease(): boolean { return this._shootOnRelease; }
-    set shootOnRelease(attacking: boolean) {
-        this._shootOnRelease = attacking;
-        this.dirty.inputs = true;
-    }
-
     readonly movement = (() => {
         let up = false;
         let left = false;
@@ -118,12 +111,9 @@ export class PlayerManager {
     itemToDrop = -1;
     consumableToConsume?: HealingItemDefinition | ScopeDefinition;
 
-    private _attacking = false;
-    get attacking(): boolean { return this._attacking; }
-    set attacking(attacking: boolean) {
-        this._attacking = attacking;
-        this.dirty.inputs = true;
-    }
+    attacking = false;
+
+    resetAttacking = false;
 
     turning = false;
 
