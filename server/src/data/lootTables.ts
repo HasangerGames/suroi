@@ -1,9 +1,26 @@
-export interface WeightedLoot { item: string, count?: number, weight: number }
-export interface WeightedTier { tier: string, weight: number }
-export type WeightedItem = WeightedLoot | WeightedTier;
-export interface LootTable { min: number, max: number, loot: WeightedItem[] }
+import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+
+export type WeightedItem =
+    (
+        { readonly item: ReferenceTo<LootDefinition> } |
+        { readonly tier: string }
+    ) &
+    {
+        readonly count?: number
+        readonly spawnSeparately?: boolean
+        readonly weight: number
+    };
+export interface LootTable { min: number, max: number, loot: WeightedItem[] | WeightedItem[][] }
 
 export const LootTables: Record<string, LootTable> = {
+    gas_can: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "gas_can", weight: 1 }
+        ]
+    },
     ground_loot: {
         min: 1,
         max: 1,
@@ -54,12 +71,29 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "melee", weight: 1 }
         ]
     },
+    tango_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            [
+                { item: "4x_scope", weight: 1 },
+                { item: "8x_scope", weight: 0.1 },
+                { item: "15x_scope", weight: 0.0025 }
+            ],
+            [
+                { item: "tango_51", spawnSeparately: true, weight: 50 },
+                { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
+                { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
+                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
+                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+            ]
+        ]
+    },
     gold_rock: {
         min: 1,
         max: 1,
         loot: [
-            { item: "mosin", weight: 1 },
-            { item: "tango_51", weight: 0.1 }
+            { item: "mosin", weight: 1 }
         ]
     },
     pumpkin: {
@@ -200,10 +234,11 @@ export const LootTables: Record<string, LootTable> = {
     }
 };
 
-export const LootTiers: Record<string, WeightedLoot[]> = {
+export const LootTiers: Record<string, WeightedItem[]> = {
     guns: [
         { item: "g19", weight: 2 },
-        { item: "mp40", weight: 1.75 },
+        { item: "m1895", weight: 1.75 },
+        { item: "mp40", weight: 1.7 },
         { item: "saf_200", weight: 1.5 },
         { item: "cz75a", weight: 1.5 },
         { item: "hp18", weight: 1.25 },
@@ -234,7 +269,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "2x_scope", weight: 1 },
         { item: "4x_scope", weight: 0.5 },
         { item: "8x_scope", weight: 0.1 },
-        { item: "15x_scope", weight: 0.0025 }
+        { item: "15x_scope", weight: 0.00025 }
     ],
     equipment: [
         { item: "hard_hat", weight: 1 },
@@ -270,6 +305,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "vss", weight: 0.55 },
         { item: "m16a4", weight: 0.5 },
         { item: "g19", weight: 0.45 },
+        { item: "m1895", weight: 0.45 },
         { item: "sr25", weight: 0.35 },
         { item: "mini14", weight: 0.35 },
         { item: "lewis_gun", weight: 0.35 },
@@ -288,7 +324,7 @@ export const LootTiers: Record<string, WeightedLoot[]> = {
         { item: "2x_scope", weight: 1 },
         { item: "4x_scope", weight: 0.45 },
         { item: "8x_scope", weight: 0.1 },
-        { item: "15x_scope", weight: 0.05 }
+        { item: "15x_scope", weight: 0.005 }
     ],
     special_equipment: [
         { item: "hard_hat", weight: 1 },

@@ -1,7 +1,16 @@
 import { type Vector } from "../../common/src/utils/vector";
 
-export enum SpawnMode { Random, Fixed, Center, Radius }
-export enum GasMode { Normal, Debug, Disabled }
+export enum SpawnMode {
+    Random,
+    Fixed,
+    Center,
+    Radius
+}
+export enum GasMode {
+    Normal,
+    Debug,
+    Disabled
+}
 
 export const Config = {
     host: "127.0.0.1",
@@ -28,7 +37,8 @@ export const Config = {
         katie: { password: "katie" },
         eipi: { password: "eipi" },
         "123op": { password: "123op" },
-        radians: { password: "radians" }
+        radians: { password: "radians" },
+        limenade: { password: "limenade" }
     }
 } satisfies ConfigType as ConfigType;
 

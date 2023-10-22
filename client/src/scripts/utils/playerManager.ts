@@ -1,14 +1,13 @@
 import { isMobile } from "pixi.js";
-import { InputActions, INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../../common/src/constants";
+import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { HealingItems } from "../../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
-import { type ScopeDefinition, Scopes } from "../../../../common/src/definitions/scopes";
+import { HealingItems, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { absMod, clamp } from "../../../../common/src/utils/math";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { ItemType, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -19,7 +18,7 @@ import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
  * This class manages the active player data and inventory
  */
 export class PlayerManager {
-    game: Game;
+    readonly game: Game;
 
     name!: string;
 
@@ -110,7 +109,7 @@ export class PlayerManager {
 
     itemToSwitch = -1;
     itemToDrop = -1;
-    consumableToConsume = "";
+    consumableToConsume?: HealingItemDefinition | ScopeDefinition;
 
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }
@@ -118,6 +117,8 @@ export class PlayerManager {
         this._attacking = attacking;
         this.dirty.inputs = true;
     }
+
+    resetAttacking = false;
 
     turning = false;
 
@@ -127,9 +128,9 @@ export class PlayerManager {
 
     readonly items: Record<string, number> = {};
 
-    scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+    scope!: ScopeDefinition;
 
-    readonly weapons = new Array<ObjectType<ObjectCategory.Loot, LootDefinition> | undefined>(INVENTORY_MAX_WEAPONS);
+    readonly weapons = new Array<LootDefinition | undefined>(INVENTORY_MAX_WEAPONS);
 
     readonly weaponsAmmo = new Array<number>(INVENTORY_MAX_WEAPONS);
 
@@ -169,13 +170,13 @@ export class PlayerManager {
         this.action = InputActions.Cancel;
     }
 
-    useItem(item: string): void {
+    useItem(item: HealingItemDefinition | ScopeDefinition): void {
         this.action = InputActions.UseConsumableItem;
         this.consumableToConsume = item;
     }
 
     cycleScope(offset: number): void {
-        const scopeId = Scopes.indexOf(this.scope.definition);
+        const scopeId = Scopes.indexOf(this.scope);
         let scopeString = this.scope.idString;
         let searchIndex = scopeId;
 
@@ -193,26 +194,33 @@ export class PlayerManager {
             }
         }
 
-        if (scopeString !== this.scope.idString) this.useItem(scopeString);
+        if (scopeString !== this.scope.idString) this.useItem(reifyDefinition<ScopeDefinition>(scopeString, Scopes));
     }
 
     constructor(game: Game) {
         this.game = game;
 
         for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
-            this.items[item.idString] = 0;
+            let amount = 0;
+
+            switch (true) {
+                case item.itemType === ItemType.Ammo && item.ephemeral: amount = Infinity; break;
+                case item.itemType === ItemType.Scope && item.giveByDefault: amount = 1; break;
+            }
+
+            this.items[item.idString] = amount;
         }
     }
 
     private _updateActiveWeaponUi(): void {
-        if (!(this.weapons[this.activeItemIndex]?.definition.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
+        if (!(this.weapons[this.activeItemIndex]?.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
             $("#weapon-ammo-container").hide();
         } else {
             $("#weapon-ammo-container").show();
             const ammo = this.weaponsAmmo[this.activeItemIndex];
             $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
 
-            const ammoType = (this.weapons[this.activeItemIndex]?.definition as GunDefinition).ammoType;
+            const ammoType = (this.weapons[this.activeItemIndex] as GunDefinition).ammoType;
             let totalAmmo: number | string = this.items[ammoType];
 
             for (const ammo of Ammos) {
@@ -244,14 +252,13 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = stream.readObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot);
+                    const item = Loots.definitions[stream.readUint8()];
 
                     this.weapons[i] = item;
-                    container.children(".item-name").text(item.definition.name);
-                    const itemDef = item.definition;
-                    container.children(".item-image").attr("src", `./img/game/weapons/${itemDef.idString}.svg`).show();
+                    container.children(".item-name").text(item.name);
+                    container.children(".item-image").attr("src", `./img/game/weapons/${item.idString}.svg`).show();
 
-                    if (itemDef.itemType === ItemType.Gun) {
+                    if (item.itemType === ItemType.Gun) {
                         const ammo = stream.readUint8();
                         this.weaponsAmmo[i] = ammo;
 
@@ -283,24 +290,29 @@ export class PlayerManager {
         const inventoryDirty = stream.readBoolean();
         if (inventoryDirty) {
             const backpackLevel = stream.readBits(2);
-            const readInventoryCount = (): number => stream.readBoolean() ? stream.readBits(9) : 0;
+            const scopeNames = Scopes.map(sc => sc.idString);
+            const adjustItemUi = (itemName: string, count: number): void => {
+                const num = count;
+                this.items[itemName] = num;
 
-            for (const item in this.items) {
-                const num = readInventoryCount();
-                this.items[item] = num;
+                $(`#${itemName}-count`).text(num);
 
-                $(`#${item}-count`).text(num);
-
-                const itemSlot = $(`#${item}-slot`);
-                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[item]);
+                const itemSlot = $(`#${itemName}-slot`);
+                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[itemName]);
                 itemSlot.toggleClass("has-item", num > 0);
 
-                if (item.includes("scope") && !UI_DEBUG_MODE) {
+                if (scopeNames.includes(itemName) && !UI_DEBUG_MODE) {
                     itemSlot.toggle(num > 0).removeClass("active");
                 }
+            };
+
+            const amount = stream.readBoolean() ? 0 : undefined;
+            //             ^^^^^^^^^^^^^^^^^^^^^^^^ Dead owner => everything is 0
+            for (const item in this.items) {
+                adjustItemUi(item, amount ?? (stream.readBoolean() ? stream.readBits(9) : 0));
             }
 
-            this.scope = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
+            this.scope = Scopes[stream.readUint8()];
             $(`#${this.scope.idString}-slot`).addClass("active");
         }
 

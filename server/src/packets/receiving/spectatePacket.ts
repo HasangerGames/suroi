@@ -47,9 +47,8 @@ export class SpectatePacket extends ReceivingPacket {
                 break;
             case SpectateActions.SpectateSpecific: {
                 const playerID = stream.readObjectID();
-                if (playerID > 0 && playerID < game.spectatablePlayers.length) {
-                    player.spectate(game.spectatablePlayers[playerID]);
-                }
+                const playerToSpectate = game.spectatablePlayers.find(player => player.id === playerID);
+                if (playerToSpectate) player.spectate(playerToSpectate);
                 break;
             }
             case SpectateActions.Report: {

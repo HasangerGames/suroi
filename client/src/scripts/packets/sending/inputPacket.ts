@@ -1,5 +1,5 @@
-import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../../../../common/src/constants";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { INPUT_ACTIONS_BITS, InputActions, PacketType } from "../../../../../common/src/constants";
+import { Loots } from "../../../../../common/src/definitions/loots";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -9,6 +9,8 @@ export class InputPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+
+        let dirtyInputs = false;
 
         const player = this.playerManager;
         stream.writeBoolean(player.movement.up);
@@ -22,6 +24,11 @@ export class InputPacket extends SendingPacket {
         }
 
         stream.writeBoolean(player.attacking);
+        if (player.resetAttacking) {
+            player.attacking = false;
+            player.resetAttacking = false;
+            dirtyInputs = true;
+        }
         stream.writeBoolean(player.turning);
         if (player.turning) {
             stream.writeRotation(player.rotation, 16);
@@ -41,12 +48,13 @@ export class InputPacket extends SendingPacket {
                 break;
             }
             case InputActions.UseConsumableItem: {
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, player.consumableToConsume));
-                player.consumableToConsume = "";
+                stream.writeUint8(Loots.idStringToNumber[player.consumableToConsume?.idString ?? ""]);
+                //                    we're in big trouble if the nullish coalescing triggers ^^^^^
+                player.consumableToConsume = undefined;
                 break;
             }
         }
         player.action = InputActions.None;
-        player.dirty.inputs = false;
+        player.dirty.inputs = dirtyInputs;
     }
 }

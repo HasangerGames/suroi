@@ -1,18 +1,14 @@
-import {
-    ANIMATION_TYPE_BITS,
-    type AnimationType,
-    ObjectCategory,
-    PLAYER_ACTIONS_BITS,
-    PlayerActions
-} from "../constants";
-import { type HealingItemDefinition } from "../definitions/healingItems";
-import { type LootDefinition } from "../definitions/loots";
-import { type ObstacleDefinition } from "../definitions/obstacles";
-import { type SkinDefinition } from "../definitions/skins";
+import { ANIMATION_TYPE_BITS, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions, type AnimationType } from "../constants";
+import { type HealingItemDefinition, HealingItems } from "../definitions/healingItems";
+import { type LootDefinition, Loots } from "../definitions/loots";
+import { type ObstacleDefinition, RotationMode } from "../definitions/obstacles";
+import { type SkinDefinition, Skins } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
+import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { type ObjectType } from "./objectType";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
+import { type DecalDefinition } from "../definitions/decals";
 
 export interface ObjectsNetData {
     //
@@ -28,16 +24,20 @@ export interface ObjectsNetData {
     } & ({ fullUpdate: false } | {
         fullUpdate: true
         invulnerable: boolean
-        activeItem: ObjectType<ObjectCategory.Loot, LootDefinition>
-        skin: ObjectType<ObjectCategory.Loot, SkinDefinition>
+        activeItem: LootDefinition
+        skin: SkinDefinition
         helmet: number
         vest: number
         backpack: number
-        action: {
-            type: PlayerActions
+        action: ({
             seq: number
-            item?: ObjectType<ObjectCategory.Loot, HealingItemDefinition>
-        }
+        }) & ({
+            type: Exclude<PlayerActions, PlayerActions.UseItem>
+            item?: undefined
+        } | {
+            type: PlayerActions.UseItem
+            item: HealingItemDefinition
+        })
     })
     //
     // Obstacle Data
@@ -45,6 +45,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Obstacle]: {
         scale: number
         dead: boolean
+        activated?: boolean
         definition: ObstacleDefinition
         door?: {
             offset: number
@@ -88,7 +89,7 @@ export interface ObjectsNetData {
     } & ({ fullUpdate: false } | {
         fullUpdate: true
         position: Vector
-        rotation: number
+        rotation: Orientation
     })
     //
     // Decal Data
@@ -96,6 +97,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Decal]: {
         position: Vector
         rotation: number
+        definition: DecalDefinition
     }
     //
     // Explosion Data
@@ -114,8 +116,8 @@ export interface ObjectsNetData {
 interface ObjectSerialization<T extends ObjectCategory> {
     serializePartial: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
     serializeFull: (stream: SuroiBitStream, data: ObjectsNetData[T]) => void
-    deserializePartial: (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[T]
-    deserializeFull: (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[T]
+    deserializePartial: (stream: SuroiBitStream, type: ObjectType<T>) => ObjectsNetData[T]
+    deserializeFull: (stream: SuroiBitStream, type: ObjectType<T>) => ObjectsNetData[T]
 }
 
 export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<K> } = {
@@ -133,8 +135,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             this.serializePartial(stream, data);
             if (!data.fullUpdate) return;
             stream.writeBoolean(data.invulnerable);
-            stream.writeObjectTypeNoCategory(data.activeItem);
-            stream.writeObjectTypeNoCategory(data.skin);
+            stream.writeUint8(Loots.idStringToNumber[data.activeItem.idString]);
+            stream.writeUint8(Skins.findIndex(s => s === data.skin));
             stream.writeBits(data.helmet, 2);
             stream.writeBits(data.vest, 2);
             stream.writeBits(data.backpack, 2);
@@ -142,7 +144,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBits(data.action.type, PLAYER_ACTIONS_BITS);
             stream.writeBits(data.action.seq, 2);
             if (data.action.item) {
-                stream.writeObjectTypeNoCategory(data.action.item);
+                stream.writeUint8(HealingItems.findIndex(h => h === data.action.item));
             }
         },
         deserializePartial(stream) {
@@ -161,8 +163,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const full: Partial<ObjectsNetData[ObjectCategory.Player]> = {
                 fullUpdate: true,
                 invulnerable: stream.readBoolean(),
-                activeItem: stream.readObjectTypeNoCategory(ObjectCategory.Loot),
-                skin: stream.readObjectTypeNoCategory(ObjectCategory.Loot),
+                activeItem: Loots.definitions[stream.readUint8()],
+                skin: Skins[stream.readUint8()],
                 helmet: stream.readBits(2),
                 vest: stream.readBits(2),
                 backpack: stream.readBits(2),
@@ -173,12 +175,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             };
 
             if (full.action && full.action.type === PlayerActions.UseItem) {
-                full.action.item = stream.readObjectTypeNoCategory(ObjectCategory.Loot);
+                full.action.item = HealingItems[stream.readUint8()];
             }
 
-            return {
-                ...partial, ...full as ObjectsNetData[ObjectCategory.Player]
-            };
+            return { ...partial, ...full as ObjectsNetData[ObjectCategory.Player] };
         }
     },
     //
@@ -188,8 +188,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writeScale(data.scale);
             stream.writeBoolean(data.dead);
-            if (data.definition.isDoor && data.door) {
+            if (data.definition.role === ObstacleSpecialRoles.Door && data.door) {
                 stream.writeBits(data.door.offset, 2);
+            } else if (data.definition.role === ObstacleSpecialRoles.Activatable) {
+                stream.writeBoolean(data.activated ?? false);
             }
         },
         serializeFull(stream, data): void {
@@ -209,11 +211,15 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 scale: stream.readScale(),
                 dead: stream.readBoolean()
             };
-            if (definition.isDoor) {
+
+            if (definition.role === ObstacleSpecialRoles.Door) {
                 data.door = {
                     offset: stream.readBits(2)
                 };
+            } else if (definition.role === ObstacleSpecialRoles.Activatable) {
+                data.activated = stream.readBoolean();
             }
+
             return data;
         },
         deserializeFull(stream, type) {
@@ -224,9 +230,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 position: stream.readPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode)
             };
+
             if (definition.variations !== undefined) {
                 full.variation = stream.readVariation();
             }
+
             return { ...partial, ...full as ObjectsNetData[ObjectCategory.Obstacle] };
         }
     },
@@ -243,21 +251,19 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBits(data.count, 9);
             stream.writeBoolean(data.isNew);
         },
-        deserializePartial(stream: SuroiBitStream) {
+        deserializePartial(stream) {
             return {
                 position: stream.readPosition(),
                 fullUpdate: false
             };
         },
         deserializeFull(stream, type) {
-            const partial = this.deserializePartial(stream, type);
-            const full = {
-                ...partial,
+            return {
+                ...this.deserializePartial(stream, type),
                 fullUpdate: true,
                 count: stream.readBits(9),
                 isNew: stream.readBoolean()
             };
-            return full;
         }
     },
     //
@@ -275,16 +281,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
         },
-        deserializePartial(stream: SuroiBitStream) {
+        deserializePartial(stream) {
             const position = stream.readPosition();
             const isNew = stream.readBoolean();
             const name = stream.readPlayerName();
             const isDev = stream.readBoolean();
-            let nameColor = "";
-            if (isDev) {
-                nameColor = stream.readUTF8String(10);
-            }
-            const data = {
+            const nameColor = isDev ? stream.readUTF8String(10) : "";
+
+            return {
                 position,
                 isNew,
                 player: {
@@ -293,7 +297,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     nameColor
                 }
             };
-            return data;
         },
         deserializeFull(stream, type) {
             return this.deserializePartial(stream, type);
@@ -312,21 +315,19 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writePosition(data.position);
             stream.writeBits(data.rotation, 2);
         },
-        deserializePartial(stream: SuroiBitStream) {
+        deserializePartial(stream) {
             return {
                 dead: stream.readBoolean(),
                 fullUpdate: false
             };
         },
         deserializeFull(stream, type) {
-            const partial = this.deserializePartial(stream, type);
-            const full = {
-                ...partial,
+            return {
+                ...this.deserializePartial(stream, type),
                 fullUpdate: true,
                 position: stream.readPosition(),
-                rotation: stream.readBits(2)
+                rotation: stream.readBits(2) as Orientation
             };
-            return full;
         }
     },
     //
@@ -335,15 +336,16 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 8);
+            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Limited);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
         },
-        deserializePartial(stream) {
+        deserializePartial(stream, type) {
             return {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(8)
+                rotation: stream.readObstacleRotation((type.definition as DecalDefinition).rotationMode ?? RotationMode.Limited).rotation,
+                definition: type.definition as DecalDefinition
             };
         },
         deserializeFull(stream, type) {

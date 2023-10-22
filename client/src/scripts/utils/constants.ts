@@ -11,14 +11,15 @@ export const HITBOX_COLORS = {
     buildingScopeCeiling: new Color("cyan"),
     loot: new Color("magenta"),
     player: new Color("blue"),
-    playerWeapon: new Color("red")
+    playerWeapon: new Color("lime")
 };
 
 export const COLORS = {
     grass: new Color("hsl(65, 72%, 10%)"),
     water: new Color("hsl(4, 90%, 12%)"),
-    gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
-    beach: new Color("hsl(33, 77%, 21%)")
+    beach: new Color("hsl(33, 77%, 21%)"),
+    riverBank: new Color("hsl(33, 50%, 30%)"),
+    gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55)
 };
 
 export const BULLET_COLORS: Record<string, number> = {

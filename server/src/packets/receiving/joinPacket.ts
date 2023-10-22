@@ -1,11 +1,11 @@
-import { ObjectCategory } from "../../../../common/src/constants";
-import { type SkinDefinition } from "../../../../common/src/definitions/skins";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { Config } from "../../config";
-import { hasBadWords } from "../../utils/badWordFilter";
 import sanitizeHtml from "sanitize-html";
+import { Emotes } from "../../../../common/src/definitions/emotes";
+import { Skins } from "../../../../common/src/definitions/skins";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { Config } from "../../config";
 import { ReceivingPacket } from "../../types/receivingPacket";
+import { hasBadWords } from "../../utils/badWordFilter";
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -23,19 +23,17 @@ export class JoinPacket extends ReceivingPacket {
         player.name = name;
 
         player.isMobile = stream.readBoolean();
-        const skin = stream.readObjectTypeNoCategory<ObjectCategory.Loot, SkinDefinition>(ObjectCategory.Loot);
-
-        const definition = skin.definition;
+        const skin = Skins[stream.readUint8()];
 
         if (
-            definition.itemType === ItemType.Skin &&
-            !definition.notInLoadout &&
-            (definition.roleRequired === undefined || definition.roleRequired === player.role)
+            skin.itemType === ItemType.Skin &&
+            !skin.notInLoadout &&
+            (skin.roleRequired === undefined || skin.roleRequired === player.role)
         ) {
             player.loadout.skin = skin;
         }
         for (let i = 0; i < 4; i++) {
-            player.loadout.emotes[i] = stream.readObjectTypeNoCategory(ObjectCategory.Emote);
+            player.loadout.emotes[i] = Emotes.definitions[stream.readUint8()];
         }
         player.game.activatePlayer(player);
     }

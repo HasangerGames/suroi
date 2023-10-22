@@ -1,13 +1,13 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { weightedRandom } from "../../../common/src/utils/random";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 
 export class LootItem {
-    idString: string;
-    count: number;
-    constructor(idString: string, count: number) {
+    readonly idString: ReferenceTo<LootDefinition>;
+    readonly count: number;
+
+    constructor(idString: ReferenceTo<LootDefinition>, count: number) {
         this.idString = idString;
         this.count = count;
     }
@@ -16,39 +16,36 @@ export class LootItem {
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];
 
-    interface TempLootItem { item: string, count?: number, isTier: boolean }
-
-    const addLoot = (type: string, count: number): void => {
-        if (type === "nothing") return;
-
-        loot.push(new LootItem(type, count));
-
-        const definition = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, type).definition;
-        if (definition === undefined) {
-            throw new Error(`Unknown loot item: ${type}`);
-        }
-
-        if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
-            loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
-        }
-    };
-
-    const items: TempLootItem[] = [];
+    const items: Array<WeightedItem[] | WeightedItem> = [];
     const weights: number[] = [];
     for (const item of loots) {
-        items.push({
-            item: "tier" in item ? item.tier : item.item,
-            count: "count" in item ? item.count : undefined,
-            isTier: "tier" in item
-        });
+        items.push(
+            item.spawnSeparately && (item.count ?? 1) > 1
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                ? new Array<WeightedItem>(item.count!).fill(item)
+                : item
+        );
         weights.push(item.weight);
     }
-    const selectedItem = weightedRandom<TempLootItem>(items, weights);
 
-    if (selectedItem.isTier) {
-        loot = loot.concat(getLootTableLoot(LootTiers[selectedItem.item]));
-    } else {
-        addLoot(selectedItem.item, selectedItem.count ?? 1);
+    const selectedItem = weightedRandom<WeightedItem | WeightedItem[]>(items, weights);
+
+    for (const selection of [selectedItem].flat()) {
+        if ("tier" in selection) {
+            loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
+        } else {
+            const item = selection.item;
+            loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
+
+            const definition = Loots.getByIDString(item);
+            if (definition === undefined) {
+                throw new Error(`Unknown loot item: ${item}`);
+            }
+
+            if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
+                loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+            }
+        }
     }
 
     return loot;

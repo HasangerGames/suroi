@@ -1,4 +1,3 @@
-import { ObjectCategory } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
@@ -25,25 +24,22 @@ export class Bullet extends BaseBullet {
             .setVPos(toPixiCoords(this.position));
 
         this.tracerLength = this.definition.tracerLength ?? 1;
-
         this.maxLength = this.image.width * this.tracerLength;
-
         this.image.scale.set(0, this.definition.tracerWidth ?? 1);
-
         this.image.anchor.set(1, 0.5);
-
         this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
 
         let tint = 0xffffff;
 
         const source = this.source;
-        if (source.category === ObjectCategory.Loot &&
-            BULLET_COLORS[source.definition.ammoType]) {
-            tint = BULLET_COLORS[source.definition.ammoType];
+        if (
+            "ammoType" in source &&
+            source.ammoType in BULLET_COLORS
+        ) {
+            tint = BULLET_COLORS[source.ammoType];
         }
 
         if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
-
         if (this.definition.tracerColor) tint = this.definition.tracerColor;
 
         this.image.tint = tint;
@@ -65,8 +61,10 @@ export class Bullet extends BaseBullet {
                 this.damagedIDs.add(object.id);
 
                 if (object instanceof Obstacle) {
-                    if ((this.definition.penetration?.obstacles && !object.type.definition.impenetrable) ??
-                        object.type.definition.noCollisions) continue;
+                    if (
+                        (this.definition.penetration?.obstacles && !object.definition.impenetrable) ??
+                        object.definition.noCollisions
+                    ) continue;
                 }
                 if (this.definition.penetration?.players && object instanceof Player) continue;
 

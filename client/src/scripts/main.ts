@@ -14,18 +14,19 @@ import { loadSounds } from "./utils/soundManager";
 import { consoleVariables } from "./utils/console/variables";
 import { portOldConfig } from "./utils/localStorageHandler";
 
-const playSoloBtn: JQuery = $("#btn-play-solo");
+const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
 
 export function enablePlayButton(): void {
-    playSoloBtn.removeClass("btn-disabled");
-    playSoloBtn.prop("disabled", false);
-    playSoloBtn.text("Play Solo");
+    playButtons.removeClass("btn-disabled");
+    playButtons.prop("disabled", false);
+    $("#btn-play-solo").text("Play Solo");
+    $("#btn-play-again").text("Play Again");
 }
 
 function disablePlayButton(text: string): void {
-    playSoloBtn.addClass("btn-disabled");
-    playSoloBtn.prop("disabled", true);
-    playSoloBtn.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    playButtons.addClass("btn-disabled");
+    playButtons.prop("disabled", true);
+    playButtons.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -57,11 +58,11 @@ $(async(): Promise<void> => {
 <li class="server-list-item" data-region="${regionID}">
   <span class="server-name">${region.name}</span>
   <span style="margin-left: auto">
-    <img src="./img/misc/player_icon_black.svg" width="16" height="16" alt="Player count">
+    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
     <span class="server-player-count">-</span>
   </span>
   <span style="margin-left: 5px">
-    <img src="./img/misc/ping_icon_black.svg" width="16" height="16" alt="Ping">
+    <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
     <span class="server-ping">-</span>
   </span>
 </li>`);
@@ -120,7 +121,7 @@ $(async(): Promise<void> => {
     });
 
     // Join server when play button is clicked
-    playSoloBtn.on("click", () => {
+    playButtons.on("click", () => {
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
@@ -194,7 +195,7 @@ $(async(): Promise<void> => {
 
     const app = new Application<HTMLCanvasElement>({
         resizeTo: window,
-        background: COLORS.water,
+        background: COLORS.grass,
         antialias: true,
         autoDensity: true,
         resolution: window.devicePixelRatio || 1

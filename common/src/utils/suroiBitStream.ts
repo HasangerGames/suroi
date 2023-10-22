@@ -1,21 +1,11 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import {
-    MAX_OBJECT_SCALE,
-    MIN_OBJECT_SCALE,
-    OBJECT_CATEGORY_BITS,
-    OBJECT_ID_BITS,
-    type ObjectCategory,
-    PACKET_TYPE_BITS,
-    type PacketType,
-    PLAYER_NAME_MAX_LENGTH,
-    VARIATION_BITS
-} from "../constants";
+import { MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, OBJECT_ID_BITS, PACKET_TYPE_BITS, PLAYER_NAME_MAX_LENGTH, VARIATION_BITS, type ObjectCategory, type PacketType } from "../constants";
+import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
 import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
 import { ObjectDefinitionsList, ObjectType } from "./objectType";
 import { type Vector } from "./vector";
-import { RotationMode } from "../definitions/obstacles";
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -141,8 +131,7 @@ export class SuroiBitStream extends BitStream {
      * @return The object type.
      */
     readObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(): ObjectType<T, U> {
-        const category = this.readBits(OBJECT_CATEGORY_BITS) as T;
-        return this.readObjectTypeNoCategory<T, U>(category);
+        return this.readObjectTypeNoCategory<T, U>(this.readBits(OBJECT_CATEGORY_BITS) as T);
     }
 
     /**
@@ -191,7 +180,7 @@ export class SuroiBitStream extends BitStream {
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, y, 0, 0, 1024, 1024, 16);
+        this.writeVector2(x, y, 0, 0, 1344, 1344, 16);
     }
 
     /**
@@ -199,7 +188,7 @@ export class SuroiBitStream extends BitStream {
      * @return the position Vector.
      */
     readPosition(): Vector {
-        return this.readVector(0, 0, 1024, 1024, 16);
+        return this.readVector(0, 0, 1344, 1344, 16);
     }
 
     /**

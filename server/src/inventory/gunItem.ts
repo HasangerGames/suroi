@@ -1,10 +1,10 @@
 import { clearTimeout } from "timers";
-import { AnimationType, FireMode, type ObjectCategory } from "../../../common/src/constants";
+import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
+import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
@@ -15,11 +15,8 @@ import { InventoryItem } from "./inventoryItem";
 /**
  * A class representing a firearm
  */
-export class GunItem extends InventoryItem {
+export class GunItem extends InventoryItem<GunDefinition> {
     declare readonly category: ItemType.Gun;
-    declare readonly type: ObjectType<ObjectCategory.Loot, GunDefinition>;
-
-    readonly definition: GunDefinition;
 
     ammo = 0;
 
@@ -39,14 +36,12 @@ export class GunItem extends InventoryItem {
      * @param owner The `Player` that owns this gun
      * @throws {TypeError} If the `idString` given does not point to a definition for a gun
      */
-    constructor(idString: string, owner: Player) {
+    constructor(idString: ReferenceTo<GunDefinition>, owner: Player) {
         super(idString, owner);
 
         if (this.category !== ItemType.Gun) {
             throw new TypeError(`Attempted to create a Gun object based on a definition for a non-gun object (Received a ${this.category as unknown as string} definition)`);
         }
-
-        this.definition = this.type.definition;
     }
 
     /**
@@ -97,16 +92,36 @@ export class GunItem extends InventoryItem {
         this._lastUse = owner.game.now;
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
-
         const jitter = definition.jitterRadius ?? 0;
 
+        let position = vAdd(
+            owner.position,
+            vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
+        );
         const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
 
-        let position = vAdd(owner.position, rotated);
+        for (
+            const object of
+            this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+        ) {
+            if (
+                object.dead ||
+                object.hitbox === undefined ||
+                !(object instanceof Obstacle) ||
+                object.definition.noCollisions === true
+            ) continue;
 
-        const objects = this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position));
-        for (const object of objects) {
-            if (!object.dead && object.hitbox && object instanceof Obstacle && !object.definition.noCollisions) {
+            for (
+                const object of
+                this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+            ) {
+                if (
+                    object.dead ||
+                    object.hitbox === undefined ||
+                    !(object instanceof Obstacle) ||
+                    object.definition.noCollisions === true
+                ) continue;
+
                 const intersection = object.hitbox.intersectsLine(owner.position, position);
                 if (intersection === null) continue;
 
@@ -117,23 +132,18 @@ export class GunItem extends InventoryItem {
         }
 
         const limit = definition.bulletCount ?? 1;
-
         for (let i = 0; i < limit; i++) {
             this.owner.game.addBullet(
                 this,
                 this.owner,
                 {
-                    position: definition.jitterRadius
-                        ? vAdd(position, randomPointInsideCircle(v(0, 0), definition.jitterRadius))
+                    position: jitter
+                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
                         : position,
-                    rotation: normalizeAngle(
-                        owner.rotation + Math.PI / 2 +
-                (
-                    definition.consistentPatterning === true
-                        ? i / limit - 0.5
-                        : randomFloat(-1, 1)
-                ) * spread
-                    )
+                    rotation: owner.rotation + Math.PI / 2 +
+                            (definition.consistentPatterning === true
+                                ? 2 * (i / limit - 0.5)
+                                : randomFloat(-1, 1)) * spread
                 }
             );
         }
@@ -154,7 +164,7 @@ export class GunItem extends InventoryItem {
 
         if (
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
-            this.owner.activeItem === this
+                this.owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeoutID);
             this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);

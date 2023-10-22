@@ -1,6 +1,5 @@
-import { type Container, Text } from "pixi.js";
-import { DEFAULT_USERNAME, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { Text, type Container } from "pixi.js";
+import { DEFAULT_USERNAME, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -9,8 +8,8 @@ import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 
-export class DeathMarker extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.DeathMarker>;
+export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
+    override readonly type = ObjectCategory.DeathMarker;
 
     playerName!: string;
     nameColor = "#dcdcdc";
@@ -21,8 +20,8 @@ export class DeathMarker extends GameObject {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, type: ObjectType, id: number) {
-        super(game, type, id);
+    constructor(game: Game, id: number) {
+        super(game, id);
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
@@ -62,16 +61,23 @@ export class DeathMarker extends GameObject {
         if (data.isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(this.game, {
-                target: this.container.scale,
-                to: { x: 1, y: 1 },
-                duration: 400
-            });
-            this.alphaAnim = new Tween(this.game, {
-                target: this.container,
-                to: { alpha: 1 },
-                duration: 400
-            });
+            this.scaleAnim = new Tween(
+                this.game,
+                {
+                    target: this.container.scale,
+                    to: { x: 1, y: 1 },
+                    duration: 400
+                }
+            );
+
+            this.alphaAnim = new Tween(
+                this.game,
+                {
+                    target: this.container,
+                    to: { alpha: 1 },
+                    duration: 400
+                }
+            );
         }
     }
 

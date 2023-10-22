@@ -1,9 +1,9 @@
-import { Howl } from "howler";
-import { FloorTypes } from "../../../../common/src/definitions/buildings";
+import { Howl, type HowlCallback, type HowlErrorCallback } from "howler";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { consoleVariables } from "./console/variables";
 
@@ -13,23 +13,17 @@ export interface Sound {
 }
 
 export class SoundManager {
-    sounds: Record<string, Howl>;
+    private readonly sounds: Record<string, Howl> = {};
 
     volume = consoleVariables.get.builtIn("cv_sfx_volume").value;
 
     position = v(0, 0);
 
-    constructor() {
-        this.sounds = {};
-    }
-
     load(name: string, path: string): void {
-        const sound = new Howl({ src: `./${path}.mp3` });
-        sound.load();
-        this.sounds[name] = sound;
+        this.sounds[name] = new Howl({ src: `./${path}.mp3` }).load();
     }
 
-    play(name: string, position?: Vector, fallOff = 1, maxRange = 256): Sound {
+    play(name: string, position?: Vector, fallOff = 1, maxRange = 256, onend?: HowlCallback | HowlErrorCallback): Sound {
         const sound = this.sounds[name];
         let id = -1;
 
@@ -37,12 +31,8 @@ export class SoundManager {
             let volume = this.volume;
             let stereoNorm = 0;
             if (position) {
-                const baseVolume = this.volume;
                 const diff = vSub(this.position, position);
-                const dist = vLength(diff);
-                const distNormal = clamp(Math.abs(dist / maxRange), 0, 1);
-                const scaledVolume = (1.0 - distNormal) ** (1.0 + fallOff * 2.0);
-                volume = scaledVolume * baseVolume;
+                volume = (1 - clamp(Math.abs(vLength(diff) / maxRange), 0, 1)) ** (1 + fallOff * 2) * this.volume;
                 stereoNorm = clamp(diff.x / maxRange * -1.0, -1.0, 1.0);
             }
 
@@ -50,9 +40,10 @@ export class SoundManager {
                 id = sound.play();
                 sound.volume(volume, id);
                 sound.stereo(stereoNorm, id);
+                if (onend) sound.on("end", onend, id);
             }
         } else {
-            console.warn(`Sound with name "${name}" not found.`);
+            console.warn(`Sound with name '${name}' not found`);
         }
 
         return {
@@ -62,7 +53,9 @@ export class SoundManager {
     }
 
     stop(sound: Sound): void {
-        this.sounds[sound.name].stop(sound.id);
+        if (this.sounds[sound.name]?.stop(sound.id) === undefined) {
+            console.warn(`Couldn't stop sound with name '${sound.name}' because it was never playing to begin with`);
+        }
     }
 
     get(name: string): Howl {
@@ -91,6 +84,18 @@ export function loadSounds(soundManager: SoundManager): void {
         [
             "door_close",
             "audio/sfx/door_close"
+        ],
+        [
+            "vault_door_open",
+            "audio/sfx/vault_door_open"
+        ],
+        [
+            "generator_starting",
+            "audio/sfx/generator_starting"
+        ],
+        [
+            "generator_running",
+            "audio/sfx/generator_running"
         ],
         [
             "ceiling_collapse",

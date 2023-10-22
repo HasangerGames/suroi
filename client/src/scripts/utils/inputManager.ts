@@ -6,6 +6,7 @@ import { defaultBinds } from "./console/defaultClientCVars";
 import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { consoleVariables } from "./console/variables";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 function fireAllEventsAtKey(input: string, down: boolean): number {
     const actions = keybinds.getActionsBoundToInput(input) ?? [];
@@ -143,6 +144,7 @@ export function setupInputs(game: Game): void {
             game.activePlayer.container.rotation = player.rotation;
             game.map.indicator.rotation = player.rotation;
         }
+
         player.turning = true;
         player.dirty.inputs = true;
     });
@@ -158,34 +160,64 @@ export function setupInputs(game: Game): void {
             color: `rgba(255, 255, 255, ${transparency})`
         });
 
-        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-            game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-            game.playerManager.movement.moving = true;
-            game.playerManager.dirty.inputs = true;
-        });
-
-        leftJoyStick.on("end", () => {
-            game.playerManager.movement.moving = false;
-            game.playerManager.dirty.inputs = true;
-        });
-
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
             size,
             color: `rgba(255, 255, 255, ${transparency})`
         });
 
-        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
-            game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-                game.activePlayer.container.rotation = game.playerManager.rotation;
+        let rightJoyStickUsed = false;
+        let shootOnRelease = false;
+
+        const playerManager = game.playerManager;
+
+        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
+            if (!rightJoyStickUsed && !shootOnRelease) {
+                playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
+                    game.activePlayer.container.rotation = playerManager.rotation;
+                }
             }
-            game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > size / 3;
+
+            playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+            playerManager.movement.moving = true;
+        });
+
+        leftJoyStick.on("end", () => {
+            playerManager.movement.moving = false;
+        });
+
+        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
+            rightJoyStickUsed = true;
+            playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+            const activePlayer = game.activePlayer;
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && activePlayer) {
+                game.activePlayer.container.rotation = playerManager.rotation;
+            }
+            playerManager.turning = true;
+
+            if (!activePlayer) return;
+
+            const def = activePlayer.activeItem;
+
+            if (def.itemType === ItemType.Gun) {
+                activePlayer.images.aimTrail.alpha = 1;
+            }
+
+            const attacking = data.distance > consoleVariables.get.builtIn("mb_joystick_size").value / 3;
+            if (def.itemType === ItemType.Gun && def.shootOnRelease) {
+                shootOnRelease = true;
+            } else {
+                playerManager.attacking = attacking;
+            }
         });
 
         rightJoyStick.on("end", () => {
-            game.playerManager.attacking = false;
+            rightJoyStickUsed = false;
+            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+            playerManager.attacking = shootOnRelease;
+            playerManager.resetAttacking = true;
+            shootOnRelease = false;
         });
     }
 
@@ -210,9 +242,11 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
             case event.deltaZ > 0: { key = "MWheelForwards"; break; }
             case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
         }
+
         if (key === "") {
             console.error("An unrecognized scroll wheel event was received: ", event);
         }
+
         return key;
     }
 
@@ -224,10 +258,10 @@ function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): s
 }
 
 // Nowhere else to put this…
-export function getIconFromInputName(input: string): string {
+export function getIconFromInputName(input: string): string | undefined {
     let name: string | undefined;
 
-    input = input.toLowerCase();
+    const copy = input.toLowerCase();
     if (
         [
             "mouse",
@@ -243,16 +277,16 @@ export function getIconFromInputName(input: string): string {
             "backspace",
             "escape",
             "space"
-        ].some(query => input.startsWith(query))
+        ].some(query => copy.startsWith(query))
     ) {
-        if (input === "meta") { // "meta" means different things depending on the OS
+        if (copy === "meta") { // "meta" means different things depending on the OS
             name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
         } else {
-            name = input.toLowerCase().replace(/ /g, "");
+            name = copy.replace(/ /g, "");
         }
     }
 
-    return name === undefined ? input : `./img/misc/${name}_icon.svg`;
+    return name === undefined ? name : `./img/misc/${name}_icon.svg`;
 }
 
 const actionsNames: Record<keyof (typeof defaultBinds), string> = {
@@ -288,7 +322,20 @@ const actionsNames: Record<keyof (typeof defaultBinds), string> = {
 // Generate the input settings
 export function generateBindsConfigScreen(): void {
     const keybindsContainer = $("#tab-keybinds-content");
-    keybindsContainer.html("");
+    keybindsContainer.html("").append(
+        $("<div>",
+            {
+                class: "modal-item",
+                id: "keybind-clear-tooltip"
+            }
+        ).append(
+            "To remove a keybind, press the keybind and then press either ",
+            $("<kbd>").text("Escape"),
+            " or ",
+            $("<kbd>").text("Backspace"),
+            "."
+        )
+    );
 
     let activeButton: HTMLButtonElement | undefined;
     for (const a in defaultBinds) {
@@ -343,6 +390,7 @@ export function generateBindsConfigScreen(): void {
                     if (key === "Escape" || key === "Backspace") {
                         key = "";
                     }
+
                     keybinds.unbindInput(key);
                     keybinds.addActionsToInput(key, action);
 
@@ -379,8 +427,8 @@ export function generateBindsConfigScreen(): void {
     })).appendTo(keybindsContainer);
 
     // Change the weapons slots keybind text
-    for (let i = 1; i <= 3; i++) {
-        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i - 1}`).filter(a => a !== "").slice(0, 2);
-        $(`#weapon-slot-${i}`).children(".slot-number").text(slotKeybinds.join(" / "));
+    for (let i = 0; i < 3; i++) {
+        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
+        $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
     }
 }

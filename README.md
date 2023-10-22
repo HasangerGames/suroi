@@ -1,6 +1,5 @@
 <div align="center">
-  <img src="./client/public/img/logos/suroi.svg" width="750" alt="Suroi logo">
-  <img src="./client/public/img/backgrounds/background.png" alt="Suroi">
+  <img src="./client/public/img/backgrounds/github-background.png" alt="Suroi">
   <hr>
 </div>
 

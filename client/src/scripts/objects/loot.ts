@@ -1,21 +1,21 @@
-import { ArmorType, type ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ArmorType, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { ItemType, LootRadius, reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type PlayerManager } from "../utils/playerManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Loot extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+export class Loot<Def extends LootDefinition = LootDefinition> extends GameObject<ObjectCategory.Loot> {
+    override readonly type = ObjectCategory.Loot;
+    readonly definition: Def;
 
     readonly images: {
         readonly background: SuroiSprite
@@ -30,17 +30,18 @@ export class Loot extends GameObject {
 
     animation?: Tween<Vector>;
 
-    constructor(game: Game, type: ObjectType, id: number) {
-        super(game, type, id);
+    constructor(game: Game, definition: Def | ReferenceTo<Def>, id: number) {
+        super(game, id);
 
-        const definition = this.type.definition;
+        this.definition = definition = reifyDefinition<LootDefinition, Def>(definition, Loots);
+        const itemType = definition.itemType;
 
         this.images = {
             background: new SuroiSprite(),
-            item: new SuroiSprite(`${this.type.idString}${definition.itemType === ItemType.Skin ? "_base" : ""}`)
+            item: new SuroiSprite(`${definition.idString}${itemType === ItemType.Skin ? "_base" : ""}`)
         };
 
-        if (definition.itemType === ItemType.Skin) this.images.item.setAngle(90).scale.set(0.75);
+        if (itemType === ItemType.Skin) this.images.item.setAngle(90).scale.set(0.75);
 
         this.container.addChild(this.images.background, this.images.item);
 
@@ -48,7 +49,7 @@ export class Loot extends GameObject {
 
         // Set the loot texture based on the type
         let backgroundTexture: string | undefined;
-        switch (definition.itemType) {
+        switch (itemType) {
             case ItemType.Gun: {
                 backgroundTexture = `loot_background_gun_${definition.ammoType}`;
                 this.images.item.scale.set(0.85);
@@ -81,7 +82,7 @@ export class Loot extends GameObject {
             this.images.background.setVisible(false);
         }
 
-        this.hitbox = new CircleHitbox(LootRadius[definition.itemType]);
+        this.hitbox = new CircleHitbox(LootRadius[itemType]);
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Loot]): void {
@@ -121,34 +122,36 @@ export class Loot extends GameObject {
     canInteract(player: PlayerManager): boolean {
         const activePlayer = this.game.activePlayer;
         if (!activePlayer) return false;
-        const definition = this.type.definition;
+
+        const definition = this.definition;
 
         switch (definition.itemType) {
             case ItemType.Gun: {
                 return !player.weapons[0] ||
                     !player.weapons[1] ||
-                    (player.activeItemIndex < 2 && this.type.idNumber !== player.weapons[player.activeItemIndex]?.idNumber);
+                    (player.activeItemIndex < 2 && this.definition.idString !== player.weapons[player.activeItemIndex]?.idString);
             }
             case ItemType.Melee: {
-                return this.type.idNumber !== player.weapons[2]?.idNumber;
+                return this.definition.idString !== player.weapons[2]?.idString;
             }
             case ItemType.Healing:
             case ItemType.Ammo: {
-                const idString = this.type.idString;
-                const currentCount = player.items[idString];
-                const maxCapacity = Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString];
-                return (definition as AmmoDefinition).ephemeral ?? currentCount + 1 <= maxCapacity;
+                const idString = this.definition.idString;
+
+                return (definition as AmmoDefinition).ephemeral ?? (player.items[idString] + 1 <= Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString]);
             }
             case ItemType.Armor: {
-                if (definition.armorType === ArmorType.Helmet) return definition.level > activePlayer.helmetLevel;
-                else if (definition.armorType === ArmorType.Vest) return definition.level > activePlayer.vestLevel;
-                else return false;
+                switch (true) {
+                    case definition.armorType === ArmorType.Helmet: return definition.level > activePlayer.helmetLevel;
+                    case definition.armorType === ArmorType.Vest: return definition.level > activePlayer.vestLevel;
+                    default: return false;
+                }
             }
             case ItemType.Backpack: {
                 return definition.level > activePlayer.backpackLevel;
             }
             case ItemType.Scope: {
-                return player.items[this.type.idString] === 0;
+                return player.items[this.definition.idString] === 0;
             }
             case ItemType.Skin: {
                 return true;

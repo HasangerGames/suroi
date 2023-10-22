@@ -1,15 +1,16 @@
-import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { PacketType } from "../../../../common/src/constants";
 import { RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
-import { type Obstacle } from "../../objects/obstacle";
+import { Building } from "../../objects/building";
+import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
     override readonly type = PacketType.Map;
 
-    game: Game;
+    readonly game: Game;
 
     constructor(game: Game) {
         // This packet is only created a single time and this.player is never used
@@ -23,26 +24,39 @@ export class MapPacket extends SendingPacket {
 
         const map = this.game.map;
 
+        stream.writeUint32(map.seed);
         stream.writeUint16(map.width);
         stream.writeUint16(map.height);
+        stream.writeUint16(map.oceanSize);
+        stream.writeUint16(map.beachSize);
+
+        stream.writeBits(map.rivers.length, 4);
+        for (const river of map.rivers) {
+            stream.writeUint8(river.width);
+            stream.writeUint8(river.bankWidth);
+
+            stream.writeUint8(river.points.length);
+            for (const point of river.points) {
+                stream.writePosition(point);
+            }
+        }
 
         stream.writeBits(this.game.minimapObjects.size, 11);
 
         for (const object of this.game.minimapObjects) {
-            stream.writeObjectType(object.type);
+            stream.writeObjectType(object.createObjectType());
             stream.writePosition(object.position);
 
-            switch (object.type.category) {
-                case ObjectCategory.Obstacle: {
-                    const obstacle = object as Obstacle;
-                    stream.writeScale(obstacle.maxScale);
-                    stream.writeObstacleRotation(object.rotation, obstacle.definition.rotationMode);
-                    if (obstacle.definition.variations !== undefined) {
-                        stream.writeVariation(obstacle.variation);
+            switch (true) {
+                case object instanceof Obstacle: {
+                    stream.writeScale(object.maxScale);
+                    stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
+                    if (object.definition.variations !== undefined) {
+                        stream.writeVariation(object.variation);
                     }
                     break;
                 }
-                case ObjectCategory.Building:
+                case object instanceof Building:
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }

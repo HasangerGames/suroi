@@ -1,32 +1,36 @@
-import { type ObjectCategory } from "../constants";
-import { type ExplosionDefinition } from "../definitions/explosions";
-import { type GunDefinition } from "../definitions/guns";
+import { ObjectCategory } from "../constants";
+import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
+import { Guns, type GunDefinition } from "../definitions/guns";
+import { Loots, type LootDefinition } from "../definitions/loots";
 import { type Hitbox } from "./hitbox";
 import { distanceSquared } from "./math";
-import { type BulletDefinition } from "./objectDefinitions";
-import { type ObjectType } from "./objectType";
-import { v, vAdd, vClone, type Vector, vMul } from "./vector";
+import { reifyDefinition, type BulletDefinition, type ReferenceTo } from "./objectDefinitions";
+import { ObjectType } from "./objectType";
+import { v, vAdd, vClone, vMul, type Vector } from "./vector";
 
 export interface BulletOptions {
-    position: Vector
-    rotation: number
-    source: ObjectType<ObjectCategory.Explosion, ExplosionDefinition> | ObjectType<ObjectCategory.Loot, GunDefinition>
-    sourceID: number
-    reflectionCount?: number
-    variance?: number
+    readonly position: Vector
+    readonly rotation: number
+    readonly source: GunDefinition | ExplosionDefinition | ReferenceTo<GunDefinition> | ReferenceTo<ExplosionDefinition>
+    readonly sourceID: number
+    readonly reflectionCount?: number
+    readonly variance?: number
 }
 
 interface GameObject {
-    position: Vector
-    hitbox?: Hitbox
-    dead: boolean
-    damageable: boolean
-    id: number
+    readonly position: Vector
+    readonly hitbox?: Hitbox
+    readonly dead: boolean
+    readonly damageable: boolean
+    readonly id: number
 }
 
 interface Collision {
-    intersection: { point: Vector, normal: Vector }
-    object: GameObject
+    readonly intersection: {
+        readonly point: Vector
+        readonly normal: Vector
+    }
+    readonly object: GameObject
 }
 
 export class BaseBullet {
@@ -49,7 +53,11 @@ export class BaseBullet {
 
     dead = false;
 
-    readonly source: ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
+    readonly source: GunDefinition | ExplosionDefinition;
+    private readonly _sourceObjectType: ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
+    public get sourceObjectType(): ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition> {
+        return this._sourceObjectType;
+    }
 
     readonly definition: BulletDefinition;
 
@@ -59,12 +67,27 @@ export class BaseBullet {
         this.initialPosition = vClone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
-        this.source = options.source;
+
+        //! evil code starts here
+        // pros: flexible
+        // cons: fugly
+
+        // this conditional is very evil!
+        if (Loots.definitions.some(def => def === options.source || def.idString === options.source)) {
+            this.source = reifyDefinition<LootDefinition, GunDefinition>(options.source as string, Guns);
+            this._sourceObjectType = ObjectType.fromString<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot, this.source.idString);
+        } else {
+            this.source = reifyDefinition<ExplosionDefinition>(options.source as string, Explosions);
+            this._sourceObjectType = ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, this.source.idString);
+        }
+
+        //! evil code ends here
+
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.variance = options.variance ?? 0;
 
-        this.definition = this.source.definition.ballistics;
+        this.definition = this.source.ballistics;
         this.maxDistance = (this.definition.maxDistance * (this.variance + 1)) / (this.reflectionCount + 1);
 
         this.maxDistanceSquared = this.maxDistance ** 2;
@@ -93,9 +116,11 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.damageable && !object.dead &&
+            if (
+                object.damageable && !object.dead &&
                 !(!this.canHitShooter && object.id === this.sourceID) &&
-                !this.damagedIDs.has(object.id)) {
+                !this.damagedIDs.has(object.id)
+            ) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
                 if (collision) {
@@ -108,9 +133,11 @@ export class BaseBullet {
         }
 
         // Sort by closest to initial position
-        collisions.sort((a, b) => {
-            return distanceSquared(a.intersection?.point, this.initialPosition) - distanceSquared(b.intersection?.point, this.initialPosition);
-        });
+        collisions.sort(
+            (a, b) =>
+                distanceSquared(a.intersection?.point, this.initialPosition) -
+                distanceSquared(b.intersection?.point, this.initialPosition)
+        );
 
         return collisions;
     }

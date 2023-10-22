@@ -1,6 +1,8 @@
 import $ from "jquery";
 import { GasState, ObjectCategory } from "../../../../../common/src/constants";
 import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
+import { Explosions, type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
+import { type GunDefinition } from "../../../../../common/src/definitions/guns";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
 import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
@@ -26,18 +28,18 @@ function safeRound(value: number): number {
 }
 
 export class UpdatePacket extends ReceivingPacket {
-    fullDirtyObjects = new Set<{
-        id: number
-        type: ObjectType
-        data: ObjectsNetData[ObjectCategory]
+    readonly fullDirtyObjects = new Set<{
+        readonly id: number
+        readonly type: ObjectType
+        readonly data: ObjectsNetData[ObjectCategory]
     }>();
 
-    partialDirtyObjects = new Set<{
-        id: number
-        data: ObjectsNetData[ObjectCategory]
+    readonly partialDirtyObjects = new Set<{
+        readonly id: number
+        readonly data: ObjectsNetData[ObjectCategory]
     }>();
 
-    deletedObjects = new Array<number>();
+    readonly deletedObjects = new Array<number>();
 
     override deserialize(stream: SuroiBitStream): void {
         const game = this.game;
@@ -107,13 +109,14 @@ export class UpdatePacket extends ReceivingPacket {
 
             if (percentage === 100) {
                 healthBar.css("background-color", "#bdc7d0");
-            } else if (percentage < 60 && percentage > 10) {
+            } else if (percentage < 60 && percentage > 25) {
                 healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
-            } else if (percentage <= 10) {
-                healthBar.css("background-color", `rgb(${percentage * 15 + 105}, 0, 0)`);
+            } else if (percentage <= 25) {
+                healthBar.css("background-color", "#ff0000");
             } else {
                 healthBar.css("background-color", "#f8f9fa");
             }
+            healthBar.toggleClass("flashing", percentage <= 25);
 
             healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
@@ -160,13 +163,15 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
+        type GeneralDeserializationFunction = (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[ObjectCategory];
+
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                const data = ObjectSerializations[type.category].deserializeFull(stream, type);
+                const data = (ObjectSerializations[type.category].deserializeFull as GeneralDeserializationFunction)(stream, type);
 
                 this.fullDirtyObjects.add({
                     id,
@@ -183,7 +188,7 @@ export class UpdatePacket extends ReceivingPacket {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
 
-                const data = ObjectSerializations[type.category].deserializePartial(stream, type);
+                const data = (ObjectSerializations[type.category].deserializePartial as GeneralDeserializationFunction)(stream, type);
                 this.partialDirtyObjects.add({
                     id,
                     data
@@ -204,24 +209,19 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                const source = stream.readObjectType() as Bullet["source"];
-                const position = stream.readPosition();
-                const rotation = stream.readRotation(16);
-                const variance = stream.readFloat(0, 1, 4);
-                const reflectionCount = stream.readBits(2);
-                const sourceID = stream.readObjectID();
-
-                const bullet = new Bullet(game, {
-                    source,
-                    position,
-                    rotation,
-                    reflectionCount,
-                    sourceID,
-                    variance
-                });
-
-                game.bullets.add(bullet);
+                game.bullets.add(
+                    new Bullet(
+                        game,
+                        {
+                            source: stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition,
+                            position: stream.readPosition(),
+                            rotation: stream.readRotation(16),
+                            variance: stream.readFloat(0, 1, 4),
+                            reflectionCount: stream.readBits(2),
+                            sourceID: stream.readObjectID()
+                        }
+                    )
+                );
             }
         }
 
@@ -231,7 +231,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    stream.readObjectTypeNoCategory(ObjectCategory.Explosion),
+                    Explosions.definitions[stream.readUint8()],
                     stream.readPosition()
                 );
             }
@@ -241,42 +241,71 @@ export class UpdatePacket extends ReceivingPacket {
         if (emotesDirty) {
             const emoteCount = stream.readBits(7);
             for (let i = 0; i < emoteCount; i++) {
-                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote);
-                const playerID = stream.readObjectID();
-                const player = game.objects.get(playerID);
+                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote).definition;
+                const player = game.objects.get(stream.readObjectID());
                 if (player instanceof Player) player.emote(emoteType);
             }
         }
 
         // Gas
+        const gas = game.gas;
         let gasPercentage: number | undefined;
+        let [
+            isInactive,
+            isWaiting,
+            isAdvancing
+        ] = [
+            gas.state === GasState.Inactive,
+            gas.state === GasState.Waiting,
+            gas.state === GasState.Advancing
+        ];
+
         if (gasDirty) {
-            game.gas.state = stream.readBits(2);
-            game.gas.initialDuration = stream.readBits(7);
-            game.gas.oldPosition = stream.readPosition();
-            game.gas.newPosition = stream.readPosition();
-            game.gas.oldRadius = stream.readFloat(0, 2048, 16);
-            game.gas.newRadius = stream.readFloat(0, 2048, 16);
+            gas.state = stream.readBits(2);
+            gas.initialDuration = stream.readBits(7);
+            gas.oldPosition = stream.readPosition();
+            gas.newPosition = stream.readPosition();
+            gas.oldRadius = stream.readFloat(0, 2048, 16);
+            gas.newRadius = stream.readFloat(0, 2048, 16);
+
+            [
+                isInactive,
+                isWaiting,
+                isAdvancing
+            ] = [
+                gas.state === GasState.Inactive,
+                gas.state === GasState.Waiting,
+                gas.state === GasState.Advancing
+            ];
 
             let currentDuration: number | undefined;
             const percentageDirty = stream.readBoolean();
             if (percentageDirty) { // Percentage dirty
                 gasPercentage = stream.readFloat(0, 1, 16);
-                currentDuration = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
+                currentDuration = gas.initialDuration - Math.round(gas.initialDuration * gasPercentage);
             } else {
-                currentDuration = game.gas.initialDuration;
+                currentDuration = gas.initialDuration;
             }
-            if (!(percentageDirty && game.gas.firstPercentageReceived)) { // Ensures that gas messages aren't displayed when switching between players when spectating
-                let gasMessage: string | undefined;
-                if (game.gas.state === GasState.Waiting) {
-                    gasMessage = `Toxic gas advances in ${formatDate(currentDuration)}`;
-                } else if (game.gas.state === GasState.Advancing) {
-                    gasMessage = "Toxic gas is advancing! Move to the safe zone";
-                } else if (game.gas.state === GasState.Inactive) {
-                    gasMessage = "Waiting for players...";
+
+            if (!(percentageDirty && gas.firstPercentageReceived)) {
+                // Ensures that gas messages aren't displayed when switching between players when spectating
+                let gasMessage = "";
+                switch (true) {
+                    case isWaiting: {
+                        gasMessage = `Toxic gas advances in ${formatDate(currentDuration)}`;
+                        break;
+                    }
+                    case isAdvancing: {
+                        gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                        break;
+                    }
+                    case isInactive: {
+                        gasMessage = "Waiting for players...";
+                        break;
+                    }
                 }
 
-                if (game.gas.state === GasState.Advancing) {
+                if (isAdvancing) {
                     $("#gas-timer").addClass("advancing");
                     $("#gas-timer-image").attr("src", "./img/misc/gas-advancing-icon.svg");
                 } else {
@@ -284,10 +313,14 @@ export class UpdatePacket extends ReceivingPacket {
                     $("#gas-timer-image").attr("src", "./img/misc/gas-waiting-icon.svg");
                 }
 
-                if ((game.gas.state === GasState.Inactive || game.gas.initialDuration !== 0) && !UI_DEBUG_MODE && !(game.gameOver && !game.spectating)) {
-                    $("#gas-msg-info").text(gasMessage ?? "");
+                if (
+                    (isInactive || gas.initialDuration !== 0) &&
+                    !UI_DEBUG_MODE &&
+                    (!game.gameOver || game.spectating)
+                ) {
+                    $("#gas-msg-info").text(gasMessage);
                     $("#gas-msg").fadeIn();
-                    if (game.gas.state === GasState.Inactive) {
+                    if (isInactive) {
                         $("#gas-msg-info").css("color", "white");
                     } else {
                         $("#gas-msg-info").css("color", "cyan");
@@ -295,28 +328,30 @@ export class UpdatePacket extends ReceivingPacket {
                     }
                 }
             }
-            game.gas.firstPercentageReceived = true;
+            gas.firstPercentageReceived = true;
         }
 
         // Gas percentage
         if (gasPercentageDirty) {
             gasPercentage = stream.readFloat(0, 1, 16);
         }
+
         if (gasPercentage !== undefined) {
-            const time = game.gas.initialDuration - Math.round(game.gas.initialDuration * gasPercentage);
+            const time = gas.initialDuration - Math.round(gas.initialDuration * gasPercentage);
             $("#gas-timer-text").text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
 
-            if (!game.gas.firstRadiusReceived && game.gas.state !== GasState.Advancing) {
-                game.gas.position = game.gas.oldPosition;
-                game.gas.radius = game.gas.oldRadius;
-                game.gas.firstRadiusReceived = true;
+            if (!gas.firstRadiusReceived && !isAdvancing) {
+                gas.position = gas.oldPosition;
+                gas.radius = gas.oldRadius;
+                gas.firstRadiusReceived = true;
             }
-            if (game.gas.state === GasState.Advancing) {
-                game.gas.lastPosition = vClone(game.gas.position);
-                game.gas.lastRadius = game.gas.radius;
-                game.gas.position = vecLerp(game.gas.oldPosition, game.gas.newPosition, gasPercentage);
-                game.gas.radius = lerp(game.gas.oldRadius, game.gas.newRadius, gasPercentage);
-                game.gas.lastUpdateTime = Date.now();
+
+            if (isAdvancing) {
+                gas.lastPosition = vClone(gas.position);
+                gas.lastRadius = gas.radius;
+                gas.position = vecLerp(gas.oldPosition, gas.newPosition, gasPercentage);
+                gas.radius = lerp(gas.oldRadius, gas.newRadius, gasPercentage);
+                gas.lastUpdateTime = Date.now();
             }
         }
 

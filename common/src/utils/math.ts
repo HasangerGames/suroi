@@ -1,19 +1,8 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
-import { type Hitbox, RectangleHitbox } from "./hitbox";
-import {
-    v,
-    vAdd,
-    vDiv,
-    vDot,
-    type Vector,
-    vLength,
-    vLengthSqr,
-    vMul,
-    vNormalize,
-    vNormalizeSafe,
-    vSub
-} from "./vector";
+import { RectangleHitbox, type Hitbox } from "./hitbox";
+import { ObstacleSpecialRoles } from "./objectDefinitions";
+import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
 
 /**
  * Draws a line between two points and returns that line's angle
@@ -162,6 +151,17 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
     return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);
 }
 
+export function rectPolyCollision(min: Vector, max: Vector, poly: Vector[]): boolean {
+    for (let i = 0; i < poly.length; i++) {
+        const a = poly[i];
+        const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
+        if (lineIntersectsRect2(a, b, min, max)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Conform a number to specified bounds
  * @param a The number to conform
@@ -191,7 +191,7 @@ export function velFromAngle(angle: number, multiplier = 1): Vector {
     };
 }
 
-export interface CollisionRecord { collided: boolean, distance: number }
+export interface CollisionRecord { readonly collided: boolean, readonly distance: number }
 
 /**
  * Determine the distance between two circles
@@ -262,7 +262,7 @@ export function addOrientations(n1: Orientation, n2: Orientation): Orientation {
  * Add a Vector to another one and rotate it by the given orientation
  * @param position1 The initial Vector
  * @param position2 The Vector to add to the first one
- * @param orientation The orientation to rotate it
+ * @param orientation The orientation to rotate the second vector by
  * @return A new Vector
  */
 export function addAdjust(position1: Vector, position2: Vector, orientation: Orientation): Vector {
@@ -296,7 +296,7 @@ export function addAdjust(position1: Vector, position2: Vector, orientation: Ori
  * @param orientation The orientation to rotate it
  * @return A new Rectangle transformed by the given position and orientation
  */
-export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { min: Vector, max: Vector } {
+export function transformRectangle(pos: Vector, min: Vector, max: Vector, scale: number, orientation: Orientation): { readonly min: Vector, readonly max: Vector } {
     min = vMul(min, scale);
     max = vMul(max, scale);
     if (orientation !== 0) {
@@ -349,7 +349,7 @@ export function lineIntersectsLine(a0: Vector, a1: Vector, b0: Vector, b1: Vecto
     return null;
 }
 
-export type IntersectionResponse = { point: Vector, normal: Vector } | null;
+export type IntersectionResponse = { readonly point: Vector, readonly normal: Vector } | null;
 
 /**
  * Checks if a line intersects a circle
@@ -454,7 +454,64 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     };
 }
 
-export type CollisionResponse = { dir: Vector, pen: number } | null;
+/**
+ * Checks if a line intersects a rectangle
+ * @param s0 The start of the line
+ * @param s1 The end of the line
+ * @param min The min Vector of the rectangle
+ * @param max The max Vector of the rectangle
+ * @return true if the line intersects, false otherwise
+ */
+export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Vector): boolean {
+    let tmin = 0;
+    let tmax = Number.MAX_VALUE;
+    const eps = 0.00001;
+    const r = s0;
+    let d = vSub(s1, s0);
+    const dist = vLength(d);
+    d = dist > eps ? vDiv(d, dist) : v(1.0, 0.0);
+
+    let absDx = Math.abs(d.x);
+    let absDy = Math.abs(d.y);
+
+    if (absDx < eps) {
+        d.x = eps * 2.0;
+        absDx = d.x;
+    }
+
+    if (absDy < eps) {
+        d.y = eps * 2.0;
+        absDy = d.y;
+    }
+
+    if (absDx > eps) {
+        const tx1 = (min.x - r.x) / d.x;
+        const tx2 = (max.x - r.x) / d.x;
+        tmin = Math.max(tmin, Math.min(tx1, tx2));
+        tmax = Math.min(tmax, Math.max(tx1, tx2));
+        if (tmin > tmax) {
+            return false;
+        }
+    }
+
+    if (absDy > eps) {
+        const ty1 = (min.y - r.y) / d.y;
+        const ty2 = (max.y - r.y) / d.y;
+        tmin = Math.max(tmin, Math.min(ty1, ty2));
+        tmax = Math.min(tmax, Math.max(ty1, ty2));
+        if (tmin > tmax) {
+            return false;
+        }
+    }
+
+    if (tmin > dist) {
+        return false;
+    }
+
+    return true;
+}
+
+export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
 
 export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vector, rad1: number): CollisionResponse {
     const r = rad0 + rad1;
@@ -505,28 +562,63 @@ export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, ra
     return null;
 }
 
-export function calculateDoorHitboxes(definition: ObstacleDefinition, position: Vector, rotation: Orientation): { openHitbox: Hitbox, openAltHitbox: Hitbox } {
-    if (!(definition.hitbox instanceof RectangleHitbox) || !definition.isDoor) {
+export function calculateDoorHitboxes<
+    // tf are you talking about
+    // eslint-disable-next-line space-before-function-paren
+    U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
+>(
+    definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },
+    position: Vector,
+    rotation: Orientation
+): U extends "slide"
+        ? { readonly openHitbox: Hitbox }
+        : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox } {
+    if (!(definition.hitbox instanceof RectangleHitbox) || definition.role !== ObstacleSpecialRoles.Door) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
-    // noinspection JSSuspiciousNameCombination
-    const openRectangle = transformRectangle(
-        addAdjust(position, vAdd(definition.hingeOffset, v(-definition.hingeOffset.y, definition.hingeOffset.x)), rotation),
-        definition.hitbox.min,
-        definition.hitbox.max,
-        1,
-        absMod(rotation + 1, 4) as Orientation
-    );
-    // noinspection JSSuspiciousNameCombination
-    const openAltRectangle = transformRectangle(
-        addAdjust(position, vAdd(definition.hingeOffset, v(definition.hingeOffset.y, -definition.hingeOffset.x)), rotation),
-        definition.hitbox.min,
-        definition.hitbox.max,
-        1,
-        absMod(rotation - 1, 4) as Orientation
-    );
-    return {
-        openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
-        openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
-    };
+
+    type Swivel = typeof definition & { readonly operationStyle: "swivel" };
+    type Slide = typeof definition & { readonly operationStyle: "slide" };
+    type Return = U extends "slide"
+        ? { readonly openHitbox: Hitbox }
+        : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox };
+
+    switch (definition.operationStyle) {
+        case "slide": {
+            const openHitbox = transformRectangle(
+                addAdjust(position, v((definition.hitbox.min.x - definition.hitbox.max.x) * ((definition as Slide).slideFactor ?? 1), 0), rotation),
+                definition.hitbox.min,
+                definition.hitbox.max,
+                1,
+                rotation
+            );
+
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            return {
+                openHitbox: new RectangleHitbox(openHitbox.min, openHitbox.max)
+            } as unknown as Return;
+        }
+        case "swivel":
+        default: {
+            const openRectangle = transformRectangle(
+                addAdjust(position, vAdd((definition as Swivel).hingeOffset, v(-(definition as Swivel).hingeOffset.y, (definition as Swivel).hingeOffset.x)), rotation),
+                definition.hitbox.min,
+                definition.hitbox.max,
+                1,
+                absMod(rotation + 1, 4) as Orientation
+            );
+            const openAltRectangle = transformRectangle(
+                addAdjust(position, vAdd((definition as Swivel).hingeOffset, v((definition as Swivel).hingeOffset.y, -(definition as Swivel).hingeOffset.x)), rotation),
+                definition.hitbox.min,
+                definition.hitbox.max,
+                1,
+                absMod(rotation - 1, 4) as Orientation
+            );
+
+            return {
+                openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
+                openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
+            } as unknown as Return;
+        }
+    }
 }

@@ -1,62 +1,62 @@
 import { GasState } from "../../../common/src/constants";
 
 export interface GasStage {
-    state: GasState
-    duration: number
-    oldRadius: number
-    newRadius: number
-    dps: number
-    preventJoin?: boolean
+    readonly state: GasState
+    readonly duration: number
+    readonly oldRadius: number
+    readonly newRadius: number
+    readonly dps: number
+    readonly preventJoin?: boolean
 }
 
 export const GasStages: GasStage[] = [
     {
         state: GasState.Inactive,
         duration: 0,
-        oldRadius: 750,
-        newRadius: 750,
+        oldRadius: 1024,
+        newRadius: 1024,
         dps: 0
     },
     {
         state: GasState.Waiting,
         duration: 80,
-        oldRadius: 750,
-        newRadius: 420,
+        oldRadius: 1024,
+        newRadius: 512,
         dps: 0
     },
     {
         state: GasState.Advancing,
         duration: 20,
-        oldRadius: 750,
-        newRadius: 420,
+        oldRadius: 1024,
+        newRadius: 512,
         dps: 0.5
     },
     {
         state: GasState.Waiting,
         duration: 60,
-        oldRadius: 420,
-        newRadius: 250,
+        oldRadius: 512,
+        newRadius: 384,
         dps: 1,
         preventJoin: true
     },
     {
         state: GasState.Advancing,
         duration: 15,
-        oldRadius: 420,
-        newRadius: 250,
+        oldRadius: 512,
+        newRadius: 384,
         dps: 1.5
     },
     {
         state: GasState.Waiting,
         duration: 45,
-        oldRadius: 250,
+        oldRadius: 384,
         newRadius: 128,
         dps: 2
     },
     {
         state: GasState.Advancing,
         duration: 10,
-        oldRadius: 250,
+        oldRadius: 384,
         newRadius: 128,
         dps: 3
     },

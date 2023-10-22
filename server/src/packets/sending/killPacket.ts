@@ -1,8 +1,9 @@
-import { PacketType } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { ObjectCategory, PacketType } from "../../../../common/src/constants";
+import { ObjectType } from "../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
+import { type Explosion } from "../../objects/explosion";
 import { type Player } from "../../objects/player";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -11,10 +12,10 @@ export class KillPacket extends SendingPacket {
     override readonly type = PacketType.Kill;
 
     readonly killed: Player;
-    readonly weaponUsed?: GunItem | MeleeItem | ObjectType;
+    readonly weaponUsed?: GunItem | MeleeItem | Explosion;
     readonly kills: number;
 
-    constructor(player: Player, killed: Player, weaponUsed?: GunItem | MeleeItem | ObjectType) {
+    constructor(player: Player, killed: Player, weaponUsed?: GunItem | MeleeItem | Explosion) {
         super(player);
 
         this.killed = killed;
@@ -36,7 +37,15 @@ export class KillPacket extends SendingPacket {
             const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
             const shouldTrackStats = canTrackStats && weaponUsed.definition.killstreak === true;
 
-            stream.writeObjectType(canTrackStats ? weaponUsed.type : weaponUsed);
+            stream.writeObjectType(
+                ObjectType.fromString(
+                    canTrackStats
+                        ? ObjectCategory.Loot
+                        : ObjectCategory.Explosion,
+                    weaponUsed.definition.idString
+                )
+            );
+
             stream.writeBoolean(shouldTrackStats);
             if (shouldTrackStats) {
                 stream.writeUint8(this.kills);

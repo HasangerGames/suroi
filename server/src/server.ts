@@ -86,7 +86,7 @@ let connectionAttempts: Record<string, number> = {};
 const permaBannedIPs = new Set<string>();
 const tempBannedIPs = new Set<string>();
 const rateLimitedIPs = new Set<string>();
-interface BanRecord { ip: string, expires?: number }
+interface BanRecord { readonly ip: string, readonly expires?: number }
 let rawBanRecords: BanRecord[] = [];
 
 let playerCount = 0;
@@ -136,21 +136,23 @@ app.get("/api/getGame", async(res, req) => {
 
 app.get("/api/bannedIPs", (res, req) => {
     cors(res);
+
     if (req.getHeader("password") === Config.protection?.ipBanList?.password) {
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(rawBanRecords));
-    } else {
-        forbidden(res);
+        return;
     }
+
+    forbidden(res);
 });
 
 export interface PlayerContainer {
-    gameID: number
+    readonly gameID: number
     player?: Player
-    ip: string | undefined
-    role?: string
-    isDev: boolean
-    nameColor: string
-    lobbyClearing: boolean
+    readonly ip: string | undefined
+    readonly role?: string
+    readonly isDev: boolean
+    readonly nameColor: string
+    readonly lobbyClearing: boolean
 }
 
 app.ws("/play", {
@@ -175,6 +177,7 @@ app.ws("/play", {
             const exceededRateLimits =
                 (maxSimultaneousConnections !== undefined && simultaneousConnections[ip] >= maxSimultaneousConnections) ||
                 (maxJoinAttempts !== undefined && connectionAttempts[ip] >= maxJoinAttempts.count);
+
             if (
                 tempBannedIPs.has(ip) ||
                 permaBannedIPs.has(ip) ||
@@ -265,6 +268,7 @@ app.ws("/play", {
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
         playerCount++;
+        //userData.player.sendPacket(new GameOverPacket(userData.player, false)); // uncomment to test game over screen
     },
 
     /**
@@ -356,6 +360,7 @@ app.listen(Config.host, Config.port, (): void => {
                 }
                 log("Reloaded list of banned IPs");
             };
+
             if (protection.ipBanList?.url) {
                 void (async() => {
                     try {
