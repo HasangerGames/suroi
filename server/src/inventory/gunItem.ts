@@ -129,46 +129,45 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
                 }
             }
+        }
 
-            const limit = definition.bulletCount ?? 1;
-
-            for (let i = 0; i < limit; i++) {
-                this.owner.game.addBullet(
-                    this,
-                    this.owner,
-                    {
-                        position: jitter
-                            ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
-                            : position,
-                        rotation: owner.rotation + Math.PI / 2 +
+        const limit = definition.bulletCount ?? 1;
+        for (let i = 0; i < limit; i++) {
+            this.owner.game.addBullet(
+                this,
+                this.owner,
+                {
+                    position: jitter
+                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
+                        : position,
+                    rotation: owner.rotation + Math.PI / 2 +
                             (definition.consistentPatterning === true
                                 ? 2 * (i / limit - 0.5)
                                 : randomFloat(-1, 1)) * spread
-                    }
-                );
-            }
+                }
+            );
+        }
 
-            owner.recoil.active = true;
-            owner.recoil.time = owner.game.now + definition.recoilDuration;
-            owner.recoil.multiplier = definition.recoilMultiplier;
+        owner.recoil.active = true;
+        owner.recoil.time = owner.game.now + definition.recoilDuration;
+        owner.recoil.multiplier = definition.recoilMultiplier;
 
-            if (!definition.infiniteAmmo) {
-                --this.ammo;
-            }
+        if (!definition.infiniteAmmo) {
+            --this.ammo;
+        }
 
-            if (this.ammo <= 0) {
-                this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
-                this._shots = 0;
-                return;
-            }
+        if (this.ammo <= 0) {
+            this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
+            this._shots = 0;
+            return;
+        }
 
-            if (
-                (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
+        if (
+            (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
                 this.owner.activeItem === this
-            ) {
-                clearTimeout(this._autoFireTimeoutID);
-                this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
-            }
+        ) {
+            clearTimeout(this._autoFireTimeoutID);
+            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
         }
     }
 
