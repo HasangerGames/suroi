@@ -52,6 +52,7 @@ export const Materials: string[] = [
     "crate",
     "metal",
     "wood",
+    "pumpkin",
     "glass",
     "porcelain",
     "cardboard",
@@ -246,6 +247,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             variations: 7,
             particleVariations: 2
+        },
+        {
+            idString: "pumpkin",
+            name: "Pumpkin",
+            material: "pumpkin",
+            health: 100,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(2.4),
+            spawnHitbox: new CircleHitbox(3),
+            rotationMode: RotationMode.Full,
         },
         {
             idString: "flint_stone",

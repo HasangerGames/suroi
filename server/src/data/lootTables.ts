@@ -59,7 +59,15 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "mosin", weight: 1 },
-            { item: "tango_51", weight: 0.1 }
+            { item: "usas", weight: 0.1 }
+        ]
+    },
+    pumpkin: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "mosin", weight: 1 }, // Switch to Glock before release.
+            { item: "tango_51", weight: 0.05 } // Switch to usas before release.
         ]
     },
     blueberry_bush: {

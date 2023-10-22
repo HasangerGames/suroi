@@ -68,7 +68,8 @@ export const Maps: Record<string, MapDefinition> = {
             pine_tree: 14,
             melee_crate: 1,
             gold_rock: 1,
-            flint_stone: 1
+            flint_stone: 1,
+            pumpkin: 75
         },
         specialObstacles: {
             oil_tank: {
@@ -251,6 +252,13 @@ export const Maps: Record<string, MapDefinition> = {
         height: 512,
         genCallback(map) {
             map.generateBuilding(ObjectType.fromString(ObjectCategory.Building, "small_house"), v(this.width / 2, this.height / 2), 0);
+        }
+    },
+    singleObstacle: {
+        width: 256,
+        height: 256,
+        genCallback(map) {
+            map.generateObstacle(ObjectType.fromString(ObjectCategory.Obstacle, "pumpkin"), v(this.width / 2, this.height / 2), 0);
         }
     }
 };
