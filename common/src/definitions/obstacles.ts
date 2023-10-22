@@ -171,6 +171,37 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
+            idString: "oak_tree_fall",
+            name: "Oak Tree Fall",
+            material: "tree",
+            health: 180,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            variations: 3,
+            zIndex: ZIndexes.ObstaclesLayer4
+        },
+        {
+            idString: "birch_tree_fall",
+            name: "Birch Tree Fall",
+            material: "tree",
+            health: 240,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            zIndex: ZIndexes.ObstaclesLayer4
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",

@@ -15,10 +15,10 @@ export const HITBOX_COLORS = {
 };
 
 export const COLORS = {
-    grass: new Color("hsl(113, 42%, 42%)"),
-    water: new Color("hsl(211, 63%, 42%)"),
+    grass: new Color("hsl(65, 72%, 10%)"),
+    water: new Color("hsl(4, 90%, 12%)"),
     gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55),
-    beach: new Color("hsl(40, 39%, 55%)")
+    beach: new Color("hsl(33, 77%, 21%)")
 };
 
 export const BULLET_COLORS: Record<string, number> = {
