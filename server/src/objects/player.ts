@@ -1,5 +1,5 @@
-import { type WebSocket } from "uWebSockets.js";
-import { AnimationType, INVENTORY_MAX_WEAPONS, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
+import type { WebSocket } from "uWebSockets.js";
+import { AnimationType, INVENTORY_MAX_WEAPONS, KillFeedMessageType, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
@@ -8,7 +8,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, type Vector } from "../../../common/src/utils/vector";
@@ -24,7 +24,6 @@ import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillPacket } from "../packets/sending/killPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
-import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
@@ -32,6 +31,7 @@ import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
+import { Scopes } from "../../../common/src/definitions/scopes";
 
 export class Player extends GameObject {
     readonly type = ObjectCategory.Player;
@@ -49,6 +49,13 @@ export class Player extends GameObject {
 
     joined = false;
     disconnected = false;
+
+    private _kills = 0;
+    get kills(): number { return this._kills; }
+    set kills(k: number) {
+        this._kills = k;
+        this.game.updateKillLeader(this);
+    }
 
     static readonly DEFAULT_MAX_HEALTH = 100;
     private _maxHealth = Player.DEFAULT_MAX_HEALTH;
@@ -106,7 +113,6 @@ export class Player extends GameObject {
 
     killedBy?: Player;
 
-    kills = 0;
     damageDone = 0;
     damageTaken = 0;
     readonly joinTime: number;
@@ -295,6 +301,10 @@ export class Player extends GameObject {
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
+        this.inventory.scope = reifyDefinition("1x_scope", Scopes);
+        // this.inventory.items["15x_scope"] = 1;
+        // this.inventory.scope = reifyDefinition("15x_scope", Scopes);
+
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
             this.inventory.addOrReplaceWeapon(0, "deathray");
@@ -389,7 +399,7 @@ export class Player extends GameObject {
         }
         /* eslint-disable no-multi-spaces */
         const speed = Config.movementSpeed *                // Base speed
-            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Floor multiplier
+            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
@@ -457,9 +467,11 @@ export class Player extends GameObject {
         let isInsideBuilding = false;
         for (const object of this.nearObjects) {
             if (object instanceof Building && !object.dead) {
-                if (object.scopeHitbox.collidesWith(this.hitbox)) {
-                    isInsideBuilding = true;
-                    break;
+                if (object.scopeHitbox !== undefined) {
+                    if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                        isInsideBuilding = true;
+                        break;
+                    }
                 }
             }
         }
@@ -660,6 +672,11 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead();
+        }
+
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -674,16 +691,11 @@ export class Player extends GameObject {
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(
-                new KillFeedPacket(
-                    this,
-                    new KillKillFeedMessage(
-                        this,
-                        source === this ? undefined : source,
-                        weaponUsed
-                    )
-                )
-            );
+            this.game.killFeedMessages.add(new KillFeedPacket(this, KillFeedMessageType.Kill, {
+                killedBy: source === this ? undefined : source,
+                weaponUsed,
+                kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0
+            }));
         }
 
         // Destroy physics body; reset movement and attacking variables

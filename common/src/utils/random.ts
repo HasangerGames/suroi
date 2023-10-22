@@ -1,5 +1,5 @@
 import { lerp } from "./math";
-import { v, type Vector } from "./vector";
+import { type Vector } from "./vector";
 
 /**
  * Generate a random floating-point value.
@@ -14,16 +14,24 @@ export function randomFloat(min: number, max: number): number {
  * Generate a random integer.
  * @param min The minimum value that can be generated.
  * @param max The maximum value that can be generated.
+ * @returns A random integer between `min` and `max`
  */
 export function random(min: number, max: number): number {
     return Math.floor(randomFloat(min, max + 1));
 }
 
 /**
- * @return A random boolean.
+ * @returns A random boolean.
  */
 export function randomBoolean(): boolean {
     return Math.random() < 0.5;
+}
+
+/**
+ * @returns Either `-1` or `1`
+ */
+export function randomSign(): -1 | 1 {
+    return randomBoolean() ? -1 : 1;
 }
 
 /**
@@ -49,22 +57,17 @@ export function randomRotation(): number {
 
 /**
  * Generate a random point inside of a circle.
- * @link https://stackoverflow.com/a/51727716/5905216
  * @param position The center of the circle.
  * @param radius The radius of the circle.
  * A vector representation of the randomized point.
  */
 export function randomPointInsideCircle(position: Vector, radius: number): Vector {
-    let x: number,
-        y: number;
-
-    do {
-        x = 2 * Math.random() - 1.0; // range [-1, +1)
-        y = 2 * Math.random() - 1.0;
-    } while ((x * x + y * y) >= 1); // check unit circle
-
-    // scale and translate the points
-    return v(x * radius + position.x, y * radius + position.y);
+    const angle = randomFloat(0, Math.PI * 2);
+    const length = randomFloat(0, radius);
+    return {
+        x: position.x + (Math.cos(angle) * length),
+        y: position.y + (Math.sin(angle) * length)
+    };
 }
 
 /**
@@ -94,7 +97,6 @@ export class SeededRandom {
 
     get(min = 0, max = 1): number {
         this.rng = this.rng * 16807 % 2147483647;
-        const t = this.rng / 2147483647;
-        return lerp(t, min, max);
+        return lerp(min, max, (this.rng / 2147483647));
     }
 }

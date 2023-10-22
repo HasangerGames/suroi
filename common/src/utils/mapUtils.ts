@@ -1,7 +1,7 @@
-import { type Hitbox, RectangleHitbox } from "./hitbox";
-import { clamp } from "./math";
+import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
+import { angleBetweenPoints, clamp, distanceSquared } from "./math";
 import { SeededRandom } from "./random";
-import { type Vector, v, vClone } from "./vector";
+import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
 export function jaggedRectangle(
     hitbox: RectangleHitbox,
@@ -19,15 +19,12 @@ export function jaggedRectangle(
     for (let x = topLeft.x + spacing; x < topRight.x; x += spacing) {
         points.push(v(x, topLeft.y + random.get(0, variation)));
     }
-
     for (let y = topRight.y + spacing; y < bottomRight.y; y += spacing) {
         points.push(v(topRight.x + random.get(0, variation), y));
     }
-
     for (let x = bottomRight.x - spacing; x > bottomLeft.x; x -= spacing) {
         points.push(v(x, bottomRight.y + random.get(0, variation)));
     }
-
     for (let y = bottomLeft.y - spacing; y > topLeft.y; y -= spacing) {
         points.push(v(bottomLeft.x + random.get(0, variation), y));
     }
@@ -35,10 +32,66 @@ export function jaggedRectangle(
     return points;
 }
 
-export function generateTerrain(width: number, height: number, oceanSize: number, beachSize: number, seed: number): {
-    readonly beachPoints: Vector[]
-    readonly grassPoints: Vector[]
-} {
+export interface FloorDefinition {
+    debugColor: number
+    speedMultiplier?: number
+    overlay?: boolean
+    particles?: boolean
+}
+
+export const FloorTypes: Record<string, FloorDefinition> = {
+    grass: {
+        debugColor: 0x005500
+    },
+    stone: {
+        debugColor: 0x121212
+    },
+    wood: {
+        debugColor: 0x7f5500
+    },
+    sand: {
+        debugColor: 0xff5500
+    },
+    metal: {
+        debugColor: 0x808080
+    },
+    water: {
+        debugColor: 0x0055ff,
+        speedMultiplier: 0.7,
+        overlay: true,
+        particles: true
+    }
+};
+
+export class River {
+    readonly width: number;
+    readonly bankWidth: number;
+    readonly points: Vector[];
+
+    constructor(width: number, bankWidth: number, points: Vector[]) {
+        this.width = width;
+        this.bankWidth = bankWidth;
+        this.points = points;
+    }
+}
+
+export function generateTerrain(
+    width: number,
+    height: number,
+    oceanSize: number,
+    beachSize: number,
+    seed: number,
+    rivers: River[]
+): {
+        readonly beach: PolygonHitbox
+        readonly grass: PolygonHitbox
+        readonly rivers: Array<{
+            readonly water: PolygonHitbox
+            readonly bank: PolygonHitbox
+        }>
+        readonly riverSpawnHitboxes: PolygonHitbox[]
+    } {
+    // generate beach and grass
     const beachPadding = oceanSize + beachSize;
 
     const random = new SeededRandom(seed);
@@ -56,45 +109,154 @@ export function generateTerrain(width: number, height: number, oceanSize: number
         v(width - beachPadding, height - beachPadding)
     );
 
-    const beachPoints = jaggedRectangle(beachHitbox, spacing, variation, random);
-    const grassPoints = jaggedRectangle(grassHitbox, spacing, variation, random);
+    const beach = new PolygonHitbox(...jaggedRectangle(beachHitbox, spacing, variation, random));
+    const grass = new PolygonHitbox(...jaggedRectangle(grassHitbox, spacing, variation, random));
+
+    const generatedRivers: ReturnType<typeof generateTerrain>["rivers"] = [];
+    const riverSpawnHitboxes: PolygonHitbox[] = [];
+
+    for (const river of rivers) {
+        // TODO Refactor this mess
+        const getRiverPolygon = (width: number): PolygonHitbox => {
+            const points: Vector[] = [];
+
+            points.push(
+                vAdd(
+                    river.points[0],
+                    vRotate(
+                        v(width + 10, 0),
+                        angleBetweenPoints(river.points[0], river.points[1]) + Math.PI / 2
+                    )
+                )
+            );
+
+            // TODO: ray cast to find an intersection position instead
+            const findClosestBeachPoint = (i: number): void => {
+                const pos = points[i];
+
+                let dist = Number.MAX_VALUE;
+                let closestPoint = v(0, 0);
+
+                for (const point of beach.points) {
+                    const newDist = distanceSquared(pos, point);
+                    if (newDist < dist) {
+                        closestPoint = point;
+                        dist = newDist;
+                    }
+                }
+
+                points[i] = closestPoint;
+            };
+            findClosestBeachPoint(0);
+            // first loop, add points from start to end
+            for (let i = 1, l = river.points.length - 1; i < l; i++) {
+                const prev = river.points[i - 1];
+                const current = river.points[i];
+                const next = river.points[i + 1];
+
+                const prevCurrent = vSub(current, prev);
+                const nextCurrent = vSub(current, next);
+
+                const prevAngle = angleBetweenPoints(v(0, 0), prevCurrent);
+                const nextAngle = angleBetweenPoints(v(0, 0), nextCurrent);
+
+                const angleToDivide = Math.abs(prevAngle - nextAngle);
+                const angle = angleToDivide / 2 + (
+                    prevAngle > nextAngle // convex check
+                        ? angleBetweenPoints(current, next)
+                        : angleBetweenPoints(prev, current)
+                );
+
+                points.push(
+                    vAdd(
+                        current,
+                        vRotate(
+                            v(width, 0),
+                            angle
+                        )
+                    )
+                );
+            }
+
+            points.push(
+                vAdd(
+                    river.points[river.points.length - 1],
+                    vRotate(
+                        v(width + 10, 0),
+                        angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) + Math.PI / 2
+                    )
+                )
+            );
+
+            points.push(
+                vAdd(
+                    river.points[river.points.length - 1],
+                    vRotate(
+                        v(width + 10, 0),
+                        angleBetweenPoints(river.points[river.points.length - 2], river.points[river.points.length - 1]) - Math.PI / 2
+                    )
+                )
+            );
+            findClosestBeachPoint(points.length - 2);
+            findClosestBeachPoint(points.length - 1);
+            // second loop, same thing but reverse and with inverted point
+            for (let l = river.points.length, i = l - 2; i > 0; i--) {
+                const prev = river.points[i - 1];
+                const current = river.points[i];
+                const next = river.points[i + 1];
+
+                const prevCurrent = vSub(prev, current);
+                const nextCurrent = vSub(next, current);
+
+                const prevAngle = angleBetweenPoints(v(0, 0), prevCurrent);
+                const nextAngle = angleBetweenPoints(v(0, 0), nextCurrent);
+
+                const angleToDivide = Math.abs(prevAngle - nextAngle);
+                const angle = angleToDivide / 2 + (
+                    prevAngle > nextAngle // convex check
+                        ? angleBetweenPoints(current, next)
+                        : angleBetweenPoints(prev, current)
+                );
+
+                points.push(
+                    vSub(
+                        current,
+                        vRotate(
+                            v(width, 0),
+                            angle
+                        )
+                    )
+                );
+            }
+
+            points.push(
+                vAdd(
+                    river.points[0],
+                    vRotate(
+                        v(width + 10, 0),
+                        angleBetweenPoints(river.points[0], river.points[1]) - Math.PI / 2
+                    )
+                )
+            );
+            findClosestBeachPoint(points.length - 1);
+
+            return new PolygonHitbox(...points);
+        };
+
+        generatedRivers.push({
+            water: getRiverPolygon(river.width / 2),
+            bank: getRiverPolygon(river.width / 2 + river.bankWidth)
+        });
+        riverSpawnHitboxes.push(getRiverPolygon(river.width / 2 + river.bankWidth * 2));
+    }
 
     return {
-        beachPoints,
-        grassPoints
+        beach,
+        grass,
+        rivers: generatedRivers,
+        riverSpawnHitboxes
     };
 }
-
-export interface FloorDefinition {
-    readonly debugColor: number
-    readonly speedMultiplier?: number
-    readonly overlay?: boolean
-    readonly particles?: boolean
-}
-
-export const FloorTypes: Record<string, FloorDefinition> = {
-    grass: {
-        debugColor: 0x005500
-    },
-    stone: {
-        debugColor: 0x121212
-    },
-    wood: {
-        debugColor: 0x7f5500
-    },
-    metal: {
-        debugColor: 0x808080
-    },
-    sand: {
-        debugColor: 0xff5500
-    },
-    water: {
-        debugColor: 0x0055ff,
-        speedMultiplier: 0.8,
-        overlay: true,
-        particles: true
-    }
-};
 
 // a grid used to store floor types
 export class TerrainGrid {
@@ -166,7 +328,6 @@ export class TerrainGrid {
                 }
             }
         }
-
         return floorType;
     }
 

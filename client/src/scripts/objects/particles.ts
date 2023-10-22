@@ -40,7 +40,7 @@ export class ParticleManager {
     spawnParticle(options: ParticleOptions): Particle {
         const particle = new Particle(options);
         this.particles.add(particle);
-        this.game.camera.container.addChild(particle.image);
+        this.game.camera.addObject(particle.image);
         return particle;
     }
 

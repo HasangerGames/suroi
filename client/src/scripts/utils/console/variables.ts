@@ -226,6 +226,7 @@ export interface CVarTypeMapping {
     readonly cv_map_transparency: ConVar<number>
     readonly cv_draw_hud: ConVar<boolean>
     readonly cv_rules_acknowledged: ConVar<boolean>
+    readonly cv_hide_rules_button: ConVar<boolean>
     readonly cv_console_width: ConVar<number>
     readonly cv_console_height: ConVar<number>
     readonly cv_console_left: ConVar<number>

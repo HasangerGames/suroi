@@ -1,4 +1,4 @@
-import { type Vector } from "../../common/src/utils/vector";
+import { v, type Vector } from "../../common/src/utils/vector";
 
 export enum SpawnMode {
     Random,
@@ -37,7 +37,8 @@ export const Config = {
         katie: { password: "katie" },
         eipi: { password: "eipi" },
         "123op": { password: "123op" },
-        radians: { password: "radians" }
+        radians: { password: "radians" },
+        limenade: { password: "limenade" }
     }
 } satisfies ConfigType as ConfigType;
 

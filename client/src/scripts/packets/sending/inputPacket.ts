@@ -10,6 +10,8 @@ export class InputPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
+        let dirtyInputs = false;
+
         const player = this.playerManager;
         stream.writeBoolean(player.movement.up);
         stream.writeBoolean(player.movement.down);
@@ -22,6 +24,11 @@ export class InputPacket extends SendingPacket {
         }
 
         stream.writeBoolean(player.attacking);
+        if (player.resetAttacking) {
+            player.attacking = false;
+            player.resetAttacking = false;
+            dirtyInputs = true;
+        }
         stream.writeBoolean(player.turning);
         if (player.turning) {
             stream.writeRotation(player.rotation, 16);
@@ -48,6 +55,6 @@ export class InputPacket extends SendingPacket {
             }
         }
         player.action = InputActions.None;
-        player.dirty.inputs = false;
+        player.dirty.inputs = dirtyInputs;
     }
 }

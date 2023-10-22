@@ -6,6 +6,7 @@ import { defaultBinds } from "./console/defaultClientCVars";
 import { gameConsole, keybinds } from "./console/gameConsole";
 import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { consoleVariables } from "./console/variables";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
 function fireAllEventsAtKey(input: string, down: boolean): number {
     const actions = keybinds.getActionsBoundToInput(input) ?? [];
@@ -159,34 +160,64 @@ export function setupInputs(game: Game): void {
             color: `rgba(255, 255, 255, ${transparency})`
         });
 
-        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-            game.playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-            game.playerManager.movement.moving = true;
-            game.playerManager.dirty.inputs = true;
-        });
-
-        leftJoyStick.on("end", () => {
-            game.playerManager.movement.moving = false;
-            game.playerManager.dirty.inputs = true;
-        });
-
         const rightJoyStick = nipplejs.create({
             zone: $("#right-joystick-container")[0],
             size,
             color: `rgba(255, 255, 255, ${transparency})`
         });
 
-        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
-            game.playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-                game.activePlayer.container.rotation = game.playerManager.rotation;
+        let rightJoyStickUsed = false;
+        let shootOnRelease = false;
+
+        const playerManager = game.playerManager;
+
+        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
+            if (!rightJoyStickUsed && !shootOnRelease) {
+                playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
+                    game.activePlayer.container.rotation = playerManager.rotation;
+                }
             }
-            game.playerManager.turning = true;
-            game.playerManager.attacking = data.distance > size / 3;
+
+            playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+            playerManager.movement.moving = true;
+        });
+
+        leftJoyStick.on("end", () => {
+            playerManager.movement.moving = false;
+        });
+
+        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
+            rightJoyStickUsed = true;
+            playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
+            const activePlayer = game.activePlayer;
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && activePlayer) {
+                game.activePlayer.container.rotation = playerManager.rotation;
+            }
+            playerManager.turning = true;
+
+            if (!activePlayer) return;
+
+            const def = activePlayer.activeItem;
+
+            if (def.itemType === ItemType.Gun) {
+                activePlayer.images.aimTrail.alpha = 1;
+            }
+
+            const attacking = data.distance > consoleVariables.get.builtIn("mb_joystick_size").value / 3;
+            if (def.itemType === ItemType.Gun && def.shootOnRelease) {
+                shootOnRelease = true;
+            } else {
+                playerManager.attacking = attacking;
+            }
         });
 
         rightJoyStick.on("end", () => {
-            game.playerManager.attacking = false;
+            rightJoyStickUsed = false;
+            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+            playerManager.attacking = shootOnRelease;
+            playerManager.resetAttacking = true;
+            shootOnRelease = false;
         });
     }
 

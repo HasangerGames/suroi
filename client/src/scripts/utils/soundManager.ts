@@ -1,9 +1,9 @@
-import { Howl } from "howler";
+import { Howl, type HowlCallback, type HowlErrorCallback } from "howler";
 import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
-import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { clamp } from "../../../../common/src/utils/math";
+import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { consoleVariables } from "./console/variables";
 
@@ -23,7 +23,7 @@ export class SoundManager {
         this.sounds[name] = new Howl({ src: `./${path}.mp3` }).load();
     }
 
-    play(name: string, position?: Vector, fallOff = 1, maxRange = 256): Sound {
+    play(name: string, position?: Vector, fallOff = 1, maxRange = 256, onend?: HowlCallback | HowlErrorCallback): Sound {
         const sound = this.sounds[name];
         let id = -1;
 
@@ -40,6 +40,7 @@ export class SoundManager {
                 id = sound.play();
                 sound.volume(volume, id);
                 sound.stereo(stereoNorm, id);
+                if (onend) sound.on("end", onend, id);
             }
         } else {
             console.warn(`Sound with name '${name}' not found`);
@@ -83,6 +84,18 @@ export function loadSounds(soundManager: SoundManager): void {
         [
             "door_close",
             "audio/sfx/door_close"
+        ],
+        [
+            "vault_door_open",
+            "audio/sfx/vault_door_open"
+        ],
+        [
+            "generator_starting",
+            "audio/sfx/generator_starting"
+        ],
+        [
+            "generator_running",
+            "audio/sfx/generator_running"
         ],
         [
             "ceiling_collapse",

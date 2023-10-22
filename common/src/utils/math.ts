@@ -151,6 +151,17 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
     return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);
 }
 
+export function rectPolyCollision(min: Vector, max: Vector, poly: Vector[]): boolean {
+    for (let i = 0; i < poly.length; i++) {
+        const a = poly[i];
+        const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
+        if (lineIntersectsRect2(a, b, min, max)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Conform a number to specified bounds
  * @param a The number to conform
@@ -443,6 +454,63 @@ export function lineIntersectsRect(s0: Vector, s1: Vector, min: Vector, max: Vec
     };
 }
 
+/**
+ * Checks if a line intersects a rectangle
+ * @param s0 The start of the line
+ * @param s1 The end of the line
+ * @param min The min Vector of the rectangle
+ * @param max The max Vector of the rectangle
+ * @return true if the line intersects, false otherwise
+ */
+export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Vector): boolean {
+    let tmin = 0;
+    let tmax = Number.MAX_VALUE;
+    const eps = 0.00001;
+    const r = s0;
+    let d = vSub(s1, s0);
+    const dist = vLength(d);
+    d = dist > eps ? vDiv(d, dist) : v(1.0, 0.0);
+
+    let absDx = Math.abs(d.x);
+    let absDy = Math.abs(d.y);
+
+    if (absDx < eps) {
+        d.x = eps * 2.0;
+        absDx = d.x;
+    }
+
+    if (absDy < eps) {
+        d.y = eps * 2.0;
+        absDy = d.y;
+    }
+
+    if (absDx > eps) {
+        const tx1 = (min.x - r.x) / d.x;
+        const tx2 = (max.x - r.x) / d.x;
+        tmin = Math.max(tmin, Math.min(tx1, tx2));
+        tmax = Math.min(tmax, Math.max(tx1, tx2));
+        if (tmin > tmax) {
+            return false;
+        }
+    }
+
+    if (absDy > eps) {
+        const ty1 = (min.y - r.y) / d.y;
+        const ty2 = (max.y - r.y) / d.y;
+        tmin = Math.max(tmin, Math.min(ty1, ty2));
+        tmax = Math.min(tmax, Math.max(ty1, ty2));
+        if (tmin > tmax) {
+            return false;
+        }
+    }
+
+    if (tmin > dist) {
+        return false;
+    }
+
+    return true;
+}
+
 export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
 
 export function circleCircleIntersection(pos0: Vector, rad0: number, pos1: Vector, rad1: number): CollisionResponse {
@@ -495,8 +563,8 @@ export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, ra
 }
 
 export function calculateDoorHitboxes<
-// tf are you talking about
-// eslint-disable-next-line space-before-function-paren
+    // tf are you talking about
+    // eslint-disable-next-line space-before-function-paren
     U extends (ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door })["operationStyle"]
 >(
     definition: ObstacleDefinition & { readonly role: ObstacleSpecialRoles.Door, readonly operationStyle?: U },

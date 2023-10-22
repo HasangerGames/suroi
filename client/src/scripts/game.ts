@@ -1,10 +1,11 @@
 import $ from "jquery";
+
 import { type Application, Container } from "pixi.js";
-import { ObjectCategory, PacketType, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
+import { ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { enablePlayButton } from "./main";
@@ -18,29 +19,29 @@ import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
 import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
+import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PingPacket } from "./packets/sending/pingPacket";
+import { type SendingPacket } from "./types/sendingPacket";
+import { type GameObject } from "./types/gameObject";
+
+import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
-import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { InputPacket } from "./packets/sending/inputPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
-import { PingPacket } from "./packets/sending/pingPacket";
+import { InputPacket } from "./packets/sending/inputPacket";
+import { getIconFromInputName } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
+import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
-import { type GameObject } from "./types/gameObject";
-import { type SendingPacket } from "./types/sendingPacket";
-import { keybinds } from "./utils/console/gameConsole";
-import { consoleVariables } from "./utils/console/variables";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { getIconFromInputName } from "./utils/inputManager";
-import { PlayerManager } from "./utils/playerManager";
-import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { consoleVariables } from "./utils/console/variables";
+import { UpdatePacket } from "./packets/receiving/updatePacket";
+import { keybinds } from "./utils/console/gameConsole";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
@@ -57,8 +58,6 @@ export class Game {
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
-
-    readonly floorHitboxes = new Map<Hitbox, string>();
 
     gameStarted = false;
     gameOver = false;
@@ -107,8 +106,6 @@ export class Game {
             }
         }, 500);
 
-        window.addEventListener("resize", this.resize.bind(this));
-
         if (!this.musicPlaying) {
             const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
 
@@ -141,12 +138,13 @@ export class Game {
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
+                $("#joysticks-containers").show();
             }
             this.sendPacket(new PingPacket(this._playerManager));
             this.sendPacket(new JoinPacket(this._playerManager));
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
-            this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
+            this.camera.addObject(this.playersContainer, this.bulletsContainer);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -217,12 +215,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) this.endGame(true);
             }
         };
     }
 
-    endGame(): void {
+    endGame(transition: boolean): void {
         clearTimeout(this._tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
@@ -233,12 +231,15 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").fadeIn();
+        $("#kill-leader-leader").text("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
+        if (transition) $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
 
         // reset stuff
+        for (const object of this.objects) object.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
@@ -277,10 +278,6 @@ export class Game {
         } catch (e) {
             console.warn("Error sending packet. Details:", e);
         }
-    }
-
-    resize(): void {
-        this.camera.resize();
     }
 
     render(): void {
@@ -331,7 +328,7 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, (type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>).definition, id);
+                        object = new Obstacle(this, type.definition as ObstacleDefinition, id);
                         break;
                     }
                     case ObjectCategory.DeathMarker: {
@@ -339,16 +336,16 @@ export class Game {
                         break;
                     }
                     case ObjectCategory.Loot: {
-                        object = new Loot(this, (type as ObjectType<ObjectCategory.Loot, LootDefinition>).definition, id);
+                        object = new Loot(this, type.definition as LootDefinition, id);
                         this.loots.add(object as Loot);
                         break;
                     }
                     case ObjectCategory.Building: {
-                        object = new Building(this, (type as ObjectType<ObjectCategory.Building, BuildingDefinition>).definition, id);
+                        object = new Building(this, type.definition as BuildingDefinition, id);
                         break;
                     }
                     case ObjectCategory.Decal: {
-                        object = new Decal(this, (type as ObjectType<ObjectCategory.Decal>).definition, id);
+                        object = new Decal(this, type.definition, id);
                         break;
                     }
                 }
@@ -444,9 +441,9 @@ export class Game {
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
-                if (object instanceof Obstacle && object.isDoor && !object.dead) {
+                if (object instanceof Obstacle && object.canInteract(player)) {
                     const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
-                    const dist = distanceSquared(object.position, player.position);
+                    const dist = distanceSquared(object.position, player.position); // fixme use of both distanceTo and distanceSquared?
                     if (dist < minDist && record?.collided) {
                         minDist = dist;
                         closestObject = object;
@@ -497,7 +494,16 @@ export class Game {
                         ) return;
 
                         let interactText = "";
-                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                        if (closestObject instanceof Obstacle) {
+                            switch (closestObject.definition.role) {
+                                case ObstacleSpecialRoles.Door:
+                                    interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                                    break;
+                                case ObstacleSpecialRoles.Activatable:
+                                    interactText += "Activate ";
+                                    break;
+                            }
+                        }
                         interactText += closestObject.definition.name;
                         if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
@@ -506,11 +512,12 @@ export class Game {
                     if (this._playerManager.isMobile) {
                         const lootDef = closestObject.definition;
 
-                        // Autoloot
-                        if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {
+                        // Auto open doors
+                        if (closestObject instanceof Obstacle && closestObject.canInteract(player) && closestObject.door?.offset === 0) {
                             this.playerManager.interact();
                         }
 
+                        // Autoloot
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             (
@@ -518,7 +525,8 @@ export class Game {
                                 (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1]))
                             )
                         ) {
-                            this._playerManager.interact();
+                            // TODO Needs testing
+                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.playerManager.interact();
                         } else if (
                             (
                                 closestObject instanceof Loot &&

@@ -4,7 +4,7 @@ import { SendingPacket } from "../../types/sendingPacket";
 import { type PlayerManager } from "../../utils/playerManager";
 
 export class SpectatePacket extends SendingPacket {
-    override readonly allocBytes = 2;
+    override readonly allocBytes = 12;
     override readonly type = PacketType.Spectate;
     readonly spectateAction: SpectateActions;
     readonly playerID?: number;

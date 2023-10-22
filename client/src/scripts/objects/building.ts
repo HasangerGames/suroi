@@ -9,6 +9,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
+
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
@@ -36,15 +37,15 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         this.container.zIndex = ZIndexes.Ground;
 
         for (const image of definition.floorImages ?? []) {
-            this.container.addChild(
-                new SuroiSprite(image.key)
-                    .setVPos(toPixiCoords(image.position))
-            );
+            const sprite = new SuroiSprite(image.key);
+            sprite.setVPos(toPixiCoords(image.position));
+            if (image.tint !== undefined) sprite.setTint(image.tint);
+            this.container.addChild(sprite);
         }
 
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = ZIndexes.BuildingsCeiling;
-        this.game.camera.container.addChild(this.ceilingContainer);
+        this.ceilingContainer.zIndex = definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
+        this.game.camera.addObject(this.ceilingContainer);
     }
 
     toggleCeiling(visible: boolean): void {
@@ -72,7 +73,7 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         if (data.dead) {
             if (!this.dead && !this.isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
-                    frames: `${definition.idString}_particle`,
+                    frames: `${this.definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: 10,
                     lifeTime: 2000,
@@ -104,6 +105,7 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
             if (this.dead && image.residue) key = image.residue;
             const sprite = new SuroiSprite(key);
             sprite.setVPos(toPixiCoords(image.position));
+            if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
         }
 
@@ -126,8 +128,21 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.clear();
-            if (this.ceilingHitbox !== undefined) {
-                drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
+
+            if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
+
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics
+            );
+
+            if (definition.scopeHitbox !== undefined) {
+                drawHitbox(
+                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.debugGraphics
+                );
             }
 
             drawHitbox(
@@ -136,11 +151,13 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
                 this.debugGraphics
             );
 
-            drawHitbox(
-                definition.scopeHitbox.transform(this.position, 1, this.orientation),
-                HITBOX_COLORS.buildingZoomCeiling,
-                this.debugGraphics
-            );
+            if (definition.scopeHitbox) {
+                drawHitbox(
+                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.debugGraphics
+                );
+            }
         }
     }
 

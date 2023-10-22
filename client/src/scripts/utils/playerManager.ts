@@ -118,6 +118,8 @@ export class PlayerManager {
         this.dirty.inputs = true;
     }
 
+    resetAttacking = false;
+
     turning = false;
 
     zoom = 48;

@@ -28,6 +28,7 @@ export interface MeleeDefinition extends ItemDefinition {
         readonly angle?: number
         readonly useAngle?: number
         readonly lootScale?: number
+        readonly separateWorldImage?: boolean
     }
     readonly fireMode?: FireMode
 }
@@ -48,10 +49,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 125,
             randomFist: true,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(75, 10),
-            useRight: v(75, -10)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(75, -10),
+            useRight: v(75, 10)
         }
     },
     {
@@ -60,25 +61,25 @@ export const Melees: MeleeDefinition[] = [
         itemType: ItemType.Melee,
         damage: 35,
         obstacleMultiplier: 1,
-        radius: 3,
-        offset: v(3, 1.2),
+        radius: 3.8,
+        offset: v(3.8, 2.2),
         cooldown: 450,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
-            left: v(45, 0),
-            right: v(55, -15),
-            useLeft: v(0, -50),
-            useRight: v(-20, -35)
+            left: v(55, -15),
+            right: v(45, 0),
+            useLeft: v(28, -15),
+            useRight: v(50, -15)
         },
         image: {
             position: v(35, 45),
-            usePosition: v(45, -45),
+            usePosition: v(115, -14),
             angle: 155,
             useAngle: 45,
-            lootScale: 0.65
+            lootScale: 0.55
         }
     },
     {
@@ -95,10 +96,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 100,
             randomFist: false,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(70, 20),
-            useRight: v(38, -35)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(70, 20)
         },
         image: {
             position: v(62, 42),
@@ -115,25 +116,53 @@ export const Melees: MeleeDefinition[] = [
         damage: 40,
         obstacleMultiplier: 2,
         piercingMultiplier: 1,
-        radius: 2.5,
-        offset: v(7.6, 0.1),
+        radius: 2.7,
+        offset: v(4.9, -1),
         cooldown: 450,
         speedMultiplier: 1,
         maxTargets: 1,
         fists: {
             animationDuration: 150,
             randomFist: false,
-            left: v(75, 38),
-            right: v(38, 28),
-            useLeft: v(90, -5),
-            useRight: v(55, 15)
+            left: v(35, -25),
+            right: v(35, 5),
+            useLeft: v(35, -15),
+            useRight: v(65, -15)
         },
         image: {
-            position: v(102, 42),
-            usePosition: v(120, -20),
-            angle: 50,
-            useAngle: 10,
+            position: v(40, 20),
+            usePosition: v(85, -25),
+            angle: 135,
+            useAngle: 45,
             lootScale: 0.6
+        }
+    },
+    {
+        idString: "gas_can",
+        name: "Gas Can",
+        itemType: ItemType.Melee,
+        damage: 22,
+        obstacleMultiplier: 1,
+        radius: 1.75,
+        offset: v(3.1, 0.5),
+        cooldown: 250,
+        speedMultiplier: 1,
+        maxTargets: 1,
+        image: {
+            position: v(54, 35),
+            usePosition: v(91, 10),
+            angle: 0,
+            useAngle: 0,
+            lootScale: 0.8,
+            separateWorldImage: true
+        },
+        fists: {
+            animationDuration: 150,
+            randomFist: false,
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(75, 10)
         }
     },
     {
@@ -152,10 +181,10 @@ export const Melees: MeleeDefinition[] = [
         fists: {
             animationDuration: 150,
             randomFist: false,
-            left: v(38, 35),
-            right: v(38, -35),
-            useLeft: v(120, 20),
-            useRight: v(38, -35)
+            left: v(38, -35),
+            right: v(38, 35),
+            useLeft: v(38, -35),
+            useRight: v(120, 20)
         },
         image: {
             position: v(102, 35),

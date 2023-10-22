@@ -1,30 +1,29 @@
 <!--suppress HtmlUnknownTarget -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="title" content="Suroi - 2D battle royale game">
+    <meta name="description"
+      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+    <meta name="keywords" content="battle royale, io game, browser game, open source">
 
-  <meta name="title" content="Suroi - 2D battle royale game">
-  <meta name="description"
-    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
-  <meta name="keywords" content="battle royale, io game, browser game, open source">
+    <meta property="og:title" content="Suroi - 2D battle royale game">
+    <meta property="og:description"
+      content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
+    <meta property="og:site_name" content="suroi.io">
+    <meta property="og:image" content="https://suroi.io/suroi/img/logos/embed_icon.png">
 
-  <meta property="og:title" content="Suroi - 2D battle royale game">
-  <meta property="og:description"
-    content="Miss surviv.io and Surviv Reloaded? Suroi is an open-source 2D battle royale game inspired by surviv.io. Work in progress.">
-  <meta property="og:site_name" content="suroi.io">
-  <meta property="og:image" content="https://suroi.io/suroi/img/logos/embed_icon.png">
+    <title>Suroi - 2D battle royale game</title>
 
-  <title>Suroi - 2D battle royale game</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="./img/logos/suroi_small.svg">
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/svg+xml" sizes="any" href="./img/logos/suroi_small.svg">
-
-  <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
-  <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
-  <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="./img/logos/suroi_16x16.png">
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="./img/logos/suroi_32x32.png">
+    <link rel="icon" type="image/x-icon" sizes="96x96" href="./img/logos/suroi_96x96.png">
 
   <link rel="manifest" href="./manifest.json" />
 </head>
@@ -36,7 +35,7 @@
       <button id="console-close"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div id="console-out"></div>
-    <textarea id="console-in" autocapitalize="false" autocomplete="off"></textarea>
+    <textarea id="console-in" autocapitalize="off" autocomplete="off"></textarea>
   </div>
   <div id="splash-ui">
     <div id="splash-logo">
@@ -44,49 +43,48 @@
     </div>
     <div id="splash-modals">
       <div id="splash-news" class="persistent-scrollbar">
-        <h2>
-          <a href="./news">
-            <i class="fa-solid fa-newspaper"></i>
-            News
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-        </h2>
-        <div id="news-posts"></div>
-      </div>
-      <div id="splash-center">
-        <div id="splash-server-message" style="display: none">
-          <span id="splash-server-message-text"></span>
+          <h2>
+            <a href="./news">
+              <i class="fa-solid fa-newspaper"></i>
+              News
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </h2>
+          <div id="news-posts"></div>
         </div>
-        <div id="splash-rotate-message" style="display: none">
-          <i class="fa-solid fa-rotate"></i> For a better experience, please rotate your device to landscape.
-        </div>
-        <div id="splash-options">
-          <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
-          <div id="server-select" class="dropdown">
-            <button id="btn-server-select">
-              <span id="server-name">-</span>
-              <span style="margin-left: auto">
-                <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
-                <span id="server-player-count">-</span>
-              </span>
-              <span style="margin-left: 5px">
-                <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-                <span id="server-ping">-</span>
-              </span>
-              <i class="fa-solid fa-caret-down"></i>
-            </button>
-            <ul class="dropdown-content" id="server-list"></ul>
+        <div id="splash-center">
+          <div id="splash-server-message" style="display: none">
+            <span id="splash-server-message-text"></span>
           </div>
-
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
-          <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
-          <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
-          <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
-          <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules">
-            <div class="pulsating-circle" style="display: none"></div>
-            <span>Rules &amp; Tutorial</span>
-          </button>
-          <!-- <button class="btn-danger btn btn-lg btn-darken close-rules" style="margin-top: 10px;margin-left: 3px; overflow: hidden;">X</button> -->
+          <div id="splash-rotate-message" style="display: none">
+            <i class="fa-solid fa-rotate"></i> For a better experience, please rotate your device to landscape.
+          </div>
+          <div id="splash-options">
+            <input type="text" name="username-input" id="username-input" placeholder="Enter a nickname" maxlength="16">
+            <div id="server-select" class="dropdown">
+              <button id="btn-server-select">
+                <span id="server-name">-</span>
+                <span style="margin-left: auto">
+                  <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                  <span id="server-player-count">-</span>
+                </span>
+                <span style="margin-left: 5px">
+                  <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+                  <span id="server-ping">-</span>
+                </span>
+                <i class="fa-solid fa-caret-down"></i>
+              </button>
+              <ul class="dropdown-content" id="server-list"></ul>
+            </div>
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-play-solo">Play Solo</button>
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-duo">Play Duo</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-primary" id="btn-play-squad">Play Squad</button> -->
+            <!-- <button class="btn btn-lg btn-darken btn-purple" id="btn-create-team">Create Team</button> -->
+            <button class="rules-close-btn btn-darken" id="rules-close-btn" style="display: none"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-rules" style="display: none">
+              <div class="pulsating-circle" style="display: none"></div>
+              <span>Rules &amp; Tutorial</span>
+            </button>
         </div>
         <div id="splash-socials">
           <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer"
@@ -149,19 +147,17 @@
             </a>
           </div>
         </div>-->
-    </div>
-    <div>
-      <div id="splash-backlinks">
-        <a href="./changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
       </div>
-      <div id="splash-settings">
-        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i
-            class="fa-solid fa-earth-americas"></i></button>
-        <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i
-            class="fa-solid fa-volume-high"></i></button>
-        <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
+      <div>
+        <div id="splash-backlinks">
+          <a href="./changelog" target="_blank" rel="noopener noreferrer">v<%=APP_VERSION%></a>
+        </div>
+        <div id="splash-settings">
+          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-language"><i class="fa-solid fa-earth-americas"></i></button>
+          <button style="display: none;" class="btn btn-darken btn-secondary" id="btn-volume"><i class="fa-solid fa-volume-high"></i></button>
+          <button class="btn btn-darken btn-secondary" id="btn-settings"><i class="fa-solid fa-gear"></i></button>
+        </div>
       </div>
-    </div>
     </div>
     <div id="game-ui">
       <button class="btn btn-lg btn-primary" id="btn-close-minimap" style="display: none"><i class="fa-solid fa-close"></i></button>
@@ -190,9 +186,17 @@
           <div id="coordinates-hud"></div>
         </div>
       </div>
-    <div class="inventory-container" id="scopes-container">
+      <div class="inventory-container" id="scopes-container">
     </div>
-    <div class="ui-leaderboard">
+
+      <div class="ui-leaderboard">
+        <div id="ui-kill-leader">
+          <div id="kill-leader-leader-container">
+            <span id="kill-leader-leader">Waiting for leader</span>
+            <i class="fa-solid fa-crown" style="margin-left: 5px; margin-right: 5px;"></i>
+            <span id="kill-leader-kills-counter">0</span>
+          </div>
+        </div>
       <div class="counter">
         <img src="./img/misc/player_icon.svg">
         <div class="counter-text" id="ui-players-alive">1</div>
@@ -298,21 +302,17 @@
       <div class="emote-bottom"></div>
       <div class="emote-left"></div>
     </div>
-    <div id="game-over-overlay" style="display: none;">
+    <div id="game-over-overlay" style="display: none">
       <div id="game-over-top-screen">
         <img id="chicken-dinner" src="img/game/emotes/chicken.svg">
         <h1 id="game-over-text" class="modal-item">You died.</h1>
-        <div id="game-over-rank-container-pc">
+        <div id="game-over-rank-container">
           <span>Rank</span>
           <span id="game-over-rank" class="modal-item"></span>
         </div>
       </div>
       <div id="game-over-screen">
         <h1 id="game-over-player-name" class="modal-item">Player</h1>
-        <div id="game-over-rank-container-mobile">
-          <span>Rank</span>
-          <span id="game-over-rank-mobile" class="modal-item"></span>
-        </div>
         <div class="modal-item" id="game-over-stats">
           <div class="stat">
             <span class="stat-name">Kills:</span>
@@ -333,7 +333,10 @@
         </div>
         <div class="modal-item">
           <button class="btn btn-lg btn-darken btn-primary" id="btn-play-again">Play Again</button>
-          <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-lg btn-darken btn-primary" id="btn-spectate">Spectate</button>
+            <button class="btn btn-lg btn-darken btn-secondary" id="btn-menu">Menu</button>
+          </div>
         </div>
       </div>
     </div>

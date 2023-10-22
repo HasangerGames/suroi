@@ -128,9 +128,9 @@ importers:
         version: 9.5.0(typescript@5.3.0-beta)(webpack@5.89.0)
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@20.8.7)(typescript@5.3.0-beta)
+        version: 10.9.1(@types/node@20.8.6)(typescript@5.3.0-beta)
       typescript:
-        specifier: ^5.3.0-beta
+        specifier: 5.3.0-beta
         version: 5.3.0-beta
       webpack:
         specifier: ^5.89.0
@@ -226,9 +226,9 @@ importers:
         version: 6.1.1(eslint@8.51.0)
       ts-node-dev:
         specifier: ^2.0.0
-        version: 2.0.0(@types/node@20.8.7)(typescript@5.3.0-beta)
+        version: 2.0.0(@types/node@20.8.6)(typescript@5.3.0-beta)
       typescript:
-        specifier: ^5.3.0-beta
+        specifier: 5.3.0-beta
         version: 5.3.0-beta
 
 packages:
@@ -2806,8 +2806,8 @@ packages:
       eslint: ^7.0.0 || ^8.0.0
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.51.0)
-      '@types/json-schema': 7.0.14
-      '@types/semver': 7.5.4
+      '@types/json-schema': 7.0.13
+      '@types/semver': 7.5.3
       '@typescript-eslint/scope-manager': 6.8.0
       '@typescript-eslint/types': 6.8.0
       '@typescript-eslint/typescript-estree': 6.8.0(typescript@5.3.0-beta)
@@ -7606,7 +7606,7 @@ packages:
       webpack: 5.89.0(webpack-cli@5.1.4)
     dev: true
 
-  /ts-node-dev@2.0.0(@types/node@20.8.7)(typescript@5.3.0-beta):
+  /ts-node-dev@2.0.0(@types/node@20.8.6)(typescript@5.3.0-beta):
     resolution: {integrity: sha512-ywMrhCfH6M75yftYvrvNarLEY+SUXtUvU8/0Z6llrHQVBx12GiFk5sStF8UdfE/yfzk9IAq7O5EEbTQsxlBI8w==}
     engines: {node: '>=0.8.0'}
     hasBin: true
@@ -7625,7 +7625,7 @@ packages:
       rimraf: 2.7.1
       source-map-support: 0.5.21
       tree-kill: 1.2.2
-      ts-node: 10.9.1(@types/node@20.8.7)(typescript@5.3.0-beta)
+      ts-node: 10.9.1(@types/node@20.8.6)(typescript@5.3.0-beta)
       tsconfig: 7.0.0
       typescript: 5.3.0-beta
     transitivePeerDependencies:
@@ -7634,7 +7634,7 @@ packages:
       - '@types/node'
     dev: true
 
-  /ts-node@10.9.1(@types/node@20.8.7)(typescript@5.3.0-beta):
+  /ts-node@10.9.1(@types/node@20.8.6)(typescript@5.3.0-beta):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:

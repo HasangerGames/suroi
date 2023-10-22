@@ -14,46 +14,38 @@ export class LootItem {
 }
 
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
-    interface TempLootItem {
-        readonly item: string
-        readonly count?: number
-        readonly isTier: boolean
+    let loot: LootItem[] = [];
+
+    const items: Array<WeightedItem[] | WeightedItem> = [];
+    const weights: number[] = [];
+    for (const item of loots) {
+        items.push(
+            item.spawnSeparately && (item.count ?? 1) > 1
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                ? new Array<WeightedItem>(item.count!).fill(item)
+                : item
+        );
+        weights.push(item.weight);
     }
 
-    const selectedItem = weightedRandom<TempLootItem>(
-        loots.map(
-            loot => "tier" in loot
-                ? {
-                    item: loot.tier,
-                    isTier: true
-                } satisfies TempLootItem
-                : {
-                    item: loot.item,
-                    count: loot.count,
-                    isTier: false
-                } satisfies TempLootItem
-        ),
-        loots.map(l => l.weight)
-    );
+    const selectedItem = weightedRandom<WeightedItem | WeightedItem[]>(items, weights);
 
-    if (selectedItem.isTier) {
-        return getLootTableLoot(LootTiers[selectedItem.item]);
-    }
+    for (const selection of [selectedItem].flat()) {
+        if ("tier" in selection) {
+            loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
+        } else {
+            const item = selection.item;
+            loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
-    const type = selectedItem.item;
+            const definition = Loots.getByIDString(item);
+            if (definition === undefined) {
+                throw new Error(`Unknown loot item: ${item}`);
+            }
 
-    if (type === "nothing") return [];
-
-    const count = selectedItem.count ?? 1;
-    const loot = [new LootItem(type, count)];
-
-    const definition = Loots.getByIDString(type);
-    if (definition === undefined) {
-        throw new Error(`Unknown loot item: ${type}`);
-    }
-
-    if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
-        loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+            if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
+                loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
+            }
+        }
     }
 
     return loot;

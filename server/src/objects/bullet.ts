@@ -43,6 +43,7 @@ export class Bullet extends BaseBullet {
         const variance = source.definition.ballistics.variance;
         super({
             ...options,
+            rotation: normalizeAngle(options.rotation),
             source: source.definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
@@ -121,12 +122,11 @@ export class Bullet extends BaseBullet {
     reflect(normal: Vector): void {
         const rotation = normalizeAngle(2 * Math.atan2(normal.y, normal.x) - this.rotation);
 
-        // move it a bit so it won't collide again with the same hitbox
-
         this.game.addBullet(
             this.sourceGun,
             this.shooter,
             {
+                // move it a bit so it won't collide again with the same hitbox
                 position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
                 rotation,
                 reflectionCount: this.reflectionCount + 1,

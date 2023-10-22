@@ -1,37 +1,41 @@
-import { type WebSocket } from "uWebSockets.js";
-import { OBJECT_ID_BITS, ObjectCategory, TICKS_PER_SECOND } from "../../common/src/constants";
-import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
-import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
-import { distanceSquared } from "../../common/src/utils/math";
-import { log } from "../../common/src/utils/misc";
-import { reifyDefinition, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
-import { v, type Vector } from "../../common/src/utils/vector";
-import { Config, SpawnMode } from "./config";
-import { Maps } from "./data/maps";
 import { Gas } from "./gas";
-import { type GunItem } from "./inventory/gunItem";
-import { Map } from "./map";
+import { Grid } from "./utils/grid";
+import { type GameObject } from "./types/gameObject";
+import { type Obstacle } from "./objects/obstacle";
 import { type Building } from "./objects/building";
-import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import { type Emote } from "./objects/emote";
+import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
 import { Loot } from "./objects/loot";
-import { type Obstacle } from "./objects/obstacle";
-import { Player } from "./objects/player";
-import { GameOverPacket } from "./packets/sending/gameOverPacket";
-import { JoinedPacket } from "./packets/sending/joinedPacket";
+import { type Emote } from "./objects/emote";
+import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
+import {
+    KILL_LEADER_MIN_KILLS,
+    KillFeedMessageType, OBJECT_ID_BITS,
+    ObjectCategory,
+    TICKS_PER_SECOND
+} from "../../common/src/constants";
+import { Maps } from "./data/maps";
+import { Config, SpawnMode } from "./config";
+import { Map } from "./map";
 import { MapPacket } from "./packets/sending/mapPacket";
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { endGame, type PlayerContainer } from "./server";
-import { type GameObject } from "./types/gameObject";
-import { JoinKillFeedMessage } from "./types/killFeedMessage";
-import { Grid } from "./utils/grid";
-import { IDAllocator } from "./utils/idAllocator";
+import { GameOverPacket } from "./packets/sending/gameOverPacket";
+import { log } from "../../common/src/utils/misc";
+import { type WebSocket } from "uWebSockets.js";
+import { ObjectType } from "../../common/src/utils/objectType";
+import { random, randomPointInsideCircle } from "../../common/src/utils/random";
+import { v, type Vector } from "../../common/src/utils/vector";
+import { distanceSquared } from "../../common/src/utils/math";
+import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { removeFrom } from "./utils/misc";
+import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
+import { type GunItem } from "./inventory/gunItem";
+import { IDAllocator } from "./utils/idAllocator";
+import { type ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
+import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 
 export class Game {
     readonly _id: number;
@@ -97,6 +101,8 @@ export class Game {
     tickTimes: number[] = [];
 
     tickDelta = 1000 / TICKS_PER_SECOND;
+
+    vaultDoor?: Obstacle; //fixme variable in Game class used for a specific object
 
     constructor(id: number) {
         this._id = id;
@@ -262,6 +268,37 @@ export class Game {
         }, delay);
     }
 
+    private _killLeader: Player | undefined;
+    get killLeader(): Player | undefined { return this._killLeader; }
+
+    updateKillLeader(player: Player): void {
+        const oldKillLeader: Player | undefined = this._killLeader;
+
+        if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+            this._killLeader = player;
+
+            if (oldKillLeader !== this._killLeader) {
+                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+            }
+        }
+
+        if (player === oldKillLeader && this._killLeader !== undefined) {
+            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderUpdated));
+        }
+    }
+
+    killLeaderDead(): void {
+        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderDead));
+        let newKillLeader: Player | undefined;
+        for (const player of this.livingPlayers) {
+            if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+                newKillLeader = player;
+            }
+        }
+        this._killLeader = newKillLeader;
+        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+    }
+
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = v(0, 0);
         switch (Config.spawn.mode) {
@@ -299,7 +336,6 @@ export class Game {
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
-        this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, true)));
 
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
@@ -320,9 +356,6 @@ export class Game {
     removePlayer(player: Player): void {
         player.disconnected = true;
         this.aliveCountDirty = true;
-        if (!player.dead) {
-            this.killFeedMessages.add(new KillFeedPacket(player, new JoinKillFeedMessage(player, false)));
-        }
         this.connectedPlayers.delete(player);
         // TODO Make it possible to spectate disconnected players
         // (currently not possible because update packets aren't sent to disconnected players)

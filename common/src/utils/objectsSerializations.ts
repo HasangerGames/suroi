@@ -1,19 +1,14 @@
-import {
-    ANIMATION_TYPE_BITS,
-    ObjectCategory,
-    PLAYER_ACTIONS_BITS,
-    PlayerActions,
-    type AnimationType
-} from "../constants";
-import { HealingItems, type HealingItemDefinition } from "../definitions/healingItems";
-import { Loots, type LootDefinition } from "../definitions/loots";
-import { type ObstacleDefinition } from "../definitions/obstacles";
-import { Skins, type SkinDefinition } from "../definitions/skins";
+import { ANIMATION_TYPE_BITS, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions, type AnimationType } from "../constants";
+import { type HealingItemDefinition, HealingItems } from "../definitions/healingItems";
+import { type LootDefinition, Loots } from "../definitions/loots";
+import { type ObstacleDefinition, RotationMode } from "../definitions/obstacles";
+import { type SkinDefinition, Skins } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { type ObjectType } from "./objectType";
 import { type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
+import { type DecalDefinition } from "../definitions/decals";
 
 export interface ObjectsNetData {
     //
@@ -50,6 +45,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Obstacle]: {
         scale: number
         dead: boolean
+        activated?: boolean
         definition: ObstacleDefinition
         door?: {
             offset: number
@@ -101,6 +97,7 @@ export interface ObjectsNetData {
     [ObjectCategory.Decal]: {
         position: Vector
         rotation: number
+        definition: DecalDefinition
     }
     //
     // Explosion Data
@@ -193,6 +190,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeBoolean(data.dead);
             if (data.definition.role === ObstacleSpecialRoles.Door && data.door) {
                 stream.writeBits(data.door.offset, 2);
+            } else if (data.definition.role === ObstacleSpecialRoles.Activatable) {
+                stream.writeBoolean(data.activated ?? false);
             }
         },
         serializeFull(stream, data): void {
@@ -217,6 +216,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 data.door = {
                     offset: stream.readBits(2)
                 };
+            } else if (definition.role === ObstacleSpecialRoles.Activatable) {
+                data.activated = stream.readBoolean();
             }
 
             return data;
@@ -335,15 +336,16 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeRotation(data.rotation, 8);
+            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Limited);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
         },
-        deserializePartial(stream) {
+        deserializePartial(stream, type) {
             return {
                 position: stream.readPosition(),
-                rotation: stream.readRotation(8)
+                rotation: stream.readObstacleRotation((type.definition as DecalDefinition).rotationMode ?? RotationMode.Limited).rotation,
+                definition: type.definition as DecalDefinition
             };
         },
         deserializeFull(stream, type) {

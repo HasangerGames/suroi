@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="72.669273mm"
+   height="14.265063mm"
+   viewBox="0 0 72.669273 14.265063"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="ship_vault_door.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="3.1037318"
+     inkscape:cx="74.748728"
+     inkscape:cy="-61.861016"
+     inkscape:window-width="2560"
+     inkscape:window-height="1372"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-126.31634,-248.60799)">
+    <g
+       id="g51563-5"
+       transform="translate(-5757.6952,-368.77113)">
+      <rect
+         style="fill:#666666;fill-opacity:1;stroke:#323232;stroke-width:2.11357;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+         id="rect1-6-0-7-8-6-2-3-3-4"
+         width="70.555702"
+         height="8.6189423"
+         x="-5955.624"
+         y="-630.5874"
+         transform="scale(-1)" />
+      <rect
+         style="fill:#323232;fill-opacity:1;stroke-width:3.2909;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stop-color:#000000"
+         id="rect50128-7"
+         width="69.573601"
+         height="2.7770975"
+         x="5885.5459"
+         y="624.84692" />
+      <rect
+         style="fill:#666666;fill-opacity:1;stroke:#323232;stroke-width:1.93636;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="rect52223-6"
+         width="23.57198"
+         height="2.683686"
+         x="5886.6255"
+         y="619.0155" />
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#323232;stroke-width:1.75856;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="rect54647-7"
+         width="12.236906"
+         height="3.4970584"
+         x="5936.459"
+         y="618.58624" />
+      <circle
+         style="fill:#666666;fill-opacity:1;stroke:#323232;stroke-width:1.90046;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="path55506-0"
+         cx="5887.5928"
+         cy="620.16962"
+         r="1.8402628" />
+      <circle
+         style="fill:#666666;fill-opacity:1;stroke:#323232;stroke-width:1.90046;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+         id="path55506-5-9"
+         cx="5892.1357"
+         cy="620.16974"
+         r="1.8402628" />
+    </g>
+  </g>
+</svg>

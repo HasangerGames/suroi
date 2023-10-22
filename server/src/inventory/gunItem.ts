@@ -2,8 +2,9 @@ import { clearTimeout } from "timers";
 import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { degreesToRadians, distanceSquared, normalizeAngle } from "../../../common/src/utils/math";
-import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
+import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
@@ -97,6 +98,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             owner.position,
             vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
         );
+        const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
 
         for (
             const object of
@@ -109,57 +111,64 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 object.definition.noCollisions === true
             ) continue;
 
-            const intersection = object.hitbox.intersectsLine(owner.position, position);
-            if (intersection === null) continue;
+            for (
+                const object of
+                this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+            ) {
+                if (
+                    object.dead ||
+                    object.hitbox === undefined ||
+                    !(object instanceof Obstacle) ||
+                    object.definition.noCollisions === true
+                ) continue;
 
-            if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
-                position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
-            }
-        }
+                const intersection = object.hitbox.intersectsLine(owner.position, position);
+                if (intersection === null) continue;
 
-        const limit = definition.bulletCount ?? 1;
-
-        for (let i = 0; i < limit; i++) {
-            this.owner.game.addBullet(
-                this,
-                this.owner,
-                {
-                    position: jitter
-                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
-                        : position,
-
-                    rotation: normalizeAngle(
-                        owner.rotation + Math.PI / 2 +
-                        (
-                            definition.consistentPatterning === true
-                                ? 2 * (i / limit - 0.5)
-                                : randomFloat(-1, 1)
-                        ) * spread
-                    )
+                if (distanceSquared(this.owner.position, position) > distanceSquared(this.owner.position, intersection.point)) {
+                    position = vSub(intersection.point, vRotate(v(0.2 + jitter, 0), owner.rotation));
                 }
-            );
-        }
+            }
 
-        owner.recoil.active = true;
-        owner.recoil.time = owner.game.now + definition.recoilDuration;
-        owner.recoil.multiplier = definition.recoilMultiplier;
+            const limit = definition.bulletCount ?? 1;
 
-        if (!definition.infiniteAmmo) {
-            --this.ammo;
-        }
+            for (let i = 0; i < limit; i++) {
+                this.owner.game.addBullet(
+                    this,
+                    this.owner,
+                    {
+                        position: jitter
+                            ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
+                            : position,
+                        rotation: owner.rotation + Math.PI / 2 +
+                            (definition.consistentPatterning === true
+                                ? 2 * (i / limit - 0.5)
+                                : randomFloat(-1, 1)) * spread
+                    }
+                );
+            }
 
-        if (this.ammo <= 0) {
-            this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
-            this._shots = 0;
-            return;
-        }
+            owner.recoil.active = true;
+            owner.recoil.time = owner.game.now + definition.recoilDuration;
+            owner.recoil.multiplier = definition.recoilMultiplier;
 
-        if (
-            (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
-            this.owner.activeItem === this
-        ) {
-            clearTimeout(this._autoFireTimeoutID);
-            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
+            if (!definition.infiniteAmmo) {
+                --this.ammo;
+            }
+
+            if (this.ammo <= 0) {
+                this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
+                this._shots = 0;
+                return;
+            }
+
+            if (
+                (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
+                this.owner.activeItem === this
+            ) {
+                clearTimeout(this._autoFireTimeoutID);
+                this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
+            }
         }
     }
 

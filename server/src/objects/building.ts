@@ -18,8 +18,8 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
     readonly definition: Def;
 
+    readonly scopeHitbox?: Hitbox;
     readonly spawnHitbox: Hitbox;
-    readonly scopeHitbox: Hitbox;
     readonly hitbox: Hitbox;
 
     private _wallsToDestroy?: number;
@@ -36,7 +36,10 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         this._wallsToDestroy = definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
         this.hitbox = this.spawnHitbox;
-        this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
+
+        if (this.definition.scopeHitbox !== undefined) {
+            this.scopeHitbox = this.definition.scopeHitbox.transform(this.position, 1, orientation);
+        }
     }
 
     override damage(): void {

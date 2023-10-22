@@ -1,7 +1,8 @@
 import { ObjectCategory } from "../../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { RotationMode, type ObstacleDefinition } from "../../../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../../common/src/typings";
+import { River } from "../../../../../common/src/utils/mapUtils";
 import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../../../common/src/utils/vector";
@@ -13,6 +14,9 @@ export class MapPacket extends ReceivingPacket {
     height!: number;
     oceanSize!: number;
     beachSize!: number;
+
+    private _rivers!: River[];
+    get rivers(): River[] { return this._rivers; }
 
     readonly obstacles: Array<{
         readonly type: ObstacleDefinition
@@ -40,6 +44,15 @@ export class MapPacket extends ReceivingPacket {
         this.height = stream.readUint16();
         this.oceanSize = stream.readUint16();
         this.beachSize = stream.readUint16();
+
+        this._rivers = Array.from(
+            { length: stream.readBits(4) },
+            () => new River(
+                stream.readUint8(),
+                stream.readUint8(),
+                Array.from({ length: stream.readUint8() }, () => stream.readPosition())
+            )
+        );
 
         const numObstacles = stream.readBits(11);
 

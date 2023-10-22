@@ -33,7 +33,9 @@ export enum AnimationType {
 
 export enum KillFeedMessageType {
     Kill,
-    Join
+    KillLeaderAssigned,
+    KillLeaderDead,
+    KillLeaderUpdated
 }
 
 export enum GasState {
@@ -105,10 +107,12 @@ export const PLAYER_RADIUS = 2.25;
 
 export const DEFAULT_USERNAME = "Player";
 
+export const KILL_LEADER_MIN_KILLS = 3;
+
 export enum ZIndexes {
     Ground,
-    DeadObstacles,
     Decals,
+    DeadObstacles,
     DeathMarkers,
     /**
      * This is the default layer for obstacles

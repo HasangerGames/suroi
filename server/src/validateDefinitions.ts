@@ -22,7 +22,7 @@ import { ObstacleSpecialRoles, type BulletDefinition, type ItemDefinition, type 
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
-import { LootTables, LootTiers, type WeightedItem, type WeightedLoot, type WeightedTier } from "./data/lootTables";
+import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
@@ -649,26 +649,45 @@ logger.indent("Validating loot table references", () => {
                     const errorPath2 = tester.createPath(errorPath, "drop declaration");
 
                     for (const entry of lootData.loot) {
-                        if ("item" in entry) {
-                            tester.assertNoPointlessValue({
+                        tester.assertNoPointlessValue({
+                            obj: entry,
+                            field: "count",
+                            defaultValue: 1,
+                            baseErrorPath: errorPath2
+                        });
+
+                        if (entry.count !== undefined) {
+                            tester.assertIntAndInBounds({
                                 obj: entry,
                                 field: "count",
-                                defaultValue: 1,
-                                baseErrorPath: errorPath
+                                min: 1,
+                                max: Infinity,
+                                includeMin: true,
+                                includeMax: true,
+                                baseErrorPath: errorPath2
                             });
+                        }
 
-                            if (entry.count !== undefined) {
-                                tester.assertIntAndInBounds({
-                                    obj: entry,
-                                    field: "count",
-                                    min: 0,
-                                    max: Infinity,
-                                    includeMin: true,
-                                    includeMax: true,
-                                    baseErrorPath: errorPath2
-                                });
-                            }
+                        tester.assertNoPointlessValue({
+                            obj: entry,
+                            field: "spawnSeparately",
+                            defaultValue: false,
+                            baseErrorPath: errorPath2
+                        });
 
+                        tester.assertWarn(
+                            entry.spawnSeparately !== true || entry.count !== 1,
+                            "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+                            errorPath2
+                        );
+
+                        tester.assertIsPositiveFiniteReal({
+                            obj: entry,
+                            field: "weight",
+                            baseErrorPath: errorPath2
+                        });
+
+                        if ("item" in entry) {
                             tester.assertReferenceExistsArray({
                                 obj: entry,
                                 field: "item",
@@ -685,32 +704,8 @@ logger.indent("Validating loot table references", () => {
                                 collectionName: "LootTiers"
                             });
                         }
-
-                        tester.assertIsPositiveFiniteReal({
-                            obj: entry,
-                            field: "weight",
-                            baseErrorPath: errorPath2
-                        });
                     }
                 });
-
-                const tiers = lootData.loot.filter((v => "tier" in v) as (v: WeightedItem) => v is WeightedTier).map(v => v.tier);
-                const items = lootData.loot.filter((v => "item" in v) as (v: WeightedItem) => v is WeightedLoot).map(v => v.item);
-
-                const { foundDupes: hasDupedTiers, dupes: dupedTiers } = findDupes(tiers);
-                const { foundDupes: hasDupedItems, dupes: dupedItems } = findDupes(items);
-
-                tester.assertWarn(
-                    !hasDupedTiers,
-                    `Loot table '${name}' has a drop declaration with duplicate tiers: ${Object.entries(dupedTiers).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
-
-                tester.assertWarn(
-                    !hasDupedItems,
-                    `Loot table '${name}' has a drop declaration with duplicate items: ${Object.entries(dupedItems).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
             });
         }
     });
@@ -721,36 +716,62 @@ logger.indent("Validating loot table references", () => {
                 const errorPath = tester.createPath("loot table references", "loot tiers", `tier '${name}'`);
 
                 for (const entry of lootTierData) {
+                    tester.assertNoPointlessValue({
+                        obj: entry,
+                        field: "count",
+                        defaultValue: 1,
+                        baseErrorPath: errorPath
+                    });
+
                     if (entry.count !== undefined) {
-                        tester.assertIsNaturalNumber({
+                        tester.assertIntAndInBounds({
                             obj: entry,
                             field: "count",
+                            min: 1,
+                            max: Infinity,
+                            includeMin: true,
+                            includeMax: true,
                             baseErrorPath: errorPath
                         });
                     }
 
-                    tester.assertReferenceExistsArray({
+                    tester.assertNoPointlessValue({
                         obj: entry,
-                        field: "item",
-                        baseErrorPath: errorPath,
-                        collection: Loots.definitions,
-                        collectionName: "Loots"
+                        field: "spawnSeparately",
+                        defaultValue: false,
+                        baseErrorPath: errorPath
                     });
+
+                    tester.assertWarn(
+                        entry.spawnSeparately !== true || entry.count !== 1,
+                        "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+                        errorPath
+                    );
 
                     tester.assertIsPositiveFiniteReal({
                         obj: entry,
                         field: "weight",
                         baseErrorPath: errorPath
                     });
+
+                    if ("item" in entry) {
+                        tester.assertReferenceExistsArray({
+                            obj: entry,
+                            field: "item",
+                            baseErrorPath: errorPath,
+                            collection: Loots.definitions,
+                            collectionName: "Loots"
+                        });
+                    } else {
+                        tester.assertReferenceExistsObject({
+                            obj: entry,
+                            field: "tier",
+                            baseErrorPath: errorPath,
+                            collection: LootTiers,
+                            collectionName: "LootTiers"
+                        });
+                    }
                 }
-
-                const { foundDupes: hasDupedItems, dupes: dupedItems } = findDupes(lootTierData.map(v => v.item));
-
-                tester.assertWarn(
-                    !hasDupedItems,
-                    `Loot tier '${name}' has a declaration with duplicate items: ${Object.entries(dupedItems).map(([k, v]) => `'${k}' => ${v} times`).join("; ")}`,
-                    errorPath
-                );
             });
         }
     });
@@ -1249,7 +1270,7 @@ logger.indent("Validating building definitions", () => {
 
             validators.hitbox(errorPath, building.spawnHitbox);
             if (building.ceilingHitbox) validators.hitbox(errorPath, building.ceilingHitbox);
-            validators.hitbox(errorPath, building.scopeHitbox);
+            if (building.scopeHitbox) validators.hitbox(errorPath, building.scopeHitbox);
 
             tester.assertNoPointlessValue({
                 obj: building,
@@ -1263,6 +1284,7 @@ logger.indent("Validating building definitions", () => {
                 logger.indent("Validating custom obstacles", () => {
                     const errorPath2 = tester.createPath(errorPath, "custom obstacles");
 
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                     for (const obstacle of building.obstacles!) {
                         logger.indent(`Validating '${obstacle.idString}'`, () => {
                             tester.assertReferenceExists({
@@ -1400,38 +1422,12 @@ logger.indent("Validating building definitions", () => {
                 });
             }
 
-            tester.assertNoPointlessValue({
-                obj: building,
-                field: "subBuildings",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: errorPath
-            });
-
-            if (building.subBuildings?.length) {
-                const errorPath2 = tester.createPath(errorPath, "sub-buildings");
-
-                for (const subbuilding of building.subBuildings) {
-                    logger.indent(`Validating sub-building '${subbuilding.idString}'`, () => {
-                        tester.assertReferenceExists({
-                            obj: subbuilding,
-                            field: "idString",
-                            collection: Buildings,
-                            baseErrorPath: errorPath2
-                        });
-
-                        validators.vector(errorPath2, subbuilding.position);
-                    });
+            if (building.ceilingImages?.length) {
+                const errorPath2 = tester.createPath(errorPath, "ceiling images");
+                for (const image of building.ceilingImages) {
+                    validators.vector(errorPath2, image.position);
                 }
             }
-
-            tester.assertNoPointlessValue({
-                obj: building,
-                field: "floorImages",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: errorPath
-            });
 
             if (building.floorImages?.length) {
                 const errorPath2 = tester.createPath(errorPath, "floor images");

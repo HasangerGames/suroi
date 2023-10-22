@@ -57,7 +57,7 @@
     top: 10px;
     left: 10px;
 
-    &>div {
+    & > div {
         margin-bottom: 10px;
     }
 
@@ -65,7 +65,7 @@
         top: 5px;
         left: 5px;
 
-        &>div {
+        & > div {
             margin-bottom: 5px;
         }
     }
@@ -94,6 +94,7 @@
     align-items: center;
     background-color: $transparent_bg;
     font-size: 17px;
+    @include text-shadow;
 
     &.advancing {
         animation: advancing 2s linear infinite;
@@ -121,6 +122,7 @@
     #gas-timer-image {
         position: relative;
         bottom: 1px;
+        @include drop-shadow;
 
         @media screen and (max-width: $screen_large) {
             width: 14px;
@@ -144,6 +146,40 @@
     }
 }
 
+#ui-kill-leader {
+    display: flex;
+    position: absolute;
+    top: 15px;
+    right: 185px;
+    margin-left: auto;
+    width: max-content;
+    background: $transparent_bg;
+    border-radius: 8px;
+    padding: 8px 12px 8px 12px;
+    gap: 10px;
+
+    @media screen and (max-width: $screen_large) {
+        display: none;
+        /*top: 7px;
+        width: 140px;
+        right: 80px;
+        padding: 4px 5px 4px 8px;
+        gap: 5px;
+        height: 30px;*/
+    }
+
+    #kill-leader-leader-container {
+        font-weight: bold;
+        font-size: 25px;
+        @include text-shadow;
+
+        /*@media screen and (max-width: $screen_large) {
+            font-size: 15px;
+        }*/
+    }
+
+}
+
 .ui-leaderboard {
     position: absolute;
     top: 10px;
@@ -164,6 +200,7 @@
         align-items: center;
         padding: 8px 10px 8px 16px;
         gap: 10px;
+        @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
             padding: 4px 5px 4px 8px;
@@ -171,6 +208,7 @@
         }
 
         img {
+            filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.6));
             width: 32px;
             height: 32px;
 
@@ -221,14 +259,14 @@
                     height: 12px;
                 }
             }
-        }
 
-        .kill-feed-item.kill-feed-item-victim {
-            background-color: #cc000075;
-        }
+            .kill-feed-item-victim {
+                background-color: #cc000075;
+            }
 
-        .kill-feed-item.kill-feed-item-killer {
-            background-color: #0066cc75;
+            .kill-feed-item-killer {
+                background-color: #0066cc75;
+            }
         }
     }
 }
@@ -302,7 +340,7 @@
     margin-left: 3px;
 }
 
-#interact-key.active+#interact-text {
+#interact-key.active + #interact-text {
     position: relative;
     top: 3px;
 }
@@ -427,6 +465,17 @@
             font-size: 12px;
         }
     }
+
+    .flashing {
+        animation: 0.5s ease-in-out 0.5s infinite flashing
+    }
+
+    @keyframes flashing {
+        0% {background-color: #000000;}
+        50% {background-color: #ff0000;}
+        100% {background-color: #000000;}
+    }
+
 }
 
 #adrenaline-bar-container {
@@ -523,7 +572,7 @@
     @media screen and (max-width: $screen_large) {
         top: 100px;
 
-        &>button {
+        & > button {
             height: fit-content;
             padding: 8px 12px;
             font-size: 14px;
@@ -541,6 +590,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 320px;
+    @include text-shadow;
 
     @media screen and (max-width: $screen_large) {
         width: 220px;
@@ -676,6 +726,7 @@
         .item-tooltip {
             position: absolute;
             background-color: $transparent_bg;
+            @include text-shadow;
             padding: 5px;
             border-radius: 5px;
             z-index: 1;
@@ -695,6 +746,7 @@
         position: absolute;
         top: 5px;
         left: 8px;
+        @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
@@ -705,6 +757,7 @@
         position: absolute;
         top: 5px;
         right: 8px;
+        @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
@@ -713,6 +766,7 @@
 
     .item-count {
         font-size: 20px;
+        @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
             font-size: 14px;
@@ -724,6 +778,7 @@
         text-align: center;
         position: absolute;
         bottom: 5px;
+        @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
             font-size: 12px;
@@ -756,9 +811,7 @@
 
         &.has-item {
             opacity: 1;
-            background: radial-gradient(circle,
-                    $light_transparent_bg 0%,
-                    $transparent_bg 100%);
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
     }
 }
@@ -888,9 +941,7 @@
         height: 78px;
 
         &.has-item {
-            background: radial-gradient(circle,
-                    $light_transparent_bg 0%,
-                    $transparent_bg 100%);
+            background: radial-gradient(circle, $light_transparent_bg 0%, $transparent_bg 100%);
         }
 
         .item-tooltip {
@@ -1000,7 +1051,7 @@
     //noinspection CssUnknownTarget
     background-image: url("../../../public/img/misc/emote_wheel.svg");
 
-    &>div {
+    & > div {
         width: 84px;
         height: 84px;
         position: absolute;
@@ -1035,81 +1086,64 @@
 }
 
 #game-over-overlay {
-    align-content: center;
-    align-items: center;
-    justify-content: center;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
     width: 100vw;
     height: 100vh;
-    position: absolute;
+    z-index: 1001;
+
     background: rgba(0, 0, 0, 0.4);
-    flex-direction: column;
     @include text-shadow;
-
-    #game-over-rank-container-mobile {
-        display: none;
-        font-size: 13px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        padding: 2px;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-
-        #game-over-rank-mobile {
-            color: $orange;
-            margin-left: 10px;
-        }
-    }
 
     #chicken-dinner {
         filter: drop-shadow(0 0 0.6rem rgba(0, 0, 0, 0.8));
-        --size: 100px;
-        height: var(--size);
         width: 100%;
-        margin-top: calc(var(--size) * -1);
+        height: 100px;
+
+        @media screen and (max-width: $screen_large) {
+            height: 50px;
+        }
     }
 
     #game-over-text {
         font-size: 40px;
-        margin-top: 0px;
-        margin-bottom: 5px;
+        margin: 0 0 10px;
+        text-align: center;
+
+        @media screen and (max-width: $screen_large) {
+            font-size: 20px;
+        }
     }
 
-    #game-over-rank-container-pc {
-        display: block;
+    #game-over-rank-container {
         font-size: 30px;
         text-align: center;
         font-weight: bold;
-        margin-bottom: 10px;
-        padding: 5px;
-        margin-left: 37%;
-        margin-right: 37%;
+        padding: 5px 15px 5px 15px;
         border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+        width: max-content;
+        margin: 5px auto 15px auto;
 
-        #game-over-rank {
-            color: $orange;
-            margin-left: 10px;
-        }
-    }
-
-    @media screen and (max-width: $screen_large) {
-        #chicken-dinner {
-            --size: 50px;
-        }
-
-        #game-over-text {
+        @media screen and (max-width: $screen_large) {
+            margin: 0 auto 10px auto;
             font-size: 15px;
         }
 
-        #game-over-overlay {
-            display: flex;
-        }
+        #game-over-rank {
+            margin-left: 10px;
+            font-size: 35px;
 
-        #game-over-rank-container-pc {
-            display: none;
-        }
+            &.won {
+                color: $orange;
+            }
 
-        #game-over-rank-container-mobile {
-            display: block;
+            @media screen and (max-width: $screen_large) {
+                font-size: 17px;
+            }
         }
     }
 }
@@ -1122,13 +1156,9 @@
     border-radius: 10px;
 
     button {
-        margin: 0.2rem 0;
+        margin: 4px 0;
         width: 100%;
         display: inline-block;
-    }
-
-    #game-over-player-name {
-        margin-bottom: 5px;
     }
 
     .modal-item {
@@ -1144,11 +1174,11 @@
     #game-over-stats {
         width: 250px;
         margin: auto;
-        padding: 20px;
-        padding-top: 0;
+        padding: 16px 20px 16px 20px;
 
         @media screen and (max-width: $screen_large) {
-            padding-bottom: 0;
+            width: 200px;
+            padding: 8px 20px 8px 20px;
         }
 
         .stat {
@@ -1156,6 +1186,10 @@
             width: 100%;
             display: flex;
             padding: 0.5rem 0;
+
+            @media screen and (max-width: $screen_large) {
+                padding: 0.25rem 0;
+            }
         }
 
         .stat-name {
@@ -1172,10 +1206,7 @@
         font-size: 12px;
         max-width: fit-content;
         width: 280px;
-
-        #game-over-stats {
-            width: 200px;
-        }
+        padding: 0.75rem;
 
         button {
             font-size: 14px;
@@ -1185,6 +1216,13 @@
 }
 
 #joysticks-containers {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                        ssupported by Chrome, Edge, Opera and Firefox */
     width: 100vw;
     height: 100vh;
     position: absolute;
