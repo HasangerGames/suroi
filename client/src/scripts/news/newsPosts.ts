@@ -3,6 +3,59 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1698001957000,
+        author: "HAZEL",
+        title: "Making Waves",
+        bannerImage: "./img/news/v0.11.0.png",
+        content: `The island grows ever busier with the newest structure, the port. Search the warehouses and shipping containers for loot, 'cause they’re packed! Containers can also be found throughout the island. But the most valuable loot is contained in the bow of the massive container ship. A highly prized sniper lies within, but you’ll need to solve a puzzle to get in.<br><br>
+
+If you like swimming, you’re in luck! Rivers now snake through the landscape, and the ocean is now accessible.<br><br>
+
+We've added two new guns to our arsenal: the Flues, a sawn-off double-barrel shotgun, and the M1895, a revolver.<br><br>
+
+In addition, we've made many quality of life changes, including shorter guns, custom crosshairs, and a kill leader mechanic.`,
+        longContent: `<h2>Suroi v0.11.0</h2>
+<h3>New features & changes</h3>
+<ul>
+  <li>Rivers & ocean! Rivers have been added. The ocean is now accessible.</li>
+  <li>New buildings! Added the port, the largest structure so far. Added shipping containers, which spawn at the port and throughout the map.</li>
+  <li>More guns! Added 2 guns: the Flues (a sawn-off double-barrel shotgun, equivalent to surviv's MP220), and the M1895 (a revolver).</li>
+  <li>The big house has been replaced by a smaller variant. The big variant will be overhauled and re-added in a future update.</li>
+  <li>Shorter guns! Gun world images have been shortened.</li>
+  <li>Kill leader! A kill leader mechanic has been added. The player with the most kills, if it's more than 3, is awarded the title of Kill Leader, and their name and kill count appears in the top right.</li>
+  <li>3 games can now start at the same time, which should reduce late spawning issues.</li>
+  <li>Custom crosshairs! You can now choose between various crosshair styles, and customize the color and outline.</li>
+  <li>Mobile improvements!</li>
+  <ul>
+    <li>The left joystick now controls rotation as well as movement. Rotation is overridden by the right joystick.</li>
+      <li>Snipers now shoot when releasing the joystick.</li>
+      <li>Added an aim line.</li>
+      <li>Doors now open automatically when approaching them.</li>
+  </ul>
+  <li>The server with the best ping is now selected automatically. Player count and ping is now displayed for each server.</li>
+  <li>The North America and Europe servers have been upgraded again.</li>
+  <li>The Play Again button now allows you to rejoin the game with 1 click. To return to the menu, click the Menu button.</li>
+  <li>Explosive obstacles now emit smoke particles when they're close to destroyed.</li>
+  <li>You can now click on players to spectate them, which should make it easier to report teamers.</li>
+  <li>Ammo is now split up when dropped from dead players.</li>
+  <li>Removed join and leave messages.</li>
+  <li>You can now hide under tables.</li>
+  <li>Added an option to hide the rules button.</li>
+  <li>Added an option to display coordinates.</li>
+  <li>Added an option to enable the old menu music.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed full auto guns not continuing to fire when holding the fire button/joystick after reloading.</li>
+  <li>Fixed more issues with auto loot pickup on mobile.</li>
+  <li>Fixed muzzle flash position.</li>
+  <li>Fixed attacking when clicking on the buttons in the pause menu.</li>
+  <li>Fixed the action progress bar not hiding when quitting.</li>
+  <li>Fixed emotes rendering below certain obstacles.</li>
+</ul>`
+    },
+    {
         date: 1694706686000,
         author: "HAZEL",
         title: "Back with a Bang",
