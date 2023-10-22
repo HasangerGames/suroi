@@ -17,13 +17,13 @@ import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { FloorTypes } from "../../common/src/utils/mapUtils";
 import { ObstacleSpecialRoles, type BulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { LootTables, LootTiers } from "./data/lootTables";
 import { Maps } from "./data/maps";
-import { FloorTypes } from "../../common/src/utils/mapUtils";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
@@ -648,12 +648,12 @@ logger.indent("Validating loot table references", () => {
                 logger.indent("Validating drop declaration", () => {
                     const errorPath2 = tester.createPath(errorPath, "drop declaration");
 
-                    for (const entry of lootData.loot) {
+                    for (const entry of lootData.loot.flat()) {
                         tester.assertNoPointlessValue({
                             obj: entry,
                             field: "count",
                             defaultValue: 1,
-                            baseErrorPath: errorPath
+                            baseErrorPath: errorPath2
                         });
 
                         if (entry.count !== undefined) {
@@ -672,7 +672,7 @@ logger.indent("Validating loot table references", () => {
                             obj: entry,
                             field: "spawnSeparately",
                             defaultValue: false,
-                            baseErrorPath: errorPath
+                            baseErrorPath: errorPath2
                         });
 
                         tester.assertWarn(
@@ -716,19 +716,61 @@ logger.indent("Validating loot table references", () => {
                 const errorPath = tester.createPath("loot table references", "loot tiers", `tier '${name}'`);
 
                 for (const entry of lootTierData) {
+                    tester.assertNoPointlessValue({
+                        obj: entry,
+                        field: "count",
+                        defaultValue: 1,
+                        baseErrorPath: errorPath
+                    });
+
                     if (entry.count !== undefined) {
-                        tester.assertIsNaturalNumber({
+                        tester.assertIntAndInBounds({
                             obj: entry,
                             field: "count",
+                            min: 1,
+                            max: Infinity,
+                            includeMin: true,
+                            includeMax: true,
                             baseErrorPath: errorPath
                         });
                     }
+
+                    tester.assertNoPointlessValue({
+                        obj: entry,
+                        field: "spawnSeparately",
+                        defaultValue: false,
+                        baseErrorPath: errorPath
+                    });
+
+                    tester.assertWarn(
+                        entry.spawnSeparately !== true || entry.count !== 1,
+                        "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+                        errorPath
+                    );
 
                     tester.assertIsPositiveFiniteReal({
                         obj: entry,
                         field: "weight",
                         baseErrorPath: errorPath
                     });
+
+                    if ("item" in entry) {
+                        tester.assertReferenceExistsArray({
+                            obj: entry,
+                            field: "item",
+                            baseErrorPath: errorPath,
+                            collection: Loots.definitions,
+                            collectionName: "Loots"
+                        });
+                    } else {
+                        tester.assertReferenceExistsObject({
+                            obj: entry,
+                            field: "tier",
+                            baseErrorPath: errorPath,
+                            collection: LootTiers,
+                            collectionName: "LootTiers"
+                        });
+                    }
                 }
             });
         }
@@ -1244,10 +1286,10 @@ logger.indent("Validating building definitions", () => {
 
                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                     for (const obstacle of building.obstacles!) {
-                        logger.indent(`Validating '${obstacle.id}'`, () => {
+                        logger.indent(`Validating '${obstacle.idString}'`, () => {
                             tester.assertReferenceExists({
                                 obj: obstacle,
-                                field: "id",
+                                field: "idString",
                                 collection: Obstacles,
                                 baseErrorPath: errorPath2
                             });
@@ -1255,7 +1297,7 @@ logger.indent("Validating building definitions", () => {
                             validators.vector(errorPath2, obstacle.position);
 
                             if (obstacle.rotation) {
-                                const reference = Obstacles.definitions.find(o => o.idString === obstacle.id);
+                                const reference = Obstacles.definitions.find(o => o.idString === obstacle.idString);
 
                                 if (reference) {
                                     const rotationMode = reference.rotationMode;
@@ -1325,13 +1367,13 @@ logger.indent("Validating building definitions", () => {
                             }
 
                             if (obstacle.variation !== undefined) {
-                                const def = Obstacles.getByIDString(obstacle.id);
+                                const def = Obstacles.getByIDString(obstacle.idString);
 
                                 if (def) {
                                     if (def.variations === undefined) {
                                         tester.assert(
                                             false,
-                                            `Cannot specify a variant of an obstacle that has no variations (Obstacle '${obstacle.id}' has no variations)`,
+                                            `Cannot specify a variant of an obstacle that has no variations (Obstacle '${obstacle.idString}' has no variations)`,
                                             errorPath2
                                         );
                                     } else {
@@ -1380,38 +1422,12 @@ logger.indent("Validating building definitions", () => {
                 });
             }
 
-            tester.assertNoPointlessValue({
-                obj: building,
-                field: "subBuildings",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: errorPath
-            });
-
-            if (building.subBuildings?.length) {
-                const errorPath2 = tester.createPath(errorPath, "sub-buildings");
-
-                for (const subbuilding of building.subBuildings) {
-                    logger.indent(`Validating sub-building '${subbuilding.id}'`, () => {
-                        tester.assertReferenceExists({
-                            obj: subbuilding,
-                            field: "id",
-                            collection: Buildings,
-                            baseErrorPath: errorPath2
-                        });
-
-                        validators.vector(errorPath2, subbuilding.position);
-                    });
+            if (building.ceilingImages?.length) {
+                const errorPath2 = tester.createPath(errorPath, "ceiling images");
+                for (const image of building.ceilingImages) {
+                    validators.vector(errorPath2, image.position);
                 }
             }
-
-            tester.assertNoPointlessValue({
-                obj: building,
-                field: "floorImages",
-                defaultValue: [],
-                equalityFunction: a => a.length === 0,
-                baseErrorPath: errorPath
-            });
 
             if (building.floorImages?.length) {
                 const errorPath2 = tester.createPath(errorPath, "floor images");
@@ -1440,7 +1456,7 @@ logger.indent("Validating building definitions", () => {
                     obj: building,
                     field: "wallsToDestroy",
                     min: 1,
-                    max: building.obstacles?.filter(o => Obstacles.definitions.find(ob => ob.idString === o.id)?.role === ObstacleSpecialRoles.Wall).length ?? Infinity,
+                    max: building.obstacles?.filter(o => Obstacles.definitions.find(ob => ob.idString === o.idString)?.role === ObstacleSpecialRoles.Wall).length ?? Infinity,
                     includeMin: true,
                     includeMax: true,
                     baseErrorPath: errorPath
@@ -1517,6 +1533,13 @@ logger.indent("Validating decals", () => {
                 obj: decal,
                 field: "scale",
                 defaultValue: 1,
+                baseErrorPath: errorPath
+            });
+
+            tester.assertNoPointlessValue({
+                obj: decal,
+                field: "rotationMode",
+                defaultValue: RotationMode.Limited,
                 baseErrorPath: errorPath
             });
 

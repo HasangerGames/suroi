@@ -120,9 +120,7 @@ export class Bullet extends BaseBullet {
     }
 
     reflect(normal: Vector): void {
-        const normalAngle = Math.atan2(normal.y, normal.x);
-
-        const rotation = this.rotation + (normalAngle - this.rotation) * 2;
+        const rotation = normalizeAngle(2 * Math.atan2(normal.y, normal.x) - this.rotation);
 
         this.game.addBullet(
             this.sourceGun,

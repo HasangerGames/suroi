@@ -36,6 +36,7 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
+
     readonly tint?: number
 } & (
     (

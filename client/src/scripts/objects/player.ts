@@ -1,12 +1,5 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
-import {
-    AnimationType,
-    ObjectCategory,
-    PLAYER_RADIUS,
-    PlayerActions,
-    SpectateActions,
-    ZIndexes
-} from "../../../../common/src/constants";
+import { AnimationType, ObjectCategory, PLAYER_RADIUS, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { Emotes, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
@@ -25,7 +18,6 @@ import { random, randomBoolean, randomFloat, randomVector } from "../../../../co
 import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";

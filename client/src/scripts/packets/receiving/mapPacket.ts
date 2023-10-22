@@ -19,7 +19,7 @@ export class MapPacket extends ReceivingPacket {
     get rivers(): River[] { return this._rivers; }
 
     readonly obstacles: Array<{
-        readonly type: ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>
+        readonly type: ObstacleDefinition
         readonly position: Vector
         readonly rotation: number
         readonly scale: number
@@ -27,7 +27,7 @@ export class MapPacket extends ReceivingPacket {
     }> = [];
 
     readonly buildings: Array<{
-        readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>
+        readonly type: BuildingDefinition
         readonly position: Vector
         readonly orientation: Orientation
         readonly rotation: number
@@ -57,23 +57,23 @@ export class MapPacket extends ReceivingPacket {
         const numObstacles = stream.readBits(11);
 
         for (let i = 0; i < numObstacles; i++) {
-            const type = stream.readObjectType();
+            const type = stream.readObjectType() as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition> | ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
             const position = stream.readPosition();
 
             switch (type.category) {
                 case ObjectCategory.Obstacle: {
                     const scale = stream.readScale();
-                    const definition = type.definition as ObstacleDefinition;
-                    const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
+                    const rotation = stream.readObstacleRotation(type.definition.rotationMode).rotation;
 
                     let variation: Variation | undefined;
-                    if (definition.variations !== undefined) {
+                    if (type.definition.variations !== undefined) {
                         variation = stream.readVariation();
                     }
+
                     this.obstacles.push({
                         position,
-                        type: type as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition>,
+                        type: type.definition,
                         scale,
                         rotation,
                         variation
@@ -84,7 +84,7 @@ export class MapPacket extends ReceivingPacket {
                     const { orientation, rotation } = stream.readObstacleRotation(RotationMode.Limited);
                     this.buildings.push({
                         position,
-                        type: type as ObjectType<ObjectCategory.Building, BuildingDefinition>,
+                        type: type.definition,
                         orientation,
                         rotation
                     });

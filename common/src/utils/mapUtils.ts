@@ -3,10 +3,12 @@ import { angleBetweenPoints, clamp, distanceSquared } from "./math";
 import { SeededRandom } from "./random";
 import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
-export function jaggedRectangle(hitbox: RectangleHitbox,
+export function jaggedRectangle(
+    hitbox: RectangleHitbox,
     spacing: number,
     variation: number,
-    random: SeededRandom): Vector[] {
+    random: SeededRandom
+): Vector[] {
     const topLeft = vClone(hitbox.min);
     const topRight = v(hitbox.max.x, hitbox.min.y);
     const bottomRight = vClone(hitbox.max);
@@ -107,8 +109,8 @@ export function generateTerrain(
         v(width - beachPadding, height - beachPadding)
     );
 
-    const beach = new PolygonHitbox(jaggedRectangle(beachHitbox, spacing, variation, random));
-    const grass = new PolygonHitbox(jaggedRectangle(grassHitbox, spacing, variation, random));
+    const beach = new PolygonHitbox(...jaggedRectangle(beachHitbox, spacing, variation, random));
+    const grass = new PolygonHitbox(...jaggedRectangle(grassHitbox, spacing, variation, random));
 
     const generatedRivers: ReturnType<typeof generateTerrain>["rivers"] = [];
     const riverSpawnHitboxes: PolygonHitbox[] = [];
@@ -238,7 +240,7 @@ export function generateTerrain(
             );
             findClosestBeachPoint(points.length - 1);
 
-            return new PolygonHitbox(points);
+            return new PolygonHitbox(...points);
         };
 
         generatedRivers.push({
@@ -264,7 +266,7 @@ export class TerrainGrid {
 
     readonly floors = new Map<Hitbox, string>();
 
-    private readonly _grid: Record<number, Record<number, Array<{ type: string, hitbox: Hitbox }>>> = {};
+    private readonly _grid: Record<number, Record<number, Array<{ readonly type: string, readonly hitbox: Hitbox }>>> = {};
 
     constructor(width: number, height: number) {
         this.width = Math.floor(width / this.cellSize);
@@ -305,6 +307,7 @@ export class TerrainGrid {
                 break;
             }
         }
+
         return floorType;
     }
 
@@ -329,7 +332,9 @@ export class TerrainGrid {
     }
 
     private _roundToCells(vector: Vector): Vector {
-        return v(clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
-            clamp(Math.floor(vector.y / this.cellSize), 0, this.height));
+        return v(
+            clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
+            clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
+        );
     }
 }

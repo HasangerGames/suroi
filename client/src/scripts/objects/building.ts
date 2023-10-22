@@ -36,13 +36,11 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
         this.container.zIndex = ZIndexes.Ground;
 
-        if (definition.floorImages) {
-            for (const image of definition.floorImages) {
-                const sprite = new SuroiSprite(image.key);
-                sprite.setVPos(toPixiCoords(image.position));
-                if (image.tint !== undefined) sprite.setTint(image.tint);
-                this.container.addChild(sprite);
-            }
+        for (const image of definition.floorImages ?? []) {
+            const sprite = new SuroiSprite(image.key);
+            sprite.setVPos(toPixiCoords(image.position));
+            if (image.tint !== undefined) sprite.setTint(image.tint);
+            this.container.addChild(sprite);
         }
 
         this.ceilingContainer = new Container();
@@ -120,7 +118,7 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
             this.container.position.copyFrom(pos);
             this.ceilingContainer.position.copyFrom(pos);
 
-            this.orientation = data.rotation as Orientation;
+            this.orientation = data.rotation;
             this.rotation = orientationToRotation(this.orientation);
             this.container.rotation = this.rotation;
             this.ceilingContainer.rotation = this.rotation;
@@ -133,14 +131,32 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
             if (this.ceilingHitbox !== undefined) drawHitbox(this.ceilingHitbox, HITBOX_COLORS.buildingScopeCeiling, this.debugGraphics);
 
-            drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
-                this.debugGraphics);
+                this.debugGraphics
+            );
 
             if (definition.scopeHitbox !== undefined) {
-                drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                drawHitbox(
+                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
-                    this.debugGraphics);
+                    this.debugGraphics
+                );
+            }
+
+            drawHitbox(
+                definition.spawnHitbox.transform(this.position, 1, this.orientation),
+                HITBOX_COLORS.spawnHitbox,
+                this.debugGraphics
+            );
+
+            if (definition.scopeHitbox) {
+                drawHitbox(
+                    definition.scopeHitbox.transform(this.position, 1, this.orientation),
+                    HITBOX_COLORS.buildingZoomCeiling,
+                    this.debugGraphics
+                );
             }
         }
     }

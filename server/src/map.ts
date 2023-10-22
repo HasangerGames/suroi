@@ -1,30 +1,15 @@
 import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
-import { type BuildingDefinition, Buildings } from "../../common/src/definitions/buildings";
+import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Decals } from "../../common/src/definitions/decals";
-import { type ObstacleDefinition, Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
+import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import {
-    CircleHitbox,
-    ComplexHitbox,
-    type Hitbox,
-    type PolygonHitbox,
-    RectangleHitbox
-} from "../../common/src/utils/hitbox";
-import { generateTerrain, River, TerrainGrid } from "../../common/src/utils/mapUtils";
+import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
-import { type ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
+import { reifyDefinition, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
-import {
-    pickRandomInArray,
-    random,
-    randomBoolean,
-    randomFloat,
-    randomPointInsideCircle,
-    randomRotation,
-    randomVector,
-    SeededRandom
-} from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, SpawnMode } from "./config";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -46,7 +31,7 @@ export class Map {
 
     readonly oceanHitbox: Hitbox;
 
-    readonly seed: number;
+    readonly seed = random(0, 2 ** 31);
 
     readonly places: Array<{
         readonly name: string
@@ -239,7 +224,8 @@ export class Map {
             for (const place of mapDefinition.places) {
                 const position = v(
                     this.width * (place.position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (place.position.y + randomFloat(-0.04, 0.04)));
+                    this.height * (place.position.y + randomFloat(-0.04, 0.04))
+                );
 
                 this.places.push({
                     name: place.name,
@@ -284,7 +270,7 @@ export class Map {
         const building = new Building(this.game, definition, vClone(position), orientation);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.getByIDString(obstacleData.id);
+            const obstacleDef = Obstacles.getByIDString(obstacleData.idString);
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -304,7 +290,7 @@ export class Map {
                 lootSpawnOffset,
                 building
             );
-            if (obstacleData.id === "vault_door") this.game.vaultDoor = obstacle; //fixme idString check
+            if (obstacleData.idString === "vault_door") this.game.vaultDoor = obstacle; //fixme idString check
         }
 
         for (const lootData of definition.lootSpawners ?? []) {
@@ -328,7 +314,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                subBuilding.id,
+                subBuilding.idString,
                 addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
@@ -427,7 +413,7 @@ export class Map {
         }
 
         for (let i = 0; i < count; i++) {
-            const loot = getLootTableLoot(LootTables[table].loot as WeightedItem[]); // fixme This will break if multiple tables are specified
+            const loot = getLootTableLoot(LootTables[table].loot.flat());
 
             const position = this.getRandomPositionFor(ObjectType.fromString(ObjectCategory.Loot, loot[0].idString));
 

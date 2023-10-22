@@ -1,23 +1,5 @@
 import { type Orientation } from "../typings";
-import {
-    addAdjust,
-    circleCircleIntersection,
-    circleCollision,
-    type CollisionRecord,
-    distanceSquared,
-    distanceToCircle,
-    distanceToRectangle,
-    type IntersectionResponse,
-    lineIntersectsCircle,
-    lineIntersectsRect,
-    rectangleCollision,
-    rectangleDistanceToRectangle,
-    rectCircleIntersection,
-    rectRectCollision,
-    transformRectangle,
-    distance,
-    rectPolyCollision
-} from "./math";
+import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, rectPolyCollision } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
@@ -314,6 +296,7 @@ export class ComplexHitbox extends Hitbox {
 
     override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {
         this.position = position;
+
         return new ComplexHitbox(
             ...this.hitboxes.map(hitbox => hitbox.transform(position, scale, orientation))
         );
@@ -364,7 +347,7 @@ export class ComplexHitbox extends Hitbox {
 export class PolygonHitbox extends Hitbox {
     points: Vector[];
 
-    constructor(points: Vector[]) {
+    constructor(...points: Vector[]) {
         super();
         this.points = points;
     }
@@ -383,12 +366,12 @@ export class PolygonHitbox extends Hitbox {
     }
 
     override clone(): PolygonHitbox {
-        return new PolygonHitbox(this.points);
+        return new PolygonHitbox(...this.points);
     }
 
     override transform(position: Vector, scale: number = 1, orientation: Orientation = 0): PolygonHitbox {
         return new PolygonHitbox(
-            this.points.map(point => vMul(addAdjust(position, point, orientation), scale))
+            ...this.points.map(point => vMul(addAdjust(position, point, orientation), scale))
         );
     }
 
@@ -398,7 +381,7 @@ export class PolygonHitbox extends Hitbox {
         }
     }
 
-    override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
         throw new Error("Not Implemented");
     }
 

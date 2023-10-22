@@ -31,9 +31,11 @@ export interface ObjectDefinition {
 export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idString"];
 
 export function reifyDefinition<T extends ObjectDefinition, U extends T = T>(definition: U | ReferenceTo<U>, collection: ObjectDefinitions<T> | T[]): U {
-    if (typeof definition !== "string") return definition;
-    if (Array.isArray(collection)) return collection.find(def => def.idString === definition) as U;
-    return collection.getByIDString<U>(definition);
+    switch (true) {
+        case typeof definition !== "string": return definition;
+        case Array.isArray(collection): return collection.find(def => def.idString === definition) as U;
+        default: return collection.getByIDString<U>(definition);
+    }
 }
 
 // expand this as needed

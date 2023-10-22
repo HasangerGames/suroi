@@ -92,20 +92,16 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.definition.idString];
-            // TODO Clean up code
-            for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
-                if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
-                    for (const loot of lootTable.loot) {
-                        for (const drop of getLootTableLoot(loot as WeightedItem[])) this.loot.push(drop);
-                    }
-                } else {
-                    for (const drop of getLootTableLoot(lootTable.loot as WeightedItem[])) this.loot.push(drop);
-                }
-            }
+            const drops = lootTable.loot.flat();
+            
+            this.loot = Array.from(
+                { length: random(lootTable.min, lootTable.max) },
+                () => getLootTableLoot(drops)
+            ).flat();
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot as WeightedItem[])) { // fixme This will break if multiple tables are specified
+            for (const item of getLootTableLoot(LootTables[this.definition.idString].loot.flat())) {
                 this.game.addLoot(
                     item.idString,
                     this.position,

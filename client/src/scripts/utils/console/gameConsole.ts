@@ -198,6 +198,7 @@ export const gameConsole = new (class GameConsole {
         const storedConfig = localStorage.getItem(this.localStorageKey);
 
         let binds = defaultBinds as GameSettings["binds"];
+        let rewriteToLS = false;
 
         if (storedConfig) {
             const config = JSON.parse(storedConfig) as GameSettings;
@@ -208,11 +209,16 @@ export const gameConsole = new (class GameConsole {
                 if (defaultClientCVars[name as keyof CVarTypeMapping]) {
                     consoleVariables.set.builtIn(name as keyof CVarTypeMapping, variable.value as string);
                 } else {
-                    const cvar = new ConVar(name, variable.value, variable.flags);
-                    consoleVariables.declareCVar(cvar);
+                    consoleVariables.declareCVar(
+                        new ConVar(name, variable.value, variable.flags)
+                    );
+                    rewriteToLS = true;
                 }
             }
-            binds = mergeDeep({}, defaultBinds, config.binds);
+            if (config.binds) {
+                binds = mergeDeep({}, defaultBinds, config.binds);
+                rewriteToLS = true;
+            }
 
             for (const alias in config.aliases) {
                 aliases.set(alias, config.aliases[alias]);
@@ -223,6 +229,10 @@ export const gameConsole = new (class GameConsole {
             for (const bind of binds[command]) {
                 keybinds.addActionsToInput(bind, command);
             }
+        }
+
+        if (rewriteToLS) {
+            this.writeToLocalStorage();
         }
     }
 

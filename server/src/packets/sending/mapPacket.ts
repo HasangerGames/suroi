@@ -10,7 +10,7 @@ export class MapPacket extends SendingPacket {
     override readonly allocBytes = 1 << 13;
     override readonly type = PacketType.Map;
 
-    game: Game;
+    readonly game: Game;
 
     constructor(game: Game) {
         // This packet is only created a single time and this.player is never used

@@ -55,7 +55,6 @@ export class Game {
     readonly bullets = new Set<Bullet>();
 
     activePlayerID = -1;
-
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }

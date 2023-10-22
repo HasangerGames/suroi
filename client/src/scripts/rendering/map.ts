@@ -14,15 +14,10 @@ import { Gas } from "./gas";
 
 export class Minimap {
     container = new Container();
-
     game: Game;
-
     expanded = false;
-
     visible = true;
-
     mask = new Graphics();
-
     position = v(0, 0);
     lastPosition = v(0, 0);
 
@@ -31,11 +26,10 @@ export class Minimap {
     gasRadius = 0;
     gasGraphics = new Graphics();
 
-    objectsContainer = new Container();
+    readonly objectsContainer = new Container();
 
-    sprite = new Sprite(Texture.EMPTY);
-
-    indicator = new SuroiSprite("player_indicator.svg");
+    readonly sprite = new Sprite(Texture.EMPTY);
+    readonly indicator = new SuroiSprite("player_indicator.svg");
 
     width = 0;
     height = 0;
@@ -45,10 +39,8 @@ export class Minimap {
 
     margins = v(0, 0);
 
-    gas = new Gas(1, this.objectsContainer);
-
-    placesContainer = new Container();
-
+    readonly gas = new Gas(1, this.objectsContainer);
+    readonly placesContainer = new Container();
     terrainGrid: TerrainGrid;
 
     constructor(game: Game) {
@@ -177,10 +169,11 @@ export class Minimap {
             ctx.lineStyle();
 
             for (const building of mapPacket.buildings) {
-                const definition = building.type.definition;
+                const definition = building.type;
                 if (definition.groundGraphics) {
                     for (const ground of definition.groundGraphics) {
                         ctx.beginFill(ground.color);
+
                         const hitbox = ground.hitbox.transform(building.position, 1, building.orientation);
                         if (hitbox instanceof RectangleHitbox) {
                             const width = hitbox.max.x - hitbox.min.x;
@@ -205,38 +198,45 @@ export class Minimap {
         mapRender.addChild(mapGraphics);
 
         for (const obstacle of mapPacket.obstacles) {
-            const definition = obstacle.type.definition;
+            const definition = obstacle.type;
 
-            let texture = definition.frames?.base ?? definition.idString;
-            if (obstacle.variation) texture += `_${obstacle.variation + 1}`;
+            let textureId = definition.idString;
+            if (obstacle.variation) {
+                textureId += `_${obstacle.variation + 1}`;
+            }
 
-            const image = new SuroiSprite(texture);
-            image.setVPos(obstacle.position).setRotation(obstacle.rotation);
+            // Create the object image
+            const image = new SuroiSprite(`${textureId}`)
+                .setVPos(obstacle.position).setRotation(obstacle.rotation)
+                .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+
+            if (definition.tint !== undefined) image.setTint(definition.tint);
             image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
-            image.setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
-            if (definition.tint) image.setTint(definition.tint);
+
             mapRender.addChild(image);
         }
 
         for (const building of mapPacket.buildings) {
-            const definition = building.type.definition;
+            const definition = building.type;
 
             for (const image of definition.floorImages ?? []) {
-                const sprite = new SuroiSprite(image.key);
-                sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
-                sprite.scale.set(1 / PIXI_SCALE);
-                sprite.setRotation(building.rotation);
-                sprite.setZIndex(ZIndexes.Ground);
+                const sprite = new SuroiSprite(image.key)
+                    .setVPos(addAdjust(building.position, image.position, building.orientation))
+                    .setRotation(building.rotation)
+                    .setZIndex(ZIndexes.Ground);
+
                 if (image.tint !== undefined) sprite.setTint(image.tint);
+                sprite.scale.set(1 / PIXI_SCALE);
                 mapRender.addChild(sprite);
             }
 
             for (const image of definition.ceilingImages ?? []) {
-                const sprite = new SuroiSprite(image.key);
-                sprite.setVPos(addAdjust(building.position, image.position, building.orientation));
+                const sprite = new SuroiSprite(image.key)
+                    .setVPos(addAdjust(building.position, image.position, building.orientation))
+                    .setRotation(building.rotation)
+                    .setZIndex(ZIndexes.BuildingsCeiling);
+
                 sprite.scale.set(1 / PIXI_SCALE);
-                sprite.setRotation(building.rotation);
-                sprite.setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
                 if (image.tint !== undefined) sprite.setTint(image.tint);
                 mapRender.addChild(sprite);
             }
@@ -251,9 +251,11 @@ export class Minimap {
         for (const river of terrain.rivers) {
             this.terrainGrid.addFloor("water", river.water);
         }
+
         for (const river of terrain.rivers) {
             this.terrainGrid.addFloor("sand", river.bank);
         }
+
         this.terrainGrid.addFloor("grass", terrain.grass);
         this.terrainGrid.addFloor("sand", terrain.beach);
 
@@ -327,11 +329,15 @@ export class Minimap {
         this.gas.updateFrom(this.game.gas);
         this.gas.update();
         // only re-render gas line and circle if something changed
-        if ((this.position.x === this.lastPosition.x &&
-            this.position.y === this.lastPosition.y &&
-            this.gas.newRadius === this.gasRadius &&
-            this.gas.newPosition.x === this.gasPos.x &&
-            this.gas.newPosition.y === this.gasPos.y) || this.gas.state === GasState.Inactive) return;
+        if (
+            (
+                this.position.x === this.lastPosition.x &&
+                this.position.y === this.lastPosition.y &&
+                this.gas.newRadius === this.gasRadius &&
+                this.gas.newPosition.x === this.gasPos.x &&
+                this.gas.newPosition.y === this.gasPos.y
+            ) || this.gas.state === GasState.Inactive
+        ) return;
 
         this.lastPosition = this.position;
         this.gasPos = this.gas.newPosition;

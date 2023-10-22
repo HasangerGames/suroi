@@ -122,9 +122,9 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 16,
         oceanSize: 160,
         genCallback: (map: Map) => {
-            // Generate all Buildings
+            // Generate all buildings
 
-            const buildingPos = v(map.width / 2, map.height / 2 - 50);
+            const buildingPos = v(200, map.height - 200);
             const buildingStartPos = vClone(buildingPos);
 
             const max = {
@@ -152,8 +152,8 @@ export const Maps: Record<string, MapDefinition> = {
                 buildingPos.x += 125;
             }
 
-            // Generate all Obstacles
-            const obstaclePos = v(map.width / 2 - 140, map.height / 2);
+            // Generate all obstacles
+            const obstaclePos = v(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {

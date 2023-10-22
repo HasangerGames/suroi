@@ -478,6 +478,7 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
         d.x = eps * 2.0;
         absDx = d.x;
     }
+
     if (absDy < eps) {
         d.y = eps * 2.0;
         absDy = d.y;
@@ -492,6 +493,7 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
             return false;
         }
     }
+
     if (absDy > eps) {
         const ty1 = (min.y - r.y) / d.y;
         const ty2 = (max.y - r.y) / d.y;
@@ -501,9 +503,11 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
             return false;
         }
     }
+
     if (tmin > dist) {
         return false;
     }
+
     return true;
 }
 

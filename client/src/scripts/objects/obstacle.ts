@@ -3,11 +3,7 @@ import { type ObstacleDefinition, Obstacles } from "../../../../common/src/defin
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { addAdjust, calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import {
-    ObstacleSpecialRoles,
-    type ReferenceTo,
-    reifyDefinition
-} from "../../../../common/src/utils/objectDefinitions";
+import { ObstacleSpecialRoles, type ReferenceTo, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { v, type Vector } from "../../../../common/src/utils/vector";
@@ -15,7 +11,7 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { ParticleEmitter } from "./particles";
@@ -282,6 +278,8 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         // Update the obstacle image
         this.image.setFrame(texture);
+
+        if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 

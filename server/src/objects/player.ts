@@ -1,11 +1,5 @@
 import type { WebSocket } from "uWebSockets.js";
-import {
-    AnimationType,
-    INVENTORY_MAX_WEAPONS, KillFeedMessageType,
-    ObjectCategory,
-    PLAYER_RADIUS,
-    PlayerActions
-} from "../../../common/src/constants";
+import { AnimationType, INVENTORY_MAX_WEAPONS, KillFeedMessageType, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
@@ -308,8 +302,8 @@ export class Player extends GameObject {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = reifyDefinition("1x_scope", Scopes);
-        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
-        //this.inventory.items["15x_scope"] = 1;
+        // this.inventory.items["15x_scope"] = 1;
+        // this.inventory.scope = reifyDefinition("15x_scope", Scopes);
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -327,13 +321,15 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*const giveWeapon = (idString: string, index: number): void => {
+        /*
+        const giveWeapon = (idString: string, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };*/
+        };
+        */
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
@@ -403,7 +399,7 @@ export class Player extends GameObject {
         }
         /* eslint-disable no-multi-spaces */
         const speed = Config.movementSpeed *                // Base speed
-            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Floor player is standing in speed multiplier
+            (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
