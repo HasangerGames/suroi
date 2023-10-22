@@ -97,7 +97,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         name: `Container ${id}`,
         spawnHitbox,
         ceilingHitbox,
-        scopeHitbox: RectangleHitbox.fromRect(14, 28),
+        scopeHitbox: RectangleHitbox.fromRect(13.9, 27.9),
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
@@ -1331,7 +1331,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "ship_tango_room_floor",
-                position: v(9, 93.8)
+                position: v(9, 94.25)
             }
         ],
         ceilingImages: [
@@ -1359,24 +1359,25 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
+            { id: "vault_door", position: v(8, 83), rotation: 0, scale: 1.07 },
             { id: "tango_crate", position: v(9, 95.5), rotation: 0, scale: 0.90 },
             { id: "super_barrel", position: v(-12, 89) },
             { id: "box", position: v(30, 87) },
             { id: "box", position: v(33, 92) },
             { id: "box", position: v(-12, 103) },
 
-            { id: "ship", position: v(0, 0) },
-            { id: "ship_thing_1", position: v(-14, -111), scale: 1.07 },
-            { id: "generator", position: v(-5, 77), scale: 1.07 },
-            { id: "barrel", position: v(-2, 68) },
+            { id: "ship", position: v(0, 0), rotation: 0 },
+            { id: "ship_thing_1", position: v(-14, -111), rotation: 0, scale: 1.07 },
+            { id: "generator", position: v(23, 77), rotation: 0, scale: 1.07 },
+            { id: "barrel", position: v(24, 68) },
             {
                 get id() {
                     return weightedRandom(["barrel", "super_barrel"], [1, 1]);
                 },
-                position: v(-6, 60)
+                position: v(21, 60)
             },
-            { id: "regular_crate", position: v(20, 75) },
-            { id: "regular_crate", position: v(23, 63) },
+            { id: "regular_crate", position: v(-6, 74) },
+            { id: "regular_crate", position: v(-4, 62) },
 
             { id: "panel_with_a_button", position: v(25.3, -55.7), rotation: 2 },
             { id: "panel_without_button_small", position: v(16.6, -55.7), rotation: 2 },
@@ -1442,7 +1443,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(31, -110),
                 orientation: 0
             }
-        ]
+        ],
+        lootSpawners: [{
+            position: v(10, -73),
+            table: "gas_can"
+        }]
     },
     {
         idString: "port",

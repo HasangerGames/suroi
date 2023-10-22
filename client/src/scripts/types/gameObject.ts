@@ -7,6 +7,7 @@ import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
+import { type HowlCallback, type HowlErrorCallback } from "howler";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -87,8 +88,8 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         this.container.destroy();
     }
 
-    playSound(key: string, fallOff?: number, maxDistance?: number): Sound {
-        return this.game.soundManager.play(key, this.position, fallOff, maxDistance);
+    playSound(key: string, fallOff?: number, maxDistance?: number, onend?: HowlCallback | HowlErrorCallback): Sound {
+        return this.game.soundManager.play(key, this.position, fallOff, maxDistance, onend);
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat]): void;

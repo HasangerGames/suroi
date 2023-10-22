@@ -1,4 +1,4 @@
-import { type Vector } from "../../common/src/utils/vector";
+import { v, type Vector } from "../../common/src/utils/vector";
 
 export enum SpawnMode {
     Random,
@@ -18,7 +18,7 @@ export const Config = {
 
     mapName: "singleBuilding",
 
-    spawn: { mode: SpawnMode.Center },
+    spawn: { mode: SpawnMode.Fixed, position: v(520, 580) },
 
     maxPlayersPerGame: 80,
     maxGames: 3,

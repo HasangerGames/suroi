@@ -1,9 +1,13 @@
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { Obstacles, type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { addAdjust, calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
-import { ObstacleSpecialRoles, reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
+import {
+    ObstacleSpecialRoles,
+    type ReferenceTo,
+    reifyDefinition
+} from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { v, type Vector } from "../../../../common/src/utils/vector";
@@ -11,8 +15,9 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { type Player } from "./player";
 
 export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -33,9 +38,12 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         openAltHitbox?: Hitbox
         hitbox?: Hitbox
         offset: number
+        locked?: boolean
     };
 
     isNew = true;
+
+    activated?: boolean;
 
     hitbox!: Hitbox;
     orientation: Orientation = 0;
@@ -109,6 +117,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                 } = calculateDoorHitboxes(definition, this.position, this.orientation)
             );
             this.door.closedHitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
+            this.door.locked = definition.locked;
         }
 
         if (definition.role === ObstacleSpecialRoles.Door && this.door !== undefined && data.door) {
@@ -127,7 +136,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                     }
                 } else {
                     this.playSound(
-                        offset === 0 ? "door_close" : "door_open",
+                        offset === 0 ? `${definition.idString}_close` : `${definition.idString}_open`,
                         0.3,
                         48
                     );
@@ -139,7 +148,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                             {
                                 target: this.image,
                                 to: { rotation: orientationToRotation(offset) },
-                                duration: 150
+                                duration: definition.animationDuration ?? 150
                             }
                         );
                     } else {
@@ -180,7 +189,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
-            this.dead = data.dead;
+            this.dead = true;
             if (!this.isNew) {
                 this.playSound(`${definition.material}_destroyed`, 0.2, 96);
 
@@ -218,6 +227,17 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
         this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
+        if (!this.activated && data.activated) {
+            this.activated = true;
+            let firstRun = !this.isNew;
+            const playGeneratorSound = (): void => {
+                if (this.destroyed) return;
+                this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
+                firstRun = false;
+            };
+            playGeneratorSound();
+        }
+
         if (!this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);
         }
@@ -235,8 +255,6 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         // Update the obstacle image
         this.image.setFrame(texture);
-
-        if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
@@ -270,6 +288,10 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                 );
             }
         }
+    }
+
+    canInteract(player: Player): boolean {
+        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && player.activeItem.idString === this.definition.activator && !this.activated));
     }
 
     hitEffect(position: Vector, angle: number): void {

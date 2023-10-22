@@ -475,11 +475,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
         if (weaponDef.image) {
-            if (weaponDef.itemType === ItemType.Melee) {
-                this.images.weapon.setFrame(`${weaponDef.idString}`);
-            } else if (weaponDef.itemType === ItemType.Gun) {
-                this.images.weapon.setFrame(`${weaponDef.idString}_world`);
-            }
+            this.images.weapon.setFrame(`${weaponDef.idString}${weaponDef.itemType === ItemType.Gun || weaponDef.image.separateWorldImage ? "_world" : ""}`);
             this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
             this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
 

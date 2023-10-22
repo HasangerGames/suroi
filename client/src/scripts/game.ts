@@ -5,7 +5,7 @@ import { ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes }
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { enablePlayButton } from "./main";
@@ -240,6 +240,7 @@ export class Game {
         this.socket.close();
 
         // reset stuff
+        for (const object of this.objects) object.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
@@ -441,9 +442,9 @@ export class Game {
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
-                if (object instanceof Obstacle && object.isDoor && !object.dead) {
+                if (object instanceof Obstacle && object.canInteract(player)) {
                     const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
-                    const dist = distanceSquared(object.position, player.position);
+                    const dist = distanceSquared(object.position, player.position); // fixme use of both distanceTo and distanceSquared?
                     if (dist < minDist && record?.collided) {
                         minDist = dist;
                         closestObject = object;
@@ -494,7 +495,16 @@ export class Game {
                         ) return;
 
                         let interactText = "";
-                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                        if (closestObject instanceof Obstacle) {
+                            switch (closestObject.definition.role) {
+                                case ObstacleSpecialRoles.Door:
+                                    interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                                    break;
+                                case ObstacleSpecialRoles.Activatable:
+                                    interactText += "Activate ";
+                                    break;
+                            }
+                        }
                         interactText += closestObject.definition.name;
                         if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
@@ -503,11 +513,12 @@ export class Game {
                     if (this._playerManager.isMobile) {
                         const lootDef = closestObject.definition;
 
-                        // Autoloot
-                        if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {
+                        // Auto open doors
+                        if (closestObject instanceof Obstacle && closestObject.canInteract(player) && closestObject.door?.offset === 0) {
                             this.playerManager.interact();
                         }
 
+                        // Autoloot
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
                             (
