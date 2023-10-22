@@ -3,6 +3,7 @@ import { type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
+import { ContainerTints } from "./buildings";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
@@ -35,6 +36,8 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
+
+    readonly tint?: number
 
     readonly isWall?: boolean
     readonly isWindow?: boolean
@@ -99,11 +102,7 @@ function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
         },
         hitbox: RectangleHitbox.fromRect(6.1, 6.1),
         rotationMode: RotationMode.None,
-        hasLoot: true,
-        frames: {
-            particle: "regular_crate_particle",
-            residue: "regular_crate_residue"
-        }
+        hasLoot: true
     };
 }
 
@@ -149,6 +148,53 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
         frames: {
             particle: "rock_particle"
         }
+    };
+}
+
+function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint?: number): ObstacleDefinition {
+    let hitbox: Hitbox;
+    switch (open) {
+        case "open2":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
+            ]);
+            break;
+        case "open1":
+            hitbox = new ComplexHitbox([
+                RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
+                RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
+                RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
+            ]);
+            break;
+        case "closed":
+        default:
+            hitbox = RectangleHitbox.fromRect(14, 28);
+            break;
+    }
+    return {
+        idString: `container_walls_${id}`,
+        name: `Container Walls ${id}`,
+        material: "metal",
+        health: 500,
+        indestructible: true,
+        noResidue: true,
+        hideOnMap: false,
+        invisible: open === "closed",
+        scale: {
+            spawnMin: 1.0,
+            spawnMax: 1.0,
+            destroy: 1.0
+        },
+        hitbox,
+        rotationMode: RotationMode.Limited,
+        isWall: true,
+        reflectBullets: true,
+        frames: {
+            base: open !== "closed" ? `container_walls_${open}` : undefined,
+            particle: "metal_particle"
+        },
+        tint
     };
 }
 
@@ -274,7 +320,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             }
         },
         makeCrate("regular_crate", "Regular Crate", {
-            rotationMode: RotationMode.Binary
+            rotationMode: RotationMode.Binary,
+            frames: {
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
+            }
         }),
         makeCrate("flint_crate", "Flint Crate", {
             rotationMode: RotationMode.None,
@@ -1151,6 +1201,648 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "wall_particle"
             }
-        }
+        },
+        {
+            idString: "truck",
+            name: "Truck",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 1.0
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
+                RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
+                RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
+                RectangleHitbox.fromRect(4.75, 15.9, v(0, -16.65)), // Fifth wheel
+                RectangleHitbox.fromRect(17, 6.9, v(0, -13.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(17, 6.9, v(0, -20.7)), // Rearmost back wheels
+                RectangleHitbox.fromRect(16.55, 1.6, v(0, -25.35)) // Rear bumper
+            ]),
+            reflectBullets: true,
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer3,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "trailer",
+            name: "Trailer",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: false,
+            invisible: false,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Frontmost back wheels
+                RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
+                RectangleHitbox.fromRect(15.5, 1.5, v(0, -22.5)), // Rear bumper
+                RectangleHitbox.fromRect(9.75, 1, v(-0.05, 22.75)) // Front part (idk)
+            ]),
+            rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "tango_crate",
+            name: "Tango crate",
+            material: "wood",
+            health: 120,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(15, 6.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "furniture_particle",
+                residue: "crate_residue"
+            },
+            hasLoot: true
+        },
+        {
+            idString: "panel_with_a_button",
+            name: "Pannel with a button",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            }
+        },
+        {
+            idString: "panel_with_the_button_pressed",
+            name: "Pannel with the button pressed",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            }
+        },
+        {
+            idString: "panel_without_button_small",
+            name: "Pannel without button small",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(7, 7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            }
+        },
+        {
+            idString: "panel_without_button",
+            name: "Pannel without button",
+            material: "metal",
+            health: Infinity,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle",
+                residue: "crate_residue"
+            }
+        },
+        {
+            idString: "crane_base",
+            name: "crane base",
+            material: "metal",
+            health: 10000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+
+                // Bottom Bottom left
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 62.9 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 62.8 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 88.6 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 92.6 + 0.6)), // Bottom Wheels
+
+                // Top Bottom left
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, 29.5 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 18.5 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, 40.4 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, 44.4 + 0.6)), // Bottom Wheels
+
+                // Bottom Bottom Right
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, 77.7 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 66.7 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, 62.9 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, 62.8 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 88.6 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, 92.6 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, 92.6 + 0.6)), // Bottom Wheels
+
+                // Top Bottom Right
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, 29.5 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 18.5 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, 14.7 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, 40.4 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, 44.4 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, 44.4 + 0.6)), // Bottom Wheels
+
+                // Bottom Top left
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -82.2 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -71.2 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -67.4 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -67.3 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -93.1 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -97.1 + 0.6)), // Bottom Wheels
+
+                // Top Top left
+                RectangleHitbox.fromRect(6, 15.5, v(-29.6, -34 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -23 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(-29.6, -44.9 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(-30.8, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(-28.5, -48.9 + 0.6)), // Bottom Wheels
+
+                // Bottom Top Right
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, -82.2 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -71.2 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, -67.4 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, -67.3 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -93.1 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, -97.1 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, -97.1 + 0.6)), // Bottom Wheels
+
+                // Top Top Right
+                RectangleHitbox.fromRect(6, 15.5, v(29.6, -34 + 0.6)), // Middle Big rectanle
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -23 + 0.6)), // Top Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, -19.2 + 0.6)), // Top Wheels
+                RectangleHitbox.fromRect(5.45, 6, v(29.6, -44.9 + 0.6)), // Bottom Small rectanle
+                RectangleHitbox.fromRect(2, 1.8, v(30.8, -48.9 + 0.6)), // Bottom Wheels
+                RectangleHitbox.fromRect(2, 1.8, v(28.5, -48.9 + 0.6)), // Bottom Wheels
+
+                RectangleHitbox.fromRect(4.3, 1.8, v(29.6, -99.5)),
+                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, -99.5)),
+
+                RectangleHitbox.fromRect(4.3, 1.8, v(29.6, 99.5)),
+                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5))// Top Wheels
+
+            ]),
+            rotationMode: RotationMode.None,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "generator",
+            name: "Generator",
+            material: "metal",
+            health: 200,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.None,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(9, 7)
+        },
+        {
+            idString: "ship_thing_1",
+            name: "Ship thing 1 lol",
+            material: "metal",
+            health: 200,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.None,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(12, 25)
+        },
+        {
+            idString: "ship",
+            name: "Ship",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.None,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1, 220, v(48, -20)), // Right wall
+
+                RectangleHitbox.fromRect(1, 66, v(-31, 4.8)), // Left wall (middle)
+                RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
+                RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
+
+                RectangleHitbox.fromRect(32, 2, v(32, 83.5)), //bottom
+                RectangleHitbox.fromRect(33, 2, v(-14.2, 83.5)), //bottom
+                RectangleHitbox.fromRect(80, 1, v(8, -128)), //top
+
+                RectangleHitbox.fromRect(80, 25, v(8, 119.5)),
+                RectangleHitbox.fromRect(14.7, 30, v(-24.5, 98)),
+                RectangleHitbox.fromRect(12, 30, v(41.3, 98))
+
+            ])
+        },
+        {
+            idString: "ship_cabin_windows",
+            name: "Ship cabin windows",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 49.8)
+        },
+        {
+            idString: "ship_exterior_long_wall",
+            name: "Ship exteropr long wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 29)
+        },
+        {
+            idString: "ship_exterior_medium_wall",
+            name: "Ship exteropr medium wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 20)
+        },
+        {
+            idString: "ship_exterior_small_wall",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 9)
+        },
+        {
+            idString: "ship_tiny_wall",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 7)
+        },
+        {
+            idString: "ship_small_wall",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 16)
+        },
+        {
+            idString: "ship_medium_wall",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 19.5)
+        },
+        {
+            idString: "ship_medium_wall2",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 20.2)
+        },
+        {
+            idString: "ship_long_wall",
+            name: "Ship exteropr small wall",
+            material: "metal",
+            health: 150,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            },
+            hitbox: RectangleHitbox.fromRect(1.7, 43.5)
+        },
+        {
+            idString: "forklift",
+            name: "Forklift",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
+                RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
+            ]),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "pallet",
+            name: "Pallet",
+            material: "wood",
+            health: 120,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(0, 0),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "crate_particle"
+            },
+            noCollisions: true
+        },
+        {
+            idString: "bollard",
+            name: "Bollard",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
+                new CircleHitbox(3.45, v(1, 0))
+            ]),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "barrier",
+            name: "Barrier",
+            material: "metal",
+            health: 1000,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
+                RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
+                RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
+            ]),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "port_shed_exterior",
+            name: "Port Shed Exterior",
+            material: "stone",
+            health: 1000,
+            indestructible: true,
+            hideOnMap: true,
+            invisible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox([
+                RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
+                RectangleHitbox.fromRect(1.75, 29.5, v(10.23, -1.7)), // Right wall
+                RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
+                RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
+            ]),
+            rotationMode: RotationMode.Limited,
+            noResidue: true,
+            frames: {
+                particle: "rock_particle"
+            }
+        },
+        {
+            idString: "port_warehouse_windows",
+            name: "Port warehouse windows",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 24),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "port_warehouse_wall_short",
+            name: "Port warehouse short wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 14.5),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "port_warehouse_wall_long",
+            name: "Port warehouse long wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 32.2),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        {
+            idString: "port_warehouse_wall_superlong",
+            name: "Port warehouse long super wall",
+            material: "metal",
+            health: Infinity,
+            hideOnMap: true,
+            indestructible: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(1.5, 56),
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "barrel_particle"
+            }
+        },
+        makeContainerWalls(1, "closed"),
+        makeContainerWalls(2, "open1", ContainerTints.Green),
+        makeContainerWalls(3, "open1", ContainerTints.Blue),
+        makeContainerWalls(4, "open2", ContainerTints.Blue),
+        makeContainerWalls(5, "open1", ContainerTints.Yellow),
+        makeContainerWalls(6, "open2", ContainerTints.Yellow)
     ]
 );

@@ -1,7 +1,7 @@
 import type { WebSocket } from "uWebSockets.js";
 import {
     AnimationType,
-    INVENTORY_MAX_WEAPONS,
+    INVENTORY_MAX_WEAPONS, KillFeedMessageType,
     ObjectCategory,
     PLAYER_RADIUS,
     PlayerActions
@@ -30,7 +30,6 @@ import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { KillPacket } from "../packets/sending/killPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
-import { KillKillFeedMessage } from "../types/killFeedMessage";
 import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
@@ -53,6 +52,13 @@ export class Player extends GameObject {
 
     joined = false;
     disconnected = false;
+
+    private _kills = 0;
+    get kills(): number { return this._kills; }
+    set kills(k: number) {
+        this._kills = k;
+        this.game.updateKillLeader(this);
+    }
 
     static readonly DEFAULT_MAX_HEALTH = 100;
     private _maxHealth = Player.DEFAULT_MAX_HEALTH;
@@ -110,7 +116,6 @@ export class Player extends GameObject {
 
     killedBy?: Player;
 
-    kills = 0;
     damageDone = 0;
     damageTaken = 0;
     joinTime: number;
@@ -409,6 +414,7 @@ export class Player extends GameObject {
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
         this.game.grid.addObject(this);
 
+        this.inventory.items["15x_scope"] = 1;
         // Disable invulnerability if the player moves or turns
         if (this.isMoving || this.turning) {
             this.disableInvulnerability();
@@ -441,9 +447,11 @@ export class Player extends GameObject {
         let isInsideBuilding = false;
         for (const object of this.nearObjects) {
             if (object instanceof Building && !object.dead) {
-                if (object.scopeHitbox.collidesWith(this.hitbox)) {
-                    isInsideBuilding = true;
-                    break;
+                if (object.scopeHitbox !== undefined) {
+                    if (object.scopeHitbox.collidesWith(this.hitbox)) {
+                        isInsideBuilding = true;
+                        break;
+                    }
                 }
             }
         }
@@ -643,6 +651,11 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | ObjectType): void {
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead();
+        }
+
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -657,16 +670,11 @@ export class Player extends GameObject {
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(
-                new KillFeedPacket(
-                    this,
-                    new KillKillFeedMessage(
-                        this,
-                        source === this ? undefined : source,
-                        weaponUsed
-                    )
-                )
-            );
+            this.game.killFeedMessages.add(new KillFeedPacket(this, KillFeedMessageType.Kill, {
+                killedBy: source === this ? undefined : source,
+                weaponUsed,
+                kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0
+            }));
         }
 
         // Destroy physics body; reset movement and attacking variables

@@ -93,9 +93,11 @@ export class BaseBullet {
         const collisions: Collision[] = [];
 
         for (const object of objects) {
-            if (object.damageable && !object.dead &&
+            if (
+                object.damageable && !object.dead &&
                 !(!this.canHitShooter && object.id === this.sourceID) &&
-                !this.damagedIDs.has(object.id)) {
+                !this.damagedIDs.has(object.id)
+            ) {
                 const collision = object.hitbox?.intersectsLine(oldPosition, this.position);
 
                 if (collision) {

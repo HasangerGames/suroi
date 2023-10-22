@@ -25,9 +25,9 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="4.0000002"
-     inkscape:cx="76.249996"
-     inkscape:cy="85.249996"
+     inkscape:zoom="2.8284273"
+     inkscape:cx="-45.961938"
+     inkscape:cy="74.246208"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -53,34 +53,25 @@
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient1390"
-       id="radialGradient937"
-       cx="-276.51196"
-       cy="-104.56355"
-       fx="-276.51196"
-       fy="-104.56355"
-       r="54.170937"
-       gradientUnits="userSpaceOnUse" />
+       id="radialGradient936"
+       cx="57.162788"
+       cy="2.2081442"
+       fx="57.162788"
+       fy="2.2081442"
+       r="11.904793"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1177912,0,0,1.1177912,-5.4088996,1.0642765)" />
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-12.961579,12.599478)">
-    <path
-       sodipodi:type="star"
-       style="fill:url(#radialGradient937);fill-opacity:1;stroke:#323232;stroke-width:6.80596;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.85098"
-       id="path849"
-       inkscape:flatsided="true"
-       sodipodi:sides="8"
-       sodipodi:cx="-276.51196"
-       sodipodi:cy="-104.56355"
-       sodipodi:r1="51.045963"
-       sodipodi:r2="47.16032"
-       sodipodi:arg1="0.78539816"
-       sodipodi:arg2="1.1780972"
-       inkscape:rounded="0"
-       inkscape:randomized="0"
-       d="m -240.41702,-68.468606 -36.09494,14.951016 -36.09495,-14.951016 -14.95102,-36.094944 14.95102,-36.09495 36.09495,-14.95102 36.09494,14.95102 14.95102,36.09495 z"
-       transform="matrix(0.24296473,0,0,0.24296473,93.373399,26.034943)" />
+     transform="translate(-45.257997,9.6966484)">
+    <circle
+       style="fill:url(#radialGradient936);fill-opacity:1;stroke:#323232;stroke-width:1.32291667;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.847059"
+       id="path848"
+       cx="58.487167"
+       cy="3.532521"
+       r="12.567699" />
   </g>
 </svg>

@@ -125,6 +125,17 @@ export function setupUI(game: Game): void {
 
     createDropdown("#server-select");
 
+    const serverSelect = $<HTMLSelectElement>("#server-select");
+
+    // Select region
+    serverSelect.on("change", () => {
+        const value = serverSelect.val() as string | undefined;
+
+        if (value !== undefined) {
+            consoleVariables.get.builtIn("cv_region").setValue(value);
+        }
+    });
+
     const rulesBtn = $("#btn-rules");
 
     // Highlight rules & tutorial button for new players
@@ -138,8 +149,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); });
+    $("#btn-quit-game").on("click", () => { game.endGame(true); });
+    $("#btn-menu").on("click", () => { game.endGame(true); });
+    $("#btn-play-again").on("click", () => { game.endGame(false); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -495,10 +507,19 @@ export function setupUI(game: Game): void {
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
     // Hide rules button
-    addCheckboxListener("#toggle-hide-rules", "cv_rules_acknowledged", (value: boolean) => {
-        $("#btn-rules").toggle(!value);
+    addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
+        $("#btn-rules, #rules-close-btn").toggle(!value);
     });
-    $("#btn-rules").toggle(!consoleVariables.get.builtIn("cv_rules_acknowledged").value);
+    rulesBtn.toggle(!consoleVariables.get.builtIn("cv_hide_rules_button").value);
+
+    // Hide option to hide rules if rules haven't been acknowledged
+    $(".checkbox-setting").has("#toggle-hide-rules").toggle(consoleVariables.get.builtIn("cv_rules_acknowledged").value);
+
+    $("#rules-close-btn").on("click", () => {
+        $("#btn-rules, #rules-close-btn").hide();
+        consoleVariables.get.builtIn("cv_hide_rules_button").setValue(true);
+        $("#toggle-hide-rules").prop("checked", true);
+    }).toggle(consoleVariables.get.builtIn("cv_rules_acknowledged").value && !consoleVariables.get.builtIn("cv_hide_rules_button").value);
 
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
@@ -518,10 +539,8 @@ export function setupUI(game: Game): void {
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString
-}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString
-}.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 

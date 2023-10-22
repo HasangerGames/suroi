@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { type Application, Container } from "pixi.js";
-import { ObjectCategory, PacketType, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
+import { ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
@@ -17,29 +17,30 @@ import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
 import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { KillPacket } from "./packets/receiving/killPacket";
+import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PingPacket } from "./packets/sending/pingPacket";
+import { type SendingPacket } from "./types/sendingPacket";
+import { type GameObject } from "./types/gameObject";
+
+import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
-import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { InputPacket } from "./packets/sending/inputPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
-import { PingPacket } from "./packets/sending/pingPacket";
+import { InputPacket } from "./packets/sending/inputPacket";
+import { getIconFromInputName } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
+import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
-import { type GameObject } from "./types/gameObject";
-import { type SendingPacket } from "./types/sendingPacket";
-import { keybinds } from "./utils/console/gameConsole";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { getIconFromInputName } from "./utils/inputManager";
-import { PlayerManager } from "./utils/playerManager";
-import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
-import { consoleVariables } from "./utils/console/variables";
 import { Decal } from "./objects/decal";
+import { consoleVariables } from "./utils/console/variables";
+import { UpdatePacket } from "./packets/receiving/updatePacket";
+import { keybinds } from "./utils/console/gameConsole";
 
 export class Game {
     socket!: WebSocket;
@@ -139,6 +140,7 @@ export class Game {
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
+                $("#joysticks-containers").show();
             }
             this.sendPacket(new PingPacket(this._playerManager));
             this.sendPacket(new JoinPacket(this._playerManager));
@@ -213,12 +215,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame();
+                if (!this.error) this.endGame(true);
             }
         };
     }
 
-    endGame(): void {
+    endGame(transition: boolean): void {
         clearTimeout(this._tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
@@ -229,7 +231,9 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
-        $("#splash-ui").fadeIn();
+        $("#kill-leader-leader").text("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
+        if (transition) $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
@@ -492,10 +496,9 @@ export class Game {
                             !(differences.object || differences.offset)
                         ) return;
 
-                        let interactText = "";
-                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
-                        interactText += closestObject.type.definition.name;
-                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
+                        let interactText;
+                        if (closestObject instanceof Obstacle) interactText = closestObject.door?.offset === 0 ? "Open Door" : "Close Door";
+                        else interactText = `${closestObject.type.definition.name}${closestObject.count > 1 ? ` (${closestObject.count})` : ""}`;
                         $("#interact-text").text(interactText);
                     };
 
@@ -512,7 +515,8 @@ export class Game {
                             ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
                                 (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1])))
                         ) {
-                            this._playerManager.interact();
+                            // TODO Needs testing
+                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.playerManager.interact();
                         } else if (
                             (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
                             closestObject instanceof Obstacle
