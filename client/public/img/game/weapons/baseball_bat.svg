@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 110 110"
+   width="140"
+   height="140"
+   viewBox="0 0 140 140"
    fill="none"
    version="1.1"
    id="svg12"
    sodipodi:docname="baseball_bat.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,17 +24,19 @@
      inkscape:pagecheckerboard="1"
      showgrid="false"
      inkscape:zoom="7.9181818"
-     inkscape:cx="37.382319"
-     inkscape:cy="46.980482"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:cx="83.352469"
+     inkscape:cy="34.919633"
+     inkscape:window-width="1920"
+     inkscape:window-height="1094"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg12" />
+     inkscape:current-layer="g856"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      id="g856"
-     transform="matrix(1.0136218,0,0,1.0155213,-0.7496684,-0.74740506)">
+     transform="matrix(1.2900639,0,0,1.2924814,-0.95412324,-0.95124263)">
     <path
        d="m 105.484,4.36822 c -3.41,-3.409659 -5.415,-4.566328 -11.7803,1.79923 L 60.315,42.0862 c 0,0 -12.0253,15.1483 -18.6028,22.2245 C 30.3256,76.5604 9.53826,97.5979 6.01891,101.158 4.67548,100.496 2.79734,99.4885 2.05494,100.029 c -0.7424,0.541 -0.58722,2.128 0.56299,3.843 0.41697,0.622 0.93664,1.255 1.54393,1.863 2.28223,2.281 5.04281,2.993 5.65389,2.055 0.61105,-0.938 -0.41611,-2.576 -1.08296,-3.925 C 12.4468,100.501 33.5684,79.8453 45.7616,68.4433 52.8249,61.8384 67.7675,49.5387 67.7675,49.5387 L 103.686,16.15 c 6.757,-5.8649 5.21,-8.37179 1.798,-11.78178 z"
        fill="#b87b2f"
@@ -69,6 +71,7 @@
        stroke="#31200c"
        stroke-width="1.72474"
        stroke-linejoin="round"
-       id="path10" />
+       id="path10"
+       style="stroke-width:1.54886025;stroke-dasharray:none" />
   </g>
 </svg>
