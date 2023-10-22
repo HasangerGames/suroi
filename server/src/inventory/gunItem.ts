@@ -131,7 +131,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
             }
         }
 
+        const clipDistance = this.owner.distanceToMouse - this.definition.length;
+
         const limit = definition.bulletCount ?? 1;
+
         for (let i = 0; i < limit; i++) {
             this.owner.game.addBullet(
                 this,
@@ -141,9 +144,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
                         ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
-                            (definition.consistentPatterning === true
-                                ? 2 * (i / limit - 0.5)
-                                : randomFloat(-1, 1)) * spread
+                        (definition.consistentPatterning === true
+                            ? 2 * (i / limit - 0.5)
+                            : randomFloat(-1, 1)) * spread,
+                    clipDistance
                 }
             );
         }
@@ -164,7 +168,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
-                this.owner.activeItem === this
+            this.owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeoutID);
             this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);

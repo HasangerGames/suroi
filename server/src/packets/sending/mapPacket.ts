@@ -7,7 +7,7 @@ import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
-    override readonly allocBytes = 1 << 13;
+    override readonly allocBytes = 1 << 14;
     override readonly type = PacketType.Map;
 
     readonly game: Game;

@@ -161,6 +161,11 @@ export class Player extends GameObject {
     turning = false;
 
     /**
+     * The distance from the player position to the player mouse in game units
+     */
+    distanceToMouse = 0;
+
+    /**
      * Keeps track of various fields which are "dirty"
      * and therefore need to be sent to the client for
      * updating

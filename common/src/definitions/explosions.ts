@@ -192,6 +192,35 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 variance: 1,
                 shrapnel: true
             }
+        },
+        {
+            idString: "usas_explosion",
+            name: "USAS-12",
+            damage: 50,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 4,
+                max: 12
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 10
+            },
+            animation: {
+                duration: 1500,
+                tint: 0x6c1313,
+                scale: 0.8
+            },
+            shrapnelCount: 4,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 2,
+                speed: 0.06,
+                maxDistance: 10,
+                variance: 1,
+                shrapnel: true
+            },
+            decal: "explosion_decal"
         }
     ]
 );
