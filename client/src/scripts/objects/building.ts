@@ -15,8 +15,6 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-
-
 export class Building extends GameObject {
     declare readonly type: ObjectType<ObjectCategory.Building, BuildingDefinition>;
 
@@ -148,7 +146,7 @@ export class Building extends GameObject {
             drawHitbox(definition.spawnHitbox.transform(this.position, 1, this.orientation),
                 HITBOX_COLORS.spawnHitbox,
                 this.debugGraphics);
-            
+
             if (definition.scopeHitbox !== undefined) {
                 drawHitbox(definition.scopeHitbox.transform(this.position, 1, this.orientation),
                     HITBOX_COLORS.buildingZoomCeiling,
