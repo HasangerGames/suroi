@@ -93,7 +93,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         if (definition.hasLoot) {
             const lootTable = LootTables[this.definition.idString];
             const drops = lootTable.loot.flat();
-            
+
             this.loot = Array.from(
                 { length: random(lootTable.min, lootTable.max) },
                 () => getLootTableLoot(drops)

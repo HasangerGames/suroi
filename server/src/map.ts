@@ -3,7 +3,7 @@ import { Buildings, type BuildingDefinition } from "../../common/src/definitions
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
