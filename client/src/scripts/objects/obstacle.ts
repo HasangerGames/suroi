@@ -21,6 +21,7 @@ import { type Player } from "./player";
 
 export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
+import { ParticleEmitter } from "./particles";
 
     readonly definition: Def;
 
@@ -42,6 +43,9 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
     };
 
     isNew = true;
+    explosiveEmitter: ParticleEmitter
+
+    activated?: boolean;
 
     activated?: boolean;
 
@@ -75,6 +79,21 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         this.particleFrames = definition.particleVariations !== undefined
             ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
             : [particleImage];
+
+            
+        this.explosiveEmitter = this.game.particleManager.addEmitter(new ParticleEmitter({
+            delay: 250,
+            active: false,
+            spawnOptions: () => ({
+                frames: 'smoke_particle',
+                position: this.position,
+                zIndex: ZIndexes.Players,
+                lifeTime: 800,
+                scale: { start: randomFloat(0.5, 0.7), end: randomFloat(1.6, 2) },
+                alpha: { start: 0.9, end: 0.3 },
+                speed: velFromAngle((randomFloat(0, 2*Math.PI)), randomFloat(0.5, 4))
+            })
+        }));
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle]): void {
@@ -87,6 +106,14 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
 
         this.scale = data.scale;
+
+        if (definition.explosion !== undefined && (this.scale - definition.scale.destroy)/(definition.scale.spawnMin-definition.scale.destroy) <= 0.3 && !this.dead) {
+            this.explosiveEmitter.active = true;
+        }
+
+        if (definition.explosion !== undefined && (this.scale - definition.scale.destroy)/(definition.scale.spawnMin-definition.scale.destroy) <= 0.3 && !this.dead) {
+            this.explosiveEmitter.active = true;
+        }
 
         if (definition.role === ObstacleSpecialRoles.Door && this.door && this.isNew) {
             let offsetX: number;
@@ -201,6 +228,9 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
+
+                this.explosiveEmitter.active = false;
+                this.explosiveEmitter.destroy();
 
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: this.particleFrames,
