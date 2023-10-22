@@ -208,9 +208,7 @@ export function setupInputs(game: Game): void {
             if (def.itemType === ItemType.Gun && def.shootOnRelease) {
                 shootOnRelease = true;
             } else {
-                if (playerManager.attacking !== attacking) playerManager.dirty.inputs = true;
                 playerManager.attacking = attacking;
-                playerManager.dirty.inputs = true;
             }
         });
 
@@ -218,9 +216,8 @@ export function setupInputs(game: Game): void {
             rightJoyStickUsed = false;
             if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
             playerManager.attacking = shootOnRelease;
-            shootOnRelease = false;
             playerManager.resetAttacking = true;
-            playerManager.dirty.inputs = true;
+            shootOnRelease = false;
         });
     }
 

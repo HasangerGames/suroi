@@ -111,7 +111,12 @@ export class PlayerManager {
     itemToDrop = -1;
     consumableToConsume?: HealingItemDefinition | ScopeDefinition;
 
-    attacking = false;
+    private _attacking = false;
+    get attacking(): boolean { return this._attacking; }
+    set attacking(attacking: boolean) {
+        this._attacking = attacking;
+        this.dirty.inputs = true;
+    }
 
     resetAttacking = false;
 
