@@ -340,7 +340,7 @@ export class Map {
 
         if (definition.decals) {
             for (const decal of definition.decals) {
-                this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), decal.rotation));
+                this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
             }
         }
 

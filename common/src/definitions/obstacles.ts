@@ -643,7 +643,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             reflectBullets: true,
             hitbox: RectangleHitbox.fromRect(12.8, 1.9, v(0.9, -0.7)),
-            rotationMode: RotationMode.None,
+            rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Door,
             locked: true,
             openOnce: true,
@@ -834,6 +834,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hideOnMap: true,
             hitbox: RectangleHitbox.fromRect(1.8, 9.4),
             zIndex: ZIndexes.ObstaclesLayer2,
+            rotationMode: RotationMode.Limited,
+            role: ObstacleSpecialRoles.Window
+        },
+        {
+            idString: "ship_cabin_window",
+            name: "Ship Cabin Window",
+            material: "glass",
+            health: 20,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.95
+            },
+            hitbox: RectangleHitbox.fromRect(1.8, 9.4),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Window
         },
@@ -1292,6 +1306,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1329,8 +1344,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             idString: "panel_with_a_button",
             name: "Panel with a button",
             material: "metal",
-            health: 1000,
-            indestructible: true,
+            health: 200,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1338,17 +1353,18 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(10.5, 7.5),
             rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
             frames: {
                 particle: "barrel_particle",
-                residue: "crate_residue"
+                residue: "barrel_residue"
             }
         },
         {
             idString: "panel_with_the_button_pressed",
             name: "Panel with the button pressed",
             material: "metal",
-            health: 1000,
-            indestructible: true,
+            health: 200,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1356,17 +1372,37 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(10.5, 7.5),
             rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
             frames: {
                 particle: "barrel_particle",
-                residue: "crate_residue"
+                residue: "barrel_residue"
+            }
+        },
+        {
+            idString: "panel_without_button",
+            name: "Panel without button",
+            material: "metal",
+            health: 200,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.7
+            },
+            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
+            rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
+            frames: {
+                particle: "barrel_particle",
+                residue: "barrel_residue"
             }
         },
         {
             idString: "panel_without_button_small",
             name: "Panel without button small",
             material: "metal",
-            health: 1000,
-            indestructible: true,
+            health: 200,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1374,27 +1410,53 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: RectangleHitbox.fromRect(7, 7.5),
             rotationMode: RotationMode.Limited,
+            explosion: "control_panel_explosion",
             frames: {
                 particle: "barrel_particle",
-                residue: "crate_residue"
+                residue: "barrel_residue"
             }
         },
         {
-            idString: "panel_without_button",
-            name: "Panel without button",
+            idString: "crane_base_end",
+            name: "Crane Base End",
             material: "metal",
-            health: 1000,
+            health: 10000,
             indestructible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
-                destroy: 0.7
+                destroy: 0.9
             },
-            hitbox: RectangleHitbox.fromRect(10.5, 7.5),
+            zIndex: ZIndexes.Ground,
+            hitbox: RectangleHitbox.fromRect(4.5, 1.8),
             rotationMode: RotationMode.Limited,
             frames: {
-                particle: "barrel_particle",
-                residue: "crate_residue"
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "crane_base_part",
+            name: "Crane Base Part",
+            material: "metal",
+            health: 10000,
+            indestructible: true,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1.0,
+                spawnMax: 1.0,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(6.1, 15.5, v(0, 0)), // Middle big rectangle
+                RectangleHitbox.fromRect(5.3, 6, v(0, 10.97)), // Top small rectangle
+                RectangleHitbox.fromRect(4.2, 1.8, v(0, 14.8)), // Top wheels
+                RectangleHitbox.fromRect(5.3, 6, v(0, -10.97)), // Bottom small rectangle
+                RectangleHitbox.fromRect(4.2, 1.8, v(0, -14.8)) // Bottom wheels
+            ),
+            zIndex: ZIndexes.ObstaclesLayer4,
+            rotationMode: RotationMode.Limited,
+            frames: {
+                particle: "metal_particle"
             }
         },
         {
@@ -1409,7 +1471,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox(
-
                 // Bottom Bottom left
                 RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectangle
                 RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectangle
@@ -1489,7 +1550,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5))// Top Wheels
 
             ),
-            zIndex: ZIndexes.ObstaclesLayer4,
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "metal_particle"
@@ -1501,6 +1561,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 200,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1537,6 +1598,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1553,13 +1615,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
                 RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
 
-                RectangleHitbox.fromRect(32, 1, v(32, 82.7)), //bottom
-                RectangleHitbox.fromRect(33, 1, v(-14.2, 82.7)), //bottom
+                RectangleHitbox.fromRect(32.2, 1.2, v(31.7, 81.2)), //bottom
+                RectangleHitbox.fromRect(33, 1.2, v(-14.8, 81.2)), //bottom
                 RectangleHitbox.fromRect(80, 1, v(8, -128)), //top
 
-                RectangleHitbox.fromRect(80, 25, v(8, 118.5)),
-                RectangleHitbox.fromRect(14.7, 30, v(-24.5, 98)),
-                RectangleHitbox.fromRect(12, 30, v(41.3, 98))
+                // Tango room bottom walls
+                RectangleHitbox.fromRect(80, 26, v(8, 117)),
+                RectangleHitbox.fromRect(14.7, 30, v(-24.8, 96)),
+                RectangleHitbox.fromRect(13.8, 30, v(41.5, 96))
             )
         },
         {
@@ -1574,6 +1637,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             rotationMode: RotationMode.Limited,
+            zIndex: ZIndexes.ObstaclesLayer1 - 3,
             frames: {
                 particle: "metal_particle"
             },
@@ -1585,6 +1649,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1602,6 +1667,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1619,6 +1685,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1636,6 +1703,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1653,6 +1721,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1670,6 +1739,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1687,6 +1757,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1704,6 +1775,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 150,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1721,6 +1793,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1759,6 +1832,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1779,6 +1853,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 1000,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1085.7045mm"
-   height="299.30661mm"
-   viewBox="0 0 1085.7044 299.30662"
+   width="1083.4684mm"
+   height="299.30692mm"
+   viewBox="0 0 1083.4683 299.30693"
    version="1.1"
    id="svg1"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="crane_ceiling2.svg"
+   sodipodi:docname="crane_ceiling.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="0.26236509"
-     inkscape:cx="1680.8639"
-     inkscape:cy="491.68127"
+     inkscape:cx="1585.5768"
+     inkscape:cy="388.77123"
      inkscape:window-width="2560"
      inkscape:window-height="1372"
      inkscape:window-x="0"
@@ -40,10 +40,10 @@
      inkscape:label="Calque 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(364.89615,238.54233)">
+     transform="translate(364.89597,238.54247)">
     <g
        id="g18989"
-       transform="translate(-4670.0139,288.69109)">
+       transform="matrix(0.99975557,0,0,1.000001,-4668.9614,288.69148)">
       <rect
          style="fill:#999900;fill-opacity:1;stroke:#4a4e05;stroke-width:2.26999;stroke-linecap:square;stroke-linejoin:miter;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
          id="rect14890"
@@ -129,7 +129,7 @@
     </g>
     <g
        id="g18072"
-       transform="translate(-4669.7544,288.59068)">
+       transform="matrix(0.99794053,0,0,0.99818553,-4660.8885,287.63407)">
       <g
          id="g16067">
         <rect

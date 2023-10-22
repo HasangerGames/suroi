@@ -82,6 +82,34 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             }
         },
         {
+            idString: "control_panel_explosion",
+            name: "Control Panel",
+            damage: 130,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 8,
+                max: 25
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 50
+            },
+            animation: {
+                duration: 1000,
+                tint: 0xff5500,
+                scale: 1.5
+            },
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 10,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                maxDistance: 20,
+                variance: 1,
+                shrapnel: true
+            }
+        },
+        {
             idString: "super_barrel_explosion",
             name: "Super Barrel",
             damage: 160,

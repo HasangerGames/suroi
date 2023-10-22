@@ -30,7 +30,7 @@ interface SubBuilding {
 interface BuildingDecal {
     id: string
     position: Vector
-    rotation?: number
+    rotation?: Orientation
     scale?: number
 }
 
@@ -1226,21 +1226,28 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ceilingImages: [
             {
                 key: "crane_ceiling",
-                position: v(55.9, -60)
+                position: v(55.5, -60)
             },
             {
                 key: "crane_ceiling",
-                position: v(55.9, 60)
+                position: v(55.5, 60)
             }
         ],
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
         obstacles: [
-            {
-                id: "crane_base",
-                position: v(0, 0),
-                scale: 1.07,
-                rotation: 0
-            }
+            { id: "crane_base_end", position: v(-31.6, -106.15), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(-31.55, -87.3), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(-31.55, -35.6), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(-31.55, 32), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(-31.55, 83.7), rotation: 0, scale: 1.07 },
+            { id: "crane_base_end", position: v(-31.6, 106.15), rotation: 0, scale: 1.07 },
+
+            { id: "crane_base_end", position: v(31.5, -106.15), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(31.55, -87.3), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(31.55, -35.6), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(31.55, 32), rotation: 0, scale: 1.07 },
+            { id: "crane_base_part", position: v(31.55, 83.7), rotation: 0, scale: 1.07 },
+            { id: "crane_base_end", position: v(31.5, 106.15), rotation: 0, scale: 1.07 }
         ]
     },
     {
@@ -1318,20 +1325,20 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 13, v(35, -73)),
             RectangleHitbox.fromRect(10, 19, v(-17, -63)),
 
-            RectangleHitbox.fromRect(60, 25, v(8, 96))
+            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
-            RectangleHitbox.fromRect(60, 25, v(8, 96))
+            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
         ),
         floorImages: [
             {
-                key: "ship_floor",
-                position: v(0, 0)
+                key: "ship_floor_1",
+                position: v(0, -65)
             },
             {
-                key: "ship_tango_room_floor",
-                position: v(9, 94.25)
+                key: "ship_floor_2",
+                position: v(0, 64.8)
             }
         ],
         ceilingImages: [
@@ -1341,7 +1348,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 key: "ship_tango_room_roof",
-                position: v(8.5, 103.3)
+                position: v(8.5, 101.75)
             }
         ],
         floors: [
@@ -1359,34 +1366,42 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             }
         ],
         obstacles: [
-            { id: "vault_door", position: v(8, 83), rotation: 0, scale: 1.07 },
-            { id: "tango_crate", position: v(9, 95.5), rotation: 0, scale: 0.90 },
+            // Tango room
+            { id: "vault_door", position: v(7.55, 81.5), rotation: 0, scale: 1.07 },
+            { id: "tango_crate", position: v(9, 93.5), rotation: 0, scale: 0.90 },
             { id: "super_barrel", position: v(-12, 89) },
-            { id: "box", position: v(30, 87) },
-            { id: "box", position: v(33, 92) },
-            { id: "box", position: v(-12, 103) },
+            { id: "box", position: v(28.5, 87) },
+            { id: "box", position: v(31.5, 92) },
+            { id: "box", position: v(-12, 101) },
 
+            // Main hitbox
             { id: "ship", position: v(0, 0), rotation: 0 },
+
             { id: "ship_thing_1", position: v(-14, -111), rotation: 0, scale: 1.07 },
-            { id: "generator", position: v(23, 77), rotation: 0, scale: 1.07 },
-            { id: "barrel", position: v(24, 68) },
+            { id: "generator", position: v(23, 75), rotation: 0, scale: 1.07 },
+            { id: "barrel", position: v(24, 66) },
             {
                 get id() {
                     return weightedRandom(["barrel", "super_barrel"], [1, 1]);
                 },
-                position: v(21, 60)
+                position: v(21, 58)
             },
-            { id: "regular_crate", position: v(-6, 74) },
-            { id: "regular_crate", position: v(-4, 62) },
+            { id: "regular_crate", position: v(-6, 73) },
+            { id: "regular_crate", position: v(-4, 61) },
 
-            { id: "panel_with_a_button", position: v(25.3, -55.7), rotation: 2 },
-            { id: "panel_without_button_small", position: v(16.6, -55.7), rotation: 2 },
-            { id: "panel_without_button", position: v(7.8, -55.7), rotation: 2 },
-            { id: "panel_with_the_button_pressed", position: v(-2.7, -55.7), rotation: 2 },
+            // Captain's cabin
+            { id: "panel_with_a_button", position: v(24.8, -55.9), rotation: 2 },
+            { id: "panel_without_button_small", position: v(15, -55.9), rotation: 2 },
+            { id: "panel_without_button", position: v(5.5, -55.9), rotation: 2 },
             { id: "regular_crate", position: v(-7, -83) },
             { id: "barrel", position: v(2, -84) },
+            { id: "bookshelf", position: v(22, -85), rotation: 2 },
 
             { id: "ship_cabin_windows", position: v(3.9, -51), rotation: 1, scale: 1.07 },
+            { id: "ship_cabin_window", position: v(-17.3, -50.3), rotation: 1, scale: 1.07 },
+            { id: "ship_cabin_window", position: v(-7.4, -50.3), rotation: 1, scale: 1.07 },
+            { id: "ship_cabin_window", position: v(5.4, -50.3), rotation: 1, scale: 1.07 },
+            { id: "ship_cabin_window", position: v(15.3, -50.3), rotation: 1, scale: 1.07 },
             { id: "ship_small_wall", position: v(-23.6, -58.6), rotation: 0, scale: 1.07 },
             { id: "ship_medium_wall", position: v(31.5, -60.5), rotation: 0, scale: 1.07 },
             { id: "ship_exterior_long_wall", position: v(41, -65.6), rotation: 0, scale: 1.07 },
@@ -1400,7 +1415,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         subBuildings: [
             {
                 get id() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
-                position: v(19, -67),
+                position: v(19, -64),
                 orientation: 2
             },
             {
@@ -1456,6 +1471,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         groundGraphics: [
             { color: 0x626262, hitbox: RectangleHitbox.fromRect(315, 425, v(0, 0)) },
             { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
+
+            // Crane tracks
+            { color: 0x2b2b2b, hitbox: RectangleHitbox.fromRect(0.8, 211, v(67.2, -95)) },
+            { color: 0x2b2b2b, hitbox: RectangleHitbox.fromRect(0.8, 211, v(69.6, -95)) },
+            { color: 0x2b2b2b, hitbox: RectangleHitbox.fromRect(0.8, 211, v(130.3, -95)) },
+            { color: 0x2b2b2b, hitbox: RectangleHitbox.fromRect(0.8, 211, v(132.7, -95)) },
 
             // Road Lines
             { color: 0xffff00, hitbox: RectangleHitbox.fromRect(1.2476, 340.443, v(155.28, -37.84)) },

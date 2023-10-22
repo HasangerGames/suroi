@@ -342,7 +342,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
-            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Full);
+            stream.writeObstacleRotation(data.rotation, data.definition.rotationMode ?? RotationMode.Limited);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
@@ -350,7 +350,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream, type) {
             return {
                 position: stream.readPosition(),
-                rotation: stream.readObstacleRotation((type.definition as DecalDefinition).rotationMode ?? RotationMode.Full).rotation,
+                rotation: stream.readObstacleRotation((type.definition as DecalDefinition).rotationMode ?? RotationMode.Limited).rotation,
                 definition: type.definition as DecalDefinition
             };
         },
