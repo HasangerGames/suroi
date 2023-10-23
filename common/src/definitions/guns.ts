@@ -203,7 +203,7 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "m37",
+        idString: "model_37",
         name: "Model 37",
         itemType: ItemType.Gun,
         ammoType: "12g",
