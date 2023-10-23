@@ -88,7 +88,7 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
 
                 // Troll
-                { item: "g19", spawnSeprately: true, count: 1, weight: 10 },
+                { item: "g19", spawnSeprately: true, count: 1, weight: 1 },
             ]
         ]
     },
