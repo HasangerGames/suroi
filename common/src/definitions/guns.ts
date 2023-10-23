@@ -721,8 +721,8 @@ export const Guns: GunDefinition[] = [
         name: "Stoner 63",
         itemType: ItemType.Gun,
         ammoType: "556mm",
-        ammoSpawnAmount: 150,
-        capacity: 75,
+        ammoSpawnAmount: 200,
+        capacity: 100,
         reloadTime: 3.8,
         fireDelay: 90,
         switchDelay: 500,
@@ -730,8 +730,8 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.7,
         recoilDuration: 175,
         fireMode: FireMode.Auto,
-        shotSpread: 3,
-        moveSpread: 4.5,
+        shotSpread: 2,
+        moveSpread: 3.5,
         length: 8.2,
         fists: {
             left: v(115, -8),
@@ -744,7 +744,7 @@ export const Guns: GunDefinition[] = [
             position: v(4, 0.6)
         },
         ballistics: {
-            damage: 14.25,
+            damage: 16.5,
             obstacleMultiplier: 2,
             speed: 0.28,
             maxDistance: 180,
