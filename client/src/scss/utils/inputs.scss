@@ -50,7 +50,7 @@ input[type="range"] {
 
     &:focus {
         outline: none;
-        border-color: $blue;
+        border-color: $hgreen;
     }
 
     &::-webkit-slider-thumb {
@@ -105,7 +105,7 @@ input[type="checkbox"] {
     }
 
     &:focus {
-        border-bottom: 4px solid $blue;
+        border-bottom: 4px solid $hgreen;
     }
 }
 
