@@ -195,10 +195,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         if (weaponDef.casingParticles !== undefined) {
-            this.game.particleManager.spawnParticle({
+            this.game.particleManager.spawnParticles(weaponDef.casingParticles.count ?? 1, () => ({
                 frames: `${weaponDef.ammoType}_particle`,
                 zIndex: ZIndexes.Players,
-                position: vAdd(this.position, vRotate(weaponDef.casingParticles.position, this.rotation)),
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                position: vAdd(this.position, vRotate(weaponDef.casingParticles!.position, this.rotation)),
                 lifeTime: 400,
                 scale: {
                     start: 0.8,
@@ -214,7 +215,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     end: initialRotation + spinAmount
                 },
                 speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
-            });
+            }));
         }
     }
 

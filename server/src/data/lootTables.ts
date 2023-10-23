@@ -81,10 +81,10 @@ export const LootTables: Record<string, LootTable> = {
                 { item: "15x_scope", weight: 0.0025 }
             ],
             [
-                { item: "tango_51", spawnSeparately: true, weight: 50 },
-                { item: "tango_51", spawnSeparately: true, count: 2, weight: 20 },
-                { item: "tango_51", spawnSeparately: true, count: 3, weight: 2.5 },
-                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.001 },
+                { item: "tango_51", spawnSeparately: true, weight: 60 },
+                { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
+                { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
+                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
                 { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
             ]
         ]
