@@ -203,7 +203,7 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
-        idString: "m37",
+        idString: "model_37",
         name: "Model 37",
         itemType: ItemType.Gun,
         ammoType: "12g",
@@ -524,7 +524,7 @@ export const Guns: GunDefinition[] = [
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(70, 0) },
+        image: { position: v(70, -1) },
         casingParticles: {
             position: v(3.5, 0.5)
         },
@@ -553,16 +553,16 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Burst,
         shotSpread: 3,
         moveSpread: 1,
-        length: 5.7,
+        length: 5.9,
         fists: {
-            left: v(90, 3),
+            left: v(95, -3),
             right: v(40, 0),
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(65, 0) },
+        image: { position: v(71, 0) },
         casingParticles: {
-            position: v(5, 0.5)
+            position: v(4, 0.5)
         },
         ballistics: {
             damage: 15.5,
@@ -629,18 +629,17 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 9,
         moveSpread: 10,
-        length: 5,
+        length: 5.8,
         fists: {
-            left: v(40, 0),
+            left: v(85, -6),
             right: v(40, 0),
-            leftZIndex: 4,
             rightZIndex: 4,
             animationDuration: 100
         },
         casingParticles: {
             position: v(3.5, 0.6)
         },
-        image: { position: v(70, 0) },
+        image: { position: v(80, 0) },
         ballistics: {
             damage: 7.75,
             obstacleMultiplier: 1,
