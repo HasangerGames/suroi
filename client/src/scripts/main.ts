@@ -12,7 +12,6 @@ import { setupInputs } from "./utils/inputManager";
 import { loadAtlases } from "./utils/pixi";
 import { loadSounds } from "./utils/soundManager";
 import { consoleVariables } from "./utils/console/variables";
-import { portOldConfig } from "./utils/localStorageHandler";
 
 const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
 
@@ -32,7 +31,6 @@ function disablePlayButton(text: string): void {
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(async(): Promise<void> => {
     gameConsole.readFromLocalStorage();
-    portOldConfig();
 
     disablePlayButton("Loading...");
 
