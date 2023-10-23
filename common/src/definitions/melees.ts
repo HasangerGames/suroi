@@ -151,7 +151,6 @@ export const Melees: MeleeDefinition[] = [
         image: {
             position: v(54, 35),
             usePosition: v(91, 10),
-            angle: 0,
             useAngle: 0,
             lootScale: 0.8,
             separateWorldImage: true
