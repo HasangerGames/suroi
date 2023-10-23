@@ -5,7 +5,7 @@ const badWordRegexes: string[] = [
 
 export function hasBadWords(text: string): boolean {
     for (const badWordRegex of badWordRegexes) {
-        if (badWordRegex.test(text) return true;
+        if (badWordRegex.test(text)) return true;
     }
     return false;
 }
