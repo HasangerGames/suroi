@@ -355,7 +355,7 @@ export class Game {
             this.startTimeoutID = setTimeout(() => {
                 this._started = true;
                 this.gas.advanceGas();
-            }, 5000);
+            }, 3000);
         }
 
         log(`Game #${this.id} | "${player.name}" joined`);
