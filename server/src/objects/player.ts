@@ -302,8 +302,8 @@ export class Player extends GameObject {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = reifyDefinition("1x_scope", Scopes);
-        // this.inventory.items["15x_scope"] = 1;
-        // this.inventory.scope = reifyDefinition("15x_scope", Scopes);
+        //this.inventory.items["15x_scope"] = 1;
+        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -321,15 +321,13 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*
-        const giveWeapon = (idString: string, index: number): void => {
+        /*const giveWeapon = (idString: string, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };
-        */
+        };*/
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
