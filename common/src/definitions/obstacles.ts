@@ -333,12 +333,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 100,
             scale: {
                 spawnMin: 0.9,
-                spawnMax: 1.1,
+                spawnMax: 1.9,
                 destroy: 0.5
             },
             hitbox: new CircleHitbox(2.4),
             spawnHitbox: new CircleHitbox(3),
             rotationMode: RotationMode.Full,
+            particleVariations: 2,
+            frames: {
+                particle: "rock_particle"
+            }
         },
         {
             idString: "flint_stone",

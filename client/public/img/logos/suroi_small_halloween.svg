@@ -1,34 +1,231 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="165" height="165" version="1.1" viewBox="-26 -28 165 165" xmlns="http://www.w3.org/2000/svg">
- <defs>
-  <mask id="b" x="-30" y="-30" width="60" height="60" maskUnits="userSpaceOnUse">
-   <path d="m-27-27h54v54h-54z" fill="#ffffff"/>
-   <path d="m2-23v-4h-4v4m1.5 17v4h1v-4"/>
-   <circle cy="-15" r="10.5"/>
-   <g transform="rotate(120)">
-    <path d="m2-23v-4h-4v4m1.5 17v4h1v-4"/>
-    <circle cy="-15" r="10.5"/>
-   </g>
-   <g transform="rotate(240)">
-    <path d="m2-23v-4h-4v4m1.5 17v4h1v-4"/>
-    <circle cy="-15" r="10.5"/>
-   </g>
-   <circle r="3"/>
-  </mask>
-  <clipPath id="a">
-   <circle cy="-15" r="9.5"/>
-   <circle transform="rotate(120)" cy="-15" r="9.5"/>
-   <circle transform="rotate(240)" cy="-15" r="9.5"/>
-  </clipPath>
- </defs>
- <g transform="matrix(.95751 0 0 .95751 130.07 98.45)">
-  <circle cx="-76.836" cy="-45.9" r="73.645" fill="#000000" stroke="#792cd0" stroke-linejoin="round" stroke-width="9.3668"/>
-  <circle cx="-76.836" cy="-45.9" r="71.322" fill="none" stroke="#ff7500" stroke-linejoin="round" stroke-width="7.4934"/>
-  <g transform="matrix(2.3424 0 0 2.3423 -76.836 -46.195)" fill="#ff7500" mask="url(#b)">
-   <circle cy="-11" r="15"/>
-   <circle transform="rotate(120)" cy="-11" r="15"/>
-   <circle transform="rotate(240)" cy="-11" r="15"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="-26 -28 165 165"
+   version="1.1"
+   id="svg940"
+   sodipodi:docname="suroi_small_halloween.svg"
+   width="165"
+   height="165"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:export-xdpi="74.472725"
+   inkscape:export-ydpi="74.472725"
+   inkscape:export-filename="../../favicon_halloween.ico.png"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview942"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="2.7932692"
+     inkscape:cx="-21.83821"
+     inkscape:cy="95.228917"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg940"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs928">
+    <clipPath
+       id="b">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle900"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(120)"
+         id="circle902"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(-120)"
+         id="circle904"
+         cx="0" />
+    </clipPath>
+    <mask
+       id="a"
+       width="60"
+       height="60"
+       x="-30"
+       y="-30"
+       maskUnits="userSpaceOnUse">
+      <path
+         fill="#ffffff"
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         id="path907" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path909" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle911"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g917">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path913" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle915"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g923">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path919" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle921"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle925"
+         cx="0"
+         cy="0" />
+    </mask>
+    <mask
+       id="a-8"
+       width="60"
+       height="60"
+       x="-30"
+       y="-30"
+       maskUnits="userSpaceOnUse">
+      <path
+         fill="#ffffff"
+         d="M -27,-27 H 27 V 27 H -27 Z"
+         id="path907-6" />
+      <path
+         d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+         id="path909-8" />
+      <circle
+         cy="-15"
+         r="10.5"
+         id="circle911-8"
+         cx="0" />
+      <g
+         transform="rotate(120)"
+         id="g917-4">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path913-3" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle915-1"
+           cx="0" />
+      </g>
+      <g
+         transform="rotate(-120)"
+         id="g923-4">
+        <path
+           d="m 2,-23 v -4 h -4 v 4 m 1.5,17 v 4 h 1 v -4"
+           id="path919-9" />
+        <circle
+           cy="-15"
+           r="10.5"
+           id="circle921-2"
+           cx="0" />
+      </g>
+      <circle
+         r="3"
+         id="circle925-0"
+         cx="0"
+         cy="0" />
+    </mask>
+    <clipPath
+       id="b-6">
+      <circle
+         cy="-15"
+         r="9.5"
+         id="circle900-8"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(120)"
+         id="circle902-9"
+         cx="0" />
+      <circle
+         cy="-15"
+         r="9.5"
+         transform="rotate(-120)"
+         id="circle904-2"
+         cx="0" />
+    </clipPath>
+  </defs>
+  <g
+     id="g19026"
+     transform="matrix(0.21695609,0,0,0.21695609,-234.39554,28.315229)">
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#792cd0;stroke-width:41.3392;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path1805-6"
+       cx="1340.8044"
+       cy="122.09428"
+       r="325.02261" />
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#00cc69;stroke-width:33.0712;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path1388-6"
+       cx="1340.8044"
+       cy="122.09428"
+       r="314.77078" />
+    <g
+       mask="url(#a-8)"
+       id="g936-4"
+       style="fill:#00cc69;fill-opacity:1;stroke:none;stroke-opacity:1"
+       transform="matrix(10.337752,0,0,10.337704,1340.8038,120.79235)">
+      <circle
+         cy="-11"
+         r="15"
+         id="circle930-9"
+         style="fill:#00cc69;fill-opacity:1;stroke:none;stroke-opacity:1"
+         cx="0" />
+      <circle
+         cy="-11"
+         r="15"
+         transform="rotate(120)"
+         id="circle932-5"
+         style="fill:#00cc69;fill-opacity:1;stroke:none;stroke-opacity:1"
+         cx="0" />
+      <circle
+         cy="-11"
+         r="15"
+         transform="rotate(-120)"
+         id="circle934-0"
+         style="fill:#00cc69;fill-opacity:1;stroke:none;stroke-opacity:1"
+         cx="0" />
+    </g>
+    <circle
+       r="11.75"
+       fill="none"
+       stroke="#000"
+       stroke-width="3.5"
+       clip-path="url(#b-6)"
+       id="circle938-4"
+       style="stroke:#792cd0;stroke-opacity:1"
+       cx="0"
+       cy="0"
+       transform="matrix(10.337752,0,0,10.337704,1340.8038,120.79235)" />
   </g>
-  <circle transform="matrix(2.3424 0 0 2.3423 -76.836 -46.195)" r="11.75" clip-path="url(#a)" fill="none" stroke="#792cd0" stroke-width="3.5"/>
- </g>
 </svg>
