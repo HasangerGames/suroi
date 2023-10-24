@@ -76,15 +76,15 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 6,
-            regular_crate: 155,
             oak_tree: 143,
+            birch_tree: 18,
+            pine_tree: 14,
+            regular_crate: 155,
             rock: 142,
             bush: 87,
             blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
-            birch_tree: 18,
-            pine_tree: 14,
             melee_crate: 1,
             gold_rock: 1,
             flint_stone: 1
