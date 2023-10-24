@@ -1854,6 +1854,21 @@ logger.indent("Validating guns", () => {
                     const errorPath2 = tester.createPath(errorPath, "particles");
                     validators.vector(errorPath2, gun.casingParticles!.position);
 
+                    if (gun.casingParticles?.count) {
+                        tester.assertNoPointlessValue({
+                            obj: gun.casingParticles,
+                            field: "count",
+                            defaultValue: 1,
+                            baseErrorPath: errorPath
+                        });
+
+                        tester.assertIsPositiveFiniteReal({
+                            obj: gun.casingParticles,
+                            field: "count",
+                            baseErrorPath: errorPath
+                        });
+                    }
+
                     tester.assertNoPointlessValue({
                         obj: gun.casingParticles!,
                         field: "spawnOnReload",

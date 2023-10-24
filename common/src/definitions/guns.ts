@@ -44,6 +44,7 @@ export type GunDefinition = ItemDefinition & {
 
     readonly casingParticles?: {
         readonly position: Vector
+        readonly count?: number
         readonly spawnOnReload?: boolean
     }
 
@@ -309,6 +310,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(75, 0) },
         casingParticles: {
             position: v(4, 0.6),
+            count: 2,
             spawnOnReload: true
         },
         ballistics: {
@@ -456,7 +458,9 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(70, 0) },
         casingParticles: {
-            position: v(3.5, 0.5)
+            position: v(3.5, 0.5),
+            count: 7,
+            spawnOnReload: true
         },
         capacity: 7,
         reloadTime: 2.1,
