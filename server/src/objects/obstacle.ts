@@ -9,7 +9,7 @@ import { ObjectSerializations } from "../../../common/src/utils/objectsSerializa
 import { random } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { vAdd, type Vector } from "../../../common/src/utils/vector";
-import { LootTables, type WeightedItem } from "../data/lootTables";
+import { LootTables } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
