@@ -47,7 +47,7 @@ export class Game {
      * A cached map packet
      * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
      */
-    private readonly mapPacketStream: SuroiBitStream;
+    private readonly mapPacketBuffer: ArrayBuffer;
 
     gas: Gas;
 
@@ -112,8 +112,9 @@ export class Game {
         this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);
-        this.mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
-        mapPacket.serialize(this.mapPacketStream);
+        const mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
+        mapPacket.serialize(mapPacketStream);
+        this.mapPacketBuffer = mapPacketStream.buffer.slice(0, Math.ceil(mapPacketStream.index / 8));
 
         this.gas = new Gas(this);
 
@@ -212,9 +213,10 @@ export class Game {
                     const updatePacket = new UpdatePacket(player);
                     const updateStream = SuroiBitStream.alloc(updatePacket.allocBytes);
                     updatePacket.serialize(updateStream);
-                    player.sendData(updateStream);
+                    const buffer = updateStream.buffer.slice(0, Math.ceil(updateStream.index / 8));
+                    player.sendData(buffer);
                     for (const spectator of player.spectators) {
-                        spectator.sendData(updateStream);
+                        spectator.sendData(buffer);
                     }
                 }
             }
@@ -339,7 +341,7 @@ export class Game {
 
         player.joined = true;
         player.sendPacket(new JoinedPacket(player));
-        player.sendData(this.mapPacketStream);
+        player.sendData(this.mapPacketBuffer);
 
         setTimeout(() => { player.disableInvulnerability(); }, 5000);
 

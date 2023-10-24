@@ -154,7 +154,7 @@ export class UpdatePacket extends SendingPacket {
             stream.writeBits(player.emotes.size, 7);
 
             for (const emote of player.emotes) {
-                stream.writeObjectTypeNoCategory(emote.createObjectType());
+                stream.writeObjectTypeNoCategory(emote.type);
                 stream.writeObjectID(emote.player.id);
             }
 

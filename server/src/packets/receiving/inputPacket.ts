@@ -64,11 +64,14 @@ export class InputPacket extends ReceivingPacket {
                 player.lastInteractionTime = player.game.now;
 
                 const detectionHitbox = new CircleHitbox(3, player.position);
+
+                const nearObjects = player.game.grid.intersectsHitbox(detectionHitbox);
+
                 const getClosestObject = (condition: (object: Loot | Obstacle) => boolean): Loot | Obstacle | undefined => {
                     let minDist = Number.MAX_VALUE;
                     let closestObject: Loot | Obstacle | undefined;
 
-                    for (const object of player.visibleObjects) {
+                    for (const object of nearObjects) {
                         if (
                             (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
                             object.hitbox !== undefined &&
@@ -121,7 +124,7 @@ export class InputPacket extends ReceivingPacket {
                     // If the closest object is a door, then we allow other doors within the
                     // interaction range to be interacted with
 
-                    for (const object of player.visibleObjects) {
+                    for (const object of nearObjects) {
                         if (object instanceof Obstacle && object.isDoor && !object.door?.locked && object.hitbox.collidesWith(detectionHitbox) && object !== closestObject) {
                             object.interact(player);
                         }
