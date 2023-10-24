@@ -244,12 +244,12 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Banana", position: v(0.23, 0.2) },
-            { name: "Takedown", position: v(0.23, 0.8) },
-            { name: "Lavlandet", position: v(0.75, 0.2) },
-            { name: "Noskin Narrows", position: v(0.72, 0.8) },
-            { name: "Mt. Sanger", position: v(0.5, 0.35) },
-            { name: "Deepwood", position: v(0.5, 0.65) }
+            { name: "Pumpkin", position: v(0.23, 0.2) },
+            { name: "Reaper", position: v(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: v(0.75, 0.2) },
+            { name: "Haunted Hollow", position: v(0.72, 0.8) },
+            { name: "Mt. Fang", position: v(0.5, 0.35) },
+            { name: "Darkwood", position: v(0.5, 0.65) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol

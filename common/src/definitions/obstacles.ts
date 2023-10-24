@@ -278,7 +278,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(5.5),
             spawnHitbox: new CircleHitbox(15),
             rotationMode: RotationMode.Full,
-            zIndex: ZIndexes.ObstaclesLayer4
+            zIndex: ZIndexes.ObstaclesLayer4,
+            frames: {
+                particle: "birch_tree_fall_particle",
+                residue: "birch_tree_fall_residue"
+            }
         },
         {
             idString: "pine_tree",
