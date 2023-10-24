@@ -77,13 +77,13 @@ export const Maps: Record<string, MapDefinition> = {
         obstacles: {
             oil_tank: 6,
             regular_crate: 155,
-            oak_tree_fall: 143,
+            oak_tree: 143,
             rock: 142,
             bush: 87,
             blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
-            birch_tree_fall: 18,
+            birch_tree: 18,
             pine_tree: 14,
             melee_crate: 1,
             gold_rock: 1,
@@ -187,6 +187,69 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "undefined Forest", position: v(0.3, 0.2) },
             { name: "seg. fault\n(core dumped)", position: v(0.3, 0.7) },
             { name: "Can't read props of null", position: v(0.4, 0.5) }
+        ]
+    },
+    halloween: {
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: 3,
+        buildings: {
+            refinery: 1,
+            warehouse: 4,
+            small_house: 5,
+            porta_potty: 10,
+            container_3: 1,
+            container_4: 1,
+            container_5: 1,
+            container_6: 1,
+            container_7: 1,
+            container_8: 1,
+            container_9: 1,
+            container_10: 1
+        },
+        obstacles: {
+            oil_tank: 6,
+            regular_crate: 155,
+            oak_tree_fall: 143,
+            rock: 142,
+            bush: 87,
+            blueberry_bush: 20,
+            barrel: 70,
+            super_barrel: 20,
+            birch_tree_fall: 18,
+            pine_tree: 14,
+            melee_crate: 1,
+            gold_rock: 1,
+            flint_stone: 1,
+            pumpkin: 75
+        },
+        specialObstacles: {
+            oil_tank: {
+                count: 3,
+                radius: 200,
+                squareRadius: true
+            },
+            aegis_crate: {
+                min: 3,
+                max: 4
+            },
+            flint_crate: {
+                min: 3,
+                max: 4
+            }
+        },
+        loots: {
+            ground_loot: 40
+        },
+        places: [
+            { name: "Banana", position: v(0.23, 0.2) },
+            { name: "Takedown", position: v(0.23, 0.8) },
+            { name: "Lavlandet", position: v(0.75, 0.2) },
+            { name: "Noskin Narrows", position: v(0.72, 0.8) },
+            { name: "Mt. Sanger", position: v(0.5, 0.35) },
+            { name: "Deepwood", position: v(0.5, 0.65) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
