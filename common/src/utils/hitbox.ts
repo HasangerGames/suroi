@@ -231,7 +231,7 @@ export class RectangleHitbox extends Hitbox {
     }
 
     override toRectangle(): RectangleHitbox {
-        return this.clone();
+        return this;
     }
 
     override isPointInside(point: Vector): boolean {

@@ -22,9 +22,8 @@ import { Player } from "./player";
 
 export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject {
     override readonly type = ObjectCategory.Obstacle;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+
+    override objectType: ObjectType<this["type"], Def>;
 
     health: number;
     readonly maxHealth: number;
@@ -80,6 +79,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         this.parentBuilding = parentBuilding;
 
         this.definition = reifyDefinition(definition, Obstacles);
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
 
         this.health = this.maxHealth = definition.health;
 
@@ -174,7 +174,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
             if (this.definition.role === ObstacleSpecialRoles.Wall) {
                 this.parentBuilding?.damage();
 
-                for (const object of this.game.grid.intersectsRect(this.hitbox.toRectangle())) {
+                for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
                     if (
                         object instanceof Obstacle &&
                         object.definition.role === ObstacleSpecialRoles.Door

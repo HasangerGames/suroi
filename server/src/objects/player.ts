@@ -32,10 +32,13 @@ import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { Scopes } from "../../../common/src/definitions/scopes";
+import { ObjectType } from "../../../common/src/utils/objectType";
 
 export class Player extends GameObject {
     readonly type = ObjectCategory.Player;
     readonly hitbox: CircleHitbox;
+
+    override readonly objectType = ObjectType.categoryOnly(ObjectCategory.Player);
 
     readonly damageable = true;
 
@@ -409,7 +412,7 @@ export class Player extends GameObject {
         this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
 
         // Find and resolve collisions
-        this.nearObjects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
 
         for (let step = 0; step < 10; step++) {
             for (const potential of this.nearObjects) {
@@ -520,7 +523,7 @@ export class Player extends GameObject {
     updateVisibleObjects(): void {
         this.ticksSinceLastUpdate = 0;
 
-        const newVisibleObjects = this.game.grid.intersectsRect(
+        const newVisibleObjects = this.game.grid.intersectsHitbox(
             RectangleHitbox.fromRect(
                 2 * this.xCullDist,
                 2 * this.yCullDist,

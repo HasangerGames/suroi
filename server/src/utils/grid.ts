@@ -1,32 +1,51 @@
-import { type RectangleHitbox } from "../../../common/src/utils/hitbox";
+import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { clamp } from "../../../common/src/utils/math";
-import { v, type Vector } from "../../../common/src/utils/vector";
-import { type GameObject } from "../types/gameObject";
+import { type Vector, v } from "../../../common/src/utils/vector";
 
-export class Grid {
+interface GameObject {
+    id: number
+    hitbox?: Hitbox
+    position: Vector
+}
+
+/**
+ * A Grid to filter collision detection of game objects
+ */
+export class Grid<T extends GameObject> {
     readonly width: number;
     readonly height: number;
-    readonly cellSize: number;
+    readonly cellSize = 32;
 
-    private readonly _grid: Record<number, Record<number, Map<number, GameObject>>> = {};
+    //              X     Y         Object ID
+    readonly _grid: Array<Array<Map<number, T>>>;
 
-    constructor(width: number, height: number, cellSize: number) {
-        this.width = Math.floor(width / cellSize);
-        this.height = Math.floor(height / cellSize);
-        this.cellSize = cellSize;
+    // store the cells each game object is occupying
+    // so removing the object from the grid is faster
+    private readonly _objectsCells = new Map<number, Vector[]>();
 
-        for (let x = 0; x <= width; x++) {
-            this._grid[x] = {};
-            for (let y = 0; y <= height; y++) {
-                this._grid[x][y] = new Map();
-            }
-        }
+    constructor(width: number, height: number) {
+        this.width = Math.floor(width / this.cellSize);
+        this.height = Math.floor(height / this.cellSize);
+
+        // fill the grid X row with arrays for the Y column
+        // maps are created on demand to save memory usage
+        this._grid = Array.from({ length: width }, () => []);
     }
 
-    addObject(object: GameObject): void {
+    /**
+     * Add an object to the grid system
+     */
+    addObject(object: T): void {
+        this.removeObject(object);
+
+        const cells: Vector[] = [];
+
         if (object.hitbox === undefined) {
             const pos = this._roundToCells(object.position);
-            this._grid[pos.x][pos.y].set(object.id, object);
+            const xRow = this._grid[pos.x];
+            if (xRow[pos.y] === undefined) xRow[pos.y] = new Map();
+            xRow[pos.y].set(object.id, object);
+            cells.push(pos);
         } else {
             // get the bounds of the hitbox
             const rect = object.hitbox.toRectangle();
@@ -36,50 +55,68 @@ export class Grid {
 
             // add it to all grid cells that it intersects
             for (let x = min.x; x <= max.x; x++) {
+                const xRow = this._grid[x];
                 for (let y = min.y; y <= max.y; y++) {
-                    this._grid[x][y].set(object.id, object);
-                    object.gridCells.push(v(x, y));
+                    if (xRow[y] === undefined) xRow[y] = new Map();
+
+                    xRow[y].set(object.id, object);
+                    cells.push(v(x, y));
                 }
             }
         }
-    }
-
-    removeObject(object: GameObject): void {
-        for (const cell of object.gridCells) {
-            this._grid[cell.x][cell.y].delete(object.id);
-        }
-        object.gridCells = [];
+        // store the cells this object is occupying
+        this._objectsCells.set(object.id, cells);
     }
 
     /**
-     * Get all objects intersecting a rectangle rounded up to the grid cells
-     * @param rect The rectangle
-     * @return A set with the objects
+     * Remove an object from the grid system
      */
-    intersectsRect(rect: RectangleHitbox): Set<GameObject> {
-        const objects = new Set<GameObject>();
+    removeObject(object: T): void {
+        const cells = this._objectsCells.get(object.id);
+        if (!cells) return;
 
-        const objectsAdded = new Map<number, boolean>();
+        for (const cell of cells) {
+            this._grid[cell.x][cell.y].delete(object.id);
+        }
+        this._objectsCells.delete(object.id);
+    }
+
+    /**
+     * Get all objects near this hitbox
+     * This transforms the hitbox into a rectangle
+     * and gets all objects intersecting it after rounding it to grid cells
+     * @param hitbox The hitbox
+     * @return A set with the objects near this hitbox
+     */
+    intersectsHitbox(hitbox: Hitbox): Set<T> {
+        const rect = hitbox.toRectangle();
 
         const min = this._roundToCells(rect.min);
         const max = this._roundToCells(rect.max);
 
+        const objects = new Set<T>();
+
         for (let x = min.x; x <= max.x; x++) {
+            const xRow = this._grid[x];
             for (let y = min.y; y <= max.y; y++) {
-                for (const [id, object] of this._grid[x][y]) {
-                    if (!objectsAdded.get(id)) {
-                        objectsAdded.set(id, true);
+                const objectsMap = xRow[y];
+                if (objectsMap) {
+                    for (const object of xRow[y].values()) {
                         objects.add(object);
                     }
                 }
             }
         }
-
         return objects;
     }
 
+    /**
+     * Rounds a position to this grid cells
+     */
     private _roundToCells(vector: Vector): Vector {
-        return v(clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
-            clamp(Math.floor(vector.y / this.cellSize), 0, this.height));
+        return {
+            x: clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
+            y: clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
+        };
     }
 }

@@ -1,7 +1,7 @@
 import { type ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
 import { type ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { type ObjectType } from "../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -11,9 +11,8 @@ export abstract class GameObject {
 
     id: number;
     abstract readonly type: ObjectCategory;
-    createObjectType(): ObjectType<typeof this["type"], ObjectDefinition> {
-        return ObjectType.categoryOnly(this.type);
-    }
+
+    abstract objectType: ObjectType<typeof this["type"], ObjectDefinition>;
 
     game: Game;
 
@@ -28,9 +27,6 @@ export abstract class GameObject {
     scale = 1;
     dead = false;
     hitbox?: Hitbox;
-
-    // which grid cells this object is occupying
-    gridCells: Vector[] = [];
 
     protected constructor(game: Game, position: Vector) {
         this.id = game.nextObjectID;

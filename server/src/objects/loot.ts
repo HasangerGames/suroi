@@ -17,9 +17,7 @@ import { type Player } from "./player";
 
 export class Loot<Def extends LootDefinition = LootDefinition> extends GameObject {
     override readonly type = ObjectCategory.Loot;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+    override objectType: ObjectType<this["type"], Def>;
 
     declare readonly hitbox: CircleHitbox;
 
@@ -45,6 +43,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         super(game, position);
 
         this.definition = reifyDefinition(definition, Loots);
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
+
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], vClone(position));
         this.oldPosition = this._position;
 
@@ -72,7 +72,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
             if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
                 this.hitbox.resolveCollision(object.hitbox);

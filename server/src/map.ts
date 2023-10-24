@@ -500,7 +500,7 @@ export class Map {
                 continue;
             }
 
-            for (const object of this.game.grid.intersectsRect(rectHitbox)) {
+            for (const object of this.game.grid.intersectsHitbox(rectHitbox)) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;

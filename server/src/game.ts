@@ -51,7 +51,7 @@ export class Game {
 
     gas: Gas;
 
-    readonly grid: Grid;
+    readonly grid: Grid<GameObject>;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
@@ -108,7 +108,7 @@ export class Game {
         this._id = id;
 
         // Generate map
-        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height, 16);
+        this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height);
         this.map = new Map(this, Config.mapName);
 
         const mapPacket = new MapPacket(this);

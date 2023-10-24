@@ -102,7 +102,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         for (
             const object of
-            this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+            this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
         ) {
             if (
                 object.dead ||
@@ -113,7 +113,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
             for (
                 const object of
-                this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+                this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
             ) {
                 if (
                     object.dead ||

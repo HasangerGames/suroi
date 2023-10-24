@@ -12,9 +12,8 @@ import { GameObject } from "../types/gameObject";
 
 export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject {
     override readonly type = ObjectCategory.Building;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+
+    override objectType: ObjectType<this["type"], Def>;
 
     readonly definition: Def;
 
@@ -31,6 +30,8 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         super(game, position);
 
         this.definition = typeof definition === "string" ? (definition = Buildings.getByIDString<Def>(definition)) : definition;
+
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
 
         this.rotation = orientation;
         this._wallsToDestroy = definition.wallsToDestroy;

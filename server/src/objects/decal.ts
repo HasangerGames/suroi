@@ -11,9 +11,7 @@ import { GameObject } from "../types/gameObject";
 
 export class Decal<Def extends DecalDefinition = DecalDefinition> extends GameObject {
     override readonly type = ObjectCategory.Decal;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+    override objectType: ObjectType<this["type"], Def>;
 
     readonly definition: Def;
 
@@ -21,6 +19,7 @@ export class Decal<Def extends DecalDefinition = DecalDefinition> extends GameOb
         super(game, position);
 
         this.definition = typeof definition === "string" ? (definition = Decals.getByIDString<Def>(definition)) : definition;
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
 
         this.rotation = rotation ?? randomRotation();
     }
