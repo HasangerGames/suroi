@@ -48,7 +48,7 @@ export class SuroiSprite extends Sprite {
         let texture: Texture | undefined;
 
         if (frame) {
-            texture = textures[frame] ?? textures["_missing_texture"];
+            texture = textures[frame] ?? textures._missing_texture;
         }
         super(texture);
 
@@ -57,7 +57,7 @@ export class SuroiSprite extends Sprite {
     }
 
     setFrame(frame: string): SuroiSprite {
-        this.texture = textures[frame] ?? textures["_missing_texture"];
+        this.texture = textures[frame] ?? textures._missing_texture;
         return this;
     }
 
