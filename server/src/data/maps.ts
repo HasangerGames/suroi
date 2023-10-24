@@ -244,7 +244,7 @@ export const Maps: Record<string, MapDefinition> = {
             ground_loot: 40
         },
         places: [
-            { name: "Pumpkin", position: v(0.23, 0.2) },
+            { name: "Pumpkin Patch", position: v(0.23, 0.2) },
             { name: "Reaper", position: v(0.23, 0.8) },
             { name: "Spøkelsesfelt", position: v(0.75, 0.2) },
             { name: "Haunted Hollow", position: v(0.72, 0.8) },
