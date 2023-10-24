@@ -30,7 +30,7 @@ export class Explosion<Def extends ExplosionDefinition = ExplosionDefinition> {
 
     explode(): void {
         // List of all near objects
-        const objects = this.game.grid.intersectsRect(new CircleHitbox(this.definition.radius.max * 2, this.position).toRectangle());
+        const objects = this.game.grid.intersectsHitbox(new CircleHitbox(this.definition.radius.max * 2, this.position));
         const damagedObjects = new Map<number, boolean>();
 
         for (let angle = -Math.PI; angle < Math.PI; angle += 0.1) {

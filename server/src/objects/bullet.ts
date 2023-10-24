@@ -63,7 +63,7 @@ export class Bullet extends BaseBullet {
     update(): DamageRecord[] {
         const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICKS_PER_SECOND)));
 
-        const objects = this.game.grid.intersectsRect(lineRect);
+        const objects = this.game.grid.intersectsHitbox(lineRect);
         const collisions = this.updateAndGetCollisions(TICKS_PER_SECOND, objects);
 
         // Bullets from dead players should not deal damage so delete them
@@ -127,7 +127,7 @@ export class Bullet extends BaseBullet {
     }
 
     reflect(normal: Vector): void {
-        const rotation = normalizeAngle(2 * Math.atan2(normal.y, normal.x) - this.rotation);
+        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
 
         this.game.addBullet(
             this.sourceGun,

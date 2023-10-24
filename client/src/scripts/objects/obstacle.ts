@@ -281,8 +281,6 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
-        if (definition.tint !== undefined) this.image.setTint(definition.tint);
-
         this.container.rotation = this.rotation;
 
         this.isNew = false;

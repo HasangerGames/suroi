@@ -1,13 +1,13 @@
 import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
+import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, reifyDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { v, vAdd, vClone, vMul, vSub, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { PickupPacket } from "../packets/sending/pickupPacket";
@@ -17,9 +17,7 @@ import { type Player } from "./player";
 
 export class Loot<Def extends LootDefinition = LootDefinition> extends GameObject {
     override readonly type = ObjectCategory.Loot;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+    override objectType: ObjectType<this["type"], Def>;
 
     declare readonly hitbox: CircleHitbox;
 
@@ -45,6 +43,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         super(game, position);
 
         this.definition = reifyDefinition(definition, Loots);
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
+
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], vClone(position));
         this.oldPosition = this._position;
 
@@ -56,12 +56,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
     }
 
     update(): void {
-        if (distanceSquared(this.oldPosition, this.position) > 0.0001) {
+        if (!vEqual(this.position, this.oldPosition)) {
             this.game.partialDirtyObjects.add(this);
             this.oldPosition = vClone(this.position);
         }
-        this.game.grid.removeObject(this);
-        if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
+
+        const moving = Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001;
+
+        const oldTickPos = vClone(this.position);
+        if (moving) {
             this.velocity = vMul(this.velocity, 0.9);
             const velocity = vMul(this.velocity, 1 / TICKS_PER_SECOND);
             velocity.x = clamp(velocity.x, -1, 1);
@@ -72,9 +75,12 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
-            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
+            if (moving &&
+                object instanceof Obstacle &&
+                object.collidable &&
+                object.hitbox.collidesWith(this.hitbox)) {
                 this.hitbox.resolveCollision(object.hitbox);
             }
 
@@ -97,7 +103,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
                 object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
-        this.game.grid.addObject(this);
+        if (!vEqual(oldTickPos, this.position)) this.game.grid.addObject(this);
     }
 
     push(angle: number, velocity: number): void {
