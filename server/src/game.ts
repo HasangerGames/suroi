@@ -102,8 +102,6 @@ export class Game {
 
     tickDelta = 1000 / TICKS_PER_SECOND;
 
-    vaultDoor?: Obstacle; //fixme variable in Game class used for a specific object
-
     constructor(id: number) {
         this._id = id;
 

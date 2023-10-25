@@ -9,6 +9,7 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
+import { type Obstacle } from "./obstacle";
 
 export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject {
     override readonly type = ObjectCategory.Building;
@@ -22,6 +23,8 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
     readonly hitbox: Hitbox;
 
     private _wallsToDestroy?: number;
+
+    interactableObstacles = new Set<Obstacle>();
 
     //@ts-expect-error it makes the typings work :3
     declare rotation: Orientation;

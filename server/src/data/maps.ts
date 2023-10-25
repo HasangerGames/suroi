@@ -158,7 +158,6 @@ export const Maps: Record<string, MapDefinition> = {
             for (const obstacle of Obstacles.definitions) {
                 if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
-
                     map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
                     obstaclePos.x += 20;
