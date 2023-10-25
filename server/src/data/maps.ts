@@ -117,10 +117,10 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     debug: {
-        width: 1024,
-        height: 1024,
-        beachSize: 16,
-        oceanSize: 160,
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
         genCallback: (map: Map) => {
             // Generate all buildings
 
@@ -156,7 +156,9 @@ export const Maps: Record<string, MapDefinition> = {
             const obstaclePos = v(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
+                if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
+
                     map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
                     obstaclePos.x += 20;

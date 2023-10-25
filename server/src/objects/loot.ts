@@ -23,8 +23,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
 
     readonly definition: Def;
 
-    oldPosition = v(0, 0);
-
     count = 1;
 
     isNew = true;
@@ -46,7 +44,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         this.objectType = ObjectType.fromString(this.type, this.definition.idString);
 
         this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], vClone(position));
-        this.oldPosition = this._position;
 
         if (count !== undefined) this.count = count;
 
@@ -56,14 +53,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
     }
 
     update(): void {
-        if (!vEqual(this.position, this.oldPosition)) {
-            this.game.partialDirtyObjects.add(this);
-            this.oldPosition = vClone(this.position);
-        }
+        const oldPosition = vClone(this.position);
 
         const moving = Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001;
 
-        const oldTickPos = vClone(this.position);
         if (moving) {
             this.velocity = vMul(this.velocity, 0.9);
             const velocity = vMul(this.velocity, 1 / TICKS_PER_SECOND);
@@ -103,7 +96,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
                 object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
-        if (!vEqual(oldTickPos, this.position)) this.game.grid.addObject(this);
+        if (!vEqual(oldPosition, this.position)) {
+            this.game.partialDirtyObjects.add(this);
+            this.game.grid.addObject(this);
+        }
     }
 
     push(angle: number, velocity: number): void {

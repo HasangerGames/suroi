@@ -324,18 +324,11 @@ export class Map {
             this.terrainGrid.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
         }
 
-        if (definition.decals) {
-            for (const decal of definition.decals) {
-                this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
-            }
+
+        for (const decal of definition.decals ?? []) {
+            this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
         }
 
-        if (definition.floors) {
-            for (const floor of definition.floors) {
-                const hitbox = floor.hitbox.transform(position, 1, orientation);
-                this.terrainGrid.addFloor(floor.type, hitbox);
-            }
-        }
 
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
         this.game.grid.addObject(building);

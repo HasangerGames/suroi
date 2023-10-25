@@ -1466,6 +1466,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 10000,
             indestructible: true,
+            invisible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1600,6 +1601,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 150,
             indestructible: true,
             reflectBullets: true,
+            invisible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
