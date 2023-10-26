@@ -1,5 +1,3 @@
-import { ObjectDefinitions } from "../../../../common/src/utils/objectDefinitions";
-
 // NOTE: make the crosshair path 16x16 pixels and the view box 20x20 pixels so theres space for the stroke
 
 export const Crosshairs: Array<string | undefined> = [
