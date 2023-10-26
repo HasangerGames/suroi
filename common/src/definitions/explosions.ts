@@ -211,15 +211,16 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 tint: 0x6c1313,
                 scale: 0.8
             },
-            shrapnelCount: 4,
+            shrapnelCount: 8,
             ballistics: {
-                damage: 15,
+                damage: 7.5,
                 obstacleMultiplier: 2,
                 speed: 0.06,
                 maxDistance: 10,
                 variance: 1,
                 shrapnel: true
             },
+            sound: "usas_explosion",
             decal: "explosion_decal"
         }
     ]

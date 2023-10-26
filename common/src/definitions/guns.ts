@@ -328,8 +328,8 @@ export const Guns: GunDefinition[] = [
         ammoType: "12g",
         ammoSpawnAmount: 20,
         capacity: 10,
-        reloadTime: 2,
-        fireDelay: 250,
+        reloadTime: 3,
+        fireDelay: 525,
         switchDelay: 250,
         speedMultiplier: 0.9,
         recoilMultiplier: 0.8,
@@ -337,13 +337,14 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 3,
         moveSpread: 3,
-        length: 8.2,
+        length: 7.7,
         fists: {
-            left: v(120, 0),
-            right: v(70, -3),
+            left: v(115, -1),
+            right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(100, -4) },
+        image: { position: v(90, -3.5) },
         casingParticles: {
             position: v(4, 0.6)
         },
