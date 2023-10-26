@@ -129,6 +129,7 @@ export class Inventory {
             this.owner.dirty.activeWeaponIndex = true;
             this.owner.game.fullDirtyObjects.add(this.owner);
         }
+        this.owner.updateAndApplyModifiers();
 
         return true;
     }

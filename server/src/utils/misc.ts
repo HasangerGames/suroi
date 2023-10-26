@@ -42,7 +42,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
                 throw new Error(`Unknown loot item: ${item}`);
             }
 
-            if ("ammoSpawnAmount" in definition && "ammoType" in definition) {
+            if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
                 loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount));
             }
         }

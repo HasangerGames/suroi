@@ -34,17 +34,6 @@ export class KillFeedPacket extends ReceivingPacket {
                     if (killedBy) killedBy.name = DEFAULT_USERNAME;
                 }
 
-                switch (true) {
-                    case killed.id === this.game.activePlayerID: { // was killed
-                        killFeedItem.addClass("kill-feed-item-victim");
-                        break;
-                    }
-                    case killedBy?.id === this.game.activePlayerID: { // killed other
-                        killFeedItem.addClass("kill-feed-item-killer");
-                        break;
-                    }
-                }
-
                 let weaponUsed: ItemDefinition | ExplosionDefinition | undefined;
                 let killstreak: number | undefined;
                 if (stream.readBoolean()) { // used a weapon
@@ -74,6 +63,17 @@ export class KillFeedPacket extends ReceivingPacket {
                         const killstreakText = killstreak !== undefined && killstreak > 1 ? ` <span style="font-size: 80%">(${killstreak} <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull" height=12>)</span>` : "";
 
                         killFeedItem.html(`${killerName} <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">${killstreakText} ${killed.name}`);
+                        break;
+                    }
+                }
+
+                switch (this.game.activePlayerID) {
+                    case killed.id: { // was killed
+                        killFeedItem.addClass("kill-feed-item-victim");
+                        break;
+                    }
+                    case killedBy?.id: { // killed other
+                        killFeedItem.addClass("kill-feed-item-killer");
                         break;
                     }
                 }

@@ -6,7 +6,7 @@ export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly ammoType: string
-    readonly ammoSpawnAmount: number
+    readonly ammoSpawnAmount?: number
     readonly capacity: number
     readonly reloadTime: number
     readonly singleReload?: boolean
@@ -901,6 +901,45 @@ export const Guns: GunDefinition[] = [
         }
     },
 
+    // only event weapons below this point
+
+    {
+        idString: "s_g17",
+        name: "G17 (scoped)",
+        itemType: ItemType.Gun,
+        ammoType: "bb",
+        fireDelay: 35,
+        switchDelay: 250,
+        speedMultiplier: 1.5,
+        recoilMultiplier: 0.99,
+        recoilDuration: 10,
+        fireMode: FireMode.Auto,
+        shotSpread: 0.5,
+        moveSpread: 5,
+        length: 5.9,
+        bulletCount: 1,
+        fists: {
+            left: v(40, 0),
+            right: v(40, 0),
+            leftZIndex: 3,
+            rightZIndex: 3,
+            animationDuration: 80
+        },
+        noMuzzleFlash: true,
+        image: { position: v(65, 0) },
+        capacity: 100,
+        reloadTime: 1.5,
+        ballistics: {
+            damage: 2,
+            obstacleMultiplier: 0.5,
+            speed: 0.1,
+            maxDistance: 70,
+            tracerWidth: 0.7,
+            tracerOpacity: 0.85,
+            tracerColor: 0xFF8000
+        }
+    },
+
     // only dev weapons below this point
 
     {
@@ -908,7 +947,6 @@ export const Guns: GunDefinition[] = [
         name: "Death Ray",
         itemType: ItemType.Gun,
         ammoType: "power_cell",
-        ammoSpawnAmount: 0,
         capacity: 1,
         reloadTime: 1.4,
         fireDelay: 40,

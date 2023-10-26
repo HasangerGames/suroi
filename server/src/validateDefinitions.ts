@@ -1684,11 +1684,20 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
-            tester.assertIsNaturalFiniteNumber({
+            tester.assertNoPointlessValue({
                 obj: gun,
                 field: "ammoSpawnAmount",
+                defaultValue: 0,
                 baseErrorPath: errorPath
             });
+
+            if (gun.ammoSpawnAmount !== undefined) {
+                tester.assertIsNaturalFiniteNumber({
+                    obj: gun,
+                    field: "ammoSpawnAmount",
+                    baseErrorPath: errorPath
+                });
+            }
 
             tester.assertIsNaturalFiniteNumber({
                 obj: gun,
@@ -1815,6 +1824,13 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
+            tester.assertNoPointlessValue({
+                obj: gun,
+                field: "shootOnRelease",
+                defaultValue: false,
+                baseErrorPath: errorPath
+            });
+
             logger.indent("Validating fists", () => {
                 const errorPath2 = tester.createPath(errorPath, "fists");
 
@@ -1886,8 +1902,10 @@ logger.indent("Validating guns", () => {
             });
 
             logger.indent("Validating ballistics", () => {
-                const errorPath2 = tester.createPath(errorPath, "ballistics");
-                validators.ballistics(errorPath2, gun.ballistics);
+                validators.ballistics(
+                    tester.createPath(errorPath, "ballistics"),
+                    gun.ballistics
+                );
             });
 
             if (gun.fireMode === FireMode.Burst) {
