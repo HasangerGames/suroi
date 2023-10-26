@@ -33,13 +33,7 @@ export const Ammos: AmmoDefinition[] = [
         name: "9mm",
         itemType: ItemType.Ammo
     },
-    {
-        // Potentially Ostentatious Weaponized Energetic Ruination
-        idString: "power_cell",
-        name: "P.O.W.E.R. cell",
-        itemType: ItemType.Ammo,
-        ephemeral: true
-    }/*,
+    /*
     {
         idString: "50ae",
         name: ".50 AE",
@@ -49,5 +43,20 @@ export const Ammos: AmmoDefinition[] = [
         idString: "127mm",
         name: "12.7mm",
         itemType: ItemType.Ammo
-    }*/
+    },*/
+
+    // Ephemeral ammo types below
+
+    {
+        idString: "power_cell",
+        name: "P.O.W.E.R. cell",
+        itemType: ItemType.Ammo,
+        ephemeral: true
+    },
+    {
+        idString: "bb",
+        name: "6mm BB",
+        itemType: ItemType.Ammo,
+        ephemeral: true
+    }
 ];

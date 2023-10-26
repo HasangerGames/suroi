@@ -120,7 +120,7 @@ export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition>
         };
 
         if (passive) applyModifiers(passive);
-        if (active && this.isActive) applyModifiers(active);
+        if (active && this._isActive) applyModifiers(active);
 
         if (on) {
             const { damageDealt, kill } = on;
@@ -140,12 +140,12 @@ export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition>
                     }
                 }
             }
-
-            this._modifiers.maxHealth = newModifiers.maxHealth;
-            this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
-            this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
-            this._modifiers.baseSpeed = newModifiers.baseSpeed;
-            this.owner.updateAndApplyModifiers();
         }
+
+        this._modifiers.maxHealth = newModifiers.maxHealth;
+        this._modifiers.maxAdrenaline = newModifiers.maxAdrenaline;
+        this._modifiers.minAdrenaline = newModifiers.minAdrenaline;
+        this._modifiers.baseSpeed = newModifiers.baseSpeed;
+        this.owner.updateAndApplyModifiers();
     }
 }

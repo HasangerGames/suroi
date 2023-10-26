@@ -176,7 +176,7 @@ class Bot {
     }
 }
 
-void (async () => {
+void (async() => {
     gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
 
     if (!gameData.success) {

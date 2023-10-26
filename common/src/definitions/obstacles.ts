@@ -340,6 +340,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(2.4),
             spawnHitbox: new CircleHitbox(3),
             rotationMode: RotationMode.Full,
+            hasLoot: true
         },
         {
             idString: "flint_stone",
