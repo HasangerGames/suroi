@@ -33,14 +33,6 @@ export const BULLET_COLORS: Record<string, number> = {
 
 export const PIXI_SCALE = 20;
 
-export enum EmoteSlot {
-    Top,
-    Right,
-    Bottom,
-    Left,
-    None
-}
-
 export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);
 export const SECOND_EMOTE_ANGLE = Math.atan2(1, 1);
 export const THIRD_EMOTE_ANGLE = Math.atan2(-1, 1);

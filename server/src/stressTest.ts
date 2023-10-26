@@ -129,7 +129,10 @@ class Bot {
         } else if (this.interact) {
             action = InputActions.Interact;
         }
-        stream.writeBits(action ?? InputActions.None, INPUT_ACTIONS_BITS);
+        stream.writeBits(action !== undefined ? 1 : 0, 4);
+        if (action) {
+            stream.writeBits(action, INPUT_ACTIONS_BITS);
+        }
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 

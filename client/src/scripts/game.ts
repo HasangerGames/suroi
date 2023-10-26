@@ -1,7 +1,7 @@
 import $ from "jquery";
 
 import { type Application, Container } from "pixi.js";
-import { ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
+import { InputActions, ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
@@ -33,18 +33,19 @@ import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
 import { InputPacket } from "./packets/sending/inputPacket";
-import { getIconFromInputName } from "./utils/inputManager";
+import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
-import { consoleVariables } from "./utils/console/variables";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { keybinds } from "./utils/console/gameConsole";
 import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
 import { type LootDefinition } from "../../../common/src/definitions/loots";
 import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
+import { GameConsole } from "./utils/console/gameConsole";
+import { setUpCommands } from "./utils/console/commands";
+import { setupUI } from "./ui";
 
 export class Game {
     socket!: WebSocket;
@@ -74,17 +75,19 @@ export class Game {
     gas!: Gas;
 
     readonly pixi: Application;
-    readonly soundManager = new SoundManager();
+    readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
     readonly camera: Camera;
+    readonly console = new GameConsole(this);
+    readonly inputManager = new InputManager(this);
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
     readonly playersContainer = new Container();
     readonly bulletsContainer = new Container();
 
-    readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
+    readonly music: Howl;
     musicPlaying = false;
 
     readonly tweens = new Set<Tween<unknown>>();
@@ -97,17 +100,30 @@ export class Game {
         this.camera = new Camera(this);
         this.map = new Minimap(this);
 
+        this.inputManager.setupInputs();
+        this.console.readFromLocalStorage();
+        setUpCommands(this);
+        this.soundManager = new SoundManager(this);
+        this.inputManager.generateBindsConfigScreen();
+
+        setupUI(this);
+
         this.playersContainer.zIndex = ZIndexes.Players;
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
+        this.music = new Howl({
+            src: this.console.getConfig("cv_use_old_menu_music") ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3",
+            loop: true
+        });
+
         setInterval(() => {
-            if (consoleVariables.get.builtIn("pf_show_fps").value) {
+            if (this.console.getConfig("pf_show_fps")) {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
 
         if (!this.musicPlaying) {
-            const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
+            const musicVolume = this.console.getConfig("cv_music_volume");
 
             this.music.play();
             this.music.volume(musicVolume);
@@ -256,7 +272,7 @@ export class Game {
 
         if (!this.musicPlaying) {
             this.music.stop().play();
-            this.music.volume(consoleVariables.get.builtIn("cv_music_volume").value);
+            this.music.volume(this.console.getConfig("cv_music_volume"));
             this.musicPlaying = true;
         }
     }
@@ -284,12 +300,11 @@ export class Game {
         if (!this.gameStarted) return;
         const delta = this.pixi.ticker.deltaMS;
 
-        if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
+        if (this.console.getConfig("cv_movement_smoothing")) {
             for (const player of this.players) {
                 player.updateContainerPosition();
-                if (
-                    consoleVariables.get.builtIn("cv_rotation_smoothing").value &&
-                    !(player.isActivePlayer && consoleVariables.get.builtIn("cv_animate_rotation").value === "client")
+                if (this.console.getConfig("cv_rotation_smoothing") &&
+                    !(player.isActivePlayer && this.console.getConfig("cv_animate_rotation") === "client")
                 ) player.updateContainerRotation();
             }
 
@@ -382,7 +397,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string => keybinds.getInputsBoundToAction("interact")[0];
+        const getPickupBind = (): string => this.inputManager.binds.getInputsBoundToAction("interact")[0];
 
         let skipLootCheck = true;
 
@@ -423,10 +438,7 @@ export class Game {
         return (): void => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
 
-            if (this._playerManager.dirty.inputs) {
-                this._playerManager.dirty.inputs = false;
-                this.sendPacket(new InputPacket(this._playerManager));
-            }
+            this.sendPacket(new InputPacket(this._playerManager));
 
             // Only run interact message and loot checks every other tick
             skipLootCheck = !skipLootCheck;
@@ -509,12 +521,12 @@ export class Game {
                         $("#interact-text").text(interactText);
                     };
 
-                    if (this._playerManager.isMobile) {
+                    if (this.inputManager.isMobile) {
                         const lootDef = closestObject.definition;
 
                         // Auto open doors
                         if (closestObject instanceof Obstacle && closestObject.canInteract(player) && closestObject.door?.offset === 0) {
-                            this.playerManager.interact();
+                            this.inputManager.addAction(InputActions.Interact);
                         }
 
                         // Autoloot
@@ -526,7 +538,7 @@ export class Game {
                             )
                         ) {
                             // TODO Needs testing
-                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.playerManager.interact();
+                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.inputManager.addAction(InputActions.Interact);
                         } else if (
                             (
                                 closestObject instanceof Loot &&
@@ -555,7 +567,7 @@ export class Game {
                             bindChangeAcknowledged = true;
 
                             const input = getPickupBind();
-                            const icon = getIconFromInputName(input);
+                            const icon = InputManager.getIconFromInputName(input);
 
                             if (icon === undefined) {
                                 $("#interact-key").text(input);

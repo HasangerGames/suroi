@@ -51,14 +51,13 @@ export enum FireMode {
 }
 
 export enum InputActions {
-    None,
     EquipItem,
     DropItem,
     SwapGunSlots,
     Interact,
     Reload,
     Cancel,
-    UseConsumableItem,
+    UseItem,
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
