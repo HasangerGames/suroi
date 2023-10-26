@@ -122,3 +122,7 @@ export function vNormalize(a: Vector): Vector {
 export function vInvert(a: Vector): Vector {
     return v(-a.x, -a.y);
 }
+
+export function vEqual(a: Vector, b: Vector, epsilon = 0.001): boolean {
+    return Math.abs(a.x - b.x) <= epsilon && Math.abs(a.y - b.y) <= epsilon;
+}

@@ -38,33 +38,30 @@ export type ObstacleDefinition = ObjectDefinition & {
     }
 
     readonly tint?: number
-} & (
-    (
-        {
-            readonly role: ObstacleSpecialRoles.Door
-            readonly locked?: boolean
-            readonly openOnce?: boolean
-            readonly animationDuration?: number
-        } & (
-            {
-                readonly operationStyle?: "swivel"
-                readonly hingeOffset: Vector
-            } | {
-                readonly operationStyle: "slide"
-                /**
-                 * Determines how much the door slides. 1 means it'll be displaced by its entire width,
-                 * 0.5 means it'll be displaced by half its width, etc
-                 */
-                readonly slideFactor?: number
-            }
-        )
-    ) | {
-        readonly role: ObstacleSpecialRoles.Activatable
-        readonly activator?: string
-    } | {
-        readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
-    }
-);
+} & (({
+    readonly role: ObstacleSpecialRoles.Door
+    readonly locked?: boolean
+    readonly openOnce?: boolean
+    readonly animationDuration?: number
+} & ({
+    readonly operationStyle?: "swivel"
+    readonly hingeOffset: Vector
+} | {
+    readonly operationStyle: "slide"
+    /**
+     * Determines how much the door slides. 1 means it'll be displaced by its entire width,
+     * 0.5 means it'll be displaced by half its width, etc
+     */
+    readonly slideFactor?: number
+})) | {
+    readonly role: ObstacleSpecialRoles.Activatable
+    readonly requiredItem?: string
+    // obstacle will interact will all obstacles with that id string from the parent building
+    readonly interactType?: string
+    readonly interactDelay?: number
+} | {
+    readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
+});
 
 export const Materials: string[] = [
     "tree",
@@ -1466,6 +1463,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             material: "metal",
             health: 10000,
             indestructible: true,
+            invisible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,
@@ -1573,7 +1571,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             role: ObstacleSpecialRoles.Activatable,
-            activator: "gas_can",
+            requiredItem: "gas_can",
+            interactType: "vault_door",
+            interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)
         },
         {
@@ -1600,6 +1600,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             health: 150,
             indestructible: true,
             reflectBullets: true,
+            invisible: true,
             scale: {
                 spawnMin: 1.0,
                 spawnMax: 1.0,

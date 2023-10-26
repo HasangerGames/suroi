@@ -76,15 +76,15 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 6,
-            regular_crate: 155,
             oak_tree: 143,
+            birch_tree: 18,
+            pine_tree: 14,
+            regular_crate: 155,
             rock: 142,
             bush: 87,
             blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
-            birch_tree: 18,
-            pine_tree: 14,
             melee_crate: 1,
             gold_rock: 1,
             flint_stone: 1
@@ -117,10 +117,10 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     debug: {
-        width: 1024,
-        height: 1024,
-        beachSize: 16,
-        oceanSize: 160,
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
         genCallback: (map: Map) => {
             // Generate all buildings
 
@@ -156,6 +156,7 @@ export const Maps: Record<string, MapDefinition> = {
             const obstaclePos = v(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
+                if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
                     map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 

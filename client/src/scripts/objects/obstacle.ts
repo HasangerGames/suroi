@@ -314,7 +314,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
     }
 
     canInteract(player: Player): boolean {
-        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && player.activeItem.idString === this.definition.activator && !this.activated));
+        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && player.activeItem.idString === this.definition.requiredItem && !this.activated));
     }
 
     hitEffect(position: Vector, angle: number): void {

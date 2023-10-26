@@ -1,18 +1,14 @@
-import { isMobile } from "pixi.js";
-import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { HealingItems, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
-import { absMod, clamp } from "../../../../common/src/utils/math";
-import { ItemType, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
-import { v } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "./console/variables";
-import { EmoteSlot, UI_DEBUG_MODE } from "./constants";
+import { UI_DEBUG_MODE } from "./constants";
 
 /**
  * This class manages the active player data and inventory
@@ -22,6 +18,7 @@ export class PlayerManager {
 
     name!: string;
 
+    // TODO: move to a common constant to sync with server
     static readonly defaultMaxHealth = 100;
     static readonly defaultMinAdrenaline = 0;
     static readonly defaultMaxAdrenaline = 100;
@@ -32,95 +29,6 @@ export class PlayerManager {
     maxAdrenaline = PlayerManager.defaultMaxAdrenaline;
     minAdrenaline = PlayerManager.defaultMinAdrenaline;
     adrenaline = 0;
-
-    get isMobile(): boolean {
-        return isMobile.any && consoleVariables.get.builtIn("mb_controls_enabled").value;
-    }
-
-    readonly movement = (() => {
-        let up = false;
-        let left = false;
-        let down = false;
-        let right = false;
-        let moving = false;
-
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
-        const T = this;
-
-        return {
-            get up() { return up; },
-            set up(u: boolean) {
-                up = u;
-                T.dirty.inputs = true;
-            },
-
-            get left() { return left; },
-            set left(l: boolean) {
-                left = l;
-                T.dirty.inputs = true;
-            },
-
-            get down() { return down; },
-            set down(d: boolean) {
-                down = d;
-                T.dirty.inputs = true;
-            },
-
-            get right() { return right; },
-            set right(r: boolean) {
-                right = r;
-                T.dirty.inputs = true;
-            },
-
-            get moving() { return moving; },
-            set moving(m: boolean) {
-                moving = m;
-                T.dirty.inputs = true;
-            }
-
-        };
-    })();
-
-    // had to put it here because it's not a boolean
-    // and inputManager assumes all keys of `movement` are booleans
-    movementAngle = 0;
-
-    mouseX = 0;
-    mouseY = 0;
-
-    emoteWheelActive = false;
-    emoteWheelPosition = v(0, 0);
-    selectedEmoteSlot = EmoteSlot.None;
-
-    readonly dirty = {
-        health: true,
-        adrenaline: true,
-        inputs: true
-    };
-
-    rotation = 0;
-
-    private _action = InputActions.None;
-    get action(): InputActions { return this._action; }
-    set action(value) {
-        this._action = value;
-        this.dirty.inputs = true;
-    }
-
-    itemToSwitch = -1;
-    itemToDrop = -1;
-    consumableToConsume?: HealingItemDefinition | ScopeDefinition;
-
-    private _attacking = false;
-    get attacking(): boolean { return this._attacking; }
-    set attacking(attacking: boolean) {
-        this._attacking = attacking;
-        this.dirty.inputs = true;
-    }
-
-    resetAttacking = false;
-
-    turning = false;
 
     zoom = 48;
 
@@ -133,69 +41,6 @@ export class PlayerManager {
     readonly weapons = new Array<LootDefinition | undefined>(INVENTORY_MAX_WEAPONS);
 
     readonly weaponsAmmo = new Array<number>(INVENTORY_MAX_WEAPONS);
-
-    private _lastItemIndex = 0;
-    get lastItemIndex(): number { return this._lastItemIndex; }
-
-    private _activeItemIndex = 2;
-    get activeItemIndex(): number { return this._activeItemIndex; }
-    set activeItemIndex(i: number) {
-        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
-        this._activeItemIndex = i;
-    }
-
-    equipItem(i: number): void {
-        this.action = InputActions.EquipItem;
-        this.itemToSwitch = i;
-    }
-
-    dropItem(i: number): void {
-        this.action = InputActions.DropItem;
-        this.itemToDrop = i;
-    }
-
-    swapGunSlots(): void {
-        this.action = InputActions.SwapGunSlots;
-    }
-
-    interact(): void {
-        this.action = InputActions.Interact;
-    }
-
-    reload(): void {
-        this.action = InputActions.Reload;
-    }
-
-    cancelAction(): void {
-        this.action = InputActions.Cancel;
-    }
-
-    useItem(item: HealingItemDefinition | ScopeDefinition): void {
-        this.action = InputActions.UseConsumableItem;
-        this.consumableToConsume = item;
-    }
-
-    cycleScope(offset: number): void {
-        const scopeId = Scopes.indexOf(this.scope);
-        let scopeString = this.scope.idString;
-        let searchIndex = scopeId;
-
-        let iterationCount = 0;
-        // Prevent possible infinite loops
-        while (iterationCount++ < 100) {
-            searchIndex = consoleVariables.get.builtIn("cv_loop_scope_selection").value
-                ? absMod(searchIndex + offset, Scopes.length)
-                : clamp(0, Scopes.length - 1, searchIndex + offset);
-
-            const scopeCandidate = Scopes[searchIndex].idString;
-            if (this.items[scopeCandidate]) {
-                scopeString = scopeCandidate;
-                break;
-            }
-        }
-
-        if (scopeString !== this.scope.idString) this.useItem(reifyDefinition<ScopeDefinition>(scopeString, Scopes));
-    }
 
     constructor(game: Game) {
         this.game = game;
@@ -213,14 +58,15 @@ export class PlayerManager {
     }
 
     private _updateActiveWeaponUi(): void {
-        if (!(this.weapons[this.activeItemIndex]?.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
+        const activeIndex = this.game.inputManager.activeItemIndex;
+        if (!(this.weapons[activeIndex]?.itemType === ItemType.Gun || UI_DEBUG_MODE)) {
             $("#weapon-ammo-container").hide();
         } else {
             $("#weapon-ammo-container").show();
-            const ammo = this.weaponsAmmo[this.activeItemIndex];
+            const ammo = this.weaponsAmmo[activeIndex];
             $("#weapon-clip-ammo").text(ammo).css("color", ammo > 0 ? "inherit" : "red");
 
-            const ammoType = (this.weapons[this.activeItemIndex] as GunDefinition).ammoType;
+            const ammoType = (this.weapons[activeIndex] as GunDefinition).ammoType;
             let totalAmmo: number | string = this.items[ammoType];
 
             for (const ammo of Ammos) {
@@ -233,7 +79,7 @@ export class PlayerManager {
             $("#weapon-inventory-ammo").text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
         }
 
-        const kills = this.itemKills[this._activeItemIndex];
+        const kills = this.itemKills[activeIndex];
         if (kills === undefined) { // killstreaks
             $("#killstreak-indicator-container").hide();
         } else {
@@ -281,9 +127,9 @@ export class PlayerManager {
         // Active item index
         const activeWeaponIndexDirty = stream.readBoolean();
         if (activeWeaponIndexDirty) {
-            this.activeItemIndex = stream.readBits(2);
+            this.game.inputManager.activeItemIndex = stream.readBits(2);
             $("#weapons-container").children(".inventory-slot").removeClass("active");
-            $(`#weapon-slot-${this.activeItemIndex + 1}`).addClass("active");
+            $(`#weapon-slot-${this.game.inputManager.activeItemIndex + 1}`).addClass("active");
         }
 
         // Inventory dirty

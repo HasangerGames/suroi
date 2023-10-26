@@ -7,7 +7,7 @@ import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type 
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { log } from "../../common/src/utils/misc";
-import { reifyDefinition, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
+import { reifyDefinition, type ReferenceTo, ObstacleSpecialRoles } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
@@ -290,7 +290,11 @@ export class Map {
                 lootSpawnOffset,
                 building
             );
-            if (obstacleData.idString === "vault_door") this.game.vaultDoor = obstacle; //fixme idString check
+
+            if (obstacleDef.role === ObstacleSpecialRoles.Activatable ||
+                obstacleDef.role === ObstacleSpecialRoles.Door) {
+                building.interactableObstacles.add(obstacle);
+            }
         }
 
         for (const lootData of definition.lootSpawners ?? []) {
@@ -324,17 +328,8 @@ export class Map {
             this.terrainGrid.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
         }
 
-        if (definition.decals) {
-            for (const decal of definition.decals) {
-                this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
-            }
-        }
-
-        if (definition.floors) {
-            for (const floor of definition.floors) {
-                const hitbox = floor.hitbox.transform(position, 1, orientation);
-                this.terrainGrid.addFloor(floor.type, hitbox);
-            }
+        for (const decal of definition.decals ?? []) {
+            this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
         }
 
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
@@ -500,7 +495,7 @@ export class Map {
                 continue;
             }
 
-            for (const object of this.game.grid.intersectsRect(rectHitbox)) {
+            for (const object of this.game.grid.intersectsHitbox(rectHitbox)) {
                 if (object instanceof Obstacle || object instanceof Building) {
                     if (object.spawnHitbox.collidesWith(hitbox)) {
                         collided = true;

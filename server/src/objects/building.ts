@@ -9,12 +9,12 @@ import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
+import { type Obstacle } from "./obstacle";
 
 export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject {
     override readonly type = ObjectCategory.Building;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
+
+    override objectType: ObjectType<this["type"], Def>;
 
     readonly definition: Def;
 
@@ -24,6 +24,8 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
     private _wallsToDestroy?: number;
 
+    interactableObstacles = new Set<Obstacle>();
+
     //@ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
@@ -31,6 +33,8 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         super(game, position);
 
         this.definition = typeof definition === "string" ? (definition = Buildings.getByIDString<Def>(definition)) : definition;
+
+        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
 
         this.rotation = orientation;
         this._wallsToDestroy = definition.wallsToDestroy;

@@ -209,19 +209,31 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                game.bullets.add(
-                    new Bullet(
-                        game,
-                        {
-                            source: stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition,
-                            position: stream.readPosition(),
-                            rotation: stream.readRotation(16),
-                            variance: stream.readFloat(0, 1, 4),
-                            reflectionCount: stream.readBits(2),
-                            sourceID: stream.readObjectID()
-                        }
-                    )
-                );
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                const source = stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition;
+                const position = stream.readPosition();
+                const rotation = stream.readRotation(16);
+                const variance = stream.readFloat(0, 1, 4);
+                const reflectionCount = stream.readBits(2);
+                const sourceID = stream.readObjectID();
+
+                let clipDistance: number | undefined;
+
+                if (source.ballistics.clipDistance) {
+                    clipDistance = stream.readFloat(0, source.ballistics.maxDistance, 16);
+                }
+
+                const bullet = new Bullet(game, {
+                    source,
+                    position,
+                    rotation,
+                    reflectionCount,
+                    sourceID,
+                    variance,
+                    clipDistance
+                });
+
+                game.bullets.add(bullet);
             }
         }
 

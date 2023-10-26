@@ -4,7 +4,6 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 
@@ -25,7 +24,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : "",
+            this.game.console.getConfig("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",

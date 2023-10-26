@@ -2,7 +2,6 @@ import $ from "jquery";
 import { DEFAULT_USERNAME } from "../../../../../common/src/constants";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";
-import { consoleVariables } from "../../utils/console/variables";
 import { randomKillWord } from "../../utils/misc";
 
 let timeoutID: number;
@@ -16,7 +15,7 @@ export class KillPacket extends ReceivingPacket {
         $("#kill-msg-kills").text(killText);
         $("#kill-msg-word").text(randomKillWord());
         const name = stream.readPlayerNameWithColor();
-        $("#kill-msg-player-name").html(consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : name);
+        $("#kill-msg-player-name").html(this.game.console.getConfig("cv_anonymize_player_names") ? DEFAULT_USERNAME : name);
         $("#kill-msg-weapon-used").text(stream.readBoolean() ? ` with ${stream.readObjectType().definition.name}${stream.readBoolean() ? ` (streak: ${stream.readUint8()})` : ""}` : "");
 
         const killModal = $("#kill-msg");

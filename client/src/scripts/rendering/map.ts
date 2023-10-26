@@ -7,7 +7,6 @@ import { addAdjust } from "../../../../common/src/utils/math";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type MapPacket } from "../packets/receiving/mapPacket";
-import { consoleVariables } from "../utils/console/variables";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
@@ -54,7 +53,7 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (consoleVariables.get.builtIn("cv_minimap_minimized").value) this.toggleMiniMap();
+        if (this.game.console.getConfig("cv_minimap_minimized")) this.toggleMiniMap();
 
         this.indicator.scale.set(0.1);
 
@@ -459,7 +458,7 @@ export class Minimap {
     }
 
     updateTransparency(): void {
-        this.container.alpha = consoleVariables.get.builtIn(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency").value;
+        this.container.alpha = this.game.console.getConfig(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency");
     }
 
     toggleMiniMap(noSwitchToggle = false): void {
@@ -468,7 +467,7 @@ export class Minimap {
         this.switchToSmallMap();
         this.container.visible = this.visible;
         this.borderContainer.toggle(this.visible);
-        consoleVariables.set.builtIn("cv_minimap_minimized", !this.visible);
+        this.game.console.setConfig("cv_minimap_minimized", !this.visible);
         if (!noSwitchToggle) {
             $("#toggle-hide-minimap").prop("checked", !this.visible);
         }

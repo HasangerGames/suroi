@@ -7,7 +7,7 @@ import { Obstacle } from "../../objects/obstacle";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class MapPacket extends SendingPacket {
-    override readonly allocBytes = 1 << 13;
+    override readonly allocBytes = 1 << 14;
     override readonly type = PacketType.Map;
 
     readonly game: Game;
@@ -44,7 +44,7 @@ export class MapPacket extends SendingPacket {
         stream.writeBits(this.game.minimapObjects.size, 11);
 
         for (const object of this.game.minimapObjects) {
-            stream.writeObjectType(object.createObjectType());
+            stream.writeObjectType(object.objectType);
             stream.writePosition(object.position);
 
             switch (true) {

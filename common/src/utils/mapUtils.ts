@@ -262,18 +262,18 @@ export function generateTerrain(
 export class TerrainGrid {
     readonly width: number;
     readonly height: number;
-    readonly cellSize = 32;
+    readonly cellSize = 128;
 
     readonly floors = new Map<Hitbox, string>();
 
-    private readonly _grid: Record<number, Record<number, Array<{ readonly type: string, readonly hitbox: Hitbox }>>> = {};
+    private readonly _grid: Array<Array<Array<{ readonly type: string, readonly hitbox: Hitbox }>>> = [];
 
     constructor(width: number, height: number) {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
 
         for (let x = 0; x <= width; x++) {
-            this._grid[x] = {};
+            this._grid[x] = [];
             for (let y = 0; y <= height; y++) {
                 this._grid[x][y] = [];
             }

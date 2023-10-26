@@ -2,7 +2,6 @@ import { type Application, Container, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "../utils/console/variables";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Camera {
@@ -80,7 +79,7 @@ export class Camera {
     }
 
     shake(duration: number, intensity: number): void {
-        if (!consoleVariables.get.builtIn("cv_camera_shake_fx").value) return;
+        if (!this.game.console.getConfig("cv_camera_shake_fx")) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;

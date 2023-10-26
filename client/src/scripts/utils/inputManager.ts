@@ -1,34 +1,254 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
-import { angleBetweenPoints, distanceSquared } from "../../../../common/src/utils/math";
-import { v } from "../../../../common/src/utils/vector";
+import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
+import { v, vDiv } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
-import { gameConsole, keybinds } from "./console/gameConsole";
-import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { consoleVariables } from "./console/variables";
-import { ItemType } from "../../../../common/src/utils/objectDefinitions";
+import { type GameSettings } from "./console/gameConsole";
+import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import { type ItemDefinition, ItemType, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { isMobile } from "pixi.js";
+import { InputActions } from "../../../../common/src/constants";
+import { Scopes } from "../../../../common/src/definitions/scopes";
+import { Loots } from "../../../../common/src/definitions/loots";
 
-function fireAllEventsAtKey(input: string, down: boolean): number {
-    const actions = keybinds.getActionsBoundToInput(input) ?? [];
-    for (const action of actions) {
-        let query = action;
-        if (!down) {
-            if (query.startsWith("+")) { // Invertible action
-                query = query.replace("+", "-");
-            } else query = ""; // If the action isn't invertible, then we do nothing
-        }
+export type InputAction = {
+    type: InputActions.UseItem
+    item: ItemDefinition
+} | {
+    type: InputActions.EquipItem | InputActions.DropItem
+    slot: number
+} | {
+    type: InputActions
+};
 
-        gameConsole.handleQuery(query);
+export class InputManager {
+    game: Game;
+
+    binds: InputMapper;
+
+    get isMobile(): boolean {
+        return isMobile.any && this.game.console.getConfig("mb_controls_enabled");
     }
 
-    return actions.length;
-}
+    movement = {
+        up: false,
+        left: false,
+        down: false,
+        right: false,
+        moving: false
+    };
 
-export function setupInputs(game: Game): void {
-    let mWheelStopTimer: number | undefined;
-    function handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
+    // had to put it here because it's not a boolean
+    // and inputManager assumes all keys of `movement` are booleans
+    movementAngle = 0;
+
+    mouseX = 0;
+    mouseY = 0;
+
+    emoteWheelActive = false;
+    emoteWheelPosition = v(0, 0);
+
+    rotation = 0;
+
+    selectedEmote?: InputActions;
+
+    actions: InputAction[] = [];
+
+    addAction(action: InputAction | InputActions): void {
+        if (typeof action === "number") {
+            this.actions.push({ type: action });
+            return;
+        }
+        this.actions.push(action);
+    }
+
+    distanceToMouse = 0;
+
+    attacking = false;
+
+    resetAttacking = false;
+
+    turning = false;
+
+    private _lastItemIndex = 0;
+    get lastItemIndex(): number { return this._lastItemIndex; }
+
+    private _activeItemIndex = 2;
+    get activeItemIndex(): number { return this._activeItemIndex; }
+    set activeItemIndex(i: number) {
+        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
+        this._activeItemIndex = i;
+    }
+
+    cycleScope(offset: number): void {
+        const scope = this.game.playerManager.scope;
+        const scopeId = Scopes.indexOf(scope);
+        let scopeString = scope.idString;
+        let searchIndex = scopeId;
+
+        let iterationCount = 0;
+        // Prevent possible infinite loops
+        while (iterationCount++ < 100) {
+            searchIndex = this.game.console.getConfig("cv_loop_scope_selection")
+                ? absMod(searchIndex + offset, Scopes.length)
+                : clamp(0, Scopes.length - 1, searchIndex + offset);
+
+            const scopeCandidate = Scopes[searchIndex].idString;
+            if (this.game.playerManager.items[scopeCandidate]) {
+                scopeString = scopeCandidate;
+                break;
+            }
+        }
+
+        if (scopeString !== scope.idString) {
+            this.addAction({
+                type: InputActions.UseItem,
+                item: reifyDefinition(scopeString, Loots)
+            });
+        }
+    }
+
+    constructor(game: Game) {
+        this.game = game;
+        this.binds = new InputMapper();
+    }
+
+    private mWheelStopTimer: number | undefined;
+    setupInputs(): void {
+        const game = this.game;
+
+        const gameUi = $("#game-ui")[0];
+
+        // different event targets… why?
+        window.addEventListener("keydown", this.handleInputEvent.bind(this, true));
+        window.addEventListener("keyup", this.handleInputEvent.bind(this, false));
+        gameUi.addEventListener("pointerdown", this.handleInputEvent.bind(this, true));
+        gameUi.addEventListener("pointerup", this.handleInputEvent.bind(this, false));
+        gameUi.addEventListener("wheel", this.handleInputEvent.bind(this, true));
+
+        gameUi.addEventListener("pointermove", (e: MouseEvent) => {
+            if (this.isMobile) return;
+
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+
+            if (this.emoteWheelActive) {
+                const mousePosition = v(e.clientX, e.clientY);
+                if (distanceSquared(this.emoteWheelPosition, mousePosition) > 500) {
+                    const angle = angleBetweenPoints(this.emoteWheelPosition, mousePosition);
+                    let slotName: string | undefined;
+
+                    if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
+                        this.selectedEmote = InputActions.TopEmoteSlot;
+                        slotName = "top";
+                    } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
+                        this.selectedEmote = InputActions.RightEmoteSlot;
+                        slotName = "right";
+                    } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
+                        this.selectedEmote = InputActions.BottomEmoteSlot;
+                        slotName = "bottom";
+                    } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
+                        this.selectedEmote = InputActions.LeftEmoteSlot;
+                        slotName = "left";
+                    }
+                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
+                } else {
+                    this.selectedEmote = undefined;
+                    $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+                }
+            }
+
+            this.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
+
+            if (!game.gameOver && game.activePlayer) {
+                const globalPos = v(e.clientX, e.clientY);
+                const pixiPos = game.camera.container.toLocal(globalPos);
+                const gamePos = vDiv(pixiPos, PIXI_SCALE);
+                this.distanceToMouse = distance(game.activePlayer.position, gamePos);
+
+                if (game.console.getConfig("cv_animate_rotation") === "client") {
+                    game.activePlayer.container.rotation = this.rotation;
+                    game.map.indicator.rotation = this.rotation;
+                }
+            }
+
+            this.turning = true;
+        });
+
+        // Mobile joysticks
+        if (this.isMobile) {
+            const size = game.console.getConfig("mb_joystick_size");
+            const transparency = game.console.getConfig("mb_joystick_transparency");
+
+            const leftJoyStick = nipplejs.create({
+                zone: $("#left-joystick-container")[0],
+                size,
+                color: `rgba(255, 255, 255, ${transparency})`
+            });
+
+            const rightJoyStick = nipplejs.create({
+                zone: $("#right-joystick-container")[0],
+                size,
+                color: `rgba(255, 255, 255, ${transparency})`
+            });
+
+            let rightJoyStickUsed = false;
+            let shootOnRelease = false;
+
+            leftJoyStick.on("move", (_, data: JoystickOutputData) => {
+                if (!rightJoyStickUsed && !shootOnRelease) {
+                    this.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                    if (game.console.getConfig("cv_animate_rotation") === "client" && !game.gameOver && game.activePlayer) {
+                        game.activePlayer.container.rotation = this.rotation;
+                    }
+                }
+
+                this.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+                this.movement.moving = true;
+            });
+
+            leftJoyStick.on("end", () => {
+                this.movement.moving = false;
+            });
+
+            rightJoyStick.on("move", (_, data: JoystickOutputData) => {
+                rightJoyStickUsed = true;
+                this.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                const activePlayer = game.activePlayer;
+                if (game.console.getConfig("cv_animate_rotation") === "client" && !game.gameOver && activePlayer) {
+                    game.activePlayer.container.rotation = this.rotation;
+                }
+                this.turning = true;
+
+                if (!activePlayer) return;
+
+                const def = activePlayer.activeItem;
+
+                if (def.itemType === ItemType.Gun) {
+                    activePlayer.images.aimTrail.alpha = 1;
+                }
+
+                const attacking = data.distance > game.console.getConfig("mb_joystick_size") / 3;
+                if (def.itemType === ItemType.Gun && def.shootOnRelease) {
+                    shootOnRelease = true;
+                } else {
+                    this.attacking = attacking;
+                }
+            });
+
+            rightJoyStick.on("end", () => {
+                rightJoyStickUsed = false;
+                if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
+                this.attacking = shootOnRelease;
+                this.resetAttacking = true;
+                shootOnRelease = false;
+            });
+        }
+    }
+
+    private handleInputEvent(down: boolean, event: KeyboardEvent | MouseEvent | WheelEvent): void {
         // Disable pointer events on mobile if mobile controls are enabled
-        if (event instanceof PointerEvent && game.playerManager.isMobile) return;
+        if (event instanceof PointerEvent && this.isMobile) return;
 
         // If the using is interacting with a text field or something of the sort, inputs should
         // not be honored
@@ -71,7 +291,7 @@ export function setupInputs(game: Game): void {
             ) return;
         }
 
-        const key = getKeyFromInputEvent(event);
+        const key = this.getKeyFromInputEvent(event);
         let actionsFired = 0;
 
         if (event instanceof WheelEvent) {
@@ -82,188 +302,217 @@ export function setupInputs(game: Game): void {
                 This has the effect of continuously cancelling the stop callback whenever a wheel event is
                 detected, which is what we want
             */
-            clearTimeout(mWheelStopTimer);
-            mWheelStopTimer = window.setTimeout(() => {
-                actionsFired = fireAllEventsAtKey(key, false);
+            clearTimeout(this.mWheelStopTimer);
+            this.mWheelStopTimer = window.setTimeout(() => {
+                actionsFired = this.fireAllEventsAtKey(key, false);
             }, 50);
 
-            actionsFired = fireAllEventsAtKey(key, true);
+            actionsFired = this.fireAllEventsAtKey(key, true);
             return;
         }
 
-        actionsFired = fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
+        actionsFired = this.fireAllEventsAtKey(key, event.type === "keydown" || event.type === "pointerdown");
 
-        if (actionsFired > 0 && game.gameStarted) {
+        if (actionsFired > 0 && this.game.gameStarted) {
             event.preventDefault();
         }
     }
 
-    const gameUi = $("#game-ui")[0];
-
-    // different event targets… why?
-    window.addEventListener("keydown", handleInputEvent.bind(null, true));
-    window.addEventListener("keyup", handleInputEvent.bind(null, false));
-    gameUi.addEventListener("pointerdown", handleInputEvent.bind(null, true));
-    gameUi.addEventListener("pointerup", handleInputEvent.bind(null, false));
-    gameUi.addEventListener("wheel", handleInputEvent.bind(null, true));
-
-    gameUi.addEventListener("pointermove", (e: MouseEvent) => {
-        if (game.playerManager === undefined || game.playerManager.isMobile) return;
-        const player = game.playerManager;
-        player.mouseX = e.clientX;
-        player.mouseY = e.clientY;
-
-        if (player.emoteWheelActive) {
-            const mousePosition = v(e.clientX, e.clientY);
-            if (distanceSquared(player.emoteWheelPosition, mousePosition) > 500) {
-                const angle = angleBetweenPoints(player.emoteWheelPosition, mousePosition);
-                let slotName: string | undefined;
-
-                if (SECOND_EMOTE_ANGLE <= angle && angle <= FOURTH_EMOTE_ANGLE) {
-                    player.selectedEmoteSlot = EmoteSlot.Top;
-                    slotName = "top";
-                } else if (!(angle >= FIRST_EMOTE_ANGLE && angle <= FOURTH_EMOTE_ANGLE)) {
-                    player.selectedEmoteSlot = EmoteSlot.Right;
-                    slotName = "right";
-                } else if (FIRST_EMOTE_ANGLE <= angle && angle <= THIRD_EMOTE_ANGLE) {
-                    player.selectedEmoteSlot = EmoteSlot.Bottom;
-                    slotName = "bottom";
-                } else if (THIRD_EMOTE_ANGLE <= angle && angle <= SECOND_EMOTE_ANGLE) {
-                    player.selectedEmoteSlot = EmoteSlot.Left;
-                    slotName = "left";
-                }
-                $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
-            } else {
-                player.selectedEmoteSlot = EmoteSlot.None;
-                $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
+    private fireAllEventsAtKey(input: string, down: boolean): number {
+        const actions = this.binds.getActionsBoundToInput(input) ?? [];
+        for (const action of actions) {
+            let query = action;
+            if (!down) {
+                if (query.startsWith("+")) { // Invertible action
+                    query = query.replace("+", "-");
+                } else query = ""; // If the action isn't invertible, then we do nothing
             }
+
+            this.game.console.handleQuery(query);
         }
 
-        player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-            game.activePlayer.container.rotation = player.rotation;
-            game.map.indicator.rotation = player.rotation;
-        }
-
-        player.turning = true;
-        player.dirty.inputs = true;
-    });
-
-    // Mobile joysticks
-    if (game.playerManager.isMobile) {
-        const size = consoleVariables.get.builtIn("mb_joystick_size").value;
-        const transparency = consoleVariables.get.builtIn("mb_joystick_transparency").value;
-
-        const leftJoyStick = nipplejs.create({
-            zone: $("#left-joystick-container")[0],
-            size,
-            color: `rgba(255, 255, 255, ${transparency})`
-        });
-
-        const rightJoyStick = nipplejs.create({
-            zone: $("#right-joystick-container")[0],
-            size,
-            color: `rgba(255, 255, 255, ${transparency})`
-        });
-
-        let rightJoyStickUsed = false;
-        let shootOnRelease = false;
-
-        const playerManager = game.playerManager;
-
-        leftJoyStick.on("move", (_, data: JoystickOutputData) => {
-            if (!rightJoyStickUsed && !shootOnRelease) {
-                playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-                if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-                    game.activePlayer.container.rotation = playerManager.rotation;
-                }
-            }
-
-            playerManager.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-            playerManager.movement.moving = true;
-        });
-
-        leftJoyStick.on("end", () => {
-            playerManager.movement.moving = false;
-        });
-
-        rightJoyStick.on("move", (_, data: JoystickOutputData) => {
-            rightJoyStickUsed = true;
-            playerManager.rotation = -Math.atan2(data.vector.y, data.vector.x);
-            const activePlayer = game.activePlayer;
-            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && activePlayer) {
-                game.activePlayer.container.rotation = playerManager.rotation;
-            }
-            playerManager.turning = true;
-
-            if (!activePlayer) return;
-
-            const def = activePlayer.activeItem;
-
-            if (def.itemType === ItemType.Gun) {
-                activePlayer.images.aimTrail.alpha = 1;
-            }
-
-            const attacking = data.distance > consoleVariables.get.builtIn("mb_joystick_size").value / 3;
-            if (def.itemType === ItemType.Gun && def.shootOnRelease) {
-                shootOnRelease = true;
-            } else {
-                playerManager.attacking = attacking;
-            }
-        });
-
-        rightJoyStick.on("end", () => {
-            rightJoyStickUsed = false;
-            if (game.activePlayer) game.activePlayer.images.aimTrail.alpha = 0;
-            playerManager.attacking = shootOnRelease;
-            playerManager.resetAttacking = true;
-            shootOnRelease = false;
-        });
+        return actions.length;
     }
 
-    generateBindsConfigScreen();
-}
-
-function getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
-    let key = "";
-    if (event instanceof KeyboardEvent) {
-        key = event.key.length > 1 ? event.key : event.key.toUpperCase();
-        if (key === " ") {
-            key = "Space";
-        }
-    }
-
-    if (event instanceof WheelEvent) {
-        switch (true) {
-            case event.deltaX > 0: { key = "MWheelRight"; break; }
-            case event.deltaX < 0: { key = "MWheelLeft"; break; }
-            case event.deltaY > 0: { key = "MWheelDown"; break; }
-            case event.deltaY < 0: { key = "MWheelUp"; break; }
-            case event.deltaZ > 0: { key = "MWheelForwards"; break; }
-            case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
+    private getKeyFromInputEvent(event: KeyboardEvent | MouseEvent | WheelEvent): string {
+        let key = "";
+        if (event instanceof KeyboardEvent) {
+            key = event.key.length > 1 ? event.key : event.key.toUpperCase();
+            if (key === " ") {
+                key = "Space";
+            }
         }
 
-        if (key === "") {
-            console.error("An unrecognized scroll wheel event was received: ", event);
+        if (event instanceof WheelEvent) {
+            switch (true) {
+                case event.deltaX > 0: { key = "MWheelRight"; break; }
+                case event.deltaX < 0: { key = "MWheelLeft"; break; }
+                case event.deltaY > 0: { key = "MWheelDown"; break; }
+                case event.deltaY < 0: { key = "MWheelUp"; break; }
+                case event.deltaZ > 0: { key = "MWheelForwards"; break; }
+                case event.deltaZ < 0: { key = "MWheelBackwards"; break; }
+            }
+
+            if (key === "") {
+                console.error("An unrecognized scroll wheel event was received: ", event);
+            }
+
+            return key;
+        }
+
+        if (event instanceof MouseEvent) {
+            key = `Mouse${event.button}`;
         }
 
         return key;
     }
 
-    if (event instanceof MouseEvent) {
-        key = `Mouse${event.button}`;
+    private readonly actionsNames: Record<keyof (typeof defaultBinds), string> = {
+        "+up": "Move Up",
+        "+down": "Move Down",
+        "+left": "Move Left",
+        "+right": "Move Right",
+        interact: "Interact",
+        "slot 0": "Equip Primary",
+        "slot 1": "Equip Secondary",
+        "slot 2": "Equip Melee",
+        last_item: "Equip Last Weapon",
+        other_weapon: "Equip Other Gun",
+        swap_gun_slots: "Swap Gun Slots",
+        "cycle_items -1": "Equip Previous Weapon",
+        "cycle_items 1": "Equip Next Weapon",
+        "+attack": "Use Weapon",
+        drop: "Drop Active Weapon",
+        reload: "Reload",
+        "cycle_scopes -1": "Previous Scope",
+        "cycle_scopes +1": "Next Scope",
+        "use_consumable gauze": "Use Gauze",
+        "use_consumable medikit": "Use Medikit",
+        "use_consumable cola": "Use Cola",
+        "use_consumable tablets": "Use Tablets",
+        cancel_action: "Cancel Action",
+        toggle_map: "Toggle Fullscreen Map",
+        toggle_minimap: "Toggle Minimap",
+        "+emote_wheel": "Emote Wheel",
+        toggle_console: "Toggle Console"
+    };
+
+    generateBindsConfigScreen(): void {
+        const keybindsContainer = $("#tab-keybinds-content");
+        keybindsContainer.html("").append(
+            $("<div>",
+                {
+                    class: "modal-item",
+                    id: "keybind-clear-tooltip"
+                }
+            ).append(
+                "To remove a keybind, press the keybind and then press either ",
+                $("<kbd>").text("Escape"),
+                " or ",
+                $("<kbd>").text("Backspace"),
+                "."
+            )
+        );
+
+        let activeButton: HTMLButtonElement | undefined;
+        for (const a in defaultBinds) {
+            const action = a as keyof (typeof defaultBinds);
+
+            const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
+
+            $("<div/>", {
+                class: "setting-title",
+                text: this.actionsNames[action]
+            }).appendTo(bindContainer);
+
+            const actions = this.binds.getInputsBoundToAction(action);
+
+            while (actions.length < 2) {
+                actions.push("None");
+            }
+
+            const buttons = actions.map(bind => {
+                return $<HTMLButtonElement>("<button/>", {
+                    class: "btn btn-darken btn-lg btn-secondary btn-bind",
+                    text: bind !== "" ? bind : "None"
+                }).appendTo(bindContainer)[0];
+            });
+
+            actions.forEach((bind, i) => {
+                const bindButton = buttons[i];
+
+                // eslint-disable-next-line no-inner-declarations
+                const setKeyBind = (event: KeyboardEvent | MouseEvent | WheelEvent): void => {
+                    event.stopImmediatePropagation();
+
+                    if (
+                        event instanceof MouseEvent &&
+                        event.type === "mousedown" &&
+                        !bindButton.classList.contains("active")
+                    ) {
+                        activeButton?.classList.remove("active");
+                        bindButton.classList.add("active");
+                        activeButton = bindButton;
+                        return;
+                    }
+
+                    if (bindButton.classList.contains("active")) {
+                        event.preventDefault();
+                        const key = this.getKeyFromInputEvent(event);
+
+                        if (bind) {
+                            this.binds.remove(bind, action);
+                        }
+
+                        this.binds.unbindInput(key);
+                        if (!(key === "Escape" || key === "Backspace")) {
+                            this.binds.addActionsToInput(key, action);
+                        }
+
+                        this.game.console.writeToLocalStorage();
+                        this.generateBindsConfigScreen();
+                    }
+                };
+
+                bindButton.addEventListener("keydown", setKeyBind);
+                bindButton.addEventListener("mousedown", setKeyBind);
+                bindButton.addEventListener("wheel", setKeyBind);
+                bindButton.addEventListener("contextmenu", e => { e.preventDefault(); });
+
+                bindButton.addEventListener("scroll", evt => {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    evt.stopImmediatePropagation();
+                });
+            });
+        }
+
+        // Add the reset button
+        $("<div/>", { class: "modal-item" }).append($("<button/>", {
+            class: "btn btn-darken btn-lg btn-danger",
+            html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
+        }).on("click", () => {
+            this.binds.unbindAll();
+
+            for (const [action, keys] of Object.entries(defaultBinds)) {
+                this.binds.addInputsToAction(action, ...keys);
+            }
+
+            this.generateBindsConfigScreen();
+        })).appendTo(keybindsContainer);
+
+        // Change the weapons slots keybind text
+        for (let i = 0; i < 3; i++) {
+            const slotKeybinds = this.binds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
+            $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
+        }
     }
 
-    return key;
-}
+    static getIconFromInputName(input: string): string | undefined {
+        let name: string | undefined;
 
-// Nowhere else to put this…
-export function getIconFromInputName(input: string): string | undefined {
-    let name: string | undefined;
-
-    const copy = input.toLowerCase();
-    if (
-        [
+        const copy = input.toLowerCase();
+        if ([
             "mouse",
             "mwheel",
             "tab",
@@ -277,158 +526,156 @@ export function getIconFromInputName(input: string): string | undefined {
             "backspace",
             "escape",
             "space"
-        ].some(query => copy.startsWith(query))
-    ) {
-        if (copy === "meta") { // "meta" means different things depending on the OS
-            name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
-        } else {
-            name = copy.replace(/ /g, "");
+        ].some(query => copy.startsWith(query))) {
+            if (copy === "meta") { // "meta" means different things depending on the OS
+                name = navigator.userAgent.match(/mac|darwin/ig) ? "command" : "windows";
+            } else {
+                name = copy.replace(/ /g, "");
+            }
         }
-    }
 
-    return name === undefined ? name : `./img/misc/${name}_icon.svg`;
+        return name === undefined ? name : `./img/misc/${name}_icon.svg`;
+    }
 }
 
-const actionsNames: Record<keyof (typeof defaultBinds), string> = {
-    "+up": "Move Up",
-    "+down": "Move Down",
-    "+left": "Move Left",
-    "+right": "Move Right",
-    interact: "Interact",
-    "slot 0": "Equip Primary",
-    "slot 1": "Equip Secondary",
-    "slot 2": "Equip Melee",
-    last_item: "Equip Last Weapon",
-    other_weapon: "Equip Other Gun",
-    swap_gun_slots: "Swap Gun Slots",
-    "cycle_items -1": "Equip Previous Weapon",
-    "cycle_items 1": "Equip Next Weapon",
-    "+attack": "Use Weapon",
-    drop: "Drop Active Weapon",
-    reload: "Reload",
-    "cycle_scopes -1": "Previous Scope",
-    "cycle_scopes +1": "Next Scope",
-    "use_consumable gauze": "Use Gauze",
-    "use_consumable medikit": "Use Medikit",
-    "use_consumable cola": "Use Cola",
-    "use_consumable tablets": "Use Tablets",
-    cancel_action: "Cancel Action",
-    toggle_map: "Toggle Fullscreen Map",
-    toggle_minimap: "Toggle Minimap",
-    "+emote_wheel": "Emote Wheel",
-    toggle_console: "Toggle Console"
-};
+class InputMapper {
+    readonly binds = new Set();
 
-// Generate the input settings
-export function generateBindsConfigScreen(): void {
-    const keybindsContainer = $("#tab-keybinds-content");
-    keybindsContainer.html("").append(
-        $("<div>",
-            {
-                class: "modal-item",
-                id: "keybind-clear-tooltip"
-            }
-        ).append(
-            "To remove a keybind, press the keybind and then press either ",
-            $("<kbd>").text("Escape"),
-            " or ",
-            $("<kbd>").text("Backspace"),
-            "."
-        )
-    );
+    // These two maps must be kept in sync!!
+    private readonly _inputToAction = new Map<string, Set<string>>();
+    private readonly _actionToInput = new Map<string, Set<string>>();
 
-    let activeButton: HTMLButtonElement | undefined;
-    for (const a in defaultBinds) {
-        const action = a as keyof (typeof defaultBinds);
+    /* eslint-disable @typescript-eslint/indent, indent, no-sequences */
+    private static readonly _generateGetAndSetIfAbsent =
+        <K, V>(map: Map<K, V>, defaultValue: V) =>
+            (key: K) =>
+                map.get(key) ?? (() => (map.set(key, defaultValue), defaultValue))();
 
-        const bindContainer = $("<div/>", { class: "modal-item" }).appendTo(keybindsContainer);
+    private static readonly _generateAdder =
+        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
+            (key: K, ...values: V[]): T => {
+                const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, new Set())(key);
 
-        $("<div/>", {
-            class: "setting-title",
-            text: actionsNames[action]
-        }).appendTo(bindContainer);
-
-        const actions = keybinds.getInputsBoundToAction(action);
-
-        while (actions.length < 2) {
-            actions.push("None");
-        }
-
-        const buttons = actions.map(bind => {
-            return $<HTMLButtonElement>("<button/>", {
-                class: "btn btn-darken btn-lg btn-secondary btn-bind",
-                text: bind !== "" ? bind : "None"
-            }).appendTo(bindContainer)[0];
-        });
-
-        actions.forEach((bind, i) => {
-            const bindButton = buttons[i];
-
-            // eslint-disable-next-line no-inner-declarations
-            function setKeyBind(event: KeyboardEvent | MouseEvent | WheelEvent): void {
-                event.stopImmediatePropagation();
-
-                if (
-                    event instanceof MouseEvent &&
-                    event.type === "mousedown" &&
-                    !bindButton.classList.contains("active")
-                ) {
-                    activeButton?.classList.remove("active");
-                    bindButton.classList.add("active");
-                    activeButton = bindButton;
-                    return;
+                for (const value of values) {
+                    forwardSet.add(value);
+                    InputMapper._generateGetAndSetIfAbsent(backwardsMap, new Set())(value).add(key);
                 }
 
-                if (bindButton.classList.contains("active")) {
-                    event.preventDefault();
-                    let key = getKeyFromInputEvent(event);
+                return thisValue;
+            };
 
-                    if (bind) {
-                        keybinds.remove(bind, action);
-                    }
+    /**
+     * Binds actions to a certain input. Note that an action (either a `Command` object or
+     * a console query `string`) may only appear once per input
+     * @param key The input to attach the actions to
+     * @param values A list of actions to be bound
+     * @returns This input mapper object
+     */
+    readonly addActionsToInput = InputMapper._generateAdder(this._inputToAction, this._actionToInput, this);
+    /**
+     * Binds inputs to a certain action. Note that an action (either a `Command` object or
+     * a console query `string`) may only appear once per action
+     * @param key The action to attach the inputs to
+     * @param values A list of inputs to be bound
+     * @returns This input mapper object
+     */
+    readonly addInputsToAction = InputMapper._generateAdder(this._actionToInput, this._inputToAction, this);
 
-                    if (key === "Escape" || key === "Backspace") {
-                        key = "";
-                    }
+    /**
+     * Removes an action that was bound to an input
+     * @param input The input that the action to be removed is currently bound to
+     * @param action The action to remove
+     * @returns `true` if the action existed and was removed, `false` if it was never
+     * there to begin with (and therefore was not removed)
+     */
+    remove(input: string, action: string): boolean {
+        const actions = this._inputToAction.get(input);
+        if (actions === undefined) return false;
 
-                    keybinds.unbindInput(key);
-                    keybinds.addActionsToInput(key, action);
-
-                    gameConsole.writeToLocalStorage();
-                    generateBindsConfigScreen();
-                }
-            }
-
-            bindButton.addEventListener("keydown", setKeyBind);
-            bindButton.addEventListener("mousedown", setKeyBind);
-            bindButton.addEventListener("wheel", setKeyBind);
-            bindButton.addEventListener("contextmenu", e => { e.preventDefault(); });
-
-            bindButton.addEventListener("scroll", evt => {
-                evt.preventDefault();
-                evt.stopPropagation();
-                evt.stopImmediatePropagation();
-            });
-        });
+        actions.delete(action);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this._actionToInput.get(action)!.delete(input);
+        return true;
     }
 
-    // Add the reset button
-    $("<div/>", { class: "modal-item" }).append($("<button/>", {
-        class: "btn btn-darken btn-lg btn-danger",
-        html: '<span style="position: relative; top: -2px"><i class="fa-solid fa-trash" style="font-size: 17px; margin-right: 3px; position: relative; top: -1px"></i> Reset to defaults</span>'
-    }).on("click", () => {
-        keybinds.unbindAll();
+    private static readonly _generateRemover =
+        <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
+            (key: K) => {
+                forwardsMap.delete(key);
 
-        for (const [action, keys] of Object.entries(defaultBinds)) {
-            keybinds.addInputsToAction(action, ...keys);
+                for (const set of backwardsMap.values()) {
+                    set.delete(key);
+                }
+
+                return thisValue;
+            };
+
+    /**
+     * Removes all actions bound to a particular input
+     * @param key The input from which to remove all actions
+     * @returns This input mapper object
+     */
+    readonly unbindInput = InputMapper._generateRemover(this._inputToAction, this._actionToInput, this);
+    /**
+     * Removes all inputs bound to a particular action
+     * @param key The action from which to remove all inputs
+     * @returns This input mapper object
+     */
+    readonly unbindAction = InputMapper._generateRemover(this._actionToInput, this._inputToAction, this);
+
+    /**
+     * Removes all bindings
+     * @returns This input mapper object
+     */
+    unbindAll(): this {
+        this._inputToAction.clear();
+        this._actionToInput.clear();
+        return this;
+    }
+
+    private static readonly _generateGetter =
+        <K, V>(map: Map<K, Set<V>>) =>
+            (key: K) => [...(map.get(key) ?? { values: () => [] }).values()];
+
+    /**
+     * Gets all the inputs bound to a particular action
+     * @param key The action from which to retrieve the inputs
+     * @returns An array of inputs bound to the action
+     */
+    readonly getInputsBoundToAction = InputMapper._generateGetter(this._actionToInput);
+    /**
+     * Gets all the actions bound to a particular input
+     * @param key The input from which to retrieve the actions
+     * @returns An array of actions bound to the input
+     */
+    readonly getActionsBoundToInput = InputMapper._generateGetter(this._inputToAction);
+
+    private static readonly _generateLister =
+        <K, V>(map: Map<K, V>) =>
+            () => [...map.keys()];
+
+    /**
+     * Lists all the inputs that are currently bound to at least one action
+     *
+     * **This list does *not* update in real time, and changes to said list
+     * are *not* reflected in the input manager**
+     */
+    readonly listBoundInputs = InputMapper._generateLister(this._inputToAction);
+    /**
+     * Lists all the actions to which at least one input is bound
+     *
+     * **This list does *not* update in real time, and changes to said list
+     * are *not* reflected in the input manager**
+     */
+    readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
+
+    getAll(): GameSettings["binds"] {
+        const binds: GameSettings["binds"] = {};
+
+        for (const [action, bindsSet] of this._actionToInput.entries()) {
+            binds[action] = [...bindsSet];
         }
 
-        generateBindsConfigScreen();
-    })).appendTo(keybindsContainer);
-
-    // Change the weapons slots keybind text
-    for (let i = 0; i < 3; i++) {
-        const slotKeybinds = keybinds.getInputsBoundToAction(`slot ${i}`).filter(a => a !== "").slice(0, 2);
-        $(`#weapon-slot-${i + 1}`).children(".slot-number").text(slotKeybinds.join(" / "));
+        return binds;
     }
 }

@@ -5,13 +5,8 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { setupUI } from "./ui";
-import { gameConsole, setUpBuiltIns } from "./utils/console/gameConsole";
 import { COLORS } from "./utils/constants";
-import { setupInputs } from "./utils/inputManager";
 import { loadAtlases } from "./utils/pixi";
-import { loadSounds } from "./utils/soundManager";
-import { consoleVariables } from "./utils/console/variables";
 
 const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
 
@@ -30,9 +25,22 @@ function disablePlayButton(text: string): void {
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(async(): Promise<void> => {
-    gameConsole.readFromLocalStorage();
-
     disablePlayButton("Loading...");
+
+    // Initialize the Application object
+
+    const app = new Application<HTMLCanvasElement>({
+        resizeTo: window,
+        background: COLORS.grass,
+        antialias: true,
+        autoDensity: true,
+        resolution: window.devicePixelRatio || 1
+    });
+    $("#game-ui").append(app.view);
+
+    const game = new Game(app);
+
+    await loadAtlases();
 
     interface RegionInfo {
         name: string
@@ -97,7 +105,7 @@ $(async(): Promise<void> => {
 
     //@ts-expect-error Even though indexing an object with undefined is technically gibberish, doing so returns undefined, which
     // is kinda what we want anyways, so it's fine
-    const cVarRegion = regionInfo[consoleVariables.get.builtIn("cv_region")?.value];
+    const cVarRegion = regionInfo[game.console.getConfig("cv_region")];
     //@ts-expect-error ditto
     const empiricalBestRegion = regionInfo[bestRegion];
     const clientConfigRegion = regionInfo[Config.defaultRegion];
@@ -113,7 +121,7 @@ $(async(): Promise<void> => {
 
         selectedRegion = info;
 
-        consoleVariables.set.builtIn("cv_region", region);
+        game.console.setConfig("cv_region", region);
 
         updateServerSelector();
     });
@@ -126,10 +134,10 @@ $(async(): Promise<void> => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
-                const devPass = consoleVariables.get.builtIn("dv_password").value;
-                const role = consoleVariables.get.builtIn("dv_role").value;
-                const nameColor = consoleVariables.get.builtIn("dv_name_color").value;
-                const lobbyClearing = consoleVariables.get.builtIn("dv_lobby_clearing").value;
+                const devPass = game.console.getConfig("dv_password");
+                const role = game.console.getConfig("dv_role");
+                const nameColor = game.console.getConfig("dv_name_color");
+                const lobbyClearing = game.console.getConfig("dv_lobby_clearing");
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
@@ -169,44 +177,25 @@ $(async(): Promise<void> => {
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
-        consoleVariables.set.builtIn("dv_name_color", nameColor);
+        game.console.setConfig("dv_name_color", nameColor);
     }
 
     const lobbyClearing = params.get("lobbyClearing");
     if (lobbyClearing) {
-        consoleVariables.set.builtIn("dv_lobby_clearing", lobbyClearing === "true");
+        game.console.setConfig("dv_lobby_clearing", lobbyClearing === "true");
     }
 
     const devPassword = params.get("password");
     if (devPassword) {
-        consoleVariables.set.builtIn("dv_password", devPassword);
+        game.console.setConfig("dv_password", devPassword);
         location.search = "";
     }
 
     const role = params.get("role");
     if (role) {
-        consoleVariables.set.builtIn("dv_role", role);
+        game.console.setConfig("dv_role", role);
         location.search = "";
     }
 
-    // Initialize the Application object
-
-    const app = new Application<HTMLCanvasElement>({
-        resizeTo: window,
-        background: COLORS.grass,
-        antialias: true,
-        autoDensity: true,
-        resolution: window.devicePixelRatio || 1
-    });
-    $("#game-ui").append(app.view);
-
-    await loadAtlases();
-
-    const game = new Game(app);
-
-    loadSounds(game.soundManager);
-    setUpBuiltIns(game);
-    setupUI(game);
-    setupInputs(game);
     enablePlayButton();
 });

@@ -1,4 +1,5 @@
 import { ObjectCategory } from "../../../common/src/constants";
+import { ObjectType } from "../../../common/src/utils/objectType";
 import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { GameObject } from "../types/gameObject";
@@ -6,7 +7,7 @@ import { type Player } from "./player";
 
 export class DeathMarker extends GameObject {
     override readonly type = ObjectCategory.DeathMarker;
-
+    override readonly objectType = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
     readonly player: Player;
     isNew = true;
 

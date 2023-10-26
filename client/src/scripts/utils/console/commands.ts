@@ -1,16 +1,14 @@
 import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../../common/src/constants";
 import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
-import { type LootDefinition, Loots } from "../../../../../common/src/definitions/loots";
+import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
 import { absMod } from "../../../../../common/src/utils/math";
 import { reifyDefinition, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
-import { EmoteSlot } from "../constants";
-import { generateBindsConfigScreen } from "../inputManager";
-import { type PlayerManager } from "../playerManager";
-import { aliases, commands, gameConsole, keybinds, type PossibleError, type Stringable } from "./gameConsole";
-import { consoleVariables, ConVar } from "./variables";
+import { type InputManager } from "../inputManager";
+import { type PossibleError, type Stringable } from "./gameConsole";
+import { ConVar } from "./variables";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 
@@ -110,10 +108,10 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
             });
         }
 
-        if (commands.has(this._name)) {
+        if (game.console.commands.has(this._name)) {
             console.warn(`Overwriting command '${this._name}'`);
         }
-        commands.set(this._name, this);
+        game.console.commands.set(this._name, this);
     }
 
     toString(): string {
@@ -122,14 +120,17 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
 }
 
 export function setUpCommands(game: Game): void {
-    const createMovementCommand = (name: keyof PlayerManager["movement"]): void => {
+    const gameConsole = game.console;
+    const keybinds = game.inputManager.binds;
+
+    const createMovementCommand = (name: keyof InputManager["movement"]): void => {
         Command.createInvertiblePair(
             name,
             function(): undefined {
-                this.playerManager.movement[name] = true;
+                this.inputManager.movement[name] = true;
             },
             function(): undefined {
-                this.playerManager.movement[name] = false;
+                this.inputManager.movement[name] = false;
             },
             game,
             {
@@ -177,7 +178,10 @@ export function setUpCommands(game: Game): void {
                 return { err: `Attempted to swap to invalid slot '${slot}'` };
             }
 
-            this.playerManager.equipItem(slotNumber);
+            this.inputManager.addAction({
+                type: InputActions.EquipItem,
+                slot: slotNumber
+            });
         },
         game,
         {
@@ -201,9 +205,10 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "last_item",
         function(): undefined {
-            const player = this.playerManager;
-
-            player.equipItem(player.lastItemIndex);
+            this.inputManager.addAction({
+                type: InputActions.EquipItem,
+                slot: this.inputManager.lastItemIndex
+            });
         },
         game,
         {
@@ -221,14 +226,16 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "other_weapon",
         function(): undefined {
-            const player = this.playerManager;
-            let index = player.activeItemIndex > 1
+            let index = this.inputManager.activeItemIndex > 1
                 ? 0
-                : 1 - player.activeItemIndex;
+                : 1 - this.inputManager.activeItemIndex;
 
             // fallback to melee if there's no weapon on the slot
-            if (player.weapons[index] === undefined) index = 2;
-            player.equipItem(index);
+            if (this.playerManager.weapons[index] === undefined) index = 2;
+            this.inputManager.addAction({
+                type: InputActions.EquipItem,
+                slot: index
+            });
         },
         game,
         {
@@ -246,7 +253,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "swap_gun_slots",
         function(): undefined {
-            this.playerManager.swapGunSlots();
+            this.inputManager.addAction(InputActions.SwapGunSlots);
         },
         game,
         {
@@ -272,12 +279,10 @@ export function setUpCommands(game: Game): void {
                 return { err: `Attempted to cycle items by an invalid offset of '${offset}' slots` };
             }
 
-            const player = game.playerManager;
-
-            let index = absMod((player.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
+            let index = absMod((this.inputManager.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
 
             let iterationCount = 0;
-            while (!player.weapons[index]) {
+            while (!this.playerManager.weapons[index]) {
                 index = absMod((index + step), INVENTORY_MAX_WEAPONS);
 
                 /*
@@ -285,12 +290,15 @@ export function setUpCommands(game: Game): void {
                     to run forever, this would prevent that
                 */
                 if (++iterationCount > 100) {
-                    index = player.activeItemIndex;
+                    index = this.inputManager.activeItemIndex;
                     break;
                 }
             }
 
-            player.equipItem(index);
+            this.inputManager.addAction({
+                type: InputActions.EquipItem,
+                slot: index
+            });
         },
         game,
         {
@@ -315,7 +323,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "interact",
         function(): undefined {
-            this.playerManager.interact();
+            this.inputManager.addAction(InputActions.Interact);
         },
         game,
         {
@@ -333,16 +341,14 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "attack",
         function(): undefined {
-            const player = this.playerManager;
-            if (player.attacking) return;
+            if (this.inputManager.attacking) return;
 
-            player.attacking = true;
+            this.inputManager.attacking = true;
         },
         function(): undefined {
-            const player = this.playerManager;
-            if (!player.attacking) return;
+            if (!this.inputManager.attacking) return;
 
-            player.attacking = false;
+            this.inputManager.attacking = false;
         },
         game,
         {
@@ -370,7 +376,10 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "drop",
         function(): undefined {
-            this.playerManager.dropItem(this.playerManager.activeItemIndex);
+            this.inputManager.addAction({
+                type: InputActions.DropItem,
+                slot: this.inputManager.activeItemIndex
+            });
         },
         game,
         {
@@ -394,7 +403,7 @@ export function setUpCommands(game: Game): void {
             if (Number.isNaN(step) || (step % 1 !== 0)) {
                 return { err: `Attempted to cycle scopes by an invalid offset of '${offset}'` };
             }
-            game.playerManager.cycleScope(step);
+            game.inputManager.cycleScope(step);
         },
         game,
         {
@@ -429,7 +438,10 @@ export function setUpCommands(game: Game): void {
                 return { err: `No consumable with idString '${idString}' exists.` };
             }
 
-            game.playerManager.useItem(reifyDefinition<LootDefinition, HealingItemDefinition | ScopeDefinition>(idString, Loots));
+            game.inputManager.addAction({
+                type: InputActions.UseItem,
+                item: reifyDefinition(idString, Loots)
+            });
         },
         game,
         {
@@ -452,7 +464,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "cancel_action",
         function(): undefined {
-            game.playerManager.cancelAction();
+            game.inputManager.addAction(InputActions.Cancel);
         },
         game,
         {
@@ -506,7 +518,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "reload",
         function(): undefined {
-            this.playerManager.reload();
+            game.inputManager.addAction(InputActions.Reload);
         },
         game,
         {
@@ -542,44 +554,22 @@ export function setUpCommands(game: Game): void {
     Command.createInvertiblePair(
         "emote_wheel",
         function(): undefined {
-            if (game.gameOver) return;
-            const player = game.playerManager;
+            if (this.gameOver) return;
+            const { mouseX, mouseY } = this.inputManager;
 
             $("#emote-wheel")
                 //                              ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
-                .css("left", `${player.mouseX - 143}px`)
-                .css("top", `${player.mouseY - 143}px`)
+                .css("left", `${mouseX - 143}px`)
+                .css("top", `${mouseY - 143}px`)
                 .css("background-image", 'url("./img/misc/emote_wheel.svg")')
                 .show();
-            player.emoteWheelActive = true;
-            player.emoteWheelPosition = v(player.mouseX, player.mouseY);
+            this.inputManager.emoteWheelActive = true;
+            this.inputManager.emoteWheelPosition = v(mouseX, mouseY);
         },
         function(): undefined {
             $("#emote-wheel").hide();
-            const player = game.playerManager;
-
-            switch (player.selectedEmoteSlot) {
-                case EmoteSlot.Top: {
-                    player.action = InputActions.TopEmoteSlot;
-                    break;
-                }
-                case EmoteSlot.Right: {
-                    player.action = InputActions.RightEmoteSlot;
-                    break;
-                }
-                case EmoteSlot.Bottom: {
-                    player.action = InputActions.BottomEmoteSlot;
-                    break;
-                }
-                case EmoteSlot.Left: {
-                    player.action = InputActions.LeftEmoteSlot;
-                    break;
-                }
-            }
-
-            player.dirty.inputs = true;
-            player.emoteWheelActive = false;
-            player.selectedEmoteSlot = EmoteSlot.None;
+            const emote = this.inputManager.selectedEmote;
+            if (emote) this.inputManager.addAction(emote);
         },
         game,
         {
@@ -656,7 +646,7 @@ export function setUpCommands(game: Game): void {
 
             keybinds.addActionsToInput(key.toUpperCase(), query);
             gameConsole.writeToLocalStorage();
-            generateBindsConfigScreen();
+            this.inputManager.generateBindsConfigScreen();
         },
         game,
         {
@@ -692,7 +682,7 @@ export function setUpCommands(game: Game): void {
 
             keybinds.unbindInput(key.toUpperCase());
             gameConsole.writeToLocalStorage();
-            generateBindsConfigScreen();
+            this.inputManager.generateBindsConfigScreen();
         },
         game,
         {
@@ -717,7 +707,7 @@ export function setUpCommands(game: Game): void {
         function(): undefined {
             keybinds.unbindAll();
             gameConsole.writeToLocalStorage();
-            generateBindsConfigScreen();
+            this.inputManager.generateBindsConfigScreen();
         },
         game,
         {
@@ -739,15 +729,15 @@ export function setUpCommands(game: Game): void {
                 return { err: `Expected 2 arguments, received ${arguments.length}` };
             }
 
-            if (commands.has(name)) {
+            if (gameConsole.commands.has(name)) {
                 return { err: `Cannot override built-in command '${name}'` };
             }
 
-            if (consoleVariables.has(name)) {
+            if (gameConsole.vars.has(name)) {
                 return { err: `Cannot shadow cvar '${name}'` };
             }
 
-            aliases.set(name, query);
+            gameConsole.aliases.set(name, query);
 
             gameConsole.writeToLocalStorage();
         },
@@ -830,7 +820,7 @@ export function setUpCommands(game: Game): void {
         (): undefined => {
             gameConsole.log.raw({
                 main: "List of CVars",
-                detail: `<ul>${consoleVariables.dump()}</ul>`
+                detail: `<ul>${gameConsole.vars.dump()}</ul>`
             });
         },
         game,
@@ -861,13 +851,13 @@ export function setUpCommands(game: Game): void {
                 return { err: "Custom CVar name be at least one character long (not including the prefix) and can only contain letters, numbers and underscores." };
             }
 
-            if (consoleVariables.has.custom(name)) {
+            if (gameConsole.vars.has.custom(name)) {
                 return { err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do <code>${name}=${value}</code>)` };
             }
 
             const toBoolean = (str: string | undefined): boolean => [undefined, "true", "false", "0", "1"].includes(str);
 
-            consoleVariables.declareCVar(new ConVar<Stringable>(name, value, { archive: toBoolean(archive), readonly: toBoolean(readonly) }));
+            gameConsole.vars.declareCVar(new ConVar<Stringable>(name, value, gameConsole, { archive: toBoolean(archive), readonly: toBoolean(readonly) }));
             gameConsole.writeToLocalStorage();
         },
         game,
@@ -913,7 +903,7 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected a string argument, received nothing" };
             }
 
-            const alias = aliases.get(name);
+            const alias = gameConsole.aliases.get(name);
 
             if (alias) {
                 gameConsole.log(`Alias '${name}' is defined as '${alias}'`);
@@ -943,12 +933,12 @@ export function setUpCommands(game: Game): void {
         "help",
         function(name) {
             if (name === undefined) {
-                gameConsole.log({ main: "List of commands", detail: [...commands.keys()] });
-                gameConsole.log({ main: "List of aliases", detail: [...aliases.keys()] });
+                gameConsole.log({ main: "List of commands", detail: [...gameConsole.commands.keys()] });
+                gameConsole.log({ main: "List of aliases", detail: [...gameConsole.aliases.keys()] });
                 return;
             }
 
-            const command = commands.get(name);
+            const command = gameConsole.commands.get(name);
 
             if (!command) {
                 return { err: `Cannot find command named '${name}'` };
