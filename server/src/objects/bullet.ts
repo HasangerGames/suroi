@@ -44,7 +44,7 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const variance = source.definition.ballistics.variance;
+        const variance = source.definition.ballistics.rangeVariance;
         super({
             ...options,
             rotation: normalizeAngle(options.rotation),
@@ -136,7 +136,7 @@ export class Bullet extends BaseBullet {
                 position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
                 rotation,
                 reflectionCount: this.reflectionCount + 1,
-                variance: this.variance,
+                variance: this.rangeVariance,
                 clipDistance: this.clipDistance
             }
         );

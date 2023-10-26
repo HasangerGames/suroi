@@ -19,15 +19,17 @@ export class Bullet extends BaseBullet {
 
         this.game = game;
 
-        this.image = new SuroiSprite(this.definition.tracerImage ?? "base_trail")
+        const tracerStats = this.definition.tracer;
+
+        this.image = new SuroiSprite(tracerStats?.image ?? "base_trail")
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
-        this.tracerLength = this.definition.tracerLength ?? 1;
+        this.tracerLength = tracerStats?.length ?? 1;
         this.maxLength = this.image.width * this.tracerLength;
-        this.image.scale.set(0, this.definition.tracerWidth ?? 1);
+        this.image.scale.set(0, tracerStats?.width ?? 1);
         this.image.anchor.set(1, 0.5);
-        this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
+        this.image.alpha = (tracerStats?.opacity ?? 1) / (this.reflectionCount + 1);
 
         let tint = 0xffffff;
 
@@ -40,7 +42,7 @@ export class Bullet extends BaseBullet {
         }
 
         if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
-        if (this.definition.tracerColor) tint = this.definition.tracerColor;
+        if (tracerStats?.color) tint = tracerStats?.color;
 
         this.image.tint = tint;
 

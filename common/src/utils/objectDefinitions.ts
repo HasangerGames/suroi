@@ -1,3 +1,5 @@
+import { type ExplosionDefinition } from "../definitions/explosions";
+
 /**
  * A class representing the definitions for some object type
  * @template T The specific type of `ObjectDefinition` this class holds
@@ -80,15 +82,19 @@ export interface BulletDefinition {
         readonly players?: boolean
         readonly obstacles?: boolean
     }
-    readonly tracerOpacity?: number
-    readonly tracerWidth?: number
-    readonly tracerLength?: number
-    readonly tracerColor?: number
-    readonly tracerImage?: string
-    readonly variance?: number
+
+    readonly tracer?: {
+        readonly opacity?: number
+        readonly width?: number
+        readonly length?: number
+        readonly color?: number
+        readonly image?: string
+    }
+
+    readonly rangeVariance?: number
     readonly shrapnel?: boolean
-    readonly onHitExplosion?: string
-    readonly clipDistance?: boolean
+    readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
+    readonly goToMouse?: boolean
 }
 
 export interface WearerAttributes {

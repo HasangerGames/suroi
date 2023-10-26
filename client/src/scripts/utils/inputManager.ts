@@ -153,7 +153,6 @@ export function setupInputs(game: Game): void {
             }
         }
 
-
         player.turning = true;
         player.dirty.inputs = true;
     });

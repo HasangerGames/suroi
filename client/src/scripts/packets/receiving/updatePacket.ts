@@ -219,7 +219,7 @@ export class UpdatePacket extends ReceivingPacket {
 
                 let clipDistance: number | undefined;
 
-                if (source.ballistics.clipDistance) {
+                if (source.ballistics.goToMouse) {
                     clipDistance = stream.readFloat(0, source.ballistics.maxDistance, 16);
                 }
 
@@ -267,10 +267,10 @@ export class UpdatePacket extends ReceivingPacket {
             isWaiting,
             isAdvancing
         ] = [
-                gas.state === GasState.Inactive,
-                gas.state === GasState.Waiting,
-                gas.state === GasState.Advancing
-            ];
+            gas.state === GasState.Inactive,
+            gas.state === GasState.Waiting,
+            gas.state === GasState.Advancing
+        ];
 
         if (gasDirty) {
             gas.state = stream.readBits(2);
@@ -285,10 +285,10 @@ export class UpdatePacket extends ReceivingPacket {
                 isWaiting,
                 isAdvancing
             ] = [
-                    gas.state === GasState.Inactive,
-                    gas.state === GasState.Waiting,
-                    gas.state === GasState.Advancing
-                ];
+                gas.state === GasState.Inactive,
+                gas.state === GasState.Waiting,
+                gas.state === GasState.Advancing
+            ];
 
             let currentDuration: number | undefined;
             const percentageDirty = stream.readBoolean();

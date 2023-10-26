@@ -239,7 +239,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 48,
-            tracerLength: 0.7
+            tracer: {
+                length: 0.7
+            }
         }
     },
     {
@@ -278,7 +280,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 0.5,
             speed: 0.12,
             maxDistance: 40,
-            tracerLength: 0.5
+            tracer: {
+                length: 0.5
+            }
         }
     },
     {
@@ -318,7 +322,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 40,
-            tracerLength: 0.5
+            tracer: {
+                length: 0.5
+            }
         }
     },
     {
@@ -353,8 +359,10 @@ export const Guns: GunDefinition[] = [
             speed: 0.16,
             maxDistance: 100,
             onHitExplosion: "usas_explosion",
-            clipDistance: true,
-            tracerColor: 0xff0000
+            goToMouse: true,
+            tracer: {
+                color: 0xFF0000
+            }
         }
     },
     {
@@ -392,8 +400,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.33,
             maxDistance: 250,
-            tracerWidth: 1.4,
-            tracerLength: 2.5
+            tracer: {
+                width: 1.4,
+                length: 2.5
+            }
         }
     },
     {
@@ -430,8 +440,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.4,
             maxDistance: 280,
-            tracerWidth: 1.6,
-            tracerLength: 3.5
+            tracer: {
+                width: 1.6,
+                length: 3.5
+            }
         }
     },
     {
@@ -717,7 +729,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 180,
-            tracerLength: 1.4
+            tracer: {
+                length: 1.4
+            }
         }
     },
     {
@@ -752,8 +766,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2.5,
             speed: 0.3,
             maxDistance: 180,
-            tracerWidth: 1.1,
-            tracerLength: 1.4
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
         }
     },
     {
@@ -788,8 +804,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2,
             speed: 0.28,
             maxDistance: 180,
-            tracerWidth: 1.1,
-            tracerLength: 1.4
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
         }
     },
     {
@@ -825,8 +843,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.22,
             maxDistance: 160,
-            tracerOpacity: 0.5,
-            tracerLength: 1.5
+            tracer: {
+                opacity: 0.5,
+                length: 1.5
+            }
         }
     },
     {
@@ -861,7 +881,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 230,
-            tracerLength: 1.5
+            tracer: {
+                length: 1.5
+            }
         }
     },
     {
@@ -896,7 +918,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 230,
-            tracerLength: 1.5
+            tracer: {
+                length: 1.5
+            }
         }
     },
 
@@ -916,7 +940,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 0.5,
         moveSpread: 5,
         length: 5.9,
-        bulletCount: 1,
         fists: {
             left: v(40, 0),
             right: v(40, 0),
@@ -933,9 +956,11 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 0.5,
             speed: 0.1,
             maxDistance: 70,
-            tracerWidth: 0.7,
-            tracerOpacity: 0.85,
-            tracerColor: 0xFF8000
+            tracer: {
+                width: 0.7,
+                opacity: 0.85,
+                color: 0xFF8000
+            }
         }
     },
 
@@ -979,8 +1004,10 @@ export const Guns: GunDefinition[] = [
                 players: true,
                 obstacles: true
             },
-            tracerImage: "power_cell_trail",
-            tracerLength: 10
+            tracer: {
+                image: "power_cell_trail",
+                length: 10
+            }
         }
     },
     {

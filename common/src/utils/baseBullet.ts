@@ -50,7 +50,7 @@ export class BaseBullet {
 
     readonly damagedIDs = new Set<number>();
 
-    readonly variance: number;
+    readonly rangeVariance: number;
 
     dead = false;
 
@@ -81,25 +81,23 @@ export class BaseBullet {
             this.source = reifyDefinition<ExplosionDefinition>(options.source as string, Explosions);
             this._sourceObjectType = ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, this.source.idString);
         }
-
         //! evil code ends here
 
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
-        this.variance = options.variance ?? 0;
+        this.rangeVariance = options.variance ?? 0;
 
         this.definition = this.source.ballistics;
 
-        let dist = this.definition.maxDistance;
+        let range = this.definition.maxDistance;
 
-        if (this.definition.clipDistance && options.clipDistance !== undefined) {
-            dist = clamp(options.clipDistance, 1, this.definition.maxDistance);
+        if (this.definition.goToMouse && options.clipDistance !== undefined) {
+            range = clamp(options.clipDistance, 0, this.definition.maxDistance);
         }
-        this.maxDistance = (dist * (this.variance + 1)) / (this.reflectionCount + 1);
-
+        this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.velocity = vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.speed * (this.variance + 1));
+        this.velocity = vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.speed * (this.rangeVariance + 1));
 
         this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
     }
