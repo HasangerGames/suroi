@@ -219,7 +219,7 @@ export class UpdatePacket extends ReceivingPacket {
 
                 let clipDistance: number | undefined;
 
-                if (source.ballistics.clipDistance) {
+                if (source.ballistics.goToMouse) {
                     clipDistance = stream.readFloat(0, source.ballistics.maxDistance, 16);
                 }
 

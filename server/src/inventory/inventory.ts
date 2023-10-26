@@ -138,7 +138,7 @@ export class Inventory {
      * Returns this inventory's active weapon
      * It will never be undefined since the only place that sets the active weapon has an undefined check
      */
-    get activeWeapon(): InventoryItem<LootDefinition> {
+    get activeWeapon(): InventoryItem<MeleeDefinition | GunDefinition> {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._weapons[this._activeWeaponIndex]!;
     }
