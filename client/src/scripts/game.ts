@@ -84,7 +84,7 @@ export class Game {
     readonly playersContainer = new Container();
     readonly bulletsContainer = new Container();
 
-    readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
+    readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/halloween_menu_music.mp3", loop: true });
     musicPlaying = false;
 
     readonly tweens = new Set<Tween<unknown>>();

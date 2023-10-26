@@ -70,6 +70,7 @@ export const Materials: string[] = [
     "crate",
     "metal",
     "wood",
+    "pumpkin",
     "glass",
     "porcelain",
     "cardboard",
@@ -246,6 +247,41 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
+            idString: "oak_tree_fall",
+            name: "Oak Tree Fall",
+            material: "tree",
+            health: 180,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            variations: 3,
+            zIndex: ZIndexes.ObstaclesLayer4
+        },
+        {
+            idString: "birch_tree_fall",
+            name: "Birch Tree Fall",
+            material: "tree",
+            health: 240,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(5.5),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            frames: {
+                particle: "birch_tree_fall_particle",
+                residue: "birch_tree_fall_residue"
+            }
+        },
+        {
             idString: "pine_tree",
             name: "Pine Tree",
             material: "tree",
@@ -290,6 +326,20 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Full,
             variations: 7,
             particleVariations: 2
+        },
+        {
+            idString: "pumpkin",
+            name: "Pumpkin",
+            material: "pumpkin",
+            health: 100,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.5
+            },
+            hitbox: new CircleHitbox(2.4),
+            spawnHitbox: new CircleHitbox(3),
+            rotationMode: RotationMode.Full,
         },
         {
             idString: "flint_stone",

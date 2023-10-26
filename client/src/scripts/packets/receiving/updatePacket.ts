@@ -219,8 +219,8 @@ export class UpdatePacket extends ReceivingPacket {
 
                 let clipDistance: number | undefined;
 
-                if (source.definition.ballistics.clipDistance) {
-                    clipDistance = stream.readFloat(0, source.definition.ballistics.maxDistance, 16);
+                if (source.ballistics.clipDistance) {
+                    clipDistance = stream.readFloat(0, source.ballistics.maxDistance, 16);
                 }
 
                 const bullet = new Bullet(game, {

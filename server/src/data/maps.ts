@@ -87,7 +87,8 @@ export const Maps: Record<string, MapDefinition> = {
             super_barrel: 20,
             melee_crate: 1,
             gold_rock: 1,
-            flint_stone: 1
+            flint_stone: 1,
+            pumpkin: 75
         },
         specialObstacles: {
             oil_tank: {
@@ -187,6 +188,69 @@ export const Maps: Record<string, MapDefinition> = {
             { name: "undefined Forest", position: v(0.3, 0.2) },
             { name: "seg. fault\n(core dumped)", position: v(0.3, 0.7) },
             { name: "Can't read props of null", position: v(0.4, 0.5) }
+        ]
+    },
+    halloween: {
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
+        rivers: 3,
+        buildings: {
+            refinery: 1,
+            warehouse: 4,
+            small_house: 5,
+            porta_potty: 10,
+            container_3: 1,
+            container_4: 1,
+            container_5: 1,
+            container_6: 1,
+            container_7: 1,
+            container_8: 1,
+            container_9: 1,
+            container_10: 1
+        },
+        obstacles: {
+            oil_tank: 6,
+            regular_crate: 155,
+            oak_tree_fall: 143,
+            rock: 142,
+            bush: 87,
+            blueberry_bush: 20,
+            barrel: 70,
+            super_barrel: 20,
+            birch_tree_fall: 18,
+            pine_tree: 14,
+            melee_crate: 1,
+            gold_rock: 1,
+            flint_stone: 1,
+            pumpkin: 75
+        },
+        specialObstacles: {
+            oil_tank: {
+                count: 3,
+                radius: 200,
+                squareRadius: true
+            },
+            aegis_crate: {
+                min: 3,
+                max: 4
+            },
+            flint_crate: {
+                min: 3,
+                max: 4
+            }
+        },
+        loots: {
+            ground_loot: 40
+        },
+        places: [
+            { name: "Pumpkin Patch", position: v(0.23, 0.2) },
+            { name: "Reaper", position: v(0.23, 0.8) },
+            { name: "Spøkelsesfelt", position: v(0.75, 0.2) },
+            { name: "Haunted Hollow", position: v(0.72, 0.8) },
+            { name: "Mt. Fang", position: v(0.5, 0.35) },
+            { name: "Darkwood", position: v(0.5, 0.65) }
         ]
     },
     // Arena map to test guns with really bad custom generation code lol
@@ -301,12 +365,12 @@ export const Maps: Record<string, MapDefinition> = {
         }
     },
     singleObstacle: {
-        width: 128,
-        height: 128,
-        beachSize: 16,
-        oceanSize: 16,
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("vault_door", v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("pumpkin", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {
