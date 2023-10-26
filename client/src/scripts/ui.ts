@@ -333,15 +333,15 @@ export function setupUI(game: Game): void {
     }
     loadCrosshair();
 
-    Crosshairs.forEach((crosshair, crosshairIndex) => {
+    Crosshairs.forEach((_, crosshairIndex) => {
         const crosshairItem = $(`
-    <div id="crosshair-${crosshair}" class="crosshairs-list-item-container">
+    <div id="crosshair-${crosshairIndex}" class="crosshairs-list-item-container">
         <div class="crosshairs-list-item"></div>
     </div>`);
 
         crosshairItem.find(".crosshairs-list-item").css({
             backgroundImage: `url("${getCrosshair(
-                crosshair,
+                crosshairIndex,
                 "#fff",
                 game.console.getConfig("cv_crosshair_size"),
                 "#0",
