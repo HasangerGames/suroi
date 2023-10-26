@@ -201,7 +201,7 @@ export class ConsoleVariables {
 export interface CVarTypeMapping {
     readonly cv_player_name: ConVar<string>
     readonly cv_loadout_skin: ConVar<string>
-    readonly cv_loadout_crosshair: ConVar<string>
+    readonly cv_loadout_crosshair: ConVar<number>
     readonly cv_loadout_top_emote: ConVar<string>
     readonly cv_loadout_right_emote: ConVar<string>
     readonly cv_loadout_bottom_emote: ConVar<string>
