@@ -1,13 +1,8 @@
-import { type ObjectDefinition, ObjectDefinitions } from "../../../../common/src/utils/objectDefinitions";
-
-export interface CrosshairDefinition extends ObjectDefinition {
-    readonly svg?: string
-}
-
+import { ObjectDefinitions } from "../../../../common/src/utils/objectDefinitions";
 
 // NOTE: make the crosshair path 16x16 pixels and the view box 20x20 pixels so theres space for the stroke
 
-export const Crosshairs = new ObjectDefinitions<CrosshairDefinition>([
+export const Crosshairs = new ObjectDefinitions<string | undefined>([
     undefined, // default
     '<path d="m2.5135417.52916667v1.98437503h-1.98437503v.2645833h1.98437503v1.9843749h.2645833v-1.9843749h1.9843749v-.2645833h-1.9843749v-1.98437503z"/>',
     '<path d="m2.441453.5291666v1.453658h.4092773v-1.453658zm-1.1983765.7002157v1.0924397h.344165v-.7482747h.7482748v-.344165zm1.7135905 0v.344165h.7482747v.7482747h.3441651v-1.0924397zm-2.4406779 1.1983764v.4092774h1.453658v-.4092774zm2.8060303 0v.4092774h1.453658v-.4092774zm-2.0789429.5152141v1.0924397h1.0924398v-.344165h-.7482748v-.7482747zm2.4618652 0v.7482747h-.7482747v.344165h1.0924398v-1.0924397zm-1.2634887.3658691v1.453658h.4092773v-1.453658z"/>',
