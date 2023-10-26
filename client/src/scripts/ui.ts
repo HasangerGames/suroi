@@ -333,9 +333,9 @@ export function setupUI(game: Game): void {
     }
     loadCrosshair();
 
-    for (const crosshair of Crosshairs.definitions) {
+    for (const crosshair of Crosshairs) {
         const crosshairItem = $(`
-    <div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
+    <div id="crosshair-${Crosshairs.indexOf(crosshair)}" class="crosshairs-list-item-container">
         <div class="crosshairs-list-item"></div>
     </div>`
         );
@@ -343,7 +343,7 @@ export function setupUI(game: Game): void {
         // This method sucks but it's the only way to do it without breaking the crosshair image
         crosshairItem.find(".crosshairs-list-item").css({
             backgroundImage: `url("${getCrosshair(
-                crosshair.idString,
+                crosshair,
                 "#fff",
                 game.console.getConfig("cv_crosshair_size"),
                 "#0",
@@ -354,7 +354,7 @@ export function setupUI(game: Game): void {
         });
 
         crosshairItem.on("click", function() {
-            game.console.setConfig("cv_loadout_crosshair", crosshair.idString);
+            game.console.setConfig("cv_loadout_crosshair", Crosshairs.indexOf(crosshair));
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
