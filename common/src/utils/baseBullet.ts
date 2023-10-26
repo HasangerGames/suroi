@@ -3,7 +3,7 @@ import { Explosions, type ExplosionDefinition } from "../definitions/explosions"
 import { Guns, type GunDefinition } from "../definitions/guns";
 import { Loots, type LootDefinition } from "../definitions/loots";
 import { type Hitbox } from "./hitbox";
-import { distanceSquared } from "./math";
+import { clamp, distanceSquared } from "./math";
 import { reifyDefinition, type BulletDefinition, type ReferenceTo } from "./objectDefinitions";
 import { ObjectType } from "./objectType";
 import { v, vAdd, vClone, vMul, type Vector } from "./vector";
@@ -15,6 +15,7 @@ export interface BulletOptions {
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
+    readonly clipDistance?: number
 }
 
 interface GameObject {
@@ -88,7 +89,13 @@ export class BaseBullet {
         this.variance = options.variance ?? 0;
 
         this.definition = this.source.ballistics;
-        this.maxDistance = (this.definition.maxDistance * (this.variance + 1)) / (this.reflectionCount + 1);
+
+        let dist = this.definition.maxDistance;
+
+        if (this.definition.clipDistance && options.clipDistance !== undefined) {
+            dist = clamp(options.clipDistance, 1, this.definition.maxDistance);
+        }
+        this.maxDistance = (dist * (this.variance + 1)) / (this.reflectionCount + 1);
 
         this.maxDistanceSquared = this.maxDistance ** 2;
 

@@ -110,6 +110,7 @@ export class PlayerManager {
     itemToSwitch = -1;
     itemToDrop = -1;
     consumableToConsume?: HealingItemDefinition | ScopeDefinition;
+    distanceToMouse = 0;
 
     private _attacking = false;
     get attacking(): boolean { return this._attacking; }

@@ -322,6 +322,42 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "usas12",
+        name: "USAS-12",
+        itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 20,
+        capacity: 10,
+        reloadTime: 2,
+        fireDelay: 250,
+        switchDelay: 250,
+        speedMultiplier: 0.9,
+        recoilMultiplier: 0.8,
+        recoilDuration: 100,
+        fireMode: FireMode.Auto,
+        shotSpread: 3,
+        moveSpread: 3,
+        length: 8.2,
+        fists: {
+            left: v(120, 0),
+            right: v(70, -3),
+            animationDuration: 100
+        },
+        image: { position: v(100, -4) },
+        casingParticles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 8,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            maxDistance: 100,
+            onHitExplosion: "usas_explosion",
+            clipDistance: true,
+            tracerColor: 0xff0000
+        }
+    },
+    {
         idString: "mosin",
         name: "Mosin-Nagant",
         itemType: ItemType.Gun,

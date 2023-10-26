@@ -1,10 +1,10 @@
 import nipplejs, { type JoystickOutputData } from "nipplejs";
-import { angleBetweenPoints, distanceSquared } from "../../../../common/src/utils/math";
-import { v } from "../../../../common/src/utils/vector";
+import { angleBetweenPoints, distance, distanceSquared } from "../../../../common/src/utils/math";
+import { v, vDiv } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { gameConsole, keybinds } from "./console/gameConsole";
-import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
+import { EmoteSlot, FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { consoleVariables } from "./console/variables";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 
@@ -140,10 +140,19 @@ export function setupInputs(game: Game): void {
         }
 
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
-        if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-            game.activePlayer.container.rotation = player.rotation;
-            game.map.indicator.rotation = player.rotation;
+
+        if (!game.gameOver && game.activePlayer) {
+            const globalPos = v(e.clientX, e.clientY);
+            const pixiPos = game.camera.container.toLocal(globalPos);
+            const gamePos = vDiv(pixiPos, PIXI_SCALE);
+            player.distanceToMouse = distance(game.activePlayer.position, gamePos);
+
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
+                game.activePlayer.container.rotation = player.rotation;
+                game.map.indicator.rotation = player.rotation;
+            }
         }
+
 
         player.turning = true;
         player.dirty.inputs = true;

@@ -35,6 +35,8 @@ class Bot {
     angle = random(-Math.PI, Math.PI);
     angularSpeed = random(0, 0.1);
 
+    distanceToMouse = 50;
+
     connected = false;
 
     disconnect = false;
@@ -102,6 +104,8 @@ class Bot {
         stream.writeBoolean(this.shootStart);
         stream.writeBoolean(true); // rotating
         stream.writeRotation(this.angle, 16);
+        stream.writeFloat(this.distanceToMouse, 0, 128, 8);
+
         this.angle += this.angularSpeed;
         if (this.angle > Math.PI) this.angle = -Math.PI;
 
@@ -172,7 +176,7 @@ class Bot {
     }
 }
 
-void (async() => {
+void (async () => {
     gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
 
     if (!gameData.success) {
