@@ -525,6 +525,23 @@ export function setupUI(game: Game): void {
         $("#toggle-hide-rules").prop("checked", true);
     }).toggle(consoleVariables.get.builtIn("cv_rules_acknowledged").value && !consoleVariables.get.builtIn("cv_hide_rules_button").value);
 
+    // Import settings from clipboard
+    $("#import-settings").click(() => {
+        //localStorage.setItem("suroi_config", )
+    });
+
+    // Export settings to clipboard
+    $("#export-settings").on("click", () => {
+        const exportedSettings = localStorage.getItem("suroi_config") ?? "Failed to get settings";
+        navigator.clipboard
+            .writeText(exportedSettings)
+            .then(() => {
+            })
+            .catch(() => {
+                alert('Unable to copy settings. You can open a developer console using Ctrl-Shift-K and typing in the command localStorage.getItem("suroi_config")');
+            });
+    });
+
     // Switch weapon slots by clicking
     for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
         const slotElement = $(`#weapon-slot-${i + 1}`);
