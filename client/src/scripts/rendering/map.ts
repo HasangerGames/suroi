@@ -199,13 +199,8 @@ export class Minimap {
         for (const obstacle of mapPacket.obstacles) {
             const definition = obstacle.type;
 
-            let textureId = definition.idString;
-            if (obstacle.variation) {
-                textureId += `_${obstacle.variation + 1}`;
-            }
-
             // Create the object image
-            const image = new SuroiSprite(`${textureId}`)
+            const image = new SuroiSprite(`${definition.frames?.base ?? definition.idString}${obstacle.variation !== undefined ? `_${obstacle.variation + 1}` : ""}`)
                 .setVPos(obstacle.position).setRotation(obstacle.rotation)
                 .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
 
@@ -233,7 +228,7 @@ export class Minimap {
                 const sprite = new SuroiSprite(image.key)
                     .setVPos(addAdjust(building.position, image.position, building.orientation))
                     .setRotation(building.rotation)
-                    .setZIndex(ZIndexes.BuildingsCeiling);
+                    .setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
 
                 sprite.scale.set(1 / PIXI_SCALE);
                 if (image.tint !== undefined) sprite.setTint(image.tint);
