@@ -1,5 +1,5 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { INPUT_ACTIONS_BITS, InputActions, PacketType } from "../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
@@ -104,7 +104,7 @@ class Bot {
         stream.writeBoolean(this.shootStart);
         stream.writeBoolean(true); // rotating
         stream.writeRotation(this.angle, 16);
-        stream.writeFloat(this.distanceToMouse, 0, 128, 8);
+        stream.writeFloat(this.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
 
         this.angle += this.angularSpeed;
         if (this.angle > Math.PI) this.angle = -Math.PI;
@@ -179,7 +179,7 @@ class Bot {
     }
 }
 
-void (async () => {
+void (async() => {
     gameData = await (await fetch(`http${config.https ? "s" : ""}://${config.address}/api/getGame`)).json();
 
     if (!gameData.success) {

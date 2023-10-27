@@ -1,5 +1,13 @@
 import type { WebSocket } from "uWebSockets.js";
-import { AnimationType, INVENTORY_MAX_WEAPONS, KillFeedMessageType, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
+import {
+    AnimationType,
+    INVENTORY_MAX_WEAPONS,
+    KillFeedMessageType,
+    MAX_MOUSE_DISTANCE,
+    ObjectCategory,
+    PLAYER_RADIUS,
+    PlayerActions
+} from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
@@ -160,7 +168,7 @@ export class Player extends GameObject {
     /**
      * The distance from the player position to the player mouse in game units
      */
-    distanceToMouse = 0;
+    distanceToMouse = MAX_MOUSE_DISTANCE;
 
     /**
      * Keeps track of various fields which are "dirty"
