@@ -893,24 +893,26 @@ export const Guns: GunDefinition[] = [
         name: "USAS-12",
         itemType: ItemType.Gun,
         ammoType: "12g",
-        ammoSpawnAmount: 20,
+        ammoSpawnAmount: 30,
         capacity: 10,
-        reloadTime: 2,
-        fireDelay: 250,
-        switchDelay: 250,
-        speedMultiplier: 0.9,
-        recoilMultiplier: 0.8,
-        recoilDuration: 100,
+        reloadTime: 3,
+        fireDelay: 525,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 450,
         fireMode: FireMode.Auto,
-        shotSpread: 3,
-        moveSpread: 3,
-        length: 8.2,
+        shotSpread: 5,
+        moveSpread: 9,
+        length: 7.7,
+        canQuickswitch: true,
         fists: {
-            left: v(120, 0),
-            right: v(70, -3),
+            left: v(115, -1),
+            right: v(40, 0),
+            rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(100, -4) },
+        image: { position: v(90, -3.5) },
         casingParticles: {
             position: v(4, 0.6)
         },
@@ -918,11 +920,12 @@ export const Guns: GunDefinition[] = [
             damage: 8,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 100,
+            maxDistance: 55,
             onHitExplosion: "usas_explosion",
             goToMouse: true,
             tracer: {
-                color: 0xFF0000
+                length: 0.5,
+                color: 0xff0000
             }
         }
     },
