@@ -89,7 +89,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        if (!this.game.console.getConfig("cv_movement_smoothing")) {
+        if (!this.game.console.getConfig("cv_movement_smoothing") || !this.created) {
             this.container.position = toPixiCoords(this.position);
         }
 
