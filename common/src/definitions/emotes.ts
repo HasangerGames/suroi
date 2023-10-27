@@ -145,6 +145,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "Froog"
         },
         {
+            idString: "bleh",
+            name: "Bleh"
+        },
+        {
             idString: "fire",
             name: "Fire"
         },

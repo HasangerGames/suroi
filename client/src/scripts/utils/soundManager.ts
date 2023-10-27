@@ -143,6 +143,10 @@ export class SoundManager {
             [
                 "tablets_pickup",
                 "audio/sfx/pickup/tablets_pickup"
+            ],
+            [
+                "usas_explosion",
+                "audio/sfx/usas_explosion"
             ]
         ];
 
