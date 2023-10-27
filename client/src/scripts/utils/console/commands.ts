@@ -567,9 +567,12 @@ export function setUpCommands(game: Game): void {
             this.inputManager.emoteWheelPosition = v(mouseX, mouseY);
         },
         function(): undefined {
-            $("#emote-wheel").hide();
-            const emote = this.inputManager.selectedEmote;
-            if (emote) this.inputManager.addAction(emote);
+            if (this.inputManager.emoteWheelActive) {
+                this.inputManager.emoteWheelActive = false;
+                $("#emote-wheel").hide();
+                const emote = this.inputManager.selectedEmote;
+                if (emote) this.inputManager.addAction(emote);
+            }
         },
         game,
         {
