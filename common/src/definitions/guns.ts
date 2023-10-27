@@ -900,11 +900,12 @@ export const Guns: GunDefinition[] = [
         switchDelay: 400,
         speedMultiplier: 0.92,
         recoilMultiplier: 0.7,
-        recoilDuration: 250,
+        recoilDuration: 450,
         fireMode: FireMode.Auto,
         shotSpread: 5,
         moveSpread: 9,
         length: 7.7,
+        canQuickswitch: true,
         fists: {
             left: v(115, -1),
             right: v(40, 0),
