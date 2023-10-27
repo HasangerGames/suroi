@@ -216,9 +216,7 @@ export interface CVarTypeMapping {
     readonly cv_language: ConVar<string>
     readonly cv_region: ConVar<string | undefined>
     readonly cv_camera_shake_fx: ConVar<boolean>
-    readonly cv_animate_rotation: ConVar<"wait_for_server" | "client">
     readonly cv_killfeed_style: ConVar<"text" | "icon">
-    readonly cv_rotation_smoothing: ConVar<boolean>
     readonly cv_movement_smoothing: ConVar<boolean>
     readonly cv_minimap_minimized: ConVar<boolean>
     readonly cv_leave_warning: ConVar<boolean>

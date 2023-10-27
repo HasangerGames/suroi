@@ -226,19 +226,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        const rotationStyleIsClient = this.game.console.getConfig("cv_animate_rotation") !== "client";
-        if (!rotationStyleIsClient ||
-            !(rotationStyleIsClient && this.isActivePlayer && !this.game.spectating)
-        ) this.container.rotation = this.rotation;
+        const noMovementSmoothing = !this.game.console.getConfig("cv_movement_smoothing");
+
+        if (noMovementSmoothing) this.container.rotation = this.rotation;
 
         if (this.isActivePlayer) {
-            if (this.game.console.getConfig("cv_movement_smoothing")) {
-                this.game.camera.position = toPixiCoords(this.position);
-            }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
-            if (rotationStyleIsClient) {
+            if (noMovementSmoothing) {
+                this.game.camera.position = toPixiCoords(this.position);
                 this.game.map.indicator.setRotation(data.rotation);
             }
 

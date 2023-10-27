@@ -166,7 +166,7 @@ export class InputManager {
                 const gamePos = vDiv(pixiPos, PIXI_SCALE);
                 this.distanceToMouse = distance(game.activePlayer.position, gamePos);
 
-                if (game.console.getConfig("cv_animate_rotation") === "client") {
+                if (game.console.getConfig("cv_movement_smoothing")) {
                     game.activePlayer.container.rotation = this.rotation;
                     game.map.indicator.rotation = this.rotation;
                 }
@@ -196,15 +196,18 @@ export class InputManager {
             let shootOnRelease = false;
 
             leftJoyStick.on("move", (_, data: JoystickOutputData) => {
+                const movementAngle = -Math.atan2(data.vector.y, data.vector.x);
+
+                this.movementAngle = movementAngle;
+                this.movement.moving = true;
+
                 if (!rightJoyStickUsed && !shootOnRelease) {
-                    this.rotation = -Math.atan2(data.vector.y, data.vector.x);
-                    if (game.console.getConfig("cv_animate_rotation") === "client" && !game.gameOver && game.activePlayer) {
+                    this.rotation = movementAngle;
+                    this.turning = true;
+                    if (game.console.getConfig("cv_movement_smoothing") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
                     }
                 }
-
-                this.movementAngle = -Math.atan2(data.vector.y, data.vector.x);
-                this.movement.moving = true;
             });
 
             leftJoyStick.on("end", () => {
@@ -214,11 +217,11 @@ export class InputManager {
             rightJoyStick.on("move", (_, data: JoystickOutputData) => {
                 rightJoyStickUsed = true;
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
+                this.turning = true;
                 const activePlayer = game.activePlayer;
-                if (game.console.getConfig("cv_animate_rotation") === "client" && !game.gameOver && activePlayer) {
+                if (game.console.getConfig("cv_movement_smoothing") && !game.gameOver && activePlayer) {
                     game.activePlayer.container.rotation = this.rotation;
                 }
-                this.turning = true;
 
                 if (!activePlayer) return;
 
