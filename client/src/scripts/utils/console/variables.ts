@@ -1,5 +1,5 @@
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
-import { defaultClientCVars, type JSONCVar } from "./defaultClientCVars";
+import { defaultClientCVars } from "./defaultClientCVars";
 
 export interface CVarFlags {
     readonly archive: boolean
@@ -15,10 +15,6 @@ export class ConVar<Value = string> {
     private _value: Value;
     readonly console: GameConsole;
     get value(): Value { return this._value; }
-
-    static from<Value extends Stringable>(json: JSONCVar<Value>, console: GameConsole): ConVar<Value> {
-        return new ConVar<Value>(json.name, json.value, console, json.flags);
-    }
 
     constructor(name: string, value: Value, console: GameConsole, flags?: Partial<CVarFlags>) {
         this.name = name;
@@ -69,7 +65,7 @@ export class ConsoleVariables {
             if (varExists(name)) continue;
 
             //@ts-expect-error This is init code, so shove it
-            this._builtInCVars[name as keyof CVarTypeMapping] = ConVar.from<Stringable>(value, console);
+            this._builtInCVars[name as keyof CVarTypeMapping] = new ConVar(name, value, console);
         }
     }
 
@@ -177,7 +173,7 @@ export class ConsoleVariables {
             const cvarName = varName as keyof CVarTypeMapping;
             const cvar = this._builtInCVars[cvarName];
 
-            if (cvar.value !== defaultClientCVars[cvarName].value) {
+            if (cvar.value !== defaultClientCVars[cvarName]) {
                 variables[varName] = { value: cvar.value };
             }
         }
