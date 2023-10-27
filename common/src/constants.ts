@@ -51,14 +51,13 @@ export enum FireMode {
 }
 
 export enum InputActions {
-    None,
     EquipItem,
     DropItem,
     SwapGunSlots,
     Interact,
     Reload,
     Cancel,
-    UseConsumableItem,
+    UseItem,
     TopEmoteSlot,
     RightEmoteSlot,
     BottomEmoteSlot,
@@ -104,6 +103,7 @@ export const TICKS_PER_SECOND = 30;
 export const GRID_SIZE = 16;
 
 export const PLAYER_RADIUS = 2.25;
+export const MAX_MOUSE_DISTANCE = 128;
 
 export const DEFAULT_USERNAME = "Player";
 

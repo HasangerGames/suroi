@@ -1,9 +1,9 @@
 import { clamp } from "../../../../../common/src/utils/math";
 import { mergeDeep } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
-import { type Command, setUpCommands } from "./commands";
+import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars } from "./defaultClientCVars";
-import { consoleVariables, ConVar, type CVarFlags, type CVarTypeMapping } from "./variables";
+import { ConsoleVariables, ConVar, type CVarFlags, type CVarTypeMapping } from "./variables";
 
 enum MessageType {
     Log = "log",
@@ -22,6 +22,8 @@ interface ConsoleData {
         readonly detail: string | string[]
     }
 }
+export type Stringable = string | number | boolean | bigint | undefined | null;
+export type PossibleError<E = never> = undefined | { readonly err: E };
 
 export interface GameSettings {
     variables: Record<string, { value: Stringable, flags?: CVarFlags }>
@@ -29,33 +31,10 @@ export interface GameSettings {
     binds: Record<string, string[]>
 }
 
-const readySystem = (() => {
-    let isReady = false;
-    const callbacks: Array<() => void> = [];
-
-    return {
-        get isReady() { return isReady; },
-        markReady() {
-            if (isReady) return;
-
-            isReady = true;
-            for (const callback of callbacks) {
-                callback();
-            }
-
-            callbacks.length = 0;
-            // destroy refs we no longer need
-        },
-        addReadyCallback(callback: () => void): void {
-            callbacks.push(callback);
-        }
-    };
-})();
-
 // When opening the console with a key, the key will be typed to the console,
 // because the keypress event is triggered for the input field
 let invalidateNextCharacter = false;
-export const gameConsole = new (class GameConsole {
+export class GameConsole {
     private _isOpen = false;
     get isOpen(): boolean { return this._isOpen; }
     set isOpen(value: boolean) {
@@ -79,11 +58,6 @@ export const gameConsole = new (class GameConsole {
         input: $("#console-in")
     };
 
-    get isReady(): boolean { return readySystem.isReady; }
-    addReadyCallback(callback: () => void): void {
-        readySystem.addReadyCallback(callback);
-    }
-
     private readonly _dimensions = (() => {
         let width = NaN;
         let height = NaN;
@@ -104,7 +78,7 @@ export const gameConsole = new (class GameConsole {
                 );
 
                 if (width !== w) {
-                    consoleVariables.set.builtIn("cv_console_width", width = w);
+                    T.vars.set.builtIn("cv_console_width", width = w);
 
                     if (!T._ui.container[0].style.width) {
                         T._ui.container.css("width", width);
@@ -121,7 +95,7 @@ export const gameConsole = new (class GameConsole {
                 );
 
                 if (height !== h) {
-                    consoleVariables.set.builtIn("cv_console_height", height = h);
+                    T.vars.set.builtIn("cv_console_height", height = h);
 
                     if (!T._ui.container[0].style.height) {
                         T._ui.container.css("height", height);
@@ -151,7 +125,7 @@ export const gameConsole = new (class GameConsole {
                 );
 
                 if (left !== l) {
-                    consoleVariables.set.builtIn("cv_console_left", left = l);
+                    T.vars.set.builtIn("cv_console_left", left = l);
 
                     if (!T._ui.container[0].style.left) {
                         T._ui.container.css("left", left);
@@ -168,7 +142,7 @@ export const gameConsole = new (class GameConsole {
                 );
 
                 if (top !== t) {
-                    consoleVariables.set.builtIn("cv_console_top", top = t);
+                    T.vars.set.builtIn("cv_console_top", top = t);
 
                     if (!T._ui.container[0].style.top) {
                         T._ui.container.css("top", top);
@@ -186,9 +160,9 @@ export const gameConsole = new (class GameConsole {
 
     writeToLocalStorage(): void {
         const settings: GameSettings = {
-            variables: consoleVariables.getAll(),
-            aliases: Object.fromEntries(aliases),
-            binds: keybinds.getAll()
+            variables: this.vars.getAll(),
+            aliases: Object.fromEntries(this.aliases),
+            binds: this.game.inputManager.binds.getAll()
         };
 
         localStorage.setItem(this.localStorageKey, JSON.stringify(settings));
@@ -207,10 +181,10 @@ export const gameConsole = new (class GameConsole {
                 const variable = config.variables[name];
 
                 if (defaultClientCVars[name as keyof CVarTypeMapping]) {
-                    consoleVariables.set.builtIn(name as keyof CVarTypeMapping, variable.value as string);
+                    this.vars.set.builtIn(name as keyof CVarTypeMapping, variable.value as string, false);
                 } else {
-                    consoleVariables.declareCVar(
-                        new ConVar(name, variable.value, variable.flags)
+                    this.vars.declareCVar(
+                        new ConVar(name, variable.value, this, variable.flags)
                     );
                     rewriteToLS = true;
                 }
@@ -221,28 +195,92 @@ export const gameConsole = new (class GameConsole {
             }
 
             for (const alias in config.aliases) {
-                aliases.set(alias, config.aliases[alias]);
+                this.aliases.set(alias, config.aliases[alias]);
             }
         }
 
         for (const command in binds) {
             for (const bind of binds[command]) {
-                keybinds.addActionsToInput(bind, command);
+                if (bind === "") continue;
+                this.game.inputManager.binds.addActionsToInput(bind, command);
             }
         }
 
         if (rewriteToLS) {
             this.writeToLocalStorage();
         }
+
+        this.resizeAndMove({
+            dimensions: {
+                width: this.getConfig("cv_console_width"),
+                height: this.getConfig("cv_console_height")
+            },
+            position: {
+                left: this.getConfig("cv_console_left"),
+                top: this.getConfig("cv_console_top")
+            }
+        });
     }
 
-    constructor() {
-        this._ui.container.css("left", this._position.left);
-        this._ui.container.css("top", this._position.top);
-        this._ui.container.css("width", this._dimensions.width);
-        this._ui.container.css("height", this._dimensions.height);
+    readonly game: Game;
+
+    readonly commands = new Map<string, Command<boolean, Stringable>>();
+    readonly aliases = new Map<string, string>();
+    readonly vars = new ConsoleVariables(this);
+
+    getConfig<K extends keyof CVarTypeMapping>(name: K): CVarTypeMapping[K]["value"] {
+        return this.vars.get.builtIn(name).value;
+    }
+
+    setConfig<K extends keyof CVarTypeMapping>(name: K, value: CVarTypeMapping[K]["value"]): void {
+        this.vars.set.builtIn(name, value);
+    }
+
+    constructor(game: Game) {
+        this.game = game;
 
         this._attachListeners();
+
+        const T = this;
+        // Overrides for native console methods
+        {
+            const {
+                log: nativeLog,
+                info: nativeInfo,
+                warn: nativeWarn,
+                error: nativeError
+            } = console;
+
+            // eslint-disable-next-line no-inner-declarations
+            function makeOverride<C extends typeof window.console, K extends "log" | "info" | "warn" | "error">(nativeKey: K, nativeMethod: C[K], gameConsoleMethod: "log" | "warn" | "error", altMode?: boolean): void {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window.console as C)[nativeKey] = function(this: typeof window["console"], ...contents: any[]) {
+                    nativeMethod.call(console, ...contents);
+                    contents.forEach(c => { T[gameConsoleMethod](`${c}`, altMode); });
+                };
+            }
+
+            (
+                [
+                    ["log", nativeLog, "log"],
+                    ["info", nativeInfo, "log", true],
+                    ["warn", nativeWarn, "warn"],
+                    ["error", nativeError, "error"]
+                ] as Array<Parameters<typeof makeOverride>>
+            ).forEach(args => { makeOverride(...args); });
+        }
+
+        window.addEventListener("error", err => {
+            if (err.filename) {
+                this.error(
+                    {
+                        main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : "error"} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
+                        detail: err.error
+                    },
+                    true
+                );
+            }
+        });
 
         this.isOpen = this._isOpen;
         // sanity check
@@ -449,7 +487,7 @@ export const gameConsole = new (class GameConsole {
 
         try {
             for (const command of extractCommandsAndArgs(query)) {
-                const target = commands.get(command.name);
+                const target = this.commands.get(command.name);
                 if (target) {
                     const result = target.run(command.args);
 
@@ -460,13 +498,13 @@ export const gameConsole = new (class GameConsole {
                     continue;
                 }
 
-                const alias = aliases.get(command.name);
+                const alias = this.aliases.get(command.name);
                 if (alias) {
                     this.handleQuery(alias);
                     continue;
                 }
 
-                const cvar = consoleVariables.get(command.name);
+                const cvar = this.vars.get(command.name);
                 if (cvar) {
                     const result = cvar.setValue(command.args[0]);
 
@@ -631,210 +669,4 @@ export const gameConsole = new (class GameConsole {
         this._entries.length = 0;
         this._ui.output.html("");
     }
-})();
-
-export type Stringable = string | number | boolean | bigint | undefined | null;
-export type PossibleError<E = never> = undefined | { readonly err: E };
-export const commands = new Map<string, Command<boolean, Stringable>>();
-export const aliases = new Map<string, string>();
-
-export const keybinds = (() => {
-    type InputKey = string;
-    type InputAction = string;
-
-    return new (class InputMapper {
-        // These two maps must be kept in sync!!
-        private readonly _inputToAction = new Map<InputKey, Set<InputAction>>();
-        private readonly _actionToInput = new Map<InputAction, Set<InputKey>>();
-
-        /* eslint-disable @typescript-eslint/indent, indent, no-sequences */
-        private static readonly _generateGetAndSetIfAbsent =
-            <K, V>(map: Map<K, V>, defaultValue: V) =>
-                (key: K) =>
-                    map.get(key) ?? (() => (map.set(key, defaultValue), defaultValue))();
-
-        private static readonly _generateAdder =
-            <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
-                (key: K, ...values: V[]): T => {
-                    const forwardSet = InputMapper._generateGetAndSetIfAbsent(forwardsMap, new Set())(key);
-
-                    for (const value of values) {
-                        forwardSet.add(value);
-                        InputMapper._generateGetAndSetIfAbsent(backwardsMap, new Set())(value).add(key);
-                    }
-
-                    return thisValue;
-                };
-
-        /**
-         * Binds actions to a certain input. Note that an action (either a `Command` object or
-         * a console query `string`) may only appear once per input
-         * @param key The input to attach the actions to
-         * @param values A list of actions to be bound
-         * @returns This input mapper object
-         */
-        readonly addActionsToInput = InputMapper._generateAdder(this._inputToAction, this._actionToInput, this);
-        /**
-         * Binds inputs to a certain action. Note that an action (either a `Command` object or
-         * a console query `string`) may only appear once per action
-         * @param key The action to attach the inputs to
-         * @param values A list of inputs to be bound
-         * @returns This input mapper object
-         */
-        readonly addInputsToAction = InputMapper._generateAdder(this._actionToInput, this._inputToAction, this);
-
-        /**
-         * Removes an action that was bound to an input
-         * @param input The input that the action to be removed is currently bound to
-         * @param action The action to remove
-         * @returns `true` if the action existed and was removed, `false` if it was never
-         * there to begin with (and therefore was not removed)
-         */
-        remove(input: InputKey, action: InputAction): boolean {
-            const actions = this._inputToAction.get(input);
-            if (actions === undefined) return false;
-
-            actions.delete(action);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this._actionToInput.get(action)!.delete(input);
-            return true;
-        }
-
-        private static readonly _generateRemover =
-            <K, V, T>(forwardsMap: Map<K, Set<V>>, backwardsMap: Map<V, Set<K>>, thisValue: T) =>
-                (key: K) => {
-                    forwardsMap.delete(key);
-
-                    for (const set of backwardsMap.values()) {
-                        set.delete(key);
-                    }
-
-                    return thisValue;
-                };
-
-        /**
-         * Removes all actions bound to a particular input
-         * @param key The input from which to remove all actions
-         * @returns This input mapper object
-         */
-        readonly unbindInput = InputMapper._generateRemover(this._inputToAction, this._actionToInput, this);
-        /**
-         * Removes all inputs bound to a particular action
-         * @param key The action from which to remove all inputs
-         * @returns This input mapper object
-         */
-        readonly unbindAction = InputMapper._generateRemover(this._actionToInput, this._inputToAction, this);
-
-        /**
-         * Removes all bindings
-         * @returns This input mapper object
-         */
-        unbindAll(): this {
-            this._inputToAction.clear();
-            this._actionToInput.clear();
-            return this;
-        }
-
-        private static readonly _generateGetter =
-            <K, V>(map: Map<K, Set<V>>) =>
-                (key: K) => [...(map.get(key) ?? { values: () => [] }).values()];
-
-        /**
-         * Gets all the inputs bound to a particular action
-         * @param key The action from which to retrieve the inputs
-         * @returns An array of inputs bound to the action
-         */
-        readonly getInputsBoundToAction = InputMapper._generateGetter(this._actionToInput);
-        /**
-         * Gets all the actions bound to a particular input
-         * @param key The input from which to retrieve the actions
-         * @returns An array of actions bound to the input
-         */
-        readonly getActionsBoundToInput = InputMapper._generateGetter(this._inputToAction);
-
-        private static readonly _generateLister =
-            <K, V>(map: Map<K, V>) =>
-                () => [...map.keys()];
-
-        /**
-         * Lists all the inputs that are currently bound to at least one action
-         *
-         * **This list does *not* update in real time, and changes to said list
-         * are *not* reflected in the input manager**
-         */
-        readonly listBoundInputs = InputMapper._generateLister(this._inputToAction);
-        /**
-         * Lists all the actions to which at least one input is bound
-         *
-         * **This list does *not* update in real time, and changes to said list
-         * are *not* reflected in the input manager**
-         */
-        readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
-
-        getAll(): GameSettings["binds"] {
-            const binds: GameSettings["binds"] = {};
-
-            for (const [action, bindsSet] of this._actionToInput.entries()) {
-                binds[action] = [...bindsSet];
-            }
-
-            return binds;
-        }
-    })();
-})();
-
-export function setUpBuiltIns(game: Game): void {
-    setUpCommands(game);
-    readySystem.markReady();
-
-    gameConsole.resizeAndMove({
-        dimensions: {
-            width: consoleVariables.get.builtIn("cv_console_width").value,
-            height: consoleVariables.get.builtIn("cv_console_height").value
-        },
-        position: {
-            left: consoleVariables.get.builtIn("cv_console_left").value,
-            top: consoleVariables.get.builtIn("cv_console_top").value
-        }
-    });
 }
-
-// Overrides for native console methods
-{
-    const {
-        log: nativeLog,
-        info: nativeInfo,
-        warn: nativeWarn,
-        error: nativeError
-    } = console;
-
-    // eslint-disable-next-line no-inner-declarations
-    function makeOverride<C extends typeof window.console, K extends "log" | "info" | "warn" | "error">(nativeKey: K, nativeMethod: C[K], gameConsoleMethod: "log" | "warn" | "error", altMode?: boolean): void {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window.console as C)[nativeKey] = function(this: typeof window["console"], ...contents: any[]) {
-            nativeMethod.call(console, ...contents);
-            contents.forEach(c => { gameConsole[gameConsoleMethod](`${c}`, altMode); });
-        };
-    }
-
-    (
-        [
-            ["log", nativeLog, "log"],
-            ["info", nativeInfo, "log", true],
-            ["warn", nativeWarn, "warn"],
-            ["error", nativeError, "error"]
-        ] as Array<Parameters<typeof makeOverride>>
-    ).forEach(args => { makeOverride(...args); });
-}
-
-window.addEventListener("error", err => {
-    if (err.filename) {
-        gameConsole.error(
-            {
-                main: `Javascript ${err.error ? `'${Object.getPrototypeOf(err.error)?.constructor?.name}'` : "error"} occurred at ${err.filename.replace(location.origin + location.pathname, "./")}:${err.lineno}:${err.colno}`,
-                detail: err.error
-            },
-            true
-        );
-    }
-});

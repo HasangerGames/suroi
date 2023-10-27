@@ -209,8 +209,8 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         health: 500,
         indestructible: true,
         noResidue: true,
-        hideOnMap: invisible || undefined,
-        invisible: invisible || undefined,
+        hideOnMap: invisible,
+        invisible,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -220,8 +220,9 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         rotationMode: RotationMode.Limited,
         role: ObstacleSpecialRoles.Wall,
         reflectBullets: true,
+        zIndex: ZIndexes.Ground,
         frames: {
-            base: open !== "closed" ? `container_walls_${open}` : undefined,
+            base: invisible ? undefined : `container_walls_${open}`,
             particle: "metal_particle"
         },
         tint

@@ -22,7 +22,6 @@ import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
-import { consoleVariables } from "../utils/console/variables";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
@@ -225,17 +224,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.position = data.position;
         this.hitbox.position = this.position;
 
+        this.rotation = data.rotation;
+
+        const noMovementSmoothing = !this.game.console.getConfig("cv_movement_smoothing");
+
+        if (noMovementSmoothing) this.container.rotation = this.rotation;
+
         if (this.isActivePlayer) {
-            if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
-                this.game.camera.position = toPixiCoords(this.position);
-            }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
-            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
-                this.game.map.indicator.setRotation(this.rotation);
+
+            if (noMovementSmoothing) {
+                this.game.camera.position = toPixiCoords(this.position);
+                this.game.map.indicator.setRotation(data.rotation);
             }
 
-            if (consoleVariables.get.builtIn("pf_show_pos").value) {
+            if (this.game.console.getConfig("pf_show_pos")) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
@@ -301,14 +305,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        this.rotation = data.rotation;
-
-        const rotationStyleIsClient = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
-        if (!rotationStyleIsClient ||
-            !(rotationStyleIsClient && this.isActivePlayer && !this.game.spectating)
-        ) this.container.rotation = this.rotation;
-
-        if (this.isNew || !consoleVariables.get.builtIn("cv_movement_smoothing").value) {
+        if (this.isNew || !this.game.console.getConfig("cv_movement_smoothing")) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);

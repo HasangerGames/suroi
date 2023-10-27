@@ -199,8 +199,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             damage: 50,
             obstacleMultiplier: 2,
             radius: {
-                min: 4,
-                max: 12
+                min: 6,
+                max: 16
             },
             cameraShake: {
                 duration: 100,
@@ -211,15 +211,16 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 tint: 0x6c1313,
                 scale: 0.8
             },
-            shrapnelCount: 4,
+            shrapnelCount: 13,
             ballistics: {
-                damage: 15,
+                damage: 3,
                 obstacleMultiplier: 2,
                 speed: 0.06,
                 maxDistance: 10,
                 rangeVariance: 1,
                 shrapnel: true
             },
+            sound: "usas_explosion",
             decal: "explosion_decal"
         }
     ]

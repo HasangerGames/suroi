@@ -1,5 +1,10 @@
-import { INPUT_ACTIONS_BITS, InputActions, PacketType } from "../../../../../common/src/constants";
-import { Loots } from "../../../../../common/src/definitions/loots";
+import {
+    INPUT_ACTIONS_BITS,
+    MAX_MOUSE_DISTANCE,
+    ObjectCategory,
+    PacketType
+} from "../../../../../common/src/constants";
+import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -10,52 +15,43 @@ export class InputPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
 
-        let dirtyInputs = false;
+        const inputs = this.game.inputManager;
+        stream.writeBoolean(inputs.movement.up);
+        stream.writeBoolean(inputs.movement.down);
+        stream.writeBoolean(inputs.movement.left);
+        stream.writeBoolean(inputs.movement.right);
 
-        const player = this.playerManager;
-        stream.writeBoolean(player.movement.up);
-        stream.writeBoolean(player.movement.down);
-        stream.writeBoolean(player.movement.left);
-        stream.writeBoolean(player.movement.right);
-
-        if (player.isMobile) {
-            stream.writeBoolean(player.movement.moving);
-            stream.writeRotation(player.movementAngle, 16);
+        if (inputs.isMobile) {
+            stream.writeBoolean(inputs.movement.moving);
+            stream.writeRotation(inputs.movementAngle, 16);
         }
 
-        stream.writeBoolean(player.attacking);
-        if (player.resetAttacking) {
-            player.attacking = false;
-            player.resetAttacking = false;
-            dirtyInputs = true;
-        }
-        stream.writeBoolean(player.turning);
-        if (player.turning) {
-            stream.writeRotation(player.rotation, 16);
-            stream.writeFloat(player.distanceToMouse, 0, 128, 8);
+        stream.writeBoolean(inputs.attacking);
+        if (inputs.resetAttacking) {
+            inputs.attacking = false;
+            inputs.resetAttacking = false;
         }
 
-        stream.writeBits(player.action, INPUT_ACTIONS_BITS);
+        stream.writeBoolean(inputs.turning);
+        if (inputs.turning) {
+            stream.writeRotation(inputs.rotation, 16);
+            if (!inputs.isMobile) stream.writeFloat(inputs.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
+            inputs.turning = false;
+        }
 
-        switch (player.action) {
-            case InputActions.EquipItem: {
-                stream.writeBits(player.itemToSwitch, 2);
-                player.itemToSwitch = -1;
-                break;
+        stream.writeBits(inputs.actions.length, 4);
+
+        for (const action of inputs.actions) {
+            stream.writeBits(action.type, INPUT_ACTIONS_BITS);
+
+            if ("slot" in action) {
+                stream.writeBits(action.slot, 2);
             }
-            case InputActions.DropItem: {
-                stream.writeBits(player.itemToDrop, 2);
-                player.itemToDrop = -1;
-                break;
-            }
-            case InputActions.UseConsumableItem: {
-                stream.writeUint8(Loots.idStringToNumber[player.consumableToConsume?.idString ?? ""]);
-                //                    we're in big trouble if the nullish coalescing triggers ^^^^^
-                player.consumableToConsume = undefined;
-                break;
+            if ("item" in action) {
+                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, action.item.idString));
             }
         }
-        player.action = InputActions.None;
-        player.dirty.inputs = dirtyInputs;
+
+        inputs.actions = [];
     }
 }
