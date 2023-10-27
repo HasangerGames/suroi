@@ -31,6 +31,7 @@ export class InputPacket extends SendingPacket {
         if (inputs.turning) {
             stream.writeRotation(inputs.rotation, 16);
             stream.writeFloat(inputs.distanceToMouse, 0, 128, 8);
+            inputs.turning = false;
         }
 
         stream.writeBits(inputs.actions.length, 4);
