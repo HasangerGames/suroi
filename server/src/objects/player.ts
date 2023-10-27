@@ -2,7 +2,7 @@ import type { WebSocket } from "uWebSockets.js";
 import { AnimationType, INVENTORY_MAX_WEAPONS, KillFeedMessageType, ObjectCategory, PLAYER_RADIUS, PlayerActions } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { Loots } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
@@ -180,7 +180,7 @@ export class Player extends GameObject {
 
     readonly inventory = new Inventory(this);
 
-    get activeItem(): InventoryItem<LootDefinition> {
+    get activeItem(): InventoryItem<MeleeDefinition | GunDefinition> {
         return this.inventory.activeWeapon;
     }
 
@@ -304,8 +304,8 @@ export class Player extends GameObject {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = reifyDefinition("1x_scope", Scopes);
-        //this.inventory.items["15x_scope"] = 1;
-        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
+        // this.inventory.items["15x_scope"] = 1;
+        // this.inventory.scope = reifyDefinition("15x_scope", Scopes);
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -323,13 +323,15 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*const giveWeapon = (idString: string, index: number): void => {
+        /*
+        const giveWeapon = (idString: ReferenceTo<GunDefinition>, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };*/
+        };
+        */
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
@@ -358,7 +360,7 @@ export class Player extends GameObject {
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
-        return this.activeItem.definition as MeleeDefinition | GunDefinition;
+        return this.activeItem.definition;
     }
 
     give(idString: string): void {

@@ -141,7 +141,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 this.owner,
                 {
                     position: jitter
-                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
+                        ? randomPointInsideCircle(position, jitter)
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
                         (definition.consistentPatterning === true

@@ -135,10 +135,10 @@ export class UpdatePacket extends SendingPacket {
                 stream.writeObjectType(bullet.sourceObjectType);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
-                stream.writeFloat(bullet.variance, 0, 1, 4);
+                stream.writeFloat(bullet.rangeVariance, 0, 1, 4);
                 stream.writeBits(bullet.reflectionCount, 2);
                 stream.writeObjectID(bullet.sourceID);
-                if (bullet.definition.clipDistance) {
+                if (bullet.definition.goToMouse) {
                     stream.writeFloat(bullet.clipDistance, 0, bullet.definition.maxDistance, 16);
                 }
             }

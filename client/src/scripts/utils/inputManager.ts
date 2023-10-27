@@ -141,16 +141,16 @@ export function setupInputs(game: Game): void {
 
         player.rotation = Math.atan2(e.clientY - window.innerHeight / 2, e.clientX - window.innerWidth / 2);
 
-        if (game.activePlayer) {
+        if (!game.gameOver && game.activePlayer) {
             const globalPos = v(e.clientX, e.clientY);
             const pixiPos = game.camera.container.toLocal(globalPos);
             const gamePos = vDiv(pixiPos, PIXI_SCALE);
             player.distanceToMouse = distance(game.activePlayer.position, gamePos);
-        }
 
-        if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client" && !game.gameOver && game.activePlayer) {
-            game.activePlayer.container.rotation = player.rotation;
-            game.map.indicator.rotation = player.rotation;
+            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
+                game.activePlayer.container.rotation = player.rotation;
+                game.map.indicator.rotation = player.rotation;
+            }
         }
 
         player.turning = true;

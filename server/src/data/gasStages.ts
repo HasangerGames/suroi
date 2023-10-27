@@ -111,4 +111,4 @@ export const GasStages: GasStage[] = [
     }
 ];
 
-console.log(GasStages.reduce((a, b) => a + b.duration, 0));
+// console.log(GasStages.reduce((a, b) => a + b.duration, 0));

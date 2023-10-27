@@ -49,7 +49,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 maxDistance: 20,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -77,7 +77,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 maxDistance: 20,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -105,7 +105,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 maxDistance: 20,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -133,7 +133,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 2,
                 speed: 0.08,
                 maxDistance: 30,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -161,7 +161,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 2,
                 speed: 0.08,
                 maxDistance: 30,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -189,7 +189,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 3,
                 speed: 0.08,
                 maxDistance: 60,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             }
         },
@@ -217,7 +217,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 obstacleMultiplier: 2,
                 speed: 0.06,
                 maxDistance: 10,
-                variance: 1,
+                rangeVariance: 1,
                 shrapnel: true
             },
             decal: "explosion_decal"
