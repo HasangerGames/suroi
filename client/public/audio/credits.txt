@@ -38,6 +38,8 @@ Obstacles:
   Stone hit - 123OP
   Stone destroyed - "Rocks - Effects - Source Recordings - 05" by GregorQuendel (CC BY 4.0):   https://freesound.org/people/newlocknew/sounds/631485/
 
+  Pumpkin destroyed - https://pixabay.com/sound-effects/splat2ogg-14668/
+
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
 
 Cola:
