@@ -199,9 +199,9 @@ export class Minimap {
 
         for (const obstacle of mapPacket.obstacles) {
             const definition = obstacle.type;
-
             let textureId = definition.idString;
-            if (obstacle.variation) {
+            
+            if (obstacle.variation !== undefined) {
                 textureId += `_${obstacle.variation + 1}`;
             }
 
