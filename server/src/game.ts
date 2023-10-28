@@ -12,7 +12,8 @@ import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/b
 import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import {
     KILL_LEADER_MIN_KILLS,
-    KillFeedMessageType, OBJECT_ID_BITS,
+    KillFeedMessageType,
+    OBJECT_ID_BITS,
     ObjectCategory,
     TICKS_PER_SECOND
 } from "../../common/src/constants";
@@ -31,7 +32,7 @@ import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { removeFrom } from "./utils/misc";
-import { Loots, type LootDefinition } from "../../common/src/definitions/loots";
+import { type LootDefinition, Loots } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
 import { type ReferenceTo, reifyDefinition } from "../../common/src/utils/objectDefinitions";
@@ -277,23 +278,21 @@ export class Game {
     get killLeader(): Player | undefined { return this._killLeader; }
 
     updateKillLeader(player: Player): void {
-        const oldKillLeader: Player | undefined = this._killLeader;
+        const oldKillLeader = this._killLeader;
 
         if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
-                this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+                this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
             }
-        }
-
-        if (player === oldKillLeader && this._killLeader !== undefined) {
-            this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderUpdated));
+        } else if (player === oldKillLeader) {
+            this._sendKillFeedMessage(KillFeedMessageType.KillLeaderUpdated);
         }
     }
 
     killLeaderDead(): void {
-        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderDead));
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead);
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
@@ -301,7 +300,11 @@ export class Game {
             }
         }
         this._killLeader = newKillLeader;
-        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, KillFeedMessageType.KillLeaderAssigned));
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
+    }
+
+    private _sendKillFeedMessage(messageType: KillFeedMessageType): void {
+        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, messageType));
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {

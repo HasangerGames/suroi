@@ -9,7 +9,7 @@ import { ObjectSerializations } from "../../../common/src/utils/objectsSerializa
 import { random } from "../../../common/src/utils/random";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { vAdd, type Vector } from "../../../common/src/utils/vector";
-import { LootTables } from "../data/lootTables";
+import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
@@ -92,12 +92,22 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         if (definition.hasLoot) {
             const lootTable = LootTables[this.definition.idString];
-            const drops = lootTable.loot.flat();
+            // TODO Clean up code
+            for (let i = 0; i < random(lootTable.min, lootTable.max); i++) {
+                if (lootTable.loot.length > 0 && lootTable.loot[0] instanceof Array) {
+                    for (const loot of lootTable.loot) {
+                        for (const drop of getLootTableLoot(loot as WeightedItem[])) this.loot.push(drop);
+                    }
+                } else {
+                    for (const drop of getLootTableLoot(lootTable.loot as WeightedItem[])) this.loot.push(drop);
+                }
+            }
+            /*const drops = lootTable.loot.flat();
 
             this.loot = Array.from(
                 { length: random(lootTable.min, lootTable.max) },
                 () => getLootTableLoot(drops)
-            ).flat();
+            ).flat();*/
         }
 
         if (definition.spawnWithLoot) {

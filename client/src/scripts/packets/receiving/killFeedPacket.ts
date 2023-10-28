@@ -82,6 +82,8 @@ export class KillFeedPacket extends ReceivingPacket {
             }
 
             case KillFeedMessageType.KillLeaderAssigned: {
+                if (stream.readObjectID() === this.game.activePlayerID) killFeedItem.addClass("kill-feed-item-killer");
+
                 const name = stream.readPlayerNameWithColor();
                 const kills = stream.readBits(7);
 

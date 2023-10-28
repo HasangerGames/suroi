@@ -1,6 +1,6 @@
 import type { WebSocket } from "uWebSockets.js";
 import {
-    AnimationType,
+    AnimationType, DEFAULT_USERNAME,
     INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
     MAX_MOUSE_DISTANCE,
@@ -10,17 +10,13 @@ import {
 } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp } from "../../../common/src/utils/math";
-import {
-    ItemType,
-    type ExtendedWearerAttributes,
-    reifyDefinition
-} from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
@@ -192,7 +188,7 @@ export class Player extends GameObject {
 
     readonly inventory = new Inventory(this);
 
-    get activeItem(): InventoryItem<MeleeDefinition | GunDefinition> {
+    get activeItem(): InventoryItem<LootDefinition> {
         return this.inventory.activeWeapon;
     }
 
@@ -291,7 +287,7 @@ export class Player extends GameObject {
 
         const userData = socket.getUserData();
         this.socket = socket;
-        this.name = "Player";
+        this.name = DEFAULT_USERNAME;
         this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
@@ -335,7 +331,7 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*const giveWeapon = (idString: ReferenceTo<GunDefinition>, index: number): void => {
+        /*const giveWeapon = (idString: string, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
@@ -370,7 +366,7 @@ export class Player extends GameObject {
     }
 
     get activeItemDefinition(): MeleeDefinition | GunDefinition {
-        return this.activeItem.definition;
+        return this.activeItem.definition as MeleeDefinition | GunDefinition;
     }
 
     give(idString: string): void {
@@ -679,11 +675,6 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
-        // Remove player from kill leader
-        if (this === this.game.killLeader) {
-            this.game.killLeaderDead();
-        }
-
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -797,6 +788,11 @@ export class Player extends GameObject {
         // Send game over to dead player
         if (!this.disconnected) {
             this.sendPacket(new GameOverPacket(this, false));
+        }
+
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead();
         }
     }
 

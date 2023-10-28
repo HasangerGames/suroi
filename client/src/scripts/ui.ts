@@ -148,9 +148,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(true); });
-    $("#btn-menu").on("click", () => { game.endGame(true); });
-    $("#btn-play-again").on("click", () => { game.endGame(false); });
+    $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-menu").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -327,23 +327,21 @@ export function setupUI(game: Game): void {
             height: size
         });
 
-        $("#crosshair-controls").toggleClass("disabled", Crosshairs.getByIDString(game.console.getConfig("cv_loadout_crosshair"))?.svg === undefined);
+        $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getConfig("cv_loadout_crosshair")]);
 
         $("#crosshair-preview, #game-ui").css({ cursor });
     }
     loadCrosshair();
 
-    for (const crosshair of Crosshairs.definitions) {
+    Crosshairs.forEach((_, crosshairIndex) => {
         const crosshairItem = $(`
-    <div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
+    <div id="crosshair-${crosshairIndex}" class="crosshairs-list-item-container">
         <div class="crosshairs-list-item"></div>
-    </div>`
-        );
+    </div>`);
 
-        // This method sucks but it's the only way to do it without breaking the crosshair image
         crosshairItem.find(".crosshairs-list-item").css({
             backgroundImage: `url("${getCrosshair(
-                crosshair.idString,
+                crosshairIndex,
                 "#fff",
                 game.console.getConfig("cv_crosshair_size"),
                 "#0",
@@ -353,14 +351,14 @@ export function setupUI(game: Game): void {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function() {
-            game.console.setConfig("cv_loadout_crosshair", crosshair.idString);
+        crosshairItem.on("click", function () {
+            game.console.setConfig("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
 
         $("#crosshairs-list").append(crosshairItem);
-    }
+    });
 
     $(`#crosshair-${game.console.getConfig("cv_loadout_crosshair")}`).addClass("selected");
 

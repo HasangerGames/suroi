@@ -21,7 +21,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_loadout_crosshair: {
         name: "cv_loadout_crosshair",
-        value: "default",
+        value: 0,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_loadout_top_emote: {
@@ -131,12 +131,12 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_rules_acknowledged: {
         name: "cv_rules_acknowledged",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_hide_rules_button: {
         name: "cv_hide_rules_button",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_console_width: {
@@ -261,5 +261,5 @@ export const defaultBinds = Object.freeze({
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
     "+emote_wheel": ["Mouse2"],
-    toggle_console: ["`"]
+    toggle_console: [] as string[]
 });

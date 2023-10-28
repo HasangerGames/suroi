@@ -43,6 +43,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly locked?: boolean
     readonly openOnce?: boolean
     readonly animationDuration?: number
+    readonly doorSound?: string
 } & ({
     readonly operationStyle?: "swivel"
     readonly hingeOffset: Vector
@@ -116,23 +117,6 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
         ...options
     };
     return definition as ObstacleDefinition;
-}
-
-function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
-    return {
-        idString,
-        name,
-        material: "crate",
-        health: 100,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.6
-        },
-        hitbox: RectangleHitbox.fromRect(6.1, 6.1),
-        rotationMode: RotationMode.None,
-        hasLoot: true
-    };
 }
 
 function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
@@ -415,7 +399,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.None,
             hideOnMap: true
         }),
-        makeSpecialCrate("melee_crate", "Melee Crate"),
+        {
+            idString: "melee_crate",
+            name: "Melee Crate",
+            material: "crate",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            hitbox: RectangleHitbox.fromRect(6.1, 6.1),
+            rotationMode: RotationMode.None,
+            hasLoot: true,
+            frames: {
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
+            }
+        },
         {
             idString: "barrel",
             name: "Barrel",
@@ -697,6 +698,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Door,
             locked: true,
             openOnce: true,
+            doorSound: "vault_door",
             animationDuration: 2000,
             hingeOffset: v(-5.5, -1),
             zIndex: ZIndexes.ObstaclesLayer3,
@@ -1944,6 +1946,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
+            particleVariations: 2,
             frames: {
                 particle: "rock_particle"
             }

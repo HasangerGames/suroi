@@ -9,8 +9,8 @@ export class JoinedPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        for (let i = 0; i < this.player.loadout.emotes.length; i++) {
-            stream.writeUint8(Emotes.idStringToNumber[this.player.loadout.emotes[i].idString]);
+        for (const emote of this.player.loadout.emotes) {
+            stream.writeUint8(Emotes.idStringToNumber[emote.idString]);
         }
         const killLeader = this.player.game.killLeader;
         const hasKillLeader = killLeader !== undefined;

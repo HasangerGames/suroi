@@ -6,9 +6,8 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 export class JoinedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         if (this.game.socket.readyState === WebSocket.OPEN) {
-            const emoteSelectors = [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"];
-            for (let i = 0; i < 4; i++) {
-                $(`#emote-wheel > ${emoteSelectors[i]}`)
+            for (const emoteSelector of [".emote-top", ".emote-right", ".emote-bottom", ".emote-left"] as const) {
+                $(`#emote-wheel > ${emoteSelector}`)
                     .css(
                         "background-image",
                         `url("./img/game/emotes/${Emotes.definitions[stream.readUint8()].idString}.svg")`
@@ -25,8 +24,8 @@ export class JoinedPacket extends ReceivingPacket {
                 name = stream.readPlayerNameWithColor();
                 kills = stream.readBits(7);
             }
-            $("#killLeader-leader").html(name ?? "Waiting for leader");
-            $("#killLeader-kills-counter").text(kills ?? "0");
+            $("#kill-leader-leader").html(name ?? "Waiting for leader");
+            $("#kill-leader-kills-counter").text(kills ?? "0");
         }
     }
 }

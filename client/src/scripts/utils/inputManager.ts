@@ -68,6 +68,8 @@ export class InputManager {
 
     resetAttacking = false;
 
+    shootOnReleaseAngle = 0;
+
     turning = false;
 
     private _lastItemIndex = 0;
@@ -234,6 +236,7 @@ export class InputManager {
                 const attacking = data.distance > game.console.getConfig("mb_joystick_size") / 3;
                 if (def.itemType === ItemType.Gun && def.shootOnRelease) {
                     shootOnRelease = true;
+                    this.shootOnReleaseAngle = this.rotation;
                 } else {
                     this.attacking = attacking;
                 }
@@ -502,6 +505,7 @@ export class InputManager {
             }
 
             this.generateBindsConfigScreen();
+            this.game.console.writeToLocalStorage();
         })).appendTo(keybindsContainer);
 
         // Change the weapons slots keybind text

@@ -158,6 +158,11 @@ export const Skins: SkinDefinition[] = [
         itemType: ItemType.Skin
     },
     {
+        idString: "aquatic",
+        name: "Aquatic",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "sunny",
         name: "Sunny",
         itemType: ItemType.Skin

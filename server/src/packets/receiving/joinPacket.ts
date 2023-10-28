@@ -1,4 +1,3 @@
-import sanitizeHtml from "sanitize-html";
 import { Emotes } from "../../../../common/src/definitions/emotes";
 import { Skins } from "../../../../common/src/definitions/skins";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -6,20 +5,14 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { Config } from "../../config";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { hasBadWords } from "../../utils/badWordFilter";
+import { DEFAULT_USERNAME } from "../../../../common/src/constants";
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
         const player = this.player;
 
-        let name = stream.readPlayerName().trim();
-        if (name.length === 0 || (Config.censorUsernames && hasBadWords(name))) {
-            name = "Player";
-        } else {
-            name = sanitizeHtml(name, {
-                allowedTags: [],
-                allowedAttributes: {}
-            });
-        }
+        let name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
+        if (name.length === 0 || (Config.censorUsernames && hasBadWords(name))) name = DEFAULT_USERNAME;
         player.name = name;
 
         player.isMobile = stream.readBoolean();
