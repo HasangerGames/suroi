@@ -232,9 +232,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "other_weapon",
         function(): undefined {
-            let index = this.inputManager.activeItemIndex > 1
-                ? 0
-                : 1 - this.inputManager.activeItemIndex;
+            let index = this.inputManager.activeItemIndex === 0 || (this.playerManager.weapons[0] === undefined && this.inputManager.activeItemIndex !== 1) ? 1 : 0;
 
             // fallback to melee if there's no weapon on the slot
             if (this.playerManager.weapons[index] === undefined) index = 2;
