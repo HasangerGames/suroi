@@ -51,7 +51,7 @@ $(async(): Promise<void> => {
     const updateServerSelector = (): void => {
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount);
-        $("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
+        //$("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
     };
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
@@ -63,11 +63,11 @@ $(async(): Promise<void> => {
     <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
     <span class="server-player-count">-</span>
   </span>
-  <span style="margin-left: 5px">
+</li>`);
+        /* <span style="margin-left: 5px">
     <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
     <span class="server-ping">-</span>
-  </span>
-</li>`);
+  </span> */
         $("#server-list").append(listItem);
 
         try {
@@ -87,7 +87,7 @@ $(async(): Promise<void> => {
             };
 
             listItem.find(".server-player-count").text(playerCount ?? "-");
-            listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+            //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
                 bestPing = ping;
