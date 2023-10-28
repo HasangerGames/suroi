@@ -505,6 +505,7 @@ export class InputManager {
             }
 
             this.generateBindsConfigScreen();
+            this.game.console.writeToLocalStorage();
         })).appendTo(keybindsContainer);
 
         // Change the weapons slots keybind text
