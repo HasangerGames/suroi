@@ -220,7 +220,7 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         rotationMode: RotationMode.Limited,
         role: ObstacleSpecialRoles.Wall,
         reflectBullets: true,
-        zIndex: ZIndexes.Ground,
+        zIndex: ZIndexes.Ground + 1,
         frames: {
             base: invisible ? undefined : `container_walls_${open}`,
             particle: "metal_particle"
