@@ -79,7 +79,7 @@ $(async(): Promise<void> => {
                     listItem.addClass("server-list-item-disabled");
                 })
             )?.text();
-            playerCount = playerCount !== undefined ? stringIsPositiveNumber(playerCount) ? playerCount : "-" : "-";
+            playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
 
             const ping = Date.now() - pingStartTime;
             regionInfo[regionID] = {
