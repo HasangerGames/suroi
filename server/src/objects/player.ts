@@ -1,6 +1,6 @@
 import type { WebSocket } from "uWebSockets.js";
 import {
-    AnimationType,
+    AnimationType, DEFAULT_USERNAME,
     INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
     MAX_MOUSE_DISTANCE,
@@ -287,7 +287,7 @@ export class Player extends GameObject {
 
         const userData = socket.getUserData();
         this.socket = socket;
-        this.name = "Player";
+        this.name = DEFAULT_USERNAME;
         this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
