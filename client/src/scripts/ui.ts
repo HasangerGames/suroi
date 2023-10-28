@@ -327,7 +327,7 @@ export function setupUI(game: Game): void {
             height: size
         });
 
-        $("#crosshair-controls").toggleClass("disabled", Crosshairs[game.console.getConfig("cv_loadout_crosshair")] === undefined);
+        $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getConfig("cv_loadout_crosshair")]);
 
         $("#crosshair-preview, #game-ui").css({ cursor });
     }
