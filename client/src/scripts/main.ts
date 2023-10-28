@@ -8,19 +8,15 @@ import { Game } from "./game";
 import { COLORS } from "./utils/constants";
 import { loadAtlases } from "./utils/pixi";
 
-const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
+const playButton: JQuery = $("#btn-play-solo");
 
 export function enablePlayButton(): void {
-    playButtons.removeClass("btn-disabled");
-    playButtons.prop("disabled", false);
-    $("#btn-play-solo").text("Play Solo");
-    $("#btn-play-again").text("Play Again");
+    playButton.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
 }
 
 function disablePlayButton(text: string): void {
-    playButtons.addClass("btn-disabled");
-    playButtons.prop("disabled", true);
-    playButtons.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    playButton.addClass("btn-disabled").prop("disabled", true)
+        .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -127,7 +123,7 @@ $(async(): Promise<void> => {
     });
 
     // Join server when play button is clicked
-    playButtons.on("click", () => {
+    playButton.on("click", () => {
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {

@@ -231,12 +231,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame(true);
+                if (!this.error) this.endGame();
             }
         };
     }
 
-    endGame(transition: boolean): void {
+    endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
@@ -249,7 +249,7 @@ export class Game {
         $("canvas").removeClass("active");
         $("#kill-leader-leader").text("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
-        if (transition) $("#splash-ui").fadeIn();
+        $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
