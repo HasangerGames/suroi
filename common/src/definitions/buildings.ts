@@ -1369,7 +1369,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // Tango room
             { idString: "vault_door", position: v(7.55, 81.5), rotation: 0, scale: 1.07 },
-            { idString: "tango_crate", position: v(9, 93.5), rotation: 0, scale: 0.90 },
+            { get idString() { return randomBoolean() ? "tango_crate" : "aegis_crate"; }, position: v(9, 93.5), rotation: 0, scale: 0.90 },
             { idString: "super_barrel", position: v(-12, 89) },
             { idString: "box", position: v(28.5, 87) },
             { idString: "box", position: v(31.5, 92) },
