@@ -1,14 +1,15 @@
-import { InputActions, INVENTORY_MAX_WEAPONS } from "../../../../../common/src/constants";
-import { HealingItems, type HealingItemDefinition } from "../../../../../common/src/definitions/healingItems";
+import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
+import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../../../common/src/definitions/scopes";
+import { type ScopeDefinition, Scopes } from "../../../../../common/src/definitions/scopes";
 import { absMod } from "../../../../../common/src/utils/math";
-import { reifyDefinition, type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
+import { type ReferenceTo, reifyDefinition } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
+import { SpectatePacket } from "../../packets/sending/spectatePacket";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 
@@ -123,12 +124,17 @@ export function setUpCommands(game: Game): void {
     const gameConsole = game.console;
     const keybinds = game.inputManager.binds;
 
-    const createMovementCommand = (name: keyof InputManager["movement"]): void => {
+    const createMovementCommand = (name: keyof InputManager["movement"], spectateAction?: SpectateActions): void => {
         Command.createInvertiblePair(
             name,
-            function(): undefined {
-                this.inputManager.movement[name] = true;
-            },
+            spectateAction
+                ? function(): undefined {
+                    this.inputManager.movement[name] = true;
+                    if (this.spectating) this.sendPacket(new SpectatePacket(this.playerManager, spectateAction));
+                }
+                : function(): undefined {
+                    this.inputManager.movement[name] = true;
+                },
             function(): undefined {
                 this.inputManager.movement[name] = false;
             },
@@ -157,9 +163,9 @@ export function setUpCommands(game: Game): void {
     };
 
     createMovementCommand("up");
-    createMovementCommand("left");
+    createMovementCommand("left", SpectateActions.SpectatePrevious);
     createMovementCommand("down");
-    createMovementCommand("right");
+    createMovementCommand("right", SpectateActions.SpectateNext);
 
     // shut
     /*
