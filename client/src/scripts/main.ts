@@ -7,6 +7,7 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { COLORS } from "./utils/constants";
 import { loadAtlases } from "./utils/pixi";
+import { stringIsPositiveNumber } from "./utils/misc";
 
 const playButton: JQuery = $("#btn-play-solo");
 
@@ -72,21 +73,22 @@ $(async(): Promise<void> => {
 
         try {
             const pingStartTime = Date.now();
-            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
+            let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
                 .catch(() => {
                     console.error(`Could not load player count for ${region.address}.`);
                     listItem.addClass("server-list-item-disabled");
                 })
             )?.text();
+            playerCount = playerCount !== undefined ? stringIsPositiveNumber(playerCount) ? playerCount : "-" : "-";
 
             const ping = Date.now() - pingStartTime;
             regionInfo[regionID] = {
                 ...region,
-                playerCount: playerCount ?? "-",
-                ping: playerCount ? ping : -1
+                playerCount,
+                ping: playerCount !== "-" ? ping : -1
             };
 
-            listItem.find(".server-player-count").text(playerCount ?? "-");
+            listItem.find(".server-player-count").text(playerCount);
             //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
