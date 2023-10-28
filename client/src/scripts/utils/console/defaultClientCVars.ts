@@ -261,5 +261,5 @@ export const defaultBinds = Object.freeze({
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],
     "+emote_wheel": ["Mouse2"],
-    toggle_console: ["`"]
+    toggle_console: [] as string[]
 });
