@@ -572,6 +572,7 @@ export function setUpCommands(game: Game): void {
                 $("#emote-wheel").hide();
                 const emote = this.inputManager.selectedEmote;
                 if (emote) this.inputManager.addAction(emote);
+                this.inputManager.selectedEmote = undefined;
             }
         },
         game,
