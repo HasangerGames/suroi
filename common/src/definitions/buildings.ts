@@ -2024,7 +2024,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(131.21, 83),
+                position: v(116.82, 110.65),
                 orientation: 0
             },
             {
