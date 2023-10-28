@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./client/public/img/backgrounds/github-background.png" alt="Suroi">
+  <img src="client/public/img/backgrounds/github_background.png" alt="Suroi">
   <hr>
 </div>
 
