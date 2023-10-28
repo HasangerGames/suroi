@@ -72,6 +72,7 @@ export class KillFeedPacket extends SendingPacket {
             }
 
             case KillFeedMessageType.KillLeaderAssigned: {
+                stream.writeObjectID(this.player.id);
                 stream.writePlayerNameWithColor(this.player);
                 stream.writeBits(this.player.kills, 7);
                 break;

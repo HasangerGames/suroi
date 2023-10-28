@@ -675,11 +675,6 @@ export class Player extends GameObject {
 
     // dies of death
     die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
-        // Remove player from kill leader
-        if (this === this.game.killLeader) {
-            this.game.killLeaderDead();
-        }
-
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -793,6 +788,11 @@ export class Player extends GameObject {
         // Send game over to dead player
         if (!this.disconnected) {
             this.sendPacket(new GameOverPacket(this, false));
+        }
+
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead();
         }
     }
 

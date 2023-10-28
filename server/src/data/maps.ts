@@ -6,7 +6,7 @@ import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../../common/src/utils/objectType";
-import { randomPointInsideCircle } from "../../../common/src/utils/random";
+import { random, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 import { Guns } from "../../../common/src/definitions/guns";
@@ -14,6 +14,7 @@ import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
+import { Skins } from "../../../common/src/definitions/skins";
 
 interface MapDefinition {
     readonly width: number
@@ -326,6 +327,22 @@ export const Maps: Record<string, MapDefinition> = {
                 map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
                 map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
+            }
+        }
+    },
+    players_test: {
+        width: 256,
+        height: 256,
+        beachSize: 16,
+        oceanSize: 16,
+        genCallback(map) {
+            for (let x = 0; x < 256; x += 16) {
+                for (let y = 0; y < 256; y += 16) {
+                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
+                    player.disableInvulnerability();
+                    player.loadout.skin = Skins[random(0, Skins.length - 1)];
+                    map.game.grid.addObject(player);
+                }
             }
         }
     },
