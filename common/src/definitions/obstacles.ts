@@ -43,6 +43,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly locked?: boolean
     readonly openOnce?: boolean
     readonly animationDuration?: number
+    readonly doorSound?: string
 } & ({
     readonly operationStyle?: "swivel"
     readonly hingeOffset: Vector
@@ -646,6 +647,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Door,
             locked: true,
             openOnce: true,
+            doorSound: "vault_door",
             animationDuration: 2000,
             hingeOffset: v(-5.5, -1),
             zIndex: ZIndexes.ObstaclesLayer3,

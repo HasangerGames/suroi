@@ -153,8 +153,9 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                         );
                     }
                 } else {
+                    const soundName = definition.doorSound ?? "door";
                     this.playSound(
-                        offset === 0 ? `${definition.idString}_close` : `${definition.idString}_open`,
+                        offset === 0 ? `${soundName}_close` : `${soundName}_open`,
                         0.3,
                         48
                     );
