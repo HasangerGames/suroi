@@ -16,7 +16,11 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
+import {
+    ItemType,
+    type ExtendedWearerAttributes,
+    reifyDefinition
+} from "../../../common/src/utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
@@ -312,8 +316,8 @@ export class Player extends GameObject {
         this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = reifyDefinition("1x_scope", Scopes);
-        // this.inventory.items["15x_scope"] = 1;
-        // this.inventory.scope = reifyDefinition("15x_scope", Scopes);
+        //this.inventory.items["15x_scope"] = 1;
+        //this.inventory.scope = reifyDefinition("15x_scope", Scopes);
 
         // Inventory preset
         if (this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing) {
@@ -331,15 +335,13 @@ export class Player extends GameObject {
             this.inventory.scope = "4x_scope";
         }
 
-        /*
-        const giveWeapon = (idString: ReferenceTo<GunDefinition>, index: number): void => {
+        /*const giveWeapon = (idString: ReferenceTo<GunDefinition>, index: number): void => {
             this.inventory.addOrReplaceWeapon(index, idString);
             const primaryItem = this.inventory.getWeapon(index) as GunItem;
             const primaryDefinition = primaryItem.definition;
             primaryItem.ammo = primaryDefinition.capacity;
             this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };
-        */
+        };*/
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
