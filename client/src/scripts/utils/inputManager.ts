@@ -5,15 +5,15 @@ import { type Game } from "../game";
 import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
-import { type ItemDefinition, ItemType, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots } from "../../../../common/src/definitions/loots";
+import { type LootDefinition } from "../../../../common/src/definitions/loots";
 
 export type InputAction = {
     type: InputActions.UseItem
-    item: ItemDefinition
+    item: LootDefinition
 } | {
     type: InputActions.EquipItem | InputActions.DropItem
     slot: number
@@ -105,7 +105,7 @@ export class InputManager {
         if (scopeString !== scope.idString) {
             this.addAction({
                 type: InputActions.UseItem,
-                item: reifyDefinition(scopeString, Loots)
+                item: scope
             });
         }
     }

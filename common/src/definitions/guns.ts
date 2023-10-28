@@ -1,5 +1,5 @@
 import { FireMode } from "../constants";
-import { type BulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
 export type GunDefinition = ItemDefinition & {
@@ -50,7 +50,7 @@ export type GunDefinition = ItemDefinition & {
 
     readonly noMuzzleFlash?: boolean
 
-    readonly ballistics: BulletDefinition
+    readonly ballistics: BaseBulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {

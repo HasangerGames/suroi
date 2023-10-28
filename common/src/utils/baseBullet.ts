@@ -1,17 +1,13 @@
-import { ObjectCategory } from "../constants";
-import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
-import { Guns, type GunDefinition } from "../definitions/guns";
-import { Loots, type LootDefinition } from "../definitions/loots";
+import { type BulletDefiniton, Bullets } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
-import { reifyDefinition, type BulletDefinition, type ReferenceTo } from "./objectDefinitions";
-import { ObjectType } from "./objectType";
+import { type ReifiableDef } from "./objectDefinitions";
 import { v, vAdd, vClone, vMul, type Vector } from "./vector";
 
 export interface BulletOptions {
     readonly position: Vector
     readonly rotation: number
-    readonly source: GunDefinition | ExplosionDefinition | ReferenceTo<GunDefinition> | ReferenceTo<ExplosionDefinition>
+    readonly source: ReifiableDef<BulletDefiniton>
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
@@ -54,13 +50,7 @@ export class BaseBullet {
 
     dead = false;
 
-    readonly source: GunDefinition | ExplosionDefinition;
-    private readonly _sourceObjectType: ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition>;
-    public get sourceObjectType(): ObjectType<ObjectCategory.Loot, GunDefinition> | ObjectType<ObjectCategory.Explosion, ExplosionDefinition> {
-        return this._sourceObjectType;
-    }
-
-    readonly definition: BulletDefinition;
+    readonly definition: BulletDefiniton;
 
     readonly canHitShooter: boolean;
 
@@ -68,26 +58,11 @@ export class BaseBullet {
         this.initialPosition = vClone(options.position);
         this.position = options.position;
         this.rotation = options.rotation;
-
-        //! evil code starts here
-        // pros: flexible
-        // cons: fugly
-
-        // this conditional is very evil!
-        if (Loots.definitions.some(def => def === options.source || def.idString === options.source)) {
-            this.source = reifyDefinition<LootDefinition, GunDefinition>(options.source as string, Guns);
-            this._sourceObjectType = ObjectType.fromString<ObjectCategory.Loot, GunDefinition>(ObjectCategory.Loot, this.source.idString);
-        } else {
-            this.source = reifyDefinition<ExplosionDefinition>(options.source as string, Explosions);
-            this._sourceObjectType = ObjectType.fromString<ObjectCategory.Explosion, ExplosionDefinition>(ObjectCategory.Explosion, this.source.idString);
-        }
-        //! evil code ends here
-
         this.reflectionCount = options.reflectionCount ?? 0;
         this.sourceID = options.sourceID;
         this.rangeVariance = options.variance ?? 0;
 
-        this.definition = this.source.ballistics;
+        this.definition = Bullets.reify(options.source);
 
         let range = this.definition.maxDistance;
 

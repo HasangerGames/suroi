@@ -10,7 +10,7 @@ export class JoinedPacket extends ReceivingPacket {
                 $(`#emote-wheel > ${emoteSelector}`)
                     .css(
                         "background-image",
-                        `url("./img/game/emotes/${Emotes.definitions[stream.readUint8()].idString}.svg")`
+                        `url("./img/game/emotes/${Emotes.readFromStream(stream).idString}.svg")`
                     );
             }
 

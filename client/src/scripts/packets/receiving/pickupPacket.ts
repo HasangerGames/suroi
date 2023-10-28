@@ -5,7 +5,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class PickupPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const type = Loots.definitions[stream.readUint8()];
+        const type = Loots.readFromStream(stream);
 
         let soundID: string;
         // A switch statement is used here to allow for many more item types in the future

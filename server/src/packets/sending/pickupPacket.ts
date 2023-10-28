@@ -17,6 +17,6 @@ export class PickupPacket extends SendingPacket {
 
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
-        stream.writeUint8(Loots.idStringToNumber[this.itemType]);
+        Loots.writeToStream(stream, this.itemType);
     }
 }

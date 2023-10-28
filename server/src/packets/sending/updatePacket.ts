@@ -1,4 +1,8 @@
 import { PacketType } from "../../../../common/src/constants";
+import { Bullets } from "../../../../common/src/definitions/bullets";
+import { Emotes } from "../../../../common/src/definitions/emotes";
+import { Explosions } from "../../../../common/src/definitions/explosions";
+import { ObjectSerializations } from "../../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -98,9 +102,11 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.fullDirtyObjects.size);
 
             for (const fullObject of player.fullDirtyObjects) {
-                stream.writeObjectType(fullObject.objectType);
+                stream.writeObjectType(fullObject.type);
                 stream.writeObjectID(fullObject.id);
-                fullObject.serializeFull(stream);
+
+                (ObjectSerializations[fullObject.type]
+                    .serializeFull as (stream: SuroiBitStream, data: typeof fullObject.data) => void)(stream, fullObject.data);
             }
             player.fullDirtyObjects.clear();
         }
@@ -110,9 +116,11 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.partialDirtyObjects.size);
 
             for (const partialObject of player.partialDirtyObjects) {
-                stream.writeObjectType(partialObject.objectType);
+                stream.writeObjectType(partialObject.type);
                 stream.writeObjectID(partialObject.id);
-                partialObject.serializePartial(stream);
+
+                (ObjectSerializations[partialObject.type]
+                    .serializePartial as (stream: SuroiBitStream, data: typeof partialObject.data) => void)(stream, partialObject.data);
             }
             player.partialDirtyObjects.clear();
         }
@@ -132,7 +140,7 @@ export class UpdatePacket extends SendingPacket {
         if (bulletsDirty) {
             stream.writeUint8(game.newBullets.size);
             for (const bullet of game.newBullets) {
-                stream.writeObjectType(bullet.sourceObjectType);
+                Bullets.writeToStream(stream, bullet.definition);
                 stream.writePosition(bullet.initialPosition);
                 stream.writeRotation(bullet.rotation, 16);
                 stream.writeFloat(bullet.rangeVariance, 0, 1, 4);
@@ -148,19 +156,18 @@ export class UpdatePacket extends SendingPacket {
         if (explosionsDirty) {
             stream.writeUint8(game.explosions.size);
             for (const explosion of game.explosions) {
-                explosion.serialize(stream);
+                Explosions.writeToStream(stream, explosion.definition);
+                stream.writePosition(explosion.position);
             }
         }
 
         // Emotes
         if (emotesDirty) {
             stream.writeBits(player.emotes.size, 7);
-
             for (const emote of player.emotes) {
-                stream.writeObjectTypeNoCategory(emote.type);
+                Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.player.id);
             }
-
             player.emotes.clear();
         }
 

@@ -1,10 +1,8 @@
 import $ from "jquery";
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
-import { Explosions, type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type GunDefinition } from "../../../../../common/src/definitions/guns";
+import { GasState, type ObjectCategory } from "../../../../../common/src/constants";
+import { Emotes } from "../../../../../common/src/definitions/emotes";
+import { Explosions } from "../../../../../common/src/definitions/explosions";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
-import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { vClone } from "../../../../../common/src/utils/vector";
@@ -15,6 +13,7 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { formatDate } from "../../utils/misc";
 import { PlayerManager } from "../../utils/playerManager";
+import { Bullets } from "../../../../../common/src/definitions/bullets";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -27,17 +26,22 @@ function safeRound(value: number): number {
     return adjustForLowValues(value);
 }
 
-export class UpdatePacket extends ReceivingPacket {
-    readonly fullDirtyObjects = new Set<{
-        readonly id: number
-        readonly type: ObjectType
-        readonly data: ObjectsNetData[ObjectCategory]
-    }>();
+export interface ObjectFullData<Cat extends ObjectCategory = ObjectCategory> {
+    readonly id: number
+    readonly type: Cat
+    readonly data: Required<ObjectsNetData[Cat]>
+}
 
-    readonly partialDirtyObjects = new Set<{
-        readonly id: number
-        readonly data: ObjectsNetData[ObjectCategory]
-    }>();
+interface ObjectPartialData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: ObjectsNetData[ObjectCategory]
+}
+
+export class UpdatePacket extends ReceivingPacket {
+    readonly fullDirtyObjects = new Set<ObjectFullData>();
+
+    readonly partialDirtyObjects = new Set<ObjectPartialData>();
 
     readonly deletedObjects = new Array<number>();
 
@@ -163,15 +167,13 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
-        type GeneralDeserializationFunction = (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[ObjectCategory];
-
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                const data = (ObjectSerializations[type.category].deserializeFull as GeneralDeserializationFunction)(stream, type);
+                const data = ObjectSerializations[type].deserializeFull(stream);
 
                 this.fullDirtyObjects.add({
                     id,
@@ -188,9 +190,10 @@ export class UpdatePacket extends ReceivingPacket {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
 
-                const data = (ObjectSerializations[type.category].deserializePartial as GeneralDeserializationFunction)(stream, type);
+                const data = ObjectSerializations[type].deserializePartial(stream);
                 this.partialDirtyObjects.add({
                     id,
+                    type,
                     data
                 });
             }
@@ -210,7 +213,7 @@ export class UpdatePacket extends ReceivingPacket {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
                 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                const source = stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition;
+                const source = Bullets.readFromStream(stream);
                 const position = stream.readPosition();
                 const rotation = stream.readRotation(16);
                 const variance = stream.readFloat(0, 1, 4);
@@ -219,8 +222,8 @@ export class UpdatePacket extends ReceivingPacket {
 
                 let clipDistance: number | undefined;
 
-                if (source.ballistics.goToMouse) {
-                    clipDistance = stream.readFloat(0, source.ballistics.maxDistance, 16);
+                if (source.goToMouse) {
+                    clipDistance = stream.readFloat(0, source.maxDistance, 16);
                 }
 
                 const bullet = new Bullet(game, {
@@ -243,7 +246,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    Explosions.definitions[stream.readUint8()],
+                    Explosions.readFromStream(stream),
                     stream.readPosition()
                 );
             }
@@ -253,7 +256,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (emotesDirty) {
             const emoteCount = stream.readBits(7);
             for (let i = 0; i < emoteCount; i++) {
-                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote).definition;
+                const emoteType = Emotes.readFromStream(stream);
                 const player = game.objects.get(stream.readObjectID());
                 if (player instanceof Player) player.emote(emoteType);
             }

@@ -1,7 +1,7 @@
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
-import { BULLET_COLORS, PIXI_SCALE } from "../utils/constants";
+import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
@@ -31,20 +31,7 @@ export class Bullet extends BaseBullet {
         this.image.anchor.set(1, 0.5);
         this.image.alpha = (tracerStats?.opacity ?? 1) / (this.reflectionCount + 1);
 
-        let tint = 0xffffff;
-
-        const source = this.source;
-        if (
-            "ammoType" in source &&
-            source.ammoType in BULLET_COLORS
-        ) {
-            tint = BULLET_COLORS[source.ammoType];
-        }
-
-        if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
-        if (tracerStats?.color) tint = tracerStats?.color;
-
-        this.image.tint = tint;
+        this.image.tint = this.definition.tracer?.color ?? 0xffffff;
 
         this.game.bulletsContainer.addChild(this.image);
     }

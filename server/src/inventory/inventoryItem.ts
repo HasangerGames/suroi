@@ -1,14 +1,12 @@
-import { ObjectCategory } from "../../../common/src/constants";
-import { Loots } from "../../../common/src/definitions/loots";
-import { type ReferenceTo, type ItemDefinition, type ItemType, type WearerAttributes, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { type LootDefinition, Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { type ItemType, type WearerAttributes, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 
 /**
  * Represents some item in the player's inventory *that can be equipped*
  * @abstract
  */
-export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition> {
+export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinition> {
     /**
      * The category of item this is, either melee or gun
      */
@@ -21,9 +19,6 @@ export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition>
      * The player this item belongs to
      */
     readonly owner: Player;
-    createObjectType(): ObjectType<ObjectCategory.Loot, Def> {
-        return ObjectType.fromString(ObjectCategory.Loot, this.definition.idString);
-    }
 
     readonly _modifiers = {
         // Multiplicative
@@ -87,8 +82,9 @@ export abstract class InventoryItem<Def extends ItemDefinition = ItemDefinition>
      * that will be represented by this instance
      * @param owner The `Player` this item belongs to
      */
-    protected constructor(definition: ReferenceTo<Def>, owner: Player) {
-        this.category = (this.definition = reifyDefinition<ItemDefinition, Def>(definition, Loots)).itemType;
+    protected constructor(definition: ReifiableDef<LootDefinition>, owner: Player) {
+        this.definition = Loots.reify(definition);
+        this.category = this.definition.itemType;
         this.owner = owner;
     }
 

@@ -43,7 +43,7 @@ export class InputPacket extends ReceivingPacket {
         for (let i = 0; i < actions; i++) {
             switch (stream.readBits(INPUT_ACTIONS_BITS)) {
                 case InputActions.UseItem:
-                    player.inventory.useItem(Loots.definitions[stream.readUint8()].idString);
+                    player.inventory.useItem(Loots.readFromStream(stream).idString);
                     break;
                 case InputActions.EquipItem: {
                     const target = stream.readBits(2);

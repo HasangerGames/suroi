@@ -9,7 +9,17 @@ import { type ScopeDefinition, Scopes } from "./scopes";
 import { type SkinDefinition, Skins } from "./skins";
 
 export type LootDefinition = GunDefinition | AmmoDefinition | MeleeDefinition | HealingItemDefinition | ArmorDefinition | BackpackDefinition | ScopeDefinition | SkinDefinition;
+export type WeaponDefinition = GunDefinition | MeleeDefinition;
 
 export const Loots = new ObjectDefinitions<LootDefinition>(
-    Array.prototype.concat(Guns, Ammos, Melees, HealingItems, Armors, Backpacks, Scopes, Skins)
+    [
+        ...Guns,
+        ...Ammos,
+        ...Melees,
+        ...HealingItems,
+        ...Armors,
+        ...Backpacks,
+        ...Scopes,
+        ...Skins
+    ]
 );

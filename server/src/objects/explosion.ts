@@ -1,10 +1,8 @@
-import { ObjectCategory } from "../../../common/src/constants";
 import { Explosions, type ExplosionDefinition } from "../../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { angleBetweenPoints, distanceSquared } from "../../../common/src/utils/math";
-import { reifyDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { randomRotation } from "../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GameObject } from "../types/gameObject";
@@ -13,17 +11,15 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 
-export class Explosion<Def extends ExplosionDefinition = ExplosionDefinition> {
-    readonly type = ObjectCategory.Explosion;
-
+export class Explosion {
     readonly game: Game;
-    readonly definition: Def;
+    readonly definition: ExplosionDefinition;
     readonly position: Vector;
     readonly source: GameObject;
 
-    constructor(game: Game, definition: ReferenceTo<Def> | Def, position: Vector, source: GameObject) {
+    constructor(game: Game, definition: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject) {
         this.game = game;
-        this.definition = reifyDefinition(definition, Explosions);
+        this.definition = Explosions.reify(definition);
         this.position = position;
         this.source = source;
     }
@@ -109,10 +105,5 @@ export class Explosion<Def extends ExplosionDefinition = ExplosionDefinition> {
 
             this.game.updateObjects = true;
         }
-    }
-
-    serialize(stream: SuroiBitStream): void {
-        stream.writeUint8(Explosions.idStringToNumber[this.definition.idString]);
-        stream.writePosition(this.position);
     }
 }
