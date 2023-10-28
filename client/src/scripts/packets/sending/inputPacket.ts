@@ -27,16 +27,17 @@ export class InputPacket extends SendingPacket {
         }
 
         stream.writeBoolean(inputs.attacking);
-        if (inputs.resetAttacking) {
-            inputs.attacking = false;
-            inputs.resetAttacking = false;
-        }
 
         stream.writeBoolean(inputs.turning);
         if (inputs.turning) {
-            stream.writeRotation(inputs.rotation, 16);
+            stream.writeRotation(inputs.resetAttacking ? inputs.shootOnReleaseAngle : inputs.rotation, 16);
             if (!inputs.isMobile) stream.writeFloat(inputs.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
             inputs.turning = false;
+        }
+
+        if (inputs.resetAttacking) {
+            inputs.attacking = false;
+            inputs.resetAttacking = false;
         }
 
         stream.writeBits(inputs.actions.length, 4);
