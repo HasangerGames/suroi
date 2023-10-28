@@ -122,8 +122,13 @@ $(async(): Promise<void> => {
         updateServerSelector();
     });
 
+    let lastPlayButtonClickTime = 0;
+
     // Join server when play button is clicked
     playButton.on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
