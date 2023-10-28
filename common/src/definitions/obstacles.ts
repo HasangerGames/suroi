@@ -117,23 +117,6 @@ function makeCrate(idString: string, name: string, options: Partial<ObstacleDefi
     return definition as ObstacleDefinition;
 }
 
-function makeSpecialCrate(idString: string, name: string): ObstacleDefinition {
-    return {
-        idString,
-        name,
-        material: "crate",
-        health: 100,
-        scale: {
-            spawnMin: 1,
-            spawnMax: 1,
-            destroy: 0.6
-        },
-        hitbox: RectangleHitbox.fromRect(6.1, 6.1),
-        rotationMode: RotationMode.None,
-        hasLoot: true
-    };
-}
-
 function makeHouseWall(lengthNumber: string, hitbox: Hitbox): ObstacleDefinition {
     return {
         idString: `house_wall_${lengthNumber}`,
@@ -364,7 +347,24 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.None,
             hideOnMap: true
         }),
-        makeSpecialCrate("melee_crate", "Melee Crate"),
+        {
+            idString: "melee_crate",
+            name: "Melee Crate",
+            material: "crate",
+            health: 100,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.6
+            },
+            hitbox: RectangleHitbox.fromRect(6.1, 6.1),
+            rotationMode: RotationMode.None,
+            hasLoot: true,
+            frames: {
+                particle: "crate_particle",
+                residue: "regular_crate_residue"
+            }
+        },
         {
             idString: "barrel",
             name: "Barrel",
@@ -1893,6 +1893,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             ),
             rotationMode: RotationMode.Limited,
             noResidue: true,
+            particleVariations: 2,
             frames: {
                 particle: "rock_particle"
             }
