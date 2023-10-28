@@ -384,6 +384,27 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 residue: "bush_residue"
             }
         },
+        {
+            idString: "blueberry_bush_fall",
+            name: "Blueberry Bush Fall",
+            material: "bush",
+            health: 80,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.8
+            },
+            hitbox: new CircleHitbox(4.2),
+            noCollisions: true,
+            rotationMode: RotationMode.Full,
+            particleVariations: 2,
+            zIndex: ZIndexes.ObstaclesLayer3,
+            spawnWithLoot: true,
+            frames: {
+                particle: "bush_particle",
+                residue: "bush_residue"
+            }
+        },
         makeCrate("regular_crate", "Regular Crate", {
             rotationMode: RotationMode.Binary,
             frames: {
