@@ -7,20 +7,17 @@ import { Config } from "./config";
 import { Game } from "./game";
 import { COLORS } from "./utils/constants";
 import { loadAtlases } from "./utils/pixi";
+import { stringIsPositiveNumber } from "./utils/misc";
 
-const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
+const playButton: JQuery = $("#btn-play-solo");
 
 export function enablePlayButton(): void {
-    playButtons.removeClass("btn-disabled");
-    playButtons.prop("disabled", false);
-    $("#btn-play-solo").text("Play Solo");
-    $("#btn-play-again").text("Play Again");
+    playButton.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
 }
 
 function disablePlayButton(text: string): void {
-    playButtons.addClass("btn-disabled");
-    playButtons.prop("disabled", true);
-    playButtons.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    playButton.addClass("btn-disabled").prop("disabled", true)
+        .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -55,7 +52,7 @@ $(async(): Promise<void> => {
     const updateServerSelector = (): void => {
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount);
-        $("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
+        //$("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
     };
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
@@ -67,31 +64,32 @@ $(async(): Promise<void> => {
     <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
     <span class="server-player-count">-</span>
   </span>
-  <span style="margin-left: 5px">
+</li>`);
+        /* <span style="margin-left: 5px">
     <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
     <span class="server-ping">-</span>
-  </span>
-</li>`);
+  </span> */
         $("#server-list").append(listItem);
 
         try {
             const pingStartTime = Date.now();
-            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
+            let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
                 .catch(() => {
                     console.error(`Could not load player count for ${region.address}.`);
                     listItem.addClass("server-list-item-disabled");
                 })
             )?.text();
+            playerCount = playerCount !== undefined ? stringIsPositiveNumber(playerCount) ? playerCount : "-" : "-";
 
             const ping = Date.now() - pingStartTime;
             regionInfo[regionID] = {
                 ...region,
-                playerCount: playerCount ?? "-",
-                ping: playerCount ? ping : -1
+                playerCount,
+                ping: playerCount !== "-" ? ping : -1
             };
 
-            listItem.find(".server-player-count").text(playerCount ?? "-");
-            listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+            listItem.find(".server-player-count").text(playerCount);
+            //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
                 bestPing = ping;
@@ -126,8 +124,13 @@ $(async(): Promise<void> => {
         updateServerSelector();
     });
 
+    let lastPlayButtonClickTime = 0;
+
     // Join server when play button is clicked
-    playButtons.on("click", () => {
+    playButton.on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {

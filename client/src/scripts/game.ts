@@ -231,12 +231,12 @@ export class Game {
                     $("#splash-server-message").show();
                 }
                 $("#btn-spectate").addClass("btn-disabled");
-                if (!this.error) this.endGame(true);
+                if (!this.error) this.endGame();
             }
         };
     }
 
-    endGame(transition: boolean): void {
+    endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
         if (this.activePlayer?.actionSound) {
@@ -249,7 +249,7 @@ export class Game {
         $("canvas").removeClass("active");
         $("#kill-leader-leader").text("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
-        if (transition) $("#splash-ui").fadeIn();
+        $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
@@ -303,25 +303,19 @@ export class Game {
         if (this.console.getConfig("cv_movement_smoothing")) {
             for (const player of this.players) {
                 player.updateContainerPosition();
-                if (this.console.getConfig("cv_rotation_smoothing") &&
-                    !(player.isActivePlayer && this.console.getConfig("cv_animate_rotation") === "client")
-                ) player.updateContainerRotation();
+                if (!player.isActivePlayer || this.spectating) player.updateContainerRotation();
             }
-
-            for (const loot of this.loots) loot.updateContainerPosition();
 
             if (this.activePlayer) {
                 this.camera.position = this.activePlayer.container.position;
             }
+
+            for (const loot of this.loots) loot.updateContainerPosition();
         }
 
-        for (const tween of this.tweens) {
-            tween.update();
-        }
+        for (const tween of this.tweens) tween.update();
 
-        for (const bullet of this.bullets) {
-            bullet.update(delta);
-        }
+        for (const bullet of this.bullets) bullet.update(delta);
 
         this.particleManager.update(delta);
 

@@ -148,9 +148,9 @@ export function setupUI(game: Game): void {
         location.href = "/rules";
     });
 
-    $("#btn-quit-game").on("click", () => { game.endGame(true); });
-    $("#btn-menu").on("click", () => { game.endGame(true); });
-    $("#btn-play-again").on("click", () => { game.endGame(false); });
+    $("#btn-quit-game").on("click", () => { game.endGame(); });
+    $("#btn-menu").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -459,17 +459,6 @@ export function setupUI(game: Game): void {
     });
     $("#coordinates-hud").toggle(game.console.getConfig("pf_show_pos"));
 
-    // Client-side prediction choice
-    {
-        const element = $("#rotation-animation-style")[0] as HTMLInputElement;
-
-        element.addEventListener("input", () => {
-            game.console.setConfig("cv_animate_rotation", element.checked ? "client" : "wait_for_server");
-        });
-
-        element.checked = game.console.getConfig("cv_animate_rotation") === "client";
-    }
-
     // Text kill feed toggle
     {
         const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
@@ -480,9 +469,6 @@ export function setupUI(game: Game): void {
 
         element.checked = game.console.getConfig("cv_killfeed_style") === "text";
     }
-
-    // Rotation smoothing toggle
-    addCheckboxListener("#toggle-rotation-smoothing", "cv_rotation_smoothing");
 
     // Movement smoothing toggle
     addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
@@ -524,15 +510,17 @@ export function setupUI(game: Game): void {
     }).toggle(game.console.getConfig("cv_rules_acknowledged") && !game.console.getConfig("cv_hide_rules_button"));
 
     // Switch weapon slots by clicking
-    for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
-        const slotElement = $(`#weapon-slot-${i + 1}`);
+    for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
+        const slotElement = $(`#weapon-slot-${slot + 1}`);
         slotElement[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
-                    if (e.button === 0) game.console.handleQuery(`slot ${i}`);
-                    else if (e.button === 2) game.console.handleQuery(`drop ${i}`);
+                    game.inputManager.addAction({
+                        type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
+                        slot
+                    });
                 }
             }
         );

@@ -1326,7 +1326,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 13, v(35, -73)),
             RectangleHitbox.fromRect(10, 19, v(-17, -63)),
 
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
+            RectangleHitbox.fromRect(60, 25, v(8, 93.2)),
+
+            new CircleHitbox(5, v(-17.3, -50.3)),
+            new CircleHitbox(5, v(-7.4, -50.3)),
+            new CircleHitbox(5, v(5.4, -50.3)),
+            new CircleHitbox(5, v(15.3, -50.3))
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
@@ -1369,7 +1374,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // Tango room
             { idString: "vault_door", position: v(7.55, 81.5), rotation: 0, scale: 1.07 },
-            { idString: "tango_crate", position: v(9, 93.5), rotation: 0, scale: 0.90 },
+            { get idString() { return randomBoolean() ? "tango_crate" : "aegis_crate"; }, position: v(9, 93.5), rotation: 0, scale: 0.90 },
             { idString: "super_barrel", position: v(-12, 89) },
             { idString: "box", position: v(28.5, 87) },
             { idString: "box", position: v(31.5, 92) },
@@ -2024,7 +2029,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(131.21, 83),
+                position: v(116.82, 110.65),
                 orientation: 0
             },
             {

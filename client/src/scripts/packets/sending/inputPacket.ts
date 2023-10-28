@@ -1,4 +1,9 @@
-import { INPUT_ACTIONS_BITS, ObjectCategory, PacketType } from "../../../../../common/src/constants";
+import {
+    INPUT_ACTIONS_BITS,
+    MAX_MOUSE_DISTANCE,
+    ObjectCategory,
+    PacketType
+} from "../../../../../common/src/constants";
 import { ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
@@ -22,16 +27,17 @@ export class InputPacket extends SendingPacket {
         }
 
         stream.writeBoolean(inputs.attacking);
-        if (inputs.resetAttacking) {
-            inputs.attacking = false;
-            inputs.resetAttacking = false;
-        }
 
         stream.writeBoolean(inputs.turning);
         if (inputs.turning) {
-            stream.writeRotation(inputs.rotation, 16);
-            stream.writeFloat(inputs.distanceToMouse, 0, 128, 8);
+            stream.writeRotation(inputs.resetAttacking ? inputs.shootOnReleaseAngle : inputs.rotation, 16);
+            if (!inputs.isMobile) stream.writeFloat(inputs.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
             inputs.turning = false;
+        }
+
+        if (inputs.resetAttacking) {
+            inputs.attacking = false;
+            inputs.resetAttacking = false;
         }
 
         stream.writeBits(inputs.actions.length, 4);

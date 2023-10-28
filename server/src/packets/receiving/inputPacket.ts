@@ -1,4 +1,4 @@
-import { INPUT_ACTIONS_BITS, InputActions, PlayerActions } from "../../../../common/src/constants";
+import { INPUT_ACTIONS_BITS, InputActions, MAX_MOUSE_DISTANCE, PlayerActions } from "../../../../common/src/constants";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { distanceSquared } from "../../../../common/src/utils/math";
@@ -35,7 +35,7 @@ export class InputPacket extends ReceivingPacket {
         player.turning = stream.readBoolean();
         if (player.turning) {
             player.rotation = stream.readRotation(16);
-            player.distanceToMouse = stream.readFloat(0, 128, 8);
+            if (!player.isMobile) player.distanceToMouse = stream.readFloat(0, MAX_MOUSE_DISTANCE, 8);
         }
 
         const actions = stream.readBits(4);

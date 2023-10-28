@@ -89,8 +89,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        const pos = toPixiCoords(this.position);
-        this.container.position.copyFrom(pos);
+        if (!this.game.console.getConfig("cv_movement_smoothing") || !this.created) {
+            this.container.position = toPixiCoords(this.position);
+        }
 
         if (data.fullUpdate) {
             this.count = data.count;
@@ -129,7 +130,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends GameObjec
             case ItemType.Gun: {
                 return !player.weapons[0] ||
                     !player.weapons[1] ||
-                    (player.activeItemIndex < 2 && this.definition.idString !== player.weapons[player.activeItemIndex]?.idString);
+                    (this.game.inputManager.activeItemIndex < 2 && this.definition.idString !== player.weapons[this.game.inputManager.activeItemIndex]?.idString);
             }
             case ItemType.Melee: {
                 return this.definition.idString !== player.weapons[2]?.idString;

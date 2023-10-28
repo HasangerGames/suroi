@@ -94,19 +94,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         value: true,
         flags: { archive: true, readonly: false, cheat: false }
     },
-    cv_animate_rotation: {
-        name: "cv_animate_rotation",
-        value: "client",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
     cv_killfeed_style: {
         name: "cv_killfeed_style",
         value: "text",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_rotation_smoothing: {
-        name: "cv_rotation_smoothing",
-        value: true,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_movement_smoothing: {
@@ -141,12 +131,12 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_rules_acknowledged: {
         name: "cv_rules_acknowledged",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_hide_rules_button: {
         name: "cv_hide_rules_button",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_console_width: {
