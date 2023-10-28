@@ -23,6 +23,6 @@ export function getCrosshair(
     strokeSize: number
 ): string {
     const crosshair = Crosshairs[index];
-    if (crosshair === undefined) return "crosshair";
+    if (!crosshair) return "crosshair";
     return `data:image/svg+xml,${encodeURIComponent(`<svg fill="${color}" height="${size}" width="${size}" stroke="${strokeColor}" stroke-width="${strokeSize}" viewBox="0 0 5.2916665 5.2916666" xmlns="http://www.w3.org/2000/svg">${crosshair}</svg>`)}`;
 }
