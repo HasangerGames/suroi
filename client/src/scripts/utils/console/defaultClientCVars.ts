@@ -21,7 +21,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_loadout_crosshair: {
         name: "cv_loadout_crosshair",
-        value: "default",
+        value: 0,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_loadout_top_emote: {
