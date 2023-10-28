@@ -1326,7 +1326,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 13, v(35, -73)),
             RectangleHitbox.fromRect(10, 19, v(-17, -63)),
 
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
+            RectangleHitbox.fromRect(60, 25, v(8, 93.2)),
+
+            new CircleHitbox(5, v(-17.3, -50.3)),
+            new CircleHitbox(5, v(-7.4, -50.3)),
+            new CircleHitbox(5, v(5.4, -50.3)),
+            new CircleHitbox(5, v(15.3, -50.3))
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
