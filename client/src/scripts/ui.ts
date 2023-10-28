@@ -351,7 +351,7 @@ export function setupUI(game: Game): void {
             "background-repeat": "no-repeat"
         });
 
-        crosshairItem.on("click", function () {
+        crosshairItem.on("click", function() {
             game.console.setConfig("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
