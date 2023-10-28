@@ -131,12 +131,12 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_rules_acknowledged: {
         name: "cv_rules_acknowledged",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_hide_rules_button: {
         name: "cv_hide_rules_button",
-        value: true,
+        value: false,
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_console_width: {
