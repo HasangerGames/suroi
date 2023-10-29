@@ -1,9 +1,8 @@
 import { clamp } from "../../../../../common/src/utils/math";
-import { mergeDeep } from "../../../../../common/src/utils/misc";
 import { type Game } from "../../game";
 import { type Command } from "./commands";
 import { defaultBinds, defaultClientCVars } from "./defaultClientCVars";
-import { ConsoleVariables, ConVar, type CVarFlags, type CVarTypeMapping } from "./variables";
+import { ConVar, ConsoleVariables, type CVarFlags, type CVarTypeMapping } from "./variables";
 
 enum MessageType {
     Log = "log",
@@ -171,7 +170,7 @@ export class GameConsole {
     readFromLocalStorage(): void {
         const storedConfig = localStorage.getItem(this.localStorageKey);
 
-        let binds = defaultBinds as GameSettings["binds"];
+        const binds = JSON.parse(JSON.stringify(defaultBinds)) as GameSettings["binds"];
         let rewriteToLS = false;
 
         if (storedConfig) {
@@ -189,8 +188,13 @@ export class GameConsole {
                     rewriteToLS = true;
                 }
             }
+
             if (config.binds) {
-                binds = mergeDeep({}, defaultBinds, config.binds);
+                for (const key in defaultBinds) {
+                    if (!(key in config.binds)) continue;
+
+                    binds[key] = config.binds[key];
+                }
                 rewriteToLS = true;
             }
 
