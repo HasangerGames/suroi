@@ -24,14 +24,13 @@ import { MapPacket } from "./packets/sending/mapPacket";
 import { UpdatePacket } from "./packets/sending/updatePacket";
 import { endGame, type PlayerContainer } from "./server";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
-import { log } from "../../common/src/utils/misc";
 import { type WebSocket } from "uWebSockets.js";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { random, randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { JoinedPacket } from "./packets/sending/joinedPacket";
-import { removeFrom } from "./utils/misc";
+import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition, Loots } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
@@ -266,7 +265,7 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                log(`Game #${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
+                Logger.log(`Game #${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
@@ -358,7 +357,7 @@ export class Game {
             }, 3000);
         }
 
-        log(`Game #${this.id} | "${player.name}" joined`);
+        Logger.log(`Game #${this.id} | "${player.name}" joined`);
     }
 
     removePlayer(player: Player): void {

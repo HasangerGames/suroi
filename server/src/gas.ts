@@ -1,11 +1,11 @@
 import { GasState } from "../../common/src/constants";
 import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
-import { log } from "../../common/src/utils/misc";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
+import { Logger } from "./utils/misc";
 
 export class Gas {
     stage = 0;
@@ -71,7 +71,7 @@ export class Gas {
         this.countdownStart = this.game.now;
 
         if (currentStage.preventJoin) {
-            log(`Game #${this.game.id} | Preventing new players from joining`);
+            Logger.log(`Game #${this.game.id} | Preventing new players from joining`);
             this.game.allowJoin = false;
         }
 

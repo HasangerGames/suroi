@@ -6,7 +6,6 @@ import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
-import { log } from "../../common/src/utils/misc";
 import { reifyDefinition, type ReferenceTo, ObstacleSpecialRoles } from "../../common/src/utils/objectDefinitions";
 import { ObjectType } from "../../common/src/utils/objectType";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
@@ -18,7 +17,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { getLootTableLoot } from "./utils/misc";
+import { Logger, getLootTableLoot } from "./utils/misc";
 
 export class Map {
     readonly game: Game;
@@ -234,7 +233,7 @@ export class Map {
             }
         }
 
-        log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
+        Logger.log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
     generateBuildings(
@@ -481,7 +480,7 @@ export class Map {
             attempts++;
 
             if (attempts >= 200) {
-                console.warn(`[WARNING] Maximum spawn attempts exceeded for: ${type.idString}`);
+                Logger.warn(`Maximum spawn attempts exceeded for: ${type.idString}`);
             }
 
             collided = false;

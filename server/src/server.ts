@@ -11,9 +11,10 @@ import {
 } from "uWebSockets.js";
 
 import { existsSync, readFile, writeFileSync } from "fs";
+import os from "os";
+
 import { URLSearchParams } from "node:url";
 import { PacketType } from "../../common/src/constants";
-import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
@@ -21,6 +22,7 @@ import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
+import { Logger } from "./utils/misc";
 
 /**
  * Apply CORS headers to a response.
@@ -50,7 +52,7 @@ createNewGame(0);
 
 function createNewGame(id: number): void {
     if (games[id] === undefined || games[id]?.stopped) {
-        log(`Game #${id} | Creating...`);
+        Logger.log(`Game #${id} | Creating...`);
         games[id] = new Game(id);
     }
 }
@@ -66,7 +68,7 @@ export function endGame(id: number): void {
         player.socket.close();
     }
     games[id] = undefined;
-    log(`Game #${id} | Ended`);
+    Logger.log(`Game #${id} | Ended`);
 }
 
 function allowJoin(gameID: number): boolean {
@@ -186,16 +188,16 @@ app.ws("/play", {
             ) {
                 if (exceededRateLimits && !rateLimited) rateLimitedIPs.add(ip);
                 forbidden(res);
-                log(`Connection blocked: ${ip}`);
+                Logger.warn(`Connection blocked: ${ip}`);
                 return;
             } else {
                 if (maxSimultaneousConnections) {
                     simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                    log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                    Logger.warn(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
                 }
                 if (maxJoinAttempts) {
                     connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
-                    log(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+                    Logger.warn(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
                 }
             }
         }
@@ -317,15 +319,15 @@ app.ws("/play", {
         const player = data.player;
         if (game === undefined || player === undefined) return;
         playerCount--;
-        log(`Game #${data.gameID} | "${player.name}" left`);
+        Logger.log(`Game #${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
     }
 });
 
 // Start the server
 app.listen(Config.host, Config.port, (): void => {
-    log(`
- _____ _   _______ _____ _____
+    console.log(
+        ` _____ _   _______ _____ _____
 /  ___| | | | ___ \\  _  |_   _|
 \\ \`--.| | | | |_/ / | | | | |
  \`--. \\ | | |    /| | | | | |
@@ -333,9 +335,9 @@ app.listen(Config.host, Config.port, (): void => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log(`Suroi Server v${version}`);
-    log(`Listening on ${Config.host}:${Config.port}`);
-    log("Press Ctrl+C to exit.");
+    Logger.log(`Suroi Server v${version}`);
+    Logger.log(`Listening on ${Config.host}:${Config.port}`);
+    Logger.log("Press Ctrl+C to exit.");
 
     const protection = Config.protection;
     if (protection) {
@@ -358,7 +360,7 @@ app.listen(Config.host, Config.port, (): void => {
                         tempBannedIPs.add(record.ip);
                     }
                 }
-                log("Reloaded list of banned IPs");
+                Logger.log("Reloaded list of banned IPs");
             };
 
             if (protection.ipBanList?.url) {
@@ -386,3 +388,17 @@ app.listen(Config.host, Config.port, (): void => {
         }, protection.refreshDuration);
     }
 });
+
+setInterval(() => {
+    const memoryUsage = process.memoryUsage().rss;
+
+    let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+
+    // windows L
+    if (os.platform() !== "win32") {
+        const load = os.loadavg().join("%, ");
+        perfString += ` | Load (1m, 5m, 15m): ${load}%`;
+    }
+
+    Logger.log(perfString);
+}, 60000);
