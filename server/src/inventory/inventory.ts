@@ -30,7 +30,7 @@ export class Inventory {
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
-    backpack?: BackpackDefinition = Loots.getByIDString("bag");
+    backpack?: BackpackDefinition = Loots.getByIDString("pack_0");
 
     private _scope!: ScopeDefinition;
 
