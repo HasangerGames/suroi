@@ -16,7 +16,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     },
     cv_loadout_skin: {
         name: "cv_loadout_skin",
-        value: "forest_camo",
+        value: "hazel_jumpsuit",
         flags: { archive: true, readonly: false, cheat: false }
     },
     cv_loadout_crosshair: {

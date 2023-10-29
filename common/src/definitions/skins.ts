@@ -62,6 +62,11 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "artist"
     },
     {
+        idString: "hazel_jumpsuit",
+        name: "HAZEL Jumpsuit",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "forest_camo",
         name: "Forest Camo",
         itemType: ItemType.Skin
@@ -80,12 +85,6 @@ export const Skins: SkinDefinition[] = [
         idString: "bloodlust",
         name: "Bloodlust",
         itemType: ItemType.Skin
-    },
-    {
-        idString: "hazel_jumpsuit",
-        name: "HAZEL Jumpsuit",
-        itemType: ItemType.Skin,
-        notInLoadout: true
     },
     {
         idString: "tomato_skin",

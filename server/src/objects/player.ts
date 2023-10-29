@@ -304,7 +304,7 @@ export class Player extends GameObject {
         this.nameColor = userData.nameColor;
 
         this.loadout = {
-            skin: Loots.getByIDString<SkinDefinition>("forest_camo"),
+            skin: Loots.getByIDString<SkinDefinition>("hazel_jumpsuit"),
             emotes: [
                 Emotes.getByIDString("happy_face"),
                 Emotes.getByIDString("thumbs_up"),
