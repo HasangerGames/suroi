@@ -18,8 +18,9 @@ After checking out these frightening additions, enjoy your candy while reading a
   <li>Added 7 new crosshairs.</li>
   <li>Tweaked gun top downs.</li>
   <li>New reload & switch sounds for Flues & M1895.</li>
-  <li>Fixed an issue with the camera being stuck in the top left corner when movement smoothing is disabled.</li>
+  <li>Fixed "Connection lost" issues.</li>
   <li>Fixed "Error joining game" issues.</li>
+  <li>Fixed an issue with the camera being stuck in the top left corner when movement smoothing is disabled.</li>
   <li>Fixed issues with the Play Again button.</li>
   <li>Fixed birch and pine trees spawning inside other obstacles.</li>
   <li>Fixed kill leader issues.</li>
