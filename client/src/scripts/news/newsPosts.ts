@@ -13,17 +13,19 @@ After checking out these frightening additions, enjoy your candy while reading a
         longContent: `<h2>Suroi v0.12.0</h2>
 <h3>Changelog</h3>
 <ul>
-  <li>Halloween mode! Added 2 new guns and a new obstacle. Reskinned trees.</li>
+  <li>Halloween mode! Added 2 new guns and a new obstacle. Reskinned trees & blueberry bushes. New menu music.</li>
   <li>Added a new skin and a new emote.</li>
   <li>Added 7 new crosshairs.</li>
   <li>Tweaked gun top downs.</li>
+  <li>New reload & switch sounds for Flues & M1895.</li>
   <li>Fixed an issue with the camera being stuck in the top left corner when movement smoothing is disabled.</li>
   <li>Fixed "Error joining game" issues.</li>
   <li>Fixed issues with the Play Again button.</li>
   <li>Fixed birch and pine trees spawning inside other obstacles.</li>
   <li>Fixed kill leader issues.</li>
   <li>Server performance improvements.</li>
-  <li>Fixed images on the news page not loading.</li>
+  <li>The AEGIS crate now has a 50% chance to spawn in place of the Tango crate in the ship vault.</li>
+  <li>Scopes now drop from the Tango crate.</li>
   <li>Fixed issues with shoot on joystick release.</li>
   <li>Fixed the rules & tutorial button being hidden by default.</li>
   <li>Removed misleading ping counter from server selector.</li>
@@ -40,8 +42,9 @@ After checking out these frightening additions, enjoy your candy while reading a
   <li>Added missing killfeed icons.</li>
   <li>Fixed some missing textures.</li>
   <li>Fixed silent porta potty doors.</li>
+  <li>Fixed images on the news page not loading.</li>
   <li>The M1895 now displays bullet casings only on reload. The M1895 and Flues now display multiple casings.</li>
-  <li>Removed default keybind for opening the console.</li>
+  <li>Removed default keybind for opening the dev console.</li>
 </ul>`
     },
     {
