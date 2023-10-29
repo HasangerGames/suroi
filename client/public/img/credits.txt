@@ -6,12 +6,12 @@ Loot:
   Scopes: Slapdap
   Pills: jchen
   Medkit, Soda: Asultra
-Weapons: 
+Weapons:
   Gun icons: eiπ, hester, jchen, vp, ScaredPenguinXXL, DogEnjoyer, yeet120, Megashark25098
   Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
   Melee weapons: Radians
 
-Obstacles: 
+Obstacles:
   Barrel: 123OP, Asultra, Henry Sanger
   Barrel residue: Dachselt, Leo, Henry Sanger
 
@@ -46,7 +46,7 @@ Obstacles:
   Residues for above obstacles: plantonthek
 
 Building designs:
-  House: platonthek
+  House, refinery, port: platonthek
   Warehouse: Leia, 1092384
   Porta potty: Katloo, Slapdap, 1092384
 
