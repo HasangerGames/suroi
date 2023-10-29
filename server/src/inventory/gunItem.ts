@@ -56,7 +56,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
-            owner.disconnected
+            owner.disconnected ||
+            this !== this.owner.activeItem
         ) {
             this._shots = 0;
             return;

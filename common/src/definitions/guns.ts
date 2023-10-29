@@ -178,7 +178,7 @@ export const Guns: GunDefinition[] = [
         speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
-        fireMode: FireMode.Single,
+        fireMode: FireMode.Auto,
         shotSpread: 5,
         moveSpread: 2,
         jitterRadius: 0.5,
@@ -905,7 +905,7 @@ export const Guns: GunDefinition[] = [
         shotSpread: 5,
         moveSpread: 9,
         length: 7.7,
-        canQuickswitch: true,
+        // canQuickswitch: true,
         fists: {
             left: v(115, -1),
             right: v(40, 0),
@@ -922,7 +922,7 @@ export const Guns: GunDefinition[] = [
             speed: 0.16,
             maxDistance: 55,
             onHitExplosion: "usas_explosion",
-            goToMouse: true,
+            // goToMouse: true,
             tracer: {
                 length: 0.5,
                 color: 0xff0000
