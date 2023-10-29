@@ -2,6 +2,7 @@ import { Loots, type LootDefinition } from "../../../common/src/definitions/loot
 import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { weightedRandom } from "../../../common/src/utils/random";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
+import { ColorStyles, styleText } from "./ansiColoring";
 
 export class LootItem {
     readonly idString: ReferenceTo<LootDefinition>;
@@ -12,6 +13,20 @@ export class LootItem {
         this.count = count;
     }
 }
+
+export const Logger = {
+    log(...message: string[]): void {
+        this._log(message.join(" "));
+    },
+    warn(...message: string[]): void {
+        this._log(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), message.join(" "));
+    },
+    _log(...message: string[]): void {
+        const date = new Date();
+        const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
+        console.log(styleText(dateString, ColorStyles.foreground.green.bright), message.join(" "));
+    }
+};
 
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];
