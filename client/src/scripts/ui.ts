@@ -77,6 +77,10 @@ export function setupUI(game: Game): void {
         {
             name: "monet",
             link: "https://www.youtube.com/@stardust_737"
+        },
+        {
+            name: "Tuncres",
+            link: "https://www.youtube.com/@Tuncres2022"
         }
     ];
 
