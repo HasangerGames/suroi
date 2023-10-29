@@ -272,9 +272,9 @@ export class TerrainGrid {
         this.width = Math.floor(width / this.cellSize);
         this.height = Math.floor(height / this.cellSize);
 
-        for (let x = 0; x <= width; x++) {
+        for (let x = 0; x <= this.width; x++) {
             this._grid[x] = [];
-            for (let y = 0; y <= height; y++) {
+            for (let y = 0; y <= this.height; y++) {
                 this._grid[x][y] = [];
             }
         }
