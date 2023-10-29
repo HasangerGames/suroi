@@ -188,12 +188,16 @@ export class Player extends GameObject {
 
     readonly inventory = new Inventory(this);
 
+    get activeItemIndex(): number {
+        return this.inventory.activeWeaponIndex;
+    }
+
     get activeItem(): InventoryItem<MeleeDefinition | GunDefinition> {
         return this.inventory.activeWeapon;
     }
 
-    get activeItemIndex(): number {
-        return this.inventory.activeWeaponIndex;
+    get activeItemDefinition(): MeleeDefinition | GunDefinition {
+        return this.activeItem.definition;
     }
 
     readonly animation = {
@@ -251,7 +255,13 @@ export class Player extends GameObject {
 
         // The action slot is now free, meaning our player isn't doing anything
         // Let's try reloading our empty gun then, unless we just cancelled a reload
-        if (!wasReload && value === undefined && this.activeItem instanceof GunItem && this.activeItem.ammo <= 0) {
+        if (
+            !wasReload &&
+            value === undefined &&
+            this.activeItem instanceof GunItem &&
+            this.activeItem.ammo <= 0 &&
+            this.inventory.items[(this.activeItemDefinition as GunDefinition).ammoType] !== 0
+        ) {
             this._action = new ReloadAction(this, this.activeItem);
         }
     }
@@ -365,10 +375,6 @@ export class Player extends GameObject {
         this.yCullDist = this._zoom * 1.35;
         this.dirty.zoom = true;
         this.updateVisibleObjects();
-    }
-
-    get activeItemDefinition(): MeleeDefinition | GunDefinition {
-        return this.activeItem.definition;
     }
 
     give(idString: string): void {
