@@ -5,7 +5,6 @@ import { type ItemDefinition } from "../../../../../common/src/utils/objectDefin
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { UI_DEBUG_MODE } from "../../utils/constants";
-import { randomKillWord } from "../../utils/misc";
 
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -48,7 +47,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 switch (this.game.console.getConfig("cv_killfeed_style")) {
                     case "text": {
                         const message = twoPartyInteraction
-                            ? `${killedBy!.name} ${randomKillWord()} ${killed.name}`
+                            ? `${killedBy!.name} killed ${killed.name}`
                             : gasKill
                                 ? `${killed.name} died to the gas`
                                 : `${killed.name} committed suicide`;

@@ -18,7 +18,6 @@ export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");
-        $("#kill-msg-word").text("obliterated");
         $("#kill-msg-player-name").html("Player");
         $("#kill-msg-weapon-used").text(" with Mosin-Nagant (streak: 255)");
         $("#kill-msg").show();
