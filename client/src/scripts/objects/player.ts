@@ -441,18 +441,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (anim) {
             this.anims.leftFistAnim = new Tween(
                 this.game, {
-                target: this.images.leftFist,
-                to: { x: fists.left.x, y: fists.left.y },
-                duration: fists.animationDuration
-            }
+                    target: this.images.leftFist,
+                    to: { x: fists.left.x, y: fists.left.y },
+                    duration: fists.animationDuration
+                }
             );
 
             this.anims.rightFistAnim = new Tween(
                 this.game, {
-                target: this.images.rightFist,
-                to: { x: fists.right.x, y: fists.right.y },
-                duration: fists.animationDuration
-            }
+                    target: this.images.rightFist,
+                    to: { x: fists.right.x, y: fists.right.y },
+                    duration: fists.animationDuration
+                }
             );
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
