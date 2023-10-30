@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { addAdjust, calculateDoorHitboxes, velFromAngle } from "../../../../common/src/utils/math";
+import { addAdjust, calculateDoorHitboxes, lerp, velFromAngle } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -14,7 +14,7 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
-import { ParticleEmitter } from "./particles";
+import { type ParticleEmitter } from "./particles";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -22,7 +22,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
-    explosiveEmitter?: ParticleEmitter;
+    smokeEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
     definition!: ObstacleDefinition;
@@ -70,20 +70,20 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
-            if (definition.explosion !== undefined) {
-                this.explosiveEmitter = this.game.particleManager.addEmitter(new ParticleEmitter({
-                    delay: 250,
+            if (definition.explosion && !this.smokeEmitter) {
+                this.smokeEmitter = this.game.particleManager.addEmitter({
+                    delay: 400,
                     active: false,
                     spawnOptions: () => ({
                         frames: "smoke_particle",
                         position: this.position,
-                        zIndex: ZIndexes.Players,
-                        lifeTime: 800,
-                        scale: { start: randomFloat(0.5, 0.7), end: randomFloat(1.6, 2) },
-                        alpha: { start: 0.9, end: 0.3 },
-                        speed: velFromAngle((randomFloat(0, 2 * Math.PI)), randomFloat(0.5, 4))
+                        zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
+                        lifeTime: 3500,
+                        scale: { start: 0, end: randomFloat(4, 5) },
+                        alpha: { start: 0.9, end: 0 },
+                        speed: velFromAngle(randomFloat(-1.9, -2.1), randomFloat(5, 6))
                     })
-                }));
+                });
             }
 
             if (!this.activated && full.activated) {
@@ -105,10 +105,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         this.scale = data.scale;
 
-        if (definition.explosion !== undefined && this.explosiveEmitter && (this.scale - definition.scale.destroy) / (definition.scale.spawnMin - definition.scale.destroy) <= 0.3 && !this.dead) {
-            this.explosiveEmitter.active = true;
-        }
-
         this.container.scale.set(this.dead ? 1 : this.scale);
 
         // Change the texture of the obstacle and play a sound when it's destroyed
@@ -126,9 +122,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 this.container.rotation = this.rotation;
                 this.container.scale.set(this.scale);
 
-                if (this.explosiveEmitter) {
-                    this.explosiveEmitter.active = false;
-                    this.explosiveEmitter.destroy();
+                if (this.smokeEmitter) {
+                    this.smokeEmitter.active = false;
+                    this.smokeEmitter.destroy();
                 }
 
                 this.game.particleManager.spawnParticles(10, () => ({
@@ -175,6 +171,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
+
+        const scaleFactor = (this.scale - definition.scale.destroy) / (definition.scale.spawnMax - definition.scale.destroy);
+
+        if (this.smokeEmitter) {
+            this.smokeEmitter.active = !this.dead && scaleFactor < 0.8;
+            this.smokeEmitter.delay = lerp(500, 2000, scaleFactor);
+        }
 
         this.container.rotation = this.rotation;
 
@@ -320,6 +323,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     destroy(): void {
         super.destroy();
         this.image.destroy();
-        this.explosiveEmitter?.destroy();
+        this.smokeEmitter?.destroy();
     }
 }
