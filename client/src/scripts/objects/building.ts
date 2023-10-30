@@ -36,7 +36,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
         this.ceilingContainer = new Container();
         this.game.camera.addObject(this.ceilingContainer);
 
-        this.updateFromData(data);
+        this.updateFromData(data, true);
     }
 
     toggleCeiling(visible: boolean): void {
