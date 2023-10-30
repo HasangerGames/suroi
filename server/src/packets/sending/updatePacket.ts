@@ -1,7 +1,7 @@
 import { PacketType } from "../../../../common/src/constants";
 import { Emotes } from "../../../../common/src/definitions/emotes";
 import { Explosions } from "../../../../common/src/definitions/explosions";
-import { distance, lineIntersectsRect2 } from "../../../../common/src/utils/math";
+import { distanceSquared, lineIntersectsRect2 } from "../../../../common/src/utils/math";
 import { ObjectSerializations } from "../../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Bullet } from "../../objects/bullet";
@@ -161,7 +161,7 @@ export class UpdatePacket extends SendingPacket {
         const explosions: Explosion[] = [];
         for (const explosion of game.explosions) {
             if (player.screenHitbox.isPointInside(explosion.position) ||
-                distance(explosion.position, player.position) < 128) {
+                distanceSquared(explosion.position, player.position) < 16384) {
                 explosions.push(explosion);
             }
         }

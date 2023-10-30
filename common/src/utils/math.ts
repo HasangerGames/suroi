@@ -504,11 +504,7 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
         }
     }
 
-    if (tmin > dist) {
-        return false;
-    }
-
-    return true;
+    return tmin <= dist;
 }
 
 export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
