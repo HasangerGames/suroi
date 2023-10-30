@@ -529,16 +529,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
+    screenHitbox = RectangleHitbox.fromRect(1, 1);
+
     updateVisibleObjects(): void {
         this.ticksSinceLastUpdate = 0;
 
-        const newVisibleObjects = this.game.grid.intersectsHitbox(
-            RectangleHitbox.fromRect(
-                2 * this.xCullDist,
-                2 * this.yCullDist,
-                this.position
-            )
+        this.screenHitbox = RectangleHitbox.fromRect(
+            2 * this.xCullDist,
+            2 * this.yCullDist,
+            this.position
         );
+
+        const newVisibleObjects = this.game.grid.intersectsHitbox(this.screenHitbox);
 
         for (const object of this.visibleObjects) {
             if (!newVisibleObjects.has(object)) {

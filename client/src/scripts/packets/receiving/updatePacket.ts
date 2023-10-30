@@ -13,7 +13,6 @@ import { ReceivingPacket } from "../../types/receivingPacket";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { formatDate } from "../../utils/misc";
 import { PlayerManager } from "../../utils/playerManager";
-import { Bullets } from "../../../../../common/src/definitions/bullets";
 
 function adjustForLowValues(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -212,30 +211,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                const source = Bullets.readFromStream(stream);
-                const position = stream.readPosition();
-                const rotation = stream.readRotation(16);
-                const variance = stream.readFloat(0, 1, 4);
-                const reflectionCount = stream.readBits(2);
-                const sourceID = stream.readObjectID();
-
-                let clipDistance: number | undefined;
-
-                if (source.goToMouse) {
-                    clipDistance = stream.readFloat(0, source.maxDistance, 16);
-                }
-
-                const bullet = new Bullet(game, {
-                    source,
-                    position,
-                    rotation,
-                    reflectionCount,
-                    sourceID,
-                    variance,
-                    clipDistance
-                });
-
+                const bullet = new Bullet(game, Bullet.deserialize(stream));
                 game.bullets.add(bullet);
             }
         }

@@ -2,6 +2,7 @@ import { type BulletDefiniton, Bullets } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
+import { type SuroiBitStream } from "./suroiBitStream";
 import { v, vAdd, vClone, vMul, type Vector } from "./vector";
 
 export interface BulletOptions {
@@ -36,6 +37,7 @@ export class BaseBullet {
 
     readonly rotation: number;
     readonly velocity: Vector;
+    readonly direction: Vector;
 
     readonly maxDistance: number;
     readonly maxDistanceSquared: number;
@@ -72,7 +74,9 @@ export class BaseBullet {
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
 
-        this.velocity = vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.definition.speed * (this.rangeVariance + 1));
+        this.direction = v(Math.sin(this.rotation), -Math.cos(this.rotation));
+
+        this.velocity = vMul(this.direction, this.definition.speed * (this.rangeVariance + 1));
 
         this.canHitShooter = (this.definition.shrapnel ?? this.reflectionCount > 0);
     }
@@ -90,7 +94,7 @@ export class BaseBullet {
 
         if (distanceSquared(this.initialPosition, this.position) > this.maxDistanceSquared) {
             this.dead = true;
-            this.position = vAdd(this.initialPosition, (vMul(v(Math.sin(this.rotation), -Math.cos(this.rotation)), this.maxDistance)));
+            this.position = vAdd(this.initialPosition, (vMul(this.direction, this.maxDistance)));
         }
 
         const collisions: Collision[] = [];
@@ -120,5 +124,43 @@ export class BaseBullet {
         );
 
         return collisions;
+    }
+
+    serialize(stream: SuroiBitStream): void {
+        Bullets.writeToStream(stream, this.definition);
+        stream.writePosition(this.initialPosition);
+        stream.writeRotation(this.rotation, 16);
+        stream.writeFloat(this.rangeVariance, 0, 1, 4);
+        stream.writeBits(this.reflectionCount, 2);
+        stream.writeObjectID(this.sourceID);
+
+        if (this.definition.goToMouse) {
+            stream.writeFloat(this.maxDistance, 0, this.definition.maxDistance, 16);
+        }
+    }
+
+    static deserialize(stream: SuroiBitStream): BulletOptions {
+        const source = Bullets.readFromStream(stream);
+        const position = stream.readPosition();
+        const rotation = stream.readRotation(16);
+        const variance = stream.readFloat(0, 1, 4);
+        const reflectionCount = stream.readBits(2);
+        const sourceID = stream.readObjectID();
+
+        let clipDistance: number | undefined;
+
+        if (source.goToMouse) {
+            clipDistance = stream.readFloat(0, source.maxDistance, 16);
+        }
+
+        return {
+            source,
+            position,
+            rotation,
+            variance,
+            reflectionCount,
+            sourceID,
+            clipDistance
+        };
     }
 }

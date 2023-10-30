@@ -82,7 +82,7 @@ class Bot {
         stream.writePlayerName(`BOT_${this.id}`);
         stream.writeBoolean(false); // is mobile
         // loadout
-        const skin = skins[random(0, skins.length - 1)];
+        const skin = pickRandomInArray(skins);
         const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
         Loots.writeToStream(stream, skin);
         Emotes.writeToStream(stream, emote());

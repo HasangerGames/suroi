@@ -36,8 +36,10 @@ export class Bullet extends BaseBullet {
     readonly sourceGun: Weapon;
     readonly shooter: GameObject;
 
-    clipDistance: number;
+    readonly clipDistance: number;
     reflected = false;
+
+    readonly finalPosition: Vector;
 
     constructor(
         game: Game,
@@ -60,6 +62,8 @@ export class Bullet extends BaseBullet {
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
+
+        this.finalPosition = vAdd(this.position, vMul(this.direction, this.maxDistance));
     }
 
     update(): DamageRecord[] {

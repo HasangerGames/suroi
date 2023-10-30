@@ -1,9 +1,11 @@
 import { PacketType } from "../../../../common/src/constants";
-import { Bullets } from "../../../../common/src/definitions/bullets";
 import { Emotes } from "../../../../common/src/definitions/emotes";
 import { Explosions } from "../../../../common/src/definitions/explosions";
+import { distance, lineIntersectsRect2 } from "../../../../common/src/utils/math";
 import { ObjectSerializations } from "../../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { type Bullet } from "../../objects/bullet";
+import { type Explosion } from "../../objects/explosion";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class UpdatePacket extends SendingPacket {
@@ -136,26 +138,38 @@ export class UpdatePacket extends SendingPacket {
             player.deletedObjects.clear();
         }
 
+        // Cull bullets
+        const bullets: Bullet[] = [];
+        for (const bullet of game.newBullets) {
+            if (lineIntersectsRect2(bullet.initialPosition,
+                bullet.finalPosition,
+                player.screenHitbox.min,
+                player.screenHitbox.max)) {
+                bullets.push(bullet);
+            }
+        }
+
         // Bullets
         if (bulletsDirty) {
-            stream.writeUint8(game.newBullets.size);
-            for (const bullet of game.newBullets) {
-                Bullets.writeToStream(stream, bullet.definition);
-                stream.writePosition(bullet.initialPosition);
-                stream.writeRotation(bullet.rotation, 16);
-                stream.writeFloat(bullet.rangeVariance, 0, 1, 4);
-                stream.writeBits(bullet.reflectionCount, 2);
-                stream.writeObjectID(bullet.sourceID);
-                if (bullet.definition.goToMouse) {
-                    stream.writeFloat(bullet.clipDistance, 0, bullet.definition.maxDistance, 16);
-                }
+            stream.writeUint8(bullets.length);
+            for (const bullet of bullets) {
+                bullet.serialize(stream);
+            }
+        }
+
+        // Cull explosions
+        const explosions: Explosion[] = [];
+        for (const explosion of game.explosions) {
+            if (player.screenHitbox.isPointInside(explosion.position) ||
+                distance(explosion.position, player.position) < 128) {
+                explosions.push(explosion);
             }
         }
 
         // Explosions
         if (explosionsDirty) {
-            stream.writeUint8(game.explosions.size);
-            for (const explosion of game.explosions) {
+            stream.writeUint8(explosions.length);
+            for (const explosion of explosions) {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             }
