@@ -1,20 +1,13 @@
 import { type ObjectCategory } from "../../../common/src/constants";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ObjectDefinition } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 
-export abstract class GameObject {
-    damageable = false;
-
-    id: number;
-    abstract readonly type: ObjectCategory;
-
-    abstract objectType: ObjectType<typeof this["type"], ObjectDefinition>;
-
-    game: Game;
+export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
+    abstract readonly type: Cat;
+    readonly id: number;
+    readonly game: Game;
 
     _position: Vector;
     get position(): Vector { return this._position; }
@@ -24,6 +17,7 @@ export abstract class GameObject {
     get rotation(): number { return this._rotation; }
     set rotation(rotation: number) { this._rotation = rotation; }
 
+    damageable = false;
     scale = 1;
     dead = false;
     hitbox?: Hitbox;
@@ -37,6 +31,5 @@ export abstract class GameObject {
 
     abstract damage(amount: number, source?: GameObject): void;
 
-    abstract serializePartial(stream: SuroiBitStream): void;
-    abstract serializeFull(stream: SuroiBitStream): void;
+    abstract get data(): Required<ObjectsNetData[Cat]>;
 }

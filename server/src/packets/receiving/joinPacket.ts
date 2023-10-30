@@ -1,11 +1,11 @@
 import { Emotes } from "../../../../common/src/definitions/emotes";
-import { Skins } from "../../../../common/src/definitions/skins";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { Config } from "../../config";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { hasBadWords } from "../../utils/badWordFilter";
 import { DEFAULT_USERNAME } from "../../../../common/src/constants";
+import { Loots } from "../../../../common/src/definitions/loots";
 
 export class JoinPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -16,7 +16,7 @@ export class JoinPacket extends ReceivingPacket {
         player.name = name;
 
         player.isMobile = stream.readBoolean();
-        const skin = Skins[stream.readUint8()];
+        const skin = Loots.readFromStream(stream);
 
         if (
             skin.itemType === ItemType.Skin &&
@@ -26,7 +26,7 @@ export class JoinPacket extends ReceivingPacket {
             player.loadout.skin = skin;
         }
         for (let i = 0; i < 4; i++) {
-            player.loadout.emotes[i] = Emotes.definitions[stream.readUint8()];
+            player.loadout.emotes[i] = Emotes.readFromStream(stream);
         }
         player.game.activatePlayer(player);
     }

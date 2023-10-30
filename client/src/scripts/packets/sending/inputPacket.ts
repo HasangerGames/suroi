@@ -1,10 +1,9 @@
 import {
     INPUT_ACTIONS_BITS,
     MAX_MOUSE_DISTANCE,
-    ObjectCategory,
     PacketType
 } from "../../../../../common/src/constants";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { Loots } from "../../../../../common/src/definitions/loots";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
@@ -49,7 +48,7 @@ export class InputPacket extends SendingPacket {
                 stream.writeBits(action.slot, 2);
             }
             if ("item" in action) {
-                stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, action.item.idString));
+                Loots.writeToStream(stream, action.item);
             }
         }
 

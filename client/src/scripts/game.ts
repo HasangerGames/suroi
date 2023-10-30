@@ -19,7 +19,6 @@ import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
 import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
-import { KillPacket } from "./packets/receiving/killPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
 import { PingPacket } from "./packets/sending/pingPacket";
@@ -40,12 +39,10 @@ import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
 import { type Tween } from "./utils/tween";
 import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { type ObstacleDefinition } from "../../../common/src/definitions/obstacles";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { GameConsole } from "./utils/console/gameConsole";
 import { setUpCommands } from "./utils/console/commands";
 import { setupUI } from "./ui";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 
 export class Game {
     socket!: WebSocket;
@@ -191,10 +188,6 @@ export class Game {
                     new GameOverPacket(this._playerManager).deserialize(stream);
                     break;
                 }
-                case PacketType.Kill: {
-                    new KillPacket(this._playerManager).deserialize(stream);
-                    break;
-                }
                 case PacketType.KillFeed: {
                     new KillFeedPacket(this._playerManager).deserialize(stream);
                     break;
@@ -327,49 +320,39 @@ export class Game {
 
     processUpdate(updateData: UpdatePacket): void {
         for (const { id, type, data } of updateData.fullDirtyObjects) {
-            let object: GameObject | undefined = this.objects.get(id);
+            const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
-                switch (type.category) {
-                    case ObjectCategory.Player: {
-                        object = new Player(this, id);
-                        this.players.add(object as Player);
-                        break;
-                    }
-                    case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, type.definition as ObstacleDefinition, id);
-                        break;
-                    }
-                    case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(this, id);
-                        break;
-                    }
-                    case ObjectCategory.Loot: {
-                        object = new Loot(this, type.definition as LootDefinition, id);
-                        this.loots.add(object as Loot);
-                        break;
-                    }
-                    case ObjectCategory.Building: {
-                        object = new Building(this, type.definition as BuildingDefinition, id);
-                        break;
-                    }
-                    case ObjectCategory.Decal: {
-                        object = new Decal(this, type.definition, id);
-                        break;
-                    }
-                }
+                const ObjectsMapping = {
+                    [ObjectCategory.Player]: Player,
+                    [ObjectCategory.Obstacle]: Obstacle,
+                    [ObjectCategory.DeathMarker]: DeathMarker,
+                    [ObjectCategory.Loot]: Loot,
+                    [ObjectCategory.Building]: Building,
+                    [ObjectCategory.Decal]: Decal
+                };
+
+                type K = typeof type;
+                const newObject = new (
+                    ObjectsMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
+                )(this, id, data);
+
+                if (newObject instanceof Loot) this.loots.add(newObject);
+                else if (newObject instanceof Player) this.players.add(newObject);
+
+                this.objects.add(newObject);
             }
 
             if (object) {
                 this.objects.add(object);
-                object.updateFromData(data);
+                object.updateFromData(data, false);
             }
         }
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
             if (object) {
-                object.updateFromData(data);
+                object.updateFromData(data, false);
             }
         }
         for (const id of updateData.deletedObjects) {

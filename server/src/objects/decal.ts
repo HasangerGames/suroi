@@ -1,36 +1,29 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { Decals, type DecalDefinition } from "../../../common/src/definitions/decals";
-import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-export class Decal<Def extends DecalDefinition = DecalDefinition> extends GameObject {
+export class Decal extends GameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;
-    override objectType: ObjectType<this["type"], Def>;
 
-    readonly definition: Def;
+    readonly definition: DecalDefinition;
 
-    constructor(game: Game, definition: ReferenceTo<Def> | Def, position: Vector, rotation?: number) {
+    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number) {
         super(game, position);
 
-        this.definition = typeof definition === "string" ? (definition = Decals.getByIDString<Def>(definition)) : definition;
-        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
+        this.definition = Decals.reify(definition);
 
         this.rotation = rotation ?? randomRotation();
     }
 
-    override serializeFull(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Decal].serializeFull(stream, this);
+    override get data(): Required<ObjectsNetData[ObjectCategory.Decal]> {
+        return this;
     }
 
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Decal].serializePartial(stream, this);
-    }
-
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     override damage(): void { }
 }

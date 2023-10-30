@@ -1,12 +1,12 @@
+import { ItemType } from "./utils/objectDefinitions";
+
 export enum ObjectCategory {
     Player,
     Obstacle,
     DeathMarker,
     Loot,
     Building,
-    Decal,
-    Explosion,
-    Emote
+    Decal
 }
 
 export enum PacketType {
@@ -16,7 +16,6 @@ export enum PacketType {
     Update,
     Input,
     GameOver,
-    Kill,
     KillFeed,
     Pickup,
     Ping,
@@ -108,6 +107,12 @@ export const MAX_MOUSE_DISTANCE = 128;
 export const DEFAULT_USERNAME = "Player";
 
 export const KILL_LEADER_MIN_KILLS = 3;
+
+export const InventorySlots = [
+    ItemType.Gun,
+    ItemType.Gun,
+    ItemType.Melee
+];
 
 export enum ZIndexes {
     Ground,

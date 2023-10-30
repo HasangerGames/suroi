@@ -1,5 +1,6 @@
 import { PacketType } from "../../../../common/src/constants";
-import { RotationMode } from "../../../../common/src/definitions/obstacles";
+import { Buildings } from "../../../../common/src/definitions/buildings";
+import { Obstacles, RotationMode } from "../../../../common/src/definitions/obstacles";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Game } from "../../game";
 import { Building } from "../../objects/building";
@@ -44,11 +45,12 @@ export class MapPacket extends SendingPacket {
         stream.writeBits(this.game.minimapObjects.size, 11);
 
         for (const object of this.game.minimapObjects) {
-            stream.writeObjectType(object.objectType);
+            stream.writeObjectType(object.type);
             stream.writePosition(object.position);
 
             switch (true) {
                 case object instanceof Obstacle: {
+                    Obstacles.writeToStream(stream, object.definition);
                     stream.writeScale(object.maxScale);
                     stream.writeObstacleRotation(object.rotation, object.definition.rotationMode);
                     if (object.definition.variations !== undefined) {
@@ -57,6 +59,7 @@ export class MapPacket extends SendingPacket {
                     break;
                 }
                 case object instanceof Building:
+                    Buildings.writeToStream(stream, object.definition);
                     stream.writeObstacleRotation(object.rotation, RotationMode.Limited);
                     break;
             }

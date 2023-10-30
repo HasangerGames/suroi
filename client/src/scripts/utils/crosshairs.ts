@@ -16,7 +16,7 @@ export const Crosshairs: Array<string | undefined> = [
 ];
 
 export function getCrosshair(
-    index: keyof typeof Crosshairs,
+    index: number,
     color: string,
     size: number,
     strokeColor: string,

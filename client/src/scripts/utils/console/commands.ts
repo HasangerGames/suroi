@@ -3,7 +3,7 @@ import { type HealingItemDefinition, HealingItems } from "../../../../../common/
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { type ScopeDefinition, Scopes } from "../../../../../common/src/definitions/scopes";
 import { absMod } from "../../../../../common/src/utils/math";
-import { type ReferenceTo, reifyDefinition } from "../../../../../common/src/utils/objectDefinitions";
+import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
 import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
@@ -444,7 +444,7 @@ export function setUpCommands(game: Game): void {
 
             game.inputManager.addAction({
                 type: InputActions.UseItem,
-                item: reifyDefinition(idString, Loots)
+                item: Loots.fromString(idString)
             });
         },
         game,

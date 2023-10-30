@@ -18,7 +18,7 @@ import { Skins } from "../../common/src/definitions/skins";
 import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { FloorTypes } from "../../common/src/utils/mapUtils";
-import { ObstacleSpecialRoles, type BulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
+import { ObstacleSpecialRoles, type BaseBulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
@@ -314,7 +314,7 @@ const tester = (() => {
 })();
 
 const validators = Object.freeze({
-    ballistics(baseErrorPath: string, ballistics: BulletDefinition): void {
+    ballistics(baseErrorPath: string, ballistics: BaseBulletDefinition): void {
         tester.assertIsRealNumber({
             obj: ballistics,
             field: "damage",
@@ -1404,7 +1404,7 @@ logger.indent("Validating building definitions", () => {
                             }
 
                             if (obstacle.variation !== undefined) {
-                                const def = Obstacles.getByIDString(obstacle.idString);
+                                const def = Obstacles.fromString(obstacle.idString);
 
                                 if (def) {
                                     if (def.variations === undefined) {
