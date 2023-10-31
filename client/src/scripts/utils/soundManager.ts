@@ -147,6 +147,14 @@ export class SoundManager {
             [
                 "usas_explosion",
                 "audio/sfx/usas_explosion"
+            ],
+            [
+                "kill_leader_assigned",
+                "audio/sfx/kill_leader_assigned"
+            ],
+            [
+                "kill_leader_dead",
+                "audio/sfx/kill_leader_dead"
             ]
         ];
 

@@ -162,6 +162,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 $("#kill-leader-kills-counter").text(kills);
 
                 messageText = `<i class="fa-solid fa-crown"></i> ${name} promoted to Kill Leader!`;
+                this.game.soundManager.play("kill_leader_assigned");
                 break;
             }
 
@@ -176,6 +177,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
                 messageText = '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!'; // TODO Add who killed the kill leader
+                this.game.soundManager.play("kill_leader_dead");
                 break;
             }
         }
