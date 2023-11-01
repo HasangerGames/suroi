@@ -70,7 +70,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
-            if (definition.explosion && !this.smokeEmitter) {
+            if ((definition.explosion || "emitParticles" in definition) && !this.smokeEmitter) {
                 this.smokeEmitter = this.game.particleManager.addEmitter({
                     delay: 400,
                     active: false,
@@ -87,7 +87,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
 
             if (!this.activated && full.activated) {
-                this.activated = true;
+                this.activated = full.activated;
                 let firstRun = !isNew;
                 const playGeneratorSound = (): void => {
                     if (this.destroyed) return;
@@ -104,6 +104,17 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const definition = this.definition;
 
         this.scale = data.scale;
+
+        const scaleFactor = (this.scale - definition.scale.destroy) / (definition.scale.spawnMax - definition.scale.destroy);
+
+        if (this.smokeEmitter) {
+            this.smokeEmitter.active = !this.dead &&
+                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
+
+            if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
+            else this.smokeEmitter.delay = lerp(150, 3000, scaleFactor);
+        }
+
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 
@@ -171,13 +182,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
-
-        const scaleFactor = (this.scale - definition.scale.destroy) / (definition.scale.spawnMax - definition.scale.destroy);
-
-        if (this.smokeEmitter) {
-            this.smokeEmitter.active = !this.dead && scaleFactor < 0.8;
-            this.smokeEmitter.delay = lerp(500, 2000, scaleFactor);
-        }
 
         this.container.rotation = this.rotation;
 
