@@ -1,9 +1,9 @@
-import { INPUT_ACTIONS_BITS, InputActions, MAX_MOUSE_DISTANCE, PlayerActions } from "../../../../common/src/constants";
+import { InputActions, MAX_MOUSE_DISTANCE, PlayerActions } from "../../../../common/src/constants";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { INPUT_ACTIONS_BITS, type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { Loot } from "../../objects/loot";
 import { Obstacle } from "../../objects/obstacle";

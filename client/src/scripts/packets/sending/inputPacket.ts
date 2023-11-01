@@ -1,10 +1,9 @@
 import {
-    INPUT_ACTIONS_BITS,
     MAX_MOUSE_DISTANCE,
     PacketType
 } from "../../../../../common/src/constants";
 import { Loots } from "../../../../../common/src/definitions/loots";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { INPUT_ACTIONS_BITS, type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class InputPacket extends SendingPacket {

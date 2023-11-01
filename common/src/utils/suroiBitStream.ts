@@ -1,9 +1,19 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, OBJECT_ID_BITS, PACKET_TYPE_BITS, PLAYER_NAME_MAX_LENGTH, VARIATION_BITS, type ObjectCategory, type PacketType } from "../constants";
+import { InputActions, KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
 import { type Vector } from "./vector";
+
+export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
+
+export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
+export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
+export const OBJECT_ID_BITS = 12;
+export const VARIATION_BITS = 3;
+export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
+export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
+export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {

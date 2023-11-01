@@ -1,7 +1,7 @@
 import $ from "jquery";
-import { DEFAULT_USERNAME, KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType } from "../../../../../common/src/constants";
+import { DEFAULT_USERNAME, KillFeedMessageType } from "../../../../../common/src/constants";
 import { Explosions, type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { KILL_FEED_MESSAGE_TYPE_BITS, type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { UI_DEBUG_MODE } from "../../utils/constants";
 import { type LootDefinition, Loots } from "../../../../../common/src/definitions/loots";
