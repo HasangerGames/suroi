@@ -105,37 +105,45 @@ export class Inventory {
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const item = this._weapons[slot];
+        const owner = this.owner;
         if (item !== undefined) {
             const oldItem = this._weapons[old];
             if (oldItem) oldItem.isActive = false;
 
             item.isActive = true;
 
-            const now = this.owner.game.now;
+            const now = owner.game.now;
 
-            this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
-                now - this.owner.lastSwitch >= 1000 &&
-                now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
-                item.definition.canQuickswitch === true
-            )
-                ? 250
-                : item.definition.switchDelay;
+            let effectiveSwitchDelay: number;
 
-            this.owner.lastSwitch = item._switchDate = now;
+            if (
+                item.definition.itemType !== ItemType.Gun || (
+                    now - owner.lastFreeSwitch >= 1000 &&
+                    !item.definition.noQuickswitch
+                )
+            ) {
+                effectiveSwitchDelay = 250;
+                owner.lastFreeSwitch = now;
+            } else {
+                effectiveSwitchDelay = item.definition.switchDelay;
+            }
+            owner.effectiveSwitchDelay = effectiveSwitchDelay;
+
+            owner.lastSwitch = item._switchDate = now;
 
             if (item instanceof GunItem && item.ammo <= 0) {
-                this._reloadTimeoutID = setTimeout(item.reload.bind(item), this.owner.effectiveSwitchDelay);
+                this._reloadTimeoutID = setTimeout(item.reload.bind(item), owner.effectiveSwitchDelay);
             }
         }
 
-        this.owner.attacking = false;
-        this.owner.recoil.active = false;
+        owner.attacking = false;
+        owner.recoil.active = false;
 
         if (slot !== old) {
-            this.owner.dirty.activeWeaponIndex = true;
-            this.owner.game.fullDirtyObjects.add(this.owner);
+            owner.dirty.activeWeaponIndex = true;
+            owner.game.fullDirtyObjects.add(this.owner);
         }
-        this.owner.updateAndApplyModifiers();
+        owner.updateAndApplyModifiers();
 
         return true;
     }

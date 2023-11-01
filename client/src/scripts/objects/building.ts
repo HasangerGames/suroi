@@ -96,7 +96,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     frames: `${this.definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: 10,
-                    lifeTime: 2000,
+                    lifetime: 2000,
                     rotation: {
                         start: randomRotation(),
                         end: randomRotation()

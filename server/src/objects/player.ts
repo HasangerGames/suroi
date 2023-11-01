@@ -281,6 +281,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     canDespawn = true;
 
     lastSwitch = 0;
+    lastFreeSwitch = 0;
     effectiveSwitchDelay = 0;
 
     isInsideBuilding = false;

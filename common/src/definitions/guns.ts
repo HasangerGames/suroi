@@ -23,7 +23,7 @@ export type GunDefinition = ItemDefinition & {
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
-    readonly canQuickswitch?: boolean
+    readonly noQuickswitch?: boolean
     readonly bulletCount?: number
     readonly length: number
     readonly killstreak?: boolean
@@ -46,6 +46,7 @@ export type GunDefinition = ItemDefinition & {
         readonly position: Vector
         readonly count?: number
         readonly spawnOnReload?: boolean
+        readonly ejectionDelay?: number
     }
 
     readonly noMuzzleFlash?: boolean
@@ -182,7 +183,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 5,
         moveSpread: 2,
         jitterRadius: 0.5,
-        canQuickswitch: true,
         bulletCount: 9,
         length: 7.7,
         fists: {
@@ -220,7 +220,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 11,
         moveSpread: 3,
         jitterRadius: 1.25,
-        canQuickswitch: true,
         bulletCount: 10,
         length: 7.9,
         fists: {
@@ -231,7 +230,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(95, 0) },
         casingParticles: {
-            position: v(4.5, 0.6)
+            position: v(4.5, 0.6),
+            ejectionDelay: 450
         },
         singleReload: true,
         ballistics: {
@@ -263,7 +263,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 30,
         moveSpread: 7,
         jitterRadius: 1.5,
-        canQuickswitch: true,
         length: 8,
         fists: {
             left: v(120, -1),
@@ -303,7 +302,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 11,
         moveSpread: 3,
         jitterRadius: 1.5,
-        canQuickswitch: true,
         length: 6,
         fists: {
             left: v(90, -8),
@@ -344,7 +342,6 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 0.8,
         moveSpread: 0.5,
-        canQuickswitch: true,
         length: 8.7,
         shootOnRelease: true,
         fists: {
@@ -355,7 +352,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 6.5) },
         casingParticles: {
-            position: v(4, 0.6)
+            position: v(4, 0.6),
+            ejectionDelay: 700
         },
         ballistics: {
             damage: 70,
@@ -384,7 +382,6 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 0.3,
         moveSpread: 0.3,
-        canQuickswitch: true,
         length: 8.2,
         shootOnRelease: true,
         fists: {
@@ -395,7 +392,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 5) },
         casingParticles: {
-            position: v(4, 0.6)
+            position: v(4, 0.6),
+            ejectionDelay: 450
         },
         ballistics: {
             damage: 79,
@@ -905,7 +903,6 @@ export const Guns: GunDefinition[] = [
         shotSpread: 5,
         moveSpread: 9,
         length: 7.7,
-        canQuickswitch: true,
         fists: {
             left: v(115, -1),
             right: v(40, 0),
@@ -984,7 +981,6 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 0.15,
         moveSpread: 0.1,
-        canQuickswitch: true,
         killstreak: true,
         length: 9.7,
         fists: {
@@ -995,7 +991,7 @@ export const Guns: GunDefinition[] = [
         image: { position: v(90, 0) },
         noMuzzleFlash: true,
         casingParticles: {
-            position: v(0, 0),
+            position: v(4.5, 0.6),
             spawnOnReload: true
         },
         ballistics: {
@@ -1029,7 +1025,6 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 11,
         moveSpread: 3,
-        canQuickswitch: true,
         killstreak: true,
         consistentPatterning: true,
         bulletCount: 10,
@@ -1041,7 +1036,8 @@ export const Guns: GunDefinition[] = [
         },
         image: { position: v(90, 0) },
         casingParticles: {
-            position: v(4, 0.6)
+            position: v(4, 0.6),
+            ejectionDelay: 450
         },
         singleReload: true,
         ballistics: {
