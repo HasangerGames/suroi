@@ -473,6 +473,9 @@ export function setupUI(game: Game): void {
         element.checked = game.console.getConfig("cv_killfeed_style") === "text";
     }
 
+    // antialias toggle
+    addCheckboxListener("#toggle-antialias", "cv_antialias");
+
     // Movement smoothing toggle
     addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
 

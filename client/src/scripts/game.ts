@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-import { type Application, Container } from "pixi.js";
+import { Application, Container } from "pixi.js";
 import { InputActions, ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
@@ -28,7 +28,7 @@ import { type GameObject } from "./types/gameObject";
 import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { COLORS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
 import { InputPacket } from "./packets/sending/inputPacket";
@@ -71,7 +71,7 @@ export class Game {
 
     gas!: Gas;
 
-    readonly pixi: Application;
+    readonly pixi: Application<HTMLCanvasElement>;
     readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
@@ -89,21 +89,30 @@ export class Game {
 
     readonly tweens = new Set<Tween<unknown>>();
 
-    constructor(pixi: Application) {
-        this.pixi = pixi;
+    constructor() {
+        this.inputManager.setupInputs();
+        this.console.readFromLocalStorage();
+
+        this.pixi = new Application({
+            resizeTo: window,
+            background: COLORS.grass,
+            antialias: this.console.getConfig("cv_antialias"),
+            autoDensity: true,
+            resolution: window.devicePixelRatio || 1
+        });
+
+        $("#game-ui").append(this.pixi.view);
 
         this.pixi.ticker.add(this.render.bind(this));
 
-        this.camera = new Camera(this);
-        this.map = new Minimap(this);
-
-        this.inputManager.setupInputs();
-        this.console.readFromLocalStorage();
         setUpCommands(this);
         this.soundManager = new SoundManager(this);
         this.inputManager.generateBindsConfigScreen();
 
         setupUI(this);
+
+        this.camera = new Camera(this);
+        this.map = new Minimap(this);
 
         this.playersContainer.zIndex = ZIndexes.Players;
         this.bulletsContainer.zIndex = ZIndexes.Bullets;

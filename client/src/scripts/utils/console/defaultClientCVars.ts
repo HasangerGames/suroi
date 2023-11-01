@@ -104,6 +104,11 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         value: true,
         flags: { archive: true, readonly: false, cheat: false }
     },
+    cv_antialias: {
+        name: "cv_antialias",
+        value: true,
+        flags: { archive: true, readonly: false, cheat: false }
+    },
     cv_minimap_minimized: {
         name: "cv_minimap_minimized",
         value: false,
