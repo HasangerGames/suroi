@@ -39,7 +39,7 @@ export class InputPacket extends SendingPacket {
             inputs.resetAttacking = false;
         }
 
-        stream.writeBits(inputs.actions.length, 4);
+        stream.writeBits(inputs.actions.length, 3);
 
         for (const action of inputs.actions) {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);

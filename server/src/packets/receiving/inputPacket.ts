@@ -38,7 +38,7 @@ export class InputPacket extends ReceivingPacket {
             if (!player.isMobile) player.distanceToMouse = stream.readFloat(0, MAX_MOUSE_DISTANCE, 8);
         }
 
-        const actions = stream.readBits(4);
+        const actions = stream.readBits(3);
 
         for (let i = 0; i < actions; i++) {
             switch (stream.readBits(INPUT_ACTIONS_BITS)) {
