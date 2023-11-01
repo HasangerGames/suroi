@@ -126,6 +126,7 @@ export class PlayerManager {
         // Active item index
         const activeWeaponIndexDirty = stream.readBoolean();
         if (activeWeaponIndexDirty) {
+            this.game.inputManager.attacking = false;
             this.game.inputManager.activeItemIndex = stream.readBits(2);
             $("#weapons-container").children(".inventory-slot").removeClass("active");
             $(`#weapon-slot-${this.game.inputManager.activeItemIndex + 1}`).addClass("active");

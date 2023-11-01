@@ -195,6 +195,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return this.activeItem.definition;
     }
 
+    bufferedAttack?: ReturnType<typeof setTimeout>;
+
     readonly animation = {
         type: AnimationType.None,
         // This boolean is flipped when an animation plays

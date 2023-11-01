@@ -96,16 +96,19 @@ export class Inventory {
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
-        this._lastWeaponIndex = old;
-        clearTimeout(this._reloadTimeoutID);
-        if (this.activeWeapon.category === ItemType.Gun) {
-            (this.activeWeapon as GunItem).cancelReload();
-        }
-
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const item = this._weapons[slot];
         const owner = this.owner;
+
+        this._lastWeaponIndex = old;
+
+        clearTimeout(this._reloadTimeoutID);
+        if (this.activeWeapon.category === ItemType.Gun) {
+            (this.activeWeapon as GunItem).cancelAllTimers();
+        }
+        clearTimeout(owner.bufferedAttack);
+
         if (item !== undefined) {
             const oldItem = this._weapons[old];
             if (oldItem) oldItem.isActive = false;
@@ -129,7 +132,7 @@ export class Inventory {
             }
             owner.effectiveSwitchDelay = effectiveSwitchDelay;
 
-            owner.lastSwitch = item._switchDate = now;
+            owner.lastSwitch = item.switchDate = now;
 
             if (item instanceof GunItem && item.ammo <= 0) {
                 this._reloadTimeoutID = setTimeout(item.reload.bind(item), owner.effectiveSwitchDelay);
