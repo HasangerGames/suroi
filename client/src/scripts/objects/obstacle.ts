@@ -70,7 +70,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
-            if ((definition.explosion || "emitParticles" in definition) && !this.smokeEmitter) {
+            if ((definition.explosion ?? "emitParticles" in definition) && !this.smokeEmitter) {
                 this.smokeEmitter = this.game.particleManager.addEmitter({
                     delay: 400,
                     active: false,
@@ -109,12 +109,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&
-                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
+                (("emitParticles" in definition && this.activated) ?? scaleFactor < 0.5);
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = lerp(150, 3000, scaleFactor);
         }
-
 
         this.container.scale.set(this.dead ? 1 : this.scale);
 

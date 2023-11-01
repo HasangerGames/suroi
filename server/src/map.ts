@@ -6,7 +6,7 @@ import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type 
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
@@ -267,8 +267,20 @@ export class Map {
 
         const building = new Building(this.game, definition, vClone(position), orientation);
 
+        const getRandomIdString = (table: Record<string, number> | string): string => {
+            if (typeof table === "string") return table;
+
+            const items: string[] = [];
+            const weights: number[] = [];
+            for (const item in table) {
+                items.push(item);
+                weights.push(table[item]);
+            }
+            return weightedRandom(items, weights);
+        };
+
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.fromString(obstacleData.idString);
+            const obstacleDef = Obstacles.fromString(getRandomIdString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -316,7 +328,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                subBuilding.idString,
+                getRandomIdString(subBuilding.idString),
                 addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
