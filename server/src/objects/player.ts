@@ -1,4 +1,4 @@
-import type { WebSocket } from "uWebSockets.js";
+import { type WebSocket } from "uWebSockets.js";
 import {
     AnimationType, DEFAULT_USERNAME,
     INVENTORY_MAX_WEAPONS,
@@ -237,6 +237,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
     readonly emotes = new Set<Emote>();
 
     private _zoom!: number;
+    get zoom(): number { return this._zoom; }
+    set zoom(zoom: number) {
+        if (this._zoom === zoom) return;
+
+        this._zoom = zoom;
+        this.xCullDist = this._zoom * 1.8;
+        this.yCullDist = this._zoom * 1.35;
+        this.dirty.zoom = true;
+        this.updateVisibleObjects();
+    }
+
     xCullDist!: number;
     yCullDist!: number;
 
@@ -289,6 +300,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
     isInsideBuilding = false;
 
     floor = "water";
+
+    get position(): Vector {
+        return this.hitbox.position;
+    }
+
+    set position(position: Vector) {
+        this.hitbox.position = position;
+    }
 
     constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector) {
         super(game, position);
@@ -351,28 +370,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.updateAndApplyModifiers();
         this.dirty.activeWeaponIndex = true;
-    }
-
-    get position(): Vector {
-        return this.hitbox.position;
-    }
-
-    set position(position: Vector) {
-        this.hitbox.position = position;
-    }
-
-    get zoom(): number {
-        return this._zoom;
-    }
-
-    set zoom(zoom: number) {
-        if (this._zoom === zoom) return;
-
-        this._zoom = zoom;
-        this.xCullDist = this._zoom * 1.8;
-        this.yCullDist = this._zoom * 1.35;
-        this.dirty.zoom = true;
-        this.updateVisibleObjects();
     }
 
     give(idString: string): void {
@@ -696,11 +693,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(new KillFeedPacket(this, KillFeedMessageType.Kill, {
-                killedBy: source === this ? undefined : source,
-                weaponUsed,
-                kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak === true ? weaponUsed.stats.kills : 0
-            }));
+            this.game.killFeedMessages.add(
+                new KillFeedPacket(
+                    this,
+                    KillFeedMessageType.Kill,
+                    {
+                        killedBy: source === this ? undefined : source,
+                        weaponUsed,
+                        kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak
+                            ? weaponUsed.stats.kills
+                            : 0
+                    }
+                )
+            );
         }
 
         // Destroy physics body; reset movement and attacking variables

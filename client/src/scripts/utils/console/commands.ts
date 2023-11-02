@@ -223,10 +223,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "last_item",
         function(): undefined {
-            this.inputManager.addAction({
-                type: InputActions.EquipItem,
-                slot: this.inputManager.lastItemIndex
-            });
+            this.inputManager.addAction(InputActions.EquipLastItem);
         },
         game,
         {

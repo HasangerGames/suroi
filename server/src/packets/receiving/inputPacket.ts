@@ -1,5 +1,7 @@
 import { InputActions, MAX_MOUSE_DISTANCE, PlayerActions } from "../../../../common/src/constants";
+import { type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../common/src/definitions/loots";
+import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { distanceSquared } from "../../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
@@ -7,12 +9,11 @@ import { INPUT_ACTIONS_BITS, type SuroiBitStream } from "../../../../common/src/
 import { GunItem } from "../../inventory/gunItem";
 import { Loot } from "../../objects/loot";
 import { Obstacle } from "../../objects/obstacle";
-import { type Player } from "../../objects/player";
 import { ReceivingPacket } from "../../types/receivingPacket";
 
 export class InputPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const player: Player = this.player;
+        const player = this.player;
         // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
         if (!player.joined || player.dead || player.game.over) return;
 
@@ -39,36 +40,43 @@ export class InputPacket extends ReceivingPacket {
         }
 
         const actions = stream.readBits(3);
+        const inventory = player.inventory;
 
         for (let i = 0; i < actions; i++) {
-            switch (stream.readBits(INPUT_ACTIONS_BITS)) {
-                case InputActions.UseItem:
-                    player.inventory.useItem(Loots.readFromStream(stream).idString);
+            const action = stream.readBits(INPUT_ACTIONS_BITS);
+            switch (action) {
+                case InputActions.UseItem: {
+                    inventory.useItem(Loots.readFromStream<HealingItemDefinition | ScopeDefinition>(stream));
                     break;
+                }
+                case InputActions.EquipLastItem:
                 case InputActions.EquipItem: {
-                    const target = stream.readBits(2);
+                    const target = action === InputActions.EquipItem
+                        ? stream.readBits(2)
+                        : inventory.lastWeaponIndex;
 
                     // If a user is reloading the gun in slot 2, then we don't cancel the reload if they "switch" to slot 2
                     if (player.action?.type !== PlayerActions.Reload || target !== player.activeItemIndex) {
                         player.action?.cancel();
                     }
 
-                    player.inventory.setActiveWeaponIndex(target);
+                    inventory.setActiveWeaponIndex(target);
                     break;
                 }
-                case InputActions.DropItem:
+                case InputActions.DropItem: {
                     player.action?.cancel();
-                    player.inventory.dropWeapon(stream.readBits(2));
+                    inventory.dropWeapon(stream.readBits(2));
                     break;
-                case InputActions.SwapGunSlots:
-                    player.inventory.swapGunSlots();
+                }
+                case InputActions.SwapGunSlots: {
+                    inventory.swapGunSlots();
                     break;
+                }
                 case InputActions.Interact: {
                     if (player.game.now - player.lastInteractionTime < 120) return;
                     player.lastInteractionTime = player.game.now;
 
                     const detectionHitbox = new CircleHitbox(3, player.position);
-
                     const nearObjects = player.game.grid.intersectsHitbox(detectionHitbox);
 
                     const getClosestObject = (condition: (object: Loot | Obstacle) => boolean): Loot | Obstacle | undefined => {

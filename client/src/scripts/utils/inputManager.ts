@@ -73,15 +73,7 @@ export class InputManager {
 
     turning = false;
 
-    private _lastItemIndex = 0;
-    get lastItemIndex(): number { return this._lastItemIndex; }
-
-    private _activeItemIndex = 2;
-    get activeItemIndex(): number { return this._activeItemIndex; }
-    set activeItemIndex(i: number) {
-        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
-        this._activeItemIndex = i;
-    }
+    activeItemIndex = 2;
 
     cycleScope(offset: number): void {
         const scope = this.game.playerManager.scope;

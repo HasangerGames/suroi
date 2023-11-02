@@ -3,11 +3,12 @@ import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammo
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { HealType, HealingItems } from "../../../common/src/definitions/healingItems";
+import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { absMod } from "../../../common/src/utils/math";
+import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
@@ -15,7 +16,7 @@ import { GunItem } from "./gunItem";
 import { type InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 
-type ReifiableItem = GunItem | MeleeItem | GunDefinition | MeleeDefinition | ReferenceTo<GunDefinition> | ReferenceTo<MeleeDefinition>;
+type ReifiableItem = GunItem | MeleeItem | ReifiableDef<GunDefinition> | ReifiableDef<MeleeDefinition>;
 
 const InventoryItemMapping = {
     [ItemType.Gun]: GunItem,
@@ -35,7 +36,6 @@ export class Inventory {
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
-
     backpack: BackpackDefinition = Loots.fromString("pack_0");
 
     private _scope!: ScopeDefinition;
@@ -45,11 +45,7 @@ export class Inventory {
     }
 
     set scope(scope: ReifiableDef<ScopeDefinition>) {
-        if (typeof scope === "string") {
-            scope = Loots.fromString<ScopeDefinition>(scope);
-        }
-
-        this._scope = scope;
+        this._scope = Loots.reify<ScopeDefinition>(scope);
         this.owner.dirty.inventory = true;
     }
 
@@ -232,7 +228,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-            [this._weapons[1], this._weapons[0]];
+        [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -342,13 +338,6 @@ export class Inventory {
         }
 
         this.removeWeapon(slot);
-
-        if (this._activeWeaponIndex === slot && this._activeWeaponIndex < 2) {
-            const otherSlot = 1 - this._activeWeaponIndex;
-
-            this.setActiveWeaponIndex(this.hasWeapon(otherSlot) ? otherSlot : 2);
-        }
-
         this.owner.game.fullDirtyObjects.add(this.owner);
 
         return item;
@@ -409,14 +398,31 @@ export class Inventory {
         const old = this._weapons[slot];
         this._weapons[slot] = item;
         this.owner.dirty.weapons = true;
+        const removal = item === undefined;
 
-        if (slot === 2 && item === undefined) {
-            this._weapons[slot] = new MeleeItem("fists", this.owner);
+        if (removal) {
+            if (slot === 2) {
+                this._weapons[slot] = new MeleeItem("fists", this.owner);
+            } else if (slot === this._activeWeaponIndex) {
+                let target = this._activeWeaponIndex;
+                while (!this.hasWeapon(target)) {
+                    target = absMod(target + 1, this._weapons.length);
+                }
+                this.setActiveWeaponIndex(target);
+            }
         }
 
-        if (slot < 2 && this.weaponCount === 2) {
-            this.setActiveWeaponIndex(slot);
+        /*
+            This is a bit of a weird one, but the short explanation is that
+            we wanna avoid having last = current unless we have no other option
+        */
+        let target = this._lastWeaponIndex === this._activeWeaponIndex && !removal
+            ? 0
+            : this._lastWeaponIndex;
+        while (!this.hasWeapon(target)) {
+            target = absMod(target - 1, this._weapons.length);
         }
+        this._lastWeaponIndex = target;
 
         item?.refreshModifiers();
         this.owner.updateAndApplyModifiers();
@@ -428,10 +434,10 @@ export class Inventory {
      * Attempts to use a consumable item or a scope with the given `idString`
      * @param itemString The `idString` of the consumable or scope to use
      */
-    useItem(itemString: string): void {
-        if (!this.items[itemString]) return;
+    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition>): void {
+        const definition = Loots.reify(itemString);
 
-        const definition = Loots.fromString(itemString);
+        if (!this.items[definition.idString]) return;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
@@ -443,11 +449,11 @@ export class Inventory {
                 if (definition.healType === HealType.Adrenaline &&
                     this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
-                this.owner.executeAction(new HealingAction(this.owner, itemString));
+                this.owner.executeAction(new HealingAction(this.owner, definition.idString));
                 break;
             }
             case ItemType.Scope: {
-                this.scope = itemString;
+                this.scope = definition.idString;
                 break;
             }
         }
