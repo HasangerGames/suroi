@@ -1,4 +1,4 @@
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Gas } from "./gas";
 import { Grid } from "./utils/grid";
 import { type GameObject } from "./types/gameObject";
@@ -13,7 +13,6 @@ import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import {
     KILL_LEADER_MIN_KILLS,
     KillFeedMessageType,
-    OBJECT_ID_BITS,
     TICKS_PER_SECOND
 } from "../../common/src/constants";
 import { Maps } from "./data/maps";

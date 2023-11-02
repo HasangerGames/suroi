@@ -464,6 +464,10 @@
         font-weight: bold;
         font-size: 16px;
         @include text-shadow;
+
+        i {
+            color: red;
+        }
     }
 
     .modal-item {

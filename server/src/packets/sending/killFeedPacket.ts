@@ -1,7 +1,7 @@
-import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, PacketType } from "../../../../common/src/constants";
+import { KillFeedMessageType, PacketType } from "../../../../common/src/constants";
 import { Explosions } from "../../../../common/src/definitions/explosions";
 import { Loots } from "../../../../common/src/definitions/loots";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { KILL_FEED_MESSAGE_TYPE_BITS, type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
 import { type Explosion } from "../../objects/explosion";

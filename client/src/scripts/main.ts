@@ -1,11 +1,9 @@
 import $ from "jquery";
-import { Application } from "pixi.js";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { COLORS } from "./utils/constants";
 import { loadAtlases } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
 
@@ -26,16 +24,7 @@ $(async(): Promise<void> => {
 
     // Initialize the Application object
 
-    const app = new Application<HTMLCanvasElement>({
-        resizeTo: window,
-        background: COLORS.grass,
-        antialias: true,
-        autoDensity: true,
-        resolution: window.devicePixelRatio || 1
-    });
-    $("#game-ui").append(app.view);
-
-    const game = new Game(app);
+    const game = new Game();
 
     await loadAtlases();
 

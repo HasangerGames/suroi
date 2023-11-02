@@ -9,7 +9,7 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
-import { type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 
 export type InputAction = {
     type: InputActions.UseItem
@@ -55,6 +55,7 @@ export class InputManager {
     actions: InputAction[] = [];
 
     addAction(action: InputAction | InputActions): void {
+        if (this.actions.length > 7) return;
         if (typeof action === "number") {
             this.actions.push({ type: action });
             return;
@@ -93,9 +94,10 @@ export class InputManager {
         while (iterationCount++ < 100) {
             searchIndex = this.game.console.getConfig("cv_loop_scope_selection")
                 ? absMod(searchIndex + offset, Scopes.length)
-                : clamp(0, Scopes.length - 1, searchIndex + offset);
+                : clamp(searchIndex + offset, 0, Scopes.length - 1);
 
             const scopeCandidate = Scopes[searchIndex].idString;
+
             if (this.game.playerManager.items[scopeCandidate]) {
                 scopeString = scopeCandidate;
                 break;
@@ -105,7 +107,7 @@ export class InputManager {
         if (scopeString !== scope.idString) {
             this.addAction({
                 type: InputActions.UseItem,
-                item: scope
+                item: Loots.fromString(scopeString)
             });
         }
     }

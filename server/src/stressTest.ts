@@ -1,9 +1,9 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { INPUT_ACTIONS_BITS, InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
+import { InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { INPUT_ACTIONS_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Loots } from "../../common/src/definitions/loots";
 
 const config = {

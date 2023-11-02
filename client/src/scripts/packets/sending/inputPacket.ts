@@ -1,10 +1,9 @@
 import {
-    INPUT_ACTIONS_BITS,
     MAX_MOUSE_DISTANCE,
     PacketType
 } from "../../../../../common/src/constants";
 import { Loots } from "../../../../../common/src/definitions/loots";
-import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
+import { INPUT_ACTIONS_BITS, type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class InputPacket extends SendingPacket {
@@ -39,7 +38,7 @@ export class InputPacket extends SendingPacket {
             inputs.resetAttacking = false;
         }
 
-        stream.writeBits(inputs.actions.length, 4);
+        stream.writeBits(inputs.actions.length, 3);
 
         for (const action of inputs.actions) {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);

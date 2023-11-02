@@ -1,16 +1,19 @@
-import { ANIMATION_TYPE_BITS, ObjectCategory, PLAYER_ACTIONS_BITS, PlayerActions, type AnimationType } from "../constants";
+import { ObjectCategory, PlayerActions, AnimationType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { type LootDefinition, Loots } from "../definitions/loots";
 import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
 import { type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
-import { type SuroiBitStream } from "./suroiBitStream";
+import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type BuildingDefinition, Buildings } from "../definitions/buildings";
 import { type ArmorDefinition } from "../definitions/armors";
 import { type BackpackDefinition } from "../definitions/backpacks";
+
+const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
+const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
 
 export interface ObjectsNetData {
     //

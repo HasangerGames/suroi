@@ -1323,112 +1323,114 @@ logger.indent("Validating building definitions", () => {
 
                     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                     for (const obstacle of building.obstacles!) {
-                        logger.indent(`Validating '${obstacle.idString}'`, () => {
-                            tester.assertReferenceExists({
-                                obj: obstacle,
-                                field: "idString",
-                                collection: Obstacles,
-                                baseErrorPath: errorPath2
-                            });
-
-                            validators.vector(errorPath2, obstacle.position);
-
-                            if (obstacle.rotation) {
-                                const reference = Obstacles.definitions.find(o => o.idString === obstacle.idString);
-
-                                if (reference) {
-                                    const rotationMode = reference.rotationMode;
-
-                                    switch (rotationMode) {
-                                        case RotationMode.Full: {
-                                            tester.assertIsFiniteRealNumber({
-                                                obj: obstacle,
-                                                field: "rotation",
-                                                baseErrorPath: errorPath2
-                                            });
-                                            break;
-                                        }
-                                        case RotationMode.Limited: {
-                                            tester.assertIntAndInBounds({
-                                                obj: obstacle,
-                                                field: "rotation",
-                                                baseErrorPath: errorPath2,
-                                                min: 0,
-                                                max: 3,
-                                                includeMin: true,
-                                                includeMax: true
-                                            });
-                                            break;
-                                        }
-                                        case RotationMode.Binary: {
-                                            tester.assertIntAndInBounds({
-                                                obj: obstacle,
-                                                field: "rotation",
-                                                baseErrorPath: errorPath2,
-                                                min: 0,
-                                                max: 1,
-                                                includeMin: true,
-                                                includeMax: true
-                                            });
-                                            break;
-                                        }
-                                        case RotationMode.None: {
-                                            tester.assertInBounds({
-                                                obj: obstacle,
-                                                field: "rotation",
-                                                baseErrorPath: errorPath2,
-                                                min: 0,
-                                                max: 0,
-                                                includeMin: true,
-                                                includeMax: true
-                                            });
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            tester.assertNoPointlessValue({
-                                obj: obstacle,
-                                field: "scale",
-                                defaultValue: 1,
-                                baseErrorPath: errorPath2
-                            });
-
-                            if (obstacle.scale) {
-                                tester.assertIsPositiveFiniteReal({
-                                    obj: obstacle,
-                                    field: "scale",
+                        for (const idString of (typeof obstacle.idString === "string" ? [obstacle.idString] : Object.keys(obstacle.idString))) {
+                            logger.indent(`Validating '${idString}'`, () => {
+                                tester.assertReferenceExists({
+                                    obj: { idString },
+                                    field: "idString",
+                                    collection: Obstacles,
                                     baseErrorPath: errorPath2
                                 });
-                            }
 
-                            if (obstacle.variation !== undefined) {
-                                const def = Obstacles.fromString(obstacle.idString);
+                                validators.vector(errorPath2, obstacle.position);
 
-                                if (def) {
-                                    if (def.variations === undefined) {
-                                        tester.assert(
-                                            false,
-                                            `Cannot specify a variant of an obstacle that has no variations (Obstacle '${obstacle.idString}' has no variations)`,
-                                            errorPath2
-                                        );
-                                    } else {
-                                        tester.assertIntAndInBounds({
-                                            obj: obstacle,
-                                            field: "variation",
-                                            min: 0,
-                                            max: def.variations - 1,
-                                            baseErrorPath: errorPath2
-                                        });
+                                if (obstacle.rotation) {
+                                    const reference = Obstacles.fromString(idString);
+
+                                    if (reference) {
+                                        const rotationMode = reference.rotationMode;
+
+                                        switch (rotationMode) {
+                                            case RotationMode.Full: {
+                                                tester.assertIsFiniteRealNumber({
+                                                    obj: obstacle,
+                                                    field: "rotation",
+                                                    baseErrorPath: errorPath2
+                                                });
+                                                break;
+                                            }
+                                            case RotationMode.Limited: {
+                                                tester.assertIntAndInBounds({
+                                                    obj: obstacle,
+                                                    field: "rotation",
+                                                    baseErrorPath: errorPath2,
+                                                    min: 0,
+                                                    max: 3,
+                                                    includeMin: true,
+                                                    includeMax: true
+                                                });
+                                                break;
+                                            }
+                                            case RotationMode.Binary: {
+                                                tester.assertIntAndInBounds({
+                                                    obj: obstacle,
+                                                    field: "rotation",
+                                                    baseErrorPath: errorPath2,
+                                                    min: 0,
+                                                    max: 1,
+                                                    includeMin: true,
+                                                    includeMax: true
+                                                });
+                                                break;
+                                            }
+                                            case RotationMode.None: {
+                                                tester.assertInBounds({
+                                                    obj: obstacle,
+                                                    field: "rotation",
+                                                    baseErrorPath: errorPath2,
+                                                    min: 0,
+                                                    max: 0,
+                                                    includeMin: true,
+                                                    includeMax: true
+                                                });
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
-                            if (obstacle.lootSpawnOffset) {
-                                validators.vector(errorPath2, obstacle.lootSpawnOffset);
-                            }
-                        });
+                                tester.assertNoPointlessValue({
+                                    obj: obstacle,
+                                    field: "scale",
+                                    defaultValue: 1,
+                                    baseErrorPath: errorPath2
+                                });
+
+                                if (obstacle.scale) {
+                                    tester.assertIsPositiveFiniteReal({
+                                        obj: obstacle,
+                                        field: "scale",
+                                        baseErrorPath: errorPath2
+                                    });
+                                }
+
+                                if (obstacle.variation !== undefined) {
+                                    const def = Obstacles.fromString(idString);
+
+                                    if (def) {
+                                        if (def.variations === undefined) {
+                                            tester.assert(
+                                                false,
+                                                `Cannot specify a variant of an obstacle that has no variations (Obstacle '${idString}' has no variations)`,
+                                                errorPath2
+                                            );
+                                        } else {
+                                            tester.assertIntAndInBounds({
+                                                obj: obstacle,
+                                                field: "variation",
+                                                min: 0,
+                                                max: def.variations - 1,
+                                                baseErrorPath: errorPath2
+                                            });
+                                        }
+                                    }
+                                }
+
+                                if (obstacle.lootSpawnOffset) {
+                                    validators.vector(errorPath2, obstacle.lootSpawnOffset);
+                                }
+                            });
+                        }
                     }
                 });
             }

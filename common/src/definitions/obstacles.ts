@@ -60,6 +60,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     // obstacle will interact will all obstacles with that id string from the parent building
     readonly interactType?: string
     readonly interactDelay?: number
+    readonly emitParticles?: boolean
 } | {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
 });
@@ -1574,6 +1575,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             role: ObstacleSpecialRoles.Activatable,
+            emitParticles: true,
             requiredItem: "gas_can",
             interactType: "vault_door",
             interactDelay: 2000,
