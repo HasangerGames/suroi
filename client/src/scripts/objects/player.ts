@@ -695,7 +695,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
                         muzzleFlash.scale = v(scale, scale * (randomBoolean() ? 1 : -1));
-                        muzzleFlash.rotation += Math.PI * 2;
 
                         this.anims.muzzleFlashFadeAnim?.kill();
                         this.anims.muzzleFlashRecoilAnim?.kill();
