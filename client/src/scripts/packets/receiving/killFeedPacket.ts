@@ -56,7 +56,7 @@ function addKillFeedMessage(text: string, classes: string[]): void {
 
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const anonymizePlayers = this.game.console.getConfig("cv_anonymize_player_names");
+        const anonymizePlayers = this.game.console.getBuiltInCVar("cv_anonymize_player_names");
 
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
 
@@ -101,7 +101,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 const gasKill = stream.readBoolean();
 
                 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-                switch (this.game.console.getConfig("cv_killfeed_style")) {
+                switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         const message = twoPartyInteraction
                             ? `${killedBy!.name} killed ${killed.name}`

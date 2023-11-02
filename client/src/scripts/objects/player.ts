@@ -251,7 +251,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        const noMovementSmoothing = !this.game.console.getConfig("cv_movement_smoothing");
+        const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
@@ -264,7 +264,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.map.indicator.setRotation(data.rotation);
             }
 
-            if (this.game.console.getConfig("pf_show_pos")) {
+            if (this.game.console.getBuiltInCVar("pf_show_pos")) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
@@ -332,7 +332,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        if (isNew || !this.game.console.getConfig("cv_movement_smoothing")) {
+        if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);

@@ -34,7 +34,7 @@ export class GameOverPacket extends ReceivingPacket {
 
         $("#game-over-text").text(won ? "Winner winner chicken dinner!" : "You died.");
         const name = stream.readPlayerNameWithColor();
-        $("#game-over-player-name").html(game.console.getConfig("cv_anonymize_player_names") ? DEFAULT_USERNAME : name);
+        $("#game-over-player-name").html(game.console.getBuiltInCVar("cv_anonymize_player_names") ? DEFAULT_USERNAME : name);
         $("#game-over-kills").text(stream.readUint8());
         $("#game-over-damage-done").text(stream.readUint16());
         $("#game-over-damage-taken").text(stream.readUint16());
@@ -44,7 +44,7 @@ export class GameOverPacket extends ReceivingPacket {
         $("#game-over-time").text(timeString);
 
         if (won) {
-            const volume = game.console.getConfig("cv_music_volume");
+            const volume = game.console.getBuiltInCVar("cv_music_volume");
             if (volume) {
                 game.music.play();
             }

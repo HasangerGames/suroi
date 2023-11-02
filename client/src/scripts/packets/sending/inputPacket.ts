@@ -46,11 +46,12 @@ export class InputPacket extends SendingPacket {
             if ("slot" in action) {
                 stream.writeBits(action.slot, 2);
             }
+
             if ("item" in action) {
                 Loots.writeToStream(stream, action.item);
             }
         }
 
-        inputs.actions = [];
+        inputs.actions.length = 0;
     }
 }

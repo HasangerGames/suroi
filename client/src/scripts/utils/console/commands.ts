@@ -42,7 +42,14 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
     private readonly _info: CommandInfo;
     get info(): CommandInfo { return this._info; }
 
-    static createInvertiblePair<ErrorType extends Stringable | never = never>(name: string, on: CommandExecutor<ErrorType>, off: CommandExecutor<ErrorType>, game: Game, infoOn: CommandInfo, infoOff?: CommandInfo): void {
+    static createInvertiblePair<ErrorType extends Stringable | never = never>(
+        name: string,
+        on: CommandExecutor<ErrorType>,
+        off: CommandExecutor<ErrorType>,
+        game: Game,
+        infoOn: CommandInfo,
+        infoOff?: CommandInfo
+    ): void {
         const plus = new Command<true, ErrorType>(
             `+${name}`,
             on,
@@ -64,7 +71,12 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
         minus._inverse = plus;
     }
 
-    static createCommand<ErrorType extends Stringable | never = never>(name: string, executor: CommandExecutor<ErrorType>, game: Game, info: CommandInfo): void {
+    static createCommand<ErrorType extends Stringable | never = never>(
+        name: string,
+        executor: CommandExecutor<ErrorType>,
+        game: Game,
+        info: CommandInfo
+    ): void {
         /* eslint-disable no-new */
         new Command(name, executor, game, info);
     }
@@ -741,7 +753,7 @@ export function setUpCommands(game: Game): void {
                 return { err: `Cannot override built-in command '${name}'` };
             }
 
-            if (gameConsole.vars.has(name)) {
+            if (gameConsole.variables.has(name)) {
                 return { err: `Cannot shadow cvar '${name}'` };
             }
 
@@ -828,7 +840,7 @@ export function setUpCommands(game: Game): void {
         (): undefined => {
             gameConsole.log.raw({
                 main: "List of CVars",
-                detail: `<ul>${gameConsole.vars.dump()}</ul>`
+                detail: `<ul>${gameConsole.variables.dump()}</ul>`
             });
         },
         game,
@@ -859,13 +871,13 @@ export function setUpCommands(game: Game): void {
                 return { err: "Custom CVar name be at least one character long (not including the prefix) and can only contain letters, numbers and underscores." };
             }
 
-            if (gameConsole.vars.has.custom(name)) {
+            if (gameConsole.variables.has.custom(name)) {
                 return { err: `Custom CVar '${name}' already exists. (To change its value to ${value}, do <code>${name}=${value}</code>)` };
             }
 
             const toBoolean = (str: string | undefined): boolean => [undefined, "true", "false", "0", "1"].includes(str);
 
-            gameConsole.vars.declareCVar(new ConVar<Stringable>(name, value, gameConsole, { archive: toBoolean(archive), readonly: toBoolean(readonly) }));
+            gameConsole.variables.declareCVar(new ConVar<Stringable>(name, value, gameConsole, { archive: toBoolean(archive), readonly: toBoolean(readonly) }));
             gameConsole.writeToLocalStorage();
         },
         game,

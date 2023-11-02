@@ -106,7 +106,7 @@ export class Loot extends GameObject {
         this.position = data.position;
         this.hitbox.position = this.position;
 
-        if (!this.game.console.getConfig("cv_movement_smoothing") || isNew) {
+        if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);
         }
 

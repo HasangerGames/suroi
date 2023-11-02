@@ -49,15 +49,19 @@ export class MapPacket extends ReceivingPacket {
             () => new River(
                 stream.readUint8(),
                 stream.readUint8(),
-                Array.from({ length: stream.readUint8() }, () => stream.readPosition())
+                Array.from(
+                    { length: stream.readUint8() },
+                    stream.readPosition.bind(stream)
+                )
             )
         );
 
-        const numObstacles = stream.readBits(11);
-
-        for (let i = 0; i < numObstacles; i++) {
+        for (
+            let i = 0, numObstacles = stream.readBits(11);
+            i < numObstacles;
+            i++
+        ) {
             const type = stream.readObjectType();
-
             const position = stream.readPosition();
 
             switch (type) {
@@ -94,8 +98,11 @@ export class MapPacket extends ReceivingPacket {
             }
         }
 
-        const placesSize = stream.readBits(4);
-        for (let i = 0; i < placesSize; i++) {
+        for (
+            let i = 0, placesSize = stream.readBits(4);
+            i < placesSize;
+            i++
+        ) {
             const name = stream.readASCIIString(24);
             const position = stream.readPosition();
             this.places.push({ position, name });
