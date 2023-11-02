@@ -53,7 +53,7 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.1",
-    "typescript": "5.3.0-beta",
+    "typescript": "5.3.0-dev.20231102",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
