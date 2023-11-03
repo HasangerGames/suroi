@@ -563,7 +563,7 @@ export const Guns: GunDefinition[] = [
         switchDelay: 400,
         speedMultiplier: 0.92,
         recoilMultiplier: 0.75,
-        recoilDuration: 900,
+        recoilDuration: 350,
         fireMode: FireMode.Burst,
         shotSpread: 1,
         moveSpread: 1.5,
