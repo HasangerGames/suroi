@@ -63,12 +63,14 @@ export enum InputActions {
     LeftEmoteSlot
 }
 
+
 export enum SpectateActions {
     BeginSpectating,
     SpectatePrevious,
     SpectateNext,
     SpectateSpecific,
-    Report
+    Report,
+    SpectateKillLeader
 }
 
 export enum PlayerActions {

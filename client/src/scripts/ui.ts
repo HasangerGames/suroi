@@ -168,6 +168,11 @@ export function setupUI(game: Game): void {
     $("#btn-spectate-previous").on("click", () => {
         sendSpectatePacket(SpectateActions.SpectatePrevious);
     });
+
+     $("#btn-spectate-kill-leader").on("click", () => {
+        sendSpectatePacket(SpectateActions.SpectateKillLeader);
+    });
+
     $("#btn-report").on("click", () => {
         if (
             confirm(

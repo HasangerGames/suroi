@@ -51,6 +51,11 @@ export class SpectatePacket extends ReceivingPacket {
                 if (playerToSpectate) player.spectate(playerToSpectate);
                 break;
             }
+            case SpectateActions.SpectateKillLeader: {
+                const playerToSpectate = game.spectatablePlayers.find(player => player.id === player.game.killLeader?.id);
+                if (playerToSpectate) player.spectate(playerToSpectate);
+                break;
+            }
             case SpectateActions.Report: {
                 if (!existsSync("reports")) mkdirSync("reports");
                 const reportID = randomUUID();
