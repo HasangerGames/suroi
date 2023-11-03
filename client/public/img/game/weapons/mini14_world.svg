@@ -1,71 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128.83 16.18">
+<svg xmlns="http://www.w3.org/2000/svg" width="128.83" height="16.18" viewBox="0 0 128.83 16.18">
   <defs>
     <style>
-      .cls-1, .cls-2 {
+      .cls-1 {
         stroke-width: 1.5px;
       }
 
-      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
-        stroke-linejoin: round;
+      .cls-1, .cls-2, .cls-3 {
+        stroke: #171717;
       }
 
       .cls-1, .cls-3 {
         fill: #4d4d4d;
-        stroke: #171717;
       }
 
-      .cls-2 {
+      .cls-4 {
         fill: #171717;
       }
 
-      .cls-2, .cls-4 {
-        stroke: #191919;
+      .cls-5 {
+        fill: #a05a2c;
+        stroke: #23140b;
       }
 
-      .cls-3, .cls-4, .cls-5, .cls-6 {
+      .cls-5, .cls-2, .cls-3 {
         stroke-width: 3px;
       }
 
-      .cls-4, .cls-5 {
+      .cls-2 {
         fill: #393939;
-      }
-
-      .cls-5 {
-        stroke: #1e1e1e;
-      }
-
-      .cls-6 {
-        fill: #a05a2c;
-        stroke: #301b0e;
       }
     </style>
   </defs>
-  <g id="Layer_6" data-name="Layer 6">
-    <g id="layer1">
-      <g id="g890">
-        <rect id="rect14220" class="cls-6" x="3.75" y="2.87" width="48.72" height="9.02"/>
-        <path id="rect14222" class="cls-6" d="M32.04,1.5H96.8V13.46H32.04V1.5Z"/>
-        <path id="rect14954" class="cls-1" d="M51.53,4.61h6.08v3.49l-6.08,1.36V4.61Z"/>
-        <rect id="rect15685" class="cls-3" x="62.89" y="9.75" width="9.6" height="3.68"/>
-        <rect id="rect15685-8-3" class="cls-3" x="109.36" y="5.48" width="11.66" height="3.83"/>
-        <rect id="rect15685-8-3-5" class="cls-3" x="122.95" y="5.48" width="4.38" height="3.77"/>
-        <rect id="rect15685-8" class="cls-3" x="102.68" y="3.66" width="8.17" height="7.67"/>
-        <path id="rect15683" class="cls-3" d="M55.71,4.42v5.14h7.97v-.38h5.35V4.42h-5.35s-7.97,0-7.97,0Z"/>
-        <path id="rect15689" class="cls-4" d="M69.27,2.67v7.75h2.28v4.26h13.38c1.51,0,2.73-2.21,2.73-4.94v-1.53s0-.01,0-.02c0-.08,0-.16,0-.25v-.06h0c-.09-2.93-1.42-5.22-3.04-5.22h-15.34Z"/>
-        <rect id="rect17958" class="cls-4" x="84.34" y="2.96" width="20.92" height="9.03"/>
-        <rect id="rect17958-9" class="cls-4" x="118.44" y="4.64" width="3.39" height="5.51"/>
-        <rect id="rect17960" class="cls-2" x="87.82" y="9.5" width=".71" height="2.65"/>
-        <rect id="rect17960-4" class="cls-2" x="92.09" y="9.57" width=".71" height="2.65"/>
-        <rect id="rect17960-0" class="cls-2" x="96.42" y="9.57" width=".71" height="2.65"/>
-        <rect id="rect17960-4-4" class="cls-2" x="100.69" y="9.61" width=".71" height="2.65"/>
-        <rect id="rect17960-6" class="cls-2" x="87.82" y="2.66" width=".71" height="2.65"/>
-        <rect id="rect17960-4-46" class="cls-2" x="92.09" y="2.73" width=".71" height="2.65"/>
-        <rect id="rect17960-0-4" class="cls-2" x="96.43" y="2.73" width=".71" height="2.65"/>
-        <rect id="rect17960-4-4-3" class="cls-2" x="100.7" y="2.81" width=".71" height="2.65"/>
-        <rect id="rect18940" class="cls-5" x="1.5" y="2.7" width="4.76" height="9.35"/>
-        <rect id="rect14226" class="cls-3" x="47.18" y="4.51" width="4.96" height="5.91"/>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Layer_6" data-name="Layer 6">
+      <g id="layer1">
+        <g id="g890">
+          <rect id="rect14220" class="cls-5" x="3.75" y="2.87" width="48.72" height="9.02" rx="1.04" ry="1.04"/>
+          <path id="rect14222" class="cls-5" d="M33.08,1.5h62.69c.57,0,1.04,.46,1.04,1.04V12.42c0,.57-.46,1.04-1.04,1.04H33.08c-.57,0-1.04-.46-1.04-1.04V2.54c0-.57,.46-1.04,1.04-1.04Z"/>
+          <path id="rect14954" class="cls-1" d="M51.53,4.61h6.08v3.49l-6.08,1.36V4.61Z"/>
+          <rect id="rect15685" class="cls-3" x="62.89" y="9.75" width="9.6" height="3.68" rx=".92" ry=".92"/>
+          <rect id="rect15685-8-3" class="cls-3" x="109.36" y="5.48" width="11.66" height="3.83"/>
+          <path id="rect15685-8-3-5" class="cls-3" d="M120.9,5.48h5.13c.72,0,1.3,.33,1.3,.74v2.3c0,.41-.58,.74-1.3,.74h-5.13c-.72,0-1.3-.33-1.3-.74v-2.3c0-.41,.58-.74,1.3-.74Z"/>
+          <rect id="rect15685-8" class="cls-3" x="102.68" y="3.66" width="8.17" height="7.67" rx=".48" ry=".48"/>
+          <path id="rect15683" class="cls-3" d="M55.71,5.2v3.58c0,.43,.35,.78,.78,.78h7.19v-.38h4.57c.43,0,.78-.35,.78-.78v-3.2c0-.43-.35-.78-.78-.78h-11.76c-.43,0-.78,.35-.78,.78Z"/>
+          <path id="rect15689" class="cls-2" d="M69.27,2.67v6.83c0,.51,.41,.92,.92,.92h.44c.51,0,.92,.41,.92,.92v2.42c0,.51,.41,.92,.92,.92h12.46c1.51,0,2.73-2.21,2.73-4.94v-1.86h0c-.09-2.93-1.42-5.22-3.04-5.22h-15.35Z"/>
+          <rect id="rect17958" class="cls-2" x="84.34" y="2.96" width="20.92" height="9.03" rx=".5" ry=".5"/>
+          <rect id="rect17958-9" class="cls-2" x="118.44" y="4.64" width="3.39" height="5.51" rx=".32" ry=".32"/>
+          <rect id="rect18940" class="cls-2" x="1.5" y="2.7" width="4.76" height="9.35" rx="1.11" ry="1.11"/>
+          <rect id="rect14226" class="cls-3" x="47.18" y="4.51" width="4.96" height="5.91" rx=".78" ry=".78"/>
+        </g>
       </g>
     </g>
+  </g>
+  <g id="Layer_3" data-name="Layer 3">
+    <rect class="cls-4" x="87.04" y="2.96" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="99.89" y="2.96" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="95.61" y="2.96" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="91.33" y="2.96" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="87.04" y="8.67" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="99.89" y="8.67" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="95.61" y="8.67" width="2.26" height="3.07" rx=".67" ry=".67"/>
+    <rect class="cls-4" x="91.33" y="8.67" width="2.26" height="3.07" rx=".67" ry=".67"/>
   </g>
 </svg>

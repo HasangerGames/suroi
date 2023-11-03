@@ -56,7 +56,7 @@ function addKillFeedMessage(text: string, classes: string[]): void {
 
 export class KillFeedPacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
-        const anonymizePlayers = this.game.console.getConfig("cv_anonymize_player_names");
+        const anonymizePlayers = this.game.console.getBuiltInCVar("cv_anonymize_player_names");
 
         const messageType: KillFeedMessageType = stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS);
 
@@ -101,7 +101,7 @@ export class KillFeedPacket extends ReceivingPacket {
                 const gasKill = stream.readBoolean();
 
                 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-                switch (this.game.console.getConfig("cv_killfeed_style")) {
+                switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         const message = twoPartyInteraction
                             ? `${killedBy!.name} killed ${killed.name}`
@@ -176,7 +176,8 @@ export class KillFeedPacket extends ReceivingPacket {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!'; // TODO Add who killed the kill leader
+                messageText = '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!';
+                // TODO Add who killed the kill leader
                 this.game.soundManager.play("kill_leader_dead");
                 break;
             }

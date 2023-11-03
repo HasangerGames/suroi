@@ -24,7 +24,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            this.game.console.getConfig("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",

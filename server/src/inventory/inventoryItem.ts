@@ -74,7 +74,7 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
     _lastUse = 0;
     get lastUse(): number { return this._lastUse; }
 
-    _switchDate = 0;
+    switchDate = 0;
 
     /**
      * Creates a new `InventoryItem` given a string and a player
@@ -92,7 +92,9 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
      * A method which will be called whenever the player owning this item attempts to use the item.
      *
      * It is this method's responsibility to ensure that the player is in a position to use the item, as well
-     * as take care of any side-effects such usage may entail (spawning objects, modifying state, etc)
+     * as take care of any side-effects such usage may entail (spawning objects, modifying state, etc). It is
+     * also this method's responsibility to take care of any scheduling of events, such as scheduling reloads,
+     * refire (ex. automatic weapons) or attempts to fire (input buffering)
      * @abstract
      */
     abstract useItem(): void;

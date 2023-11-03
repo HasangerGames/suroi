@@ -7,7 +7,7 @@
    sodipodi:docname="lewis_gun_world.svg"
    width="235.2"
    height="60.400063"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,93 +21,38 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="5.6590137"
-     inkscape:cx="117.51164"
-     inkscape:cy="30.21728"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
+     inkscape:zoom="2.2656325"
+     inkscape:cx="185.3787"
+     inkscape:cy="56.054987"
+     inkscape:window-width="1496"
+     inkscape:window-height="455"
      inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="Layer_1" />
+     inkscape:window-y="38"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Layer_1"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs4">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect1"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,1.4885102,0,1 @ F,0,0,1,0,0.56063781,0,1 @ F,0,0,1,0,0.98751707,0,1 @ F,0,0,1,0,0.56063781,0,1 @ F,0,0,1,0,0.56063781,0,1 @ F,0,0,1,0,0.56063781,0,1 @ F,0,0,1,0,0.86625508,0,1 @ F,0,0,1,0,0.9121868,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
     <style
-       id="style2">
-      .cls-1, .cls-2 {
-        fill: none;
-      }
-
-      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {
-        stroke: #171718;
-      }
-
-      .cls-1, .cls-3, .cls-7, .cls-8, .cls-9, .cls-10, .cls-5, .cls-11 {
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-
-      .cls-2 {
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-
-      .cls-12, .cls-10, .cls-13 {
-        fill: #403a35;
-      }
-
-      .cls-3, .cls-6 {
-        fill: #4b4b4d;
-      }
-
-      .cls-14 {
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-
-      .cls-14, .cls-7 {
-        fill: #494647;
-        stroke: #181718;
-      }
-
-      .cls-4 {
-        fill: #1e1f24;
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-
-      .cls-8 {
-        fill: #8a5029;
-        stroke: #25160b;
-      }
-
-      .cls-9 {
-        fill: #44424b;
-        stroke: #161519;
-      }
-
-      .cls-10, .cls-13 {
-        stroke: #1a1816;
-      }
-
-      .cls-5, .cls-11 {
-        fill: #414447;
-      }
-
-      .cls-11 {
-        stroke: #161719;
-      }
-
-      .cls-13 {
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-
-      .cls-6 {
-        stroke-miterlimit: 11.34;
-        stroke-width: 3px;
-      }
-    </style>
+       id="style2">&#10;      .cls-1, .cls-2 {&#10;        fill: none;&#10;      }&#10;&#10;      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6 {&#10;        stroke: #171718;&#10;      }&#10;&#10;      .cls-1, .cls-3, .cls-7, .cls-8, .cls-9, .cls-10, .cls-5, .cls-11 {&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-2 {&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-12, .cls-10, .cls-13 {&#10;        fill: #403a35;&#10;      }&#10;&#10;      .cls-3, .cls-6 {&#10;        fill: #4b4b4d;&#10;      }&#10;&#10;      .cls-14 {&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-14, .cls-7 {&#10;        fill: #494647;&#10;        stroke: #181718;&#10;      }&#10;&#10;      .cls-4 {&#10;        fill: #1e1f24;&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-8 {&#10;        fill: #8a5029;&#10;        stroke: #25160b;&#10;      }&#10;&#10;      .cls-9 {&#10;        fill: #44424b;&#10;        stroke: #161519;&#10;      }&#10;&#10;      .cls-10, .cls-13 {&#10;        stroke: #1a1816;&#10;      }&#10;&#10;      .cls-5, .cls-11 {&#10;        fill: #414447;&#10;      }&#10;&#10;      .cls-11 {&#10;        stroke: #161719;&#10;      }&#10;&#10;      .cls-13 {&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;&#10;      .cls-6 {&#10;        stroke-miterlimit: 11.34;&#10;        stroke-width: 3px;&#10;      }&#10;    </style>
   </defs>
   <g
      id="layer1"
@@ -164,13 +109,15 @@
       <path
          id="path25149"
          class="cls-10"
-         d="m 60.9,24.61 v 10.4 h -6 v -2.4 h 1.4 v -5.4 h -1.4 v -2.5 z" />
+         d="m 60.9,26.09851 0,8.350852 A 0.56063781,0.56063781 135 0 1 60.339362,35.01 H 55.887517 A 0.98751707,0.98751707 45 0 1 54.9,34.022483 l 0,-0.851845 A 0.56063781,0.56063781 135 0 1 55.460638,32.61 h 0.278724 A 0.56063781,0.56063781 135 0 0 56.3,32.049362 V 27.770638 A 0.56063781,0.56063781 45 0 0 55.739362,27.21 0.85291464,0.85291464 45.903322 0 1 54.9,26.343745 l 0,-0.721558 a 0.9275166,0.9275166 134.52258 0 1 0.91206,-0.927388 l 3.599636,-0.05999 A 1.4639084,1.4639084 44.522579 0 1 60.9,26.09851 Z"
+         inkscape:path-effect="#path-effect1"
+         inkscape:original-d="m 60.9,24.61 v 10.4 h -6 v -2.4 h 1.4 v -5.4 h -1.4 v -2.5 z" />
       <ellipse
          id="path26795"
          class="cls-13"
          cx="57.790001"
          cy="35.07"
-         rx="4"
+         rx="3.6696799"
          ry="3.5999999"
          transform="rotate(-89.91,57.78795,35.07722)" />
       <path

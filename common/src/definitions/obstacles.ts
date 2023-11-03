@@ -164,9 +164,9 @@ function makeConcreteWall(idString: string, name: string, hitbox: Hitbox, indest
     };
 }
 
-function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint?: number): ObstacleDefinition {
+function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tint?: number): ObstacleDefinition {
     let hitbox: Hitbox;
-    switch (open) {
+    switch (style) {
         case "open2":
             hitbox = new ComplexHitbox(
                 RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
@@ -185,7 +185,7 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
             hitbox = RectangleHitbox.fromRect(14, 28);
             break;
     }
-    const invisible = open === "closed";
+    const invisible = style === "closed";
     return {
         idString: `container_walls_${id}`,
         name: `Container Walls ${id}`,
@@ -193,8 +193,8 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         health: 500,
         indestructible: true,
         noResidue: true,
-        hideOnMap: invisible,
-        invisible,
+        hideOnMap: invisible || undefined,
+        invisible: invisible || undefined,
         scale: {
             spawnMin: 1.0,
             spawnMax: 1.0,
@@ -206,7 +206,7 @@ function makeContainerWalls(id: number, open: "open2" | "open1" | "closed", tint
         reflectBullets: true,
         zIndex: ZIndexes.Ground + 1,
         frames: {
-            base: invisible ? undefined : `container_walls_${open}`,
+            base: invisible ? undefined : `container_walls_${style}`,
             particle: "metal_particle"
         },
         tint
