@@ -53,7 +53,7 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (this.game.console.getConfig("cv_minimap_minimized")) this.toggleMiniMap();
+        if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMiniMap();
 
         this.indicator.scale.set(0.1);
 
@@ -187,7 +187,7 @@ export class Minimap {
                 }
             }
         };
-        drawTerrain(terrainGraphics, PIXI_SCALE, this.game.console.getConfig("cv_antialias") ? 2 : 4);
+        drawTerrain(terrainGraphics, PIXI_SCALE, this.game.console.getBuiltInCVar("cv_antialias") ? 2 : 4);
         drawTerrain(mapGraphics, 1, 2);
 
         this.game.camera.addObject(terrainGraphics);
@@ -453,7 +453,7 @@ export class Minimap {
     }
 
     updateTransparency(): void {
-        this.container.alpha = this.game.console.getConfig(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency");
+        this.container.alpha = this.game.console.getBuiltInCVar(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency");
     }
 
     toggleMiniMap(noSwitchToggle = false): void {
@@ -462,7 +462,7 @@ export class Minimap {
         this.switchToSmallMap();
         this.container.visible = this.visible;
         this.borderContainer.toggle(this.visible);
-        this.game.console.setConfig("cv_minimap_minimized", !this.visible);
+        this.game.console.setBuiltInCVar("cv_minimap_minimized", !this.visible);
         if (!noSwitchToggle) {
             $("#toggle-hide-minimap").prop("checked", !this.visible);
         }

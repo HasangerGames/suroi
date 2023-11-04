@@ -23,7 +23,7 @@ export class SoundManager {
 
     constructor(game: Game) {
         this.game = game;
-        this.volume = game.console.getConfig("cv_sfx_volume");
+        this.volume = game.console.getBuiltInCVar("cv_sfx_volume");
         this.loadSounds();
     }
 

@@ -96,7 +96,7 @@ export class Game {
         this.pixi = new Application({
             resizeTo: window,
             background: COLORS.grass,
-            antialias: this.console.getConfig("cv_antialias"),
+            antialias: this.console.getBuiltInCVar("cv_antialias"),
             autoDensity: true,
             resolution: window.devicePixelRatio || 1
         });
@@ -118,18 +118,18 @@ export class Game {
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
         this.music = new Howl({
-            src: this.console.getConfig("cv_use_old_menu_music") ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3",
+            src: this.console.getBuiltInCVar("cv_use_old_menu_music") ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3",
             loop: true
         });
 
         setInterval(() => {
-            if (this.console.getConfig("pf_show_fps")) {
+            if (this.console.getBuiltInCVar("pf_show_fps")) {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
 
         if (!this.musicPlaying) {
-            const musicVolume = this.console.getConfig("cv_music_volume");
+            const musicVolume = this.console.getBuiltInCVar("cv_music_volume");
 
             this.music.play();
             this.music.volume(musicVolume);
@@ -274,7 +274,7 @@ export class Game {
 
         if (!this.musicPlaying) {
             this.music.stop().play();
-            this.music.volume(this.console.getConfig("cv_music_volume"));
+            this.music.volume(this.console.getBuiltInCVar("cv_music_volume"));
             this.musicPlaying = true;
         }
     }
@@ -302,7 +302,7 @@ export class Game {
         if (!this.gameStarted) return;
         const delta = this.pixi.ticker.deltaMS;
 
-        if (this.console.getConfig("cv_movement_smoothing")) {
+        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
             for (const player of this.players) {
                 player.updateContainerPosition();
                 if (!player.isActivePlayer || this.spectating) player.updateContainerRotation();

@@ -304,6 +304,7 @@ const tester = (() => {
 
             const errorPath = this.createPath(baseErrorPath, `field '${String(field)}'`);
 
+            // technically we should do "field in obj" here, but meh…
             tester.assertWarn(
                 (obj[field] === undefined) || !(equalityFunction ?? ((a, b) => a === b))(obj[field]!, defaultValue),
                 `This field is optional and has a default value (${JSON.stringify(defaultValue)}); specifying its default value serves no purpose`,
@@ -1830,7 +1831,7 @@ logger.indent("Validating guns", () => {
 
             tester.assertNoPointlessValue({
                 obj: gun,
-                field: "canQuickswitch",
+                field: "noQuickswitch",
                 defaultValue: false,
                 baseErrorPath: errorPath
             });
@@ -1905,31 +1906,47 @@ logger.indent("Validating guns", () => {
             });
 
             if (gun.casingParticles !== undefined) {
-                logger.indent("Validating particles", () => {
-                    const errorPath2 = tester.createPath(errorPath, "particles");
-                    validators.vector(errorPath2, gun.casingParticles!.position);
+                const casings = gun.casingParticles;
+                logger.indent("Validating casings", () => {
+                    const errorPath2 = tester.createPath(errorPath, "casings");
+                    validators.vector(errorPath2, casings.position);
 
-                    if (gun.casingParticles?.count) {
-                        tester.assertNoPointlessValue({
-                            obj: gun.casingParticles,
-                            field: "count",
-                            defaultValue: 1,
-                            baseErrorPath: errorPath
-                        });
+                    tester.assertNoPointlessValue({
+                        obj: casings,
+                        field: "count",
+                        defaultValue: 1,
+                        baseErrorPath: errorPath
+                    });
 
+                    if (casings.count !== undefined) {
                         tester.assertIsPositiveFiniteReal({
-                            obj: gun.casingParticles,
+                            obj: casings,
                             field: "count",
                             baseErrorPath: errorPath
                         });
                     }
 
                     tester.assertNoPointlessValue({
-                        obj: gun.casingParticles!,
+                        obj: casings,
                         field: "spawnOnReload",
                         defaultValue: false,
                         baseErrorPath: errorPath
                     });
+
+                    tester.assertNoPointlessValue({
+                        obj: casings,
+                        field: "ejectionDelay",
+                        defaultValue: 0,
+                        baseErrorPath: errorPath
+                    });
+
+                    if (casings.ejectionDelay !== undefined) {
+                        tester.assertIsPositiveFiniteReal({
+                            obj: casings,
+                            field: "ejectionDelay",
+                            baseErrorPath: errorPath
+                        });
+                    }
                 });
             }
 

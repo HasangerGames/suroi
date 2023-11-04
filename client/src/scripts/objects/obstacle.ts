@@ -78,7 +78,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         frames: "smoke_particle",
                         position: this.position,
                         zIndex: Math.max((definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1, ZIndexes.Players),
-                        lifeTime: 3500,
+                        lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
                         alpha: { start: 0.9, end: 0 },
                         speed: velFromAngle(randomFloat(-1.9, -2.1), randomFloat(5, 6))
@@ -141,7 +141,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     frames: this.particleFrames,
                     position: this.hitbox.randomPoint(),
                     zIndex: (definition.zIndex ?? ZIndexes.ObstaclesLayer1) + 1,
-                    lifeTime: 1500,
+                    lifetime: 1500,
                     rotation: {
                         start: randomRotation(),
                         end: randomRotation()
@@ -316,7 +316,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             frames: this.particleFrames,
             position,
             zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-            lifeTime: 600,
+            lifetime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
             speed: velFromAngle((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))

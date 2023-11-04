@@ -162,7 +162,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 return {
                     frames: `${frame}_particle`,
                     position: this.hitbox.randomPoint(),
-                    lifeTime: 1000,
+                    lifetime: 1000,
                     zIndex: ZIndexes.Players,
                     rotation: 0,
                     alpha: {
@@ -198,28 +198,48 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
-        if (weaponDef.casingParticles !== undefined) {
-            this.game.particleManager.spawnParticles(weaponDef.casingParticles.count ?? 1, () => ({
-                frames: `${weaponDef.ammoType}_particle`,
-                zIndex: ZIndexes.Players,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                position: vAdd(this.position, vRotate(weaponDef.casingParticles!.position, this.rotation)),
-                lifeTime: 400,
-                scale: {
-                    start: 0.8,
-                    end: 0.4
+        const casings = weaponDef.casingParticles;
+
+        if (casings === undefined) return;
+
+        const spawnCasings = (): void => {
+            this.game.particleManager.spawnParticles(
+                casings.count ?? 1,
+                () => ({
+                    frames: `${weaponDef.ammoType}_particle`,
+                    zIndex: ZIndexes.Players,
+                    position: vAdd(this.position, vRotate(casings.position, this.rotation)),
+                    lifetime: 400,
+                    scale: {
+                        start: 0.8,
+                        end: 0.4
+                    },
+                    alpha: {
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctions.sextIn
+                    },
+                    rotation: {
+                        start: initialRotation,
+                        end: initialRotation + spinAmount
+                    },
+                    speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
+                })
+            );
+        };
+
+        if (!casings.ejectionDelay) {
+            spawnCasings();
+        } else {
+            const reference = weaponDef.idString;
+            setTimeout(
+                () => {
+                    if (reference !== this.activeItem.idString) return;
+
+                    spawnCasings();
                 },
-                alpha: {
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctions.sextIn
-                },
-                rotation: {
-                    start: initialRotation,
-                    end: initialRotation + spinAmount
-                },
-                speed: vRotate(vAdd2(randomVector(2, -5, 10, 15), -(spinAmount / 4), 0), this.rotation)
-            }));
+                casings.ejectionDelay
+            );
         }
     }
 
@@ -231,7 +251,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.rotation = data.rotation;
 
-        const noMovementSmoothing = !this.game.console.getConfig("cv_movement_smoothing");
+        const noMovementSmoothing = !this.game.console.getBuiltInCVar("cv_movement_smoothing");
 
         if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
 
@@ -244,7 +264,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.game.map.indicator.setRotation(data.rotation);
             }
 
-            if (this.game.console.getConfig("pf_show_pos")) {
+            if (this.game.console.getBuiltInCVar("pf_show_pos")) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
@@ -279,9 +299,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         frames: "ripple_particle",
                         zIndex: ZIndexes.Ground,
                         position: this.hitbox.randomPoint(),
-                        lifeTime: 1000,
+                        lifetime: 1000,
                         speed: v(0, 0)
                     };
+
                     // outer
                     this.game.particleManager.spawnParticle({
                         ...options,
@@ -294,6 +315,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             end: 0
                         }
                     });
+
                     // inner
                     this.game.particleManager.spawnParticle({
                         ...options,
@@ -310,7 +332,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        if (isNew || !this.game.console.getConfig("cv_movement_smoothing")) {
+        if (isNew || !this.game.console.getBuiltInCVar("cv_movement_smoothing")) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
@@ -351,16 +373,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.healingParticlesEmitter.active = false;
 
                 switch (action.type) {
-                    case PlayerActions.None:
+                    case PlayerActions.None: {
                         if (this.isActivePlayer) $("#action-container").hide().stop();
                         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
+                    }
                     case PlayerActions.Reload: {
                         const weaponDef = (this.activeItem as GunDefinition);
                         actionName = "Reloading...";
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
-                        actionSoundName = `${this.activeItem.idString}_reload`;
-                        actionTime = (this.activeItem as GunDefinition).reloadTime;
+                        actionSoundName = `${weaponDef.idString}_reload`;
+                        actionTime = weaponDef.reloadTime;
                         break;
                     }
                     case PlayerActions.UseItem: {
@@ -672,7 +695,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
                         muzzleFlash.scale = v(scale, scale * (randomBoolean() ? 1 : -1));
-                        muzzleFlash.rotation += Math.PI * 2;
 
                         this.anims.muzzleFlashFadeAnim?.kill();
                         this.anims.muzzleFlashRecoilAnim?.kill();
@@ -735,7 +757,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             frames: "blood_particle",
             zIndex: ZIndexes.Players + 1,
             position,
-            lifeTime: 1000,
+            lifetime: 1000,
             scale: {
                 start: 0.5,
                 end: 1

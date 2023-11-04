@@ -12,25 +12,24 @@ import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
 
 export type InputAction = {
-    type: InputActions.UseItem
-    item: LootDefinition
+    readonly type: InputActions.UseItem
+    readonly item: LootDefinition
 } | {
-    type: InputActions.EquipItem | InputActions.DropItem
-    slot: number
+    readonly type: InputActions.EquipItem | InputActions.DropItem
+    readonly slot: number
 } | {
-    type: InputActions
+    readonly type: InputActions
 };
 
 export class InputManager {
-    game: Game;
-
-    binds: InputMapper;
+    readonly game: Game;
+    readonly binds: InputMapper;
 
     get isMobile(): boolean {
-        return isMobile.any && this.game.console.getConfig("mb_controls_enabled");
+        return isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
     }
 
-    movement = {
+    readonly movement = {
         up: false,
         left: false,
         down: false,
@@ -52,14 +51,15 @@ export class InputManager {
 
     selectedEmote?: InputActions;
 
-    actions: InputAction[] = [];
+    readonly actions: InputAction[] = [];
 
     addAction(action: InputAction | InputActions): void {
         if (this.actions.length > 7) return;
+
         if (typeof action === "number") {
-            this.actions.push({ type: action });
-            return;
+            action = { type: action };
         }
+
         this.actions.push(action);
     }
 
@@ -73,15 +73,7 @@ export class InputManager {
 
     turning = false;
 
-    private _lastItemIndex = 0;
-    get lastItemIndex(): number { return this._lastItemIndex; }
-
-    private _activeItemIndex = 2;
-    get activeItemIndex(): number { return this._activeItemIndex; }
-    set activeItemIndex(i: number) {
-        if (this._lastItemIndex !== this._activeItemIndex) this._lastItemIndex = this._activeItemIndex;
-        this._activeItemIndex = i;
-    }
+    activeItemIndex = 2;
 
     cycleScope(offset: number): void {
         const scope = this.game.playerManager.scope;
@@ -92,7 +84,7 @@ export class InputManager {
         let iterationCount = 0;
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
-            searchIndex = this.game.console.getConfig("cv_loop_scope_selection")
+            searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
                 ? absMod(searchIndex + offset, Scopes.length)
                 : clamp(searchIndex + offset, 0, Scopes.length - 1);
 
@@ -170,7 +162,7 @@ export class InputManager {
                 const gamePos = vDiv(pixiPos, PIXI_SCALE);
                 this.distanceToMouse = distance(game.activePlayer.position, gamePos);
 
-                if (game.console.getConfig("cv_movement_smoothing")) {
+                if (game.console.getBuiltInCVar("cv_movement_smoothing")) {
                     game.activePlayer.container.rotation = this.rotation;
                     game.map.indicator.rotation = this.rotation;
                 }
@@ -181,8 +173,8 @@ export class InputManager {
 
         // Mobile joysticks
         if (this.isMobile) {
-            const size = game.console.getConfig("mb_joystick_size");
-            const transparency = game.console.getConfig("mb_joystick_transparency");
+            const size = game.console.getBuiltInCVar("mb_joystick_size");
+            const transparency = game.console.getBuiltInCVar("mb_joystick_transparency");
 
             const leftJoyStick = nipplejs.create({
                 zone: $("#left-joystick-container")[0],
@@ -208,7 +200,7 @@ export class InputManager {
                 if (!rightJoyStickUsed && !shootOnRelease) {
                     this.rotation = movementAngle;
                     this.turning = true;
-                    if (game.console.getConfig("cv_movement_smoothing") && !game.gameOver && game.activePlayer) {
+                    if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
                     }
                 }
@@ -223,7 +215,7 @@ export class InputManager {
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
                 const activePlayer = game.activePlayer;
-                if (game.console.getConfig("cv_movement_smoothing") && !game.gameOver && activePlayer) {
+                if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && activePlayer) {
                     game.activePlayer.container.rotation = this.rotation;
                 }
 
@@ -235,7 +227,7 @@ export class InputManager {
                     activePlayer.images.aimTrail.alpha = 1;
                 }
 
-                const attacking = data.distance > game.console.getConfig("mb_joystick_size") / 3;
+                const attacking = data.distance > game.console.getBuiltInCVar("mb_joystick_size") / 3;
                 if (def.itemType === ItemType.Gun && def.shootOnRelease) {
                     shootOnRelease = true;
                     this.shootOnReleaseAngle = this.rotation;
@@ -276,16 +268,17 @@ export class InputManager {
             a normal key without modifiers.
 
             This only applies to keyboard events
+
+            Also we allow shift and alt to be used normally, because keyboard shortcuts usually involve
+            the meta or control key
         */
 
         if (event instanceof KeyboardEvent) {
             let modifierCount = 0;
             (
                 [
-                    "altKey",
                     "metaKey",
-                    "ctrlKey",
-                    "shiftKey"
+                    "ctrlKey"
                 ] as Array<keyof KeyboardEvent>
             ).forEach(modifier => (event[modifier] && modifierCount++));
 
@@ -293,7 +286,7 @@ export class InputManager {
             if (
                 (
                     modifierCount > 1 ||
-                    (modifierCount === 1 && !["Shift", "Control", "Alt", "Meta"].includes(event.key))
+                    (modifierCount === 1 && !["Control", "Meta"].includes(event.key))
                 ) && down
                 // …but it only invalidates pressing a key, not releasing it
             ) return;
@@ -375,7 +368,7 @@ export class InputManager {
         return key;
     }
 
-    private readonly actionsNames: Record<keyof (typeof defaultBinds), string> = {
+    private readonly actionsNames: Record<keyof typeof defaultBinds, string> = {
         "+up": "Move Up",
         "+down": "Move Down",
         "+left": "Move Left",
@@ -442,7 +435,7 @@ export class InputManager {
             const buttons = actions.map(bind => {
                 return $<HTMLButtonElement>("<button/>", {
                     class: "btn btn-darken btn-lg btn-secondary btn-bind",
-                    text: bind !== "" ? bind : "None"
+                    text: bind || "None"
                 }).appendTo(bindContainer)[0];
             });
 
@@ -548,8 +541,6 @@ export class InputManager {
 }
 
 class InputMapper {
-    readonly binds = new Set();
-
     // These two maps must be kept in sync!!
     private readonly _inputToAction = new Map<string, Set<string>>();
     private readonly _actionToInput = new Map<string, Set<string>>();
@@ -644,7 +635,7 @@ class InputMapper {
 
     private static readonly _generateGetter =
         <K, V>(map: Map<K, Set<V>>) =>
-            (key: K) => [...(map.get(key) ?? { values: () => [] }).values()];
+            (key: K) => [...(map.get(key)?.values?.() ?? [])];
 
     /**
      * Gets all the inputs bound to a particular action
@@ -679,12 +670,12 @@ class InputMapper {
     readonly listBoundActions = InputMapper._generateLister(this._actionToInput);
 
     getAll(): GameSettings["binds"] {
-        const binds: GameSettings["binds"] = {};
-
-        for (const [action, bindsSet] of this._actionToInput.entries()) {
-            binds[action] = [...bindsSet];
-        }
-
-        return binds;
+        return [...this._actionToInput.entries()].reduce<GameSettings["binds"]>(
+            (acc, [action, bindSet]) => {
+                acc[action] = [...bindSet];
+                return acc;
+            },
+            {}
+        );
     }
 }

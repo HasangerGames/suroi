@@ -196,7 +196,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         {
             idString: "usas_explosion",
             name: "USAS-12",
-            damage: 50,
+            damage: 35,
             obstacleMultiplier: 2,
             radius: {
                 min: 6,
