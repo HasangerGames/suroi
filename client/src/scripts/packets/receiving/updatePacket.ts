@@ -1,10 +1,8 @@
 import $ from "jquery";
-import { GasState, ObjectCategory } from "../../../../../common/src/constants";
-import { type EmoteDefinition } from "../../../../../common/src/definitions/emotes";
-import { Explosions, type ExplosionDefinition } from "../../../../../common/src/definitions/explosions";
-import { type GunDefinition } from "../../../../../common/src/definitions/guns";
+import { GasState, type ObjectCategory } from "../../../../../common/src/constants";
+import { Emotes } from "../../../../../common/src/definitions/emotes";
+import { Explosions } from "../../../../../common/src/definitions/explosions";
 import { lerp, vecLerp } from "../../../../../common/src/utils/math";
-import type { ObjectType } from "../../../../../common/src/utils/objectType";
 import { ObjectSerializations, type ObjectsNetData } from "../../../../../common/src/utils/objectsSerializations";
 import type { SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { vClone } from "../../../../../common/src/utils/vector";
@@ -27,17 +25,22 @@ function safeRound(value: number): number {
     return adjustForLowValues(value);
 }
 
-export class UpdatePacket extends ReceivingPacket {
-    readonly fullDirtyObjects = new Set<{
-        readonly id: number
-        readonly type: ObjectType
-        readonly data: ObjectsNetData[ObjectCategory]
-    }>();
+export interface ObjectFullData<Cat extends ObjectCategory = ObjectCategory> {
+    readonly id: number
+    readonly type: Cat
+    readonly data: Required<ObjectsNetData[Cat]>
+}
 
-    readonly partialDirtyObjects = new Set<{
-        readonly id: number
-        readonly data: ObjectsNetData[ObjectCategory]
-    }>();
+interface ObjectPartialData {
+    readonly id: number
+    readonly type: ObjectCategory
+    readonly data: ObjectsNetData[ObjectCategory]
+}
+
+export class UpdatePacket extends ReceivingPacket {
+    readonly fullDirtyObjects = new Set<ObjectFullData>();
+
+    readonly partialDirtyObjects = new Set<ObjectPartialData>();
 
     readonly deletedObjects = new Array<number>();
 
@@ -163,15 +166,13 @@ export class UpdatePacket extends ReceivingPacket {
         // Objects
         //
 
-        type GeneralDeserializationFunction = (stream: SuroiBitStream, type: ObjectType) => ObjectsNetData[ObjectCategory];
-
         // Full objects
         if (fullObjectsDirty) {
             const fullObjectCount = stream.readUint16();
             for (let i = 0; i < fullObjectCount; i++) {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
-                const data = (ObjectSerializations[type.category].deserializeFull as GeneralDeserializationFunction)(stream, type);
+                const data = ObjectSerializations[type].deserializeFull(stream);
 
                 this.fullDirtyObjects.add({
                     id,
@@ -188,9 +189,10 @@ export class UpdatePacket extends ReceivingPacket {
                 const type = stream.readObjectType();
                 const id = stream.readObjectID();
 
-                const data = (ObjectSerializations[type.category].deserializePartial as GeneralDeserializationFunction)(stream, type);
+                const data = ObjectSerializations[type].deserializePartial(stream);
                 this.partialDirtyObjects.add({
                     id,
+                    type,
                     data
                 });
             }
@@ -209,19 +211,8 @@ export class UpdatePacket extends ReceivingPacket {
         if (bulletsDirty) {
             const bulletCount = stream.readUint8();
             for (let i = 0; i < bulletCount; i++) {
-                game.bullets.add(
-                    new Bullet(
-                        game,
-                        {
-                            source: stream.readObjectType<ObjectCategory.Loot | ObjectCategory.Explosion, GunDefinition | ExplosionDefinition>().definition,
-                            position: stream.readPosition(),
-                            rotation: stream.readRotation(16),
-                            variance: stream.readFloat(0, 1, 4),
-                            reflectionCount: stream.readBits(2),
-                            sourceID: stream.readObjectID()
-                        }
-                    )
-                );
+                const bullet = new Bullet(game, Bullet.deserialize(stream));
+                game.bullets.add(bullet);
             }
         }
 
@@ -231,7 +222,7 @@ export class UpdatePacket extends ReceivingPacket {
             for (let i = 0; i < explosionCount; i++) {
                 explosion(
                     game,
-                    Explosions.definitions[stream.readUint8()],
+                    Explosions.readFromStream(stream),
                     stream.readPosition()
                 );
             }
@@ -241,7 +232,7 @@ export class UpdatePacket extends ReceivingPacket {
         if (emotesDirty) {
             const emoteCount = stream.readBits(7);
             for (let i = 0; i < emoteCount; i++) {
-                const emoteType = stream.readObjectTypeNoCategory<ObjectCategory.Emote, EmoteDefinition>(ObjectCategory.Emote).definition;
+                const emoteType = Emotes.readFromStream(stream);
                 const player = game.objects.get(stream.readObjectID());
                 if (player instanceof Player) player.emote(emoteType);
             }

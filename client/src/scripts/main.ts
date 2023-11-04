@@ -1,38 +1,32 @@
 import $ from "jquery";
-import { Application } from "pixi.js";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { setupUI } from "./ui";
-import { gameConsole, setUpBuiltIns } from "./utils/console/gameConsole";
-import { COLORS } from "./utils/constants";
-import { setupInputs } from "./utils/inputManager";
 import { loadAtlases } from "./utils/pixi";
-import { loadSounds } from "./utils/soundManager";
-import { consoleVariables } from "./utils/console/variables";
+import { stringIsPositiveNumber } from "./utils/misc";
 
-const playButtons: JQuery = $("#btn-play-solo, #btn-play-again");
+const playButton: JQuery = $("#btn-play-solo");
 
 export function enablePlayButton(): void {
-    playButtons.removeClass("btn-disabled");
-    playButtons.prop("disabled", false);
-    $("#btn-play-solo").text("Play Solo");
-    $("#btn-play-again").text("Play Again");
+    playButton.removeClass("btn-disabled").prop("disabled", false).text("Play Solo");
 }
 
 function disablePlayButton(text: string): void {
-    playButtons.addClass("btn-disabled");
-    playButtons.prop("disabled", true);
-    playButtons.html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
+    playButton.addClass("btn-disabled").prop("disabled", true)
+        .html(`<span style="position: relative; bottom: 1px;"><div class="spin"></div>${text}</span>`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(async(): Promise<void> => {
-    gameConsole.readFromLocalStorage();
-
     disablePlayButton("Loading...");
+
+    // Initialize the Application object
+
+    const game = new Game();
+
+    await loadAtlases();
 
     interface RegionInfo {
         name: string
@@ -47,7 +41,7 @@ $(async(): Promise<void> => {
     const updateServerSelector = (): void => {
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount);
-        $("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
+        //$("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
     };
     let bestPing = Number.MAX_VALUE;
     let bestRegion: string | undefined;
@@ -59,31 +53,32 @@ $(async(): Promise<void> => {
     <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
     <span class="server-player-count">-</span>
   </span>
-  <span style="margin-left: 5px">
+</li>`);
+        /* <span style="margin-left: 5px">
     <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
     <span class="server-ping">-</span>
-  </span>
-</li>`);
+  </span> */
         $("#server-list").append(listItem);
 
         try {
             const pingStartTime = Date.now();
-            const playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
+            let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
                 .catch(() => {
                     console.error(`Could not load player count for ${region.address}.`);
                     listItem.addClass("server-list-item-disabled");
                 })
             )?.text();
+            playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
 
             const ping = Date.now() - pingStartTime;
             regionInfo[regionID] = {
                 ...region,
-                playerCount: playerCount ?? "-",
-                ping: playerCount ? ping : -1
+                playerCount,
+                ping: playerCount !== "-" ? ping : -1
             };
 
-            listItem.find(".server-player-count").text(playerCount ?? "-");
-            listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+            listItem.find(".server-player-count").text(playerCount);
+            //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
             if (ping < bestPing) {
                 bestPing = ping;
@@ -97,7 +92,7 @@ $(async(): Promise<void> => {
 
     //@ts-expect-error Even though indexing an object with undefined is technically gibberish, doing so returns undefined, which
     // is kinda what we want anyways, so it's fine
-    const cVarRegion = regionInfo[consoleVariables.get.builtIn("cv_region")?.value];
+    const cVarRegion = regionInfo[game.console.getConfig("cv_region")];
     //@ts-expect-error ditto
     const empiricalBestRegion = regionInfo[bestRegion];
     const clientConfigRegion = regionInfo[Config.defaultRegion];
@@ -113,23 +108,28 @@ $(async(): Promise<void> => {
 
         selectedRegion = info;
 
-        consoleVariables.set.builtIn("cv_region", region);
+        game.console.setConfig("cv_region", region);
 
         updateServerSelector();
     });
 
+    let lastPlayButtonClickTime = 0;
+
     // Join server when play button is clicked
-    playButtons.on("click", () => {
+    playButton.on("click", () => {
+        const now = Date.now();
+        if (now - lastPlayButtonClickTime < 1500) return; // Play button rate limit
+        lastPlayButtonClickTime = now;
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
         void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
-                const devPass = consoleVariables.get.builtIn("dv_password").value;
-                const role = consoleVariables.get.builtIn("dv_role").value;
-                const nameColor = consoleVariables.get.builtIn("dv_name_color").value;
-                const lobbyClearing = consoleVariables.get.builtIn("dv_lobby_clearing").value;
+                const devPass = game.console.getConfig("dv_password");
+                const role = game.console.getConfig("dv_role");
+                const nameColor = game.console.getConfig("dv_name_color");
+                const lobbyClearing = game.console.getConfig("dv_lobby_clearing");
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
@@ -169,44 +169,25 @@ $(async(): Promise<void> => {
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
-        consoleVariables.set.builtIn("dv_name_color", nameColor);
+        game.console.setConfig("dv_name_color", nameColor);
     }
 
     const lobbyClearing = params.get("lobbyClearing");
     if (lobbyClearing) {
-        consoleVariables.set.builtIn("dv_lobby_clearing", lobbyClearing === "true");
+        game.console.setConfig("dv_lobby_clearing", lobbyClearing === "true");
     }
 
     const devPassword = params.get("password");
     if (devPassword) {
-        consoleVariables.set.builtIn("dv_password", devPassword);
+        game.console.setConfig("dv_password", devPassword);
         location.search = "";
     }
 
     const role = params.get("role");
     if (role) {
-        consoleVariables.set.builtIn("dv_role", role);
+        game.console.setConfig("dv_role", role);
         location.search = "";
     }
 
-    // Initialize the Application object
-
-    const app = new Application<HTMLCanvasElement>({
-        resizeTo: window,
-        background: COLORS.grass,
-        antialias: true,
-        autoDensity: true,
-        resolution: window.devicePixelRatio || 1
-    });
-    $("#game-ui").append(app.view);
-
-    await loadAtlases();
-
-    const game = new Game(app);
-
-    loadSounds(game.soundManager);
-    setUpBuiltIns(game);
-    setupUI(game);
-    setupInputs(game);
     enablePlayButton();
 });

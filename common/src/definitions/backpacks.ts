@@ -8,8 +8,8 @@ export interface BackpackDefinition extends ItemDefinition {
 
 export const Backpacks: BackpackDefinition[] = [
     {
-        idString: "bag",
-        name: "Bag",
+        idString: "pack_0",
+        name: "Lvl. 0 Pack",
         itemType: ItemType.Backpack,
         level: 0,
         maxCapacity: {
@@ -26,8 +26,8 @@ export const Backpacks: BackpackDefinition[] = [
         noDrop: true
     },
     {
-        idString: "satchel",
-        name: "Satchel",
+        idString: "pack_1",
+        name: "Lvl. 1 Pack",
         itemType: ItemType.Backpack,
         level: 1,
         maxCapacity: {
@@ -43,8 +43,8 @@ export const Backpacks: BackpackDefinition[] = [
         }
     },
     {
-        idString: "regular_backpack",
-        name: "Regular Backpack",
+        idString: "pack_2",
+        name: "Lvl. 2 Pack",
         itemType: ItemType.Backpack,
         level: 2,
         maxCapacity: {
@@ -60,8 +60,8 @@ export const Backpacks: BackpackDefinition[] = [
         }
     },
     {
-        idString: "tactical_backpack",
-        name: "Tactical Backpack",
+        idString: "pack_3",
+        name: "Lvl. 3 Pack",
         itemType: ItemType.Backpack,
         level: 3,
         maxCapacity: {

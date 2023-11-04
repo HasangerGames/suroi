@@ -1,12 +1,12 @@
 import { FireMode } from "../constants";
-import { type BulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
     readonly ammoType: string
-    readonly ammoSpawnAmount: number
+    readonly ammoSpawnAmount?: number
     readonly capacity: number
     readonly reloadTime: number
     readonly singleReload?: boolean
@@ -50,7 +50,7 @@ export type GunDefinition = ItemDefinition & {
 
     readonly noMuzzleFlash?: boolean
 
-    readonly ballistics: BulletDefinition
+    readonly ballistics: BaseBulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
 } | {
@@ -239,7 +239,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 48,
-            tracerLength: 0.7
+            tracer: {
+                length: 0.7
+            }
         }
     },
     {
@@ -278,7 +280,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 0.5,
             speed: 0.12,
             maxDistance: 40,
-            tracerLength: 0.5
+            tracer: {
+                length: 0.5
+            }
         }
     },
     {
@@ -318,7 +322,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.16,
             maxDistance: 40,
-            tracerLength: 0.5
+            tracer: {
+                length: 0.5
+            }
         }
     },
     {
@@ -356,8 +362,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.33,
             maxDistance: 250,
-            tracerWidth: 1.4,
-            tracerLength: 2.5
+            tracer: {
+                width: 1.4,
+                length: 2.5
+            }
         }
     },
     {
@@ -394,8 +402,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.4,
             maxDistance: 280,
-            tracerWidth: 1.6,
-            tracerLength: 3.5
+            tracer: {
+                width: 1.6,
+                length: 3.5
+            }
         }
     },
     {
@@ -681,7 +691,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 180,
-            tracerLength: 1.4
+            tracer: {
+                length: 1.4
+            }
         }
     },
     {
@@ -716,8 +728,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2.5,
             speed: 0.3,
             maxDistance: 180,
-            tracerWidth: 1.1,
-            tracerLength: 1.4
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
         }
     },
     {
@@ -752,8 +766,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 2,
             speed: 0.28,
             maxDistance: 180,
-            tracerWidth: 1.1,
-            tracerLength: 1.4
+            tracer: {
+                width: 1.1,
+                length: 1.4
+            }
         }
     },
     {
@@ -789,8 +805,10 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.22,
             maxDistance: 160,
-            tracerOpacity: 0.5,
-            tracerLength: 1.5
+            tracer: {
+                opacity: 0.5,
+                length: 1.5
+            }
         }
     },
     {
@@ -825,7 +843,9 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 230,
-            tracerLength: 1.5
+            tracer: {
+                length: 1.5
+            }
         }
     },
     {
@@ -860,7 +880,90 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.3,
             maxDistance: 230,
-            tracerLength: 1.5
+            tracer: {
+                length: 1.5
+            }
+        }
+    },
+
+    // only event weapons below this point
+
+    {
+        idString: "usas12",
+        name: "USAS-12",
+        itemType: ItemType.Gun,
+        ammoType: "12g",
+        ammoSpawnAmount: 30,
+        capacity: 10,
+        reloadTime: 3,
+        fireDelay: 525,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.7,
+        recoilDuration: 450,
+        fireMode: FireMode.Auto,
+        shotSpread: 5,
+        moveSpread: 9,
+        length: 7.7,
+        canQuickswitch: true,
+        fists: {
+            left: v(115, -1),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(90, -3.5) },
+        casingParticles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 8,
+            obstacleMultiplier: 1,
+            speed: 0.16,
+            maxDistance: 55,
+            onHitExplosion: "usas_explosion",
+            goToMouse: true,
+            tracer: {
+                length: 0.5,
+                color: 0xff0000
+            }
+        }
+    },
+    {
+        idString: "s_g17",
+        name: "G17 (scoped)",
+        itemType: ItemType.Gun,
+        ammoType: "bb",
+        fireDelay: 35,
+        switchDelay: 250,
+        speedMultiplier: 1.5,
+        recoilMultiplier: 0.99,
+        recoilDuration: 10,
+        fireMode: FireMode.Auto,
+        shotSpread: 0.5,
+        moveSpread: 5,
+        length: 5.9,
+        fists: {
+            left: v(40, 0),
+            right: v(40, 0),
+            leftZIndex: 3,
+            rightZIndex: 3,
+            animationDuration: 80
+        },
+        noMuzzleFlash: true,
+        image: { position: v(65, 0) },
+        capacity: 100,
+        reloadTime: 1.5,
+        ballistics: {
+            damage: 2,
+            obstacleMultiplier: 0.5,
+            speed: 0.1,
+            maxDistance: 70,
+            tracer: {
+                width: 0.7,
+                opacity: 0.85,
+                color: 0xFF8000
+            }
         }
     },
 
@@ -871,7 +974,6 @@ export const Guns: GunDefinition[] = [
         name: "Death Ray",
         itemType: ItemType.Gun,
         ammoType: "power_cell",
-        ammoSpawnAmount: 0,
         capacity: 1,
         reloadTime: 1.4,
         fireDelay: 40,
@@ -905,8 +1007,10 @@ export const Guns: GunDefinition[] = [
                 players: true,
                 obstacles: true
             },
-            tracerImage: "power_cell_trail",
-            tracerLength: 10
+            tracer: {
+                image: "power_cell_trail",
+                length: 10
+            }
         }
     },
     {

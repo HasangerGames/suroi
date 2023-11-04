@@ -1,18 +1,16 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
 import { AnimationType, ObjectCategory, PLAYER_RADIUS, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
-import { Emotes, type EmoteDefinition } from "../../../../common/src/definitions/emotes";
+import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
+import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
-import { Helmets } from "../../../../common/src/definitions/helmets";
-import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
+import { Loots } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
-import { Vests } from "../../../../common/src/definitions/vests";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
-import { ItemType, type ReferenceTo, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
+import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
@@ -22,7 +20,6 @@ import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
-import { consoleVariables } from "../utils/console/variables";
 import { SpectatePacket } from "../packets/sending/spectatePacket";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
@@ -32,11 +29,17 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     name!: string;
 
-    activeItem = Loots.getByIDString("fists");
+    activeItem = Loots.fromString("fists");
 
     oldItem = this.activeItem;
 
-    isNew = true;
+    equipment: {
+        helmet?: ArmorDefinition
+        vest?: ArmorDefinition
+        backpack: BackpackDefinition
+    } = {
+            backpack: Loots.fromString("pack_0")
+        };
 
     get isActivePlayer(): boolean {
         return this.id === this.game.activePlayerID;
@@ -99,7 +102,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     floorType = "grass";
     waterOverlayAnim?: Tween<SuroiSprite>;
 
-    constructor(game: Game, id: number) {
+    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Player]>) {
         super(game, id);
 
         this.images = {
@@ -183,6 +186,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.container.on("pointerdown", sendSpectatePacket);
         this.container.on("click", sendSpectatePacket);
+        this.updateFromData(data, true);
     }
 
     override updateContainerPosition(): void {
@@ -219,23 +223,28 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.Player]): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Player], isNew = false): void {
         // Position and rotation
         if (this.position !== undefined) this.oldPosition = vClone(this.position);
         this.position = data.position;
         this.hitbox.position = this.position;
 
+        this.rotation = data.rotation;
+
+        const noMovementSmoothing = !this.game.console.getConfig("cv_movement_smoothing");
+
+        if (noMovementSmoothing || isNew) this.container.rotation = this.rotation;
+
         if (this.isActivePlayer) {
-            if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
-                this.game.camera.position = toPixiCoords(this.position);
-            }
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
-            if (consoleVariables.get.builtIn("cv_animate_rotation").value === "client") {
-                this.game.map.indicator.setRotation(this.rotation);
+
+            if (noMovementSmoothing) {
+                this.game.camera.position = toPixiCoords(this.position);
+                this.game.map.indicator.setRotation(data.rotation);
             }
 
-            if (consoleVariables.get.builtIn("pf_show_pos").value) {
+            if (this.game.console.getConfig("pf_show_pos")) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
             }
         }
@@ -301,14 +310,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        this.rotation = data.rotation;
-
-        const rotationStyleIsClient = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
-        if (!rotationStyleIsClient ||
-            !(rotationStyleIsClient && this.isActivePlayer && !this.game.spectating)
-        ) this.container.rotation = this.rotation;
-
-        if (this.isNew || !consoleVariables.get.builtIn("cv_movement_smoothing").value) {
+        if (isNew || !this.game.console.getConfig("cv_movement_smoothing")) {
             const pos = toPixiCoords(this.position);
             const emotePos = vAdd(pos, v(0, -175));
             this.container.position.copyFrom(pos);
@@ -321,25 +323,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
         this.animationSeq = data.animation.seq;
 
-        if (data.fullUpdate) {
-            this.container.alpha = data.invulnerable ? 0.5 : 1;
+        if (data.full) {
+            const full = data.full;
+            this.container.alpha = full.invulnerable ? 0.5 : 1;
 
             this.oldItem = this.activeItem;
-            this.activeItem = data.activeItem;
+            this.activeItem = full.activeItem;
             if (this.isActivePlayer && !UI_DEBUG_MODE) {
                 $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
             }
 
-            const skinID = data.skin.idString;
+            const skinID = full.skin.idString;
             this.images.body.setFrame(`${skinID}_base`);
             this.images.leftFist.setFrame(`${skinID}_fist`);
             this.images.rightFist.setFrame(`${skinID}_fist`);
 
-            this.helmetLevel = data.helmet;
-            this.vestLevel = data.vest;
-            this.backpackLevel = data.backpack;
+            this.equipment.helmet = full.helmet;
+            this.equipment.vest = full.vest;
+            this.equipment.backpack = full.backpack;
 
-            const action = data.action;
+            const action = full.action;
 
             if (this.action.type !== action.type || this.action.seq !== action.seq) {
                 let actionTime = 0;
@@ -390,7 +393,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.updateFistsPosition(true);
             this.updateWeapon();
-            this.isNew = false;
         }
 
         if (HITBOX_DEBUG_MODE) {
@@ -496,50 +498,45 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     updateEquipment(): void {
-        this.updateEquipmentWorldImage("helmet", Helmets);
-        this.updateEquipmentWorldImage("vest", Vests);
-        this.updateEquipmentWorldImage("backpack", Backpacks);
+        for (const item of ["helmet", "vest", "backpack"] as const) {
+            this.updateEquipmentWorldImage(item, this.equipment[item]);
 
-        if (this.isActivePlayer) {
-            this.updateEquipmentSlot("helmet", Helmets);
-            this.updateEquipmentSlot("vest", Vests);
-            this.updateEquipmentSlot("backpack", Backpacks);
+            if (this.isActivePlayer) {
+                this.updateEquipmentSlot(item, this.equipment[item]);
+            }
         }
     }
 
-    updateEquipmentWorldImage(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
-        const level = this[`${equipmentType}Level`];
-        const image = this.images[equipmentType];
-        if (level > 0) {
-            image.setFrame(`${definitions[equipmentType === "backpack" ? level : level - 1].idString}_world`).setVisible(true);
+    updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
+        const image = this.images[type];
+        if (def && def.level > 0) {
+            image.setFrame(`${def.idString}_world`).setVisible(true);
         } else {
             image.setVisible(false);
         }
     }
 
-    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", definitions: LootDefinition[]): void {
+    updateEquipmentSlot(equipmentType: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
         const container = $(`#${equipmentType}-slot`);
-        const level = this[`${equipmentType}Level`];
-        if (level > 0) {
-            const definition = definitions[equipmentType === "backpack" ? level : level - 1];
-            container.children(".item-name").text(`Lvl. ${level}`);
-            container.children(".item-image").attr("src", `./img/game/loot/${definition.idString}.svg`);
+        if (def && def.level > 0) {
+            container.children(".item-name").text(`Lvl. ${def.level}`);
+            container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
 
-            let itemTooltip = definition.name;
-            if (equipmentType === "helmet" || equipmentType === "vest") {
-                itemTooltip += `<br>Reduces ${(definition as ArmorDefinition).damageReduction * 100}% damage`;
+            let itemTooltip = def.name;
+            if (def.itemType === ItemType.Armor) {
+                itemTooltip += `<br>Reduces ${def.damageReduction * 100}% damage`;
             }
             container.children(".item-tooltip").html(itemTooltip);
         }
-        container.css("visibility", level > 0 ? "visible" : "hidden");
+        container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
     }
 
-    emote(type: EmoteDefinition | ReferenceTo<EmoteDefinition>): void {
+    emote(type: EmoteDefinition): void {
         this.anims.emoteAnim?.kill();
         this.anims.emoteHideAnim?.kill();
         clearTimeout(this._emoteHideTimeoutID);
         this.playSound("emote", 0.4, 128);
-        this.images.emoteImage.setFrame(`${reifyDefinition(type, Emotes).idString}`);
+        this.images.emoteImage.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
         this.emoteContainer.scale.set(0);

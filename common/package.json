@@ -14,12 +14,12 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.32.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7",
-    "@typescript-eslint/eslint-plugin": "^6.8.0",
-    "@typescript-eslint/parser": "^6.8.0",
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
     "eslint": "^8.52.0",
     "eslint-config-standard-with-typescript": "^39.1.1",
-    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.2.0",
     "eslint-plugin-promise": "^6.1.1"
   }

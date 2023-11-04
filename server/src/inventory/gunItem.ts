@@ -56,7 +56,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
-            owner.disconnected
+            owner.disconnected ||
+            this !== this.owner.activeItem
         ) {
             this._shots = 0;
             return;
@@ -98,11 +99,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
             owner.position,
             vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
         );
-        const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
+        // const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
 
         for (
             const object of
-            this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+            this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
         ) {
             if (
                 object.dead ||
@@ -113,7 +114,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
             for (
                 const object of
-                this.owner.game.grid.intersectsRect(RectangleHitbox.fromLine(owner.position, position))
+                this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
             ) {
                 if (
                     object.dead ||
@@ -131,19 +132,23 @@ export class GunItem extends InventoryItem<GunDefinition> {
             }
         }
 
+        const clipDistance = this.owner.distanceToMouse - this.definition.length;
+
         const limit = definition.bulletCount ?? 1;
+
         for (let i = 0; i < limit; i++) {
             this.owner.game.addBullet(
                 this,
                 this.owner,
                 {
                     position: jitter
-                        ? vAdd(position, randomPointInsideCircle(v(0, 0), jitter))
+                        ? randomPointInsideCircle(position, jitter)
                         : position,
                     rotation: owner.rotation + Math.PI / 2 +
-                            (definition.consistentPatterning === true
-                                ? 2 * (i / limit - 0.5)
-                                : randomFloat(-1, 1)) * spread
+                        (definition.consistentPatterning === true
+                            ? 2 * (i / limit - 0.5)
+                            : randomFloat(-1, 1)) * spread,
+                    clipDistance
                 }
             );
         }
@@ -164,7 +169,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
-                this.owner.activeItem === this
+            this.owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeoutID);
             this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);

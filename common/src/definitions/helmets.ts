@@ -4,24 +4,24 @@ import { type ArmorDefinition } from "./armors";
 
 export const Helmets: ArmorDefinition[] = [
     {
-        idString: "hard_hat",
-        name: "Hard Hat",
+        idString: "helmet_1",
+        name: "Lvl. 1 Helmet",
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 1,
         damageReduction: 0.1
     },
     {
-        idString: "m1_helmet",
-        name: "M1 Helmet",
+        idString: "helmet_2",
+        name: "Lvl. 2 Helmet",
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 2,
         damageReduction: 0.15
     },
     {
-        idString: "tactical_helmet",
-        name: "Tactical Helmet",
+        idString: "helmet_3",
+        name: "Lvl. 3 Helmet",
         itemType: ItemType.Armor,
         armorType: ArmorType.Helmet,
         level: 3,

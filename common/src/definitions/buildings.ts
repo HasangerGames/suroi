@@ -1,14 +1,13 @@
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type FloorTypes } from "../utils/mapUtils";
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
-import { randomBoolean, weightedRandom } from "../utils/random";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
-import { type RotationMode } from "./obstacles";
+import { type ObstacleDefinition, type RotationMode } from "./obstacles";
 import { ZIndexes } from "../constants";
 
 interface BuildingObstacle {
-    readonly idString: string
+    readonly idString: ReferenceTo<ObstacleDefinition> | Record<ReferenceTo<ObstacleDefinition>, number>
     readonly position: Vector
     readonly rotation?: number
     readonly variation?: Variation
@@ -22,7 +21,7 @@ interface LootSpawner {
 }
 
 interface SubBuilding {
-    readonly idString: string
+    readonly idString: ReferenceTo<BuildingDefinition> | Record<ReferenceTo<BuildingDefinition>, number>
     readonly position: Vector
     readonly orientation?: Orientation
 }
@@ -133,6 +132,23 @@ export const ContainerTints = {
     Yellow: 0xcccc00
 };
 
+const randomContainer1 = {
+    container_1: 1,
+    container_2: 2,
+    container_3: 3,
+    container_4: 4,
+    container_5: 3,
+    container_6: 4,
+    container_7: 3,
+    container_8: 4,
+    container_10: 3
+};
+
+const randomContainer2 = {
+    ...randomContainer1,
+    container_11: 7
+};
+
 export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "porta_potty",
@@ -158,8 +174,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             {
-                get idString() {
-                    return weightedRandom(["porta_potty_toilet_open", "porta_potty_toilet_closed"], [0.7, 0.3]);
+                idString: {
+                    porta_potty_toilet_open: 0.7,
+                    porta_potty_toilet_closed: 0.3
                 },
                 position: v(0, -5),
                 rotation: 0
@@ -283,8 +300,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 0
             },
             {
-                get idString() {
-                    return weightedRandom(["toilet", "used_toilet"], [0.7, 0.3]);
+                idString: {
+                    toilet: 0.7,
+                    used_toilet: 0.3
                 },
                 position: v(7, 14.4),
                 rotation: 2
@@ -509,9 +527,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(-14, -28.5)
             },
             {
-                // TODO: better way of adding random obstacles
-                get idString() {
-                    return weightedRandom(["regular_crate", "flint_crate"], [0.7, 0.3]);
+                idString: {
+                    regular_crate: 0.7,
+                    flint_crate: 0.3
                 },
                 position: v(-14, 28.5)
             },
@@ -702,9 +720,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             },
             {
-                // TODO: better way of adding random obstacles
-                get idString() {
-                    return weightedRandom(["regular_crate", "flint_crate"], [0.3, 1]);
+                idString: {
+                    regular_crate: 0.3,
+                    flint_crate: 1
                 },
                 position: v(-11, 50)
             },
@@ -850,15 +868,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(-39, -25.59)
             },
             {
-                get idString(): string {
-                    return randomBoolean() ? "barrel" : "super_barrel";
-                },
+                idString: { barrel: 1, super_barrel: 1 },
                 position: v(-26, -30)
             },
             {
-                get idString(): string {
-                    return randomBoolean() ? "barrel" : "super_barrel";
-                },
+                idString: { barrel: 1, super_barrel: 1 },
                 position: v(-21.5, 4)
             },
             {
@@ -956,9 +970,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(85.25, -33.5)
             },
             {
-                get idString(): string {
-                    return randomBoolean() ? "barrel" : "super_barrel";
-                },
+                idString: { barrel: 1, super_barrel: 1 },
                 position: v(83, -25)
             },
             {
@@ -1326,7 +1338,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 13, v(35, -73)),
             RectangleHitbox.fromRect(10, 19, v(-17, -63)),
 
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
+            RectangleHitbox.fromRect(60, 25, v(8, 93.2)),
+
+            new CircleHitbox(5, v(-17.3, -50.3)),
+            new CircleHitbox(5, v(-7.4, -50.3)),
+            new CircleHitbox(5, v(5.4, -50.3)),
+            new CircleHitbox(5, v(15.3, -50.3))
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
@@ -1369,7 +1386,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         obstacles: [
             // Tango room
             { idString: "vault_door", position: v(7.55, 81.5), rotation: 0, scale: 1.07 },
-            { idString: "tango_crate", position: v(9, 93.5), rotation: 0, scale: 0.90 },
+            { idString: { tango_crate: 1, aegis_crate: 1 }, position: v(9, 93.5), rotation: 0, scale: 0.90 },
             { idString: "super_barrel", position: v(-12, 89) },
             { idString: "box", position: v(28.5, 87) },
             { idString: "box", position: v(31.5, 92) },
@@ -1382,9 +1399,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "generator", position: v(23, 75), rotation: 0, scale: 1.07 },
             { idString: "barrel", position: v(24, 66) },
             {
-                get idString() {
-                    return weightedRandom(["barrel", "super_barrel"], [1, 1]);
-                },
+                idString: { barrel: 1, super_barrel: 1 },
                 position: v(21, 58)
             },
             { idString: "regular_crate", position: v(-6, 73) },
@@ -1415,47 +1430,47 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         subBuildings: [
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(19, -64),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(-15, 20),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(-16, -20),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(-31, -20),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(16, -22),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(15, 22),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(-1, 22),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(16, -110),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 10 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3]); },
+                idString: randomContainer1,
                 position: v(31, -110),
                 orientation: 0
             }
@@ -1799,23 +1814,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             { idString: "barrel", position: v(5, 14) },
             {
-                get idString() {
-                    return weightedRandom(["aegis_crate", "flint_crate"], [1, 1]);
-                },
+                idString: { aegis_crate: 1, flint_crate: 1 },
                 position: v(15, 14)
             },
             { idString: "super_barrel", position: v(25, 11) },
 
             {
-                get idString() {
-                    return weightedRandom(["aegis_crate", "flint_crate"], [1, 1]);
-                },
+                idString: { aegis_crate: 1, flint_crate: 1 },
                 position: v(90, -32)
             },
             {
-                get idString() {
-                    return weightedRandom(["barrel", "super_barrel"], [1, 1]);
-                },
+                idString: { aegis_crate: 1, flint_crate: 1 },
                 position: v(85, -42)
             },
 
@@ -1897,191 +1906,191 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
             // Group 1
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-37.52, 184.72),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-51.98, 184.73),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(37.83, -157.25),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(51.98, -157.25),
                 orientation: 0
             },
             // Group 2
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-98.38, 184.09),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-112.84, 184.09),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(113.09, -156.62),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(98.38, -156.62),
                 orientation: 0
             },
             // Group 3
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-110.4, -45.04),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-96.9, -45.04),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(83.32, 45.04),
                 orientation: 1
             },
             // Group 4
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(110.4, 110),
                 orientation: 1
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-96.9, -110),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(83.32, 110),
                 orientation: 1
             },
             // Group 5
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-6.21, 45.74),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-20.57, 45.74),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-35.28, 45.74),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(6.21, -18.22),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(20.88, -18.22),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(35.28, -18.22),
                 orientation: 0
             },
             // Group 6
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(104.35, -18.42),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(119.01, -18.42),
                 orientation: 0
             },
             // Group 7
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-116.82, -83),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-131.21, -83),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
-                position: v(131.21, 83),
+                idString: randomContainer2,
+                position: v(116.82, 110.65),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(131.21, 110.65),
                 orientation: 0
             },
 
             // Group 8
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-116.79, -150.27),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-131.18, -150.27),
                 orientation: 2
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(130.97, 178.02),
                 orientation: 0
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(116.59, 178.02),
                 orientation: 0
             },
             // Group 9
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(25.76, 128.55),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(40.31, 128.55),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(55.18, 128.55),
                 orientation: 3
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-55.18, -101.15),
                 orientation: 1
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-40.31, -101.15),
                 orientation: 1
             },
             {
-                get idString() { return weightedRandom(Array.from({ length: 11 }, (_, i) => `container_${i + 1}`), [1, 2, 3, 4, 3, 4, 3, 4, 3, 3, 7]); },
+                idString: randomContainer2,
                 position: v(-25.67, -101.15),
                 orientation: 1
             }

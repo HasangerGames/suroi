@@ -1,12 +1,14 @@
 // Chromium
-.persistent-scrollbar ::-webkit-scrollbar {
-    width: 5px;
+.persistent-scrollbar {
+    &::-webkit-scrollbar, ::-webkit-scrollbar {
+        width: 5px;
+    }
 
-    &-track {
+    &::-webkit-scrollbar-track, ::-webkit-scrollbar-track {
         background: transparent;
     }
 
-    &-thumb {
+    &::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb {
         background: #ccc;
         border-radius: 10px;
     }

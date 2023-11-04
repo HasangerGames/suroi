@@ -16,15 +16,13 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     readonly game: Game;
 
     damageable = false;
-
-    oldPosition!: Vector;
-    lastPositionChange!: number;
-    _position!: Vector;
-
     destroyed = false;
 
     debugGraphics!: Graphics;
 
+    oldPosition!: Vector;
+    lastPositionChange!: number;
+    _position!: Vector;
     get position(): Vector { return this._position; }
     set position(position: Vector) {
         if (this._position !== undefined) this.oldPosition = vClone(this._position);
@@ -92,5 +90,5 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         return this.game.soundManager.play(key, this.position, fallOff, maxDistance, onend);
     }
 
-    abstract updateFromData(data: ObjectsNetData[Cat]): void;
+    abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 }

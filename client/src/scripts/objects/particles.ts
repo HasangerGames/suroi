@@ -152,7 +152,7 @@ export class ParticleEmitter {
     get dead(): boolean { return this._dead; }
 
     lastSpawn = 0;
-    readonly delay: number;
+    delay: number;
     active: boolean;
     readonly spawnOptions: () => ParticleOptions;
 

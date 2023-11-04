@@ -1,5 +1,6 @@
 import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 import { RotationMode } from "./obstacles";
+import { ZIndexes } from "../constants";
 
 export interface DecalDefinition extends ObjectDefinition {
     readonly image?: string
@@ -45,7 +46,8 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
         },
         {
             idString: "container_mark",
-            name: "Container mark"
+            name: "Container mark",
+            zIndex: ZIndexes.Ground
         }
     ]
 );

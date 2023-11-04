@@ -1,13 +1,11 @@
-import { Explosions, type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
+import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
 import { distanceSquared } from "../../../../common/src/utils/math";
-import { type ReferenceTo, reifyDefinition } from "../../../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-export function explosion(game: Game, definition: ExplosionDefinition | ReferenceTo<ExplosionDefinition>, position: Vector): void {
-    definition = reifyDefinition(definition, Explosions);
+export function explosion(game: Game, definition: ExplosionDefinition, position: Vector): void {
     const pixiPos = toPixiCoords(position);
 
     const image = new SuroiSprite("explosion_1");

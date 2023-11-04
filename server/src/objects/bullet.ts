@@ -1,4 +1,5 @@
 import { TICKS_PER_SECOND } from "../../../common/src/constants";
+import { Bullets } from "../../../common/src/definitions/bullets";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { normalizeAngle } from "../../../common/src/utils/math";
@@ -26,6 +27,7 @@ export interface ServerBulletOptions {
     readonly rotation: number
     readonly reflectionCount?: number
     readonly variance?: number
+    readonly clipDistance?: number
 }
 
 export class Bullet extends BaseBullet {
@@ -34,30 +36,40 @@ export class Bullet extends BaseBullet {
     readonly sourceGun: Weapon;
     readonly shooter: GameObject;
 
+    readonly clipDistance: number;
+    reflected = false;
+
+    readonly finalPosition: Vector;
+
     constructor(
         game: Game,
         source: Weapon,
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const variance = source.definition.ballistics.variance;
+        const definition = Bullets.fromString(`${source.definition.idString}_bullet`);
+        const variance = definition.rangeVariance;
+
         super({
             ...options,
             rotation: normalizeAngle(options.rotation),
-            source: source.definition,
+            source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
         });
 
+        this.clipDistance = options.clipDistance ?? this.definition.maxDistance;
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
+
+        this.finalPosition = vAdd(this.position, vMul(this.direction, this.maxDistance));
     }
 
     update(): DamageRecord[] {
         const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICKS_PER_SECOND)));
 
-        const objects = this.game.grid.intersectsRect(lineRect);
+        const objects = this.game.grid.intersectsHitbox(lineRect);
         const collisions = this.updateAndGetCollisions(TICKS_PER_SECOND, objects);
 
         // Bullets from dead players should not deal damage so delete them
@@ -108,6 +120,7 @@ export class Bullet extends BaseBullet {
 
                     if (object.definition.reflectBullets && this.reflectionCount < 3) {
                         this.reflect(collision.intersection.normal);
+                        this.reflected = true;
                     }
 
                     this.dead = true;
@@ -120,7 +133,7 @@ export class Bullet extends BaseBullet {
     }
 
     reflect(normal: Vector): void {
-        const rotation = normalizeAngle(2 * Math.atan2(normal.y, normal.x) - this.rotation);
+        const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
 
         this.game.addBullet(
             this.sourceGun,
@@ -130,7 +143,8 @@ export class Bullet extends BaseBullet {
                 position: vAdd(this.position, v(Math.sin(rotation), -Math.cos(rotation))),
                 rotation,
                 reflectionCount: this.reflectionCount + 1,
-                variance: this.variance
+                variance: this.rangeVariance,
+                clipDistance: this.clipDistance
             }
         );
     }

@@ -1,5 +1,8 @@
+import { type ExplosionDefinition } from "../definitions/explosions";
+import { type SuroiBitStream } from "./suroiBitStream";
+
 /**
- * A class representing the definitions for some object type
+ * A class representing a list of definitions
  * @template T The specific type of `ObjectDefinition` this class holds
  */
 export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
@@ -15,8 +18,26 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
         }
     }
 
-    getByIDString<U extends T = T>(id: ReferenceTo<T>): U {
-        return this.definitions[this.idStringToNumber[id]] as U;
+    reify<U extends T = T>(type: ReifiableDef<T>): U {
+        return (typeof type === "string"
+            ? this.fromString(type)
+            : type) as U;
+    }
+
+    fromString<U extends T = T>(idString: ReferenceTo<U>): U {
+        const id = this.idStringToNumber[idString];
+        if (id === undefined) throw new Error(`Unknow idString: ${idString}`);
+        return this.definitions[id] as U;
+    }
+
+    writeToStream(stream: SuroiBitStream, type: ReifiableDef<T>): void {
+        stream.writeBits(this.idStringToNumber[
+            typeof type === "string" ? type : type.idString
+        ], this.bitCount);
+    }
+
+    readFromStream<U extends T = T>(stream: SuroiBitStream): U {
+        return this.definitions[stream.readBits(this.bitCount)] as U;
     }
 }
 
@@ -30,19 +51,11 @@ export interface ObjectDefinition {
  */
 export type ReferenceTo<T extends ObjectDefinition = ObjectDefinition> = T["idString"];
 
-export function reifyDefinition<T extends ObjectDefinition, U extends T = T>(definition: U | ReferenceTo<U>, collection: ObjectDefinitions<T> | T[]): U {
-    if (typeof definition !== "string") return definition;
-    else if (Array.isArray(collection)) return collection.find(def => def.idString === definition) as U;
-    else return collection.getByIDString<U>(definition);
-    /*switch (true) {
-        case typeof definition !== "string": return definition;
-        case Array.isArray(collection): return collection.find(def => def.idString === definition) as U;
-        default: return collection.getByIDString<U>(definition);
-    }*/
-}
+export type ReifiableDef<T extends ObjectDefinition> = ReferenceTo<T> | T;
 
 // expand this as needed
 export enum ItemType {
+    None,
     Gun,
     Ammo,
     Melee,
@@ -61,6 +74,7 @@ export enum ObstacleSpecialRoles {
 }
 
 export const LootRadius: Record<ItemType, number> = {
+    [ItemType.None]: 1,
     [ItemType.Gun]: 3.4,
     [ItemType.Ammo]: 2,
     [ItemType.Melee]: 3,
@@ -71,7 +85,7 @@ export const LootRadius: Record<ItemType, number> = {
     [ItemType.Skin]: 3
 };
 
-export interface BulletDefinition {
+export interface BaseBulletDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly speed: number
@@ -80,13 +94,19 @@ export interface BulletDefinition {
         readonly players?: boolean
         readonly obstacles?: boolean
     }
-    readonly tracerOpacity?: number
-    readonly tracerWidth?: number
-    readonly tracerLength?: number
-    readonly tracerColor?: number
-    readonly tracerImage?: string
-    readonly variance?: number
+
+    readonly tracer?: {
+        readonly opacity?: number
+        readonly width?: number
+        readonly length?: number
+        readonly color?: number
+        readonly image?: string
+    }
+
+    readonly rangeVariance?: number
     readonly shrapnel?: boolean
+    readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
+    readonly goToMouse?: boolean
 }
 
 export interface WearerAttributes {

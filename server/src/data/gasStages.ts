@@ -35,7 +35,7 @@ export const GasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 60,
         oldRadius: 512,
-        newRadius: 384,
+        newRadius: 320,
         dps: 1,
         preventJoin: true
     },
@@ -43,20 +43,20 @@ export const GasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 15,
         oldRadius: 512,
-        newRadius: 384,
+        newRadius: 320,
         dps: 1.5
     },
     {
         state: GasState.Waiting,
-        duration: 45,
-        oldRadius: 384,
+        duration: 40,
+        oldRadius: 320,
         newRadius: 128,
         dps: 2
     },
     {
         state: GasState.Advancing,
         duration: 10,
-        oldRadius: 384,
+        oldRadius: 320,
         newRadius: 128,
         dps: 3
     },
@@ -76,7 +76,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Waiting,
-        duration: 20,
+        duration: 15,
         oldRadius: 64,
         newRadius: 32,
         dps: 5
@@ -90,7 +90,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Waiting,
-        duration: 10,
+        duration: 5,
         oldRadius: 32,
         newRadius: 0,
         dps: 7
@@ -111,4 +111,4 @@ export const GasStages: GasStage[] = [
     }
 ];
 
-//console.log(GasStages.reduce((a, b) => a + b.duration, 0));
+// console.log(GasStages.reduce((a, b) => a + b.duration, 0));

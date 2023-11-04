@@ -1,6 +1,7 @@
-import { KILL_FEED_MESSAGE_TYPE_BITS, KillFeedMessageType, ObjectCategory, PacketType } from "../../../../common/src/constants";
-import { ObjectType } from "../../../../common/src/utils/objectType";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { KillFeedMessageType, PacketType } from "../../../../common/src/constants";
+import { Explosions } from "../../../../common/src/definitions/explosions";
+import { Loots } from "../../../../common/src/definitions/loots";
+import { KILL_FEED_MESSAGE_TYPE_BITS, type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { GunItem } from "../../inventory/gunItem";
 import { MeleeItem } from "../../inventory/meleeItem";
 import { type Explosion } from "../../objects/explosion";
@@ -44,6 +45,7 @@ export class KillFeedPacket extends SendingPacket {
                 if (twoPartyInteraction) {
                     stream.writePlayerNameWithColor(killedBy);
                     stream.writeObjectID(killedBy.id);
+                    stream.writeUint8(killedBy.kills);
                 }
 
                 const weaponUsed = options.weaponUsed;
@@ -53,14 +55,14 @@ export class KillFeedPacket extends SendingPacket {
                     const canTrackStats = weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem;
                     const shouldTrackStats = canTrackStats && weaponUsed.definition.killstreak === true;
 
-                    stream.writeObjectType(
-                        ObjectType.fromString(
-                            canTrackStats
-                                ? ObjectCategory.Loot
-                                : ObjectCategory.Explosion,
-                            weaponUsed.definition.idString
-                        )
-                    );
+                    stream.writeBoolean(canTrackStats);
+
+                    if (canTrackStats) {
+                        Loots.writeToStream(stream, weaponUsed.definition);
+                    } else {
+                        Explosions.writeToStream(stream, weaponUsed.definition);
+                    }
+
                     stream.writeBoolean(shouldTrackStats);
                     if (shouldTrackStats) {
                         stream.writeBits(options.kills, 7);
@@ -72,6 +74,7 @@ export class KillFeedPacket extends SendingPacket {
             }
 
             case KillFeedMessageType.KillLeaderAssigned: {
+                stream.writeObjectID(this.player.id);
                 stream.writePlayerNameWithColor(this.player);
                 stream.writeBits(this.player.kills, 7);
                 break;

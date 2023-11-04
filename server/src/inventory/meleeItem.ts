@@ -61,7 +61,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
                 const damagedObjects: GameObject[] = [];
 
-                const objects = owner.game.grid.intersectsRect(hitbox.toRectangle());
+                const objects = owner.game.grid.intersectsHitbox(hitbox);
 
                 for (const object of objects) {
                     if (!object.dead && object !== owner && object.damageable) {

@@ -1,8 +1,3 @@
-export function log(message: string): void {
-    const date = new Date();
-    console.log(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}] ${message}`);
-}
-
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }

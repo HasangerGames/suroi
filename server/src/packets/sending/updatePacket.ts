@@ -1,5 +1,11 @@
 import { PacketType } from "../../../../common/src/constants";
+import { Emotes } from "../../../../common/src/definitions/emotes";
+import { Explosions } from "../../../../common/src/definitions/explosions";
+import { distanceSquared, lineIntersectsRect2 } from "../../../../common/src/utils/math";
+import { ObjectSerializations } from "../../../../common/src/utils/objectsSerializations";
 import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { type Bullet } from "../../objects/bullet";
+import { type Explosion } from "../../objects/explosion";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class UpdatePacket extends SendingPacket {
@@ -98,9 +104,11 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.fullDirtyObjects.size);
 
             for (const fullObject of player.fullDirtyObjects) {
-                stream.writeObjectType(fullObject.createObjectType());
+                stream.writeObjectType(fullObject.type);
                 stream.writeObjectID(fullObject.id);
-                fullObject.serializeFull(stream);
+
+                (ObjectSerializations[fullObject.type]
+                    .serializeFull as (stream: SuroiBitStream, data: typeof fullObject.data) => void)(stream, fullObject.data);
             }
             player.fullDirtyObjects.clear();
         }
@@ -110,9 +118,11 @@ export class UpdatePacket extends SendingPacket {
             stream.writeUint16(player.partialDirtyObjects.size);
 
             for (const partialObject of player.partialDirtyObjects) {
-                stream.writeObjectType(partialObject.createObjectType());
+                stream.writeObjectType(partialObject.type);
                 stream.writeObjectID(partialObject.id);
-                partialObject.serializePartial(stream);
+
+                (ObjectSerializations[partialObject.type]
+                    .serializePartial as (stream: SuroiBitStream, data: typeof partialObject.data) => void)(stream, partialObject.data);
             }
             player.partialDirtyObjects.clear();
         }
@@ -128,36 +138,50 @@ export class UpdatePacket extends SendingPacket {
             player.deletedObjects.clear();
         }
 
+        // Cull bullets
+        const bullets: Bullet[] = [];
+        for (const bullet of game.newBullets) {
+            if (lineIntersectsRect2(bullet.initialPosition,
+                bullet.finalPosition,
+                player.screenHitbox.min,
+                player.screenHitbox.max)) {
+                bullets.push(bullet);
+            }
+        }
+
         // Bullets
         if (bulletsDirty) {
-            stream.writeUint8(game.newBullets.size);
-            for (const bullet of game.newBullets) {
-                stream.writeObjectType(bullet.sourceObjectType);
-                stream.writePosition(bullet.initialPosition);
-                stream.writeRotation(bullet.rotation, 16);
-                stream.writeFloat(bullet.variance, 0, 1, 4);
-                stream.writeBits(bullet.reflectionCount, 2);
-                stream.writeObjectID(bullet.sourceID);
+            stream.writeUint8(bullets.length);
+            for (const bullet of bullets) {
+                bullet.serialize(stream);
+            }
+        }
+
+        // Cull explosions
+        const explosions: Explosion[] = [];
+        for (const explosion of game.explosions) {
+            if (player.screenHitbox.isPointInside(explosion.position) ||
+                distanceSquared(explosion.position, player.position) < 16384) {
+                explosions.push(explosion);
             }
         }
 
         // Explosions
         if (explosionsDirty) {
-            stream.writeUint8(game.explosions.size);
-            for (const explosion of game.explosions) {
-                explosion.serialize(stream);
+            stream.writeUint8(explosions.length);
+            for (const explosion of explosions) {
+                Explosions.writeToStream(stream, explosion.definition);
+                stream.writePosition(explosion.position);
             }
         }
 
         // Emotes
         if (emotesDirty) {
             stream.writeBits(player.emotes.size, 7);
-
             for (const emote of player.emotes) {
-                stream.writeObjectTypeNoCategory(emote.createObjectType());
+                Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.player.id);
             }
-
             player.emotes.clear();
         }
 

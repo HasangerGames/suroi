@@ -1,12 +1,10 @@
-import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { randomPointInsideCircle } from "../../../common/src/utils/random";
+import { random, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 import { Guns } from "../../../common/src/definitions/guns";
@@ -14,6 +12,7 @@ import { Player } from "../objects/player";
 import { type PlayerContainer } from "../server";
 import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
+import { Skins } from "../../../common/src/definitions/skins";
 
 interface MapDefinition {
     readonly width: number
@@ -76,15 +75,15 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 6,
-            regular_crate: 155,
             oak_tree: 143,
+            birch_tree: 18,
+            pine_tree: 14,
+            regular_crate: 155,
             rock: 142,
             bush: 87,
             blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
-            birch_tree: 18,
-            pine_tree: 14,
             melee_crate: 1,
             gold_rock: 1,
             flint_stone: 1
@@ -117,10 +116,10 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     debug: {
-        width: 1024,
-        height: 1024,
-        beachSize: 16,
-        oceanSize: 160,
+        width: 1344,
+        height: 1344,
+        oceanSize: 128,
+        beachSize: 32,
         genCallback: (map: Map) => {
             // Generate all buildings
 
@@ -156,6 +155,7 @@ export const Maps: Record<string, MapDefinition> = {
             const obstaclePos = v(200, 200);
 
             for (const obstacle of Obstacles.definitions) {
+                if (obstacle.invisible) continue;
                 for (let i = 0; i < (obstacle.variations ?? 1); i++) {
                     map.generateObstacle(obstacle.idString, obstaclePos, 0, 1, i as Variation);
 
@@ -272,14 +272,15 @@ export const Maps: Record<string, MapDefinition> = {
 
             for (const obstacle in randomObstacles) {
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
+                    const definition = Obstacles.fromString(obstacle);
                     map.generateObstacle(
-                        obstacle,
+                        definition,
                         map.getRandomPositionFor(
-                            ObjectType.fromString(ObjectCategory.Obstacle, obstacle),
+                            definition.spawnHitbox ?? definition.hitbox,
                             1,
                             0,
                             getPos
-                        ),
+                        ) ?? v(0, 0),
                         0,
                         1
                     );
@@ -325,6 +326,22 @@ export const Maps: Record<string, MapDefinition> = {
                 map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
                 map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
+            }
+        }
+    },
+    players_test: {
+        width: 256,
+        height: 256,
+        beachSize: 16,
+        oceanSize: 16,
+        genCallback(map) {
+            for (let x = 0; x < 256; x += 16) {
+                for (let y = 0; y < 256; y += 16) {
+                    const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
+                    player.disableInvulnerability();
+                    player.loadout.skin = Skins[random(0, Skins.length - 1)];
+                    map.game.grid.addObject(player);
+                }
             }
         }
     },

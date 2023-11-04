@@ -2,21 +2,17 @@ import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../common/src/typings";
 import { type Hitbox } from "../../../common/src/utils/hitbox";
-import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
+import { type Obstacle } from "./obstacle";
 
-export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject {
+export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
-    override createObjectType(): ObjectType<this["type"], Def> {
-        return ObjectType.fromString(this.type, this.definition.idString);
-    }
 
-    readonly definition: Def;
+    readonly definition: BuildingDefinition;
 
     readonly scopeHitbox?: Hitbox;
     readonly spawnHitbox: Hitbox;
@@ -24,16 +20,18 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
 
     private _wallsToDestroy?: number;
 
+    interactableObstacles = new Set<Obstacle>();
+
     //@ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
-    constructor(game: Game, definition: ReferenceTo<Def> | Def, position: Vector, orientation: Orientation) {
+    constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {
         super(game, position);
 
-        this.definition = typeof definition === "string" ? (definition = Buildings.getByIDString<Def>(definition)) : definition;
+        this.definition = Buildings.reify(definition);
 
         this.rotation = orientation;
-        this._wallsToDestroy = definition.wallsToDestroy;
+        this._wallsToDestroy = this.definition.wallsToDestroy;
         this.spawnHitbox = this.definition.spawnHitbox.transform(this.position, 1, orientation);
         this.hitbox = this.spawnHitbox;
 
@@ -53,25 +51,14 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         }
     }
 
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Building].serializePartial(
-            stream,
-            {
-                dead: this.dead,
-                fullUpdate: false
-            }
-        );
-    }
-
-    override serializeFull(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Building].serializeFull(
-            stream,
-            {
-                dead: this.dead,
+    override get data(): Required<ObjectsNetData[ObjectCategory.Building]> {
+        return {
+            dead: this.dead,
+            full: {
+                definition: this.definition,
                 position: this.position,
-                rotation: this.rotation,
-                fullUpdate: true
+                rotation: this.rotation
             }
-        );
+        };
     }
 }
