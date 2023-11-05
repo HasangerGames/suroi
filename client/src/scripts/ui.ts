@@ -169,7 +169,7 @@ export function setupUI(game: Game): void {
         sendSpectatePacket(SpectateActions.SpectatePrevious);
     });
 
-     $("#btn-spectate-kill-leader").on("click", () => {
+    $("#btn-spectate-kill-leader").on("click", () => {
         sendSpectatePacket(SpectateActions.SpectateKillLeader);
     });
 
@@ -519,6 +519,59 @@ export function setupUI(game: Game): void {
         game.console.setBuiltInCVar("cv_hide_rules_button", true);
         $("#toggle-hide-rules").prop("checked", true);
     }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
+
+    // Import settings
+    $("#import-settings-btn").on("click", () => {
+        if (!confirm("This option will overwrite all settings and reload the page. Continue?")) return;
+        const error = (): void => {
+            alert("Invalid config.");
+        };
+        try {
+            const input = prompt("Enter a config:");
+            if (!input) {
+                error();
+                return;
+            }
+
+            const config = JSON.parse(input);
+            if (typeof config !== "object" || !("variables" in config)) {
+                error();
+                return;
+            }
+
+            localStorage.setItem("suroi_config", input);
+            alert("Settings loaded successfully.");
+            window.location.reload();
+        } catch (e) {
+            error();
+        }
+    });
+
+    // Copy settings to clipboard
+    $("#export-settings-btn").on("click", () => {
+        const exportedSettings = localStorage.getItem("suroi_config");
+        const error = (): void => {
+            alert('Unable to copy settings. To export settings manually, open the dev tools with Ctrl+Shift+I and type in the following: localStorage.getItem("suroi_config")');
+        };
+        if (exportedSettings === null) {
+            error();
+            return;
+        }
+        navigator.clipboard
+            .writeText(exportedSettings)
+            .then(() => {
+                alert("Settings copied to clipboard.");
+            })
+            .catch(error);
+    });
+
+    // Reset settings
+    $("#reset-settings-btn").on("click", () => {
+        if (!confirm("This option will reset all settings and reload the page. Continue?")) return;
+        if (!confirm("Are you sure? This action cannot be undone.")) return;
+        localStorage.removeItem("suroi_config");
+        window.location.reload();
+    });
 
     // Switch weapon slots by clicking
     for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
