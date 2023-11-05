@@ -51,6 +51,7 @@ export enum FireMode {
 
 export enum InputActions {
     EquipItem,
+    EquipLastItem,
     DropItem,
     SwapGunSlots,
     Interact,

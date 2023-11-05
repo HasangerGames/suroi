@@ -79,7 +79,7 @@ export class Camera {
     }
 
     shake(duration: number, intensity: number): void {
-        if (!this.game.console.getConfig("cv_camera_shake_fx")) return;
+        if (!this.game.console.getBuiltInCVar("cv_camera_shake_fx")) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;

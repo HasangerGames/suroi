@@ -1,16 +1,77 @@
-<svg width="219" height="35" viewBox="0 0 219 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="19.7816" y="4.15918" width="80.42" height="4.96402" rx="2.48201" fill="#3E3B38" stroke="#363230" stroke-width="2.04097"/>
-<rect x="19.7814" y="25.752" width="80.42" height="4.96402" rx="2.48201" fill="#3E3B38" stroke="#363230" stroke-width="2.04097"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M156.307 7.77734H191.907C192.444 7.77734 192.96 7.98996 193.34 8.36841C193.72 8.74687 193.933 9.26017 193.933 9.79539V25.2073C193.933 25.7426 193.72 26.2559 193.34 26.6343C192.96 27.0128 192.444 27.2254 191.907 27.2254H156.307C156.041 27.2254 155.777 27.1732 155.531 27.0718C155.285 26.9704 155.062 26.8217 154.874 26.6343C154.686 26.4469 154.536 26.2245 154.435 25.9796C154.333 25.7348 154.28 25.4724 154.28 25.2073V9.79539C154.28 9.26017 154.494 8.74687 154.874 8.36841C155.254 7.98996 155.769 7.77734 156.307 7.77734Z" fill="#282624" stroke="#181616" stroke-width="4.14072" stroke-linecap="round" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M127.845 13.1377H209.866V21.8624H127.845V13.1377Z" fill="#635D5A" stroke="#181716" stroke-width="4.25902" stroke-linecap="round" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M56.2518 13.1826H86.7194V21.6905H56.2518V13.1826Z" fill="#282624" stroke="#181716" stroke-width="4.14072" stroke-linecap="round" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M2.97388 2.43555H23.639V32.4355H2.97388V2.43555Z" fill="#302E2B" stroke="#181716" stroke-width="4.14072" stroke-linecap="round" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M86.7197 8.4043H127.846V26.6049H86.7197V8.4043Z" fill="#736C68" stroke="#181716" stroke-width="4.25902" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M90.7653 21.5049H123.738" stroke="#44413F" stroke-width="1.18306" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M90.765 23.3623H92.7911" stroke="#44413F" stroke-width="1.18306" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M90.7651 13.5029H123.738" stroke="#44413F" stroke-width="1.18306" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M90.7654 11.6387H92.7915" stroke="#44413F" stroke-width="1.18306" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="91.8593" y="12.46" width="17.3219" height="10.0827" rx="1.24449" fill="#6F705C" stroke="#191915" stroke-width="2.04097"/>
-<rect x="110.222" y="16.7715" width="98.9805" height="1.45935" fill="#702929"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M216.469 11.2207L209.203 11.7185V23.2909L216.469 23.7887V11.2207Z" fill="#6F705C" stroke="#191915" stroke-width="4.25902" stroke-linecap="round" stroke-linejoin="round"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" width="141" height="21.73" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141 21.73">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #6f705c;
+        stroke: #191915;
+      }
+
+      .cls-1, .cls-3 {
+        stroke-width: 1.5px;
+      }
+
+      .cls-4 {
+        fill: #181716;
+      }
+
+      .cls-5 {
+        fill: #702929;
+      }
+
+      .cls-2, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10 {
+        fill-rule: evenodd;
+        stroke-width: 3px;
+      }
+
+      .cls-2, .cls-6, .cls-7, .cls-8, .cls-9, .cls-10, .cls-3 {
+        stroke-linecap: round;
+      }
+
+      .cls-6 {
+        stroke: #181616;
+      }
+
+      .cls-6, .cls-7 {
+        fill: #282624;
+      }
+
+      .cls-7, .cls-8, .cls-9, .cls-10 {
+        stroke: #181716;
+      }
+
+      .cls-8 {
+        fill: #635d5a;
+      }
+
+      .cls-9 {
+        fill: #302e2b;
+      }
+
+      .cls-10 {
+        fill: #736c68;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #44413f;
+      }
+    </style>
+  </defs>
+  <g id="Layer_15" data-name="Layer 15">
+    <path class="cls-4" d="M12.6,2.58H56.02c.79,0,1.43,.69,1.43,1.55h0c0,.86-.64,1.55-1.43,1.55H12.6c-.79,0-1.43-.69-1.43-1.55h0c0-.86,.64-1.55,1.43-1.55Z"/>
+    <path class="cls-4" d="M12.6,16.06H56.02c.79,0,1.43,.69,1.43,1.55h0c0,.86-.64,1.55-1.43,1.55H12.6c-.79,0-1.43-.69-1.43-1.55h0c0-.86,.64-1.55,1.43-1.55Z"/>
+    <path class="cls-6" d="M97.04,4.83h25.12c.38,0,.74,.13,1.01,.37,.27,.24,.42,.56,.42,.89V15.72c0,.33-.15,.65-.42,.89-.27,.24-.63,.37-1.01,.37h-25.12c-.19,0-.37-.03-.55-.1-.17-.06-.33-.16-.46-.27-.13-.12-.24-.26-.31-.41-.07-.15-.11-.32-.11-.48V6.09c0-.33,.15-.65,.42-.89,.27-.24,.63-.37,1.01-.37Z"/>
+    <path class="cls-8" d="M76.96,8.18h57.88v5.45h-57.88v-5.45Z"/>
+    <path class="cls-7" d="M27.43,8.21h19.51c.55,0,.99,.45,.99,.99v3.32c0,.55-.45,.99-.99,.99H27.43c-.55,0-.99-.45-.99-.99v-3.32c0-.55,.45-.99,.99-.99Z"/>
+    <path class="cls-9" d="M3.19,1.5H11.7c.94,0,1.69,.76,1.69,1.69v15.34c0,.94-.76,1.69-1.69,1.69H3.19c-.94,0-1.69-.76-1.69-1.69V3.19c0-.94,.76-1.69,1.69-1.69Z"/>
+    <path class="cls-10" d="M48.64,5.23h27.61c.39,0,.71,.32,.71,.71V15.88c0,.39-.32,.71-.71,.71h-27.61c-.39,0-.71-.32-.71-.71V5.93c0-.39,.32-.71,.71-.71Z"/>
+    <path class="cls-3" d="M50.79,13.4h23.27"/>
+    <path class="cls-3" d="M50.79,14.56h1.43"/>
+    <path class="cls-3" d="M50.79,8.41h23.27"/>
+    <path class="cls-3" d="M50.79,7.25h1.43"/>
+    <path class="cls-1" d="M52.44,7.76h10.47c.49,0,.88,.35,.88,.78v4.74c0,.43-.39,.78-.88,.78h-10.47c-.49,0-.88-.35-.88-.78v-4.74c0-.43,.39-.78,.88-.78Z"/>
+    <rect class="cls-5" x="64.52" y="10.45" width="69.85" height=".91"/>
+    <path class="cls-2" d="M138.79,7.03l-3.8,.23c-.35,.02-.62,.31-.62,.66v5.97c0,.35,.27,.64,.62,.66l3.8,.23c.38,.02,.71-.28,.71-.66V7.69c0-.38-.32-.69-.71-.66Z"/>
+  </g>
 </svg>
