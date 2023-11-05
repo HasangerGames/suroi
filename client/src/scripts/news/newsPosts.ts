@@ -3,6 +3,52 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1698602400000,
+        author: "HAZEL",
+        title: "Trick-or-Tweak",
+        bannerImage: "../img/news/v0.12.0.png",
+        content: `The island grows dark. The trees begin to turn, the rivers run red, and the full moon rises. A new spooky orange obstacle drops one of two new weapons: a training weapon from A.E.G.I.S. stores, and a very powerful shotgun specially modified by H.A.Z.E.L.'s R&D team.<br><br>
+
+After checking out these frightening additions, enjoy your candy while reading all the bug fixes and QoL changes this update brings. Happy Halloween!`,
+        longContent: `<h2>Suroi v0.12.0</h2>
+<h3>Changelog</h3>
+<ul>
+  <li>Halloween mode! Added 2 new guns and a new obstacle. Reskinned trees & blueberry bushes. New menu music.</li>
+  <li>Added a new skin and a new emote.</li>
+  <li>Added 7 new crosshairs.</li>
+  <li>Tweaked gun top downs.</li>
+  <li>New reload & switch sounds for Flues & M1895.</li>
+  <li>Fixed "Connection lost" issues.</li>
+  <li>Fixed "Error joining game" issues.</li>
+  <li>Fixed an issue with the camera being stuck in the top left corner when movement smoothing is disabled.</li>
+  <li>Fixed issues with the Play Again button.</li>
+  <li>Fixed birch and pine trees spawning inside other obstacles.</li>
+  <li>Fixed kill leader issues.</li>
+  <li>Server performance improvements.</li>
+  <li>The AEGIS crate now has a 50% chance to spawn in place of the Tango crate in the ship vault.</li>
+  <li>Scopes now drop from the Tango crate.</li>
+  <li>Fixed issues with shoot on joystick release.</li>
+  <li>Fixed the rules & tutorial button being hidden by default.</li>
+  <li>Removed misleading ping counter from server selector.</li>
+  <li>Fixed overlapping containers at the port.</li>
+  <li>Fixed issues with special characters in usernames.</li>
+  <li>Fixed kill feed messages not being colored.</li>
+  <li>Fixed movement keys not working to switch spectators.</li>
+  <li>Fixed rivers below the port slowing players down.</li>
+  <li>Fixed keybind reset button.</li>
+  <li>Fixed "Equip Other Gun" keybind not switching to secondary slot with only 1 gun equipped and melee slot selected.</li>
+  <li>Fixed minimap rendering issues.</li>
+  <li>Fixed container layering issues.</li>
+  <li>The inside of the captain's cabin on the ship is now revealed when near the windows.</li>
+  <li>Added missing killfeed icons.</li>
+  <li>Fixed some missing textures.</li>
+  <li>Fixed silent porta potty doors.</li>
+  <li>Fixed images on the news page not loading.</li>
+  <li>The M1895 now displays bullet casings only on reload. The M1895 and Flues now display multiple casings.</li>
+  <li>Removed default keybind for opening the dev console.</li>
+</ul>`
+    },
+    {
         date: 1698001957000,
         author: "HAZEL",
         title: "Making Waves",

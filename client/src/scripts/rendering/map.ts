@@ -10,6 +10,7 @@ import { type MapPacket } from "../packets/receiving/mapPacket";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { Gas } from "./gas";
+import { MODE } from "../../../../common/src/definitions/modes";
 
 export class Minimap {
     container = new Container();
@@ -199,8 +200,15 @@ export class Minimap {
         for (const obstacle of mapPacket.obstacles) {
             const definition = obstacle.type;
 
+            let texture = definition.frames?.base ?? definition.idString;
+
+            if (obstacle.variation !== undefined) texture += `_${obstacle.variation + 1}`;
+
+            const reskin = MODE.reskin;
+            if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
+
             // Create the object image
-            const image = new SuroiSprite(`${definition.frames?.base ?? definition.idString}${obstacle.variation !== undefined ? `_${obstacle.variation + 1}` : ""}`)
+            const image = new SuroiSprite(texture)
                 .setVPos(obstacle.position).setRotation(obstacle.rotation)
                 .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
 

@@ -144,7 +144,7 @@ export class Map {
         this.riverSpawnHitboxes = terrain.riverSpawnHitboxes;
 
         // TODO Make a specialBuildings property
-        if (mapName === "main") {
+        if (mapName === "main" || mapName === "halloween") {
             const width = this.width; const height = this.height; const shoreDist = 285; const sideDist = 1024;
             const initialHitbox = Buildings.fromString("port").spawnHitbox;
             let collided = true;

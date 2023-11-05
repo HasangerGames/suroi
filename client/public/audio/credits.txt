@@ -1,4 +1,5 @@
 Menu music - Pixelbitie - Marching with Style: https://www.youtube.com/watch?v=_7lqVysj1ww
+Halloween menu music - Secrets of the House on the Hill by Rage Sound
 
 Most sound effects edited by Henry Sanger
 
@@ -16,6 +17,14 @@ Guns:
   ARX-160 - ARX160 Rifle by oneshotofficial: https://gamebanana.com/sounds/57736
 
   Flues fire - "080902_Shotgun" from Pixabay: https://pixabay.com/sound-effects/080902-shotgun-39753/
+  Flues switch - eiπ
+  Flues reload - eiπ, Katloo
+
+  M1895 reload - "Clean Revolver Reload" from Pixabay: https://pixabay.com/sound-effects/clean-revolver-reload-6889/
+
+  USAS-12 fire - "Small Explosion" from Pixabay: https://pixabay.com/sound-effects/small-explosion-103931/
+  USAS-12 switch & explosion - "Cannon Fire" from Pixabay: https://pixabay.com/sound-effects/cannon-fire-161072/
+  USAS-12 reload - Yeet120
 
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
@@ -38,22 +47,35 @@ Obstacles:
   Stone hit - 123OP
   Stone destroyed - "Rocks - Effects - Source Recordings - 05" by GregorQuendel (CC BY 4.0):   https://freesound.org/people/newlocknew/sounds/631485/
 
+  Pumpkin destroyed - https://pixabay.com/sound-effects/splat2ogg-14668/
+
 Ceiling breaking - https://freesound.org/people/InspectorJ/sounds/352513/
+Vault door opening - "Metal warehouse door opened with chains" from Pixabay: https://pixabay.com/sound-effects/metal-warehouse-door-opened-with-chains-100823/
 
 Cola:
   "Opening a can of soda" from Pixabay: https://pixabay.com/sound-effects/opening-a-can-of-soda-80185/
   "Soda Can Plus Pour and Fizz MUS 152" from Pixabay: https://pixabay.com/sound-effects/soda-can-plus-pour-and-fizz-mus-152-25167/
   "Gulping Noises | Drinking Noises" from Pixabay: https://pixabay.com/sound-effects/gulping-noises-drinking-noises-37758/
+  Picking up: 123OP
 
 Medikit:
   "Opening a small cardboard box" by Aiwha: https://freesound.org/people/Aiwha/sounds/415488/
   "Rustle through chord box.mp3" by hank_richard: https://freesound.org/people/hank_richard/sounds/179670/
   "Heal soft water spell" from Mixkit: https://mixkit.co/free-sound-effects/spell/
+  Pickup - Yeet120
 
 Gauze:
+  Use - hasanger
   Pickup - 1092384
 
 Pills:
-  Pickup - Hasanger and 1092384
+  Use - hasanger
+  Pickup - hasanger and 1092384
+
+Footsteps:
+  Grass, wood, stone - Katloo
+  Metal - "Metal Footsteps" from Pixabay: https://pixabay.com/sound-effects/metal-footsteps-14727/
+  Sand - "foley_footsteps_desert_boots_sand" from Pixabay: https://pixabay.com/sound-effects/foley-footsteps-desert-boots-sand-6900/
+  Water - "Footsteps in Water - Nature Sounds" from Pixabay: https://pixabay.com/sound-effects/footsteps-in-water-nature-sounds-8185/
 
 All other sound effects - Katloo

@@ -26,7 +26,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
 
     fromString<U extends T = T>(idString: ReferenceTo<U>): U {
         const id = this.idStringToNumber[idString];
-        if (id === undefined) throw new Error(`Unknow idString: ${idString}`);
+        if (id === undefined) throw new Error(`Unknown idString: ${idString}`);
         return this.definitions[id] as U;
     }
 

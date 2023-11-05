@@ -322,7 +322,7 @@ export class Inventory {
 
                 To solve this, we just ignore capacity limits when the player is dead.
             */
-            const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral === true || this.owner.dead
+            const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral ?? this.owner.dead
                 ? 0
                 : this.items[ammoType] - (this.backpack?.maxCapacity[ammoType] ?? 0);
 

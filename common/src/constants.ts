@@ -1,5 +1,3 @@
-import { ItemType } from "./utils/objectDefinitions";
-
 export enum ObjectCategory {
     Player,
     Obstacle,
@@ -87,7 +85,7 @@ export enum ArmorType {
 
 // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
 // or a new item is added to a definition list
-export const PROTOCOL_VERSION = 1;
+export const PROTOCOL_VERSION = 2;
 
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
@@ -101,12 +99,6 @@ export const DEFAULT_USERNAME = "Player";
 export const INVENTORY_MAX_WEAPONS = 3;
 export const KILL_LEADER_MIN_KILLS = 3;
 export const MAX_MOUSE_DISTANCE = 128;
-
-export const InventorySlots = [
-    ItemType.Gun,
-    ItemType.Gun,
-    ItemType.Melee
-];
 
 export enum ZIndexes {
     Ground,
