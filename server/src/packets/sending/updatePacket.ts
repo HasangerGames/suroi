@@ -87,8 +87,11 @@ export class UpdatePacket extends SendingPacket {
             player.dirty.activePlayerID = false;
             const spectating = player.spectators.size > 0;
             stream.writeBoolean(spectating);
+            const killLeader = this.player.game.killLeader;
+            const hasKillLeader = killLeader !== undefined;
             if (spectating) {
                 stream.writePlayerNameWithColor(player);
+                stream.writeBoolean(hasKillLeader);
             }
         }
 

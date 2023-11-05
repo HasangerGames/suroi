@@ -159,7 +159,7 @@ export class Game {
                 $("#ui-kills").text("0");
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
-                $("#spectating-buttons-container").hide();
+                // $("#spectating-buttons-container").hide();
                 $("#joysticks-containers").show();
             }
             this.sendPacket(new PingPacket(this._playerManager));

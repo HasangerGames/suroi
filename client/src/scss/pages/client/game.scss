@@ -574,7 +574,10 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
+    width: 225px;
     gap: 10px;
+    justify-content: space-between;
+    flex-wrap: wrap;
 
     @media screen and (max-width: $screen_large) {
         top: 100px;
@@ -584,6 +587,10 @@
             padding: 8px 12px;
             font-size: 14px;
         }
+    }
+
+    #btn-spectate-kill-leader {
+        width: 100%;
     }
 }
 
