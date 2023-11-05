@@ -800,7 +800,7 @@ export const Guns: GunDefinition[] = [
         noMuzzleFlash: true,
         ballistics: {
             damage: 22,
-            obstacleMultiplier: 1,
+            obstacleMultiplier: 1.5,
             speed: 0.22,
             maxDistance: 160,
             tracer: {
