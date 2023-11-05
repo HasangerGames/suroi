@@ -434,9 +434,9 @@
             </label>
           </div>
         </div>
-        <div class="tab-content" id="tab-keybinds-content" style="display: none;">
+        <div class="tab-content" id="tab-keybinds-content" style="display: none">
         </div>
-        <div class="tab-content" id="tab-graphics-content" style="display: none;">
+        <div class="tab-content" id="tab-graphics-content" style="display: none">
           <div class="modal-item checkbox-setting" title="Requires restart">
             <label>
               <span class="setting-title">Anti-Aliasing<i>*</i></span>
@@ -456,7 +456,7 @@
             </label>
           </div>
         </div>
-        <div class="tab-content" id="tab-interface-content" style="display: none;">
+        <div class="tab-content" id="tab-interface-content" style="display: none">
           <div class="modal-item">
             <label>
               <span class="setting-title">Minimap Transparency</span>
@@ -526,27 +526,27 @@
             </label>
           </div>
         </div>
-        <div class="tab-content" id="tab-import-export-content">
+        <div class="tab-content" id="tab-import-export-content" style="display: none">
           <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="import-settings">
+            <button class="btn btn-darken btn-lg btn-secondary" id="import-settings-btn">
               <i class="fa-solid fa-file-import"></i>
-              Load Settings from Clipboard
+              Load settings
             </button>
           </div>
           <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-secondary" id="export-settings">
-              <i class="fa-solid fa-file-import"></i>
-              Save Settings to Clipboard
+            <button class="btn btn-darken btn-lg btn-secondary" id="export-settings-btn">
+              <i class="fa-solid fa-file-export"></i>
+              Copy settings to clipboard
             </button>
           </div>
           <div class="modal-item">
-            <button class="btn btn-darken btn-lg btn-danger" id="reset-settings">
+            <button class="btn btn-darken btn-lg btn-danger" id="reset-settings-btn">
               <i class="fa-solid fa-trash"></i>
-              Reset Settings
+              Reset settings
             </button>
           </div>
         </div>
-        <div class="tab-content" id="tab-mobile-content" style="display: none;">
+        <div class="tab-content" id="tab-mobile-content" style="display: none">
           <i>Changing these settings requires reloading the page</i>
           <div class="modal-item">
             <button style="margin-bottom: 10px;" class="btn btn-lg btn-darken btn-secondary"
@@ -583,7 +583,7 @@
     </div>
     <div id="customize-tabs-container">
       <div class="tab-bar" id="customize-tab-bar">
-        <button class="tab active" id="tab-skins"><img src="./img/misc/player_icon.svg">Skins</button>
+        <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i>Skins</button>
         <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg">Emotes</button>
         <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg">Crosshair</button>
       </div>

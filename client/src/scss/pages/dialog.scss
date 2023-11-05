@@ -4,7 +4,7 @@
 #settings-menu,
 #report-modal {
     background-color: $bg;
-    max-width: 650px;
+    max-width: 450px;
 }
 
 #reporting-name {
@@ -423,7 +423,7 @@
                 padding: 3px;
                 background-color: lighten($transparent_bg, 30%);
             }
-            
+
             .modal-item:not(:last-child) {
                 div.settings-title {
                     width: 100%;
@@ -453,6 +453,7 @@
             position: relative;
             top: 3px;
             margin-right: 5px;
+            @include drop-shadow;
         }
     }
 
