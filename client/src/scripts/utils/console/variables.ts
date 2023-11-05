@@ -218,6 +218,7 @@ export interface CVarTypeMapping {
     readonly cv_camera_shake_fx: ConVar<boolean>
     readonly cv_killfeed_style: ConVar<"text" | "icon">
     readonly cv_movement_smoothing: ConVar<boolean>
+    readonly cv_antialias: ConVar<boolean>
     readonly cv_minimap_minimized: ConVar<boolean>
     readonly cv_leave_warning: ConVar<boolean>
     readonly cv_minimap_transparency: ConVar<number>

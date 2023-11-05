@@ -1,4 +1,5 @@
 import { TICKS_PER_SECOND } from "../../../common/src/constants";
+import { Bullets } from "../../../common/src/definitions/bullets";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { normalizeAngle } from "../../../common/src/utils/math";
@@ -35,8 +36,10 @@ export class Bullet extends BaseBullet {
     readonly sourceGun: Weapon;
     readonly shooter: GameObject;
 
-    clipDistance: number;
+    readonly clipDistance: number;
     reflected = false;
+
+    readonly finalPosition: Vector;
 
     constructor(
         game: Game,
@@ -44,11 +47,13 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const variance = source.definition.ballistics.rangeVariance;
+        const definition = Bullets.fromString(`${source.definition.idString}_bullet`);
+        const variance = definition.rangeVariance;
+
         super({
             ...options,
             rotation: normalizeAngle(options.rotation),
-            source: source.definition,
+            source: definition,
             sourceID: shooter.id,
             variance: variance ? randomFloat(0, variance) : undefined
         });
@@ -57,6 +62,8 @@ export class Bullet extends BaseBullet {
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
+
+        this.finalPosition = vAdd(this.position, vMul(this.direction, this.maxDistance));
     }
 
     update(): DamageRecord[] {

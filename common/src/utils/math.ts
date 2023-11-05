@@ -1,6 +1,6 @@
 import { type ObstacleDefinition } from "../definitions/obstacles";
 import { type Orientation } from "../typings";
-import { RectangleHitbox, type Hitbox } from "./hitbox";
+import { RectangleHitbox } from "./hitbox";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { v, vAdd, vDiv, vDot, vLength, vLengthSqr, vMul, vNormalize, vNormalizeSafe, vSub, type Vector } from "./vector";
 
@@ -504,11 +504,7 @@ export function lineIntersectsRect2(s0: Vector, s1: Vector, min: Vector, max: Ve
         }
     }
 
-    if (tmin > dist) {
-        return false;
-    }
-
-    return true;
+    return tmin <= dist;
 }
 
 export type CollisionResponse = { readonly dir: Vector, readonly pen: number } | null;
@@ -571,8 +567,8 @@ export function calculateDoorHitboxes<
     position: Vector,
     rotation: Orientation
 ): U extends "slide"
-        ? { readonly openHitbox: Hitbox }
-        : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox } {
+        ? { readonly openHitbox: RectangleHitbox }
+        : { readonly openHitbox: RectangleHitbox, readonly openAltHitbox: RectangleHitbox } {
     if (!(definition.hitbox instanceof RectangleHitbox) || definition.role !== ObstacleSpecialRoles.Door) {
         throw new Error("Unable to calculate hitboxes for door: Not a door or hitbox is non-rectangular");
     }
@@ -580,8 +576,8 @@ export function calculateDoorHitboxes<
     type Swivel = typeof definition & { readonly operationStyle: "swivel" };
     type Slide = typeof definition & { readonly operationStyle: "slide" };
     type Return = U extends "slide"
-        ? { readonly openHitbox: Hitbox }
-        : { readonly openHitbox: Hitbox, readonly openAltHitbox: Hitbox };
+        ? { readonly openHitbox: RectangleHitbox }
+        : { readonly openHitbox: RectangleHitbox, readonly openAltHitbox: RectangleHitbox };
 
     switch (definition.operationStyle) {
         case "slide": {
@@ -596,7 +592,7 @@ export function calculateDoorHitboxes<
             // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 openHitbox: new RectangleHitbox(openHitbox.min, openHitbox.max)
-            } as unknown as Return;
+            } as Return;
         }
         case "swivel":
         default: {
@@ -615,10 +611,11 @@ export function calculateDoorHitboxes<
                 absMod(rotation - 1, 4) as Orientation
             );
 
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
             return {
                 openHitbox: new RectangleHitbox(openRectangle.min, openRectangle.max),
                 openAltHitbox: new RectangleHitbox(openAltRectangle.min, openAltRectangle.max)
-            } as unknown as Return;
+            } as Return;
         }
     }
 }

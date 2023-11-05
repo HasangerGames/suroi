@@ -1,11 +1,9 @@
 import $ from "jquery";
-import { Application } from "pixi.js";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { COLORS } from "./utils/constants";
 import { loadAtlases } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
 
@@ -26,16 +24,7 @@ $(async(): Promise<void> => {
 
     // Initialize the Application object
 
-    const app = new Application<HTMLCanvasElement>({
-        resizeTo: window,
-        background: COLORS.grass,
-        antialias: true,
-        autoDensity: true,
-        resolution: window.devicePixelRatio || 1
-    });
-    $("#game-ui").append(app.view);
-
-    const game = new Game(app);
+    const game = new Game();
 
     await loadAtlases();
 
@@ -103,7 +92,7 @@ $(async(): Promise<void> => {
 
     //@ts-expect-error Even though indexing an object with undefined is technically gibberish, doing so returns undefined, which
     // is kinda what we want anyways, so it's fine
-    const cVarRegion = regionInfo[game.console.getConfig("cv_region")];
+    const cVarRegion = regionInfo[game.console.getBuiltInCVar("cv_region")];
     //@ts-expect-error ditto
     const empiricalBestRegion = regionInfo[bestRegion];
     const clientConfigRegion = regionInfo[Config.defaultRegion];
@@ -119,7 +108,7 @@ $(async(): Promise<void> => {
 
         selectedRegion = info;
 
-        game.console.setConfig("cv_region", region);
+        game.console.setBuiltInCVar("cv_region", region);
 
         updateServerSelector();
     });
@@ -137,10 +126,10 @@ $(async(): Promise<void> => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
-                const devPass = game.console.getConfig("dv_password");
-                const role = game.console.getConfig("dv_role");
-                const nameColor = game.console.getConfig("dv_name_color");
-                const lobbyClearing = game.console.getConfig("dv_lobby_clearing");
+                const devPass = game.console.getBuiltInCVar("dv_password");
+                const role = game.console.getBuiltInCVar("dv_role");
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
@@ -180,23 +169,23 @@ $(async(): Promise<void> => {
 
     const nameColor = params.get("nameColor");
     if (nameColor) {
-        game.console.setConfig("dv_name_color", nameColor);
+        game.console.setBuiltInCVar("dv_name_color", nameColor);
     }
 
     const lobbyClearing = params.get("lobbyClearing");
     if (lobbyClearing) {
-        game.console.setConfig("dv_lobby_clearing", lobbyClearing === "true");
+        game.console.setBuiltInCVar("dv_lobby_clearing", lobbyClearing === "true");
     }
 
     const devPassword = params.get("password");
     if (devPassword) {
-        game.console.setConfig("dv_password", devPassword);
+        game.console.setBuiltInCVar("dv_password", devPassword);
         location.search = "";
     }
 
     const role = params.get("role");
     if (role) {
-        game.console.setConfig("dv_role", role);
+        game.console.setBuiltInCVar("dv_role", role);
         location.search = "";
     }
 

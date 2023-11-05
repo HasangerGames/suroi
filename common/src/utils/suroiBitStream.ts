@@ -1,11 +1,19 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, OBJECT_CATEGORY_BITS, OBJECT_ID_BITS, PACKET_TYPE_BITS, PLAYER_NAME_MAX_LENGTH, VARIATION_BITS, type ObjectCategory, type PacketType } from "../constants";
+import { InputActions, KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
-import { type ObjectDefinition, type ObjectDefinitions } from "./objectDefinitions";
-import { ObjectDefinitionsList, ObjectType } from "./objectType";
 import { type Vector } from "./vector";
+
+export const calculateEnumPacketBits = (enumeration: Record<string | number, string | number>): number => Math.ceil(Math.log2(Object.keys(enumeration).length / 2));
+
+export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
+export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
+export const OBJECT_ID_BITS = 12;
+export const VARIATION_BITS = 3;
+export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
+export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
+export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -110,44 +118,16 @@ export class SuroiBitStream extends BitStream {
      * Write a game object type to the stream.
      * @param type The ObjectType
      */
-    writeObjectType(type: ObjectType): void {
-        this.writeBits(type.category, OBJECT_CATEGORY_BITS);
-        this.writeObjectTypeNoCategory(type);
-    }
-
-    /**
-     * Write a game object type, minus the category, to the stream.
-     * @param type The ObjectType
-     */
-    writeObjectTypeNoCategory<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(type: ObjectType<T, U>): void {
-        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[type.category];
-        if (definitions !== undefined) {
-            this.writeBits(type.idNumber, definitions.bitCount);
-        }
+    writeObjectType(type: ObjectCategory): void {
+        this.writeBits(type, OBJECT_CATEGORY_BITS);
     }
 
     /**
      * Read a game object type from stream.
      * @return The object type.
      */
-    readObjectType<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(): ObjectType<T, U> {
-        return this.readObjectTypeNoCategory<T, U>(this.readBits(OBJECT_CATEGORY_BITS) as T);
-    }
-
-    /**
-     * Read a game object type, minus the category, from stream.
-     * @param category The object category
-     * @return The object type
-     */
-    readObjectTypeNoCategory<T extends ObjectCategory = ObjectCategory, U extends ObjectDefinition = ObjectDefinition>(category: T): ObjectType<T, U> {
-        const definitions: ObjectDefinitions | undefined = ObjectDefinitionsList[category];
-
-        if (definitions !== undefined) {
-            const idNumber = this.readBits(definitions.bitCount);
-            return ObjectType.fromNumber(category, idNumber);
-        } else {
-            return ObjectType.categoryOnly(category);
-        }
+    readObjectType(): ObjectCategory {
+        return this.readBits(OBJECT_CATEGORY_BITS);
     }
 
     /**

@@ -1,8 +1,8 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { randomUUID } from "node:crypto";
-import { SPECTATE_ACTIONS_BITS, SpectateActions } from "../../../../common/src/constants";
+import { SpectateActions } from "../../../../common/src/constants";
 import { random } from "../../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
+import { SPECTATE_ACTIONS_BITS, type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { ReportPacket } from "../sending/reportPacket";
@@ -48,6 +48,11 @@ export class SpectatePacket extends ReceivingPacket {
             case SpectateActions.SpectateSpecific: {
                 const playerID = stream.readObjectID();
                 const playerToSpectate = game.spectatablePlayers.find(player => player.id === playerID);
+                if (playerToSpectate) player.spectate(playerToSpectate);
+                break;
+            }
+            case SpectateActions.SpectateKillLeader: {
+                const playerToSpectate = game.spectatablePlayers.find(player => player.id === player.game.killLeader?.id);
                 if (playerToSpectate) player.spectate(playerToSpectate);
                 break;
             }

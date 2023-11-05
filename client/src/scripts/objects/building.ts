@@ -1,10 +1,9 @@
 import { Container } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
-import { Buildings, type BuildingDefinition } from "../../../../common/src/definitions/buildings";
+import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { type Hitbox } from "../../../../common/src/utils/hitbox";
 import { velFromAngle } from "../../../../common/src/utils/math";
-import { reifyDefinition, type ReferenceTo } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import type { Game } from "../game";
@@ -15,37 +14,29 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 
-export class Building<Def extends BuildingDefinition = BuildingDefinition> extends GameObject<ObjectCategory.Building> {
+export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
 
-    readonly definition: Def;
-
     readonly ceilingContainer: Container;
+
+    definition!: BuildingDefinition;
+
     ceilingHitbox?: Hitbox;
     ceilingTween?: Tween<Container>;
 
     orientation!: Orientation;
 
     ceilingVisible = true;
-    isNew = true;
 
-    constructor(game: Game, definition: Def | ReferenceTo<Def>, id: number) {
+    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Building]>) {
         super(game, id);
-
-        this.definition = definition = reifyDefinition(definition, Buildings);
 
         this.container.zIndex = ZIndexes.Ground;
 
-        for (const image of definition.floorImages ?? []) {
-            const sprite = new SuroiSprite(image.key);
-            sprite.setVPos(toPixiCoords(image.position));
-            if (image.tint !== undefined) sprite.setTint(image.tint);
-            this.container.addChild(sprite);
-        }
-
         this.ceilingContainer = new Container();
-        this.ceilingContainer.zIndex = definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
         this.game.camera.addObject(this.ceilingContainer);
+
+        this.updateFromData(data, true);
     }
 
     toggleCeiling(visible: boolean): void {
@@ -67,16 +58,45 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
         );
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.Building]): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.Building], isNew = false): void {
+        if (data.full) {
+            const full = data.full;
+            this.definition = full.definition;
+            this.position = full.position;
+
+            for (const image of this.definition.floorImages ?? []) {
+                const sprite = new SuroiSprite(image.key);
+                sprite.setVPos(toPixiCoords(image.position));
+                if (image.tint !== undefined) sprite.setTint(image.tint);
+                this.container.addChild(sprite);
+            }
+
+            const pos = toPixiCoords(this.position);
+            this.container.position.copyFrom(pos);
+            this.ceilingContainer.position.copyFrom(pos);
+            this.ceilingContainer.zIndex = this.definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling;
+
+            this.orientation = full.rotation;
+            this.rotation = orientationToRotation(this.orientation);
+            this.container.rotation = this.rotation;
+            this.ceilingContainer.rotation = this.rotation;
+
+            this.ceilingHitbox = this.definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
+        }
+
         const definition = this.definition;
 
+        if (definition === undefined) {
+            console.warn("Building partially updated before being fully updated");
+        }
+
         if (data.dead) {
-            if (!this.dead && !this.isNew) {
+            if (!this.dead && !isNew) {
                 this.game.particleManager.spawnParticles(10, () => ({
                     frames: `${this.definition.idString}_particle`,
                     position: this.ceilingHitbox?.randomPoint() ?? { x: 0, y: 0 },
                     zIndex: 10,
-                    lifeTime: 2000,
+                    lifetime: 2000,
                     rotation: {
                         start: randomRotation(),
                         end: randomRotation()
@@ -107,23 +127,6 @@ export class Building<Def extends BuildingDefinition = BuildingDefinition> exten
             sprite.setVPos(toPixiCoords(image.position));
             if (image.tint !== undefined) sprite.setTint(image.tint);
             this.ceilingContainer.addChild(sprite);
-        }
-
-        this.isNew = false;
-
-        if (data.fullUpdate) {
-            this.position = data.position;
-
-            const pos = toPixiCoords(this.position);
-            this.container.position.copyFrom(pos);
-            this.ceilingContainer.position.copyFrom(pos);
-
-            this.orientation = data.rotation;
-            this.rotation = orientationToRotation(this.orientation);
-            this.container.rotation = this.rotation;
-            this.ceilingContainer.rotation = this.rotation;
-
-            this.ceilingHitbox = definition.ceilingHitbox?.transform(this.position, 1, this.orientation);
         }
 
         if (HITBOX_DEBUG_MODE) {

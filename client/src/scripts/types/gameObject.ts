@@ -90,5 +90,5 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         return this.game.soundManager.play(key, this.position, fallOff, maxDistance, onend);
     }
 
-    abstract updateFromData(data: ObjectsNetData[Cat]): void;
+    abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;
 }

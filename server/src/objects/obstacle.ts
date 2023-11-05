@@ -3,11 +3,9 @@ import { type ObstacleDefinition, Obstacles, RotationMode } from "../../../commo
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { CircleHitbox, type Hitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { addAdjust, angleBetweenPoints, calculateDoorHitboxes } from "../../../common/src/utils/math";
-import { ItemType, ObstacleSpecialRoles, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { ItemType, ObstacleSpecialRoles, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { random } from "../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { vAdd, type Vector } from "../../../common/src/utils/vector";
 import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
@@ -20,16 +18,14 @@ import { type Building } from "./building";
 import { type Explosion } from "./explosion";
 import { Player } from "./player";
 
-export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> extends GameObject {
+export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
-
-    override objectType: ObjectType<this["type"], Def>;
+    override readonly damageable = true;
 
     health: number;
     readonly maxHealth: number;
     readonly maxScale: number;
 
-    readonly damageable = true;
     collidable: boolean;
 
     readonly variation: Variation;
@@ -39,7 +35,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
     readonly loot: LootItem[] = [];
     readonly lootSpawnOffset?: Vector;
 
-    readonly definition: Def;
+    readonly definition: ObstacleDefinition;
 
     readonly isDoor: boolean;
     door?: {
@@ -60,7 +56,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
     constructor(
         game: Game,
-        definition: Def,
+        type: ReifiableDef<ObstacleDefinition>,
         position: Vector,
         rotation: number,
         scale: number,
@@ -78,10 +74,9 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
 
         this.parentBuilding = parentBuilding;
 
-        this.definition = reifyDefinition(definition, Obstacles);
-        this.objectType = ObjectType.fromString(this.type, this.definition.idString);
+        const definition = this.definition = Obstacles.reify(type);
 
-        this.health = this.maxHealth = definition.health;
+        this.health = this.maxHealth = this.definition.health;
 
         const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? rotation as Orientation : 0;
 
@@ -137,7 +132,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         }
     }
 
-    override damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion, position?: Vector): void {
+    damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion, position?: Vector): void {
         const definition = this.definition;
 
         if (this.health === 0 || definition.indestructible) return;
@@ -249,7 +244,7 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
                 break;
         }
 
-        this.game.partialDirtyObjects.add(this);
+        this.game.fullDirtyObjects.add(this);
     }
 
     toggleDoor(player?: Player): void {
@@ -311,27 +306,21 @@ export class Obstacle<Def extends ObstacleDefinition = ObstacleDefinition> exten
         this.game.grid.addObject(this);
     }
 
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Obstacle].serializePartial(stream, {
-            ...this,
-            fullUpdate: false
-        });
-    }
-
-    override serializeFull(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Obstacle].serializeFull(stream, {
+    override get data(): Required<ObjectsNetData[ObjectCategory.Obstacle]> {
+        return {
             scale: this.scale,
             dead: this.dead,
-            activated: this.activated,
-            definition: this.definition,
-            door: this.door,
-            fullUpdate: true,
-            position: this.position,
-            variation: this.variation,
-            rotation: {
-                rotation: this.rotation,
-                orientation: this.rotation as Orientation
+            full: {
+                activated: this.activated,
+                definition: this.definition,
+                door: this.door,
+                position: this.position,
+                variation: this.variation,
+                rotation: {
+                    rotation: this.rotation,
+                    orientation: this.rotation as Orientation
+                }
             }
-        });
+        };
     }
 }

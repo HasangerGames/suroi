@@ -1,6 +1,5 @@
 import { INVENTORY_MAX_WEAPONS } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
@@ -98,7 +97,7 @@ export class PlayerManager {
                 if (stream.readBoolean()) {
                     // if the slot is not empty
                     container.addClass("has-item");
-                    const item = Loots.definitions[stream.readUint8()];
+                    const item = Loots.readFromStream(stream);
 
                     this.weapons[i] = item;
                     container.children(".item-name").text(item.name);
@@ -127,6 +126,7 @@ export class PlayerManager {
         // Active item index
         const activeWeaponIndexDirty = stream.readBoolean();
         if (activeWeaponIndexDirty) {
+            this.game.inputManager.attacking = false;
             this.game.inputManager.activeItemIndex = stream.readBits(2);
             $("#weapons-container").children(".inventory-slot").removeClass("active");
             $(`#weapon-slot-${this.game.inputManager.activeItemIndex + 1}`).addClass("active");
@@ -135,7 +135,6 @@ export class PlayerManager {
         // Inventory dirty
         const inventoryDirty = stream.readBoolean();
         if (inventoryDirty) {
-            const backpackLevel = stream.readBits(2);
             const scopeNames = Scopes.map(sc => sc.idString);
             const adjustItemUi = (itemName: string, count: number): void => {
                 const num = count;
@@ -144,7 +143,10 @@ export class PlayerManager {
                 $(`#${itemName}-count`).text(num);
 
                 const itemSlot = $(`#${itemName}-slot`);
-                itemSlot.toggleClass("full", num >= Backpacks[backpackLevel].maxCapacity[itemName]);
+                if (this.game.activePlayer) {
+                    const backpack = this.game.activePlayer.equipment.backpack;
+                    itemSlot.toggleClass("full", num >= backpack.maxCapacity[itemName]);
+                }
                 itemSlot.toggleClass("has-item", num > 0);
 
                 if (scopeNames.includes(itemName) && !UI_DEBUG_MODE) {
@@ -158,7 +160,7 @@ export class PlayerManager {
                 adjustItemUi(item, amount ?? (stream.readBoolean() ? stream.readBits(9) : 0));
             }
 
-            this.scope = Scopes[stream.readUint8()];
+            this.scope = Loots.readFromStream(stream);
             $(`#${this.scope.idString}-slot`).addClass("active");
         }
 

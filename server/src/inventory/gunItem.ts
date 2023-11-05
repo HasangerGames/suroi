@@ -22,11 +22,15 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
     private _shots = 0;
 
-    private _reloadTimeoutID: NodeJS.Timeout | undefined;
+    private _reloadTimeoutID?: NodeJS.Timeout;
+    private _burstTimeoutID?: NodeJS.Timeout;
+    private _autoFireTimeoutID?: NodeJS.Timeout;
 
-    private _burstTimeoutID: NodeJS.Timeout | undefined;
-
-    private _autoFireTimeoutID: NodeJS.Timeout | undefined;
+    cancelAllTimers(): void {
+        clearTimeout(this._reloadTimeoutID);
+        clearTimeout(this._burstTimeoutID);
+        clearTimeout(this._autoFireTimeoutID);
+    }
 
     cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
 
@@ -99,7 +103,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
             owner.position,
             vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
         );
-        // const rotated = vRotate(v(definition.length - jitter, 0), owner.rotation); // player radius + gun length
 
         for (
             const object of
@@ -177,13 +180,41 @@ export class GunItem extends InventoryItem<GunDefinition> {
     }
 
     override useItem(): void {
-        let attackCooldown = this.definition.fireDelay;
-        if (this.definition.fireMode === FireMode.Burst) attackCooldown = this.definition.burstProperties.burstCooldown;
+        const def = this.definition;
+        const owner = this.owner;
+        const now = owner.game.now;
+
+        const timeToFire = (
+            def.fireMode === FireMode.Burst
+                ? def.burstProperties.burstCooldown
+                : def.fireDelay
+        ) - (now - this._lastUse);
+        const timeToSwitch = owner.effectiveSwitchDelay - (now - this.switchDate);
+
         if (
-            this.owner.game.now - this._lastUse > attackCooldown &&
-            this.owner.game.now - this._switchDate > this.owner.effectiveSwitchDelay
+            timeToFire <= 0 &&
+            timeToSwitch <= 0
         ) {
             this._useItemNoDelayCheck(true);
+        } else {
+            const bufferDuration = Math.max(timeToFire, timeToSwitch);
+
+            // We only honor buffered inputs shorter than 200ms
+            if (bufferDuration >= 200) return;
+
+            clearTimeout(owner.bufferedAttack);
+            owner.bufferedAttack = setTimeout(
+                () => {
+                    if (
+                        owner.activeItem === this &&
+                        owner.attacking
+                    ) {
+                        clearTimeout(owner.bufferedAttack);
+                        this.useItem();
+                    }
+                },
+                bufferDuration
+            );
         }
     }
 

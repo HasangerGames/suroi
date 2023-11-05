@@ -7,7 +7,7 @@ const now = Date.now();
 // Clean up expired bans
 const banRecords: BanRecord[] = [];
 for (const record of initialBanRecords) {
-    if (record.expires === undefined || record.expires < now) banRecords.push(record);
+    /*if (record.expires === undefined || record.expires < now)*/ banRecords.push(record);
 }
 
 // Process the given command
@@ -33,4 +33,4 @@ if (option === "ban") {
 }
 
 // Write the updated ban list
-writeFileSync("bannedIPs.json", JSON.stringify(banRecords));
+writeFileSync("bannedIPs.json", JSON.stringify(banRecords, null, 4));

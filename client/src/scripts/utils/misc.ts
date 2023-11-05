@@ -1,14 +1,7 @@
 import { normalizeAngle } from "../../../../common/src/utils/math";
-import { random } from "../../../../common/src/utils/random";
 
 export function orientationToRotation(orientation: number): number {
     return -normalizeAngle(orientation * (Math.PI / 2));
-}
-
-const killWords = ["killed", "destroyed", "ended", "murdered", "wiped out", "annihilated", "slaughtered", "obliterated"];
-
-export function randomKillWord(): string {
-    return killWords[random(0, killWords.length - 1)];
 }
 
 declare global {

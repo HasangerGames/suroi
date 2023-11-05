@@ -1,9 +1,8 @@
 import { ObjectCategory } from "../../../../../common/src/constants";
-import { type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
-import { type ObstacleDefinition, RotationMode } from "../../../../../common/src/definitions/obstacles";
+import { Buildings, type BuildingDefinition } from "../../../../../common/src/definitions/buildings";
+import { type ObstacleDefinition, RotationMode, Obstacles } from "../../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../../common/src/typings";
 import { River } from "../../../../../common/src/utils/mapUtils";
-import { type ObjectType } from "../../../../../common/src/utils/objectType";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../../../common/src/utils/vector";
 import { ReceivingPacket } from "../../types/receivingPacket";
@@ -50,30 +49,35 @@ export class MapPacket extends ReceivingPacket {
             () => new River(
                 stream.readUint8(),
                 stream.readUint8(),
-                Array.from({ length: stream.readUint8() }, () => stream.readPosition())
+                Array.from(
+                    { length: stream.readUint8() },
+                    stream.readPosition.bind(stream)
+                )
             )
         );
 
-        const numObstacles = stream.readBits(11);
-
-        for (let i = 0; i < numObstacles; i++) {
-            const type = stream.readObjectType() as ObjectType<ObjectCategory.Obstacle, ObstacleDefinition> | ObjectType<ObjectCategory.Building, BuildingDefinition>;
-
+        for (
+            let i = 0, numObstacles = stream.readBits(11);
+            i < numObstacles;
+            i++
+        ) {
+            const type = stream.readObjectType();
             const position = stream.readPosition();
 
-            switch (type.category) {
+            switch (type) {
                 case ObjectCategory.Obstacle: {
+                    const definition = Obstacles.readFromStream(stream);
                     const scale = stream.readScale();
-                    const rotation = stream.readObstacleRotation(type.definition.rotationMode).rotation;
+                    const rotation = stream.readObstacleRotation(definition.rotationMode).rotation;
 
                     let variation: Variation | undefined;
-                    if (type.definition.variations !== undefined) {
+                    if (definition.variations !== undefined) {
                         variation = stream.readVariation();
                     }
 
                     this.obstacles.push({
                         position,
-                        type: type.definition,
+                        type: definition,
                         scale,
                         rotation,
                         variation
@@ -81,10 +85,11 @@ export class MapPacket extends ReceivingPacket {
                     break;
                 }
                 case ObjectCategory.Building: {
+                    const definition = Buildings.readFromStream(stream);
                     const { orientation, rotation } = stream.readObstacleRotation(RotationMode.Limited);
                     this.buildings.push({
                         position,
-                        type: type.definition,
+                        type: definition,
                         orientation,
                         rotation
                     });
@@ -93,8 +98,11 @@ export class MapPacket extends ReceivingPacket {
             }
         }
 
-        const placesSize = stream.readBits(4);
-        for (let i = 0; i < placesSize; i++) {
+        for (
+            let i = 0, placesSize = stream.readBits(4);
+            i < placesSize;
+            i++
+        ) {
             const name = stream.readASCIIString(24);
             const position = stream.readPosition();
             this.places.push({ position, name });

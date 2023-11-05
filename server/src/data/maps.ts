@@ -1,11 +1,9 @@
-import { ObjectCategory } from "../../../common/src/constants";
 import { Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
 import { Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
 import { random, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
@@ -338,14 +336,15 @@ export const Maps: Record<string, MapDefinition> = {
 
             for (const obstacle in randomObstacles) {
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
+                    const definition = Obstacles.fromString(obstacle);
                     map.generateObstacle(
-                        obstacle,
+                        definition,
                         map.getRandomPositionFor(
-                            ObjectType.fromString(ObjectCategory.Obstacle, obstacle),
+                            definition.spawnHitbox ?? definition.hitbox,
                             1,
                             0,
                             getPos
-                        ),
+                        ) ?? v(0, 0),
                         0,
                         1
                     );

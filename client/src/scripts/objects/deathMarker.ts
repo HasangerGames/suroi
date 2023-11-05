@@ -19,12 +19,12 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, id: number) {
+    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.DeathMarker]>) {
         super(game, id);
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            this.game.console.getConfig("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
@@ -39,9 +39,11 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         this.container.addChild(this.image, this.playerNameText);
 
         this.container.zIndex = ZIndexes.DeathMarkers;
+
+        this.updateFromData(data, true);
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
         const pos = toPixiCoords(this.position);
@@ -57,7 +59,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         this.playerNameText.style.fill = this.nameColor;
 
         // Play an animation if this is a new death marker.
-        if (data.isNew) {
+        if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
             this.scaleAnim = new Tween(

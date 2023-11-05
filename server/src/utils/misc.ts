@@ -52,7 +52,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
             const item = selection.item;
             loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
-            const definition = Loots.getByIDString(item);
+            const definition = Loots.fromString(item);
             if (definition === undefined) {
                 throw new Error(`Unknown loot item: ${item}`);
             }

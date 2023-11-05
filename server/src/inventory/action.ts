@@ -1,6 +1,7 @@
 import { PlayerActions } from "../../../common/src/constants";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { type ReferenceTo, reifyDefinition } from "../../../common/src/utils/objectDefinitions";
+import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
+import { Loots } from "../../../common/src/definitions/loots";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 
@@ -68,10 +69,10 @@ export class HealingAction extends Action {
     readonly item: HealingItemDefinition;
     override readonly speedMultiplier = 0.5;
 
-    constructor(player: Player, item: ReferenceTo<HealingItemDefinition> | HealingItemDefinition) {
-        const itemDef = item = reifyDefinition(item, HealingItems);
+    constructor(player: Player, item: ReifiableDef<HealingItemDefinition>) {
+        const itemDef = Loots.reify<HealingItemDefinition>(item);
         super(player, itemDef.useTime);
-        this.item = item;
+        this.item = itemDef;
     }
 
     execute(): void {

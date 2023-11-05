@@ -1,9 +1,10 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { INPUT_ACTIONS_BITS, InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
-import { Emotes } from "../../common/src/definitions/emotes";
+import { InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
+import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { INPUT_ACTIONS_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { Loots } from "../../common/src/definitions/loots";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -81,13 +82,13 @@ class Bot {
         stream.writePlayerName(`BOT_${this.id}`);
         stream.writeBoolean(false); // is mobile
         // loadout
-        const skin = skins[random(0, skins.length)];
-        const emote = (): number => Emotes.idStringToNumber[pickRandomInArray(Emotes.definitions).idString];
-        stream.writeUint8(Skins.findIndex(s => s.idString === skin));
-        stream.writeUint8(emote());
-        stream.writeUint8(emote());
-        stream.writeUint8(emote());
-        stream.writeUint8(emote());
+        const skin = pickRandomInArray(skins);
+        const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
+        Loots.writeToStream(stream, skin);
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 

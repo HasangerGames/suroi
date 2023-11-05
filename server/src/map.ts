@@ -1,4 +1,3 @@
-import { ObjectCategory, PLAYER_RADIUS } from "../../common/src/constants";
 import { Buildings, type BuildingDefinition } from "../../common/src/definitions/buildings";
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
@@ -6,11 +5,9 @@ import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
-import { reifyDefinition, type ReferenceTo, ObstacleSpecialRoles } from "../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
-import { Config, SpawnMode } from "./config";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -149,7 +146,7 @@ export class Map {
         // TODO Make a specialBuildings property
         if (mapName === "main" || mapName === "halloween") {
             const width = this.width; const height = this.height; const shoreDist = 285; const sideDist = 1024;
-            const initialHitbox = Buildings.getByIDString("port").spawnHitbox;
+            const initialHitbox = Buildings.fromString("port").spawnHitbox;
             let collided = true;
             let position: Vector | undefined;
             let orientation: Orientation | undefined;
@@ -237,39 +234,53 @@ export class Map {
     }
 
     generateBuildings(
-        definition: BuildingDefinition | ReferenceTo<BuildingDefinition>,
+        definition: ReifiableDef<BuildingDefinition>,
         count: number
     ): void {
-        definition = reifyDefinition(definition, Buildings);
+        definition = Buildings.reify(definition);
         const rotationMode = definition.rotationMode ?? RotationMode.Limited;
 
         for (let i = 0; i < count; i++) {
             const orientation = Map.getRandomBuildingOrientation(rotationMode);
 
-            this.generateBuilding(
-                definition,
-                this.getRandomPositionFor(
-                    ObjectType.fromString<ObjectCategory.Building, BuildingDefinition>(ObjectCategory.Building, definition.idString),
-                    1,
-                    orientation
-                ),
+            const position = this.getRandomPositionFor(
+                definition.spawnHitbox,
+                1,
                 orientation
             );
+
+            if (!position) {
+                Logger.warn(`Failed to find valid position for building ${definition.idString}`);
+                continue;
+            }
+            this.generateBuilding(definition, position, orientation);
         }
     }
 
     generateBuilding(
-        definition: BuildingDefinition | ReferenceTo<BuildingDefinition>,
+        definition: ReifiableDef<BuildingDefinition>,
         position: Vector,
         orientation?: Orientation
     ): Building {
-        definition = reifyDefinition(definition, Buildings);
+        definition = Buildings.reify(definition);
         orientation ??= Map.getRandomBuildingOrientation(definition.rotationMode ?? RotationMode.Limited);
 
         const building = new Building(this.game, definition, vClone(position), orientation);
 
+        const getRandomIdString = (table: Record<string, number> | string): string => {
+            if (typeof table === "string") return table;
+
+            const items: string[] = [];
+            const weights: number[] = [];
+            for (const item in table) {
+                items.push(item);
+                weights.push(table[item]);
+            }
+            return weightedRandom(items, weights);
+        };
+
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.getByIDString(obstacleData.idString);
+            const obstacleDef = Obstacles.fromString(getRandomIdString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -317,7 +328,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                subBuilding.idString,
+                getRandomIdString(subBuilding.idString),
                 addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
@@ -328,7 +339,7 @@ export class Map {
         }
 
         for (const decal of definition.decals ?? []) {
-            this.game.grid.addObject(new Decal(this.game, reifyDefinition(decal.id, Decals), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
+            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
         }
 
         if (!definition.hideOnMap) this.game.minimapObjects.add(building);
@@ -343,8 +354,7 @@ export class Map {
         radius?: number,
         squareRadius?: boolean
     ): void {
-        definition = reifyDefinition(definition, Obstacles);
-        const type = ObjectType.fromString(ObjectCategory.Obstacle, definition.idString);
+        definition = Obstacles.reify(definition);
 
         for (let i = 0; i < count; i++) {
             if (Math.random() < (spawnProbability ??= 1)) {
@@ -358,9 +368,27 @@ export class Map {
                     orientation = rotation as Orientation;
                 }
 
-                let position = this.getRandomPositionFor(type, scale, orientation);
+                const hitbox = definition.spawnHitbox ?? definition.hitbox;
+
+                let position: Vector | undefined;
                 if (radius !== undefined) {
-                    position = this.getRandomPositionInRadiusFor(type, scale, orientation, radius, squareRadius);
+                    position = this.getRandomPositionInRadiusFor(
+                        hitbox,
+                        scale,
+                        orientation,
+                        radius,
+                        squareRadius);
+                } else {
+                    position = this.getRandomPositionFor(
+                        hitbox,
+                        scale,
+                        orientation
+                    );
+                }
+
+                if (!position) {
+                    Logger.warn(`Failed to find valid position for obstacle ${definition.idString}`);
+                    continue;
                 }
 
                 this.generateObstacle(definition, position, undefined, scale, variation);
@@ -377,7 +405,7 @@ export class Map {
         lootSpawnOffset?: Vector,
         parentBuilding?: Building
     ): Obstacle {
-        definition = reifyDefinition(definition, Obstacles);
+        definition = Obstacles.reify(definition);
 
         scale ??= randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
         if (variation === undefined && definition.variations) {
@@ -409,8 +437,12 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const loot = getLootTableLoot(LootTables[table].loot.flat());
 
-            const position = this.getRandomPositionFor(ObjectType.fromString(ObjectCategory.Loot, loot[0].idString));
+            const position = this.getRandomPositionFor(new CircleHitbox(5));
 
+            if (!position) {
+                Logger.warn(`Failed to find valid position for loot ${loot[0].idString}`);
+                continue;
+            }
             for (const item of loot) {
                 this.game.addLoot(
                     item.idString,
@@ -422,66 +454,23 @@ export class Map {
     }
 
     getRandomPositionFor(
-        type: ObjectType,
+        initialHitbox: Hitbox,
         scale = 1,
         orientation: Orientation = 0,
-        getPosition?: () => Vector
-    ): Vector {
+        getPosition?: () => Vector,
+        maxAttempts = 200
+    ): Vector | undefined {
         let collided = true;
         let position: Vector = v(0, 0);
         let attempts = 0;
-        let initialHitbox: Hitbox | undefined;
 
-        // Set up the hitbox
-        switch (type.category) {
-            case ObjectCategory.Obstacle: {
-                const definition: ObstacleDefinition = type.definition as ObstacleDefinition;
-                initialHitbox = definition.spawnHitbox ?? definition.hitbox;
-                break;
-            }
-            case ObjectCategory.Player: {
-                initialHitbox = new CircleHitbox(PLAYER_RADIUS);
-                break;
-            }
-            case ObjectCategory.Loot: {
-                initialHitbox = new CircleHitbox(5);
-                break;
-            }
-            case ObjectCategory.Building: {
-                initialHitbox = (type.definition as BuildingDefinition).spawnHitbox;
-                break;
-            }
-        }
+        const padding = this.oceanSize + this.beachSize;
 
-        if (initialHitbox === undefined) {
-            throw new Error(`Unsupported object category: ${type.category}`);
-        }
-
-        if (!getPosition) {
-            if (
-                type.category === ObjectCategory.Obstacle ||
-                type.category === ObjectCategory.Loot ||
-                type.category === ObjectCategory.Building ||
-                (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Random)) {
-                getPosition = (): Vector => randomVector(this.oceanSize,
-                    this.width - this.oceanSize,
-                    this.oceanSize,
-                    this.height - this.oceanSize);
-            } else if (type.category === ObjectCategory.Player && Config.spawn.mode === SpawnMode.Radius) {
-                const spawn = Config.spawn as { readonly mode: SpawnMode.Radius, readonly position: Vector, readonly radius: number };
-                getPosition = (): Vector => randomPointInsideCircle(spawn.position, spawn.radius);
-            } else {
-                getPosition = (): Vector => v(0, 0);
-            }
-        }
+        getPosition = getPosition ?? ((): Vector => randomVector(padding, this.width - padding, padding, this.height - padding));
 
         // Find a valid position
-        while (collided && attempts <= 200) {
+        while (collided && attempts < maxAttempts) {
             attempts++;
-
-            if (attempts >= 200) {
-                Logger.warn(`Maximum spawn attempts exceeded for: ${type.idString}`);
-            }
 
             collided = false;
             position = getPosition();
@@ -511,16 +500,18 @@ export class Map {
             }
         }
 
+        if (attempts > maxAttempts) return undefined;
+
         return position;
     }
 
     getRandomPositionInRadiusFor(
-        type: ObjectType,
+        hitbox: Hitbox,
         scale = 1,
         orientation: Orientation = 0,
         radius: number,
         squareRadius?: boolean
-    ): Vector {
+    ): Vector | undefined {
         if (radius > this.width || radius > this.height) {
             radius = Math.min(this.width, this.height);
         }
@@ -541,7 +532,7 @@ export class Map {
             }
         }
 
-        return this.getRandomPositionFor(type, scale, orientation, getPosition);
+        return this.getRandomPositionFor(hitbox, scale, orientation, getPosition);
     }
 
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {

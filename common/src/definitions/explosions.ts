@@ -1,4 +1,4 @@
-import { type BulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
@@ -19,7 +19,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
 
     readonly shrapnelCount: number
-    readonly ballistics: BulletDefinition
+    readonly ballistics: BaseBulletDefinition
     readonly decal?: string
 }
 
@@ -196,7 +196,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
         {
             idString: "usas_explosion",
             name: "USAS-12",
-            damage: 50,
+            damage: 35,
             obstacleMultiplier: 2,
             radius: {
                 min: 6,

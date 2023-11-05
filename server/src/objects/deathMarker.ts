@@ -1,13 +1,10 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { GameObject } from "../types/gameObject";
 import { type Player } from "./player";
 
-export class DeathMarker extends GameObject {
+export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
-    override readonly objectType = ObjectType.categoryOnly(ObjectCategory.DeathMarker);
     readonly player: Player;
     isNew = true;
 
@@ -18,22 +15,10 @@ export class DeathMarker extends GameObject {
         setTimeout((): void => { this.isNew = false; }, 100);
     }
 
-    /* eslint-disable @typescript-eslint/no-empty-function */
-    override damage(amount: number, source: GameObject): void { }
-
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.DeathMarker].serializePartial(stream, {
-            position: this.position,
-            player: {
-                isDev: this.player.isDev,
-                name: this.player.name,
-                nameColor: this.player.nameColor
-            },
-            isNew: this.isNew
-        });
+    override get data(): Required<ObjectsNetData[ObjectCategory.DeathMarker]> {
+        return this;
     }
 
-    override serializeFull(stream: SuroiBitStream): void {
-        this.serializePartial(stream);
-    }
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    override damage(): void { }
 }
