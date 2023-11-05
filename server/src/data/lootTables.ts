@@ -113,15 +113,6 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "scopes", weight: 1 }
         ]
     },
-    blueberry_bush_fall: {
-        min: 1,
-        max: 1,
-        loot: [
-            { tier: "equipment", weight: 1 },
-            { tier: "healing_items", weight: 1 },
-            { tier: "scopes", weight: 1 }
-        ]
-    },
     warehouse: {
         min: 1,
         max: 1,

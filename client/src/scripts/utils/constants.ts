@@ -1,4 +1,5 @@
 import { Color } from "pixi.js";
+import { MODE } from "../../../../common/src/definitions/modes";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
@@ -14,14 +15,13 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-export const COLORS = {
-    grass: new Color("hsl(65, 100%, 12%)"),
-    water: new Color("hsl(4, 100%, 14%)"),
-    border: new Color("hsl(4, 90%, 12%)"),
-    beach: new Color("hsl(33, 77%, 21%)"),
-    riverBank: new Color("hsl(33, 50%, 30%)"),
-    gas: new Color("hsl(17, 100%, 50%)").setAlpha(0.55)
-};
+// Converts the strings in the mode definition to Color objects
+/* eslint-disable @typescript-eslint/indent */
+export const COLORS = Object.keys(MODE.colors)
+    .reduce<Record<string, Color>>((result, key) => {
+        result[key] = new Color(MODE.colors[key]);
+        return result;
+    }, {});
 
 export const PIXI_SCALE = 20;
 

@@ -86,8 +86,7 @@ export const Maps: Record<string, MapDefinition> = {
             super_barrel: 20,
             melee_crate: 1,
             gold_rock: 1,
-            flint_stone: 1,
-            pumpkin: 75
+            flint_stone: 1
         },
         specialObstacles: {
             oil_tank: {
@@ -211,13 +210,13 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 6,
-            oak_tree_fall: 143,
-            birch_tree_fall: 18,
+            oak_tree: 143,
+            birch_tree: 18,
             pine_tree: 14,
             regular_crate: 155,
             rock: 142,
             bush: 87,
-            blueberry_bush_fall: 20,
+            blueberry_bush: 20,
             barrel: 70,
             super_barrel: 20,
             melee_crate: 1,

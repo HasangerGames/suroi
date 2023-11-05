@@ -15,6 +15,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter } from "./particles";
+import { MODE } from "../../../../common/src/definitions/modes";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -52,6 +53,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {
+        const reskin = MODE.reskin;
+
         if (data.full) {
             const full = data.full;
 
@@ -64,7 +67,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (definition.invisible) this.container.visible = false;
 
             // If there are multiple particle variations, generate a list of variation image names
-            const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
+            let particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
+
+            if (
+                reskin &&
+                this.definition.idString in reskin.obstacles &&
+                !reskin.obstacles[definition.idString].defaultParticles
+            ) particleImage += `_${reskin.suffix}`;
 
             this.particleFrames = definition.particleVariations !== undefined
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
@@ -126,7 +135,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    this.image.setFrame(`${definition.frames?.residue ?? `${definition.idString}_residue`}`);
+                    let texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+                    if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
+                    this.image.setFrame(texture);
                 }
 
                 this.container.rotation = this.rotation;
@@ -176,6 +187,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         else texture = definition.frames?.residue ?? `${definition.idString}_residue`;
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
+
+        if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
         // Update the obstacle image
         this.image.setFrame(texture);
@@ -279,28 +292,19 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             if (definition.operationStyle !== "slide") {
                 // eslint-disable-next-line no-new
-                new Tween(
-                    this.game,
-                    {
-                        target: this.image,
-                        to: { rotation: orientationToRotation(offset) },
-                        duration: definition.animationDuration ?? 150
-                    }
-                );
+                new Tween(this.game, {
+                    target: this.image,
+                    to: { rotation: orientationToRotation(offset) },
+                    duration: definition.animationDuration ?? 150
+                });
             } else {
                 const x = offset ? (definition.slideFactor ?? 1) * (backupHitbox.min.x - backupHitbox.max.x) * PIXI_SCALE : 0;
                 // eslint-disable-next-line no-new
-                new Tween(
-                    this.game,
-                    {
-                        target: this.image.position,
-                        to: {
-                            x,
-                            y: 0
-                        },
-                        duration: 150
-                    }
-                );
+                new Tween(this.game, {
+                    target: this.image.position,
+                    to: { x, y: 0 },
+                    duration: 150
+                });
             }
         }
     }
