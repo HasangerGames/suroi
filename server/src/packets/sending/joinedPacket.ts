@@ -4,7 +4,7 @@ import { type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class JoinedPacket extends SendingPacket {
-    override readonly allocBytes = 32;
+    override readonly allocBytes = 34;
     override readonly type = PacketType.Joined;
 
     override serialize(stream: SuroiBitStream): void {
