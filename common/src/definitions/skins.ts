@@ -81,7 +81,7 @@ export const Skins: SkinDefinition[] = [
         name: "Arctic Camo",
         itemType: ItemType.Skin
     },
-    /* Maybe someday 
+    /* Maybe someday
     {
         idString: "toilet",
         name: "Skibidi Toilet",

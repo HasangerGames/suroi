@@ -39,7 +39,7 @@ export class JoinPacket extends ReceivingPacket {
         player.game.activatePlayer(player);
 
         player.dead = true;
-        
+
         let toSpectate: Player | undefined;
         if (player.killedBy !== undefined && !player.killedBy.dead) toSpectate = player.killedBy;
         else if (game.spectatablePlayers.length > 1) toSpectate = game.spectatablePlayers[random(0, game.spectatablePlayers.length)];
