@@ -1,4 +1,4 @@
-import { type PossibleError, type Stringable, gameConsole, type GameSettings } from "./gameConsole";
+import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
 import { defaultClientCVars, type JSONCVar } from "./defaultClientCVars";
 
 export interface CVarFlags {
@@ -13,15 +13,17 @@ export class ConVar<Value = string> {
     readonly name: string;
     readonly flags: CVarFlags;
     private _value: Value;
+    readonly console: GameConsole;
     get value(): Value { return this._value; }
 
-    static from<Value extends Stringable>(json: JSONCVar<Value>): ConVar<Value> {
-        return new ConVar<Value>(json.name, json.value, json.flags);
+    static from<Value extends Stringable>(json: JSONCVar<Value>, console: GameConsole): ConVar<Value> {
+        return new ConVar<Value>(json.name, json.value, console, json.flags);
     }
 
-    constructor(name: string, value: Value, flags?: Partial<CVarFlags>) {
+    constructor(name: string, value: Value, console: GameConsole, flags?: Partial<CVarFlags>) {
         this.name = name;
         this._value = value;
+        this.console = console;
         this.flags = {
             archive: flags?.archive ?? false,
             readonly: flags?.readonly ?? true,
@@ -30,7 +32,7 @@ export class ConVar<Value = string> {
         };
     }
 
-    setValue(value: Value): PossibleError<string> {
+    setValue(value: Value, writeToLS = true): PossibleError<string> {
         switch (true) {
             case this.flags.readonly: {
                 return { err: `Cannot set value of readonly CVar '${this.name}'` };
@@ -45,31 +47,29 @@ export class ConVar<Value = string> {
             }
         }
 
+        if (this.value === value) return;
         this._value = value;
-        if (this.flags.archive) {
-            gameConsole.writeToLocalStorage();
+        // to not write built in cvars again when they are being loaded
+        if (this.flags.archive && writeToLS) {
+            this.console.writeToLocalStorage();
         }
     }
 }
 
-export const consoleVariables = new (class {
+export class ConsoleVariables {
     private readonly _userCVars = new Map<string, ConVar<Stringable>>();
     private readonly _builtInCVars: CVarTypeMapping = {} as unknown as CVarTypeMapping;
 
-    private _initialized = false;
+    readonly console: GameConsole;
 
-    initialize(): void {
-        if (this._initialized) console.warn("Tried to initialize CVars more than once.");
-
-        this._initialized = true;
-
+    constructor(console: GameConsole) {
         const varExists = this.has.bind(this);
-
+        this.console = console;
         for (const [name, value] of Object.entries(defaultClientCVars)) {
             if (varExists(name)) continue;
 
             //@ts-expect-error This is init code, so shove it
-            this._builtInCVars[name as keyof CVarTypeMapping] = ConVar.from<Stringable>(value);
+            this._builtInCVars[name as keyof CVarTypeMapping] = ConVar.from<Stringable>(value, console);
         }
     }
 
@@ -99,11 +99,13 @@ export const consoleVariables = new (class {
     readonly set = (() => {
         type GoofyParameterType<K extends string> = K extends keyof CVarTypeMapping ? ExtractConVarValue<CVarTypeMapping[K]> : Stringable;
         type Setter = (<K extends string>(key: K, value: GoofyParameterType<K>) => void) & {
-            builtIn: <K extends keyof CVarTypeMapping>(key: K, value: GoofyParameterType<K>) => void
+            builtIn: <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS?: boolean) => void
             custom: (key: string, value: Stringable) => PossibleError<string>
         };
 
-        const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: GoofyParameterType<K>): void => { (this._builtInCVars[key] as ConVar<GoofyParameterType<K>>).setValue(value); };
+        const setBuiltIn = <K extends keyof CVarTypeMapping>(key: K, value: CVarTypeMapping[K]["value"], writeToLS = true): void => {
+            (this._builtInCVars[key] as ConVar<CVarTypeMapping[K]["value"]>).setValue(value, writeToLS);
+        };
         const setCustom = (key: string, value: Stringable): PossibleError<string> => {
             const cvar = this._userCVars.get(key);
 
@@ -113,9 +115,9 @@ export const consoleVariables = new (class {
 
             cvar.setValue(value);
         };
-        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>): void => {
+        const fn: Setter = <K extends string>(key: K, value: GoofyParameterType<K>, writeToLs = false): void => {
             if (key in this._builtInCVars) {
-                setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>);
+                setBuiltIn(key as keyof CVarTypeMapping, value as ExtractConVarValue<CVarTypeMapping[keyof CVarTypeMapping]>, writeToLs);
                 return;
             }
 
@@ -194,14 +196,12 @@ export const consoleVariables = new (class {
                 ].join(" ")} => ${cvar.value}</li>`
             ).join("");
     }
-})();
-
-consoleVariables.initialize();
+}
 
 export interface CVarTypeMapping {
     readonly cv_player_name: ConVar<string>
     readonly cv_loadout_skin: ConVar<string>
-    readonly cv_loadout_crosshair: ConVar<string>
+    readonly cv_loadout_crosshair: ConVar<number>
     readonly cv_loadout_top_emote: ConVar<string>
     readonly cv_loadout_right_emote: ConVar<string>
     readonly cv_loadout_bottom_emote: ConVar<string>
@@ -216,16 +216,16 @@ export interface CVarTypeMapping {
     readonly cv_language: ConVar<string>
     readonly cv_region: ConVar<string | undefined>
     readonly cv_camera_shake_fx: ConVar<boolean>
-    readonly cv_animate_rotation: ConVar<"wait_for_server" | "client">
     readonly cv_killfeed_style: ConVar<"text" | "icon">
-    readonly cv_rotation_smoothing: ConVar<boolean>
     readonly cv_movement_smoothing: ConVar<boolean>
+    readonly cv_antialias: ConVar<boolean>
     readonly cv_minimap_minimized: ConVar<boolean>
     readonly cv_leave_warning: ConVar<boolean>
     readonly cv_minimap_transparency: ConVar<number>
     readonly cv_map_transparency: ConVar<number>
     readonly cv_draw_hud: ConVar<boolean>
     readonly cv_rules_acknowledged: ConVar<boolean>
+    readonly cv_hide_rules_button: ConVar<boolean>
     readonly cv_console_width: ConVar<number>
     readonly cv_console_height: ConVar<number>
     readonly cv_console_left: ConVar<number>

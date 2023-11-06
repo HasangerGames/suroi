@@ -1,10 +1,10 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { INPUT_ACTIONS_BITS, InputActions, ObjectCategory, PacketType } from "../../common/src/constants";
-import { Emotes } from "../../common/src/definitions/emotes";
+import { InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
+import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
-import { ObjectType } from "../../common/src/utils/objectType";
-import { random, randomBoolean } from "../../common/src/utils/random";
-import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
+import { INPUT_ACTIONS_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { Loots } from "../../common/src/definitions/loots";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -17,12 +17,6 @@ const skins: string[] = [];
 
 for (const skin of Skins) {
     if (!skin.notInLoadout && !skin.roleRequired) skins.push(skin.idString);
-}
-
-const emotes: string[] = [];
-
-for (const emote of Emotes.definitions) {
-    emotes.push(emote.idString);
 }
 
 const bots = new Set<Bot>();
@@ -42,14 +36,19 @@ class Bot {
     angle = random(-Math.PI, Math.PI);
     angularSpeed = random(0, 0.1);
 
+    distanceToMouse = 50;
+
     connected = false;
 
     disconnect = false;
 
+    id: number;
+
     ws: WebSocket;
 
     constructor(id: number) {
-        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}&name=BOT_${id}`);
+        this.id = id;
+        this.ws = new WebSocket(`ws${config.https ? "s" : ""}://${config.address}/play?gameID=${gameData.gameID}`);
 
         this.ws.addEventListener("error", console.error);
 
@@ -78,17 +77,18 @@ class Bot {
 
     join(): void {
         this.connected = true;
-        const stream = SuroiBitStream.alloc(8);
+        const stream = SuroiBitStream.alloc(24);
         stream.writePacketType(PacketType.Join);
+        stream.writePlayerName(`BOT_${this.id}`);
         stream.writeBoolean(false); // is mobile
         // loadout
-        const skin = skins[random(0, skins.length)];
-        const emote = (): string => emotes[random(0, emotes.length)];
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Loot, skin));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
-        stream.writeObjectTypeNoCategory(ObjectType.fromString(ObjectCategory.Emote, emote()));
+        const skin = pickRandomInArray(skins);
+        const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
+        Loots.writeToStream(stream, skin);
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
+        Emotes.writeToStream(stream, emote());
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 
@@ -105,6 +105,8 @@ class Bot {
         stream.writeBoolean(this.shootStart);
         stream.writeBoolean(true); // rotating
         stream.writeRotation(this.angle, 16);
+        stream.writeFloat(this.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
+
         this.angle += this.angularSpeed;
         if (this.angle > Math.PI) this.angle = -Math.PI;
 
@@ -128,7 +130,10 @@ class Bot {
         } else if (this.interact) {
             action = InputActions.Interact;
         }
-        stream.writeBits(action ?? InputActions.None, INPUT_ACTIONS_BITS);
+        stream.writeBits(action !== undefined ? 1 : 0, 4);
+        if (action) {
+            stream.writeBits(action, INPUT_ACTIONS_BITS);
+        }
         this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
     }
 

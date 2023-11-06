@@ -1,4 +1,4 @@
-import { ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface EmoteDefinition extends ObjectDefinition {}
 
@@ -113,6 +113,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "Flint Logo"
         },
         {
+            idString: "team_equals_ban",
+            name: "Team = Ban"
+        },
+        {
             idString: "gg",
             name: "gg"
         },
@@ -143,6 +147,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
         {
             idString: "froog",
             name: "Froog"
+        },
+        {
+            idString: "bleh",
+            name: "Bleh"
         },
         {
             idString: "fire",

@@ -1,26 +1,29 @@
 import { ObjectCategory } from "../../../common/src/constants";
-import { type DecalDefinition } from "../../../common/src/definitions/decals";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { Decals, type DecalDefinition } from "../../../common/src/definitions/decals";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 
-export class Decal extends GameObject {
-    constructor(game: Game, type: ObjectType<ObjectCategory.Decal, DecalDefinition>, position: Vector, rotation?: number) {
-        super(game, type, position);
+export class Decal extends GameObject<ObjectCategory.Decal> {
+    override readonly type = ObjectCategory.Decal;
+
+    readonly definition: DecalDefinition;
+
+    constructor(game: Game, definition: ReifiableDef<DecalDefinition>, position: Vector, rotation?: number) {
+        super(game, position);
+
+        this.definition = Decals.reify(definition);
+
         this.rotation = rotation ?? randomRotation();
     }
 
-    override serializeFull(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Decal].serializeFull(stream, this);
+    override get data(): Required<ObjectsNetData[ObjectCategory.Decal]> {
+        return this;
     }
 
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Decal].serializePartial(stream, this);
-    }
-
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     override damage(): void { }
 }

@@ -1,8 +1,7 @@
-import { Container, type Application } from "pixi.js";
+import { type Application, Container, type DisplayObject } from "pixi.js";
 import { randomFloat } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { consoleVariables } from "../utils/console/variables";
 import { EaseFunctions, Tween } from "../utils/tween";
 
 export class Camera {
@@ -26,6 +25,9 @@ export class Camera {
     shakeDuration!: number;
     shakeIntensity!: number;
 
+    width = 1;
+    height = 1;
+
     constructor(game: Game) {
         this.game = game;
         this.pixi = game.pixi;
@@ -34,10 +36,15 @@ export class Camera {
         this.pixi.stage.addChild(this.container);
 
         this.resize();
+
+        this.pixi.renderer.on("resize", this.resize.bind(this));
     }
 
     resize(animation = false): void {
-        const size = window.innerHeight < window.innerWidth ? window.innerWidth : window.innerHeight;
+        this.width = this.pixi.screen.width;
+        this.height = this.pixi.screen.height;
+
+        const size = this.height < this.width ? this.width : this.height;
         const scale = (size / 2560) * (48 / this.zoom); // 2560 = 1x, 5120 = 2x
 
         this.zoomTween?.kill();
@@ -65,16 +72,21 @@ export class Camera {
 
         const cameraPos = vAdd(
             vMul(position, this.container.scale.x),
-            v(-this.pixi.screen.width / 2, -this.pixi.screen.height / 2)
+            v(-this.width / 2, -this.height / 2)
         );
+
         this.container.position.set(-cameraPos.x, -cameraPos.y);
     }
 
     shake(duration: number, intensity: number): void {
-        if (!consoleVariables.get.builtIn("cv_camera_shake_fx").value) return;
+        if (!this.game.console.getBuiltInCVar("cv_camera_shake_fx")) return;
         this.shaking = true;
         this.shakeStart = Date.now();
         this.shakeDuration = duration;
         this.shakeIntensity = intensity;
+    }
+
+    addObject(...objects: DisplayObject[]): void {
+        this.container.addChild(...objects);
     }
 }

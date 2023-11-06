@@ -4,24 +4,24 @@ import { type ArmorDefinition } from "./armors";
 
 export const Vests: ArmorDefinition[] = [
     {
-        idString: "basic_vest",
-        name: "Basic Vest",
+        idString: "vest_1",
+        name: "Lvl. 1 Vest",
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 1,
         damageReduction: 0.2
     },
     {
-        idString: "bulletproof_vest",
-        name: "Bulletproof Vest",
+        idString: "vest_2",
+        name: "Lvl. 2 Vest",
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 2,
         damageReduction: 0.35
     },
     {
-        idString: "tactical_vest",
-        name: "Tactical Vest",
+        idString: "vest_3",
+        name: "Lvl. 3 Vest",
         itemType: ItemType.Armor,
         armorType: ArmorType.Vest,
         level: 3,

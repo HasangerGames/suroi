@@ -1,11 +1,3 @@
-export function log(message: string, noLine = false): void {
-    const date = new Date();
-    const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
-
-    console.log(`${dateString} ${message}`);
-    if (!noLine) console.log(`${dateString} ===========================`);
-}
-
 export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }

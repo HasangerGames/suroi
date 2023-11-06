@@ -12,14 +12,12 @@ import { type Game } from "./game";
 import { Skins } from "../../../common/src/definitions/skins";
 import { body, createDropdown } from "./uiHelpers";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { consoleVariables, type CVarTypeMapping } from "./utils/console/variables";
-import { gameConsole } from "./utils/console/gameConsole";
+import { type CVarTypeMapping } from "./utils/console/variables";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
         // Kill message
         $("#kill-msg-kills").text("Kills: 7");
-        $("#kill-msg-word").text("obliterated");
         $("#kill-msg-player-name").html("Player");
         $("#kill-msg-weapon-used").text(" with Mosin-Nagant (streak: 255)");
         $("#kill-msg").show();
@@ -78,6 +76,10 @@ export function setupUI(game: Game): void {
         {
             name: "monet",
             link: "https://www.youtube.com/@stardust_737"
+        },
+        {
+            name: "Tuncres",
+            link: "https://www.youtube.com/@Tuncres2022"
         }
     ];
 
@@ -106,7 +108,7 @@ export function setupUI(game: Game): void {
     const gameMenu = $("#game-menu");
     const settingsMenu = $("#settings-menu");
 
-    usernameField.val(consoleVariables.get.builtIn("cv_player_name").value);
+    usernameField.val(game.console.getBuiltInCVar("cv_player_name"));
 
     usernameField.on("input", () => {
         usernameField.val(
@@ -120,26 +122,38 @@ export function setupUI(game: Game): void {
                 .replace(/[^\x00-\xFF]/g, "")
         );
 
-        consoleVariables.set.builtIn("cv_player_name", usernameField.val() as string);
+        game.console.setBuiltInCVar("cv_player_name", usernameField.val() as string);
     });
 
     createDropdown("#server-select");
 
+    const serverSelect = $<HTMLSelectElement>("#server-select");
+
+    // Select region
+    serverSelect.on("change", () => {
+        const value = serverSelect.val() as string | undefined;
+
+        if (value !== undefined) {
+            game.console.setBuiltInCVar("cv_region", value);
+        }
+    });
+
     const rulesBtn = $("#btn-rules");
 
     // Highlight rules & tutorial button for new players
-    if (!consoleVariables.get.builtIn("cv_rules_acknowledged").value) {
+    if (!game.console.getBuiltInCVar("cv_rules_acknowledged")) {
         rulesBtn.removeClass("btn-secondary").addClass("highlighted");
     }
 
     // Event listener for rules button
     rulesBtn.on("click", () => {
-        consoleVariables.set.builtIn("cv_rules_acknowledged", true);
+        game.console.setBuiltInCVar("cv_rules_acknowledged", true);
         location.href = "/rules";
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
-    $("#btn-play-again").on("click", () => { game.endGame(); });
+    $("#btn-menu").on("click", () => { game.endGame(); });
+    $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
         game.sendPacket(new SpectatePacket(game.playerManager, action));
@@ -154,6 +168,11 @@ export function setupUI(game: Game): void {
     $("#btn-spectate-previous").on("click", () => {
         sendSpectatePacket(SpectateActions.SpectatePrevious);
     });
+
+    $("#btn-spectate-kill-leader").on("click", () => {
+        sendSpectatePacket(SpectateActions.SpectateKillLeader);
+    });
+
     $("#btn-report").on("click", () => {
         if (
             confirm(
@@ -175,11 +194,11 @@ export function setupUI(game: Game): void {
 
     body.on("keydown", (e: JQuery.KeyDownEvent) => {
         if (e.key === "Escape") {
-            if ($("canvas").hasClass("active") && !gameConsole.isOpen) {
+            if ($("canvas").hasClass("active") && !game.console.isOpen) {
                 gameMenu.fadeToggle(250);
                 settingsMenu.hide();
             }
-            gameConsole.isOpen = false;
+            game.console.isOpen = false;
         }
     });
 
@@ -228,9 +247,10 @@ export function setupUI(game: Game): void {
             `url("./img/game/skins/${skinID}_fist.svg")`
         );
     };
-    updateSplashCustomize(consoleVariables.get.builtIn("cv_loadout_skin").value);
+    updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
     for (const skin of Skins) {
-        if (skin.notInLoadout ?? (skin.roleRequired !== undefined && skin.roleRequired !== consoleVariables.get.builtIn("dv_role").value)) continue;
+        if (skin.notInLoadout ?? (skin.roleRequired !== undefined &&
+            skin.roleRequired !== game.console.getBuiltInCVar("dv_role"))) continue;
 
         /* eslint-disable @typescript-eslint/restrict-template-expressions */
         // noinspection CssUnknownTarget
@@ -244,13 +264,13 @@ export function setupUI(game: Game): void {
   <span class="skin-name">${skin.name}</span>
 </div>`);
         skinItem.on("click", function() {
-            consoleVariables.set.builtIn("cv_loadout_skin", skin.idString);
+            game.console.setBuiltInCVar("cv_loadout_skin", skin.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             updateSplashCustomize(skin.idString);
         });
         $("#skins-list").append(skinItem);
     }
-    $(`#skin-${consoleVariables.get.builtIn("cv_loadout_skin").value}`).addClass("selected");
+    $(`#skin-${game.console.getBuiltInCVar("cv_loadout_skin")}`).addClass("selected");
 
     // Load emotes
     let selectedEmoteSlot: "top" | "right" | "bottom" | "left" | undefined;
@@ -263,7 +283,7 @@ export function setupUI(game: Game): void {
 </div>`);
         emoteItem.on("click", function() {
             if (selectedEmoteSlot === undefined) return;
-            consoleVariables.set.builtIn(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
+            game.console.setBuiltInCVar(`cv_loadout_${selectedEmoteSlot}_emote`, emote.idString);
             $(this).addClass("selected").siblings().removeClass("selected");
             $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
                 "background-image",
@@ -274,7 +294,7 @@ export function setupUI(game: Game): void {
     }
 
     for (const slot of ["top", "right", "bottom", "left"] as const) {
-        const emote = consoleVariables.get.builtIn(`cv_loadout_${slot}_emote`).value;
+        const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-customize-wheel > .emote-${slot}`)
             .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
@@ -299,13 +319,13 @@ export function setupUI(game: Game): void {
 
     // Load crosshairs
     function loadCrosshair(): void {
-        const size = consoleVariables.get.builtIn("cv_crosshair_size").value;
+        const size = game.console.getBuiltInCVar("cv_crosshair_size");
         const crosshair = getCrosshair(
-            consoleVariables.get.builtIn("cv_loadout_crosshair").value,
-            consoleVariables.get.builtIn("cv_crosshair_color").value,
+            game.console.getBuiltInCVar("cv_loadout_crosshair"),
+            game.console.getBuiltInCVar("cv_crosshair_color"),
             size,
-            consoleVariables.get.builtIn("cv_crosshair_stroke_color").value,
-            consoleVariables.get.builtIn("cv_crosshair_stroke_size").value
+            game.console.getBuiltInCVar("cv_crosshair_stroke_color"),
+            game.console.getBuiltInCVar("cv_crosshair_stroke_size")
         );
         const cursor = `url("${crosshair}") ${size / 2} ${size / 2}, crosshair`;
 
@@ -315,64 +335,61 @@ export function setupUI(game: Game): void {
             height: size
         });
 
-        $("#crosshair-preview").css({ cursor });
+        $("#crosshair-controls").toggleClass("disabled", !Crosshairs[game.console.getBuiltInCVar("cv_loadout_crosshair")]);
 
-        $("#game-ui").css({ cursor });
+        $("#crosshair-preview, #game-ui").css({ cursor });
     }
     loadCrosshair();
 
-    for (const crosshair of Crosshairs.definitions) {
+    Crosshairs.forEach((_, crosshairIndex) => {
         const crosshairItem = $(`
-    <div id="crosshair-${crosshair.idString}" class="crosshairs-list-item-container">
+    <div id="crosshair-${crosshairIndex}" class="crosshairs-list-item-container">
         <div class="crosshairs-list-item"></div>
     </div>`);
 
-        const size = consoleVariables.get.builtIn("cv_crosshair_size").value;
-        const backgroundImage = `url("${getCrosshair(
-            crosshair.idString,
-            "#fff",
-            size,
-            "#0",
-            0)}")`;
-
-        // This method sucks but it's the only way to do it without breaking the crosshair image
         crosshairItem.find(".crosshairs-list-item").css({
-            backgroundImage,
+            backgroundImage: `url("${getCrosshair(
+                crosshairIndex,
+                "#fff",
+                game.console.getBuiltInCVar("cv_crosshair_size"),
+                "#0",
+                0
+            )}")`,
             "background-size": "contain",
             "background-repeat": "no-repeat"
         });
 
         crosshairItem.on("click", function() {
-            consoleVariables.set.builtIn("cv_loadout_crosshair", crosshair.idString);
+            game.console.setBuiltInCVar("cv_loadout_crosshair", crosshairIndex);
             loadCrosshair();
             $(this).addClass("selected").siblings().removeClass("selected");
         });
 
         $("#crosshairs-list").append(crosshairItem);
-    }
+    });
 
-    $(`#crosshair-${consoleVariables.get.builtIn("cv_loadout_crosshair").value}`).addClass("selected");
+    $(`#crosshair-${game.console.getBuiltInCVar("cv_loadout_crosshair")}`).addClass("selected");
 
     addSliderListener("#slider-crosshair-size", "cv_crosshair_size", (value: number) => {
-        consoleVariables.set.builtIn("cv_crosshair_size", 20 * value);
+        game.console.setBuiltInCVar("cv_crosshair_size", 20 * value);
         loadCrosshair();
     });
-    $("#slider-crosshair-size").val(consoleVariables.get.builtIn("cv_crosshair_size").value / 20);
+    $("#slider-crosshair-size").val(game.console.getBuiltInCVar("cv_crosshair_size") / 20);
 
     addSliderListener("#slider-crosshair-stroke-size", "cv_crosshair_stroke_size", () => {
         loadCrosshair();
     });
-    $("#slider-crosshair-stroke-size").val(consoleVariables.get.builtIn("cv_crosshair_stroke_size").value);
+    $("#slider-crosshair-stroke-size").val(game.console.getBuiltInCVar("cv_crosshair_stroke_size"));
 
     $<HTMLInputElement>("#crosshair-color-picker").on("input", e => {
-        consoleVariables.set.builtIn("cv_crosshair_color", e.target.value);
+        game.console.setBuiltInCVar("cv_crosshair_color", e.target.value);
         loadCrosshair();
-    }).val(consoleVariables.get.builtIn("cv_crosshair_color").value);
+    }).val(game.console.getBuiltInCVar("cv_crosshair_color"));
 
     $<HTMLInputElement>("#crosshair-stroke-picker").on("input", (e) => {
-        consoleVariables.set.builtIn("cv_crosshair_stroke_color", e.target.value);
+        game.console.setBuiltInCVar("cv_crosshair_stroke_color", e.target.value);
         loadCrosshair();
-    }).val(consoleVariables.get.builtIn("cv_crosshair_stroke_color").value);
+    }).val(game.console.getBuiltInCVar("cv_crosshair_stroke_color"));
 
     // Disable context menu
     $("#game-ui").on("contextmenu", e => { e.preventDefault(); });
@@ -384,12 +401,12 @@ export function setupUI(game: Game): void {
 
         element.addEventListener("input", () => {
             const value = +element.value;
-            consoleVariables.set(settingName, value);
+            game.console.setBuiltInCVar(settingName, value);
 
             callback?.(value);
         });
 
-        element.value = (consoleVariables.get.builtIn(settingName).value as number).toString();
+        element.value = (game.console.getBuiltInCVar(settingName) as number).toString();
     }
 
     function addCheckboxListener(elementId: string, settingName: keyof CVarTypeMapping, callback?: (value: boolean) => void): void {
@@ -397,12 +414,12 @@ export function setupUI(game: Game): void {
 
         element.addEventListener("input", () => {
             const value = element.checked;
-            consoleVariables.set(settingName, value);
+            game.console.setBuiltInCVar(settingName, value);
 
             callback?.(value);
         });
 
-        element.checked = consoleVariables.get.builtIn(settingName).value as boolean;
+        element.checked = game.console.getBuiltInCVar(settingName) as boolean;
     }
 
     // Scope looping toggle
@@ -424,7 +441,7 @@ export function setupUI(game: Game): void {
     addSliderListener("#slider-master-volume", "cv_master_volume", (value: number) => {
         Howler.volume(value);
     });
-    Howler.volume(consoleVariables.get.builtIn("cv_master_volume").value);
+    Howler.volume(game.console.getBuiltInCVar("cv_master_volume"));
 
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");
@@ -436,44 +453,33 @@ export function setupUI(game: Game): void {
     addCheckboxListener("#toggle-fps", "pf_show_fps", (value: boolean) => {
         $("#fps-counter").toggle(value);
     });
-    $("#fps-counter").toggle(consoleVariables.get.builtIn("pf_show_fps").value);
+    $("#fps-counter").toggle(game.console.getBuiltInCVar("pf_show_fps"));
 
     // Ping toggle
     addCheckboxListener("#toggle-ping", "pf_show_ping", (value: boolean) => {
         $("#ping-counter").toggle(value);
     });
-    $("#ping-counter").toggle(consoleVariables.get.builtIn("pf_show_ping").value);
+    $("#ping-counter").toggle(game.console.getBuiltInCVar("pf_show_ping"));
 
     // Coordinates toggle
     addCheckboxListener("#toggle-coordinates", "pf_show_pos", (value: boolean) => {
         $("#coordinates-hud").toggle(value);
     });
-    $("#coordinates-hud").toggle(consoleVariables.get.builtIn("pf_show_pos").value);
-
-    // Client-side prediction choice
-    {
-        const element = $("#rotation-animation-style")[0] as HTMLInputElement;
-
-        element.addEventListener("input", () => {
-            consoleVariables.set.builtIn("cv_animate_rotation", element.checked ? "client" : "wait_for_server");
-        });
-
-        element.checked = consoleVariables.get.builtIn("cv_animate_rotation").value === "client";
-    }
+    $("#coordinates-hud").toggle(game.console.getBuiltInCVar("pf_show_pos"));
 
     // Text kill feed toggle
     {
         const element = $("#toggle-text-kill-feed")[0] as HTMLInputElement;
 
         element.addEventListener("input", () => {
-            consoleVariables.set.builtIn("cv_killfeed_style", element.checked ? "text" : "icon");
+            game.console.setBuiltInCVar("cv_killfeed_style", element.checked ? "text" : "icon");
         });
 
-        element.checked = consoleVariables.get.builtIn("cv_killfeed_style").value === "text";
+        element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
     }
 
-    // Rotation smoothing toggle
-    addCheckboxListener("#toggle-rotation-smoothing", "cv_rotation_smoothing");
+    // antialias toggle
+    addCheckboxListener("#toggle-antialias", "cv_antialias");
 
     // Movement smoothing toggle
     addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
@@ -500,21 +506,85 @@ export function setupUI(game: Game): void {
     addCheckboxListener("#toggle-leave-warning", "cv_leave_warning");
 
     // Hide rules button
-    addCheckboxListener("#toggle-hide-rules", "cv_rules_acknowledged", (value: boolean) => {
-        $("#btn-rules").toggle(!value);
+    addCheckboxListener("#toggle-hide-rules", "cv_hide_rules_button", (value: boolean) => {
+        $("#btn-rules, #rules-close-btn").toggle(!value);
     });
-    $("#btn-rules").toggle(!consoleVariables.get.builtIn("cv_rules_acknowledged").value);
+    rulesBtn.toggle(!game.console.getBuiltInCVar("cv_hide_rules_button"));
+
+    // Hide option to hide rules if rules haven't been acknowledged
+    $(".checkbox-setting").has("#toggle-hide-rules").toggle(game.console.getBuiltInCVar("cv_rules_acknowledged"));
+
+    $("#rules-close-btn").on("click", () => {
+        $("#btn-rules, #rules-close-btn").hide();
+        game.console.setBuiltInCVar("cv_hide_rules_button", true);
+        $("#toggle-hide-rules").prop("checked", true);
+    }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
+
+    // Import settings
+    $("#import-settings-btn").on("click", () => {
+        if (!confirm("This option will overwrite all settings and reload the page. Continue?")) return;
+        const error = (): void => {
+            alert("Invalid config.");
+        };
+        try {
+            const input = prompt("Enter a config:");
+            if (!input) {
+                error();
+                return;
+            }
+
+            const config = JSON.parse(input);
+            if (typeof config !== "object" || !("variables" in config)) {
+                error();
+                return;
+            }
+
+            localStorage.setItem("suroi_config", input);
+            alert("Settings loaded successfully.");
+            window.location.reload();
+        } catch (e) {
+            error();
+        }
+    });
+
+    // Copy settings to clipboard
+    $("#export-settings-btn").on("click", () => {
+        const exportedSettings = localStorage.getItem("suroi_config");
+        const error = (): void => {
+            alert('Unable to copy settings. To export settings manually, open the dev tools with Ctrl+Shift+I and type in the following: localStorage.getItem("suroi_config")');
+        };
+        if (exportedSettings === null) {
+            error();
+            return;
+        }
+        navigator.clipboard
+            .writeText(exportedSettings)
+            .then(() => {
+                alert("Settings copied to clipboard.");
+            })
+            .catch(error);
+    });
+
+    // Reset settings
+    $("#reset-settings-btn").on("click", () => {
+        if (!confirm("This option will reset all settings and reload the page. Continue?")) return;
+        if (!confirm("Are you sure? This action cannot be undone.")) return;
+        localStorage.removeItem("suroi_config");
+        window.location.reload();
+    });
 
     // Switch weapon slots by clicking
-    for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
-        const slotElement = $(`#weapon-slot-${i + 1}`);
+    for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
+        const slotElement = $(`#weapon-slot-${slot + 1}`);
         slotElement[0].addEventListener(
             "pointerdown",
             (e: PointerEvent): void => {
                 if (slotElement.hasClass("has-item")) {
                     e.stopImmediatePropagation();
-                    if (e.button === 0) game.playerManager.equipItem(i);
-                    else if (e.button === 2) game.playerManager.dropItem(i);
+                    game.inputManager.addAction({
+                        type: e.button === 2 ? InputActions.DropItem : InputActions.EquipItem,
+                        slot
+                    });
                 }
             }
         );
@@ -523,20 +593,18 @@ export function setupUI(game: Game): void {
     // Generate the UI for scopes, healing items and ammos
     for (const scope of Scopes) {
         $("#scopes-container").append(`
-        <div class="inventory-slot item-slot" id="${scope.idString
-}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString
-}.svg" draggable="false">
+        <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
+            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
-        $(`#${scope.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(scope.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${scope.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.inputManager.addAction({
+                type: InputActions.UseItem,
+                item: scope
+            });
+            e.stopPropagation();
+        });
         if (UI_DEBUG_MODE) {
             $(`#${scope.idString}-slot`).show();
         }
@@ -545,24 +613,22 @@ export function setupUI(game: Game): void {
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${item.idString
-}.svg" draggable="false">
+            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
                 <br>
-                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"
-}
+                Restores ${item.restoreAmount}${item.healType === HealType.Adrenaline ? "% adrenaline" : " health"}
             </div>
         </div>`);
 
-        $(`#${item.idString}-slot`)[0].addEventListener(
-            "pointerdown",
-            (e: PointerEvent) => {
-                game.playerManager.useItem(item.idString);
-                e.stopPropagation();
-            }
-        );
+        $(`#${item.idString}-slot`)[0].addEventListener("pointerdown", (e: PointerEvent) => {
+            game.inputManager.addAction({
+                type: InputActions.UseItem,
+                item
+            });
+            e.stopPropagation();
+        });
     }
 
     for (const ammo of Ammos) {
@@ -579,17 +645,17 @@ export function setupUI(game: Game): void {
     $("#tab-mobile").toggle(isMobile.any);
 
     // Mobile event listeners
-    if (game.playerManager.isMobile) {
+    if (game.inputManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            game.playerManager.interact();
+            game.console.handleQuery("interact");
         });
 
         // Reload button
         $("#btn-reload")
             .show()
             .on("click", () => {
-                game.playerManager.reload();
+                game.console.handleQuery("reload");
             });
 
         // Emote button & wheel
@@ -604,8 +670,7 @@ export function setupUI(game: Game): void {
         const createEmoteWheelListener = (slot: string, action: InputActions): void => {
             $(`#emote-wheel .emote-${slot}`).on("click", () => {
                 $("#emote-wheel").hide();
-                game.playerManager.action = action;
-                game.playerManager.dirty.inputs = true;
+                game.inputManager.addAction(action);
             });
         };
         createEmoteWheelListener("top", InputActions.TopEmoteSlot);
@@ -623,7 +688,7 @@ export function setupUI(game: Game): void {
 
     // Prompt when trying to close the tab while playing
     window.addEventListener("beforeunload", (e: Event) => {
-        if ($("canvas").hasClass("active") && consoleVariables.get.builtIn("cv_leave_warning").value && !game.gameOver) {
+        if ($("canvas").hasClass("active") && game.console.getBuiltInCVar("cv_leave_warning") && !game.gameOver) {
             e.preventDefault();
         }
     });

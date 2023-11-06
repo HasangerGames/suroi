@@ -3,10 +3,11 @@
 ## Supported Versions
 The following versions of Suroi are currently being actively supported. Any security vulnerabilities discovered must be reproducible in supported versions.
 
-| Version | Supported          |
-|---------| ------------------ |
+| Version  | Supported          |
+|--------- | ------------------ |
+| 0.11.x   | :white_check_mark: |
 | 0.10.x   | :white_check_mark: |
-| 0.9.x    | :white_check_mark: |
+| 0.9.x    | :x: |
 | 0.8.x    | :x: |
 | 0.7.x    | :x: |
 | 0.6.x    | :x: |

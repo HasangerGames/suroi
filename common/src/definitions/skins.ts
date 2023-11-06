@@ -1,10 +1,9 @@
-import { ItemType, type ItemDefinition } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
 
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
     readonly notInLoadout?: boolean
     readonly roleRequired?: string
-    readonly noDrop?: boolean
 }
 
 export const Skins: SkinDefinition[] = [
@@ -19,6 +18,12 @@ export const Skins: SkinDefinition[] = [
         name: "Leia",
         itemType: ItemType.Skin,
         roleRequired: "leia"
+    },
+    {
+        idString: "limenade",
+        name: "LimeNade",
+        itemType: ItemType.Skin,
+        roleRequired: "limenade"
     },
     {
         idString: "katie",
@@ -57,6 +62,11 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "artist"
     },
     {
+        idString: "hazel_jumpsuit",
+        name: "HAZEL Jumpsuit",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "forest_camo",
         name: "Forest Camo",
         itemType: ItemType.Skin
@@ -71,16 +81,17 @@ export const Skins: SkinDefinition[] = [
         name: "Arctic Camo",
         itemType: ItemType.Skin
     },
+    /* Maybe someday
+    {
+        idString: "toilet",
+        name: "Skibidi Toilet",
+        itemType: ItemType.Skin
+    },
+    */
     {
         idString: "bloodlust",
         name: "Bloodlust",
         itemType: ItemType.Skin
-    },
-    {
-        idString: "hazel_jumpsuit",
-        name: "HAZEL Jumpsuit",
-        itemType: ItemType.Skin,
-        notInLoadout: true
     },
     {
         idString: "tomato_skin",
@@ -150,6 +161,11 @@ export const Skins: SkinDefinition[] = [
     {
         idString: "snow_cone",
         name: "Snow Cone",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "aquatic",
+        name: "Aquatic",
         itemType: ItemType.Skin
     },
     {

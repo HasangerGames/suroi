@@ -1,8 +1,8 @@
-import { ObjectCategory, PacketType } from "../../../../../common/src/constants";
-import { ObjectType } from "../../../../../common/src/utils/objectType";
+import { PacketType } from "../../../../../common/src/constants";
+import { Emotes } from "../../../../../common/src/definitions/emotes";
+import { Loots } from "../../../../../common/src/definitions/loots";
 import { type SuroiBitStream } from "../../../../../common/src/utils/suroiBitStream";
 import { SendingPacket } from "../../types/sendingPacket";
-import { type CVarTypeMapping, consoleVariables } from "../../utils/console/variables";
 
 export class JoinPacket extends SendingPacket {
     override readonly allocBytes = 24;
@@ -10,21 +10,15 @@ export class JoinPacket extends SendingPacket {
 
     serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
+        const con = this.game.console;
 
-        stream.writePlayerName(consoleVariables.get.builtIn("cv_player_name").value);
+        stream.writePlayerName(con.getBuiltInCVar("cv_player_name"));
+        stream.writeBoolean(this.game.inputManager.isMobile);
 
-        stream.writeBoolean(this.playerManager.isMobile);
-
-        const writeLoadoutItem = (
-            propertyName: keyof CVarTypeMapping,
-            category = ObjectCategory.Emote
-        ): void => {
-            stream.writeObjectTypeNoCategory(ObjectType.fromString(category, consoleVariables.get.builtIn(propertyName).value as string));
-        };
-        writeLoadoutItem("cv_loadout_skin", ObjectCategory.Loot);
-        writeLoadoutItem("cv_loadout_top_emote");
-        writeLoadoutItem("cv_loadout_right_emote");
-        writeLoadoutItem("cv_loadout_bottom_emote");
-        writeLoadoutItem("cv_loadout_left_emote");
+        Loots.writeToStream(stream, con.getBuiltInCVar("cv_loadout_skin"));
+        Emotes.writeToStream(stream, con.getBuiltInCVar("cv_loadout_top_emote"));
+        Emotes.writeToStream(stream, con.getBuiltInCVar("cv_loadout_right_emote"));
+        Emotes.writeToStream(stream, con.getBuiltInCVar("cv_loadout_bottom_emote"));
+        Emotes.writeToStream(stream, con.getBuiltInCVar("cv_loadout_left_emote"));
     }
 }

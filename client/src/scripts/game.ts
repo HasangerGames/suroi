@@ -1,16 +1,18 @@
 import $ from "jquery";
-import { Container, type Application } from "pixi.js";
-import { ObjectCategory, PacketType, TICKS_PER_SECOND, zIndexes } from "../../../common/src/constants";
+
+import { Application, Container } from "pixi.js";
+import { InputActions, ObjectCategory, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
-import { CircleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
-import { circleCollision, distanceSquared, type CollisionRecord } from "../../../common/src/utils/math";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
+import { CircleHitbox } from "../../../common/src/utils/hitbox";
+import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
+import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { enablePlayButton } from "./main";
 import { Building } from "./objects/building";
 import { type Bullet } from "./objects/bullet";
 import { DeathMarker } from "./objects/deathMarker";
+import { Decal } from "./objects/decal";
 import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { ParticleManager } from "./objects/particles";
@@ -18,28 +20,29 @@ import { Player } from "./objects/player";
 import { GameOverPacket, gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { JoinedPacket } from "./packets/receiving/joinedPacket";
 import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
-import { KillPacket } from "./packets/receiving/killPacket";
+import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { PingPacket } from "./packets/sending/pingPacket";
+import { type SendingPacket } from "./types/sendingPacket";
+import { type GameObject } from "./types/gameObject";
+
+import { PlayerManager } from "./utils/playerManager";
 import { MapPacket } from "./packets/receiving/mapPacket";
 import { PickupPacket } from "./packets/receiving/pickupPacket";
-import { PingedPacket } from "./packets/receiving/pingedPacket";
+import { COLORS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { ReportPacket } from "./packets/receiving/reportPacket";
-import { UpdatePacket } from "./packets/receiving/updatePacket";
-import { InputPacket } from "./packets/sending/inputPacket";
 import { JoinPacket } from "./packets/sending/joinPacket";
-import { PingPacket } from "./packets/sending/pingPacket";
+import { InputPacket } from "./packets/sending/inputPacket";
+import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
+import { SoundManager } from "./utils/soundManager";
 import { Gas } from "./rendering/gas";
 import { Minimap } from "./rendering/map";
-import { type GameObject } from "./types/gameObject";
-import { type SendingPacket } from "./types/sendingPacket";
-import { keybinds } from "./utils/console/gameConsole";
-import { PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { getIconFromInputName } from "./utils/inputManager";
-import { PlayerManager } from "./utils/playerManager";
-import { SoundManager } from "./utils/soundManager";
 import { type Tween } from "./utils/tween";
-import { consoleVariables } from "./utils/console/variables";
-import { Decal } from "./objects/decal";
+import { UpdatePacket } from "./packets/receiving/updatePacket";
+import { GameConsole } from "./utils/console/gameConsole";
+import { setUpCommands } from "./utils/console/commands";
+import { setupUI } from "./ui";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 
 export class Game {
     socket!: WebSocket;
@@ -50,12 +53,9 @@ export class Game {
     readonly bullets = new Set<Bullet>();
 
     activePlayerID = -1;
-
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
     }
-
-    readonly floorHitboxes = new Map<Hitbox, string>();
 
     gameStarted = false;
     gameOver = false;
@@ -71,44 +71,65 @@ export class Game {
 
     gas!: Gas;
 
-    readonly pixi: Application;
-    readonly soundManager = new SoundManager();
+    readonly pixi: Application<HTMLCanvasElement>;
+    readonly soundManager: SoundManager;
     readonly particleManager = new ParticleManager(this);
     readonly map: Minimap;
     readonly camera: Camera;
+    readonly console = new GameConsole(this);
+    readonly inputManager = new InputManager(this);
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
-    playersContainer = new Container();
-    bulletsContainer = new Container();
+    readonly playersContainer = new Container();
+    readonly bulletsContainer = new Container();
 
-    readonly music = new Howl({ src: consoleVariables.get.builtIn("cv_use_old_menu_music").value ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3", loop: true });
+    readonly music: Howl;
     musicPlaying = false;
 
     readonly tweens = new Set<Tween<unknown>>();
 
-    constructor(pixi: Application) {
-        this.pixi = pixi;
+    constructor() {
+        this.inputManager.setupInputs();
+        this.console.readFromLocalStorage();
+
+        this.pixi = new Application({
+            resizeTo: window,
+            background: COLORS.grass,
+            antialias: this.console.getBuiltInCVar("cv_antialias"),
+            autoDensity: true,
+            resolution: window.devicePixelRatio || 1
+        });
+
+        $("#game-ui").append(this.pixi.view);
 
         this.pixi.ticker.add(this.render.bind(this));
 
-        this.camera = new Camera(this);
+        setUpCommands(this);
+        this.soundManager = new SoundManager(this);
+        this.inputManager.generateBindsConfigScreen();
 
+        setupUI(this);
+
+        this.camera = new Camera(this);
         this.map = new Minimap(this);
 
-        this.playersContainer.zIndex = zIndexes.Players;
-        this.bulletsContainer.zIndex = zIndexes.Bullets;
+        this.playersContainer.zIndex = ZIndexes.Players;
+        this.bulletsContainer.zIndex = ZIndexes.Bullets;
+
+        this.music = new Howl({
+            src: this.console.getBuiltInCVar("cv_use_old_menu_music") ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3",
+            loop: true
+        });
 
         setInterval(() => {
-            if (consoleVariables.get.builtIn("pf_show_fps").value) {
+            if (this.console.getBuiltInCVar("pf_show_fps")) {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
 
-        window.addEventListener("resize", this.resize.bind(this));
-
         if (!this.musicPlaying) {
-            const musicVolume = consoleVariables.get.builtIn("cv_music_volume").value;
+            const musicVolume = this.console.getBuiltInCVar("cv_music_volume");
 
             this.music.play();
             this.music.volume(musicVolume);
@@ -139,12 +160,13 @@ export class Game {
                 $("#kill-feed").html("");
                 $("#spectating-msg").hide();
                 $("#spectating-buttons-container").hide();
+                $("#joysticks-containers").show();
             }
             this.sendPacket(new PingPacket(this._playerManager));
             this.sendPacket(new JoinPacket(this._playerManager));
 
             this.gas = new Gas(PIXI_SCALE, this.camera.container);
-            this.camera.container.addChild(this.playersContainer, this.bulletsContainer);
+            this.camera.addObject(this.playersContainer, this.bulletsContainer);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -160,7 +182,9 @@ export class Game {
                     break;
                 }
                 case PacketType.Map: {
-                    new MapPacket(this._playerManager).deserialize(stream);
+                    const mapPacket = new MapPacket(this.playerManager);
+                    mapPacket.deserialize(stream);
+                    this.map.updateFromPacket(mapPacket);
                     break;
                 }
                 case PacketType.Update: {
@@ -171,10 +195,6 @@ export class Game {
                 }
                 case PacketType.GameOver: {
                     new GameOverPacket(this._playerManager).deserialize(stream);
-                    break;
-                }
-                case PacketType.Kill: {
-                    new KillPacket(this._playerManager).deserialize(stream);
                     break;
                 }
                 case PacketType.KillFeed: {
@@ -229,12 +249,15 @@ export class Game {
         $("#game-menu").hide();
         $("#game-over-overlay").hide();
         $("canvas").removeClass("active");
+        $("#kill-leader-leader").text("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
         $("#splash-ui").fadeIn();
 
         this.gameStarted = false;
         this.socket.close();
 
         // reset stuff
+        for (const object of this.objects) object.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
@@ -243,7 +266,6 @@ export class Game {
         this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
-        this.floorHitboxes.clear();
         this.loots.clear();
 
         this.camera.zoom = Scopes[0].zoomLevel;
@@ -252,7 +274,7 @@ export class Game {
 
         if (!this.musicPlaying) {
             this.music.stop().play();
-            this.music.volume(consoleVariables.get.builtIn("cv_music_volume").value);
+            this.music.volume(this.console.getBuiltInCVar("cv_music_volume"));
             this.musicPlaying = true;
         }
     }
@@ -276,37 +298,26 @@ export class Game {
         }
     }
 
-    resize(): void {
-        this.camera.resize();
-    }
-
     render(): void {
         if (!this.gameStarted) return;
         const delta = this.pixi.ticker.deltaMS;
 
-        if (consoleVariables.get.builtIn("cv_movement_smoothing").value) {
+        if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
             for (const player of this.players) {
                 player.updateContainerPosition();
-                if (
-                    consoleVariables.get.builtIn("cv_rotation_smoothing").value &&
-                    !(player.isActivePlayer && consoleVariables.get.builtIn("cv_animate_rotation").value === "client")
-                ) player.updateContainerRotation();
+                if (!player.isActivePlayer || this.spectating) player.updateContainerRotation();
             }
-
-            for (const loot of this.loots) loot.updateContainerPosition();
 
             if (this.activePlayer) {
                 this.camera.position = this.activePlayer.container.position;
             }
+
+            for (const loot of this.loots) loot.updateContainerPosition();
         }
 
-        for (const tween of this.tweens) {
-            tween.update();
-        }
+        for (const tween of this.tweens) tween.update();
 
-        for (const bullet of this.bullets) {
-            bullet.update(delta);
-        }
+        for (const bullet of this.bullets) bullet.update(delta);
 
         this.particleManager.update(delta);
 
@@ -318,48 +329,39 @@ export class Game {
 
     processUpdate(updateData: UpdatePacket): void {
         for (const { id, type, data } of updateData.fullDirtyObjects) {
-            let object: GameObject | undefined = this.objects.get(id);
+            const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
-                switch (type.category) {
-                    case ObjectCategory.Player: {
-                        object = new Player(this, id);
-                        this.players.add(object as Player);
-                        break;
-                    }
-                    case ObjectCategory.Obstacle: {
-                        object = new Obstacle(this, type, id);
-                        break;
-                    }
-                    case ObjectCategory.DeathMarker: {
-                        object = new DeathMarker(this, type, id);
-                        break;
-                    }
-                    case ObjectCategory.Loot: {
-                        object = new Loot(this, type, id);
-                        this.loots.add(object as Loot);
-                        break;
-                    }
-                    case ObjectCategory.Building: {
-                        object = new Building(this, type, id);
-                        break;
-                    }
-                    case ObjectCategory.Decal: {
-                        object = new Decal(this, type, id);
-                    }
-                }
+                const ObjectsMapping = {
+                    [ObjectCategory.Player]: Player,
+                    [ObjectCategory.Obstacle]: Obstacle,
+                    [ObjectCategory.DeathMarker]: DeathMarker,
+                    [ObjectCategory.Loot]: Loot,
+                    [ObjectCategory.Building]: Building,
+                    [ObjectCategory.Decal]: Decal
+                };
+
+                type K = typeof type;
+                const newObject = new (
+                    ObjectsMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
+                )(this, id, data);
+
+                if (newObject instanceof Loot) this.loots.add(newObject);
+                else if (newObject instanceof Player) this.players.add(newObject);
+
+                this.objects.add(newObject);
             }
 
             if (object) {
                 this.objects.add(object);
-                object.updateFromData(data);
+                object.updateFromData(data, false);
             }
         }
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
             if (object) {
-                object.updateFromData(data);
+                object.updateFromData(data, false);
             }
         }
         for (const id of updateData.deletedObjects) {
@@ -381,7 +383,7 @@ export class Game {
     }
 
     tick = (() => {
-        const getPickupBind = (): string => getIconFromInputName(keybinds.getInputsBoundToAction("interact")[0]);
+        const getPickupBind = (): string => this.inputManager.binds.getInputsBoundToAction("interact")[0];
 
         let skipLootCheck = true;
 
@@ -422,10 +424,7 @@ export class Game {
         return (): void => {
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
 
-            if (this._playerManager.dirty.inputs) {
-                this._playerManager.dirty.inputs = false;
-                this.sendPacket(new InputPacket(this._playerManager));
-            }
+            this.sendPacket(new InputPacket(this._playerManager));
 
             // Only run interact message and loot checks every other tick
             skipLootCheck = !skipLootCheck;
@@ -440,9 +439,9 @@ export class Game {
             const doorDetectionHitbox = new CircleHitbox(3, player.position);
 
             for (const object of this.objects) {
-                if (object instanceof Obstacle && object.isDoor && !object.dead) {
+                if (object instanceof Obstacle && object.canInteract(player)) {
                     const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
-                    const dist = distanceSquared(object.position, player.position);
+                    const dist = distanceSquared(object.position, player.position); // fixme use of both distanceTo and distanceSquared?
                     if (dist < minDist && record?.collided) {
                         minDist = dist;
                         closestObject = object;
@@ -493,28 +492,45 @@ export class Game {
                         ) return;
 
                         let interactText = "";
-                        if (closestObject instanceof Obstacle) interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
-                        interactText += closestObject.type.definition.name;
+                        if (closestObject instanceof Obstacle) {
+                            switch (closestObject.definition.role) {
+                                case ObstacleSpecialRoles.Door:
+                                    interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
+                                    break;
+                                case ObstacleSpecialRoles.Activatable:
+                                    interactText += "Activate ";
+                                    break;
+                            }
+                        }
+                        interactText += closestObject.definition.name;
                         if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
                         $("#interact-text").text(interactText);
                     };
 
-                    if (this._playerManager.isMobile) {
-                        const lootDef = closestObject.type.definition;
+                    if (this.inputManager.isMobile) {
+                        const lootDef = closestObject.definition;
 
-                        // Autoloot
-                        if (closestObject instanceof Obstacle && closestObject.isDoor && closestObject.door?.offset === 0) {
-                            this.playerManager.interact();
+                        // Auto open doors
+                        if (closestObject instanceof Obstacle && closestObject.canInteract(player) && closestObject.door?.offset === 0) {
+                            this.inputManager.addAction(InputActions.Interact);
                         }
 
+                        // Autoloot
                         if (
                             closestObject instanceof Loot && "itemType" in lootDef &&
-                            ((lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
-                                (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1])))
+                            (
+                                (lootDef.itemType !== ItemType.Gun && lootDef.itemType !== ItemType.Melee) ||
+                                (lootDef.itemType === ItemType.Gun && (!this._playerManager.weapons[0] || !this._playerManager.weapons[1]))
+                            )
                         ) {
-                            this._playerManager.interact();
+                            // TODO Needs testing
+                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.inputManager.addAction(InputActions.Interact);
                         } else if (
-                            (closestObject instanceof Loot && "itemType" in lootDef && (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)) ||
+                            (
+                                closestObject instanceof Loot &&
+                                "itemType" in lootDef &&
+                                (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)
+                            ) ||
                             closestObject instanceof Obstacle
                         ) {
                             prepareInteractText();
@@ -537,7 +553,7 @@ export class Game {
                             bindChangeAcknowledged = true;
 
                             const input = getPickupBind();
-                            const icon = getIconFromInputName(input);
+                            const icon = InputManager.getIconFromInputName(input);
 
                             if (icon === undefined) {
                                 $("#interact-key").text(input);

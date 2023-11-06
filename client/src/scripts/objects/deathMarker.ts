@@ -1,16 +1,14 @@
-import { type Container, Text } from "pixi.js";
-import { DEFAULT_USERNAME, type ObjectCategory, zIndexes } from "../../../../common/src/constants";
-import { type ObjectType } from "../../../../common/src/utils/objectType";
+import { Text, type Container } from "pixi.js";
+import { DEFAULT_USERNAME, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { consoleVariables } from "../utils/console/variables";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 
-export class DeathMarker extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.DeathMarker>;
+export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
+    override readonly type = ObjectCategory.DeathMarker;
 
     playerName!: string;
     nameColor = "#dcdcdc";
@@ -21,12 +19,12 @@ export class DeathMarker extends GameObject {
     scaleAnim?: Tween<Vector>;
     alphaAnim?: Tween<Container>;
 
-    constructor(game: Game, type: ObjectType, id: number) {
-        super(game, type, id);
+    constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.DeathMarker]>) {
+        super(game, id);
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            consoleVariables.get.builtIn("cv_anonymize_player_names").value ? DEFAULT_USERNAME : "",
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",
@@ -40,10 +38,12 @@ export class DeathMarker extends GameObject {
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-        this.container.zIndex = zIndexes.DeathMarkers;
+        this.container.zIndex = ZIndexes.DeathMarkers;
+
+        this.updateFromData(data, true);
     }
 
-    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker]): void {
+    override updateFromData(data: ObjectsNetData[ObjectCategory.DeathMarker], isNew = false): void {
         this.position = data.position;
 
         const pos = toPixiCoords(this.position);
@@ -59,19 +59,26 @@ export class DeathMarker extends GameObject {
         this.playerNameText.style.fill = this.nameColor;
 
         // Play an animation if this is a new death marker.
-        if (data.isNew) {
+        if (data.isNew && isNew) {
             this.container.scale.set(0.5);
             this.container.alpha = 0;
-            this.scaleAnim = new Tween(this.game, {
-                target: this.container.scale,
-                to: { x: 1, y: 1 },
-                duration: 400
-            });
-            this.alphaAnim = new Tween(this.game, {
-                target: this.container,
-                to: { alpha: 1 },
-                duration: 400
-            });
+            this.scaleAnim = new Tween(
+                this.game,
+                {
+                    target: this.container.scale,
+                    to: { x: 1, y: 1 },
+                    duration: 400
+                }
+            );
+
+            this.alphaAnim = new Tween(
+                this.game,
+                {
+                    target: this.container,
+                    to: { alpha: 1 },
+                    duration: 400
+                }
+            );
         }
     }
 

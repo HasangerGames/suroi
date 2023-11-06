@@ -1,18 +1,27 @@
-import { INVENTORY_MAX_WEAPONS, ObjectCategory } from "../../../common/src/constants";
+import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { HealType, HealingItems, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
+import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { HealType, type HealingItemDefinition, HealingItems } from "../../../common/src/definitions/healingItems";
+import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { ObjectType } from "../../../common/src/utils/objectType";
+import { absMod } from "../../../common/src/utils/math";
+import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
 import { type InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
+
+type ReifiableItem = GunItem | MeleeItem | ReifiableDef<GunDefinition> | ReifiableDef<MeleeDefinition>;
+
+const InventoryItemMapping = {
+    [ItemType.Gun]: GunItem,
+    [ItemType.Melee]: MeleeItem
+};
 
 /**
  * A class representing a player's inventory
@@ -25,25 +34,25 @@ export class Inventory {
 
     readonly items: Record<string, number> = {};
 
-    helmet: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
-    vest: ObjectType<ObjectCategory.Loot, ArmorDefinition> | undefined;
-    backpack: ObjectType<ObjectCategory.Loot, BackpackDefinition> = ObjectType.fromString(ObjectCategory.Loot, "bag");
+    helmet?: ArmorDefinition;
+    vest?: ArmorDefinition;
+    backpack: BackpackDefinition = Loots.fromString("pack_0");
 
-    private _scope!: ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+    private _scope!: ScopeDefinition;
 
-    get scope(): ObjectType<ObjectCategory.Loot, ScopeDefinition> {
+    get scope(): ScopeDefinition {
         return this._scope;
     }
 
-    set scope(scope: ObjectType<ObjectCategory.Loot, ScopeDefinition>) {
-        this._scope = scope;
+    set scope(scope: ReifiableDef<ScopeDefinition>) {
+        this._scope = Loots.reify<ScopeDefinition>(scope);
         this.owner.dirty.inventory = true;
     }
 
     /**
      * An internal array storing weapons
      */
-    private readonly _weapons: Array<GunItem | MeleeItem | undefined> = new Array<GunItem | MeleeItem | undefined>(INVENTORY_MAX_WEAPONS);
+    private readonly _weapons = new Array<InventoryItem | undefined>(INVENTORY_MAX_WEAPONS);
 
     /**
      * Private variable storing the index pointing to the last active weapon
@@ -60,7 +69,11 @@ export class Inventory {
      */
     private _activeWeaponIndex = 2;
 
-    private _reloadTimeoutID: NodeJS.Timeout | undefined;
+    /**
+     * A reference to the timeout object responsible for scheduling the action
+     * of reloading, kept here in case said action needs to be cancelled
+     */
+    private _reloadTimeoutID?: NodeJS.Timeout;
 
     /**
      * Returns the index pointing to the active weapon
@@ -71,6 +84,7 @@ export class Inventory {
      * Sets the index pointing to the active item, if it is valid. Passing an invalid index throws a `RangeError`
      * If the assignment is successful, `Player#dirty.activeWeaponIndex` is automatically set to `true` if the active item index changes
      * @param slot The new slot
+     * @returns Whether the swap was done successfully
      */
     setActiveWeaponIndex(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set active index to invalid slot '${slot}'`);
@@ -78,50 +92,57 @@ export class Inventory {
         const old = this._activeWeaponIndex;
         this._activeWeaponIndex = slot;
 
-        if (slot !== old) {
-            this._lastWeaponIndex = old;
-        }
-
-        clearTimeout(this._reloadTimeoutID);
-        if (this.activeWeapon.category === ItemType.Gun) {
-            (this.activeWeapon as GunItem).cancelReload();
-        }
-
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
         const item = this._weapons[slot];
+        const owner = this.owner;
+
+        this._lastWeaponIndex = old;
+
+        clearTimeout(this._reloadTimeoutID);
+        if (this.activeWeapon.category === ItemType.Gun) {
+            (this.activeWeapon as GunItem).cancelAllTimers();
+        }
+        clearTimeout(owner.bufferedAttack);
+
         if (item !== undefined) {
             const oldItem = this._weapons[old];
             if (oldItem) oldItem.isActive = false;
 
             item.isActive = true;
 
-            const now = this.owner.game.now;
+            const now = owner.game.now;
 
-            this.owner.effectiveSwitchDelay = item.definition.itemType !== ItemType.Gun || (
-                now - this.owner.lastSwitch >= 1000 &&
-                now - (this._weapons[old]?._lastUse ?? -Infinity) < item.definition.fireDelay &&
-                item.definition.canQuickswitch === true
-            )
-                ? 250
-                : item.definition.switchDelay;
+            let effectiveSwitchDelay: number;
 
-            //console.log("current:", item.type.idString, "previous:", oldItem?.type.idString ?? "N/A", this.owner.effectiveSwitchDelay, now - this.owner.lastSwitch, now - item.lastUse);
+            if (
+                item.definition.itemType !== ItemType.Gun || (
+                    now - owner.lastFreeSwitch >= 1000 &&
+                    !item.definition.noQuickswitch
+                )
+            ) {
+                effectiveSwitchDelay = 250;
+                owner.lastFreeSwitch = now;
+            } else {
+                effectiveSwitchDelay = item.definition.switchDelay;
+            }
+            owner.effectiveSwitchDelay = effectiveSwitchDelay;
 
-            this.owner.lastSwitch = item._switchDate = now;
+            owner.lastSwitch = item.switchDate = now;
 
             if (item instanceof GunItem && item.ammo <= 0) {
-                this._reloadTimeoutID = setTimeout(() => { item.reload(); }, this.owner.effectiveSwitchDelay);
+                this._reloadTimeoutID = setTimeout(item.reload.bind(item), owner.effectiveSwitchDelay);
             }
         }
 
-        this.owner.attacking = false;
-        this.owner.recoil.active = false;
+        owner.attacking = false;
+        owner.recoil.active = false;
 
         if (slot !== old) {
-            this.owner.dirty.activeWeaponIndex = true;
-            this.owner.game.fullDirtyObjects.add(this.owner);
+            owner.dirty.activeWeaponIndex = true;
+            owner.game.fullDirtyObjects.add(this.owner);
         }
+        owner.updateAndApplyModifiers();
 
         return true;
     }
@@ -130,7 +151,7 @@ export class Inventory {
      * Returns this inventory's active weapon
      * It will never be undefined since the only place that sets the active weapon has an undefined check
      */
-    get activeWeapon(): InventoryItem {
+    get activeWeapon(): InventoryItem<WeaponDefinition> {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._weapons[this._activeWeaponIndex]!;
     }
@@ -149,13 +170,21 @@ export class Inventory {
 
         for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
             let amount = 0;
+
             if (item.itemType === ItemType.Ammo && item.ephemeral) {
                 amount = Infinity;
             }
+
             if (item.itemType === ItemType.Scope && item.giveByDefault) {
                 amount = 1;
+                this.scope ??= item.idString;
             }
+
             this.items[item.idString] = amount;
+        }
+
+        if (this.scope === undefined) {
+            this.scope = Scopes[0].idString;
         }
     }
 
@@ -175,13 +204,11 @@ export class Inventory {
      * @param item The item to convert
      * @returns The corresponding `InventoryItem` subclass
      */
-    private _reifyItem(item: GunItem | MeleeItem | string): GunItem | MeleeItem | undefined {
+    private _reifyItem(item: ReifiableItem): InventoryItem | undefined {
         if (item instanceof GunItem || item instanceof MeleeItem) return item;
+        const definition = Loots.reify<WeaponDefinition>(item);
 
-        switch (ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, item).definition.itemType) {
-            case ItemType.Gun: return new GunItem(item, this.owner);
-            case ItemType.Melee: return new MeleeItem(item, this.owner);
-        }
+        return new InventoryItemMapping[definition.itemType](definition.idString, this.owner);
     }
 
     /**
@@ -201,7 +228,7 @@ export class Inventory {
      */
     swapGunSlots(): void {
         [this._weapons[0], this._weapons[1]] =
-            [this._weapons[1], this._weapons[0]];
+        [this._weapons[1], this._weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -213,7 +240,7 @@ export class Inventory {
      * @param item The item to add
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    addOrReplaceWeapon(slot: number, item: GunItem | MeleeItem | string): void {
+    addOrReplaceWeapon(slot: number, item: ReifiableItem): void {
         this.owner.game.fullDirtyObjects.add(this.owner);
 
         /**
@@ -247,74 +274,82 @@ export class Inventory {
      * @param item The item to add
      * @returns The slot in which the item was added, or `-1` if it could not be added
      */
-    appendWeapon(item: GunItem | MeleeItem | string): number {
+    appendWeapon(item: ReifiableItem): number {
         for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
             if (this._weapons[slot] === undefined) {
                 this._setWeapon(slot, this._reifyItem(item));
                 return slot;
             }
         }
+
         return -1;
     }
 
     /**
      * Drops a weapon from this inventory
      * @param slot The slot to drop
-     * @param pushForce The velocity to push the loot, defaults to -5
+     * @param pushForce The velocity to push the loot, defaults to -10
      * @returns The item that was dropped, if any
      */
-    dropWeapon(slot: number, pushForce = -10): GunItem | MeleeItem | undefined {
+    dropWeapon(slot: number, pushForce = -10): InventoryItem | undefined {
         const item = this._weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
-        const loot = this.owner.game.addLoot(item.type, this.owner.position);
-        loot.push(this.owner.rotation, pushForce);
+        this.owner.game
+            .addLoot(item.definition, this.owner.position)
+            .push(this.owner.rotation, pushForce);
 
         if (item instanceof GunItem && item.ammo > 0) {
             // Put the ammo in the gun back in the inventory
             const ammoType = item.definition.ammoType;
             this.items[ammoType] += item.ammo;
 
-            // If the new amount is more than the inventory can hold, drop the extra
-            const overAmount = ObjectType.fromString<ObjectCategory.Loot, AmmoDefinition>(ObjectCategory.Loot, ammoType).definition.ephemeral
+            /*
+                If the new amount is more than the inventory can hold, drop the extra
+                unless the owner is dead; in that case, we ignore the limit
+
+                When players die, they drop equipable items (firearms and melees) before
+                dropping stackable items (ammos, consumable). Therefore, if a player has a gun
+                and their ammo reserve for that gun's ammo is full, the gun and its stored ammo will
+                be dropped, and the the reserve will be dropped, which potentially creates more
+                blocks of ammo than required.
+
+                For example, consider a 5-round shotgun with a 15-round reserve. Combined, this is 20
+                rounds, well below the limit of 60 per block. However, because the gun is dropped with its
+                5 ammo, and then the 15 ammo in reserve is dropped afterwards, we get two blocks instead of
+                one.
+
+                To solve this, we just ignore capacity limits when the player is dead.
+            */
+            const overAmount = Loots.reify<AmmoDefinition>(ammoType).ephemeral ?? this.owner.dead
                 ? 0
-                : this.items[ammoType] - this.backpack.definition.maxCapacity[ammoType];
+                : this.items[ammoType] - (this.backpack?.maxCapacity[ammoType] ?? 0);
 
             if (overAmount > 0) {
-                /* const splitUpLoot = (player: Player, item: string, amount: number): void => {
-                    const dropCount = Math.floor(amount / 60);
-                    for (let i = 0; i < dropCount; i++) {
-                        const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, 60);
-                        pushLoot(loot);
-                    }
-
-                    if (amount % 60 !== 0) {
-                        const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, item), player.position, amount % 60);
-                        pushLoot(loot);
-                    }
-                };
-
-                splitUpLoot(this.owner, ammoType, overAmount); */
                 this.items[ammoType] -= overAmount;
-                const loot = this.owner.game.addLoot(ObjectType.fromString(ObjectCategory.Loot, ammoType), this.owner.position, overAmount);
-                loot.push(this.owner.rotation, pushForce);
+
+                this.owner.game
+                    .addLoot(ammoType, this.owner.position, overAmount)
+                    .push(this.owner.rotation, pushForce);
             }
 
             this.owner.dirty.inventory = true;
         }
 
         this.removeWeapon(slot);
-
-        if (this._activeWeaponIndex === slot && this._activeWeaponIndex < 2) {
-            const otherSlot = 1 - this._activeWeaponIndex;
-
-            this.setActiveWeaponIndex(this.hasWeapon(otherSlot) ? otherSlot : 2);
-        }
-
         this.owner.game.fullDirtyObjects.add(this.owner);
 
         return item;
+    }
+
+    /*
+     * Drops all weapons from this inventory
+     */
+    dropWeapons(): void {
+        for (let i = 0; i < this._weapons.length; i++) {
+            this.dropWeapon(i);
+        }
     }
 
     /**
@@ -324,7 +359,7 @@ export class Inventory {
      * @throws {RangeError} If `slot` isn't a valid slot number
      * @throws {Error} If performing this operation would leave the inventory empty
      */
-    removeWeapon(slot: number): GunItem | MeleeItem | undefined {
+    removeWeapon(slot: number): InventoryItem | undefined {
         return this._setWeapon(slot, undefined);
     }
 
@@ -334,7 +369,7 @@ export class Inventory {
      * @returns Whether the item exists on the inventory
      */
     checkIfWeaponExists(item: string): boolean {
-        return this._weapons.some(weapon => weapon?.type.idString === item);
+        return this._weapons.some(weapon => weapon?.definition.idString === item);
     }
 
     /**
@@ -342,7 +377,7 @@ export class Inventory {
      * @param index The weapon index
      * @returns The weapon at the given index, undefined if empty
      */
-    getWeapon(index: number): GunItem | MeleeItem | undefined {
+    getWeapon(index: number): InventoryItem | undefined {
         return this._weapons[index];
     }
 
@@ -353,24 +388,41 @@ export class Inventory {
      *
      * If the only item was fists and an item is added in slots 0 or 1, it will be swapped to
      * @param slot The slot to place the item in
-     * @param item The item to place there
+     * @param item The item to place there. Omitting this parameter removes the item at the given slot
      * @returns The item that was previously located in the slot, if any
      * @throws {RangeError} If `slot` isn't a valid slot number
      */
-    private _setWeapon(slot: number, item: GunItem | MeleeItem | undefined): GunItem | MeleeItem | undefined {
+    private _setWeapon(slot: number, item?: InventoryItem): InventoryItem | undefined {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set weapon in invalid slot '${slot}'`);
 
         const old = this._weapons[slot];
         this._weapons[slot] = item;
         this.owner.dirty.weapons = true;
+        const removal = item === undefined;
 
-        if (slot === 2 && item === undefined) {
-            this._weapons[slot] = new MeleeItem("fists", this.owner);
+        if (removal) {
+            if (slot === 2) {
+                this._weapons[slot] = new MeleeItem("fists", this.owner);
+            } else if (slot === this._activeWeaponIndex) {
+                let target = this._activeWeaponIndex;
+                while (!this.hasWeapon(target)) {
+                    target = absMod(target + 1, this._weapons.length);
+                }
+                this.setActiveWeaponIndex(target);
+            }
         }
 
-        if (slot < 2 && this.weaponCount === 2) {
-            this.setActiveWeaponIndex(slot);
+        /*
+            This is a bit of a weird one, but the short explanation is that
+            we wanna avoid having last = current unless we have no other option
+        */
+        let target = this._lastWeaponIndex === this._activeWeaponIndex && !removal
+            ? 0
+            : this._lastWeaponIndex;
+        while (!this.hasWeapon(target)) {
+            target = absMod(target - 1, this._weapons.length);
         }
+        this._lastWeaponIndex = target;
 
         item?.refreshModifiers();
         this.owner.updateAndApplyModifiers();
@@ -378,27 +430,30 @@ export class Inventory {
         return old;
     }
 
-    useItem(itemString: string): void {
-        if (!this.items[itemString]) return;
+    /**
+     * Attempts to use a consumable item or a scope with the given `idString`
+     * @param itemString The `idString` of the consumable or scope to use
+     */
+    useItem(itemString: ReifiableDef<HealingItemDefinition | ScopeDefinition>): void {
+        const definition = Loots.reify(itemString);
 
-        const item = ObjectType.fromString<ObjectCategory.Loot, LootDefinition>(ObjectCategory.Loot, itemString);
-        const definition = item.definition;
+        if (!this.items[definition.idString]) return;
 
         switch (definition.itemType) {
             case ItemType.Healing: {
                 // Already consuming something else
                 if (this.owner.action instanceof HealingAction) return;
 
-                const definition = item.definition as HealingItemDefinition;
+                if (definition.healType === HealType.Health &&
+                    this.owner.health >= this.owner.maxHealth) return;
+                if (definition.healType === HealType.Adrenaline &&
+                    this.owner.adrenaline >= this.owner.maxAdrenaline) return;
 
-                if (definition.healType === HealType.Health && this.owner.health >= this.owner.maxHealth) return;
-                if (definition.healType === HealType.Adrenaline && this.owner.adrenaline >= this.owner.maxAdrenaline) return;
-
-                this.owner.executeAction(new HealingAction(this.owner, item as ObjectType<ObjectCategory.Loot, HealingItemDefinition>));
+                this.owner.executeAction(new HealingAction(this.owner, definition.idString));
                 break;
             }
             case ItemType.Scope: {
-                this.scope = item as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
+                this.scope = definition.idString;
                 break;
             }
         }
@@ -416,7 +471,7 @@ export class Inventory {
             for (const item of this._weapons) {
                 stream.writeBoolean(item !== undefined);
                 if (item !== undefined) {
-                    stream.writeObjectTypeNoCategory<ObjectCategory.Loot, LootDefinition>(item.type);
+                    Loots.writeToStream(stream, item.definition);
                     // TODO: find a better place to send this stuff
                     if (item instanceof GunItem) {
                         stream.writeUint8(item.ammo);
@@ -442,12 +497,15 @@ export class Inventory {
         stream.writeBoolean(inventoryDirty);
         if (inventoryDirty) {
             this.owner.dirty.inventory = false;
-            stream.writeBits(this.backpack.definition.level, 2);
-            for (const count of Object.values(this.items)) {
-                stream.writeBoolean(count > 0); // Has item
-                if (count > 0) stream.writeBits(count, 9);
+            stream.writeBoolean(this.owner.dead); // if the owner is dead, then everything is 0
+
+            if (!this.owner.dead) {
+                for (const count of Object.values(this.items)) {
+                    stream.writeBoolean(count > 0); // Has item
+                    if (count > 0) stream.writeBits(count, 9);
+                }
             }
-            stream.writeObjectTypeNoCategory(this.scope);
+            Loots.writeToStream(stream, this._scope);
         }
     }
 }

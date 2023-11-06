@@ -11,9 +11,10 @@ import {
 } from "uWebSockets.js";
 
 import { existsSync, readFile, writeFileSync } from "fs";
+import os from "os";
+
 import { URLSearchParams } from "node:url";
 import { PacketType } from "../../common/src/constants";
-import { log } from "../../common/src/utils/misc";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
@@ -21,6 +22,7 @@ import { InputPacket } from "./packets/receiving/inputPacket";
 import { JoinPacket } from "./packets/receiving/joinPacket";
 import { PingedPacket } from "./packets/receiving/pingedPacket";
 import { SpectatePacket } from "./packets/receiving/spectatePacket";
+import { Logger } from "./utils/misc";
 
 /**
  * Apply CORS headers to a response.
@@ -48,9 +50,9 @@ const app = Config.ssl
 const games: Array<Game | undefined> = [];
 createNewGame(0);
 
-export function createNewGame(id: number): void {
+function createNewGame(id: number): void {
     if (games[id] === undefined || games[id]?.stopped) {
-        log(`Creating new game with ID #${id}`);
+        Logger.log(`Game #${id} | Creating...`);
         games[id] = new Game(id);
     }
 }
@@ -66,15 +68,12 @@ export function endGame(id: number): void {
         player.socket.close();
     }
     games[id] = undefined;
-    log(`Game #${id} ended`);
+    Logger.log(`Game #${id} | Ended`);
 }
 
-export function allowJoin(gameID: number): boolean {
+function allowJoin(gameID: number): boolean {
     const game = games[gameID];
-    if (game !== undefined) {
-        return game.allowJoin && game.aliveCount < Config.playerLimit;
-    }
-    return false;
+    return game !== undefined && game.allowJoin && game.aliveCount < Config.maxPlayersPerGame;
 }
 
 const decoder = new TextDecoder();
@@ -89,7 +88,7 @@ let connectionAttempts: Record<string, number> = {};
 const permaBannedIPs = new Set<string>();
 const tempBannedIPs = new Set<string>();
 const rateLimitedIPs = new Set<string>();
-interface BanRecord { ip: string, expires?: number }
+interface BanRecord { readonly ip: string, readonly expires?: number }
 let rawBanRecords: BanRecord[] = [];
 
 let playerCount = 0;
@@ -118,17 +117,16 @@ app.get("/api/getGame", async(res, req) => {
     } else if (rateLimitedIPs.has(ip)) {
         response = { success: false, message: "rateLimited" };
     } else {
-        let gameID: number | undefined;
-        if (allowJoin(0)) {
-            gameID = 0;
-        } else if (allowJoin(1)) {
-            gameID = 1;
-        } else {
-            response = { success: false };
+        let foundGame = false;
+        for (let gameID = 0; gameID < Config.maxGames; gameID++) {
+            if (games[gameID] === undefined) createNewGame(gameID);
+            if (allowJoin(gameID)) {
+                response = { success: true, gameID };
+                foundGame = true;
+                break;
+            }
         }
-        if (gameID !== undefined) {
-            response = { success: true, gameID };
-        }
+        if (!foundGame) response = { success: false };
     }
 
     if (!aborted) {
@@ -140,21 +138,23 @@ app.get("/api/getGame", async(res, req) => {
 
 app.get("/api/bannedIPs", (res, req) => {
     cors(res);
+
     if (req.getHeader("password") === Config.protection?.ipBanList?.password) {
         res.writeHeader("Content-Type", "application/json").end(JSON.stringify(rawBanRecords));
-    } else {
-        forbidden(res);
+        return;
     }
+
+    forbidden(res);
 });
 
 export interface PlayerContainer {
-    gameID: number
+    readonly gameID: number
     player?: Player
-    ip: string | undefined
-    role?: string
-    isDev: boolean
-    nameColor: string
-    lobbyClearing: boolean
+    readonly ip: string | undefined
+    readonly role?: string
+    readonly isDev: boolean
+    readonly nameColor: string
+    readonly lobbyClearing: boolean
 }
 
 app.ws("/play", {
@@ -179,6 +179,7 @@ app.ws("/play", {
             const exceededRateLimits =
                 (maxSimultaneousConnections !== undefined && simultaneousConnections[ip] >= maxSimultaneousConnections) ||
                 (maxJoinAttempts !== undefined && connectionAttempts[ip] >= maxJoinAttempts.count);
+
             if (
                 tempBannedIPs.has(ip) ||
                 permaBannedIPs.has(ip) ||
@@ -187,16 +188,16 @@ app.ws("/play", {
             ) {
                 if (exceededRateLimits && !rateLimited) rateLimitedIPs.add(ip);
                 forbidden(res);
-                log(`Connection blocked: ${ip}`);
+                Logger.warn(`Connection blocked: ${ip}`);
                 return;
             } else {
                 if (maxSimultaneousConnections) {
                     simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                    log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
+                    Logger.warn(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
                 }
                 if (maxJoinAttempts) {
                     connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
-                    log(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
+                    Logger.warn(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
                 }
             }
         }
@@ -207,9 +208,8 @@ app.ws("/play", {
         // Validate game ID
         //
         let gameID = Number(searchParams.get("gameID"));
-        if (gameID < 0 || gameID > 1) gameID = 0;
-        const game = games[gameID];
-        if (game === undefined || !allowJoin(gameID)) {
+        if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
+        if (!allowJoin(gameID)) {
             forbidden(res);
             return;
         }
@@ -270,6 +270,7 @@ app.ws("/play", {
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
         playerCount++;
+        //userData.player.sendPacket(new GameOverPacket(userData.player, false)); // uncomment to test game over screen
     },
 
     /**
@@ -318,15 +319,15 @@ app.ws("/play", {
         const player = data.player;
         if (game === undefined || player === undefined) return;
         playerCount--;
-        log(`"${player.name}" left game #${data.gameID}`);
+        Logger.log(`Game #${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
     }
 });
 
 // Start the server
 app.listen(Config.host, Config.port, (): void => {
-    log(`
- _____ _   _______ _____ _____
+    console.log(
+        ` _____ _   _______ _____ _____
 /  ___| | | | ___ \\  _  |_   _|
 \\ \`--.| | | | |_/ / | | | | |
  \`--. \\ | | |    /| | | | | |
@@ -334,9 +335,9 @@ app.listen(Config.host, Config.port, (): void => {
 \\____/ \\___/\\_| \\_|\\___/ \\___/
         `);
 
-    log(`Suroi Server v${version}`, true);
-    log(`Listening on ${Config.host}:${Config.port}`, true);
-    log("Press Ctrl+C to exit.");
+    Logger.log(`Suroi Server v${version}`);
+    Logger.log(`Listening on ${Config.host}:${Config.port}`);
+    Logger.log("Press Ctrl+C to exit.");
 
     const protection = Config.protection;
     if (protection) {
@@ -359,8 +360,9 @@ app.listen(Config.host, Config.port, (): void => {
                         tempBannedIPs.add(record.ip);
                     }
                 }
-                log("Reloaded list of banned IPs");
+                Logger.log("Reloaded list of banned IPs");
             };
+
             if (protection.ipBanList?.url) {
                 void (async() => {
                     try {
@@ -386,3 +388,17 @@ app.listen(Config.host, Config.port, (): void => {
         }, protection.refreshDuration);
     }
 });
+
+setInterval(() => {
+    const memoryUsage = process.memoryUsage().rss;
+
+    let perfString = `Server | Memory usage: ${Math.round(memoryUsage / 1024 / 1024 * 100) / 100} MB`;
+
+    // windows L
+    if (os.platform() !== "win32") {
+        const load = os.loadavg().join("%, ");
+        perfString += ` | Load (1m, 5m, 15m): ${load}%`;
+    }
+
+    Logger.log(perfString);
+}, 60000);

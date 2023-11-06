@@ -1,8 +1,7 @@
-import { ObjectCategory } from "../../../../common/src/constants";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
-import { BULLET_COLORS, PIXI_SCALE } from "../utils/constants";
+import { PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
@@ -20,33 +19,19 @@ export class Bullet extends BaseBullet {
 
         this.game = game;
 
-        this.image = new SuroiSprite(this.definition.tracerImage ?? "base_trail")
+        const tracerStats = this.definition.tracer;
+
+        this.image = new SuroiSprite(tracerStats?.image ?? "base_trail")
             .setRotation(this.rotation - Math.PI / 2)
             .setVPos(toPixiCoords(this.position));
 
-        this.tracerLength = this.definition.tracerLength ?? 1;
-
+        this.tracerLength = tracerStats?.length ?? 1;
         this.maxLength = this.image.width * this.tracerLength;
-
-        this.image.scale.set(0, this.definition.tracerWidth ?? 1);
-
+        this.image.scale.set(0, tracerStats?.width ?? 1);
         this.image.anchor.set(1, 0.5);
+        this.image.alpha = (tracerStats?.opacity ?? 1) / (this.reflectionCount + 1);
 
-        this.image.alpha = (this.definition.tracerOpacity ?? 1) / (this.reflectionCount + 1);
-
-        let tint = 0xffffff;
-
-        const source = this.source;
-        if (source.category === ObjectCategory.Loot &&
-            BULLET_COLORS[source.definition.ammoType]) {
-            tint = BULLET_COLORS[source.definition.ammoType];
-        }
-
-        if (this.definition.shrapnel) tint = BULLET_COLORS.shrapnel;
-
-        if (this.definition.tracerColor) tint = this.definition.tracerColor;
-
-        this.image.tint = tint;
+        this.image.tint = this.definition.tracer?.color ?? 0xffffff;
 
         this.game.bulletsContainer.addChild(this.image);
     }
@@ -65,8 +50,10 @@ export class Bullet extends BaseBullet {
                 this.damagedIDs.add(object.id);
 
                 if (object instanceof Obstacle) {
-                    if ((this.definition.penetration?.obstacles && !object.type.definition.impenetrable) ??
-                        object.type.definition.noCollisions) continue;
+                    if (
+                        (this.definition.penetration?.obstacles && !object.definition.impenetrable) ??
+                        object.definition.noCollisions
+                    ) continue;
                 }
                 if (this.definition.penetration?.players && object instanceof Player) continue;
 

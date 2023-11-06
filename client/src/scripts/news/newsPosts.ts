@@ -3,10 +3,109 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1698602400000,
+        author: "HAZEL",
+        title: "Trick-or-Tweak",
+        bannerImage: "../img/news/v0.12.0.png",
+        content: `The island grows dark. The trees begin to turn, the rivers run red, and the full moon rises. A new spooky orange obstacle drops one of two new weapons: a training weapon from A.E.G.I.S. stores, and a very powerful shotgun specially modified by H.A.Z.E.L.'s R&D team.<br><br>
+
+After checking out these frightening additions, enjoy your candy while reading all the bug fixes and QoL changes this update brings. Happy Halloween!`,
+        longContent: `<h2>Suroi v0.12.0</h2>
+<h3>Changelog</h3>
+<ul>
+  <li>Halloween mode! Added 2 new guns and a new obstacle. Reskinned trees & blueberry bushes. New menu music.</li>
+  <li>Added a new skin and a new emote.</li>
+  <li>Added 7 new crosshairs.</li>
+  <li>Tweaked gun top downs.</li>
+  <li>New reload & switch sounds for Flues & M1895.</li>
+  <li>Fixed "Connection lost" issues.</li>
+  <li>Fixed "Error joining game" issues.</li>
+  <li>Fixed an issue with the camera being stuck in the top left corner when movement smoothing is disabled.</li>
+  <li>Fixed issues with the Play Again button.</li>
+  <li>Fixed birch and pine trees spawning inside other obstacles.</li>
+  <li>Fixed kill leader issues.</li>
+  <li>Server performance improvements.</li>
+  <li>The AEGIS crate now has a 50% chance to spawn in place of the Tango crate in the ship vault.</li>
+  <li>Scopes now drop from the Tango crate.</li>
+  <li>Fixed issues with shoot on joystick release.</li>
+  <li>Fixed the rules & tutorial button being hidden by default.</li>
+  <li>Removed misleading ping counter from server selector.</li>
+  <li>Fixed overlapping containers at the port.</li>
+  <li>Fixed issues with special characters in usernames.</li>
+  <li>Fixed kill feed messages not being colored.</li>
+  <li>Fixed movement keys not working to switch spectators.</li>
+  <li>Fixed rivers below the port slowing players down.</li>
+  <li>Fixed keybind reset button.</li>
+  <li>Fixed "Equip Other Gun" keybind not switching to secondary slot with only 1 gun equipped and melee slot selected.</li>
+  <li>Fixed minimap rendering issues.</li>
+  <li>Fixed container layering issues.</li>
+  <li>The inside of the captain's cabin on the ship is now revealed when near the windows.</li>
+  <li>Added missing killfeed icons.</li>
+  <li>Fixed some missing textures.</li>
+  <li>Fixed silent porta potty doors.</li>
+  <li>Fixed images on the news page not loading.</li>
+  <li>The M1895 now displays bullet casings only on reload. The M1895 and Flues now display multiple casings.</li>
+  <li>Removed default keybind for opening the dev console.</li>
+</ul>`
+    },
+    {
+        date: 1698001957000,
+        author: "HAZEL",
+        title: "Making Waves",
+        bannerImage: "../img/news/v0.11.0.png",
+        content: `The island grows ever busier with the newest structure, the port. Search the warehouses and shipping containers for loot, 'cause they’re packed! Containers can also be found throughout the island. But the most valuable loot is contained in the bow of the massive container ship. A highly prized sniper lies within, but you’ll need to solve a puzzle to get in.<br><br>
+
+If you like swimming, you’re in luck! Rivers now snake through the landscape, and the ocean is now accessible.<br><br>
+
+We've added two new guns to our arsenal: the Flues, a sawn-off double-barrel shotgun, and the M1895, a revolver.<br><br>
+
+In addition, we've made many quality of life changes, including shorter guns, custom crosshairs, and a kill leader mechanic.`,
+        longContent: `<h2>Suroi v0.11.0</h2>
+<h3>New features & changes</h3>
+<ul>
+  <li>Rivers & ocean! Rivers have been added. The ocean is now accessible.</li>
+  <li>New buildings! Added the port, the largest structure so far. Added shipping containers, which spawn at the port and throughout the map.</li>
+  <li>More guns! Added 2 guns: the Flues (a sawn-off double-barrel shotgun, equivalent to surviv's MP220), and the M1895 (a revolver).</li>
+  <li>The big house has been replaced by a smaller variant. The big variant will be overhauled and re-added in a future update.</li>
+  <li>Shorter guns! Gun world images have been shortened.</li>
+  <li>Kill leader! A kill leader mechanic has been added. The player with the most kills, if it's more than 3, is awarded the title of Kill Leader, and their name and kill count appears in the top right.</li>
+  <li>3 games can now start at the same time, which should reduce late spawning issues.</li>
+  <li>Custom crosshairs! You can now choose between various crosshair styles, and customize the color and outline.</li>
+  <li>Mobile improvements!</li>
+  <ul>
+    <li>The left joystick now controls rotation as well as movement. Rotation is overridden by the right joystick.</li>
+      <li>Snipers now shoot when releasing the joystick.</li>
+      <li>Added an aim line.</li>
+      <li>Doors now open automatically when approaching them.</li>
+  </ul>
+  <li>The server with the best ping is now selected automatically. Player count and ping is now displayed for each server.</li>
+  <li>The North America and Europe servers have been upgraded again.</li>
+  <li>The Play Again button now allows you to rejoin the game with 1 click. To return to the menu, click the Menu button.</li>
+  <li>Explosive obstacles now emit smoke particles when they're close to destroyed.</li>
+  <li>You can now click on players to spectate them, which should make it easier to report teamers.</li>
+  <li>Ammo is now split up when dropped from dead players.</li>
+  <li>Removed join and leave messages.</li>
+  <li>You can now hide under tables.</li>
+  <li>Added an option to hide the rules button.</li>
+  <li>Added an option to display coordinates.</li>
+  <li>Added an option to enable the old menu music.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed full auto guns not continuing to fire when holding the fire button/joystick after reloading.</li>
+  <li>Fixed more issues with auto loot pickup on mobile.</li>
+  <li>Fixed muzzle flash position.</li>
+  <li>Fixed attacking when clicking on the buttons in the pause menu.</li>
+  <li>Fixed the action progress bar not hiding when quitting.</li>
+  <li>Fixed emotes rendering below certain obstacles.</li>
+</ul>`
+    },
+    {
         date: 1694706686000,
         author: "HAZEL",
         title: "Back with a Bang",
-        bannerImage: "./img/news/v0.10.0.png",
+        bannerImage: "../img/news/v0.10.0.png",
         content: `Despite the construction delays, we're back on the island to officially open the newest building: the refinery! Full of plenty of loot, but watch out or the whole place could go ka-boom...<br><br>
 
 We're also happy to announce a large shipment containing 4 new types of guns, including two new DMRs! One gun is Italian, and three are American. Sources indicate the new LMG is particularly potent...<br><br>
@@ -43,7 +142,7 @@ Special thanks to Leia and platonthek. This update wouldn't have been possible w
         date: 1690748181000,
         author: "HAZEL",
         title: "Behind Closed Doors",
-        bannerImage: "./img/news/v0.9.0.png",
+        bannerImage: "../img/news/v0.9.0.png",
         content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.<br><br>
 
 There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of a punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
@@ -137,7 +236,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1687625334000,
         author: "HAZEL",
         title: "Locked & Loaded",
-        bannerImage: "./img/news/v0.5.0.png",
+        bannerImage: "../img/news/v0.5.0.png",
         content: `The newest supply shipment to the island has arrived, along with a slew of new weapons! Blast enemies all day long with the 47 round pan on the Lewis gun, or test your marksmanship with the Tango 51. Prefer hand-to-hand combat? The K-bar or the baseball bat may be for you. A glint of gold may yield a fruitful surprise...`,
         longContent: `<h2>Suroi v0.5.0</h2>
 
@@ -155,7 +254,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1687026036000,
         author: "Dr. Felix Sterling",
         title: "Supplies received",
-        bannerImage: "./img/news/v0.4.0.png",
+        bannerImage: "../img/news/v0.4.0.png",
         content: `We have received the new arms and supply shipment from Mr. Flint. In the crates were all four weapons promised: the Mosin-Nagant, Ithaca Model 37, SAF-200, and Glock 19. These should help us dramatically, as we were in great need of additional and varied firepower. Additionally, the new medical items, gauze, colas, and medikits, will allow better treatment of injuries. However, they were not of the portable variety we requested, and we hope to resolve this soon.`,
         longContent: `<h2>Suroi v0.4.0</h2>
 
@@ -182,7 +281,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1685914769000,
         author: "Dr. Petrova",
         title: "2, 8, 18, 7",
-        bannerImage: "./img/news/v0.3.0.png",
+        bannerImage: "../img/news/v0.3.0.png",
         content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -7.2°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
@@ -205,7 +304,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1685317752000,
         author: "hasanger",
         title: "Fun guns",
-        bannerImage: "./img/news/v0.2.0.png",
+        bannerImage: "../img/news/v0.2.0.png",
         content: `This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.<br>If you're having issues with textures, try <a href="https://its.uiowa.edu/support/article/719">clearing your cache.</a>`,
         longContent: `<h2>Suroi v0.2.0</h2>
 <h3>New features</h3>
@@ -224,7 +323,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1684625426000,
         author: "hasanger",
         title: "We're back, baby",
-        bannerImage: "./img/news/v0.1.0.png",
+        bannerImage: "../img/news/v0.1.0.png",
         content: `Kongregate may have shut down Surviv Reloaded, but that's not gonna stop me! Today, I'm releasing the first ever beta version of Suroi, an open-source 2D battle royale game inspired by surviv.io.
 To report a bug or suggest something, <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer">join the Discord server</a>. If you have any questions, check out the FAQ on <a href="https://suroi.io/news" target="_blank" rel="noopener noreferrer">the news page</a>.`,
         longContent: `<h2>FAQ</h2>

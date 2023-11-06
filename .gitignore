@@ -17,8 +17,3 @@ server/bannedIPs.json
 # try to prevent chpster moments from happening
 *.desktop
 *.css
-
-
-# config files
-client/src/scripts/config.ts
-server/src/config.ts

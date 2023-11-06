@@ -1,7 +1,7 @@
-import { Graphics, type Container } from "pixi.js";
-import { GasState, TICKS_PER_SECOND, zIndexes } from "../../../../common/src/constants";
+import { type Container, Graphics } from "pixi.js";
+import { GasState, TICKS_PER_SECOND, ZIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
-import { v, vMul, type Vector } from "../../../../common/src/utils/vector";
+import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { COLORS } from "../utils/constants";
 
 const kOverdraw = 100 * 1000;
@@ -31,7 +31,7 @@ export class Gas {
 
         this.graphics = new Graphics();
 
-        this.graphics.zIndex = zIndexes.Gas;
+        this.graphics.zIndex = ZIndexes.Gas;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay

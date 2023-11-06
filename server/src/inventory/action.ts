@@ -1,6 +1,7 @@
-import { PlayerActions, type ObjectCategory } from "../../../common/src/constants";
+import { PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
-import { type ObjectType } from "../../../common/src/utils/objectType";
+import { Loots } from "../../../common/src/definitions/loots";
+import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 
@@ -65,29 +66,26 @@ export class HealingAction extends Action {
     private readonly _type = PlayerActions.UseItem;
     get type(): PlayerActions.UseItem { return this._type; }
 
-    readonly item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>;
+    readonly item: HealingItemDefinition;
     override readonly speedMultiplier = 0.5;
 
-    constructor(player: Player, item: ObjectType<ObjectCategory.Loot, HealingItemDefinition>) {
-        const itemDef = item.definition;
+    constructor(player: Player, item: ReifiableDef<HealingItemDefinition>) {
+        const itemDef = Loots.reify<HealingItemDefinition>(item);
         super(player, itemDef.useTime);
-        this.item = item;
+        this.item = itemDef;
     }
 
     execute(): void {
         super.execute();
 
-        const items = this.player.inventory.items;
-        const itemDef = this.item.definition;
+        this.player.inventory.items[this.item.idString]--;
 
-        items[itemDef.idString] -= 1;
-
-        switch (itemDef.healType) {
+        switch (this.item.healType) {
             case HealType.Health:
-                this.player.health += itemDef.restoreAmount;
+                this.player.health += this.item.restoreAmount;
                 break;
             case HealType.Adrenaline:
-                this.player.adrenaline += itemDef.restoreAmount;
+                this.player.adrenaline += this.item.restoreAmount;
                 break;
         }
         this.player.dirty.inventory = true;

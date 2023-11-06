@@ -1,17 +1,11 @@
 import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
-import { type ArmorDefinition } from "../../../common/src/definitions/armors";
-import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
-import { type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ScopeDefinition } from "../../../common/src/definitions/scopes";
-import { type SkinDefinition } from "../../../common/src/definitions/skins";
+import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCircleIntersection, clamp, distance, distanceSquared, velFromAngle } from "../../../common/src/utils/math";
-import { ItemType, LootRadius } from "../../../common/src/utils/objectDefinitions";
-import { type ObjectType } from "../../../common/src/utils/objectType";
-import { ObjectSerializations } from "../../../common/src/utils/objectsSerializations";
+import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
+import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { randomRotation } from "../../../common/src/utils/random";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
-import { v, vAdd, vClone, vMul, vSub, type Vector } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
 import { PickupPacket } from "../packets/sending/pickupPacket";
@@ -19,12 +13,12 @@ import { GameObject } from "../types/gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
 
-export class Loot extends GameObject {
-    declare readonly type: ObjectType<ObjectCategory.Loot, LootDefinition>;
+export class Loot extends GameObject<ObjectCategory.Loot> {
+    override readonly type = ObjectCategory.Loot;
 
     declare readonly hitbox: CircleHitbox;
 
-    oldPosition = v(0, 0);
+    readonly definition: LootDefinition;
 
     count = 1;
 
@@ -40,11 +34,12 @@ export class Loot extends GameObject {
         this.hitbox.position = pos;
     }
 
-    constructor(game: Game, type: ObjectType<ObjectCategory.Loot, LootDefinition>, position: Vector, count?: number) {
-        super(game, type, position);
+    constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
+        super(game, position);
 
-        this.hitbox = new CircleHitbox(LootRadius[this.type.definition.itemType], vClone(position));
-        this.oldPosition = this._position;
+        this.definition = Loots.reify(definition);
+
+        this.hitbox = new CircleHitbox(LootRadius[this.definition.itemType], vClone(position));
 
         if (count !== undefined) this.count = count;
 
@@ -54,12 +49,11 @@ export class Loot extends GameObject {
     }
 
     update(): void {
-        if (distanceSquared(this.oldPosition, this.position) > 0.0001) {
-            this.game.partialDirtyObjects.add(this);
-            this.oldPosition = vClone(this.position);
-        }
-        this.game.grid.removeObject(this);
-        if (Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001) {
+        const oldPosition = vClone(this.position);
+
+        const moving = Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001;
+
+        if (moving) {
             this.velocity = vMul(this.velocity, 0.9);
             const velocity = vMul(this.velocity, 1 / TICKS_PER_SECOND);
             velocity.x = clamp(velocity.x, -1, 1);
@@ -70,9 +64,12 @@ export class Loot extends GameObject {
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        const objects = this.game.grid.intersectsRect(this.hitbox.toRectangle());
+        const objects = this.game.grid.intersectsHitbox(this.hitbox);
         for (const object of objects) {
-            if (object instanceof Obstacle && object.collidable && object.hitbox.collidesWith(this.hitbox)) {
+            if (moving &&
+                object instanceof Obstacle &&
+                object.collidable &&
+                object.hitbox.collidesWith(this.hitbox)) {
                 this.hitbox.resolveCollision(object.hitbox);
             }
 
@@ -95,7 +92,10 @@ export class Loot extends GameObject {
                 object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
-        this.game.grid.addObject(this);
+        if (!vEqual(oldPosition, this.position)) {
+            this.game.partialDirtyObjects.add(this);
+            this.game.grid.addObject(this);
+        }
     }
 
     push(angle: number, velocity: number): void {
@@ -105,34 +105,40 @@ export class Loot extends GameObject {
     canInteract(player: Player): boolean {
         if (this.dead) return false;
         const inventory = player.inventory;
-        const definition = this.type.definition;
 
-        switch (definition.itemType) {
+        switch (this.definition.itemType) {
             case ItemType.Gun: {
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
-                    (inventory.activeWeaponIndex < 2 && this.type.idNumber !== inventory.activeWeapon.type.idNumber);
+                    (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition);
             }
             case ItemType.Healing:
             case ItemType.Ammo: {
-                const idString = this.type.idString;
+                const idString = this.definition.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
+                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
                 return currentCount + 1 <= maxCapacity;
             }
             case ItemType.Melee: {
-                return this.type.idNumber !== inventory.getWeapon(2)?.type.idNumber;
+                return this.definition !== inventory.getWeapon(2)?.definition;
             }
             case ItemType.Armor: {
-                if (definition.armorType === ArmorType.Helmet) return definition.level > (inventory.helmet?.definition.level ?? 0);
-                else if (definition.armorType === ArmorType.Vest) return definition.level > (inventory.vest?.definition.level ?? 0);
-                else return false;
+                switch (true) {
+                    case this.definition.armorType === ArmorType.Helmet: {
+                        return this.definition.level > (inventory.helmet?.level ?? 0);
+                    }
+                    case this.definition.armorType === ArmorType.Vest: {
+                        return this.definition.level > (inventory.vest?.level ?? 0);
+                    }
+                }
+
+                return false;
             }
             case ItemType.Backpack: {
-                return definition.level > inventory.backpack.definition.level;
+                return this.definition.level > (inventory.backpack?.level ?? 0);
             }
             case ItemType.Scope: {
-                return inventory.items[this.type.idString] === 0;
+                return inventory.items[this.definition.idString] === 0;
             }
             case ItemType.Skin: {
                 return true;
@@ -142,7 +148,7 @@ export class Loot extends GameObject {
 
     interact(player: Player, noPickup = false): void {
         if (this.dead) return;
-        const createNewItem = (type = this.type): void => {
+        const createNewItem = (type: LootDefinition = this.definition): void => {
             this.game.addLoot(type, this.position, this.count).push(player.rotation + Math.PI, 6);
         };
 
@@ -154,34 +160,33 @@ export class Loot extends GameObject {
 
         const inventory = player.inventory;
         let deleteItem = true;
-        const definition = this.type.definition;
 
-        switch (definition.itemType) {
+        switch (this.definition.itemType) {
             case ItemType.Melee: {
-                inventory.addOrReplaceWeapon(2, this.type.idString);
+                inventory.addOrReplaceWeapon(2, this.definition.idString);
                 break;
             }
             case ItemType.Gun: {
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
-                    inventory.appendWeapon(this.type.idString);
-                } else if (inventory.activeWeaponIndex < 2 && this.type.idString !== inventory.activeWeapon.type.idString) {
+                    inventory.appendWeapon(this.definition.idString);
+                } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
                     if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
-                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.type.idString);
+                    inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition.idString);
                 }
                 break;
             }
             case ItemType.Healing:
             case ItemType.Ammo: {
-                const idString = this.type.idString;
+                const idString = this.definition.idString;
                 const currentCount = inventory.items[idString];
-                const maxCapacity = inventory.backpack.definition.maxCapacity[idString];
+                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
 
                 if (currentCount + 1 <= maxCapacity) {
                     if (currentCount + this.count <= maxCapacity) {
                         inventory.items[idString] += this.count;
-                    } else if (currentCount + this.count > maxCapacity) {
+                    } else /* if (currentCount + this.count > maxCapacity) */ {
                         inventory.items[idString] = maxCapacity;
-                        this.count = (currentCount + this.count) - maxCapacity;
+                        this.count = currentCount + this.count - maxCapacity;
                         this.game.fullDirtyObjects.add(this);
                         deleteItem = false;
                     }
@@ -189,14 +194,14 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Armor: {
-                switch (definition.armorType) {
+                switch (this.definition.armorType) {
                     case ArmorType.Helmet:
                         if (player.inventory.helmet) createNewItem(player.inventory.helmet);
-                        player.inventory.helmet = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
+                        player.inventory.helmet = this.definition;
                         break;
                     case ArmorType.Vest:
                         if (player.inventory.vest) createNewItem(player.inventory.vest);
-                        player.inventory.vest = this.type as ObjectType<ObjectCategory.Loot, ArmorDefinition>;
+                        player.inventory.vest = this.definition;
                 }
 
                 player.fullDirtyObjects.add(player);
@@ -204,27 +209,26 @@ export class Loot extends GameObject {
                 break;
             }
             case ItemType.Backpack: {
-                if (player.inventory.backpack.definition.level > 0) createNewItem(player.inventory.backpack);
-                player.inventory.backpack = this.type as ObjectType<ObjectCategory.Loot, BackpackDefinition>;
+                if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
+                player.inventory.backpack = this.definition;
 
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Scope: {
-                inventory.items[this.type.idString] = 1;
+                inventory.items[this.definition.idString] = 1;
                 player.dirty.inventory = true;
 
-                const scope = this.type as ObjectType<ObjectCategory.Loot, ScopeDefinition>;
-                if (scope.definition.zoomLevel > player.inventory.scope.definition.zoomLevel) {
-                    player.inventory.scope = scope;
+                if (this.definition.zoomLevel > player.inventory.scope.zoomLevel) {
+                    player.inventory.scope = this.definition.idString;
                 }
 
                 break;
             }
             case ItemType.Skin: {
                 createNewItem(player.loadout.skin);
-                player.loadout.skin = this.type as ObjectType<ObjectCategory.Loot, SkinDefinition>;
+                player.loadout.skin = this.definition;
 
                 player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
@@ -238,7 +242,7 @@ export class Loot extends GameObject {
         this.game.removeLoot(this);
 
         // Send pickup packet
-        player.sendPacket(new PickupPacket(player, this.type));
+        player.sendPacket(new PickupPacket(player, this.definition.idString));
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) createNewItem();
@@ -248,28 +252,23 @@ export class Loot extends GameObject {
         if (
             activeWeapon instanceof GunItem &&
             activeWeapon.ammo === 0 &&
-            this.type.idString === activeWeapon.definition.ammoType
+            this.definition.idString === activeWeapon.definition.ammoType
         ) {
             activeWeapon.reload();
         }
     }
 
+    override get data(): Required<ObjectsNetData[ObjectCategory.Loot]> {
+        return {
+            position: this.position,
+            full: {
+                definition: this.definition,
+                count: this.count,
+                isNew: this.isNew
+            }
+        };
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    override damage(amount: number, source?: GameObject): void { }
-
-    override serializePartial(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Loot].serializePartial(stream, {
-            position: this.position,
-            fullUpdate: false
-        });
-    }
-
-    override serializeFull(stream: SuroiBitStream): void {
-        ObjectSerializations[ObjectCategory.Loot].serializeFull(stream, {
-            position: this.position,
-            count: this.count,
-            isNew: this.isNew,
-            fullUpdate: true
-        });
-    }
+    override damage(): void { }
 }
