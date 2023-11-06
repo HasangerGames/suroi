@@ -99,39 +99,10 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
         }, 50);
     }
 
-    //todo probably extract this to a common method cause this is like the same as GunItem#useItem lmao
     override useItem(): void {
-        const def = this.definition;
-        const owner = this.owner;
-        const now = owner.game.now;
-
-        const timeToFire = def.cooldown - (now - this._lastUse);
-        const timeToSwitch = owner.effectiveSwitchDelay - (now - this.switchDate);
-
-        if (
-            timeToFire <= 0 &&
-            timeToSwitch <= 0
-        ) {
-            this._useItemNoDelayCheck(true);
-        } else {
-            const bufferDuration = Math.max(timeToFire, timeToSwitch);
-
-            // We only honor buffered inputs shorter than 200ms
-            if (bufferDuration >= 200) return;
-
-            clearTimeout(owner.bufferedAttack);
-            owner.bufferedAttack = setTimeout(
-                () => {
-                    if (
-                        owner.activeItem === this &&
-                        owner.attacking
-                    ) {
-                        clearTimeout(owner.bufferedAttack);
-                        this.useItem();
-                    }
-                },
-                bufferDuration
-            );
-        }
+        super._bufferAttack(
+            this.definition.cooldown,
+            this._useItemNoDelayCheck.bind(this, true)
+        );
     }
 }

@@ -146,4 +146,38 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         this._modifiers.baseSpeed = newModifiers.baseSpeed;
         this.owner.updateAndApplyModifiers();
     }
+
+    protected _bufferAttack(cooldown: number, internalCallback: (this: this) => void): void {
+        const owner = this.owner;
+        const now = owner.game.now;
+
+        const timeToFire = cooldown - (now - this._lastUse);
+        const timeToSwitch = owner.effectiveSwitchDelay - (now - this.switchDate);
+
+        if (
+            timeToFire <= 0 &&
+            timeToSwitch <= 0
+        ) {
+            internalCallback.call(this);
+        } else {
+            const bufferDuration = Math.max(timeToFire, timeToSwitch);
+
+            // We only honor buffered inputs shorter than 200ms
+            if (bufferDuration >= 200) return;
+
+            clearTimeout(owner.bufferedAttack);
+            owner.bufferedAttack = setTimeout(
+                () => {
+                    if (
+                        owner.activeItem === this &&
+                        owner.attacking
+                    ) {
+                        clearTimeout(owner.bufferedAttack);
+                        this.useItem();
+                    }
+                },
+                bufferDuration
+            );
+        }
+    }
 }
