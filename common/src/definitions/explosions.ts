@@ -222,6 +222,6 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             sound: "usas_explosion",
             decal: "explosion_decal"
-        },
+        }
     ]
 );
