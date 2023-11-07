@@ -98,7 +98,7 @@ export const PLAYER_NAME_MAX_LENGTH = 16;
 export const DEFAULT_USERNAME = "Player";
 export const INVENTORY_MAX_WEAPONS = 3;
 export const KILL_LEADER_MIN_KILLS = 3;
-export const MAX_MOUSE_DISTANCE = 128;
+export const MAX_MOUSE_DISTANCE = 256;
 
 export enum ZIndexes {
     Ground,

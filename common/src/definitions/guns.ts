@@ -967,41 +967,6 @@ export const Guns: GunDefinition[] = [
     // only dev weapons below this point
 
     {
-        idString: "ab47",
-        name: "AB-47",
-        itemType: ItemType.Gun,
-        ammoType: "762mm",
-        ammoSpawnAmount: 90,
-        capacity: 30,
-        reloadTime: 2.5,
-        fireDelay: 85,
-        switchDelay: 500,
-        speedMultiplier: 0.92,
-        recoilMultiplier: 0.75,
-        recoilDuration: 150,
-        fireMode: FireMode.Auto,
-        shotSpread: 1.34,
-        moveSpread: 2.66,
-        length: 8.9,
-        fists: {
-            left: v(122, -3),
-            right: v(62, 0),
-            animationDuration: 100
-        },
-        image: { position: v(90, 2) },
-        casingParticles: {
-            position: v(4, 0.6)
-        },
-        ballistics: {
-            damage: 21,
-            obstacleMultiplier: 2,
-            speed: 0.39,
-            maxDistance: 320,
-            tracerWidth: 1.5,
-            tracerLength: 2.25
-        }
-    },
-    {
         idString: "deathray",
         name: "Death Ray",
         itemType: ItemType.Gun,
@@ -1109,5 +1074,51 @@ export const Guns: GunDefinition[] = [
                 ]
             }
         }
+    },
+    /*
+    {
+        idString: "qd",
+        name: "Quantum Destabilizer",
+        itemType: ItemType.Gun,
+        ammoType: "power_cell",
+        capacity: 1,
+        reloadTime: 1.2,
+        fireDelay: 2000,
+        switchDelay: 2000,
+        speedMultiplier: 0.75,
+        recoilMultiplier: 0.5,
+        recoilDuration: 2000,
+        fireMode: FireMode.Auto,
+        shotSpread: 1,
+        moveSpread: 29,
+        length: 7.7,
+        fists: {
+            left: v(115, -1),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(90, -3.5) },
+        casingParticles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 20,
+            obstacleMultiplier: 0,
+            speed: 0.39,
+            maxDistance: 512,
+            penetration: {
+                players: true,
+                obstacles: true
+            },
+            onHitExplosion: "qd_explosion",
+            goToMouse: true,
+            tracer: {
+                width: 2,
+                length: 10,
+                color: 0xc0ffff
+            }
+        }
     }
+    */
 ];

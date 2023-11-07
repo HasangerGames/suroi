@@ -48,6 +48,12 @@ export const Decals = new ObjectDefinitions<DecalDefinition>(
             idString: "container_mark",
             name: "Container mark",
             zIndex: ZIndexes.Ground
+        },
+        {
+            idString: "qd_decal",
+            name: "QD Explosion Decal",
+            scale: 2.5,
+            rotationMode: RotationMode.Full
         }
     ]
 );
