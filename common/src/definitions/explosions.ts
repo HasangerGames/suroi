@@ -223,39 +223,5 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             sound: "usas_explosion",
             decal: "explosion_decal"
         },
-        /*
-        {
-            idString: "qd_explosion",
-            name: "QD",
-            damage: 256,
-            obstacleMultiplier: 16,
-            radius: {
-                min: 0,
-                max: 48
-            },
-            cameraShake: {
-                duration: 1000,
-                intensity: 75
-            },
-            animation: {
-                duration: 1500,
-                tint: 0xc0ffff,
-                scale: 3
-            },
-            shrapnelCount: 64,
-            ballistics: {
-                damage: 16,
-                obstacleMultiplier: 1.5,
-                speed: 0.125,
-                maxDistance: 48,
-                rangeVariance: 1,
-                tracer: {
-                    color: 0xc0ffff
-                }
-            },
-            sound: "qd_explosion",
-            decal: "qd_decal"
-        }
-        */
     ]
 );
