@@ -1074,5 +1074,5 @@ export const Guns: GunDefinition[] = [
                 ]
             }
         }
-    },
+    }
 ];
