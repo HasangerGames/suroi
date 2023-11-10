@@ -396,7 +396,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
-            emitParticles: true,
             reflectBullets: true
         },
         {
@@ -412,7 +411,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
-            emitParticles: true,
             reflectBullets: true
         },
         {
