@@ -364,15 +364,12 @@ export const Maps: Record<string, MapDefinition> = {
         }
     },
     singleObstacle: {
-        width: 48,
-        height: 48,
-        beachSize: 4,
-        oceanSize: 4,
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("barrel", v(this.width / 2, this.height / 2), 0);
-            map.game.addLoot("gauze", v(this.width / 2, this.height / 2));
-            map.game.addLoot("12g", v(this.width / 2, this.height / 2), 4);
-            map.game.addLoot("m3k", v(this.width / 2, this.height / 2));
+            map.generateObstacle("pumpkin", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {
