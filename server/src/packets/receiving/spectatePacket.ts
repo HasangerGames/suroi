@@ -1,11 +1,11 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { randomUUID } from "node:crypto";
 import { SpectateActions } from "../../../../common/src/constants";
 import { random } from "../../../../common/src/utils/random";
 import { SPECTATE_ACTIONS_BITS, type SuroiBitStream } from "../../../../common/src/utils/suroiBitStream";
 import { type Player } from "../../objects/player";
 import { ReceivingPacket } from "../../types/receivingPacket";
 import { ReportPacket } from "../sending/reportPacket";
+import { randomBytes } from "crypto";
 
 export class SpectatePacket extends ReceivingPacket {
     override deserialize(stream: SuroiBitStream): void {
@@ -58,12 +58,12 @@ export class SpectatePacket extends ReceivingPacket {
             }
             case SpectateActions.Report: {
                 if (!existsSync("reports")) mkdirSync("reports");
-                const reportID = randomUUID();
+                const reportID = randomBytes(4).toString("hex");
                 writeFileSync(`reports/${reportID}.json`, JSON.stringify({
                     ip: player.spectating?.ip,
                     name: player.spectating?.name,
                     time: player.game.now
-                }, null, 4));
+                }));
                 player.sendPacket(new ReportPacket(player, player.spectating?.name ?? "", reportID));
                 break;
             }

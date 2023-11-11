@@ -4,7 +4,7 @@ import { type Player } from "../../objects/player";
 import { SendingPacket } from "../../types/sendingPacket";
 
 export class ReportPacket extends SendingPacket {
-    override readonly allocBytes = 53;
+    override readonly allocBytes = 25;
     override readonly type = PacketType.Report;
     readonly reportedName: string;
     readonly reportID: string;
@@ -18,6 +18,6 @@ export class ReportPacket extends SendingPacket {
     override serialize(stream: SuroiBitStream): void {
         super.serialize(stream);
         stream.writePlayerName(this.reportedName);
-        stream.writeASCIIString(this.reportID, 36);
+        stream.writeASCIIString(this.reportID, 8);
     }
 }

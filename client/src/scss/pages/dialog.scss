@@ -30,23 +30,15 @@
 
 #report-id-container {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 5px;
 }
 
-#report-id-input {
-    color: black;
-    font-size: 16px;
-    width: 235px;
-    padding: 5px 8px;
-    border-radius: 8px;
-}
-
-#btn-copy-report-id {
-    display: inline-block;
-    font-size: 16px;
-    height: auto;
-    padding: 6px 12px;
+#report-id {
+    font-size: 50px;
+    font-family: monospace;
 }
 
 #customize-menu {
