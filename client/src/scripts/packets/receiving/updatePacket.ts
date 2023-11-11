@@ -154,7 +154,7 @@ export class UpdatePacket extends ReceivingPacket {
                     $("#game-over-overlay").fadeOut();
                     $("#spectating-msg-info").html(`<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">${name}</span>`);
                     $("#spectating-msg").show();
-                    if(stream.readBoolean()) {
+                    if (stream.readBoolean()) {
                         $("#spectating-buttons-container").show();
                     } else {
                         $("#spectating-buttons-container").show();

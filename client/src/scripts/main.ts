@@ -4,7 +4,7 @@ import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
-import { loadAtlases } from "./utils/pixi";
+import { loadTextures } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
 
 const playButton: JQuery = $("#btn-play-solo");
@@ -26,7 +26,7 @@ $(async(): Promise<void> => {
 
     const game = new Game();
 
-    await loadAtlases();
+    await loadTextures();
 
     interface RegionInfo {
         name: string
