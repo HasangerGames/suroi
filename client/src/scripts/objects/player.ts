@@ -38,7 +38,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         vest?: ArmorDefinition
         backpack: BackpackDefinition
     } = {
-            backpack: Loots.fromString("pack_0")
+            backpack: Loots.fromString("bag")
         };
 
     get isActivePlayer(): boolean {
