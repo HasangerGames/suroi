@@ -8,7 +8,7 @@ export class PingedPacket extends ReceivingPacket {
         $("#ping-counter").text(`${ping} ms`);
         setTimeout((): void => {
             if (this.game.gameStarted) {
-                this.game.sendPacket(new PingPacket(this.playerManager));
+                this.game.sendPacket(new PingPacket(this.game));
             }
         }, 5000);
     }

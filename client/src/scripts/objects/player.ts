@@ -181,7 +181,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const sendSpectatePacket = (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
 
-            this.game.sendPacket(new SpectatePacket(game.playerManager, SpectateActions.SpectateSpecific, this.id));
+            this.game.sendPacket(new SpectatePacket(game, SpectateActions.SpectateSpecific, this.id));
         };
 
         this.container.on("pointerdown", sendSpectatePacket);

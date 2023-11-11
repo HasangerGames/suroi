@@ -6,9 +6,11 @@ export class Emote {
     readonly definition: EmoteDefinition;
 
     readonly player: Player;
+    readonly playerId: number;
 
     constructor(definition: ReifiableDef<EmoteDefinition>, player: Player) {
         this.definition = Emotes.reify(definition);
         this.player = player;
+        this.playerId = player.id;
     }
 }

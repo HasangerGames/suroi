@@ -14,14 +14,9 @@ import { existsSync, readFile, writeFileSync } from "fs";
 import os from "os";
 
 import { URLSearchParams } from "node:url";
-import { PacketType } from "../../common/src/constants";
 import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
-import { InputPacket } from "./packets/receiving/inputPacket";
-import { JoinPacket } from "./packets/receiving/joinPacket";
-import { PingedPacket } from "./packets/receiving/pingedPacket";
-import { SpectatePacket } from "./packets/receiving/spectatePacket";
 import { Logger } from "./utils/misc";
 
 /**
@@ -281,28 +276,9 @@ app.ws("/play", {
     message(socket: WebSocket<PlayerContainer>, message) {
         const stream = new SuroiBitStream(message);
         try {
-            const packetType = stream.readPacketType();
             const player = socket.getUserData().player;
             if (player === undefined) return;
-
-            switch (packetType) {
-                case PacketType.Join: {
-                    new JoinPacket(player).deserialize(stream);
-                    break;
-                }
-                case PacketType.Input: {
-                    new InputPacket(player).deserialize(stream);
-                    break;
-                }
-                case PacketType.Ping: {
-                    new PingedPacket(player).deserialize(stream);
-                    break;
-                }
-                case PacketType.Spectate: {
-                    new SpectatePacket(player).deserialize(stream);
-                    break;
-                }
-            }
+            player.game.handlePacket(stream, player);
         } catch (e) {
             console.warn("Error parsing message:", e);
         }

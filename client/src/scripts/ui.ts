@@ -156,7 +156,7 @@ export function setupUI(game: Game): void {
     $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
-        game.sendPacket(new SpectatePacket(game.playerManager, action));
+        game.sendPacket(new SpectatePacket(game, action));
     };
 
     $("#btn-spectate").on("click", () => {

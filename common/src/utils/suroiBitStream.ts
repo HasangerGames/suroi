@@ -1,5 +1,5 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { InputActions, KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
+import { KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
@@ -11,7 +11,6 @@ export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
-export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
 export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 
@@ -310,5 +309,28 @@ export class SuroiBitStream extends BitStream {
         const style = hasColor ? `style="color: ${this.readUTF8String(10)}"` : "";
 
         return `<span ${style}>${playerName}</span>`;
+    }
+
+    writeArray<T>(size: number,
+        bitCount: number,
+        items: { [Symbol.iterator]: () => Iterator<T> },
+        writeCallback: (item: T) => void): void {
+        let i = 0;
+        const max = 2 ** bitCount;
+
+        this.writeBits(Math.min(size, max), bitCount);
+        for (const item of items) {
+            writeCallback(item);
+            i++;
+            if (i > max) break;
+        }
+    }
+
+    readArray(bitCount: number, readCallback: () => void): void {
+        const size = this.readBits(bitCount);
+
+        for (let i = 0; i < size; i++) {
+            readCallback();
+        }
     }
 }

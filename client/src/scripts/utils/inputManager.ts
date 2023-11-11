@@ -9,17 +9,8 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
-
-export type InputAction = {
-    readonly type: InputActions.UseItem
-    readonly item: LootDefinition
-} | {
-    readonly type: InputActions.EquipItem | InputActions.DropItem
-    readonly slot: number
-} | {
-    readonly type: InputActions
-};
+import { Loots } from "../../../../common/src/definitions/loots";
+import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket";
 
 export class InputManager {
     readonly game: Game;
@@ -57,7 +48,8 @@ export class InputManager {
         if (this.actions.length > 7) return;
 
         if (typeof action === "number") {
-            action = { type: action };
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            action = { type: action } as InputAction;
         }
 
         this.actions.push(action);
@@ -73,10 +65,38 @@ export class InputManager {
 
     turning = false;
 
-    activeItemIndex = 2;
+    update(): void {
+        const packet = new InputPacket();
+        packet.movement = this.movement;
+        packet.attacking = this.attacking;
+
+        packet.turning = this.turning;
+        if (this.turning) {
+            packet.rotation = this.resetAttacking ? this.shootOnReleaseAngle : this.rotation;
+            packet.distanceToMouse = this.distanceToMouse;
+            this.turning = false;
+        }
+
+        packet.isMobile = this.isMobile;
+        if (this.isMobile) {
+            packet.mobile = {
+                angle: this.movementAngle,
+                moving: this.movement.moving
+            };
+        }
+
+        if (this.resetAttacking) {
+            this.attacking = false;
+            this.resetAttacking = false;
+        }
+        packet.actions = this.actions;
+
+        this.game.sendPacket(packet);
+        this.actions.length = 0;
+    }
 
     cycleScope(offset: number): void {
-        const scope = this.game.playerManager.scope;
+        const scope = this.game.uiManager.inventory.scope;
         const scopeId = Scopes.indexOf(scope);
         let scopeString = scope.idString;
         let searchIndex = scopeId;
@@ -90,7 +110,7 @@ export class InputManager {
 
             const scopeCandidate = Scopes[searchIndex].idString;
 
-            if (this.game.playerManager.items[scopeCandidate]) {
+            if (this.game.uiManager.inventory.items[scopeCandidate]) {
                 scopeString = scopeCandidate;
                 break;
             }

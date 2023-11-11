@@ -1,8 +1,11 @@
-import { type Container, Graphics } from "pixi.js";
+import { Graphics } from "pixi.js";
 import { GasState, TICKS_PER_SECOND, ZIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
-import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { COLORS } from "../utils/constants";
+import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector";
+import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
+import { formatDate } from "../utils/misc";
+import { type Game } from "../game";
 
 const kOverdraw = 100 * 1000;
 const kSegments = 512;
@@ -18,15 +21,110 @@ export class Gas {
     lastRadius = 2048;
     radius = 2048;
     newRadius = 2048;
-    firstPercentageReceived = false;
-    firstRadiusReceived = false;
+
     lastUpdateTime = Date.now();
 
+    game: Game;
+
+    private readonly _ui = {
+        msgText: $("#gas-msg-info"),
+        msgContainer: $("#gas-msg"),
+
+        timer: $("#gas-timer"),
+        timerText: $("#gas-timer-text"),
+        timerImg: $("#gas-timer-image")
+    };
+
+    constructor(game: Game) {
+        this.game = game;
+    }
+
+    updateFrom(data: UpdatePacket): void {
+        const gas = data.gas;
+
+        const gasPercentage = data.gasPercentage?.value;
+
+        if (gas) {
+            this.state = gas.state;
+            this.initialDuration = gas.initialDuration;
+            this.oldPosition = gas.oldPosition;
+            this.newPosition = gas.newPosition;
+            this.oldRadius = gas.oldRadius;
+            this.newRadius = gas.newRadius;
+
+            const [isInactive, isAdvancing] = [
+                gas.state === GasState.Inactive,
+                gas.state === GasState.Advancing
+            ];
+
+            const time = this.initialDuration - Math.round(this.initialDuration * (gasPercentage ?? 1));
+
+            let gasMessage = "";
+            switch (this.state) {
+                case GasState.Waiting: {
+                    gasMessage = `Toxic gas advances in ${formatDate(time)}`;
+                    break;
+                }
+                case GasState.Advancing: {
+                    gasMessage = "Toxic gas is advancing! Move to the safe zone";
+                    break;
+                }
+                case GasState.Inactive: {
+                    gasMessage = "Waiting for players...";
+                    break;
+                }
+            }
+
+            if (isAdvancing) {
+                this._ui.timer.addClass("advancing");
+                this._ui.timerImg.attr("src", "./img/misc/gas-advancing-icon.svg");
+            } else {
+                this._ui.timer.removeClass("advancing");
+                this._ui.timerImg.attr("src", "./img/misc/gas-waiting-icon.svg");
+            }
+
+            if (
+                (isInactive || gas.initialDuration !== 0) &&
+                !UI_DEBUG_MODE &&
+                (!this.game.gameOver || this.game.spectating)
+            ) {
+                this._ui.msgText.text(gasMessage);
+                this._ui.msgContainer.fadeIn();
+                if (isInactive) {
+                    this._ui.msgText.css("color", "white");
+                } else {
+                    this._ui.msgText.css("color", "cyan");
+                    setTimeout(() => $("#gas-msg").fadeOut(1000), 5000);
+                }
+            }
+        }
+
+        if (gasPercentage !== undefined) {
+            const time = this.initialDuration - Math.round(this.initialDuration * gasPercentage);
+            this._ui.timerText.text(`${Math.floor(time / 60)}:${(time % 60) < 10 ? "0" : ""}${time % 60}`);
+
+            if (this.state !== GasState.Advancing) {
+                this.position = this.oldPosition;
+                this.radius = this.oldRadius;
+            }
+
+            if (this.state === GasState.Advancing) {
+                this.lastPosition = vClone(this.position);
+                this.lastRadius = this.radius;
+                this.position = vecLerp(this.oldPosition, this.newPosition, gasPercentage);
+                this.radius = lerp(this.oldRadius, this.newRadius, gasPercentage);
+                this.lastUpdateTime = Date.now();
+            }
+        }
+    }
+}
+
+export class GasRender {
     graphics: Graphics;
 
     scale: number;
 
-    constructor(scale: number, container: Container) {
+    constructor(scale: number) {
         this.scale = scale;
 
         this.graphics = new Graphics();
@@ -53,20 +151,19 @@ export class Gas {
         this.graphics.endHole()
             .closePath()
             .endFill();
-
-        container.addChild(this.graphics);
     }
 
-    update(): void {
+    update(gas: Gas): void {
         let position: Vector;
         let radius: number;
-        if (this.state === GasState.Advancing) {
-            const interpFactor = clamp((Date.now() - this.lastUpdateTime) / TICKS_PER_SECOND, 0, 1);
-            position = vecLerp(this.lastPosition, this.position, interpFactor);
-            radius = lerp(this.lastRadius, this.radius, interpFactor);
+
+        if (gas.state === GasState.Advancing) {
+            const interpFactor = clamp((Date.now() - gas.lastUpdateTime) / TICKS_PER_SECOND, 0, 1);
+            position = vecLerp(gas.lastPosition, gas.position, interpFactor);
+            radius = lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {
-            position = this.position;
-            radius = this.radius;
+            position = gas.position;
+            radius = gas.radius;
         }
 
         const center = vMul(position, this.scale);
@@ -79,19 +176,5 @@ export class Gas {
         }
         this.graphics.position.copyFrom(center);
         this.graphics.scale.set(rad);
-    }
-
-    updateFrom(gas: Gas): void {
-        this.state = gas.state;
-        this.initialDuration = gas.initialDuration;
-        this.oldPosition = gas.oldPosition;
-        this.lastPosition = gas.lastPosition;
-        this.position = gas.position;
-        this.newPosition = gas.newPosition;
-        this.oldRadius = gas.oldRadius;
-        this.lastRadius = gas.lastRadius;
-        this.radius = gas.radius;
-        this.newRadius = gas.newRadius;
-        this.lastUpdateTime = gas.lastUpdateTime;
     }
 }

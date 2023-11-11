@@ -204,7 +204,6 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                         player.inventory.vest = this.definition;
                 }
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
@@ -212,13 +211,11 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = this.definition;
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Scope: {
                 inventory.items[this.definition.idString] = 1;
-                player.dirty.inventory = true;
 
                 if (this.definition.zoomLevel > player.inventory.scope.zoomLevel) {
                     player.inventory.scope = this.definition.idString;
@@ -230,13 +227,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 createNewItem(player.loadout.skin);
                 player.loadout.skin = this.definition;
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
         }
 
-        player.dirty.inventory = true;
+        player.dirty.items = true;
 
         // Destroy the old loot
         this.game.removeLoot(this);
