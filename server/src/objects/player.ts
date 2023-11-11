@@ -324,7 +324,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
-        this.inventory.addOrReplaceWeapon(2, "maul");
+        this.inventory.addOrReplaceWeapon(2, "fists");
 
         this.inventory.scope = "1x_scope";
         // this.inventory.items["15x_scope"] = 1;
