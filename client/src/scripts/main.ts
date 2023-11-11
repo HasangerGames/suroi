@@ -20,10 +20,6 @@ function disablePlayButton(text: string): void {
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(async(): Promise<void> => {
-    disablePlayButton("Loading...");
-
-    // Initialize the Application object
-
     const game = new Game();
 
     await loadTextures();
@@ -32,74 +28,91 @@ $(async(): Promise<void> => {
         name: string
         address: string
         https: boolean
-        playerCount: string
-        ping: number
+        playerCount?: string
+        ping?: number
     }
-    const regionInfo: Record<string, RegionInfo> = {};
+
+    const regionInfo: Record<string, RegionInfo> = Config.regions;
+    const regionMap = Object.entries(regionInfo);
+    const serverList = $("#server-list");
+
+    // Load server list
+    for (const [regionID, region] of regionMap) {
+        const listItem = $(`
+                <li class="server-list-item" data-region="${regionID}">
+                    <span class="server-name">${region.name}</span>
+                    <span style="margin-left: auto">
+                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                      <span class="server-player-count">-</span>
+                    </span>
+                </li>
+            `);
+        /*<span style="margin-left: 5px">
+          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+          <span class="server-ping">-</span>
+        </span>*/
+        serverList.append(listItem);
+    }
+
+    // Get player counts + find server w/ best ping
+    let bestPing = Number.MAX_VALUE;
+    let bestRegion: string | undefined;
+    const loadServers = async(): Promise<void> => {
+        for (const [regionID, region] of regionMap) {
+            const listItem = $(`.server-list-item[data-region=${regionID}]`);
+            try {
+                const pingStartTime = Date.now();
+                let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
+                    .catch(() => {
+                        console.error(`Could not load player count for ${region.address}.`);
+                    })
+                )?.text();
+                playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
+
+                const ping = Date.now() - pingStartTime;
+                regionInfo[regionID] = {
+                    ...region,
+                    playerCount,
+                    ping: playerCount !== "-" ? ping : -1
+                };
+
+                listItem.find(".server-player-count").text(playerCount);
+                //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+
+                if (ping < bestPing) {
+                    bestPing = ping;
+                    bestRegion = regionID;
+                }
+            } catch (e) {
+                listItem.addClass("server-list-item-disabled");
+                console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
+            }
+        }
+    };
+
     let selectedRegion: RegionInfo;
 
     const updateServerSelector = (): void => {
         $("#server-name").text(selectedRegion.name);
-        $("#server-player-count").text(selectedRegion.playerCount);
-        //$("#server-ping").text(selectedRegion.ping >= 0 ? selectedRegion.ping : "-");
+        $("#server-player-count").text(selectedRegion.playerCount ?? "-");
+        //$("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
-    let bestPing = Number.MAX_VALUE;
-    let bestRegion: string | undefined;
-    for (const [regionID, region] of Object.entries(Config.regions)) {
-        const listItem = $(`
-<li class="server-list-item" data-region="${regionID}">
-  <span class="server-name">${region.name}</span>
-  <span style="margin-left: auto">
-    <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
-    <span class="server-player-count">-</span>
-  </span>
-</li>`);
-        /* <span style="margin-left: 5px">
-    <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
-    <span class="server-ping">-</span>
-  </span> */
-        $("#server-list").append(listItem);
 
-        try {
-            const pingStartTime = Date.now();
-            let playerCount = await (await fetch(`http${region.https ? "s" : ""}://${region.address}/api/playerCount`, { signal: AbortSignal.timeout(2000) })
-                .catch(() => {
-                    console.error(`Could not load player count for ${region.address}.`);
-                    listItem.addClass("server-list-item-disabled");
-                })
-            )?.text();
-            playerCount = playerCount && stringIsPositiveNumber(playerCount) ? playerCount : "-";
-
-            const ping = Date.now() - pingStartTime;
-            regionInfo[regionID] = {
-                ...region,
-                playerCount,
-                ping: playerCount !== "-" ? ping : -1
-            };
-
-            listItem.find(".server-player-count").text(playerCount);
-            //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
-
-            if (ping < bestPing) {
-                bestPing = ping;
-                bestRegion = regionID;
-            }
-        } catch (e) {
-            listItem.addClass("server-list-item-disabled");
-            console.error(`Failed to fetch player count for region ${regionID}. Details:`, e);
-        }
+    const region = game.console.getBuiltInCVar("cv_region");
+    if (region) {
+        void (async() => {
+            await loadServers();
+            selectedRegion = regionInfo[region];
+            updateServerSelector();
+        })();
+        selectedRegion = regionInfo[region];
+    } else {
+        await loadServers();
+        selectedRegion = regionInfo[bestRegion ?? Config.defaultRegion];
     }
-
-    //@ts-expect-error Even though indexing an object with undefined is technically gibberish, doing so returns undefined, which
-    // is kinda what we want anyways, so it's fine
-    const cVarRegion = regionInfo[game.console.getBuiltInCVar("cv_region")];
-    //@ts-expect-error ditto
-    const empiricalBestRegion = regionInfo[bestRegion];
-    const clientConfigRegion = regionInfo[Config.defaultRegion];
-    selectedRegion = cVarRegion ?? empiricalBestRegion ?? clientConfigRegion;
     updateServerSelector();
 
-    $("#server-list").children("li.server-list-item").on("click", function(this: HTMLLIElement) {
+    serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {
         const region = this.getAttribute("data-region");
         if (region === null) return;
 

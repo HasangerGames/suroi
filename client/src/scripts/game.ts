@@ -93,6 +93,7 @@ export class Game {
         this.inputManager.setupInputs();
         this.console.readFromLocalStorage();
 
+        // Initialize the Application object
         this.pixi = new Application({
             resizeTo: window,
             background: COLORS.grass,
