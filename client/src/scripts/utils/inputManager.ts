@@ -184,7 +184,7 @@ export class InputManager {
                 const gamePos = vDiv(pixiPos, PIXI_SCALE);
                 this.distanceToMouse = distance(game.activePlayer.position, gamePos);
 
-                if (game.console.getBuiltInCVar("cv_movement_smoothing")) {
+                if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
                     game.map.indicator.rotation = this.rotation;
                 }
@@ -222,7 +222,7 @@ export class InputManager {
                 if (!rightJoyStickUsed && !shootOnRelease) {
                     this.rotation = movementAngle;
                     this.turning = true;
-                    if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && game.activePlayer) {
+                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
                     }
                 }
@@ -237,7 +237,7 @@ export class InputManager {
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
                 const activePlayer = game.activePlayer;
-                if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && activePlayer) {
+                if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
                     game.activePlayer.container.rotation = this.rotation;
                 }
 

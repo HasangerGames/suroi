@@ -261,7 +261,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             if (noMovementSmoothing) {
                 this.game.camera.position = toPixiCoords(this.position);
-                this.game.map.indicator.setRotation(data.rotation);
+                if (!this.game.console.getBuiltInCVar("cv_responsive_rotation")) this.game.map.indicator.setRotation(data.rotation);
             }
 
             if (this.game.console.getBuiltInCVar("pf_show_pos")) {

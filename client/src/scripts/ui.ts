@@ -463,11 +463,14 @@ Video evidence is required.`)) {
         element.checked = game.console.getBuiltInCVar("cv_killfeed_style") === "text";
     }
 
-    // antialias toggle
+    // Anti-aliasing toggle
     addCheckboxListener("#toggle-antialias", "cv_antialias");
 
     // Movement smoothing toggle
     addCheckboxListener("#toggle-movement-smoothing", "cv_movement_smoothing");
+
+    // Responsive rotation toggle
+    addCheckboxListener("#toggle-responsive-rotation", "cv_responsive_rotation");
 
     // Mobile controls stuff
     addCheckboxListener("#toggle-mobile-controls", "mb_controls_enabled");

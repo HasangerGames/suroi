@@ -315,7 +315,9 @@ export class Game {
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
             for (const player of this.players) {
                 player.updateContainerPosition();
-                if (!player.isActivePlayer || this.spectating) player.updateContainerRotation();
+                if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
+                    player.updateContainerRotation();
+                }
             }
 
             if (this.activePlayer) {
