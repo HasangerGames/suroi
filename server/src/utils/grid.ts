@@ -29,7 +29,7 @@ export class Grid<T extends GameObject> {
 
         // fill the grid X row with arrays for the Y column
         // maps are created on demand to save memory usage
-        this._grid = Array.from({ length: width }, () => []);
+        this._grid = Array.from({ length: this.width }, () => []);
     }
 
     /**
