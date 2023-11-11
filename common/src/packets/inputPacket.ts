@@ -69,12 +69,14 @@ export class InputPacket extends Packet {
         for (const action of this.actions) {
             stream.writeBits(action.type, INPUT_ACTIONS_BITS);
 
-            if ("slot" in action) {
-                stream.writeBits(action.slot, 2);
-            }
-
-            if ("item" in action) {
-                Loots.writeToStream(stream, action.item);
+            switch (action.type) {
+                case InputActions.EquipItem:
+                case InputActions.DropItem:
+                    stream.writeBits(action.slot, 2);
+                    break;
+                case InputActions.UseItem:
+                    Loots.writeToStream(stream, action.item);
+                    break;
             }
         }
     }

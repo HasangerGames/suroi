@@ -164,6 +164,7 @@ export class Game {
 
             const joinPacket = new JoinPacket();
             joinPacket.name = this.uiManager.name;
+            joinPacket.isMobile = this.inputManager.isMobile;
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             for (const emote of ["top", "right", "bottom", "left"] as const) {

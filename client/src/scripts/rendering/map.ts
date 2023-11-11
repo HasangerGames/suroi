@@ -65,7 +65,7 @@ export class Minimap {
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         this.borderContainer.on("click", e => {
-            if (!isMobile.any) return;
+            if (!this.game.inputManager.isMobile) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
         });

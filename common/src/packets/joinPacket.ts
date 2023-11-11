@@ -31,7 +31,7 @@ export class JoinPacket extends Packet {
     }
 
     override deserialize(stream: SuroiBitStream): void {
-        this.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML;
+        this.name = stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(); // Regex strips out HTML
 
         this.isMobile = stream.readBoolean();
         this.skin = Loots.readFromStream(stream);
