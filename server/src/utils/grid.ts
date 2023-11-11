@@ -17,7 +17,7 @@ export class Grid<T extends GameObject> {
     readonly cellSize = 32;
 
     //              X     Y         Object ID
-    readonly _grid: Array<Array<Map<number, T>>>;
+    private readonly _grid: Array<Array<Map<number, T>>>;
 
     // store the cells each game object is occupying
     // so removing the object from the grid is faster
@@ -29,7 +29,7 @@ export class Grid<T extends GameObject> {
 
         // fill the grid X row with arrays for the Y column
         // maps are created on demand to save memory usage
-        this._grid = Array.from({ length: width }, () => []);
+        this._grid = Array.from({ length: this.width + 1 }, () => []);
     }
 
     /**

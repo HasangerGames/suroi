@@ -412,7 +412,8 @@
         #tab-keybinds-content {
             #keybind-clear-tooltip {
                 border: 2px solid gray;
-                padding: 3px;
+                border-radius: 10px;
+                padding: 7px;
                 background-color: lighten($transparent_bg, 30%);
             }
 

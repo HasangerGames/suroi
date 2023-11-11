@@ -79,7 +79,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
-            if ((definition.explosion ?? "emitParticles" in definition) && !this.smokeEmitter) {
+            if ((definition.explosion ?? ("emitParticles" in definition)) && !this.smokeEmitter) {
                 this.smokeEmitter = this.game.particleManager.addEmitter({
                     delay: 400,
                     active: false,
