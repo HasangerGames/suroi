@@ -16,9 +16,7 @@ export class InputManager {
     readonly game: Game;
     readonly binds: InputMapper;
 
-    get isMobile(): boolean {
-        return isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
-    }
+    readonly isMobile!: boolean;
 
     readonly movement = {
         up: false,
@@ -131,6 +129,10 @@ export class InputManager {
 
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
+        //@ts-expect-error init code
+        // noinspection JSConstantReassignment
+        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
+
         const game = this.game;
 
         const gameUi = $("#game-ui")[0];

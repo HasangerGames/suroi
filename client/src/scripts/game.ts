@@ -87,8 +87,8 @@ export class Game {
     readonly tweens = new Set<Tween<unknown>>();
 
     constructor() {
-        this.inputManager.setupInputs();
         this.console.readFromLocalStorage();
+        this.inputManager.setupInputs();
 
         // Initialize the Application object
         this.pixi = new Application({
