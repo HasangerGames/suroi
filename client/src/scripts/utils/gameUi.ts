@@ -32,7 +32,7 @@ export class GameUi {
     inventory = {
         activeWeaponIndex: 0,
         weapons: new Array(INVENTORY_MAX_WEAPONS).fill(undefined) as PlayerData["inventory"]["weapons"],
-        items: DEFAULT_INVENTORY,
+        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
 

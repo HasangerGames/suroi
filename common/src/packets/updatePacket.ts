@@ -464,7 +464,5 @@ export class UpdatePacket extends Packet {
             this.aliveCountDirty = true;
             this.aliveCount = stream.readBits(7);
         }
-
-        if (flags > 0) console.log(this);
     }
 }

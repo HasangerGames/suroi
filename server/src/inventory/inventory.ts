@@ -31,7 +31,7 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    readonly items = DEFAULT_INVENTORY;
+    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
@@ -264,7 +264,6 @@ export class Inventory {
 
         if (index !== undefined) {
             this.setActiveWeaponIndex(index);
-            this.owner.dirty.weapons = false;
         }
     }
 
