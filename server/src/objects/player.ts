@@ -324,7 +324,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
         this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
 
-        this.inventory.addOrReplaceWeapon(2, "fists");
+        this.inventory.addOrReplaceWeapon(2, "maul");
 
         this.inventory.scope = "1x_scope";
         // this.inventory.items["15x_scope"] = 1;
@@ -776,6 +776,28 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         if (source instanceof Player) {
             this.killedBy = source;
             if (source !== this) source.kills++;
+
+            /*
+            // Weapon swap event
+            const inventory = source.inventory;
+            const index = source.activeItemIndex;
+            inventory.removeWeapon(index);
+            inventory.setActiveWeaponIndex(index);
+            switch (index) {
+                case 0:
+                case 1: {
+                    const gun = pickRandomInArray(Guns.filter(g => !g.killstreak));
+                    inventory.addOrReplaceWeapon(index, gun);
+                    const { ammoType } = gun;
+                    if (gun.ammoSpawnAmount) inventory.items[ammoType] = Math.min(inventory.backpack.maxCapacity[ammoType], inventory.items[ammoType] + gun.ammoSpawnAmount);
+                    break;
+                }
+                case 2: {
+                    inventory.addOrReplaceWeapon(index, pickRandomInArray(Melees.filter(m => !m.killstreak)));
+                    break;
+                }
+            }
+            */
         }
 
         if (source instanceof Player || source === "gas") {
