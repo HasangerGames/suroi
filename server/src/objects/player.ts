@@ -1,8 +1,10 @@
 import { type WebSocket } from "uWebSockets.js";
 import {
-    AnimationType, DEFAULT_HEALTH, DEFAULT_USERNAME,
-    INVENTORY_MAX_WEAPONS,
+    AnimationType,
+    DEFAULT_HEALTH,
+    DEFAULT_USERNAME,
     InputActions,
+    INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
     MAX_ADRENALINE,
     MAX_MOUSE_DISTANCE,
@@ -10,7 +12,7 @@ import {
     PLAYER_RADIUS,
     PlayerActions
 } from "../../../common/src/constants";
-import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
+import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
@@ -18,13 +20,13 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
+import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
-import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
+import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
+import { type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
 import { type Game } from "../game";
-import { HealingAction, ReloadAction, type Action } from "../inventory/action";
+import { type Action, HealingAction, ReloadAction } from "../inventory/action";
 import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
@@ -1002,16 +1004,18 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
                     if (interactable.object) {
                         interactable.object.interact(this);
 
-                        // If the closest object is a door, interact with other doors within range
-                        for (const object of nearObjects) {
-                            if (
-                                object instanceof Obstacle &&
-                                object.isDoor &&
-                                !object.door?.locked &&
-                                object !== interactable.object &&
-                                object.hitbox.collidesWith(detectionHitbox)
-                            ) {
-                                object.interact(this);
+                        if ((interactable.object as Obstacle).isDoor) {
+                            // If the closest object is a door, interact with other doors within range
+                            for (const object of nearObjects) {
+                                if (
+                                    object instanceof Obstacle &&
+                                    object.isDoor &&
+                                    !object.door?.locked &&
+                                    object !== interactable.object &&
+                                    object.hitbox.collidesWith(detectionHitbox)
+                                ) {
+                                    object.interact(this);
+                                }
                             }
                         }
                     } else if (uninteractable.object) {
