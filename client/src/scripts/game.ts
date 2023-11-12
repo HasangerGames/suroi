@@ -40,6 +40,7 @@ import { Emotes } from "../../../common/src/definitions/emotes";
 import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { PingPacket } from "../../../common/src/packets/pingPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -63,7 +64,7 @@ export class Game {
 
     uiManager = new GameUI(this);
 
-    lastPingDate = Date.now();
+    lastPingDate = 0;
 
     private _tickTimeoutID: number | undefined;
 
@@ -162,7 +163,9 @@ export class Game {
                 $("#spectating-buttons-container").hide();
                 $("#joysticks-containers").show();
             }
-            // this.sendPacket(new PingPacket(this));
+
+            this.sendPacket(new PingPacket());
+            this.lastPingDate = Date.now();
 
             const joinPacket = new JoinPacket();
             joinPacket.isMobile = this.inputManager.isMobile;
@@ -209,6 +212,15 @@ export class Game {
                     const packet = new GameOverPacket();
                     packet.deserialize(stream);
                     this.uiManager.showGameOverScreen(packet);
+                    break;
+                }
+                case PacketType.Ping: {
+                    const ping = Date.now() - this.lastPingDate;
+                    $("#ping-counter").text(`${ping} ms`);
+                    setTimeout((): void => {
+                        this.sendPacket(new PingPacket());
+                        this.lastPingDate = Date.now();
+                    }, 5000);
                     break;
                 }
             }

@@ -34,6 +34,7 @@ import { JoinPacket } from "../../common/src/packets/joinPacket";
 import { hasBadWords } from "./utils/badWordFilter";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { InputPacket } from "../../common/src/packets/inputPacket";
+import { PingPacket } from "../../common/src/packets/pingPacket";
 
 export class Game {
     readonly _id: number;
@@ -136,6 +137,11 @@ export class Game {
                 packet.deserialize(stream);
                 player.processInputs(packet);
                 break;
+            }
+            case PacketType.Ping: {
+                if (Date.now() - player.lastPingTime < 4000) return;
+                player.lastPingTime = Date.now();
+                player.sendPacket(new PingPacket());
             }
         }
     }
