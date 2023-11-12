@@ -266,6 +266,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
     startedSpectating = false;
     spectators = new Set<Player>();
     lastSpectateActionTime = 0;
+    lastPingTime = 0;
 
     readonly role?: string;
     readonly isDev: boolean;
