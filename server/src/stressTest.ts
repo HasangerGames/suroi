@@ -7,6 +7,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Loots } from "../../common/src/definitions/loots";
 import { type InputAction, InputPacket } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -73,8 +74,9 @@ class Bot {
             const stream = new SuroiBitStream(message.data as ArrayBuffer);
             switch (stream.readPacketType()) {
                 case PacketType.GameOver: {
-                    const won = stream.readBoolean();
-                    console.log(`Bot ${id} ${won ? "won" : "died"}`);
+                    const packet = new GameOverPacket();
+                    packet.deserialize(stream);
+                    console.log(`Bot ${id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
                     this.disconnect = true;
                     this.connected = false;
                     this.ws.close();
