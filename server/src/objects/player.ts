@@ -20,7 +20,6 @@ import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
 import { ItemType, type ExtendedWearerAttributes, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
 import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
@@ -30,11 +29,9 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
-import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -43,6 +40,8 @@ import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { Loot } from "./loot";
+import { type Packet } from "../../../common/src/packets/packet";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 
 export class Player extends GameObject<ObjectCategory.Player> implements PlayerData {
     override readonly type = ObjectCategory.Player;
@@ -622,7 +621,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // send kill feed packets
-        for (const message of this.game.killFeedMessages) this.sendPacket(message);
+        // for (const message of this.game.killFeedMessages) this.sendPacket(message);
     }
 
     spectate(spectating?: Player): void {
@@ -647,11 +646,9 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
-    sendPacket(packet: SendingPacket): void {
-        const stream = SuroiBitStream.alloc(packet.allocBytes);
-        packet.serialize(stream);
-        const buffer = stream.buffer.slice(0, Math.ceil(stream.index / 8));
-        this.sendData(buffer);
+    sendPacket(packet: Packet): void {
+        packet.serialize();
+        this.sendData(packet.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -896,13 +893,25 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
         // Send game over to dead player
         if (!this.disconnected) {
-            this.sendPacket(new GameOverPacket(this, false));
+            this.sendGameOverPacket();
         }
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
             this.game.killLeaderDead();
         }
+    }
+
+    sendGameOverPacket(won = false): void {
+        const packet = new GameOverPacket();
+        packet.won = won;
+        packet.playerId = this.id;
+        packet.kills = this.kills;
+        packet.damageDone = this.damageDone;
+        packet.damageTaken = this.damageTaken;
+        packet.timeAlive = (this.game.now - this.joinTime) / 1000;
+        packet.rank = this.game.aliveCount + 1;
+        this.sendPacket(packet);
     }
 
     processInputs(packet: InputPacket): void {

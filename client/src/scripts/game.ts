@@ -21,7 +21,6 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
-import { gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { GameUi } from "./utils/gameUi";
@@ -40,6 +39,7 @@ import { explosion } from "./objects/explosion";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { Loots } from "../../../common/src/definitions/loots";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -153,7 +153,7 @@ export class Game {
             this.spectating = false;
 
             if (!UI_DEBUG_MODE) {
-                clearTimeout(gameOverScreenTimeout);
+                clearTimeout(this.uiManager.gameOverScreenTimeout);
                 $("#game-over-overlay").hide();
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
@@ -165,8 +165,8 @@ export class Game {
             // this.sendPacket(new PingPacket(this));
 
             const joinPacket = new JoinPacket();
-            joinPacket.name = this.uiManager.name;
             joinPacket.isMobile = this.inputManager.isMobile;
+            joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             for (const emote of ["top", "right", "bottom", "left"] as const) {
@@ -203,6 +203,12 @@ export class Game {
                     packet.previousData = this.uiManager;
                     packet.deserialize(stream);
                     this.processUpdate(packet);
+                    break;
+                }
+                case PacketType.GameOver: {
+                    const packet = new GameOverPacket();
+                    packet.deserialize(stream);
+                    this.uiManager.showGameOverScreen(packet);
                     break;
                 }
             }

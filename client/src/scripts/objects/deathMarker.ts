@@ -49,11 +49,15 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-        this.playerName = data.player.name;
-        this.playerNameText.text = this.playerName;
+        const player = this.game.playerNames.get(data.playerId);
 
-        if (data.player.isDev) {
-            this.nameColor = data.player.nameColor;
+        if (player) {
+            this.playerName = player.name;
+            this.playerNameText.text = this.playerName;
+
+            if (player.hasColor) {
+                this.nameColor = player.nameColor;
+            }
         }
 
         this.playerNameText.style.fill = this.nameColor;

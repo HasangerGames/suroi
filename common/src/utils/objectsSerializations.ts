@@ -80,11 +80,7 @@ export interface ObjectsNetData {
     //
     [ObjectCategory.DeathMarker]: {
         position: Vector
-        player: {
-            name: string
-            isDev: boolean
-            nameColor: string
-        }
+        playerId: number
         isNew: boolean
     }
     //
@@ -281,10 +277,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
             stream.writeBoolean(data.isNew);
-            stream.writePlayerName(data.player.name);
-            const hasColor = data.player.isDev && data.player.nameColor.length > 0;
-            stream.writeBoolean(hasColor);
-            if (hasColor) stream.writeUTF8String(data.player.nameColor, 10);
+            stream.writeObjectID(data.playerId);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
@@ -292,18 +285,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const position = stream.readPosition();
             const isNew = stream.readBoolean();
-            const name = stream.readPlayerName();
-            const isDev = stream.readBoolean();
-            const nameColor = isDev ? stream.readUTF8String(10) : "";
+            const playerId = stream.readObjectID();
 
             return {
                 position,
                 isNew,
-                player: {
-                    name,
-                    isDev,
-                    nameColor
-                }
+                playerId
             };
         },
         deserializeFull(stream) {

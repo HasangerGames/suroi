@@ -265,7 +265,7 @@ app.ws("/play", {
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
         playerCount++;
-        //userData.player.sendPacket(new GameOverPacket(userData.player, false)); // uncomment to test game over screen
+        // data.player.sendGameOverPacket(false) // uncomment to test game over screen
     },
 
     /**

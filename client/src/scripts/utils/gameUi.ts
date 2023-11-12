@@ -2,10 +2,12 @@ import { DEFAULT_HEALTH, DEFAULT_INVENTORY, DEFAULT_USERNAME, INVENTORY_MAX_WEAP
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
 import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
+import { formatDate } from "./misc";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -19,8 +21,6 @@ function safeRound(value: number): number {
  */
 export class GameUi {
     readonly game: Game;
-
-    name = DEFAULT_USERNAME;
 
     maxHealth = DEFAULT_HEALTH;
     health = DEFAULT_HEALTH;
@@ -82,6 +82,58 @@ export class GameUi {
         adrenalineBar: $("#adrenaline-bar"),
         adrenalineBarPercentage: $("#adrenaline-bar-percentage")
     };
+
+    gameOverScreenTimeout: number | undefined;
+
+    showGameOverScreen(packet: GameOverPacket): void {
+        const game = this.game;
+
+        $("#interact-message").hide();
+        const activePlayer = game.activePlayer;
+        if (activePlayer?.actionSound) game.soundManager.stop(activePlayer.actionSound);
+
+        $("#gas-msg").fadeOut(500);
+
+        // Disable joysticks div so you can click on players to spectate
+        $("#joysticks-containers").hide();
+
+        const gameOverScreen = $("#game-over-overlay");
+
+        game.gameOver = true;
+
+        if (!packet.won) {
+            $("#btn-spectate").removeClass("btn-disabled").show();
+            game.map.indicator.setFrame("player_indicator_dead").setRotation(0);
+        } else {
+            $("#btn-spectate").hide();
+        }
+
+        $("#chicken-dinner").toggle(packet.won);
+        $("#game-over-text").text(packet.won ? "Winner winner chicken dinner!" : "You died.");
+
+        const name = this.getPlayerName(packet.playerId);
+        $("#game-over-player-name").html("").append(name);
+
+        $("#game-over-kills").text(packet.kills);
+        $("#game-over-damage-done").text(packet.damageDone);
+        $("#game-over-damage-taken").text(packet.damageTaken);
+        $("#game-over-time").text(formatDate(packet.timeAlive));
+
+        if (packet.won) {
+            const volume = game.console.getBuiltInCVar("cv_music_volume");
+            if (volume) {
+                game.music.play();
+            }
+            game.music.loop();
+            game.music.volume(volume);
+            game.musicPlaying = true;
+        }
+
+        this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
+
+        // Player rank
+        $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
+    }
 
     updateUi(data: PlayerData): void {
         if (data.id) this.game.activePlayerID = data.id;

@@ -19,7 +19,6 @@ import { Maps } from "./data/maps";
 import { Config, SpawnMode } from "./config";
 import { Map } from "./map";
 import { endGame, type PlayerContainer } from "./server";
-import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
@@ -217,7 +216,7 @@ export class Game {
                     lastManStanding.movement.left = false;
                     lastManStanding.movement.right = false;
                     lastManStanding.attacking = false;
-                    lastManStanding.sendPacket(new GameOverPacket(lastManStanding, true));
+                    lastManStanding.sendGameOverPacket(true);
                 }
 
                 // End the game in 1 second
