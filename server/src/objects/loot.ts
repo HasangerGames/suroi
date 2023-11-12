@@ -167,7 +167,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
             case ItemType.Gun: {
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
-                    inventory.appendWeapon(this.definition.idString);
+                    const slot = inventory.appendWeapon(this.definition.idString);
+                    if (inventory.activeWeaponIndex > 1) inventory.setActiveWeaponIndex(slot);
                 } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
                     if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition.idString);
