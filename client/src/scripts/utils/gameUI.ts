@@ -1,13 +1,22 @@
-import { DEFAULT_HEALTH, DEFAULT_INVENTORY, DEFAULT_USERNAME, INVENTORY_MAX_WEAPONS, MAX_ADRENALINE } from "../../../../common/src/constants";
+import {
+    DEFAULT_HEALTH,
+    DEFAULT_INVENTORY,
+    DEFAULT_USERNAME,
+    INVENTORY_MAX_WEAPONS,
+    KillFeedMessageType,
+    MAX_ADRENALINE
+} from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
-import { Loots } from "../../../../common/src/definitions/loots";
+import { LootDefinition, Loots } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
+import { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
 import { formatDate } from "./misc";
+import $ from "jquery";
 
 function safeRound(value: number): number {
     // this looks more math-y and easier to read, so eslint can shove it
@@ -80,7 +89,10 @@ export class GameUI {
         healthAnim: $("#health-bar-animation"),
 
         adrenalineBar: $("#adrenaline-bar"),
-        adrenalineBarPercentage: $("#adrenaline-bar-percentage")
+        adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
+
+        killModal: $("#kill-msg"),
+        killFeed: $("#kill-feed")
     };
 
     gameOverScreenTimeout: number | undefined;
@@ -300,5 +312,123 @@ export class GameUI {
         }
 
         $(`#${this.inventory.scope.idString}-slot`).addClass("active");
+    }
+
+    private _killMsgTimeoutID: number;
+
+    private _addKillMsg(kills: number, name: string, weaponUsed: string, streak?: number): void {
+        const killText = `Kills: ${kills}`;
+        $("#ui-kills").text(kills);
+
+        $("#kill-msg-kills").text(killText);
+        $("#kill-msg-player-name").html(name);
+        $("#kill-msg-weapon-used").text(` with ${weaponUsed}${streak ? ` (streak: ${streak})` : ""}`);
+
+        killModal.fadeIn(350, () => {
+            // clear the previous fade out timeout so it won't fade away too
+            // fast if the player makes more than one kill in a short time span
+            if (timeoutID !== undefined) clearTimeout(timeoutID);
+
+            timeoutID = window.setTimeout(() => {
+                killModal.fadeOut(350);
+            }, 3000);
+        });
+    }
+
+    private _addKillFeedMessage(text: string, classes: string[]): void {
+        const killFeedItem = $('<div class="kill-feed-item">');
+
+        killFeedItem.html(text);
+        killFeedItem.addClass(classes);
+
+        setTimeout(
+            () => killFeedItem.fadeOut(1000, killFeedItem.remove.bind(killFeedItem)),
+            7000
+        );
+
+        killFeed.prepend(killFeedItem);
+        if (!UI_DEBUG_MODE) {
+            while (killFeed.children().length > 5) {
+                killFeed.children().last().remove();
+            }
+        }
+
+        setTimeout(
+            () => killFeedItem.fadeOut(1000, killFeedItem.remove.bind(killFeedItem)),
+            7000
+        );
+    }
+
+    processKillFeedPacket(packet: KillFeedPacket): void {
+        const messageType: KillFeedMessageType = packet.messageType;
+
+        let messageText: string | undefined;
+        const classes: string[] = [];
+
+        switch (messageType) {
+            case KillFeedMessageType.Kill: {
+                const twoPartyInteraction = packet.killedByID !== undefined;
+
+                /* eslint-disable @typescript-eslint/no-non-null-assertion */
+                switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
+                    case "text": {
+                        const killedByName = this.getPlayerName(packet.killedByID!).html();
+                        const killedName = this.getPlayerName(packet.id).html();
+                        const message = twoPartyInteraction
+                            ? `${killedByName} killed ${killedName}`
+                            : packet.gasKill
+                                ? `${killedName} died to the gas`
+                                : `${killedName} committed suicide`;
+                        messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">${message}${packet.weaponUsed === undefined ? "" : ` with ${packet.weaponUsed.name}`}`;
+                        break;
+                    }
+                    case "icon": {
+                        const killerName = twoPartyInteraction ? this.getPlayerName(packet.killedByID!).html() : "";
+                        const altText = packet.weaponUsed === undefined ? packet.gasKill ? "gas" : "" : ` (${packet.weaponUsed?.name})`;
+                        messageText = `${killerName}<img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">${this.getPlayerName(packet.id)}`;
+                        break;
+                    }
+                }
+
+                switch (true) {
+                    case packet.id === this.game.activePlayerID: { // was killed
+                        classes.push("kill-feed-item-victim");
+                        break;
+                    }
+                    case packet.killedByID === this.game.activePlayerID: { // killed other
+                        classes.push("kill-feed-item-killer");
+                        break;
+                    }
+                }
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderAssigned: {
+                if (packet.id === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+                const name = this.getPlayerName(packet.id).html();
+                $("#kill-leader-leader").html();
+                $("#kill-leader-kills-counter").text(packet.kills!);
+                messageText = `<i class="fa-solid fa-crown"></i> ${name} promoted to Kill Leader!`;
+                this.game.soundManager.play("kill_leader_assigned");
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderUpdated: {
+                $("#kill-leader-kills-counter").text(packet.kills!);
+                break;
+            }
+
+            case KillFeedMessageType.KillLeaderDead: {
+                $("#kill-leader-leader").text("Waiting for leader");
+                $("#kill-leader-kills-counter").text("0");
+                // noinspection HtmlUnknownTarget
+                messageText = '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!';
+                // TODO Add who killed the kill leader
+                this.game.soundManager.play("kill_leader_dead");
+                break;
+            }
+        }
+
+        if (messageText) this._addKillFeedMessage(messageText, classes);
     }
 }

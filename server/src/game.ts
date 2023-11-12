@@ -27,7 +27,7 @@ import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
-import { type ReifiableDef, type ReferenceTo, ItemType } from "../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -35,6 +35,7 @@ import { hasBadWords } from "./utils/badWordFilter";
 import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 
 export class Game {
     readonly _id: number;
@@ -139,6 +140,12 @@ export class Game {
                 packet.isMobile = player.isMobile;
                 packet.deserialize(stream);
                 player.processInputs(packet);
+                break;
+            }
+            case PacketType.Spectate: {
+                const packet = new SpectatePacket();
+                packet.deserialize(stream);
+                player.processSpectatePacket(packet);
                 break;
             }
             case PacketType.Ping: {

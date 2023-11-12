@@ -1,7 +1,14 @@
 import $ from "jquery";
 
 import { Application, Container } from "pixi.js";
-import { InputActions, ObjectCategory, PROTOCOL_VERSION, PacketType, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
+import {
+    InputActions,
+    ObjectCategory,
+    PacketType,
+    PROTOCOL_VERSION,
+    TICKS_PER_SECOND,
+    ZIndexes
+} from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { distanceSquared } from "../../../common/src/utils/math";
@@ -41,6 +48,8 @@ import { type LootDefinition, Loots } from "../../../common/src/definitions/loot
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -221,6 +230,20 @@ export class Game {
                         this.sendPacket(new PingPacket());
                         this.lastPingDate = Date.now();
                     }, 5000);
+                    break;
+                }
+                case PacketType.Report: {
+                    const packet = new ReportPacket();
+                    packet.deserialize(stream);
+                    $("#reporting-name").text(packet.playerName);
+                    $("#report-id").text(packet.reportID);
+                    $("#report-modal").fadeIn(250);
+                    break;
+                }
+                case PacketType.KillFeed: {
+                    const packet = new KillFeedPacket();
+                    packet.deserialize(stream);
+                    this.uiManager.processKillFeedPacket(packet);
                     break;
                 }
             }

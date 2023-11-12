@@ -10,7 +10,7 @@ import {
     MAX_MOUSE_DISTANCE,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions
+    PlayerActions, SpectateActions
 } from "../../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -44,6 +44,11 @@ import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { Loot } from "./loot";
 import { type Packet } from "../../../common/src/packets/packet";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
+import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
+import { random } from "../../../common/src/utils/random";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { randomBytes } from "crypto";
 
 export class Player extends GameObject<ObjectCategory.Player> implements PlayerData {
     override readonly type = ObjectCategory.Player;
@@ -624,7 +629,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // send kill feed packets
-        // for (const message of this.game.killFeedMessages) this.sendPacket(message);
+        for (const message of this.game.killFeedMessages) this.sendPacket(message);
     }
 
     spectate(spectating?: Player): void {
@@ -1047,6 +1052,68 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
                 case InputActions.LeftEmoteSlot:
                     this.emote(3);
                     break;
+            }
+        }
+    }
+
+    processSpectatePacket(packet: SpectatePacket): void {
+        const game = this.game;
+        if (game.now - this.lastSpectateActionTime < 200) return;
+        this.lastSpectateActionTime = game.now;
+        switch (packet.spectateAction) {
+            case SpectateActions.BeginSpectating: {
+                let toSpectate: Player | undefined;
+                if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
+                else if (game.players.length > 1) toSpectate = game.players[random(0, game.players.length)];
+                if (toSpectate !== undefined) this.spectate(toSpectate);
+                break;
+            }
+            case SpectateActions.SpectatePrevious:
+                if (game.players.length < 2) {
+                    game.removePlayer(this);
+                    break;
+                }
+                if (this.spectating !== undefined) {
+                    let index: number = game.players.indexOf(this.spectating) - 1;
+                    if (index < 0) index = game.players.length - 1;
+                    this.spectate(game.players[index]);
+                }
+                break;
+            case SpectateActions.SpectateNext:
+                if (game.players.length < 2) {
+                    game.removePlayer(this);
+                    break;
+                }
+                if (this.spectating !== undefined) {
+                    let index: number = game.players.indexOf(this.spectating) + 1;
+                    if (index >= game.players.length) index = 0;
+                    this.spectate(game.players[index]);
+                }
+                break;
+            case SpectateActions.SpectateSpecific: {
+                const playerID = packet.playerID;
+                const playerToSpectate = game.players.find(player => player.id === playerID);
+                if (playerToSpectate) this.spectate(playerToSpectate);
+                break;
+            }
+            case SpectateActions.SpectateKillLeader: {
+                const playerToSpectate = game.players.find(player => player.id === player.game.killLeader?.id);
+                if (playerToSpectate) this.spectate(playerToSpectate);
+                break;
+            }
+            case SpectateActions.Report: {
+                if (!existsSync("reports")) mkdirSync("reports");
+                const reportID = randomBytes(4).toString("hex");
+                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
+                    ip: this.spectating?.ip,
+                    name: this.spectating?.name,
+                    time: this.game.now
+                }));
+                const packet = new ReportPacket();
+                packet.playerName = this.spectating?.name ?? "";
+                packet.reportID = reportID;
+                this.sendPacket(packet);
+                break;
             }
         }
     }
