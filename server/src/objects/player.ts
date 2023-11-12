@@ -9,9 +9,9 @@ import {
     PlayerActions
 } from "../../../common/src/constants";
 import { Emotes, type EmoteDefinition } from "../../../common/src/definitions/emotes";
-import { type GunDefinition } from "../../../common/src/definitions/guns";
+import { type GunDefinition, Guns } from "../../../common/src/definitions/guns";
 import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
-import { type MeleeDefinition } from "../../../common/src/definitions/melees";
+import { type MeleeDefinition, Melees } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
@@ -38,6 +38,7 @@ import { DeathMarker } from "./deathMarker";
 import { Emote } from "./emote";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
+import { pickRandomInArray } from "../../../common/src/utils/random";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -690,6 +691,26 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (source instanceof Player) {
             this.killedBy = source;
             if (source !== this) source.kills++;
+
+            // Weapon swap event
+            const inventory = source.inventory;
+            const index = source.activeItemIndex;
+            inventory.removeWeapon(index);
+            inventory.setActiveWeaponIndex(index);
+            switch (index) {
+                case 0:
+                case 1: {
+                    const gun = pickRandomInArray(Guns.filter(g => !g.killstreak));
+                    inventory.addOrReplaceWeapon(index, gun);
+                    const { ammoType } = gun;
+                    if (gun.ammoSpawnAmount) inventory.items[ammoType] = Math.min(inventory.backpack.maxCapacity[ammoType], inventory.items[ammoType] + gun.ammoSpawnAmount);
+                    break;
+                }
+                case 2: {
+                    inventory.addOrReplaceWeapon(index, pickRandomInArray(Melees.filter(m => !m.killstreak)));
+                    break;
+                }
+            }
         }
 
         if (source instanceof Player || source === "gas") {
