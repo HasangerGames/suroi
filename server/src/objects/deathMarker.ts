@@ -16,7 +16,11 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     }
 
     override get data(): Required<ObjectsNetData[ObjectCategory.DeathMarker]> {
-        return this;
+        return {
+            position: this.position,
+            isNew: this.isNew,
+            playerId: this.player.id
+        };
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function

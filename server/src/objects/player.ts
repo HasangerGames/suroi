@@ -20,7 +20,6 @@ import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
 import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
 import { UpdatePacket, type PlayerData } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
@@ -30,11 +29,9 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { GameOverPacket } from "../packets/sending/gameOverPacket";
 import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
-import { type SendingPacket } from "../types/sendingPacket";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -43,6 +40,8 @@ import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { type InputPacket } from "../../../common/src/packets/inputPacket";
 import { Loot } from "./loot";
+import { type Packet } from "../../../common/src/packets/packet";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 
 export class Player extends GameObject<ObjectCategory.Player> implements PlayerData {
     override readonly type = ObjectCategory.Player;
@@ -268,6 +267,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     readonly role?: string;
     readonly isDev: boolean;
+    readonly hasColor: boolean;
     readonly nameColor: string;
 
     /**
@@ -307,6 +307,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor;
+        this.hasColor = (userData.nameColor.trim().length > 2) && userData.nameColor !== "none";
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -486,10 +487,14 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     private _firstPacket = true;
 
+    /**
+     * Calculate visible objects and send packets
+     */
     secondUpdate(): void {
-        const deletedObjects = new Set<number>();
         const fullDirtyObjects = new Set<GameObject>();
         const partialDirtyObjects = new Set<GameObject>();
+
+        const packet = new UpdatePacket();
 
         const player = this.spectating ?? this;
 
@@ -510,7 +515,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    deletedObjects.add(object.id);
+                    packet.deletedObjects.push(object.id);
                 }
             }
 
@@ -534,14 +539,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             }
         }
 
-        for (const object of this.game.deletedObjects) {
-            if (this.visibleObjects.has(object) && object !== this) {
-                deletedObjects.add(object.id);
-            }
-        }
-
-        const packet = new UpdatePacket();
-
+        // player data
         packet.playerData = {
             health: player.health,
             adrenaline: player.adrenaline,
@@ -560,12 +558,11 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             }
         }
 
-        packet.fullDirtyObjects = [...fullDirtyObjects];
-        packet.partialDirtyObjects = [...partialDirtyObjects];
-        packet.deletedObjects = [...deletedObjects];
+        // objects
+        packet.fullDirtyObjects.push(...fullDirtyObjects);
+        packet.partialDirtyObjects.push(...partialDirtyObjects);
 
         // Cull bullets
-        packet.bullets = [];
         for (const bullet of this.game.newBullets) {
             if (lineIntersectsRect2(bullet.initialPosition,
                 bullet.finalPosition,
@@ -576,7 +573,6 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // Cull explosions
-        packet.explosions = [];
         for (const explosion of this.game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 distanceSquared(explosion.position, this.position) < 16384) {
@@ -585,7 +581,6 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // Emotes
-        packet.emotes = [];
         for (const emote of this.game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
                 packet.emotes.push(emote);
@@ -603,22 +598,30 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             value: this.game.gas.percentage
         };
 
+        // new and deleted players
+        if (this._firstPacket) packet.newPlayers = this.game.players;
+        else packet.newPlayers = this.game.newPlayers;
+
+        packet.deletedPlayers = this.game.deletedPlayers;
+
+        // alive count
         packet.aliveCount = this.game.aliveCount;
         packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
 
+        // serialize and send update packet
         packet.serialize();
 
         const buffer = packet.getBuffer();
         this.sendData(buffer);
 
+        // reset stuff
         this._firstPacket = false;
-
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
 
         // send kill feed packets
-        for (const message of this.game.killFeedMessages) this.sendPacket(message);
+        // for (const message of this.game.killFeedMessages) this.sendPacket(message);
     }
 
     spectate(spectating?: Player): void {
@@ -643,11 +646,9 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
-    sendPacket(packet: SendingPacket): void {
-        const stream = SuroiBitStream.alloc(packet.allocBytes);
-        packet.serialize(stream);
-        const buffer = stream.buffer.slice(0, Math.ceil(stream.index / 8));
-        this.sendData(buffer);
+    sendPacket(packet: Packet): void {
+        packet.serialize();
+        this.sendData(packet.getBuffer());
     }
 
     sendData(buffer: ArrayBuffer): void {
@@ -828,7 +829,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        removeFrom(this.game.spectatablePlayers, this);
+        removeFrom(this.game.players, this);
         this.game.removeObject(this);
 
         //
@@ -892,13 +893,25 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
         // Send game over to dead player
         if (!this.disconnected) {
-            this.sendPacket(new GameOverPacket(this, false));
+            this.sendGameOverPacket();
         }
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
             this.game.killLeaderDead();
         }
+    }
+
+    sendGameOverPacket(won = false): void {
+        const packet = new GameOverPacket();
+        packet.won = won;
+        packet.playerId = this.id;
+        packet.kills = this.kills;
+        packet.damageDone = this.damageDone;
+        packet.damageTaken = this.damageTaken;
+        packet.timeAlive = (this.game.now - this.joinTime) / 1000;
+        packet.rank = this.game.aliveCount + 1;
+        this.sendPacket(packet);
     }
 
     processInputs(packet: InputPacket): void {

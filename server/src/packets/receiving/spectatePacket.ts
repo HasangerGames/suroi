@@ -19,40 +19,40 @@ export class SpectatePacket extends ReceivingPacket {
             case SpectateActions.BeginSpectating: {
                 let toSpectate: Player | undefined;
                 if (player.killedBy !== undefined && !player.killedBy.dead) toSpectate = player.killedBy;
-                else if (game.spectatablePlayers.length > 1) toSpectate = game.spectatablePlayers[random(0, game.spectatablePlayers.length)];
+                else if (game.players.length > 1) toSpectate = game.players[random(0, game.players.length)];
                 if (toSpectate !== undefined) player.spectate(toSpectate);
                 break;
             }
             case SpectateActions.SpectatePrevious:
-                if (game.spectatablePlayers.length < 2) {
+                if (game.players.length < 2) {
                     game.removePlayer(player);
                     break;
                 }
                 if (player.spectating !== undefined) {
-                    let index: number = game.spectatablePlayers.indexOf(player.spectating) - 1;
-                    if (index < 0) index = game.spectatablePlayers.length - 1;
-                    player.spectate(game.spectatablePlayers[index]);
+                    let index: number = game.players.indexOf(player.spectating) - 1;
+                    if (index < 0) index = game.players.length - 1;
+                    player.spectate(game.players[index]);
                 }
                 break;
             case SpectateActions.SpectateNext:
-                if (game.spectatablePlayers.length < 2) {
+                if (game.players.length < 2) {
                     game.removePlayer(player);
                     break;
                 }
                 if (player.spectating !== undefined) {
-                    let index: number = game.spectatablePlayers.indexOf(player.spectating) + 1;
-                    if (index >= game.spectatablePlayers.length) index = 0;
-                    player.spectate(game.spectatablePlayers[index]);
+                    let index: number = game.players.indexOf(player.spectating) + 1;
+                    if (index >= game.players.length) index = 0;
+                    player.spectate(game.players[index]);
                 }
                 break;
             case SpectateActions.SpectateSpecific: {
                 const playerID = stream.readObjectID();
-                const playerToSpectate = game.spectatablePlayers.find(player => player.id === playerID);
+                const playerToSpectate = game.players.find(player => player.id === playerID);
                 if (playerToSpectate) player.spectate(playerToSpectate);
                 break;
             }
             case SpectateActions.SpectateKillLeader: {
-                const playerToSpectate = game.spectatablePlayers.find(player => player.id === player.game.killLeader?.id);
+                const playerToSpectate = game.players.find(player => player.id === player.game.killLeader?.id);
                 if (playerToSpectate) player.spectate(playerToSpectate);
                 break;
             }

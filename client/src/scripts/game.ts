@@ -21,7 +21,6 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
-import { gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { type GameObject } from "./types/gameObject";
 
 import { GameUI } from "./utils/gameUI";
@@ -40,6 +39,7 @@ import { explosion } from "./objects/explosion";
 import { Emotes } from "../../../common/src/definitions/emotes";
 import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
+import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -48,6 +48,8 @@ export class Game {
     readonly players = new ObjectPool<Player>();
     readonly loots = new Set<Loot>();
     readonly bullets = new Set<Bullet>();
+
+    readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: string }>();
 
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
@@ -151,7 +153,7 @@ export class Game {
             this.spectating = false;
 
             if (!UI_DEBUG_MODE) {
-                clearTimeout(gameOverScreenTimeout);
+                clearTimeout(this.uiManager.gameOverScreenTimeout);
                 $("#game-over-overlay").hide();
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
@@ -163,8 +165,8 @@ export class Game {
             // this.sendPacket(new PingPacket(this));
 
             const joinPacket = new JoinPacket();
-            joinPacket.name = this.uiManager.name;
             joinPacket.isMobile = this.inputManager.isMobile;
+            joinPacket.name = this.console.getBuiltInCVar("cv_player_name");
             joinPacket.skin = Loots.fromString(this.console.getBuiltInCVar("cv_loadout_skin"));
 
             for (const emote of ["top", "right", "bottom", "left"] as const) {
@@ -201,6 +203,12 @@ export class Game {
                     packet.previousData = this.uiManager;
                     packet.deserialize(stream);
                     this.processUpdate(packet);
+                    break;
+                }
+                case PacketType.GameOver: {
+                    const packet = new GameOverPacket();
+                    packet.deserialize(stream);
+                    this.uiManager.showGameOverScreen(packet);
                     break;
                 }
             }
@@ -343,7 +351,19 @@ export class Game {
         const playerData = updateData.playerData;
         if (playerData) this.uiManager.updateUI(playerData);
 
-        for (const { id, type, data } of updateData.fullDirtyObjects ?? []) {
+        for (const newPlayer of updateData.newPlayers) {
+            this.playerNames.set(newPlayer.id, {
+                name: newPlayer.name,
+                hasColor: newPlayer.hasColor,
+                nameColor: newPlayer.nameColor
+            });
+        }
+
+        for (const deletedPlayerId of updateData.deletedPlayers) {
+            this.playerNames.delete(deletedPlayerId);
+        }
+
+        for (const { id, type, data } of updateData.fullDirtyObjects) {
             const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
@@ -373,12 +393,12 @@ export class Game {
             }
         }
 
-        for (const { id, data } of updateData.partialDirtyObjects ?? []) {
+        for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
             if (object) object.updateFromData(data, false);
         }
 
-        for (const id of updateData.deletedObjects ?? []) {
+        for (const id of updateData.deletedObjects) {
             const object = this.objects.get(id);
             if (object === undefined) {
                 console.warn(`Trying to delete unknown object with ID ${id}`);
@@ -395,15 +415,15 @@ export class Game {
             }
         }
 
-        for (const bullet of updateData.deserializedBullets ?? []) {
+        for (const bullet of updateData.deserializedBullets) {
             this.bullets.add(new Bullet(this, bullet));
         }
 
-        for (const explosionData of updateData.explosions ?? []) {
+        for (const explosionData of updateData.explosions) {
             explosion(this, explosionData.definition, explosionData.position);
         }
 
-        for (const emote of updateData.emotes ?? []) {
+        for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerId);
             if (player instanceof Player) {
                 player.emote(emote.definition);

@@ -8,7 +8,6 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { PickupPacket } from "../packets/sending/pickupPacket";
 import { GameObject } from "../types/gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -238,7 +237,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         this.game.removeLoot(this);
 
         // Send pickup packet
-        player.sendPacket(new PickupPacket(player, this.definition.idString));
+        // player.sendPacket(new PickupPacket(player, this.definition.idString));
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) createNewItem();
