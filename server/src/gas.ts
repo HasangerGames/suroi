@@ -6,6 +6,7 @@ import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
 import { Logger } from "./utils/misc";
+import { newGame } from "./server";
 
 export class Gas {
     stage = 0;
@@ -78,9 +79,9 @@ export class Gas {
         this.percentage = 1;
         this.countdownStart = this.game.now;
 
-        if (currentStage.preventJoin) {
-            Logger.log(`Game #${this.game.id} | Preventing new players from joining`);
-            this.game.allowJoin = false;
+        if (currentStage.createNewGame) {
+            Logger.log(`Game #${this.game.id} | Creating new game`);
+            newGame();
         }
 
         if (currentStage.state === GasState.Waiting) {

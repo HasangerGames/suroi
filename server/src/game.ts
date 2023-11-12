@@ -85,10 +85,12 @@ export class Game {
      */
     readonly killFeedMessages = new Set<KillFeedPacket>();
 
+    created = false;
     private _started = false;
-    allowJoin = false;
     over = false;
     stopped = false;
+
+    createdTime: number;
 
     startTimeoutID?: NodeJS.Timeout;
 
@@ -113,7 +115,8 @@ export class Game {
 
         this.gas = new Gas(this);
 
-        this.allowJoin = true;
+        this.created = true;
+        this.createdTime = Date.now();
 
         // Start the tick loop
         this.tick(TICKS_PER_SECOND);
@@ -226,7 +229,6 @@ export class Game {
                 }
 
                 // End the game in 1 second
-                this.allowJoin = false;
                 this.over = true;
                 setTimeout(() => endGame(this._id), 1000);
             }

@@ -52,10 +52,18 @@ function createNewGame(id: number): void {
     }
 }
 
+export function newGame(): void {
+    for (let i = 0; i < Config.maxGames; i++) {
+        if (games[i] === undefined || games[i]?.stopped) {
+            createNewGame(i);
+            return;
+        }
+    }
+}
+
 export function endGame(id: number): void {
     const game = games[id];
     if (game === undefined) return;
-    game.allowJoin = false;
     game.stopped = true;
     clearTimeout(game.startTimeoutID);
     clearTimeout(game.gas.timeoutID);
@@ -64,11 +72,12 @@ export function endGame(id: number): void {
     }
     games[id] = undefined;
     Logger.log(`Game #${id} | Ended`);
+    createNewGame(id);
 }
 
-function allowJoin(gameID: number): boolean {
+function canJoin(gameID: number): boolean {
     const game = games[gameID];
-    return game !== undefined && game.allowJoin && game.aliveCount < Config.maxPlayersPerGame;
+    return game !== undefined && game.created && !game.over && game.aliveCount < Config.maxPlayersPerGame;
 }
 
 const decoder = new TextDecoder();
@@ -112,16 +121,18 @@ app.get("/api/getGame", async(res, req) => {
     } else if (rateLimitedIPs.has(ip)) {
         response = { success: false, message: "rateLimited" };
     } else {
-        let foundGame = false;
+        let newestGameID = -1;
+        let newestGameCreatedTime = 0;
         for (let gameID = 0; gameID < Config.maxGames; gameID++) {
-            if (games[gameID] === undefined) createNewGame(gameID);
-            if (allowJoin(gameID)) {
-                response = { success: true, gameID };
-                foundGame = true;
-                break;
+            const game = games[gameID];
+            if (game === undefined) continue;
+            if (canJoin(gameID) && game.createdTime > newestGameCreatedTime) {
+                newestGameID = gameID;
+                newestGameCreatedTime = game.createdTime;
             }
         }
-        if (!foundGame) response = { success: false };
+        if (newestGameID === -1) response = { success: false };
+        else response = { success: true, gameID: newestGameID };
     }
 
     if (!aborted) {
@@ -204,7 +215,7 @@ app.ws("/play", {
         //
         let gameID = Number(searchParams.get("gameID"));
         if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
-        if (!allowJoin(gameID)) {
+        if (!canJoin(gameID)) {
             forbidden(res);
             return;
         }
