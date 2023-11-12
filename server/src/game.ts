@@ -21,7 +21,7 @@ import { Map } from "./map";
 import { endGame, type PlayerContainer } from "./server";
 import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { type WebSocket } from "uWebSockets.js";
-import { random, randomPointInsideCircle } from "../../common/src/utils/random";
+import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
@@ -48,13 +48,24 @@ export class Game {
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
-    readonly deletedObjects = new Set<GameObject>();
 
     updateObjects = false;
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
-    readonly spectatablePlayers: Player[] = [];
+    /**
+     * All players, including disconnected and dead ones
+     * Used to send names on updatePacket and index spectating
+     */
+    readonly players: Player[] = [];
+    /**
+     * New players created this tick
+     */
+    readonly newPlayers: Player[] = [];
+    /**
+    * Players deleted this tick
+    */
+    readonly deletedPlayers: number[] = [];
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
@@ -185,10 +196,11 @@ export class Game {
             // Reset everything
             this.fullDirtyObjects.clear();
             this.partialDirtyObjects.clear();
-            this.deletedObjects.clear();
             this.newBullets.clear();
             this.explosions.clear();
             this.emotes.clear();
+            this.newPlayers.length = 0;
+            this.deletedPlayers.length = 0;
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
@@ -312,8 +324,9 @@ export class Game {
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);
-        this.spectatablePlayers.push(player);
+        this.players.push(player);
         this.connectedPlayers.add(player);
+        this.newPlayers.push(player);
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
@@ -344,30 +357,23 @@ export class Game {
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
-        // TODO Make it possible to spectate disconnected players
-        // (currently not possible because update packets aren't sent to disconnected players)
-        removeFrom(this.spectatablePlayers, player);
+
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
+            this.deletedPlayers.push(player.id);
+            removeFrom(this.players, player);
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
             player.attacking = false;
             this.partialDirtyObjects.add(player);
         }
-        if (this.aliveCount > 0 && player.spectators.size > 0) {
-            if (this.spectatablePlayers.length > 1) {
-                const randomPlayer = this.spectatablePlayers[random(0, this.spectatablePlayers.length - 1)];
-                for (const spectator of player.spectators) {
-                    spectator.spectate(randomPlayer);
-                }
-            }
-            player.spectators = new Set<Player>();
-        }
+
         if (player.spectating !== undefined) {
             player.spectating.spectators.delete(player);
         }
+
         if (this.aliveCount < 2) {
             clearTimeout(this.startTimeoutID);
             this.startTimeoutID = undefined;

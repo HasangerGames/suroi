@@ -40,9 +40,33 @@ export class GameUi {
         this.game = game;
     }
 
+    getPlayerName(id: number): JQuery<HTMLSpanElement> {
+        const element = $("<span>");
+        const player = this.game.playerNames.get(id);
+
+        let name: string;
+
+        if (player === undefined) {
+            console.warn(`Unknown player name with id ${id}`);
+            name = "[Unknown Player]";
+        } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            name = DEFAULT_USERNAME;
+        } else {
+            name = player.name;
+        }
+        element.text(name);
+
+        if (player?.hasColor) {
+            element.css("color", player.nameColor);
+        }
+
+        return element;
+    }
+
     private readonly _ui = {
         activeWeapon: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
+        weaponInventoryAmmo: $("#weapon-inventory-ammo"),
         killStreakIndicator: $("#killstreak-indicator-container"),
         killStreakCounter: $("#killstreak-indicator-counter"),
 
@@ -163,7 +187,7 @@ export class GameUi {
                     }
                 }
 
-                $("#weapon-inventory-ammo").text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
+                this._ui.weaponInventoryAmmo.text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
             }
         }
 

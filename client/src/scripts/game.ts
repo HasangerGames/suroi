@@ -49,6 +49,8 @@ export class Game {
     readonly loots = new Set<Loot>();
     readonly bullets = new Set<Bullet>();
 
+    readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: string }>();
+
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
         return this.objects.get(this.activePlayerID) as Player;
@@ -346,7 +348,19 @@ export class Game {
             this.uiManager.updateUi(playerData);
         }
 
-        for (const { id, type, data } of updateData.fullDirtyObjects ?? []) {
+        for (const newPlayer of updateData.newPlayers) {
+            this.playerNames.set(newPlayer.id, {
+                name: newPlayer.name,
+                hasColor: newPlayer.hasColor,
+                nameColor: newPlayer.nameColor
+            });
+        }
+
+        for (const deletedPlayerId of updateData.deletedPlayers) {
+            this.playerNames.delete(deletedPlayerId);
+        }
+
+        for (const { id, type, data } of updateData.fullDirtyObjects) {
             const object: GameObject | undefined = this.objects.get(id);
 
             if (object === undefined || object.destroyed) {
@@ -376,14 +390,14 @@ export class Game {
             }
         }
 
-        for (const { id, data } of updateData.partialDirtyObjects ?? []) {
+        for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
             if (object) {
                 object.updateFromData(data, false);
             }
         }
 
-        for (const id of updateData.deletedObjects ?? []) {
+        for (const id of updateData.deletedObjects) {
             const object = this.objects.get(id);
             if (object === undefined) {
                 console.warn(`Trying to delete unknown object with ID ${id}`);
@@ -400,15 +414,15 @@ export class Game {
             }
         }
 
-        for (const bullet of updateData.deserializedBullets ?? []) {
+        for (const bullet of updateData.deserializedBullets) {
             this.bullets.add(new Bullet(this, bullet));
         }
 
-        for (const explosionData of updateData.explosions ?? []) {
+        for (const explosionData of updateData.explosions) {
             explosion(this, explosionData.definition, explosionData.position);
         }
 
-        for (const emote of updateData.emotes ?? []) {
+        for (const emote of updateData.emotes) {
             const player = this.objects.get(emote.playerId);
             if (player instanceof Player) {
                 player.emote(emote.definition);

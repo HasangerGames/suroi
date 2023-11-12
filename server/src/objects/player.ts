@@ -268,6 +268,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     readonly role?: string;
     readonly isDev: boolean;
+    readonly hasColor: boolean;
     readonly nameColor: string;
 
     /**
@@ -307,6 +308,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor;
+        this.hasColor = (userData.nameColor.trim().length > 2) && userData.nameColor !== "none";
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -486,10 +488,14 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
 
     private _firstPacket = true;
 
+    /**
+     * Calculate visible objects and send packets
+     */
     secondUpdate(): void {
-        const deletedObjects = new Set<number>();
         const fullDirtyObjects = new Set<GameObject>();
         const partialDirtyObjects = new Set<GameObject>();
+
+        const packet = new UpdatePacket();
 
         const player = this.spectating ?? this;
 
@@ -510,7 +516,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    deletedObjects.add(object.id);
+                    packet.deletedObjects.push(object.id);
                 }
             }
 
@@ -534,14 +540,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             }
         }
 
-        for (const object of this.game.deletedObjects) {
-            if (this.visibleObjects.has(object) && object !== this) {
-                deletedObjects.add(object.id);
-            }
-        }
-
-        const packet = new UpdatePacket();
-
+        // player data
         packet.playerData = {
             health: player.health,
             adrenaline: player.adrenaline,
@@ -560,12 +559,11 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             }
         }
 
-        packet.fullDirtyObjects = [...fullDirtyObjects];
-        packet.partialDirtyObjects = [...partialDirtyObjects];
-        packet.deletedObjects = [...deletedObjects];
+        // objects
+        packet.fullDirtyObjects.push(...fullDirtyObjects);
+        packet.partialDirtyObjects.push(...partialDirtyObjects);
 
         // Cull bullets
-        packet.bullets = [];
         for (const bullet of this.game.newBullets) {
             if (lineIntersectsRect2(bullet.initialPosition,
                 bullet.finalPosition,
@@ -576,7 +574,6 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // Cull explosions
-        packet.explosions = [];
         for (const explosion of this.game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 distanceSquared(explosion.position, this.position) < 16384) {
@@ -585,7 +582,6 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         // Emotes
-        packet.emotes = [];
         for (const emote of this.game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
                 packet.emotes.push(emote);
@@ -603,16 +599,24 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             value: this.game.gas.percentage
         };
 
+        // new and deleted players
+        if (this._firstPacket) packet.newPlayers = this.game.players;
+        else packet.newPlayers = this.game.newPlayers;
+
+        packet.deletedPlayers = this.game.deletedPlayers;
+
+        // alive count
         packet.aliveCount = this.game.aliveCount;
         packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
 
+        // serialize and send update packet
         packet.serialize();
 
         const buffer = packet.getBuffer();
         this.sendData(buffer);
 
+        // reset stuff
         this._firstPacket = false;
-
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
@@ -828,7 +832,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        removeFrom(this.game.spectatablePlayers, this);
+        removeFrom(this.game.players, this);
         this.game.removeObject(this);
 
         //

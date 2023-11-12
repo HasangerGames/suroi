@@ -13,19 +13,6 @@ import { Packet } from "./packet";
 // SHUT UP SHUT UP SHUT UP SHUT UP
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-const UpdateFlags = {
-    PlayerData: 1 << 0,
-    DeletedObjects: 1 << 1,
-    FullObjects: 1 << 2,
-    PartialObjects: 1 << 3,
-    Bullets: 1 << 4,
-    Explosions: 1 << 5,
-    Emotes: 1 << 6,
-    Gas: 1 << 7,
-    GasPercentage: 1 << 8,
-    AliveCount: 1 << 9
-};
-
 interface ObjectFullData {
     readonly id: number
     readonly type: ObjectCategory
@@ -225,6 +212,21 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     return data;
 }
 
+const UpdateFlags = {
+    PlayerData: 1 << 0,
+    DeletedObjects: 1 << 1,
+    FullObjects: 1 << 2,
+    PartialObjects: 1 << 3,
+    Bullets: 1 << 4,
+    Explosions: 1 << 5,
+    Emotes: 1 << 6,
+    Gas: 1 << 7,
+    GasPercentage: 1 << 8,
+    NewPlayers: 1 << 9,
+    DeletedPlayers: 1 << 10,
+    AliveCount: 1 << 11
+};
+
 export class UpdatePacket extends Packet {
     override readonly allocBytes = 2 ** 13;
     override readonly type = PacketType.Update;
@@ -235,20 +237,20 @@ export class UpdatePacket extends Packet {
     // used to store previous sent max and min health / adrenaline
     previousData!: PreviousData;
 
-    deletedObjects?: number[];
+    deletedObjects: number[] = [];
 
-    fullDirtyObjects?: ObjectFullData[];
+    fullDirtyObjects: ObjectFullData[] = [];
 
-    partialDirtyObjects?: ObjectPartialData[];
+    partialDirtyObjects: ObjectPartialData[] = [];
 
     // server side only
-    bullets?: BaseBullet[];
+    bullets: BaseBullet[] = [];
 
-    deserializedBullets?: BulletOptions[];
+    deserializedBullets: BulletOptions[] = [];
 
-    explosions?: Array<{ definition: ExplosionDefinition, position: Vector }>;
+    explosions: Array<{ definition: ExplosionDefinition, position: Vector }> = [];
 
-    emotes?: Array<{ definition: EmoteDefinition, playerId: number }>;
+    emotes: Array<{ definition: EmoteDefinition, playerId: number }> = [];
 
     gas?: {
         state: GasState
@@ -264,6 +266,15 @@ export class UpdatePacket extends Packet {
         dirty: boolean
         value: number
     };
+
+    newPlayers: Array<{
+        id: number
+        name: string
+        hasColor: boolean
+        nameColor: string
+    }> = [];
+
+    deletedPlayers: number[] = [];
 
     aliveCountDirty?: boolean;
     aliveCount?: number;
@@ -289,6 +300,8 @@ export class UpdatePacket extends Packet {
         if (this.emotes?.length) flags += UpdateFlags.Emotes;
         if (this.gas?.dirty) flags += UpdateFlags.Gas;
         if (this.gasPercentage?.dirty) flags += UpdateFlags.GasPercentage;
+        if (this.newPlayers?.length) flags += UpdateFlags.NewPlayers;
+        if (this.deletedPlayers?.length) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
 
         stream.writeUint16(flags);
@@ -298,13 +311,13 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.DeletedObjects) !== 0) {
-            stream.writeUint16(this.deletedObjects!.length);
-            for (const id of this.deletedObjects!) stream.writeObjectID(id);
+            stream.writeUint16(this.deletedObjects.length);
+            for (const id of this.deletedObjects) stream.writeObjectID(id);
         }
 
         if ((flags & UpdateFlags.FullObjects) !== 0) {
-            stream.writeUint16(this.fullDirtyObjects!.length);
-            for (const object of this.fullDirtyObjects!) {
+            stream.writeUint16(this.fullDirtyObjects.length);
+            for (const object of this.fullDirtyObjects) {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
                 (ObjectSerializations[object.type]
@@ -313,8 +326,8 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.PartialObjects) !== 0) {
-            stream.writeUint16(this.partialDirtyObjects!.length);
-            for (const object of this.partialDirtyObjects!) {
+            stream.writeUint16(this.partialDirtyObjects.length);
+            for (const object of this.partialDirtyObjects) {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
                 (ObjectSerializations[object.type]
@@ -323,23 +336,23 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.Bullets) !== 0) {
-            stream.writeUint8(this.bullets!.length);
-            for (const bullet of this.bullets!) {
+            stream.writeUint8(this.bullets.length);
+            for (const bullet of this.bullets) {
                 bullet.serialize(stream);
             }
         }
 
         if ((flags & UpdateFlags.Explosions) !== 0) {
-            stream.writeUint8(this.explosions!.length);
-            for (const explosion of this.explosions!) {
+            stream.writeUint8(this.explosions.length);
+            for (const explosion of this.explosions) {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
             }
         }
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
-            stream.writeBits(this.emotes!.length, 7);
-            for (const emote of this.emotes!) {
+            stream.writeBits(this.emotes.length, 7);
+            for (const emote of this.emotes) {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerId);
             }
@@ -357,6 +370,27 @@ export class UpdatePacket extends Packet {
 
         if ((flags & UpdateFlags.GasPercentage) !== 0) {
             stream.writeFloat(this.gasPercentage!.value, 0, 1, 16);
+        }
+
+        if ((flags & UpdateFlags.NewPlayers) !== 0) {
+            stream.writeUint8(this.newPlayers.length);
+
+            for (const player of this.newPlayers) {
+                stream.writeObjectID(player.id);
+                stream.writePlayerName(player.name);
+                stream.writeBoolean(player.hasColor);
+                if (player.hasColor) {
+                    stream.writeUTF8String(player.nameColor, 10);
+                }
+            }
+        }
+
+        if ((flags & UpdateFlags.DeletedPlayers) !== 0) {
+            stream.writeUint8(this.deletedPlayers.length);
+
+            for (const player of this.deletedPlayers) {
+                stream.writeObjectID(player);
+            }
         }
 
         if ((flags & UpdateFlags.AliveCount) !== 0) {
@@ -458,6 +492,31 @@ export class UpdatePacket extends Packet {
                 dirty: true,
                 value: stream.readFloat(0, 1, 16)
             };
+        }
+
+        if ((flags & UpdateFlags.NewPlayers) !== 0) {
+            const count = stream.readUint8();
+
+            for (let i = 0; i < count; i++) {
+                const id = stream.readObjectID();
+                const name = stream.readPlayerName();
+                const hasColor = stream.readBoolean();
+                const nameColor = hasColor ? stream.readUTF8String(10) : "";
+                this.newPlayers.push({
+                    id,
+                    name,
+                    hasColor,
+                    nameColor
+                });
+            }
+        }
+
+        if ((flags & UpdateFlags.DeletedPlayers) !== 0) {
+            const size = stream.readUint8();
+
+            for (let i = 0; i < size; i++) {
+                this.deletedPlayers.push(stream.readObjectID());
+            }
         }
 
         if ((flags & UpdateFlags.AliveCount) !== 0) {
