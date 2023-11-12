@@ -7,7 +7,6 @@ import { Explosion } from "./objects/explosion";
 import { Loot } from "./objects/loot";
 import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import {
     DEFAULT_USERNAME,
     KILL_LEADER_MIN_KILLS,
@@ -36,6 +35,7 @@ import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
+import { KillFeedPacket } from "../../common/src/packets/killFeedPacket";
 
 export class Game {
     readonly _id: number;
@@ -145,13 +145,14 @@ export class Game {
             case PacketType.Spectate: {
                 const packet = new SpectatePacket();
                 packet.deserialize(stream);
-                player.processSpectatePacket(packet);
+                player.spectate(packet);
                 break;
             }
             case PacketType.Ping: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
                 player.sendPacket(new PingPacket());
+                break;
             }
         }
     }
@@ -287,7 +288,7 @@ export class Game {
     }
 
     private _sendKillFeedMessage(messageType: KillFeedMessageType): void {
-        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, messageType));
+        // if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, messageType));
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {

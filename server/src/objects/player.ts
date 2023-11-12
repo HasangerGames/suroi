@@ -10,7 +10,8 @@ import {
     MAX_MOUSE_DISTANCE,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions, SpectateActions
+    PlayerActions,
+    SpectateActions
 } from "../../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -31,7 +32,6 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
 import { removeFrom } from "../utils/misc";
@@ -45,12 +45,12 @@ import { Loot } from "./loot";
 import { type Packet } from "../../../common/src/packets/packet";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { type SpectatePacket } from "../../../common/src/packets/spectatePacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { random } from "../../../common/src/utils/random";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { randomBytes } from "crypto";
+import { pickRandomInArray } from "../../../common/src/utils/random";
+import { ReportPacket } from "../../../common/src/packets/reportPacket";
 
-export class Player extends GameObject<ObjectCategory.Player> implements PlayerData {
+export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
     override readonly damageable = true;
 
@@ -556,7 +556,8 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             maxAdrenaline: player.maxAdrenaline,
             zoom: player.zoom,
             id: player.id,
-            dirty: player.dirty,
+            spectating: this.spectating !== undefined,
+            dirty: JSON.parse(JSON.stringify(player.dirty)),
             inventory: player.inventory
         };
 
@@ -564,6 +565,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
+            this.startedSpectating = false;
         }
 
         // objects
@@ -632,8 +634,58 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         for (const message of this.game.killFeedMessages) this.sendPacket(message);
     }
 
-    spectate(spectating?: Player): void {
-        if (spectating === undefined) {
+    spectate(packet: SpectatePacket): void {
+        if (!this.dead) return;
+        const game = this.game;
+        if (game.now - this.lastSpectateActionTime < 200) return;
+        this.lastSpectateActionTime = game.now;
+
+        let toSpectate: Player | undefined;
+
+        switch (packet.spectateAction) {
+            case SpectateActions.BeginSpectating: {
+                if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
+                else if (game.players.length > 1) toSpectate = pickRandomInArray(game.players);
+                break;
+            }
+            case SpectateActions.SpectatePrevious:
+                if (this.spectating !== undefined) {
+                    let index: number = game.players.indexOf(this.spectating) - 1;
+                    if (index < 0) index = game.players.length - 1;
+                    toSpectate = game.players[index];
+                }
+                break;
+            case SpectateActions.SpectateNext:
+                if (this.spectating !== undefined) {
+                    let index: number = game.players.indexOf(this.spectating) + 1;
+                    if (index >= game.players.length) index = 0;
+                    toSpectate = game.players[index];
+                }
+                break;
+            case SpectateActions.SpectateSpecific: {
+                toSpectate = game.players.find(player => player.id === packet.playerID);
+                break;
+            }
+            case SpectateActions.SpectateKillLeader: {
+                toSpectate = game.killLeader;
+                break;
+            }
+            case SpectateActions.Report: {
+                if (!existsSync("reports")) mkdirSync("reports");
+                const reportID = randomBytes(4).toString("hex");
+                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
+                    ip: this.spectating?.ip,
+                    name: this.spectating?.name,
+                    time: this.game.now
+                }));
+                const packet = new ReportPacket();
+                packet.playerName = this.spectating?.name ?? "";
+                packet.reportID = reportID;
+                this.sendPacket(packet);
+            }
+        }
+
+        if (toSpectate === undefined) {
             this.game.removePlayer(this);
             return;
         }
@@ -641,8 +693,8 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         this.spectating?.spectators.delete(this);
         this.updateObjects = true;
         this.startedSpectating = true;
-        this.spectating = spectating;
-        spectating.spectators.add(this);
+        this.spectating = toSpectate;
+        toSpectate.spectators.add(this);
     }
 
     disableInvulnerability(): void {
@@ -809,7 +861,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
             */
         }
 
-        if (source instanceof Player || source === "gas") {
+        /*if (source instanceof Player || source === "gas") {
             this.game.killFeedMessages.add(
                 new KillFeedPacket(
                     this,
@@ -823,7 +875,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
                     }
                 )
             );
-        }
+        }*/
 
         // Destroy physics body; reset movement and attacking variables
         this.movement.up = false;
@@ -1052,68 +1104,6 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
                 case InputActions.LeftEmoteSlot:
                     this.emote(3);
                     break;
-            }
-        }
-    }
-
-    processSpectatePacket(packet: SpectatePacket): void {
-        const game = this.game;
-        if (game.now - this.lastSpectateActionTime < 200) return;
-        this.lastSpectateActionTime = game.now;
-        switch (packet.spectateAction) {
-            case SpectateActions.BeginSpectating: {
-                let toSpectate: Player | undefined;
-                if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
-                else if (game.players.length > 1) toSpectate = game.players[random(0, game.players.length)];
-                if (toSpectate !== undefined) this.spectate(toSpectate);
-                break;
-            }
-            case SpectateActions.SpectatePrevious:
-                if (game.players.length < 2) {
-                    game.removePlayer(this);
-                    break;
-                }
-                if (this.spectating !== undefined) {
-                    let index: number = game.players.indexOf(this.spectating) - 1;
-                    if (index < 0) index = game.players.length - 1;
-                    this.spectate(game.players[index]);
-                }
-                break;
-            case SpectateActions.SpectateNext:
-                if (game.players.length < 2) {
-                    game.removePlayer(this);
-                    break;
-                }
-                if (this.spectating !== undefined) {
-                    let index: number = game.players.indexOf(this.spectating) + 1;
-                    if (index >= game.players.length) index = 0;
-                    this.spectate(game.players[index]);
-                }
-                break;
-            case SpectateActions.SpectateSpecific: {
-                const playerID = packet.playerID;
-                const playerToSpectate = game.players.find(player => player.id === playerID);
-                if (playerToSpectate) this.spectate(playerToSpectate);
-                break;
-            }
-            case SpectateActions.SpectateKillLeader: {
-                const playerToSpectate = game.players.find(player => player.id === player.game.killLeader?.id);
-                if (playerToSpectate) this.spectate(playerToSpectate);
-                break;
-            }
-            case SpectateActions.Report: {
-                if (!existsSync("reports")) mkdirSync("reports");
-                const reportID = randomBytes(4).toString("hex");
-                writeFileSync(`reports/${reportID}.json`, JSON.stringify({
-                    ip: this.spectating?.ip,
-                    name: this.spectating?.name,
-                    time: this.game.now
-                }));
-                const packet = new ReportPacket();
-                packet.playerName = this.spectating?.name ?? "";
-                packet.reportID = reportID;
-                this.sendPacket(packet);
-                break;
             }
         }
     }

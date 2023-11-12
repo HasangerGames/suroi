@@ -49,7 +49,7 @@ import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -469,7 +469,7 @@ export class Game {
 
         this.gas.updateFrom(updateData);
 
-        if (updateData.aliveCount) {
+        if (updateData.aliveCount !== undefined) {
             $("#ui-players-alive").text(updateData.aliveCount);
             $("#btn-spectate").toggle(updateData.aliveCount > 1);
         }

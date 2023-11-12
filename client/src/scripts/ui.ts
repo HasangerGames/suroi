@@ -7,12 +7,12 @@ import { HealingItems, HealType } from "../../../common/src/definitions/healingI
 import { isMobile } from "pixi.js";
 import { Ammos } from "../../../common/src/definitions/ammos";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { SpectatePacket } from "./packets/sending/spectatePacket";
 import { type Game } from "./game";
 import { Skins } from "../../../common/src/definitions/skins";
 import { body, createDropdown } from "./uiHelpers";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { type CVarTypeMapping } from "./utils/console/variables";
+import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -23,9 +23,7 @@ export function setupUI(game: Game): void {
         $("#kill-msg").show();
 
         // Spectating message
-        $("#spectating-msg-info").html(
-            '<span style="font-weight: 600">Spectating</span> <span style="margin-left: 3px">Player</span>'
-        );
+        $("#spectating-msg-player").html("Player");
         $("#spectating-msg").show();
 
         // Gas message
@@ -156,7 +154,9 @@ export function setupUI(game: Game): void {
     $("#btn-play-again").on("click", () => { game.endGame(); $("#btn-play-solo").trigger("click"); });
 
     const sendSpectatePacket = (action: SpectateActions): void => {
-        game.sendPacket(new SpectatePacket(game, action));
+        const packet = new SpectatePacket();
+        packet.spectateAction = action;
+        game.sendPacket(packet);
     };
 
     $("#btn-spectate").on("click", () => {
