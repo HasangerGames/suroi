@@ -364,6 +364,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.equipment.vest = full.vest;
             this.equipment.backpack = full.backpack;
 
+            this.helmetLevel = full.helmet?.level ?? 0;
+            this.vestLevel = full.vest?.level ?? 0;
+            this.backpackLevel = full.backpack.level;
+
             const action = full.action;
 
             if (this.action.type !== action.type || this.action.seq !== action.seq) {

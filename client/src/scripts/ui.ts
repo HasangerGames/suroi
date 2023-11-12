@@ -638,6 +638,8 @@ Video evidence is required.`)) {
         $("#interact-message").on("click", () => {
             game.console.handleQuery("interact");
         });
+        // noinspection HtmlUnknownTarget
+        $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
 
         // Reload button
         $("#btn-reload")

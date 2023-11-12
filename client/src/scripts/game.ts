@@ -1,10 +1,10 @@
 import $ from "jquery";
 
 import { Application, Container } from "pixi.js";
-import { InputActions, ObjectCategory, PROTOCOL_VERSION, PacketType, PlayerActions, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
+import { InputActions, ObjectCategory, PROTOCOL_VERSION, PacketType, TICKS_PER_SECOND, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { circleCollision, type CollisionRecord, distanceSquared } from "../../../common/src/utils/math";
+import { distanceSquared } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -24,7 +24,7 @@ import { Player } from "./objects/player";
 import { gameOverScreenTimeout } from "./packets/receiving/gameOverPacket";
 import { type GameObject } from "./types/gameObject";
 
-import { GameUi } from "./utils/gameUi";
+import { GameUI } from "./utils/gameUI";
 import { COLORS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
@@ -38,7 +38,7 @@ import { setupUI } from "./ui";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { explosion } from "./objects/explosion";
 import { Emotes } from "../../../common/src/definitions/emotes";
-import { Loots } from "../../../common/src/definitions/loots";
+import { type LootDefinition, Loots } from "../../../common/src/definitions/loots";
 import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 
 export class Game {
@@ -59,7 +59,7 @@ export class Game {
     spectating = false;
     error = false;
 
-    uiManager = new GameUi(this);
+    uiManager = new GameUI(this);
 
     lastPingDate = Date.now();
 
@@ -341,10 +341,7 @@ export class Game {
 
     processUpdate(updateData: UpdatePacket): void {
         const playerData = updateData.playerData;
-
-        if (playerData) {
-            this.uiManager.updateUi(playerData);
-        }
+        if (playerData) this.uiManager.updateUI(playerData);
 
         for (const { id, type, data } of updateData.fullDirtyObjects ?? []) {
             const object: GameObject | undefined = this.objects.get(id);
@@ -378,9 +375,7 @@ export class Game {
 
         for (const { id, data } of updateData.partialDirtyObjects ?? []) {
             const object = this.objects.get(id);
-            if (object) {
-                object.updateFromData(data, false);
-            }
+            if (object) object.updateFromData(data, false);
         }
 
         for (const id of updateData.deletedObjects ?? []) {
@@ -425,188 +420,144 @@ export class Game {
         }
     }
 
-    tick = (() => {
-        const getPickupBind = (): string => this.inputManager.binds.getInputsBoundToAction("interact")[0];
+    /**
+     * Context: rerendering ui elements needlessly is bad, so we
+     * determine the information that should trigger a re-render if
+     * changed, and cache them in order to detect such changes
+     *
+     * In the case of the pickup message thingy, those informations are:
+     * - the item the pickup message concerns
+     * - its quantity
+     * - the bind to interact has changed
+     * - whether the user can interact with it
+    */
+    private readonly _cache: {
+        object?: Loot | Obstacle
+        offset?: number
+        pickupBind?: string
+        canInteract?: boolean
+    } = {};
 
-        let skipLootCheck = true;
+    /**
+     * When a bind is changed, the corresponding html won't
+     * get changed because rendering only occurs when an item
+     * is interactable. We thus store whether the intent to
+     * change was acknowledged here.
+     */
+    private _bindChangeAcknowledged = false;
 
-        /*
-            Context: rerendering ui elements needlessly is bad, so we
-            determine the information that should trigger a re-render if
-            changed, and cache them in order to detect such changes
+    private _skipUpdate = true;
 
-            In the case of the pickup message thingy, those informations are:
-            - the item the pickup message concerns
-            - its quantity
-            - the bind to interact has changed
-            - whether the user can interact with it
-        */
-        const cache: {
-            object?: Loot | Obstacle
-            offset?: number
-            pickupBind?: string
-            canInteract?: boolean
-            readonly clear: () => void
-            readonly pickupBindIsValid: () => boolean
-        } = {
-            clear() {
-                this.object = this.pickupBind = undefined;
-            },
-            pickupBindIsValid() {
-                return getPickupBind() === this.pickupBind;
-            }
+    tick(): void {
+        if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+        this.inputManager.update();
+
+        this._skipUpdate = !this._skipUpdate;
+        if (this._skipUpdate) return;
+
+        const player = this.activePlayer;
+        if (!player) return;
+
+        interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
+        const interactable: CloseObject = {
+            object: undefined,
+            minDist: Number.MAX_VALUE
         };
-        /**
-         * When a bind is changed, the corresponding html won't
-         * get changed because rendering only occurs when an item
-         * is interactable. We thus store whether the intent to
-         * change was acknowledged here.
-         */
-        let bindChangeAcknowledged = false;
+        const uninteractable: CloseObject = {
+            object: undefined,
+            minDist: Number.MAX_VALUE
+        };
+        const detectionHitbox = new CircleHitbox(3, player.position);
 
-        return (): void => {
-            if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
-
-            this.inputManager.update();
-
-            // Only run interact message and loot checks every other tick
-            skipLootCheck = !skipLootCheck;
-            if (skipLootCheck) return;
-            const player = this.activePlayer;
-            if (!player) return;
-
-            // Loop through all loot objects to check if the player is colliding with one to show the interact message
-            let minDist = Number.MAX_VALUE;
-            let closestObject: Loot | Obstacle | undefined;
-            let canInteract: boolean | undefined;
-            const doorDetectionHitbox = new CircleHitbox(3, player.position);
-
-            for (const object of this.objects) {
-                if (object instanceof Obstacle && object.canInteract(player)) {
-                    const record: CollisionRecord | undefined = object.hitbox?.distanceTo(doorDetectionHitbox);
-                    const dist = distanceSquared(object.position, player.position); // fixme use of both distanceTo and distanceSquared?
-                    if (dist < minDist && record?.collided) {
-                        minDist = dist;
-                        closestObject = object;
-                        canInteract = !object.dead;
-                    }
-                } else if (object instanceof Loot) {
-                    const dist = distanceSquared(object.position, player.position);
-                    if (dist < minDist && circleCollision(player.position, 3, object.position, object.hitbox.radius)) {
-                        minDist = dist;
-                        closestObject = object;
-                        canInteract = closestObject.canInteract();
-                    }
-                } else if (object instanceof Building) {
-                    if (!object.dead) object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
-                }
-            }
-
-            const getOffset = (): number | undefined => closestObject instanceof Obstacle ? closestObject.door?.offset : undefined;
-
-            const differences = {
-                object: cache.object?.id !== closestObject?.id,
-                offset: cache.offset !== getOffset(),
-                bind: !cache.pickupBindIsValid(),
-                canInteract: cache.canInteract !== canInteract
-            };
-
-            if (differences.bind) bindChangeAcknowledged = false;
-
+        for (const object of this.objects) {
             if (
-                differences.object ||
-                differences.offset ||
-                differences.bind ||
-                differences.canInteract
+                (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
+                object.hitbox.collidesWith(detectionHitbox)
             ) {
-                // Cache miss, rerender
-                cache.clear();
-                cache.object = closestObject;
-                cache.offset = getOffset();
-                cache.pickupBind = getPickupBind();
-                cache.canInteract = canInteract;
+                const dist = distanceSquared(object.position, player.position);
+                if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
+                    interactable.minDist = dist;
+                    interactable.object = object;
+                } else if (object instanceof Loot && dist < uninteractable.minDist) {
+                    uninteractable.minDist = dist;
+                    uninteractable.object = object;
+                }
+            } else if (object instanceof Building && !object.dead) {
+                object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
+            }
+        }
 
-                if (closestObject !== undefined) {
-                    const prepareInteractText = (): void => {
-                        if (
-                            closestObject === undefined ||
-                            // If the loot object hasn't changed, we don't need to redo the text
-                            !(differences.object || differences.offset)
-                        ) return;
+        const object = interactable.object ?? uninteractable.object;
+        const offset = object instanceof Obstacle ? object.door?.offset : undefined;
+        const canInteract = interactable.object !== undefined;
 
-                        let interactText = "";
-                        if (closestObject instanceof Obstacle) {
-                            switch (closestObject.definition.role) {
-                                case ObstacleSpecialRoles.Door:
-                                    interactText += closestObject.door?.offset === 0 ? "Open " : "Close ";
-                                    break;
-                                case ObstacleSpecialRoles.Activatable:
-                                    interactText += "Activate ";
-                                    break;
-                            }
+        const differences = {
+            object: this._cache.object?.id !== object?.id,
+            offset: this._cache.offset !== offset,
+            bind: this.inputManager.getPickupBind() !== this._cache.pickupBind,
+            canInteract: this._cache.canInteract !== canInteract
+        };
+
+        if (differences.bind) this._bindChangeAcknowledged = false;
+
+        if (
+            differences.object ||
+            differences.offset ||
+            differences.bind ||
+            differences.canInteract
+        ) {
+            // Cache miss, rerender
+            this._cache.object = object;
+            this._cache.offset = offset;
+            this._cache.pickupBind = this.inputManager.getPickupBind();
+            this._cache.canInteract = canInteract;
+
+            if (object !== undefined) {
+                const prepareInteractText = (): void => {
+                    if (
+                        object === undefined ||
+                        // If the loot object hasn't changed, we don't need to redo the text
+                        !(differences.object || differences.offset)
+                    ) return;
+
+                    let interactText;
+                    if (object instanceof Obstacle) {
+                        switch (object.definition.role) {
+                            case ObstacleSpecialRoles.Door:
+                                interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
+                                break;
+                            case ObstacleSpecialRoles.Activatable:
+                                interactText = `Activate ${object.definition.name}`;
+                                break;
                         }
-                        interactText += closestObject.definition.name;
-                        if (closestObject instanceof Loot && closestObject.count > 1) interactText += ` (${closestObject.count})`;
-                        $("#interact-text").text(interactText);
-                    };
+                    } else { // object must be Loot
+                        interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
+                    }
+                    if (!interactText) return;
+                    $("#interact-text").text(interactText);
+                };
 
-                    if (this.inputManager.isMobile) {
-                        const lootDef = closestObject.definition;
+                if (this.inputManager.isMobile) {
+                    // Auto open doors
+                    if (object instanceof Obstacle && object.canInteract(player) && object.door?.offset === 0) {
+                        this.inputManager.addAction(InputActions.Interact);
+                    }
 
-                        // Auto open doors
-                        if (closestObject instanceof Obstacle && closestObject.canInteract(player) && closestObject.door?.offset === 0) {
-                            this.inputManager.addAction(InputActions.Interact);
-                        }
-
-                        // Autoloot
-                        if (
-                            closestObject instanceof Loot && "itemType" in lootDef &&
-                            (
-                                (lootDef.itemType !== ItemType.Gun &&
-                                    lootDef.itemType !== ItemType.Melee) ||
-                                (lootDef.itemType === ItemType.Gun &&
-                                    (!this.uiManager.inventory.weapons[0] ||
-                                        !this.uiManager.inventory.weapons[1]))
-                            )
-                        ) {
-                            // TODO Needs testing
-                            if (lootDef.itemType !== ItemType.Gun || player.action.type !== PlayerActions.Reload) this.inputManager.addAction(InputActions.Interact);
-                        } else if (
-                            (
-                                closestObject instanceof Loot &&
-                                "itemType" in lootDef &&
-                                (lootDef.itemType === ItemType.Gun || lootDef.itemType === ItemType.Melee)
-                            ) ||
-                            closestObject instanceof Obstacle
-                        ) {
-                            prepareInteractText();
-
-                            if (canInteract) {
-                                // noinspection HtmlUnknownTarget
-                                $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">').addClass("active").show();
-                            } else {
-                                $("#interact-key").removeClass("active").hide();
-                            }
-                            $("#interact-message").show();
-                            return;
-                        }
-
-                        $("#interact-message").hide();
-                    } else {
+                    const type = (object.definition as LootDefinition).itemType;
+                    if ( // Auto pickup
+                        object instanceof Loot &&
+                        canInteract &&
+                        // Only pick up melees if no melee is equipped
+                        (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
+                        // Only pick up guns if there's a free slot
+                        (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1]))
+                    ) {
+                        this.inputManager.addAction(InputActions.Interact);
+                    } else if (
+                        (object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee)) ||
+                        object instanceof Obstacle
+                    ) {
                         prepareInteractText();
-
-                        if (!bindChangeAcknowledged) {
-                            bindChangeAcknowledged = true;
-
-                            const input = getPickupBind();
-                            const icon = InputManager.getIconFromInputName(input);
-
-                            if (icon === undefined) {
-                                $("#interact-key").text(input);
-                            } else {
-                                $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
-                            }
-                        }
 
                         if (canInteract) {
                             $("#interact-key").addClass("active").show();
@@ -615,11 +566,37 @@ export class Game {
                         }
 
                         $("#interact-message").show();
+                        return;
                     }
-                } else {
+                    // noinspection JSJQueryEfficiency
                     $("#interact-message").hide();
+                } else { // not mobile
+                    prepareInteractText();
+
+                    if (!this._bindChangeAcknowledged) {
+                        this._bindChangeAcknowledged = true;
+
+                        const input = this.inputManager.getPickupBind();
+                        const icon = InputManager.getIconFromInputName(input);
+
+                        if (icon === undefined) {
+                            $("#interact-key").text(input);
+                        } else {
+                            $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
+                        }
+                    }
+
+                    if (canInteract) {
+                        $("#interact-key").addClass("active").show();
+                    } else {
+                        $("#interact-key").removeClass("active").hide();
+                    }
+
+                    $("#interact-message").show();
                 }
+            } else { // object is undefined
+                $("#interact-message").hide();
             }
-        };
-    })();
+        }
+    }
 }

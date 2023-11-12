@@ -338,13 +338,13 @@
     font-weight: 700;
     line-height: 1;
     padding: 2px 4px;
+    margin-right: 3px;
     white-space: nowrap;
 }
 
 #interact-text {
     font-size: 20px;
     @include text-shadow;
-    margin-left: 3px;
 }
 
 #interact-key.active + #interact-text {

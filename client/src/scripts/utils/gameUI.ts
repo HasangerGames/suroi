@@ -17,7 +17,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export class GameUi {
+export class GameUI {
     readonly game: Game;
 
     name = DEFAULT_USERNAME;
@@ -59,7 +59,7 @@ export class GameUi {
         adrenalineBarPercentage: $("#adrenaline-bar-percentage")
     };
 
-    updateUi(data: PlayerData): void {
+    updateUI(data: PlayerData): void {
         if (data.id) this.game.activePlayerID = data.id;
 
         if (data.zoom) this.game.camera.zoom = data.zoom;

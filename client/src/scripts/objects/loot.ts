@@ -10,6 +10,7 @@ import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { type Player } from "./player";
 
 export class Loot extends GameObject {
     override readonly type = ObjectCategory.Loot;
@@ -119,10 +120,7 @@ export class Loot extends GameObject {
         super.destroy();
     }
 
-    canInteract(): boolean {
-        const activePlayer = this.game.activePlayer;
-        if (!activePlayer) return false;
-
+    canInteract(player: Player): boolean {
         const inventory = this.game.uiManager.inventory;
 
         const definition = this.definition;
@@ -140,17 +138,17 @@ export class Loot extends GameObject {
             case ItemType.Ammo: {
                 const idString = this.definition.idString;
 
-                return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= activePlayer.equipment.backpack.maxCapacity[idString]);
+                return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);
             }
             case ItemType.Armor: {
                 switch (true) {
-                    case definition.armorType === ArmorType.Helmet: return definition.level > activePlayer.helmetLevel;
-                    case definition.armorType === ArmorType.Vest: return definition.level > activePlayer.vestLevel;
+                    case definition.armorType === ArmorType.Helmet: return definition.level > player.helmetLevel;
+                    case definition.armorType === ArmorType.Vest: return definition.level > player.vestLevel;
                     default: return false;
                 }
             }
             case ItemType.Backpack: {
-                return definition.level > activePlayer.backpackLevel;
+                return definition.level > player.backpackLevel;
             }
             case ItemType.Scope: {
                 return inventory.items[this.definition.idString] === 0;

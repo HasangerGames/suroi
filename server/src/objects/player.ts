@@ -18,7 +18,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { ItemType, type ExtendedWearerAttributes, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ExtendedWearerAttributes } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { v, vAdd, vClone, vEqual, type Vector } from "../../../common/src/utils/vector";
@@ -954,74 +954,59 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
                     if (this.game.now - this.lastInteractionTime < 120) return;
                     this.lastInteractionTime = this.game.now;
 
+                    interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
+                    const interactable: CloseObject = {
+                        object: undefined,
+                        minDist: Number.MAX_VALUE
+                    };
+                    const uninteractable: CloseObject = {
+                        object: undefined,
+                        minDist: Number.MAX_VALUE
+                    };
                     const detectionHitbox = new CircleHitbox(3, this.position);
                     const nearObjects = this.game.grid.intersectsHitbox(detectionHitbox);
 
-                    const getClosestObject = (condition: (object: Loot | Obstacle) => boolean): Loot | Obstacle | undefined => {
-                        let minDist = Number.MAX_VALUE;
-                        let closestObject: Loot | Obstacle | undefined;
-
-                        for (const object of nearObjects) {
-                            if (
-                                (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
-                                object.hitbox !== undefined &&
-                                condition(object)
+                    for (const object of nearObjects) {
+                        if (
+                            (object instanceof Loot || (object instanceof Obstacle && object.canInteract(this))) &&
+                            object.hitbox.collidesWith(detectionHitbox)
+                        ) {
+                            const dist = distanceSquared(object.position, this.position);
+                            if ((object instanceof Obstacle || object.canInteract(this)) && dist < interactable.minDist) {
+                                interactable.minDist = dist;
+                                interactable.object = object;
+                            } else if (
+                                object instanceof Loot &&
+                                object.definition.itemType !== ItemType.Gun &&
+                                dist < uninteractable.minDist
                             ) {
-                                const dist = distanceSquared(object.position, this.position);
-                                if (dist < minDist && object.hitbox.collidesWith(detectionHitbox)) {
-                                    minDist = dist;
-                                    closestObject = object;
-                                }
+                                uninteractable.minDist = dist;
+                                uninteractable.object = object;
                             }
                         }
-
-                        return closestObject;
-                    };
-
-                    const closestObject = getClosestObject(object => object instanceof Obstacle || object.canInteract(this));
-
-                    if (!closestObject) {
-                        // the thing that happens when you try pick up
-                        const closestObject = getClosestObject(object => {
-                            if (!(object instanceof Loot)) return false;
-                            const itemType = object.definition.itemType;
-                            return itemType !== ItemType.Gun && itemType !== ItemType.Melee;
-                        });
-
-                        if (closestObject) {
-                            closestObject.interact(this, true);
-                        }
-
-                        break;
                     }
 
-                    const interact = (): void => {
-                        closestObject?.interact(this);
-                        this.canDespawn = false;
-                        this.disableInvulnerability();
-                    };
+                    if (interactable.object) {
+                        interactable.object.interact(this);
 
-                    if (closestObject instanceof Loot || closestObject.definition.role === ObstacleSpecialRoles.Activatable) {
-                        if (closestObject.canInteract(this)) {
-                            interact();
-                        }
-                        break;
-                    }
-
-                    if (closestObject.isDoor && !closestObject.door?.locked) {
-                        interact();
-
-                        // If the closest object is a door, then we allow other doors within the
-                        // interaction range to be interacted with
-
+                        // If the closest object is a door, interact with other doors within range
                         for (const object of nearObjects) {
-                            if (object instanceof Obstacle && object.isDoor && !object.door?.locked && object.hitbox.collidesWith(detectionHitbox) && object !== closestObject) {
+                            if (
+                                object instanceof Obstacle &&
+                                object.isDoor &&
+                                !object.door?.locked &&
+                                object !== interactable.object &&
+                                object.hitbox.collidesWith(detectionHitbox)
+                            ) {
                                 object.interact(this);
                             }
                         }
-                        break;
+                    } else if (uninteractable.object) {
+                        uninteractable.object?.interact(this, true);
                     }
 
+                    this.canDespawn = false;
+                    this.disableInvulnerability();
                     break;
                 }
                 case InputActions.Reload:
