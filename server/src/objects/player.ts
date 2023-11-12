@@ -513,8 +513,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.updateObjects = false;
 
             this.screenHitbox = RectangleHitbox.fromRect(
-                2 * this.xCullDist,
-                2 * this.yCullDist,
+                2 * player.xCullDist,
+                2 * player.yCullDist,
                 player.position
             );
 
