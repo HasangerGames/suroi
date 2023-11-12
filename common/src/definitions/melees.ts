@@ -156,7 +156,7 @@ export const Melees: MeleeDefinition[] = [
             separateWorldImage: true
         },
         fists: {
-            animationDuration: 150,
+            animationDuration: 125,
             randomFist: false,
             left: v(38, -35),
             right: v(38, 35),
