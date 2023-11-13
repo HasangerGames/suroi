@@ -1,5 +1,6 @@
 import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
@@ -238,7 +239,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         this.game.removeLoot(this);
 
         // Send pickup packet
-        // player.sendPacket(new PickupPacket(player, this.definition.idString));
+        const packet = new PickupPacket();
+        packet.item = this.definition;
+        player.sendPacket(packet);
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) createNewItem();

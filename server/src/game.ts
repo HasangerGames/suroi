@@ -35,7 +35,7 @@ import { JoinedPacket } from "../../common/src/packets/joinedPacket";
 import { InputPacket } from "../../common/src/packets/inputPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
-import { KillFeedPacket } from "../../common/src/packets/killFeedPacket";
+import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 
 export class Game {
     readonly _id: number;
@@ -84,7 +84,7 @@ export class Game {
     /**
      * All kill feed messages this tick
      */
-    readonly killFeedMessages = new Set<KillFeedPacket>();
+    readonly killFeedMessages = new Set<KillFeedMessage>();
 
     created = false;
     private _started = false;
@@ -275,8 +275,8 @@ export class Game {
         }
     }
 
-    killLeaderDead(): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead);
+    killLeaderDead(killer?: Player): void {
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { twoPartyInteraction: true, killerID: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
@@ -287,12 +287,14 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType): void {
+    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<KillFeedMessage>): void {
         if (this._killLeader === undefined) return;
-        const packet = new KillFeedPacket();
-        packet.messageType = messageType;
-        packet.playerID = this._killLeader?.id;
-        this.killFeedMessages.add(packet);
+        this.killFeedMessages.add({
+            messageType,
+            playerID: this._killLeader.id,
+            kills: this._killLeader.kills,
+            ...options
+        });
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
@@ -354,7 +356,6 @@ export class Game {
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.emotes = player.loadout.emotes;
-        joinedPacket.killLeader = this.killLeader;
         joinedPacket.serialize();
         player.sendData(joinedPacket.getBuffer());
 

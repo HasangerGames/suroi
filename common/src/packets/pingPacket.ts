@@ -7,5 +7,5 @@ export class PingPacket extends Packet {
     override readonly type = PacketType.Ping;
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    override deserialize(_stream: SuroiBitStream): void { }
+    override deserialize(stream: SuroiBitStream): void { }
 }

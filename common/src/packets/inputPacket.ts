@@ -104,14 +104,15 @@ export class InputPacket extends Packet {
             if (!this.isMobile) this.distanceToMouse = stream.readFloat(0, MAX_MOUSE_DISTANCE, 8);
         }
 
+        // Actions
         const length = stream.readBits(3);
         for (let i = 0; i < length; i++) {
-            const inputType = stream.readBits(INPUT_ACTIONS_BITS);
+            const type = stream.readBits(INPUT_ACTIONS_BITS);
 
             let slot: number | undefined;
             let item: HealingItemDefinition | ScopeDefinition | undefined;
 
-            switch (inputType) {
+            switch (type) {
                 case InputActions.EquipItem:
                 case InputActions.DropItem:
                     slot = stream.readBits(2);
@@ -121,11 +122,7 @@ export class InputPacket extends Packet {
                     break;
             }
 
-            this.actions.push({
-                type: inputType,
-                item,
-                slot
-            });
+            this.actions.push({ type, item, slot });
         }
     }
 }

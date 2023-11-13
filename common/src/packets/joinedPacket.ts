@@ -11,13 +11,6 @@ export class JoinedPacket extends Packet {
 
     emotes: EmoteDefinition[] = [];
 
-    killLeader?: {
-        name: string
-        // isDev: boolean
-        // nameColor: string
-        kills: number
-    };
-
     override serialize(): void {
         super.serialize();
         const stream = this.stream;
@@ -27,14 +20,6 @@ export class JoinedPacket extends Packet {
         for (const emote of this.emotes) {
             Emotes.writeToStream(stream, emote);
         }
-
-        const killLeader = this.killLeader;
-        const hasKillLeader = killLeader !== undefined;
-        stream.writeBoolean(hasKillLeader);
-        if (hasKillLeader) {
-            stream.writePlayerName(killLeader.name);
-            stream.writeUint8(killLeader.kills);
-        }
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -42,13 +27,6 @@ export class JoinedPacket extends Packet {
 
         for (let i = 0; i < 4; i++) {
             this.emotes.push(Emotes.readFromStream(stream));
-        }
-
-        if (stream.readBoolean()) {
-            this.killLeader = {
-                name: stream.readPlayerName(),
-                kills: stream.readUint8()
-            };
         }
     }
 }

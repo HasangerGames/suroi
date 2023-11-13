@@ -10,8 +10,7 @@ import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
-import { type PlayerData } from "../../../../common/src/packets/updatePacket";
+import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
 import { UI_DEBUG_MODE } from "./constants";
@@ -123,8 +122,7 @@ export class UIManager {
         $("#chicken-dinner").toggle(packet.won);
         $("#game-over-text").text(packet.won ? "Winner winner chicken dinner!" : "You died.");
 
-        const name = this.getPlayerName(packet.playerID);
-        $("#game-over-player-name").html(name);
+        $("#game-over-player-name").html(this.getPlayerName(packet.playerID));
 
         $("#game-over-kills").text(packet.kills);
         $("#game-over-damage-done").text(packet.damageDone);
@@ -154,13 +152,9 @@ export class UIManager {
             this.game.spectating = data.spectating;
             if (data.spectating) {
                 $("#game-over-overlay").fadeOut();
-                $("#spectating-msg-player").html("").append(this.getPlayerName(data.id));
-
-                // $("#btn-spectate-kill-leader").hide();
+                $("#spectating-msg-player").html(this.getPlayerName(data.id));
             }
-            $("#spectating-msg").toggle(data.spectating);
-            $("#spectating-msg").toggle(data.spectating);
-            $("#spectating-buttons-container").toggle(data.spectating);
+            $("#spectating-msg, #spectating-buttons-container").toggle(data.spectating);
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;
@@ -367,7 +361,7 @@ export class UIManager {
         );
     }
 
-    processKillFeedPacket(packet: KillFeedPacket): void {
+    processKillFeedMessage(message: KillFeedMessage): void {
         const {
             messageType,
             playerID,
@@ -378,10 +372,11 @@ export class UIManager {
             weaponUsed,
             killstreak,
 
-            gasKill
-        } = packet;
+            gasKill,
+            hideInKillFeed
+        } = message;
 
-        const playerName = this.getPlayerName(playerID);
+        const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
 
         let messageText: string | undefined;
         const classes: string[] = [];
@@ -431,7 +426,7 @@ export class UIManager {
                     }
                     case killerID === this.game.activePlayerID: { // killed other
                         classes.push("kill-feed-item-killer");
-                        this._addKillMessage(kills!, playerName, weaponUsed?.name ?? "", killstreak);
+                        this._addKillMessage(kills as number, playerName, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
@@ -442,15 +437,17 @@ export class UIManager {
                 if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
 
                 $("#kill-leader-leader").html(playerName);
-                $("#kill-leader-kills-counter").text(kills!);
+                $("#kill-leader-kills-counter").text(kills as number);
 
-                messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
-                this.game.soundManager.play("kill_leader_assigned");
+                if (!hideInKillFeed) {
+                    messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
+                    this.game.soundManager.play("kill_leader_assigned");
+                }
                 break;
             }
 
             case KillFeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(kills!);
+                $("#kill-leader-kills-counter").text(kills as number);
                 break;
             }
 
@@ -460,6 +457,7 @@ export class UIManager {
                 // noinspection HtmlUnknownTarget
                 messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}`;
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+                else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
                 break;
             }

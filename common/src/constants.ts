@@ -19,7 +19,6 @@ export enum PacketType {
     Update,
     Input,
     GameOver,
-    KillFeed,
     Pickup,
     Ping,
     Spectate,

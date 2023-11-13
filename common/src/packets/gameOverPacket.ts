@@ -24,10 +24,7 @@ export class GameOverPacket extends Packet {
         stream.writeUint16(this.damageDone);
         stream.writeUint16(this.damageTaken);
         stream.writeUint16(this.timeAlive);
-
-        if (!this.won) {
-            stream.writeBits(this.rank, 7);
-        }
+        if (!this.won) stream.writeBits(this.rank, 7);
     }
 
     override deserialize(stream: SuroiBitStream): void {
@@ -37,9 +34,6 @@ export class GameOverPacket extends Packet {
         this.damageDone = stream.readUint16();
         this.damageTaken = stream.readUint16();
         this.timeAlive = stream.readUint16();
-
-        if (!this.won) {
-            this.rank = stream.readBits(7);
-        } else this.rank = 1;
+        this.rank = this.won ? 1 : stream.readBits(7);
     }
 }

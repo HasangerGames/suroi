@@ -12,7 +12,7 @@ export abstract class Packet {
         this.stream.writePacketType(this.type);
     }
 
-    abstract deserialize(_stream: SuroiBitStream): void;
+    abstract deserialize(stream: SuroiBitStream): void;
 
     getBuffer(): ArrayBuffer {
         return this.stream.buffer.slice(0, Math.ceil(this.stream.index / 8));

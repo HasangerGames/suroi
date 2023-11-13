@@ -49,7 +49,7 @@ import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -240,10 +240,27 @@ export class Game {
                     $("#report-modal").fadeIn(250);
                     break;
                 }
-                case PacketType.KillFeed: {
-                    const packet = new KillFeedPacket();
+                case PacketType.Pickup: {
+                    const packet = new PickupPacket();
                     packet.deserialize(stream);
-                    this.uiManager.processKillFeedPacket(packet);
+
+                    let soundID: string;
+                    switch (packet.item.itemType) {
+                        case ItemType.Ammo:
+                            soundID = "ammo_pickup";
+                            break;
+                        case ItemType.Healing:
+                            soundID = `${packet.item.idString}_pickup`;
+                            break;
+                        case ItemType.Scope:
+                            soundID = "scope_pickup";
+                            break;
+                        default:
+                            soundID = "pickup";
+                            break;
+                    }
+
+                    this.soundManager.play(soundID);
                     break;
                 }
             }
@@ -289,14 +306,8 @@ export class Game {
         $("canvas").addClass("active");
         $("#splash-ui").fadeOut(enablePlayButton);
 
-        let name: string | undefined;
-        let kills: number | undefined;
-        if (packet.killLeader) {
-            name = packet.killLeader.name;
-            kills = packet.killLeader.kills;
-        }
-        $("#kill-leader-leader").html(name ?? "Waiting for leader");
-        $("#kill-leader-kills-counter").text(kills ?? "0");
+        $("#kill-leader-leader").html("Waiting for leader");
+        $("#kill-leader-kills-counter").text("0");
     }
 
     endGame(): void {
@@ -472,6 +483,10 @@ export class Game {
         if (updateData.aliveCount !== undefined) {
             $("#ui-players-alive").text(updateData.aliveCount);
             $("#btn-spectate").toggle(updateData.aliveCount > 1);
+        }
+
+        for (const message of updateData.killFeedMessages) {
+            this.uiManager.processKillFeedMessage(message);
         }
     }
 

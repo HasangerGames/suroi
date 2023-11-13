@@ -1,12 +1,19 @@
-import { type GasState, type ObjectCategory, PacketType, DEFAULT_INVENTORY, INVENTORY_MAX_WEAPONS } from "../constants";
+import {
+    type GasState,
+    type ObjectCategory,
+    PacketType,
+    DEFAULT_INVENTORY,
+    INVENTORY_MAX_WEAPONS,
+    KillFeedMessageType
+} from "../constants";
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
-import { type WeaponDefinition, Loots } from "../definitions/loots";
+import { type WeaponDefinition, Loots, type LootDefinition } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
-import { type SuroiBitStream } from "../utils/suroiBitStream";
+import { KILL_FEED_MESSAGE_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
@@ -215,6 +222,126 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     return data;
 }
 
+function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessage): void {
+    stream.writeBits(message.messageType, KILL_FEED_MESSAGE_TYPE_BITS);
+    switch (message.messageType) {
+        case KillFeedMessageType.Kill: {
+            stream.writeObjectID(message.playerID!);
+
+            message.twoPartyInteraction = message.killerID !== undefined;
+            stream.writeBoolean(message.twoPartyInteraction);
+            if (message.twoPartyInteraction) {
+                stream.writeObjectID(message.killerID as number);
+                stream.writeBits(message.kills as number, 7);
+            }
+
+            /* eslint-disable @typescript-eslint/no-non-null-assertion */
+            const weaponWasUsed = message.weaponUsed !== undefined;
+            stream.writeBoolean(weaponWasUsed);
+            if (weaponWasUsed) {
+                const isExplosion = "shrapnelCount" in message.weaponUsed!; //fixme hack to check if weapon used is an explosion
+                stream.writeBoolean(isExplosion);
+                if (isExplosion) {
+                    Explosions.writeToStream(stream, message.weaponUsed as ExplosionDefinition);
+                } else {
+                    Loots.writeToStream(stream, message.weaponUsed as LootDefinition);
+                }
+
+                const trackKillstreak = !isExplosion && "killstreak" in message.weaponUsed! && message.weaponUsed.killstreak === true;
+                stream.writeBoolean(trackKillstreak);
+                if (trackKillstreak) {
+                    stream.writeBits(message.killstreak!, 7);
+                }
+            }
+
+            stream.writeBoolean(message.gasKill ?? false);
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderAssigned: {
+            stream.writeObjectID(message.playerID!);
+            stream.writeBits(message.kills as number, 7);
+            stream.writeBoolean(message.hideInKillFeed ?? false);
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderUpdated: {
+            stream.writeBits(message.kills as number, 7);
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderDead: {
+            stream.writeObjectID(message.playerID!);
+            stream.writeObjectID(message.killerID!);
+            break;
+        }
+    }
+}
+
+export interface KillFeedMessage {
+    messageType: KillFeedMessageType
+    playerID?: number
+
+    twoPartyInteraction?: boolean
+    killerID?: number
+    kills?: number
+    weaponUsed?: LootDefinition | ExplosionDefinition
+    killstreak?: number
+
+    gasKill?: boolean
+
+    hideInKillFeed?: boolean
+}
+
+function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
+    const message: KillFeedMessage = {
+        messageType: stream.readBits(KILL_FEED_MESSAGE_TYPE_BITS)
+    };
+    switch (message.messageType) {
+        case KillFeedMessageType.Kill: {
+            message.playerID = stream.readObjectID();
+
+            message.twoPartyInteraction = stream.readBoolean();
+            if (message.twoPartyInteraction) {
+                message.killerID = stream.readObjectID();
+                message.kills = stream.readBits(7);
+            }
+
+            if (stream.readBoolean()) { // used a weapon
+                message.weaponUsed = stream.readBoolean() // is explosion
+                    ? Explosions.readFromStream(stream)
+                    : Loots.readFromStream(stream);
+
+                if (stream.readBoolean()) { // track killstreak
+                    message.killstreak = stream.readBits(7);
+                }
+            }
+
+            message.gasKill = stream.readBoolean();
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderAssigned: {
+            message.playerID = stream.readObjectID();
+            message.kills = stream.readBits(7);
+            message.hideInKillFeed = stream.readBoolean();
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderUpdated: {
+            message.kills = stream.readBits(7);
+            break;
+        }
+
+        case KillFeedMessageType.KillLeaderDead: {
+            message.playerID = stream.readObjectID();
+            message.killerID = stream.readObjectID();
+            break;
+        }
+    }
+    return message;
+}
+
 const UpdateFlags = {
     PlayerData: 1 << 0,
     DeletedObjects: 1 << 1,
@@ -227,8 +354,10 @@ const UpdateFlags = {
     GasPercentage: 1 << 8,
     NewPlayers: 1 << 9,
     DeletedPlayers: 1 << 10,
-    AliveCount: 1 << 11
+    AliveCount: 1 << 11,
+    KillFeedMessages: 1 << 12
 };
+const UPDATE_FLAGS_BITS = 13;
 
 export class UpdatePacket extends Packet {
     override readonly allocBytes = 2 ** 13;
@@ -282,6 +411,8 @@ export class UpdatePacket extends Packet {
     aliveCountDirty?: boolean;
     aliveCount?: number;
 
+    killFeedMessages: KillFeedMessage[] = [];
+
     override serialize(): void {
         super.serialize();
         const stream = this.stream;
@@ -306,8 +437,9 @@ export class UpdatePacket extends Packet {
         if (this.newPlayers?.length) flags += UpdateFlags.NewPlayers;
         if (this.deletedPlayers?.length) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
+        if (this.killFeedMessages?.length) flags += UpdateFlags.KillFeedMessages;
 
-        stream.writeUint16(flags);
+        stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
         if ((flags & UpdateFlags.PlayerData) !== 0) {
             serializePlayerData(stream, this.playerData as Required<PlayerData>);
@@ -399,10 +531,18 @@ export class UpdatePacket extends Packet {
         if ((flags & UpdateFlags.AliveCount) !== 0) {
             stream.writeBits(this.aliveCount!, 7);
         }
+
+        if ((flags & UpdateFlags.KillFeedMessages) !== 0) {
+            stream.writeUint8(this.killFeedMessages.length);
+
+            for (const message of this.killFeedMessages) {
+                serializeKillFeedMessage(stream, message);
+            }
+        }
     }
 
     override deserialize(stream: SuroiBitStream): void {
-        const flags = stream.readUint16();
+        const flags = stream.readBits(UPDATE_FLAGS_BITS);
 
         if ((flags & UpdateFlags.PlayerData) !== 0) {
             this.playerData = deserializePlayerData(stream, this.previousData);
@@ -525,6 +665,14 @@ export class UpdatePacket extends Packet {
         if ((flags & UpdateFlags.AliveCount) !== 0) {
             this.aliveCountDirty = true;
             this.aliveCount = stream.readBits(7);
+        }
+
+        if ((flags & UpdateFlags.KillFeedMessages) !== 0) {
+            const count = stream.readUint8();
+
+            for (let i = 0; i < count; i++) {
+                this.killFeedMessages.push(deserializeKillFeedMessage(stream));
+            }
         }
     }
 }

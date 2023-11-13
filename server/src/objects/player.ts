@@ -15,7 +15,7 @@ import {
 } from "../../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
-import { Loots, type WeaponDefinition } from "../../../common/src/definitions/loots";
+import { Loots } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
@@ -24,7 +24,7 @@ import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src
 import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
-import { type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
+import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
 import { type Game } from "../game";
 import { type Action, HealingAction, ReloadAction } from "../inventory/action";
@@ -48,7 +48,6 @@ import { type SpectatePacket } from "../../../common/src/packets/spectatePacket"
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { randomBytes } from "crypto";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 import { pickRandomInArray } from "../../../common/src/utils/random";
 
 export class Player extends GameObject<ObjectCategory.Player> {
@@ -196,7 +195,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return this.inventory.activeWeaponIndex;
     }
 
-    get activeItem(): InventoryItem<WeaponDefinition> {
+    get activeItem(): InventoryItem {
         return this.inventory.activeWeapon;
     }
 
@@ -316,7 +315,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.role = userData.role;
         this.isDev = userData.isDev;
         this.nameColor = userData.nameColor;
-        this.hasColor = (userData.nameColor.trim().length > 2) && userData.nameColor !== "none";
+        this.hasColor = userData.nameColor !== undefined && (userData.nameColor.trim().length > 2) && userData.nameColor !== "none";
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
@@ -368,10 +367,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
-    }
-
-    give(idString: string): void {
-        this.inventory.appendWeapon(idString);
     }
 
     emote(slot: number): void {
@@ -619,6 +614,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         packet.aliveCount = this.game.aliveCount;
         packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
 
+        // kill feed messages
+        packet.killFeedMessages = [...this.game.killFeedMessages];
+        const killLeader = this.game.killLeader;
+        if (this._firstPacket && killLeader) {
+            packet.killFeedMessages.push({
+                messageType: KillFeedMessageType.KillLeaderAssigned,
+                playerID: killLeader.id,
+                kills: killLeader.kills,
+                hideInKillFeed: true
+            });
+        }
+
         // serialize and send update packet
         packet.serialize();
 
@@ -630,9 +637,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         for (const key in this.dirty) {
             this.dirty[key as keyof PlayerData["dirty"]] = false;
         }
-
-        // send kill feed packets
-        for (const message of this.game.killFeedMessages) this.sendPacket(message);
     }
 
     spectate(packet: SpectatePacket): void {
@@ -686,10 +690,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        if (toSpectate === undefined) {
-            this.game.removePlayer(this);
-            return;
-        }
+        if (toSpectate === undefined) return;
 
         this.spectating?.spectators.delete(this);
         this.updateObjects = true;
@@ -863,17 +864,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         if (source instanceof Player || source === "gas") {
-            const killFeedPacket = new KillFeedPacket();
-            killFeedPacket.messageType = KillFeedMessageType.Kill;
-            killFeedPacket.playerID = this.id;
-            if (source instanceof Player) {
-                killFeedPacket.killerID = source.id;
-                killFeedPacket.kills = source.kills;
-                killFeedPacket.weaponUsed = weaponUsed?.definition;
-            } else { // if source isn't a Player, it's gas
-                killFeedPacket.gasKill = true;
+            const killFeedMessage: KillFeedMessage = {
+                messageType: KillFeedMessageType.Kill,
+                playerID: this.id,
+                weaponUsed: weaponUsed?.definition
+            };
+            if (source instanceof Player && source !== this) {
+                killFeedMessage.killerID = source.id;
+                killFeedMessage.kills = source.kills;
+            } else if (source === "gas") {
+                killFeedMessage.gasKill = true;
             }
-            this.game.killFeedMessages.add(killFeedPacket);
+            this.game.killFeedMessages.add(killFeedMessage);
         }
 
         // Destroy physics body; reset movement and attacking variables
@@ -957,7 +959,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Remove player from kill leader
         if (this === this.game.killLeader) {
-            this.game.killLeaderDead();
+            this.game.killLeaderDead(source instanceof Player ? source : undefined);
         }
     }
 
