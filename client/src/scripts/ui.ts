@@ -725,4 +725,12 @@ Video evidence is required.`)) {
         tabContent.addClass("active");
         tabContent.show();
     });
+
+    $("#warning-modal-agree-checkbox").on("click", function() {
+        $("#warning-btn-play-solo, #btn-play-solo").toggleClass("btn-disabled", !$(this).prop("checked"));
+    });
+    $("#warning-btn-play-solo").on("click", () => {
+        $("#warning-modal").hide();
+        $("#btn-play-solo").trigger("click");
+    });
 }

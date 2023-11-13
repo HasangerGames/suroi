@@ -132,19 +132,19 @@ export interface ConfigType {
         }
 
         /**
-         * If this option is present, a list of banned IPs will be loaded, either from a local file or from a remote source.
-         * If `url` is specified, the list is loaded from the specified URL (e.g. https://suroi.io/api/bannedIPs).
+         * If this option is present, a list of punishments will be loaded, either from a local file or from a remote source.
+         * If `url` is specified, the list is loaded from the specified URL (e.g. https://suroi.io). Trailing slash not allowed.
          * The specified `password` is sent in the `Password` header.
-         * If `url` is not specified, the list is loaded from `bannedIPs.json`, and it's accessible from `/api/bannedIPs`.
+         * If `url` is not specified, the list is loaded from `punishments.json`, and it's accessible from `/api/punishments`.
          * To access the list, the specified `password` must be provided in the `Password` header.
          */
-        readonly ipBanList?: {
+        readonly punishments?: {
             readonly password: string
             readonly url?: string
         }
 
         /**
-         * Every `refreshDuration` milliseconds, the list of rate limited IPs is cleared, and the list of banned IPs is reloaded if enabled.
+         * Every `refreshDuration` milliseconds, rate limited IPs are cleared, and the list of punishments is reloaded if enabled.
          */
         readonly refreshDuration: number
     }

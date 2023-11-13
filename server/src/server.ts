@@ -10,7 +10,7 @@ import {
     type WebSocket
 } from "uWebSockets.js";
 
-import { existsSync, readFile, writeFileSync } from "fs";
+import { existsSync, readFile, writeFile, writeFileSync } from "fs";
 import os from "os";
 
 import { URLSearchParams } from "node:url";
@@ -89,11 +89,22 @@ function getIP(res: HttpResponse, req: HttpRequest): string {
 
 const simultaneousConnections: Record<string, number> = {};
 let connectionAttempts: Record<string, number> = {};
-const permaBannedIPs = new Set<string>();
-const tempBannedIPs = new Set<string>();
-const rateLimitedIPs = new Set<string>();
-interface BanRecord { readonly ip: string, readonly expires?: number }
-let rawBanRecords: BanRecord[] = [];
+
+export interface Punishment { readonly type: "rateLimit" | "warning" | "tempBan" | "permaBan", readonly expires?: number }
+let punishments: Record<string, Punishment> = {};
+
+function removePunishment(ip: string): void {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete punishments[ip];
+    writeFile(
+        "punishments.json",
+        JSON.stringify(punishments, null, 4),
+        "utf8",
+        (err) => {
+            if (err) console.error(err);
+        }
+    );
+}
 
 let playerCount = 0;
 
@@ -110,16 +121,22 @@ app.get("/api/getGame", async(res, req) => {
     let response: {
         success: boolean
         gameID?: number
-        message?: "tempBanned" | "permaBanned" | "rateLimited"
+        message?: "rateLimit" | "warning" | "tempBan" | "permaBan"
     };
 
     const ip = getIP(res, req);
-    if (tempBannedIPs.has(ip)) {
-        response = { success: false, message: "tempBanned" };
-    } else if (permaBannedIPs.has(ip)) {
-        response = { success: false, message: "permaBanned" };
-    } else if (rateLimitedIPs.has(ip)) {
-        response = { success: false, message: "rateLimited" };
+    const punishment = punishments[ip];
+    if (punishment) {
+        response = { success: false, message: punishment.type };
+        if (punishment.type === "warning") {
+            const protection = Config.protection;
+            if (protection?.punishments?.url) {
+                fetch(`${protection.punishments.url}/api/removePunishment?ip=${ip}`, { headers: { Password: protection.punishments.password } })
+                    .catch(e => console.error("Error acknowledging warning. Details: ", e));
+            } else {
+                removePunishment(ip);
+            }
+        }
     } else {
         let newestGameID = -1;
         let newestGameCreatedTime = 0;
@@ -142,15 +159,25 @@ app.get("/api/getGame", async(res, req) => {
     }
 });
 
-app.get("/api/bannedIPs", (res, req) => {
+app.get("/api/punishments", (res, req) => {
     cors(res);
 
-    if (req.getHeader("password") === Config.protection?.ipBanList?.password) {
-        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(rawBanRecords));
-        return;
+    if (req.getHeader("password") === Config.protection?.punishments?.password) {
+        res.writeHeader("Content-Type", "application/json").end(JSON.stringify(punishments));
+    } else {
+        forbidden(res);
     }
+});
 
-    forbidden(res);
+app.get("/api/removePunishment", (res, req) => {
+    cors(res);
+
+    if (req.getHeader("password") === Config.protection?.punishments?.password) {
+        const ip = new URLSearchParams(req.getQuery()).get("ip");
+        if (ip) removePunishment(ip);
+    } else {
+        forbidden(res);
+    }
 });
 
 export interface PlayerContainer {
@@ -181,18 +208,15 @@ app.ws("/play", {
         if (Config.protection) {
             const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections;
             const maxJoinAttempts = Config.protection.maxJoinAttempts;
-            const rateLimited = rateLimitedIPs.has(ip);
             const exceededRateLimits =
                 (maxSimultaneousConnections !== undefined && simultaneousConnections[ip] >= maxSimultaneousConnections) ||
                 (maxJoinAttempts !== undefined && connectionAttempts[ip] >= maxJoinAttempts.count);
 
             if (
-                tempBannedIPs.has(ip) ||
-                permaBannedIPs.has(ip) ||
-                rateLimited ||
+                punishments[ip] ||
                 exceededRateLimits
             ) {
-                if (exceededRateLimits && !rateLimited) rateLimitedIPs.add(ip);
+                if (exceededRateLimits && !punishments[ip]) punishments[ip] = { type: "rateLimit" };
                 forbidden(res);
                 Logger.warn(`Connection blocked: ${ip}`);
                 return;
@@ -335,43 +359,39 @@ app.listen(Config.host, Config.port, (): void => {
         }
 
         setInterval(() => {
-            rateLimitedIPs.clear();
-            const processBanRecords = (records: BanRecord[]): void => {
-                permaBannedIPs.clear();
-                tempBannedIPs.clear();
-                const now = Date.now();
-                for (const record of records) {
-                    if (record.expires === undefined) {
-                        permaBannedIPs.add(record.ip);
-                    } else if (record.expires > now) {
-                        tempBannedIPs.add(record.ip);
-                    }
-                }
-                Logger.log("Reloaded list of banned IPs");
-            };
-
-            if (protection.ipBanList?.url) {
+            if (protection.punishments?.url) {
                 void (async() => {
                     try {
-                        if (!protection.ipBanList?.url) return;
-                        const response = await fetch(protection.ipBanList.url, { headers: { Password: protection.ipBanList.password } });
-                        if (response.ok) processBanRecords(await response.json());
-                        else console.error("Error: Unable to fetch list of banned IPs.");
+                        if (!protection.punishments?.url) return;
+                        const response = await fetch(`${protection.punishments.url}/api/punishments`, { headers: { Password: protection.punishments.password } });
+                        if (response.ok) punishments = await response.json();
+                        else console.error("Error: Unable to fetch punishment list.");
                     } catch (e) {
-                        console.error("Error: Unable to fetch list of banned IPs. Details:", e);
+                        console.error("Error: Unable to fetch punishment list. Details:", e);
                     }
                 })();
             } else {
-                if (!existsSync("bannedIPs.json")) writeFileSync("bannedIPs.json", "[]");
-                readFile("bannedIPs.json", "utf8", (error, data) => {
-                    if (error) {
+                if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
+                readFile("punishments.json", "utf8", (error, data) => {
+                    if (!error) {
+                        punishments = JSON.parse(data);
+                    } else {
                         console.error(error);
-                        return;
                     }
-                    rawBanRecords = JSON.parse(data);
-                    processBanRecords(rawBanRecords);
                 });
             }
+
+            const now = Date.now();
+            for (const [ip, punishment] of Object.entries(punishments)) {
+                if (
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                    (punishment.expires && punishment.expires < now) ||
+                    punishment.type === "rateLimit"
+                    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+                ) delete punishments[ip];
+            }
+
+            Logger.log("Reloaded punishment list");
         }, protection.refreshDuration);
     }
 });

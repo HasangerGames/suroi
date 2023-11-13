@@ -7,15 +7,23 @@
     "build": "pnpm -r build",
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
+
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-    "moderation": "cd server && pnpm moderation",
-    "validateDefinitions": "cd server && pnpm validateDefinitions",
+
+    "moderation": "cd server && node --enable-source-maps dist/server/src/moderation.js",
+    "warn": "pnpm moderation warn",
+    "ban": "pnpm moderation ban",
+    "unban": "pnpm moderation unban",
+
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd server && pnpm dev:test",
+
     "lint": "pnpm -r lint",
     "lint:ci": "pnpm -r lint:ci",
+    "validateDefinitions": "cd server && pnpm validateDefinitions",
+
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules && pnpm install"
   },
   "keywords": [

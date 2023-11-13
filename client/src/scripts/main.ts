@@ -135,7 +135,7 @@ $(async(): Promise<void> => {
         lastPlayButtonClickTime = now;
         disablePlayButton("Connecting...");
         const urlPart = `${selectedRegion.https ? "s" : ""}://${selectedRegion.address}`;
-        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "tempBanned" | "permaBanned" | "rateLimited", gameID: number }) => {
+        void $.get(`http${urlPart}/api/getGame`, (data: { success: boolean, message?: "rateLimit" | "warning" | "tempBan" | "permaBan", gameID: number }) => {
             if (data.success) {
                 let address = `ws${urlPart}/play?gameID=${data.gameID}`;
 
@@ -152,24 +152,44 @@ $(async(): Promise<void> => {
                 game.connect(address);
                 $("#splash-server-message").hide();
             } else {
+                let showWarningModal = false;
+                let title: string | undefined;
                 let message: string;
                 switch (data.message) {
-                    case "tempBanned":
-                        message = "You have been banned for 1 day. Reason: Teaming";
-                        break;
-                    case "permaBanned":
-                        message = "<strong>You have been permanently banned!</strong><br>Reason: Hacking";
-                        break;
-                    case "rateLimited":
+                    case "rateLimit":
                         message = "Error joining game.<br>Please try again in a few minutes.";
                         break;
+                    case "warning":
+                        showWarningModal = true;
+                        title = "Teaming is against the rules!";
+                        message = "You have been reported for teaming. Allying with other players for extended periods is not allowed. If you continue to team, you will be banned.";
+                        break;
+                    case "tempBan":
+                        showWarningModal = true;
+                        title = "You have been banned for 1 day for teaming!";
+                        message = "Remember, allying with other players for extended periods is not allowed!";
+                        break;
+                    case "permaBan":
+                        showWarningModal = true;
+                        title = "You have been permanently banned for hacking!";
+                        message = "The use of scripts, plugins, extensions, etc. to modify the game in order to gain an advantage over opponents is strictly forbidden.";
+                        break;
                     default:
-                        message = "Error joining game.";
+                        message = "Error joining game.<br>Please try again in 30 seconds.";
                         break;
                 }
-                $("#splash-server-message-text").html(message);
-                $("#splash-server-message").show();
                 enablePlayButton();
+                if (showWarningModal) {
+                    $("#warning-modal-title").text(title ?? "");
+                    $("#warning-modal-text").text(message ?? "");
+                    $("#warning-modal-agree-options").toggle(data.message === "warning");
+                    $("#warning-modal-agree-checkbox").prop("checked", false);
+                    $("#warning-modal").show();
+                    $("#btn-play-solo").addClass("btn-disabled");
+                } else {
+                    $("#splash-server-message-text").html(message);
+                    $("#splash-server-message").show();
+                }
             }
         }).fail(() => {
             $("#splash-server-message-text").html("Error finding game.<br>Please try again.");
