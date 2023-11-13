@@ -24,7 +24,7 @@ export function setupUI(game: Game): void {
 
         // Spectating message
         $("#spectating-msg-player").html("Player");
-        $("#spectating-msg").show();
+        $("#spectating-container").show();
 
         // Gas message
         $("#gas-msg-info")

@@ -168,8 +168,7 @@ export class Game {
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
                 $("#kill-feed").html("");
-                $("#spectating-msg").hide();
-                $("#spectating-buttons-container").hide();
+                $("#spectating-container").hide();
                 $("#joysticks-containers").show();
             }
 
@@ -308,6 +307,7 @@ export class Game {
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
+        $("#btn-spectate-kill-leader").hide();
     }
 
     endGame(): void {

@@ -194,8 +194,6 @@
           <div id="coordinates-hud"></div>
         </div>
       </div>
-      <div class="inventory-container" id="scopes-container">
-    </div>
 
       <div class="ui-leaderboard">
         <div id="ui-kill-leader">
@@ -245,19 +243,25 @@
         <span id="killstreak-indicator-counter">Streak: 0</span>
       </div>
     </div>
-    <div id="spectating-buttons-container" style="display: none">
-      <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
-      <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
-      <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
-      <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
+
+    <div id="center-top-container">
+      <div class="inventory-container" id="scopes-container"></div>
+      <div id="spectating-container" style="display: none">
+        <div id="spectating-msg">
+          Spectating <span id="spectating-msg-player"></span>
+        </div>
+        <div id="spectating-buttons-container">
+          <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
+          <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
+          <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+          <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
+        </div>
+      </div>
+      <div id="gas-msg" style="display: none">
+        <div id="gas-msg-info"></div>
+      </div>
     </div>
-    <div id="spectating-msg" style="display: none">
-      <span style="font-weight: 600; margin-left: 3px">Spectating</span>
-      <span id="spectating-msg-player"></span>
-    </div>
-    <div id="gas-msg" style="display: none">
-      <div id="gas-msg-info"></div>
-    </div>
+
     <div id="kill-msg" style="display: none">
       <div id="kill-msg-kills"></div>
       You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>

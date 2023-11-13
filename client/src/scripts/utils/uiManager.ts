@@ -154,7 +154,7 @@ export class UIManager {
                 $("#game-over-overlay").fadeOut();
                 $("#spectating-msg-player").html(this.getPlayerName(data.id));
             }
-            $("#spectating-msg, #spectating-buttons-container").toggle(data.spectating);
+            $("#spectating-container").toggle(data.spectating);
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;
@@ -446,6 +446,7 @@ export class UIManager {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
+                $("#btn-spectate-kill-leader").show();
                 break;
             }
 
@@ -462,6 +463,7 @@ export class UIManager {
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
+                $("#btn-spectate-kill-leader").hide();
                 break;
             }
         }
