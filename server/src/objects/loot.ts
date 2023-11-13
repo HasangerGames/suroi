@@ -1,5 +1,6 @@
 import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
+import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { circleCircleIntersection, clamp, distance, velFromAngle } from "../../../common/src/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
@@ -8,7 +9,6 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { PickupPacket } from "../packets/sending/pickupPacket";
 import { GameObject } from "../types/gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
@@ -168,7 +168,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             }
             case ItemType.Gun: {
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
-                    inventory.appendWeapon(this.definition.idString);
+                    const slot = inventory.appendWeapon(this.definition.idString);
+                    if (inventory.activeWeaponIndex > 1) inventory.setActiveWeaponIndex(slot);
                 } else if (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition) {
                     if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition.idString);
@@ -204,7 +205,6 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                         player.inventory.vest = this.definition;
                 }
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
@@ -212,13 +212,11 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 if ((player.inventory.backpack?.level ?? 0) > 0) createNewItem(player.inventory.backpack);
                 player.inventory.backpack = this.definition;
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
             case ItemType.Scope: {
                 inventory.items[this.definition.idString] = 1;
-                player.dirty.inventory = true;
 
                 if (this.definition.zoomLevel > player.inventory.scope.zoomLevel) {
                     player.inventory.scope = this.definition.idString;
@@ -230,19 +228,20 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 createNewItem(player.loadout.skin);
                 player.loadout.skin = this.definition;
 
-                player.fullDirtyObjects.add(player);
                 this.game.fullDirtyObjects.add(player);
                 break;
             }
         }
 
-        player.dirty.inventory = true;
+        player.dirty.items = true;
 
         // Destroy the old loot
         this.game.removeLoot(this);
 
         // Send pickup packet
-        player.sendPacket(new PickupPacket(player, this.definition.idString));
+        const packet = new PickupPacket();
+        packet.item = this.definition;
+        player.sendPacket(packet);
 
         // If the item wasn't deleted, create a new loot item pushed slightly away from the player
         if (!deleteItem) createNewItem();

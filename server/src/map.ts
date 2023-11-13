@@ -8,6 +8,7 @@ import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "..
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
+import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { type Game } from "./game";
@@ -29,16 +30,19 @@ export class Map {
 
     readonly seed = random(0, 2 ** 31);
 
-    readonly places: Array<{
-        readonly name: string
-        readonly position: Vector
-    }> = [];
-
     readonly rivers: River[];
 
     readonly riverSpawnHitboxes: PolygonHitbox[];
 
     readonly terrainGrid: TerrainGrid;
+
+    readonly packet: MapPacket;
+
+    /**
+    * A cached map packet buffer
+    * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
+    */
+    readonly buffer: ArrayBuffer;
 
     constructor(game: Game, mapName: string) {
         const mapStartTime = Date.now();
@@ -46,12 +50,14 @@ export class Map {
 
         const mapDefinition = Maps[mapName];
 
-        this.seed = random(0, 2 ** 31);
+        const packet = this.packet = new MapPacket();
 
-        this.width = mapDefinition.width;
-        this.height = mapDefinition.height;
-        this.oceanSize = mapDefinition.oceanSize;
-        this.beachSize = mapDefinition.beachSize;
+        this.seed = packet.seed = random(0, 2 ** 31);
+
+        this.width = packet.width = mapDefinition.width;
+        this.height = packet.height = mapDefinition.height;
+        this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
+        this.beachSize = packet.beachSize = mapDefinition.beachSize;
 
         const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
 
@@ -73,7 +79,7 @@ export class Map {
             v(this.width - mapDefinition.oceanSize, this.height - mapDefinition.oceanSize)
         );
 
-        this.rivers = Array.from(
+        this.rivers = packet.rivers = Array.from(
             { length: mapDefinition.rivers ?? 0 },
             () => {
                 const riverPoints: Vector[] = [];
@@ -223,12 +229,15 @@ export class Map {
                     this.height * (place.position.y + randomFloat(-0.04, 0.04))
                 );
 
-                this.places.push({
+                packet.places.push({
                     name: place.name,
                     position
                 });
             }
         }
+
+        packet.serialize();
+        this.buffer = packet.getBuffer();
 
         Logger.log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
@@ -342,7 +351,7 @@ export class Map {
             this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
         }
 
-        if (!definition.hideOnMap) this.game.minimapObjects.add(building);
+        if (!definition.hideOnMap) this.packet.objects.push(building);
         this.game.grid.addObject(building);
         return building;
     }
@@ -424,7 +433,7 @@ export class Map {
             lootSpawnOffset,
             parentBuilding
         );
-        if (!definition.hideOnMap) this.game.minimapObjects.add(obstacle);
+        if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         return obstacle;
     }

@@ -271,17 +271,17 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "15x_scope", weight: 0.00025 }
     ],
     equipment: [
-        { item: "helmet_1", weight: 1 },
-        { item: "helmet_2", weight: 0.3 },
-        { item: "helmet_3", weight: 0.1 },
+        { item: "basic_helmet", weight: 1 },
+        { item: "regular_helmet", weight: 0.3 },
+        { item: "tactical_helmet", weight: 0.1 },
 
-        { item: "vest_1", weight: 1 },
-        { item: "vest_2", weight: 0.3 },
-        { item: "vest_3", weight: 0.1 },
+        { item: "basic_vest", weight: 1 },
+        { item: "regular_vest", weight: 0.3 },
+        { item: "tactical_vest", weight: 0.1 },
 
-        { item: "pack_1", weight: 1 },
-        { item: "pack_2", weight: 0.3 },
-        { item: "pack_3", weight: 0.1 }
+        { item: "basic_pack", weight: 1 },
+        { item: "regular_pack", weight: 0.3 },
+        { item: "tactical_pack", weight: 0.1 }
     ],
     ammo: [
         { item: "12g", count: 10, weight: 0.75 },
@@ -326,17 +326,17 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "15x_scope", weight: 0.005 }
     ],
     special_equipment: [
-        { item: "helmet_1", weight: 1 },
-        { item: "helmet_2", weight: 0.5 },
-        { item: "helmet_3", weight: 0.15 },
+        { item: "basic_helmet", weight: 1 },
+        { item: "regular_helmet", weight: 0.5 },
+        { item: "tactical_helmet", weight: 0.15 },
 
-        { item: "vest_1", weight: 1 },
-        { item: "vest_2", weight: 0.5 },
-        { item: "vest_3", weight: 0.15 },
+        { item: "basic_vest", weight: 1 },
+        { item: "regular_vest", weight: 0.5 },
+        { item: "tactical_vest", weight: 0.15 },
 
-        { item: "pack_1", weight: 1 },
-        { item: "pack_2", weight: 0.5 },
-        { item: "pack_3", weight: 0.15 }
+        { item: "basic_pack", weight: 1 },
+        { item: "regular_pack", weight: 0.5 },
+        { item: "tactical_pack", weight: 0.15 }
     ],
     melee: [
         { item: "baseball_bat", weight: 4 },

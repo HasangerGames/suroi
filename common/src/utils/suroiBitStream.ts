@@ -1,5 +1,5 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { InputActions, KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
+import { KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
@@ -11,8 +11,6 @@ export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
-export const INPUT_ACTIONS_BITS = calculateEnumPacketBits(InputActions);
-export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 
 export class SuroiBitStream extends BitStream {
@@ -283,32 +281,5 @@ export class SuroiBitStream extends BitStream {
      */
     readPlayerName(): string {
         return this.readASCIIString(PLAYER_NAME_MAX_LENGTH);
-    }
-
-    /**
-     * Write a player name with dev colors to the stream.
-     * @param player The player to write the name of
-     */
-    writePlayerNameWithColor(player: { name: string, isDev: boolean, nameColor: string }): void {
-        this.writePlayerName(player.name);
-
-        const hasColor = player.isDev && player.nameColor.length > 0;
-
-        this.writeBoolean(hasColor);
-        if (hasColor) {
-            this.writeUTF8String(player.nameColor, 10);
-        }
-    }
-
-    /**
-     * Read a player name with dev colors from the stream.
-     * @return A player name wrapped in a span element, with color if it's a dev
-     */
-    readPlayerNameWithColor(): string {
-        const playerName = this.readPlayerName();
-        const hasColor = this.readBoolean();
-        const style = hasColor ? `style="color: ${this.readUTF8String(10)}"` : "";
-
-        return `<span ${style}>${playerName}</span>`;
     }
 }

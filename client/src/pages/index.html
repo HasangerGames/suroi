@@ -194,8 +194,6 @@
           <div id="coordinates-hud"></div>
         </div>
       </div>
-      <div class="inventory-container" id="scopes-container">
-    </div>
 
       <div class="ui-leaderboard">
         <div id="ui-kill-leader">
@@ -245,18 +243,25 @@
         <span id="killstreak-indicator-counter">Streak: 0</span>
       </div>
     </div>
-    <div id="spectating-buttons-container" style="display: none">
-      <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
-      <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
-      <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
-      <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
+
+    <div id="center-top-container">
+      <div class="inventory-container" id="scopes-container"></div>
+      <div id="spectating-container" style="display: none">
+        <div id="spectating-msg">
+          Spectating <span id="spectating-msg-player"></span>
+        </div>
+        <div id="spectating-buttons-container">
+          <button id="btn-spectate-previous" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-left"></i></button>
+          <button id="btn-report" class="btn btn-lg btn-danger">Report</button>
+          <button id="btn-spectate-next" class="btn btn-lg btn-primary"><i class="fa-solid fa-arrow-right"></i></button>
+          <button id="btn-spectate-kill-leader" class="btn btn-lg btn-secondary">Spectate Kill Leader</button>
+        </div>
+      </div>
+      <div id="gas-msg" style="display: none">
+        <div id="gas-msg-info"></div>
+      </div>
     </div>
-    <div id="spectating-msg" style="display: none">
-      <div id="spectating-msg-info"></div>
-    </div>
-    <div id="gas-msg" style="display: none">
-      <div id="gas-msg-info"></div>
-    </div>
+
     <div id="kill-msg" style="display: none">
       <div id="kill-msg-kills"></div>
       You killed <span id="kill-msg-player-name"></span><span id="kill-msg-weapon-used"></span>
@@ -389,6 +394,19 @@
       </ol>
     </div>
   </div>
+  <div class="modal dialog" id="warning-modal" style="display: none">
+    <div id="warning-modal-content">
+      <h1 style="color: red; text-align: center" id="warning-modal-title"></h1>
+      <p id="warning-modal-text"></p>
+      <div id="warning-modal-agree-options" style="display: none">
+        <br>
+        <input type="checkbox" class="regular-checkbox" id="warning-modal-agree-checkbox">
+        <label for="warning-modal-agree-checkbox">I agree not to team</label>
+        <br><br>
+        <button class="btn btn-lg btn-darken btn-primary btn-disabled" id="warning-btn-play-solo" style="width: 100%">Play <strong>Solo</strong></button>
+      </div>
+    </div>
+  </div>
   <div class="modal dialog" id="settings-menu" style="display: none">
     <div class="dialog-header">
       <h3>Settings</h3>
@@ -405,7 +423,6 @@
       </div>
       <div id="settings-tabs" class="persistent-scrollbar">
         <div class="tab-content active" id="tab-volume-content">
-          <p style="color: red"><i>* Requires reload to apply</i></p>
           <div class="modal-item">
             <label>
               <span class="setting-title">Master Volume</span>
@@ -427,20 +444,20 @@
               <input type="range" max="1" min="0" id="slider-music-volume" step="0.1" value="1">
             </label>
           </div>
-          <div class="modal-item checkbox-setting" title="Requires restart">
+          <div class="modal-item checkbox-setting">
             <label>
               <span class="setting-title">Old menu music<i>*</i></span>
               <input type="checkbox" id="toggle-old-music">
             </label>
           </div>
+          <p style="color: red"><i>* Requires reload to apply</i></p>
         </div>
         <div class="tab-content" id="tab-keybinds-content" style="display: none">
         </div>
         <div class="tab-content" id="tab-graphics-content" style="display: none">
-          <p style="color: red"><i>* Requires reload to apply</i></p>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title">Anti-Aliasing<i>*</i></span>
+              <span class="setting-title">Anti-aliasing<i>*</i></span>
               <input type="checkbox" id="toggle-antialias">
             </label>
           </div>
@@ -452,10 +469,17 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
+              <span class="setting-title">Responsive rotation</span>
+              <input type="checkbox" id="toggle-responsive-rotation">
+            </label>
+          </div>
+          <div class="modal-item checkbox-setting">
+            <label>
               <span class="setting-title">Camera shake</span>
               <input type="checkbox" id="toggle-camera-shake">
             </label>
           </div>
+          <p style="color: red"><i>* Requires reload to apply</i></p>
         </div>
         <div class="tab-content" id="tab-interface-content" style="display: none">
           <div class="modal-item">

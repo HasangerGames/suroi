@@ -1,16 +1,18 @@
 import "@pixi/graphics-extras";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
-import { GRID_SIZE, GasState, ZIndexes } from "../../../../common/src/constants";
+import { GRID_SIZE, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
 import { addAdjust } from "../../../../common/src/utils/math";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type MapPacket } from "../packets/receiving/mapPacket";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
-import { Gas } from "./gas";
+import { GasRender } from "./gas";
 import { MODE } from "../../../../common/src/definitions/modes";
+import { type MapPacket } from "../../../../common/src/packets/mapPacket";
+import { type Orientation } from "../../../../common/src/typings";
+import { orientationToRotation } from "../utils/misc";
 
 export class Minimap {
     container = new Container();
@@ -39,7 +41,7 @@ export class Minimap {
 
     margins = v(0, 0);
 
-    readonly gas = new Gas(1, this.objectsContainer);
+    readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
     terrainGrid: TerrainGrid;
 
@@ -51,6 +53,8 @@ export class Minimap {
 
         this.container.addChild(this.objectsContainer);
 
+        this.container.addChild(this.gasRender.graphics);
+
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
@@ -58,10 +62,10 @@ export class Minimap {
 
         this.indicator.scale.set(0.1);
 
-        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gas.graphics, this.gasGraphics, this.indicator).sortChildren();
+        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         this.borderContainer.on("click", e => {
-            if (!isMobile.any) return;
+            if (!this.game.inputManager.isMobile) return;
             this.switchToBigMap();
             e.stopImmediatePropagation();
         });
@@ -168,13 +172,15 @@ export class Minimap {
             ctx.endFill();
             ctx.lineStyle();
 
-            for (const building of mapPacket.buildings) {
-                const definition = building.type;
+            for (const building of mapPacket.objects) {
+                if (building.type !== ObjectCategory.Building) continue;
+
+                const definition = building.definition;
                 if (definition.groundGraphics) {
                     for (const ground of definition.groundGraphics) {
                         ctx.beginFill(ground.color);
 
-                        const hitbox = ground.hitbox.transform(building.position, 1, building.orientation);
+                        const hitbox = ground.hitbox.transform(building.position, 1, building.rotation as Orientation);
                         if (hitbox instanceof RectangleHitbox) {
                             const width = hitbox.max.x - hitbox.min.x;
                             const height = hitbox.max.y - hitbox.min.y;
@@ -197,57 +203,65 @@ export class Minimap {
         const mapRender = new Container();
         mapRender.addChild(mapGraphics);
 
-        for (const obstacle of mapPacket.obstacles) {
-            const definition = obstacle.type;
+        for (const mapObject of mapPacket.objects) {
+            switch (mapObject.type) {
+                case ObjectCategory.Obstacle: {
+                    const definition = mapObject.definition;
 
-            let texture = definition.frames?.base ?? definition.idString;
+                    let texture = definition.frames?.base ?? definition.idString;
 
-            if (obstacle.variation !== undefined) texture += `_${obstacle.variation + 1}`;
+                    if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
 
-            const reskin = MODE.reskin;
-            if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
+                    const reskin = MODE.reskin;
+                    if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
-            // Create the object image
-            const image = new SuroiSprite(texture)
-                .setVPos(obstacle.position).setRotation(obstacle.rotation)
-                .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
+                    const image = new SuroiSprite(texture)
+                        .setVPos(mapObject.position).setRotation(mapObject.rotation)
+                        .setZIndex(definition.zIndex ?? ZIndexes.ObstaclesLayer1);
 
-            if (definition.tint !== undefined) image.setTint(definition.tint);
-            image.scale.set(obstacle.scale * (1 / PIXI_SCALE));
+                    if (definition.tint !== undefined) image.setTint(definition.tint);
+                    image.scale.set(mapObject.scale * (1 / PIXI_SCALE));
 
-            mapRender.addChild(image);
+                    mapRender.addChild(image);
+                }
+                    break;
+
+                case ObjectCategory.Building: {
+                    const definition = mapObject.definition;
+
+                    const rotation = orientationToRotation(mapObject.rotation);
+
+                    for (const image of definition.floorImages ?? []) {
+                        const sprite = new SuroiSprite(image.key)
+                            .setVPos(addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setRotation(rotation)
+                            .setZIndex(ZIndexes.Ground);
+
+                        if (image.tint !== undefined) sprite.setTint(image.tint);
+                        sprite.scale.set(1 / PIXI_SCALE);
+                        mapRender.addChild(sprite);
+                    }
+
+                    for (const image of definition.ceilingImages ?? []) {
+                        const sprite = new SuroiSprite(image.key)
+                            .setVPos(addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
+                            .setRotation(rotation)
+                            .setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
+
+                        sprite.scale.set(1 / PIXI_SCALE);
+                        if (image.tint !== undefined) sprite.setTint(image.tint);
+                        mapRender.addChild(sprite);
+                    }
+
+                    for (const floor of definition.floors ?? []) {
+                        const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
+                        this.terrainGrid.addFloor(floor.type, hitbox);
+                    }
+                }
+                    break;
+            }
         }
 
-        for (const building of mapPacket.buildings) {
-            const definition = building.type;
-
-            for (const image of definition.floorImages ?? []) {
-                const sprite = new SuroiSprite(image.key)
-                    .setVPos(addAdjust(building.position, image.position, building.orientation))
-                    .setRotation(building.rotation)
-                    .setZIndex(ZIndexes.Ground);
-
-                if (image.tint !== undefined) sprite.setTint(image.tint);
-                sprite.scale.set(1 / PIXI_SCALE);
-                mapRender.addChild(sprite);
-            }
-
-            for (const image of definition.ceilingImages ?? []) {
-                const sprite = new SuroiSprite(image.key)
-                    .setVPos(addAdjust(building.position, image.position, building.orientation))
-                    .setRotation(building.rotation)
-                    .setZIndex(definition.ceilingZIndex ?? ZIndexes.BuildingsCeiling);
-
-                sprite.scale.set(1 / PIXI_SCALE);
-                if (image.tint !== undefined) sprite.setTint(image.tint);
-                mapRender.addChild(sprite);
-            }
-
-            for (const floor of definition.floors ?? []) {
-                const hitbox = floor.hitbox.transform(building.position, 1, building.orientation);
-                this.terrainGrid.addFloor(floor.type, hitbox);
-            }
-        }
         mapRender.sortChildren();
 
         for (const river of terrain.rivers) {
@@ -328,22 +342,21 @@ export class Minimap {
     }
 
     update(): void {
-        this.gas.updateFrom(this.game.gas);
-        this.gas.update();
+        this.gasRender.update(this.game.gas);
         // only re-render gas line and circle if something changed
         if (
             (
                 this.position.x === this.lastPosition.x &&
                 this.position.y === this.lastPosition.y &&
-                this.gas.newRadius === this.gasRadius &&
-                this.gas.newPosition.x === this.gasPos.x &&
-                this.gas.newPosition.y === this.gasPos.y
-            ) || this.gas.state === GasState.Inactive
+                this.game.gas.newRadius === this.gasRadius &&
+                this.game.gas.newPosition.x === this.gasPos.x &&
+                this.game.gas.newPosition.y === this.gasPos.y
+            ) || this.game.gas.state === GasState.Inactive
         ) return;
 
         this.lastPosition = this.position;
-        this.gasPos = this.gas.newPosition;
-        this.gasRadius = this.gas.newRadius;
+        this.gasPos = this.game.gas.newPosition;
+        this.gasRadius = this.game.gas.newRadius;
 
         this.gasGraphics.clear();
 

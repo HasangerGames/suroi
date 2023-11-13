@@ -1,7 +1,10 @@
+// noinspection JSConstantReassignment
+
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { type ScopeDefinition, Scopes } from "../../../../../common/src/definitions/scopes";
+import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { absMod } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
@@ -9,7 +12,6 @@ import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
-import { SpectatePacket } from "../../packets/sending/spectatePacket";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 
@@ -142,7 +144,11 @@ export function setUpCommands(game: Game): void {
             spectateAction
                 ? function(): undefined {
                     this.inputManager.movement[name] = true;
-                    if (this.spectating) this.sendPacket(new SpectatePacket(this.playerManager, spectateAction));
+                    if (this.spectating) {
+                        const packet = new SpectatePacket();
+                        packet.spectateAction = spectateAction;
+                        this.sendPacket(packet);
+                    }
                 }
                 : function(): undefined {
                     this.inputManager.movement[name] = true;
@@ -241,10 +247,14 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "other_weapon",
         function(): undefined {
-            let index = this.inputManager.activeItemIndex === 0 || (this.playerManager.weapons[0] === undefined && this.inputManager.activeItemIndex !== 1) ? 1 : 0;
+            let index = this.uiManager.inventory.activeWeaponIndex === 0 ||
+                (this.uiManager.inventory.weapons[0] === undefined &&
+                    this.uiManager.inventory.activeWeaponIndex !== 1)
+                ? 1
+                : 0;
 
             // fallback to melee if there's no weapon on the slot
-            if (this.playerManager.weapons[index] === undefined) index = 2;
+            if (this.uiManager.inventory.weapons[index] === undefined) index = 2;
             this.inputManager.addAction({
                 type: InputActions.EquipItem,
                 slot: index
@@ -292,10 +302,10 @@ export function setUpCommands(game: Game): void {
                 return { err: `Attempted to cycle items by an invalid offset of '${offset}' slots` };
             }
 
-            let index = absMod((this.inputManager.activeItemIndex + step), INVENTORY_MAX_WEAPONS);
+            let index = absMod((this.uiManager.inventory.activeWeaponIndex + step), INVENTORY_MAX_WEAPONS);
 
             let iterationCount = 0;
-            while (!this.playerManager.weapons[index]) {
+            while (!this.uiManager.inventory.weapons[index]) {
                 index = absMod((index + step), INVENTORY_MAX_WEAPONS);
 
                 /*
@@ -303,7 +313,7 @@ export function setUpCommands(game: Game): void {
                     to run forever, this would prevent that
                 */
                 if (++iterationCount > 100) {
-                    index = this.inputManager.activeItemIndex;
+                    index = this.uiManager.inventory.activeWeaponIndex;
                     break;
                 }
             }
@@ -391,7 +401,7 @@ export function setUpCommands(game: Game): void {
         function(): undefined {
             this.inputManager.addAction({
                 type: InputActions.DropItem,
-                slot: this.inputManager.activeItemIndex
+                slot: this.uiManager.inventory.activeWeaponIndex
             });
         },
         game,

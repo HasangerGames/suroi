@@ -58,7 +58,7 @@ export class ReloadAction extends Action {
         if (definition.singleReload) this.item.reload();
         this.player.attacking = false;
         this.player.dirty.weapons = true;
-        this.player.dirty.inventory = true;
+        this.player.dirty.items = true;
     }
 }
 
@@ -88,6 +88,6 @@ export class HealingAction extends Action {
                 this.player.adrenaline += this.item.restoreAmount;
                 break;
         }
-        this.player.dirty.inventory = true;
+        this.player.dirty.items = true;
     }
 }

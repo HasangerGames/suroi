@@ -2,7 +2,8 @@
 @import "../palette.scss";
 
 #settings-menu,
-#report-modal {
+#report-modal,
+#warning-modal {
     background-color: $bg;
     max-width: 450px;
 }
@@ -11,7 +12,7 @@
     margin-left: 5px;
 }
 
-#report-modal-content {
+#report-modal-content, #warning-modal-content {
     padding: 1rem;
 
     p {

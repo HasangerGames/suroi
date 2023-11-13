@@ -9,25 +9,14 @@ import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
-import { Loots, type LootDefinition } from "../../../../common/src/definitions/loots";
-
-export type InputAction = {
-    readonly type: InputActions.UseItem
-    readonly item: LootDefinition
-} | {
-    readonly type: InputActions.EquipItem | InputActions.DropItem
-    readonly slot: number
-} | {
-    readonly type: InputActions
-};
+import { Loots } from "../../../../common/src/definitions/loots";
+import { type InputAction, InputPacket } from "../../../../common/src/packets/inputPacket";
 
 export class InputManager {
     readonly game: Game;
     readonly binds: InputMapper;
 
-    get isMobile(): boolean {
-        return isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
-    }
+    readonly isMobile!: boolean;
 
     readonly movement = {
         up: false,
@@ -57,7 +46,8 @@ export class InputManager {
         if (this.actions.length > 7) return;
 
         if (typeof action === "number") {
-            action = { type: action };
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            action = { type: action } as InputAction;
         }
 
         this.actions.push(action);
@@ -73,10 +63,39 @@ export class InputManager {
 
     turning = false;
 
-    activeItemIndex = 2;
+    update(): void {
+        if (this.game.gameOver) return;
+        const packet = new InputPacket();
+        packet.movement = this.movement;
+        packet.attacking = this.attacking;
+
+        packet.turning = this.turning;
+        if (this.turning) {
+            packet.rotation = this.resetAttacking ? this.shootOnReleaseAngle : this.rotation;
+            packet.distanceToMouse = this.distanceToMouse;
+            this.turning = false;
+        }
+
+        packet.isMobile = this.isMobile;
+        if (this.isMobile) {
+            packet.mobile = {
+                angle: this.movementAngle,
+                moving: this.movement.moving
+            };
+        }
+
+        if (this.resetAttacking) {
+            this.attacking = false;
+            this.resetAttacking = false;
+        }
+        packet.actions = this.actions;
+
+        this.game.sendPacket(packet);
+        this.actions.length = 0;
+    }
 
     cycleScope(offset: number): void {
-        const scope = this.game.playerManager.scope;
+        const scope = this.game.uiManager.inventory.scope;
         const scopeId = Scopes.indexOf(scope);
         let scopeString = scope.idString;
         let searchIndex = scopeId;
@@ -90,7 +109,7 @@ export class InputManager {
 
             const scopeCandidate = Scopes[searchIndex].idString;
 
-            if (this.game.playerManager.items[scopeCandidate]) {
+            if (this.game.uiManager.inventory.items[scopeCandidate]) {
                 scopeString = scopeCandidate;
                 break;
             }
@@ -111,6 +130,10 @@ export class InputManager {
 
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
+        //@ts-expect-error init code
+        // noinspection JSConstantReassignment
+        this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
+
         const game = this.game;
 
         const gameUi = $("#game-ui")[0];
@@ -162,7 +185,7 @@ export class InputManager {
                 const gamePos = vDiv(pixiPos, PIXI_SCALE);
                 this.distanceToMouse = distance(game.activePlayer.position, gamePos);
 
-                if (game.console.getBuiltInCVar("cv_movement_smoothing")) {
+                if (game.console.getBuiltInCVar("cv_responsive_rotation")) {
                     game.activePlayer.container.rotation = this.rotation;
                     game.map.indicator.rotation = this.rotation;
                 }
@@ -200,7 +223,7 @@ export class InputManager {
                 if (!rightJoyStickUsed && !shootOnRelease) {
                     this.rotation = movementAngle;
                     this.turning = true;
-                    if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && game.activePlayer) {
+                    if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
                     }
                 }
@@ -215,7 +238,7 @@ export class InputManager {
                 this.rotation = -Math.atan2(data.vector.y, data.vector.x);
                 this.turning = true;
                 const activePlayer = game.activePlayer;
-                if (game.console.getBuiltInCVar("cv_movement_smoothing") && !game.gameOver && activePlayer) {
+                if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && activePlayer) {
                     game.activePlayer.container.rotation = this.rotation;
                 }
 
@@ -538,6 +561,8 @@ export class InputManager {
 
         return name === undefined ? name : `./img/misc/${name}_icon.svg`;
     }
+
+    readonly getPickupBind = (): string => this.binds.getInputsBoundToAction("interact")[0];
 }
 
 class InputMapper {

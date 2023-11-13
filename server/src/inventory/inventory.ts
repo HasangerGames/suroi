@@ -1,4 +1,4 @@
-import { INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { DEFAULT_INVENTORY, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
@@ -9,7 +9,6 @@ import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { absMod } from "../../../common/src/utils/math";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
-import { type SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -32,11 +31,11 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    readonly items: Record<string, number> = {};
+    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
-    backpack: BackpackDefinition = Loots.fromString("pack_0");
+    backpack: BackpackDefinition = Loots.fromString("bag");
 
     private _scope!: ScopeDefinition;
 
@@ -46,13 +45,13 @@ export class Inventory {
 
     set scope(scope: ReifiableDef<ScopeDefinition>) {
         this._scope = Loots.reify<ScopeDefinition>(scope);
-        this.owner.dirty.inventory = true;
+        this.owner.dirty.items = true;
     }
 
     /**
      * An internal array storing weapons
      */
-    private readonly _weapons = new Array<InventoryItem | undefined>(INVENTORY_MAX_WEAPONS);
+    readonly weapons = new Array<InventoryItem | undefined>(INVENTORY_MAX_WEAPONS);
 
     /**
      * Private variable storing the index pointing to the last active weapon
@@ -94,7 +93,7 @@ export class Inventory {
 
         // todo switch penalties, other stuff that should happen when switching items
         // (started)
-        const item = this._weapons[slot];
+        const item = this.weapons[slot];
         const owner = this.owner;
 
         this._lastWeaponIndex = old;
@@ -106,7 +105,7 @@ export class Inventory {
         clearTimeout(owner.bufferedAttack);
 
         if (item !== undefined) {
-            const oldItem = this._weapons[old];
+            const oldItem = this.weapons[old];
             if (oldItem) oldItem.isActive = false;
 
             item.isActive = true;
@@ -139,7 +138,7 @@ export class Inventory {
         owner.recoil.active = false;
 
         if (slot !== old) {
-            owner.dirty.activeWeaponIndex = true;
+            owner.dirty.weapons = true;
             owner.game.fullDirtyObjects.add(this.owner);
         }
         owner.updateAndApplyModifiers();
@@ -153,13 +152,13 @@ export class Inventory {
      */
     get activeWeapon(): InventoryItem<WeaponDefinition> {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this._weapons[this._activeWeaponIndex]!;
+        return this.weapons[this._activeWeaponIndex]!;
     }
 
     /**
      * @return The number of weapons in this inventory
      */
-    get weaponCount(): number { return this._weapons.reduce((acc, item) => acc + +(item !== undefined), 0); }
+    get weaponCount(): number { return this.weapons.reduce((acc, item) => acc + +(item !== undefined), 0); }
 
     /**
      * Creates a new inventory.
@@ -220,15 +219,15 @@ export class Inventory {
     hasWeapon(slot: number): boolean {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to test for item in invalid slot '${slot}'`);
 
-        return this._weapons[slot] !== undefined;
+        return this.weapons[slot] !== undefined;
     }
 
     /**
      * Swaps the items in the gun slots
      */
     swapGunSlots(): void {
-        [this._weapons[0], this._weapons[1]] =
-        [this._weapons[1], this._weapons[0]];
+        [this.weapons[0], this.weapons[1]] =
+            [this.weapons[1], this.weapons[0]];
 
         if (this._activeWeaponIndex < 2) this.setActiveWeaponIndex(1 - this._activeWeaponIndex);
         this.owner.dirty.weapons = true;
@@ -251,7 +250,7 @@ export class Inventory {
 
         if (
             // If the active weapon is being replaced, then we want to swap to the new item when done
-            (slot === this._activeWeaponIndex && this._weapons[slot]?.definition.noDrop !== true) ||
+            (slot === this._activeWeaponIndex && this.weapons[slot]?.definition.noDrop !== true) ||
 
             // Only melee in inventory, swap to new item's slot
             this.weaponCount === 1
@@ -265,7 +264,6 @@ export class Inventory {
 
         if (index !== undefined) {
             this.setActiveWeaponIndex(index);
-            this.owner.dirty.activeWeaponIndex = false;
         }
     }
 
@@ -276,7 +274,7 @@ export class Inventory {
      */
     appendWeapon(item: ReifiableItem): number {
         for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
-            if (this._weapons[slot] === undefined) {
+            if (this.weapons[slot] === undefined) {
                 this._setWeapon(slot, this._reifyItem(item));
                 return slot;
             }
@@ -292,7 +290,7 @@ export class Inventory {
      * @returns The item that was dropped, if any
      */
     dropWeapon(slot: number, pushForce = -10): InventoryItem | undefined {
-        const item = this._weapons[slot];
+        const item = this.weapons[slot];
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
@@ -334,7 +332,7 @@ export class Inventory {
                     .push(this.owner.rotation, pushForce);
             }
 
-            this.owner.dirty.inventory = true;
+            this.owner.dirty.items = true;
         }
 
         this.removeWeapon(slot);
@@ -347,7 +345,7 @@ export class Inventory {
      * Drops all weapons from this inventory
      */
     dropWeapons(): void {
-        for (let i = 0; i < this._weapons.length; i++) {
+        for (let i = 0; i < this.weapons.length; i++) {
             this.dropWeapon(i);
         }
     }
@@ -369,7 +367,7 @@ export class Inventory {
      * @returns Whether the item exists on the inventory
      */
     checkIfWeaponExists(item: string): boolean {
-        return this._weapons.some(weapon => weapon?.definition.idString === item);
+        return this.weapons.some(weapon => weapon?.definition.idString === item);
     }
 
     /**
@@ -378,7 +376,7 @@ export class Inventory {
      * @returns The weapon at the given index, undefined if empty
      */
     getWeapon(index: number): InventoryItem | undefined {
-        return this._weapons[index];
+        return this.weapons[index];
     }
 
     /**
@@ -395,18 +393,18 @@ export class Inventory {
     private _setWeapon(slot: number, item?: InventoryItem): InventoryItem | undefined {
         if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to set weapon in invalid slot '${slot}'`);
 
-        const old = this._weapons[slot];
-        this._weapons[slot] = item;
+        const old = this.weapons[slot];
+        this.weapons[slot] = item;
         this.owner.dirty.weapons = true;
         const removal = item === undefined;
 
         if (removal) {
             if (slot === 2) {
-                this._weapons[slot] = new MeleeItem("fists", this.owner);
+                this.weapons[slot] = new MeleeItem("fists", this.owner);
             } else if (slot === this._activeWeaponIndex) {
                 let target = this._activeWeaponIndex;
                 while (!this.hasWeapon(target)) {
-                    target = absMod(target + 1, this._weapons.length);
+                    target = absMod(target + 1, this.weapons.length);
                 }
                 this.setActiveWeaponIndex(target);
             }
@@ -420,7 +418,7 @@ export class Inventory {
             ? 0
             : this._lastWeaponIndex;
         while (!this.hasWeapon(target)) {
-            target = absMod(target - 1, this._weapons.length);
+            target = absMod(target - 1, this.weapons.length);
         }
         this._lastWeaponIndex = target;
 
@@ -456,56 +454,6 @@ export class Inventory {
                 this.scope = definition.idString;
                 break;
             }
-        }
-    }
-
-    /**
-     * Serializes the inventory to send to the client
-     * @param stream The bit stream to write the inventory
-    */
-    serializeInventory(stream: SuroiBitStream): void {
-        const weaponsDirty = this.owner.dirty.weapons || this.owner.fullUpdate;
-        stream.writeBoolean(weaponsDirty);
-        if (weaponsDirty) {
-            this.owner.dirty.weapons = false;
-            for (const item of this._weapons) {
-                stream.writeBoolean(item !== undefined);
-                if (item !== undefined) {
-                    Loots.writeToStream(stream, item.definition);
-                    // TODO: find a better place to send this stuff
-                    if (item instanceof GunItem) {
-                        stream.writeUint8(item.ammo);
-                    }
-
-                    const shouldTrackStats = item.definition.killstreak === true;
-                    stream.writeBoolean(shouldTrackStats);
-                    if (shouldTrackStats) {
-                        stream.writeUint8(item.stats.kills);
-                    }
-                }
-            }
-        }
-
-        const activeWeaponIndexDirty = this.owner.dirty.activeWeaponIndex || this.owner.fullUpdate;
-        stream.writeBoolean(activeWeaponIndexDirty);
-        if (activeWeaponIndexDirty) {
-            this.owner.dirty.activeWeaponIndex = false;
-            stream.writeBits(this.activeWeaponIndex, 2);
-        }
-
-        const inventoryDirty = this.owner.dirty.inventory || this.owner.fullUpdate;
-        stream.writeBoolean(inventoryDirty);
-        if (inventoryDirty) {
-            this.owner.dirty.inventory = false;
-            stream.writeBoolean(this.owner.dead); // if the owner is dead, then everything is 0
-
-            if (!this.owner.dead) {
-                for (const count of Object.values(this.items)) {
-                    stream.writeBoolean(count > 0); // Has item
-                    if (count > 0) stream.writeBits(count, 9);
-                }
-            }
-            Loots.writeToStream(stream, this._scope);
         }
     }
 }

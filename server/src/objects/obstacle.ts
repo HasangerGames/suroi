@@ -216,7 +216,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     canInteract(player?: Player): boolean {
-        return !this.dead && (this.door !== undefined || (this.definition.role === ObstacleSpecialRoles.Activatable && player?.activeItem.definition.idString === this.definition.requiredItem && !this.activated));
+        return !this.dead && (
+            (this.isDoor && (!this.door?.locked || player === undefined)) ||
+            (this.definition.role === ObstacleSpecialRoles.Activatable && player?.activeItem.definition.idString === this.definition.requiredItem && !this.activated)
+        );
     }
 
     interact(player?: Player): void {
@@ -225,9 +228,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         switch (this.definition.role) {
             case ObstacleSpecialRoles.Door:
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                if (!(this.door!.open &&
-                    this.definition.role === ObstacleSpecialRoles.Door &&
-                    this.definition.openOnce)) {
+                if (!(this.door!.open && this.definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;

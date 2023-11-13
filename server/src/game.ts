@@ -1,39 +1,41 @@
-import { OBJECT_ID_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Gas } from "./gas";
 import { Grid } from "./utils/grid";
 import { type GameObject } from "./types/gameObject";
-import { type Obstacle } from "./objects/obstacle";
-import { type Building } from "./objects/building";
 import { Player } from "./objects/player";
 import { Explosion } from "./objects/explosion";
 import { Loot } from "./objects/loot";
 import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
-import { KillFeedPacket } from "./packets/sending/killFeedPacket";
 import {
+    DEFAULT_USERNAME,
     KILL_LEADER_MIN_KILLS,
     KillFeedMessageType,
+    PacketType,
     TICKS_PER_SECOND
 } from "../../common/src/constants";
 import { Maps } from "./data/maps";
 import { Config, SpawnMode } from "./config";
 import { Map } from "./map";
-import { MapPacket } from "./packets/sending/mapPacket";
-import { UpdatePacket } from "./packets/sending/updatePacket";
 import { endGame, type PlayerContainer } from "./server";
-import { GameOverPacket } from "./packets/sending/gameOverPacket";
 import { type WebSocket } from "uWebSockets.js";
-import { random, randomPointInsideCircle } from "../../common/src/utils/random";
+import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
-import { JoinedPacket } from "./packets/sending/joinedPacket";
 import { Logger, removeFrom } from "./utils/misc";
-import { type LootDefinition, Loots } from "../../common/src/definitions/loots";
+import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
-import { type ReifiableDef, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { hasBadWords } from "./utils/badWordFilter";
+import { JoinedPacket } from "../../common/src/packets/joinedPacket";
+import { InputPacket } from "../../common/src/packets/inputPacket";
+import { PingPacket } from "../../common/src/packets/pingPacket";
+import { SpectatePacket } from "../../common/src/packets/spectatePacket";
+import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 
 export class Game {
     readonly _id: number;
@@ -41,27 +43,35 @@ export class Game {
 
     map: Map;
 
-    /**
-     * A cached map packet
-     * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
-     */
-    private readonly mapPacketBuffer: ArrayBuffer;
-
     gas: Gas;
 
     readonly grid: Grid<GameObject>;
 
     readonly partialDirtyObjects = new Set<GameObject>();
     readonly fullDirtyObjects = new Set<GameObject>();
-    readonly deletedObjects = new Set<GameObject>();
 
     updateObjects = false;
 
-    readonly minimapObjects = new Set<Obstacle | Building>();
-
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
-    readonly spectatablePlayers: Player[] = [];
+    /**
+     * All players, including disconnected and dead ones
+     */
+    readonly players: Player[] = [];
+
+    /*
+     * Same as players but excluding dead ones
+    */
+    readonly spectablePlayers: Player[] = [];
+
+    /**
+     * New players created this tick
+     */
+    readonly newPlayers: Player[] = [];
+    /**
+    * Players deleted this tick
+    */
+    readonly deletedPlayers: number[] = [];
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
@@ -79,12 +89,14 @@ export class Game {
     /**
      * All kill feed messages this tick
      */
-    readonly killFeedMessages = new Set<KillFeedPacket>();
+    readonly killFeedMessages = new Set<KillFeedMessage>();
 
+    created = false;
     private _started = false;
-    allowJoin = false;
     over = false;
     stopped = false;
+
+    createdTime: number;
 
     startTimeoutID?: NodeJS.Timeout;
 
@@ -107,17 +119,47 @@ export class Game {
         this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height);
         this.map = new Map(this, Config.mapName);
 
-        const mapPacket = new MapPacket(this);
-        const mapPacketStream = SuroiBitStream.alloc(mapPacket.allocBytes);
-        mapPacket.serialize(mapPacketStream);
-        this.mapPacketBuffer = mapPacketStream.buffer.slice(0, Math.ceil(mapPacketStream.index / 8));
-
         this.gas = new Gas(this);
 
-        this.allowJoin = true;
+        this.created = true;
+        this.createdTime = Date.now();
 
         // Start the tick loop
         this.tick(TICKS_PER_SECOND);
+    }
+
+    handlePacket(stream: SuroiBitStream, player: Player): void {
+        switch (stream.readPacketType()) {
+            case PacketType.Join: {
+                if (player.joined) return;
+                const packet = new JoinPacket();
+                packet.deserialize(stream);
+                this.activatePlayer(player, packet);
+                break;
+            }
+            case PacketType.Input: {
+                // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
+                if (!player.joined || player.dead || player.game.over) return;
+
+                const packet = new InputPacket();
+                packet.isMobile = player.isMobile;
+                packet.deserialize(stream);
+                player.processInputs(packet);
+                break;
+            }
+            case PacketType.Spectate: {
+                const packet = new SpectatePacket();
+                packet.deserialize(stream);
+                player.spectate(packet);
+                break;
+            }
+            case PacketType.Ping: {
+                if (Date.now() - player.lastPingTime < 4000) return;
+                player.lastPingTime = Date.now();
+                player.sendPacket(new PingPacket());
+                break;
+            }
+        }
     }
 
     tick(delay: number): void {
@@ -169,66 +211,17 @@ export class Game {
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
 
-                // Calculate visible objects
-                player.ticksSinceLastUpdate++;
-                if (player.ticksSinceLastUpdate > 8 || this.updateObjects) player.updateVisibleObjects();
-
-                // Full objects
-                if (this.fullDirtyObjects.size !== 0) {
-                    for (const object of this.fullDirtyObjects) {
-                        if (player.visibleObjects.has(object)) {
-                            player.fullDirtyObjects.add(object);
-                        }
-                    }
-                }
-
-                // Partial objects
-                if (this.partialDirtyObjects.size !== 0) {
-                    for (const object of this.partialDirtyObjects) {
-                        if (player.visibleObjects.has(object) && !player.fullDirtyObjects.has(object)) {
-                            player.partialDirtyObjects.add(object);
-                        }
-                    }
-                }
-
-                // Deleted objects
-                if (this.deletedObjects.size !== 0) {
-                    for (const object of this.deletedObjects) {
-                        if (player.visibleObjects.has(object) && object !== player) {
-                            player.deletedObjects.add(object);
-                        }
-                    }
-                }
-
-                // Emotes
-                if (this.emotes.size !== 0) {
-                    for (const emote of this.emotes) {
-                        if (player.visibleObjects.has(emote.player)) {
-                            player.emotes.add(emote);
-                        }
-                    }
-                }
-
-                for (const message of this.killFeedMessages) player.sendPacket(message);
-                if (player.spectating === undefined) {
-                    const updatePacket = new UpdatePacket(player);
-                    const updateStream = SuroiBitStream.alloc(updatePacket.allocBytes);
-                    updatePacket.serialize(updateStream);
-                    const buffer = updateStream.buffer.slice(0, Math.ceil(updateStream.index / 8));
-                    player.sendData(buffer);
-                    for (const spectator of player.spectators) {
-                        spectator.sendData(buffer);
-                    }
-                }
+                player.secondUpdate();
             }
 
             // Reset everything
             this.fullDirtyObjects.clear();
             this.partialDirtyObjects.clear();
-            this.deletedObjects.clear();
             this.newBullets.clear();
             this.explosions.clear();
             this.emotes.clear();
+            this.newPlayers.length = 0;
+            this.deletedPlayers.length = 0;
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
@@ -245,11 +238,10 @@ export class Game {
                     lastManStanding.movement.left = false;
                     lastManStanding.movement.right = false;
                     lastManStanding.attacking = false;
-                    lastManStanding.sendPacket(new GameOverPacket(lastManStanding, true));
+                    lastManStanding.sendGameOverPacket(true);
                 }
 
                 // End the game in 1 second
-                this.allowJoin = false;
                 this.over = true;
                 setTimeout(() => endGame(this._id), 1000);
             }
@@ -288,8 +280,8 @@ export class Game {
         }
     }
 
-    killLeaderDead(): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead);
+    killLeaderDead(killer?: Player): void {
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { twoPartyInteraction: true, killerID: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
@@ -300,8 +292,14 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType): void {
-        if (this._killLeader !== undefined) this.killFeedMessages.add(new KillFeedPacket(this._killLeader, messageType));
+    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<KillFeedMessage>): void {
+        if (this._killLeader === undefined) return;
+        this.killFeedMessages.add({
+            messageType,
+            playerID: this._killLeader.id,
+            kills: this._killLeader.kills,
+            ...options
+        });
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
@@ -335,17 +333,39 @@ export class Game {
     }
 
     // Called when a JoinPacket is sent by the client
-    activatePlayer(player: Player): void {
+    activatePlayer(player: Player, packet: JoinPacket): void {
+        let name = packet.name;
+        if (name.length === 0 || (Config.censorUsernames && hasBadWords(name))) name = DEFAULT_USERNAME;
+        player.name = name;
+
+        player.isMobile = packet.isMobile;
+        const skin = packet.skin;
+        if (
+            skin.itemType === ItemType.Skin &&
+            !skin.notInLoadout &&
+            (skin.roleRequired === undefined || skin.roleRequired === player.role)
+        ) {
+            player.loadout.skin = skin;
+        }
+        player.loadout.emotes = packet.emotes;
+
         this.livingPlayers.add(player);
-        this.spectatablePlayers.push(player);
+        this.players.push(player);
+        this.spectablePlayers.push(player);
         this.connectedPlayers.add(player);
+        this.newPlayers.push(player);
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
 
         player.joined = true;
-        player.sendPacket(new JoinedPacket(player));
-        player.sendData(this.mapPacketBuffer);
+
+        const joinedPacket = new JoinedPacket();
+        joinedPacket.emotes = player.loadout.emotes;
+        joinedPacket.serialize();
+        player.sendData(joinedPacket.getBuffer());
+
+        player.sendData(this.map.buffer);
 
         setTimeout(() => { player.disableInvulnerability(); }, 5000);
 
@@ -363,30 +383,24 @@ export class Game {
         player.disconnected = true;
         this.aliveCountDirty = true;
         this.connectedPlayers.delete(player);
-        // TODO Make it possible to spectate disconnected players
-        // (currently not possible because update packets aren't sent to disconnected players)
-        removeFrom(this.spectatablePlayers, player);
+
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
+            this.deletedPlayers.push(player.id);
+            removeFrom(this.players, player);
+            removeFrom(this.spectablePlayers, player);
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
             player.attacking = false;
             this.partialDirtyObjects.add(player);
         }
-        if (this.aliveCount > 0 && player.spectators.size > 0) {
-            if (this.spectatablePlayers.length > 1) {
-                const randomPlayer = this.spectatablePlayers[random(0, this.spectatablePlayers.length - 1)];
-                for (const spectator of player.spectators) {
-                    spectator.spectate(randomPlayer);
-                }
-            }
-            player.spectators = new Set<Player>();
-        }
+
         if (player.spectating !== undefined) {
             player.spectating.spectators.delete(player);
         }
+
         if (this.aliveCount < 2) {
             clearTimeout(this.startTimeoutID);
             this.startTimeoutID = undefined;
@@ -407,7 +421,7 @@ export class Game {
     addLoot(definition: ReifiableDef<LootDefinition>, position: Vector, count?: number): Loot {
         const loot = new Loot(
             this,
-            Loots.reify(definition),
+            definition,
             position,
             count
         );

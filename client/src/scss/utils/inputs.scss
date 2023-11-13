@@ -58,7 +58,7 @@ input[type="range"] {
     }
 }
 
-input[type="checkbox"] {
+input[type="checkbox"]:not(.regular-checkbox) {
     appearance: none;
     -webkit-appearance: none;
     -webkit-tap-highlight-color: transparent;

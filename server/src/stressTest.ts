@@ -1,10 +1,13 @@
 import { WebSocket, type MessageEvent } from "ws";
-import { InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../../common/src/constants";
+import { InputActions, PacketType } from "../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../common/src/definitions/emotes";
 import { Skins } from "../../common/src/definitions/skins";
 import { pickRandomInArray, random, randomBoolean } from "../../common/src/utils/random";
-import { INPUT_ACTIONS_BITS, SuroiBitStream } from "../../common/src/utils/suroiBitStream";
+import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Loots } from "../../common/src/definitions/loots";
+import { type InputAction, InputPacket } from "../../common/src/packets/inputPacket";
+import { JoinPacket } from "../../common/src/packets/joinPacket";
+import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 
 const config = {
     address: "127.0.0.1:8000",
@@ -26,13 +29,19 @@ let allBotsJoined = false;
 let gameData: { success: boolean, address: string, gameID: number };
 
 class Bot {
-    movingUp = false;
-    movingDown = false;
-    movingLeft = false;
-    movingRight = false;
+    moving = {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+    };
+
     shootStart = false;
+
     interact = false;
+
     emote = false;
+
     angle = random(-Math.PI, Math.PI);
     angularSpeed = random(0, 0.1);
 
@@ -65,8 +74,9 @@ class Bot {
             const stream = new SuroiBitStream(message.data as ArrayBuffer);
             switch (stream.readPacketType()) {
                 case PacketType.GameOver: {
-                    const won = stream.readBoolean();
-                    console.log(`Bot ${id} ${won ? "won" : "died"}`);
+                    const packet = new GameOverPacket();
+                    packet.deserialize(stream);
+                    console.log(`Bot ${id} ${packet.won ? "won" : "died"} | kills: ${packet.kills} | rank: ${packet.rank}`);
                     this.disconnect = true;
                     this.connected = false;
                     this.ws.close();
@@ -77,71 +87,65 @@ class Bot {
 
     join(): void {
         this.connected = true;
-        const stream = SuroiBitStream.alloc(24);
-        stream.writePacketType(PacketType.Join);
-        stream.writePlayerName(`BOT_${this.id}`);
-        stream.writeBoolean(false); // is mobile
-        // loadout
-        const skin = pickRandomInArray(skins);
+
+        const joinPacket = new JoinPacket();
+
+        joinPacket.name = `BOT_${this.id}`;
+        joinPacket.isMobile = false;
+
+        joinPacket.skin = Loots.reify(pickRandomInArray(skins));
         const emote = (): EmoteDefinition => pickRandomInArray(Emotes.definitions);
-        Loots.writeToStream(stream, skin);
-        Emotes.writeToStream(stream, emote());
-        Emotes.writeToStream(stream, emote());
-        Emotes.writeToStream(stream, emote());
-        Emotes.writeToStream(stream, emote());
-        this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
+        joinPacket.emotes = [emote(), emote(), emote(), emote()];
+
+        joinPacket.serialize();
+
+        this.ws.send(joinPacket.getBuffer());
     }
 
     sendInputs(): void {
         if (!this.connected) return;
 
-        const stream = SuroiBitStream.alloc(128);
-        stream.writePacketType(PacketType.Input);
-        stream.writeBoolean(this.movingUp);
-        stream.writeBoolean(this.movingDown);
-        stream.writeBoolean(this.movingLeft);
-        stream.writeBoolean(this.movingRight);
+        const inputPacket = new InputPacket();
 
-        stream.writeBoolean(this.shootStart);
-        stream.writeBoolean(true); // rotating
-        stream.writeRotation(this.angle, 16);
-        stream.writeFloat(this.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
+        inputPacket.movement = this.moving;
+        inputPacket.attacking = this.shootStart;
+        inputPacket.turning = true;
+        inputPacket.rotation = this.angle;
+        inputPacket.distanceToMouse = this.distanceToMouse;
 
         this.angle += this.angularSpeed;
         if (this.angle > Math.PI) this.angle = -Math.PI;
 
-        let action: InputActions | undefined;
+        let action: InputAction | undefined;
         if (this.emote) {
             this.emote = false;
-            switch (random(0, 3)) {
-                case 0:
-                    action = InputActions.TopEmoteSlot;
-                    break;
-                case 1:
-                    action = InputActions.RightEmoteSlot;
-                    break;
-                case 2:
-                    action = InputActions.BottomEmoteSlot;
-                    break;
-                case 3:
-                    action = InputActions.LeftEmoteSlot;
-                    break;
-            }
+
+            action = {
+                type: pickRandomInArray([
+                    InputActions.TopEmoteSlot,
+                    InputActions.RightEmoteSlot,
+                    InputActions.BottomEmoteSlot,
+                    InputActions.LeftEmoteSlot
+                ])
+            };
         } else if (this.interact) {
-            action = InputActions.Interact;
+            action = { type: InputActions.Interact };
         }
-        stream.writeBits(action !== undefined ? 1 : 0, 4);
-        if (action) {
-            stream.writeBits(action, INPUT_ACTIONS_BITS);
-        }
-        this.ws.send(stream.buffer.slice(0, Math.ceil(stream.index / 8)));
+
+        if (action) inputPacket.actions = [action];
+
+        inputPacket.serialize();
+
+        this.ws.send(inputPacket.getBuffer());
     }
 
     updateInputs(): void {
-        this.movingUp = false;
-        this.movingDown = false;
-        this.movingLeft = false;
-        this.movingRight = false;
+        this.moving = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        };
 
         this.shootStart = randomBoolean();
         this.interact = randomBoolean();
@@ -149,32 +153,32 @@ class Bot {
 
         switch (random(1, 8)) {
             case 1:
-                this.movingUp = true;
+                this.moving.up = true;
                 break;
             case 2:
-                this.movingDown = true;
+                this.moving.down = true;
                 break;
             case 3:
-                this.movingLeft = true;
+                this.moving.left = true;
                 break;
             case 4:
-                this.movingRight = true;
+                this.moving.right = true;
                 break;
             case 5:
-                this.movingUp = true;
-                this.movingLeft = true;
+                this.moving.up = true;
+                this.moving.left = true;
                 break;
             case 6:
-                this.movingUp = true;
-                this.movingRight = true;
+                this.moving.up = true;
+                this.moving.right = true;
                 break;
             case 7:
-                this.movingDown = true;
-                this.movingLeft = true;
+                this.moving.down = true;
+                this.moving.left = true;
                 break;
             case 8:
-                this.movingDown = true;
-                this.movingRight = true;
+                this.moving.down = true;
+                this.moving.right = true;
                 break;
         }
     }

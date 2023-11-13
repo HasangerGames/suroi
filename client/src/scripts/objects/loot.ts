@@ -1,6 +1,5 @@
 import { ArmorType, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
-import { Backpacks } from "../../../../common/src/definitions/backpacks";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
@@ -10,8 +9,8 @@ import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
-import { type PlayerManager } from "../utils/playerManager";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { type Player } from "./player";
 
 export class Loot extends GameObject {
     override readonly type = ObjectCategory.Loot;
@@ -121,39 +120,38 @@ export class Loot extends GameObject {
         super.destroy();
     }
 
-    canInteract(player: PlayerManager): boolean {
-        const activePlayer = this.game.activePlayer;
-        if (!activePlayer) return false;
+    canInteract(player: Player): boolean {
+        const inventory = this.game.uiManager.inventory;
 
         const definition = this.definition;
 
         switch (definition.itemType) {
             case ItemType.Gun: {
-                return !player.weapons[0] ||
-                    !player.weapons[1] ||
-                    (this.game.inputManager.activeItemIndex < 2 && this.definition.idString !== player.weapons[this.game.inputManager.activeItemIndex]?.idString);
+                return !inventory.weapons[0] ||
+                    !inventory.weapons[1] ||
+                    (inventory.activeWeaponIndex < 2 && this.definition.idString !== inventory.weapons[inventory.activeWeaponIndex]?.definition.idString);
             }
             case ItemType.Melee: {
-                return this.definition.idString !== player.weapons[2]?.idString;
+                return this.definition.idString !== inventory.weapons[2]?.definition.idString;
             }
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.definition.idString;
 
-                return (definition as AmmoDefinition).ephemeral ?? (player.items[idString] + 1 <= Backpacks[this.game.activePlayer.backpackLevel].maxCapacity[idString]);
+                return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);
             }
             case ItemType.Armor: {
                 switch (true) {
-                    case definition.armorType === ArmorType.Helmet: return definition.level > activePlayer.helmetLevel;
-                    case definition.armorType === ArmorType.Vest: return definition.level > activePlayer.vestLevel;
+                    case definition.armorType === ArmorType.Helmet: return definition.level > player.helmetLevel;
+                    case definition.armorType === ArmorType.Vest: return definition.level > player.vestLevel;
                     default: return false;
                 }
             }
             case ItemType.Backpack: {
-                return definition.level > activePlayer.backpackLevel;
+                return definition.level > player.backpackLevel;
             }
             case ItemType.Scope: {
-                return player.items[this.definition.idString] === 0;
+                return inventory.items[this.definition.idString] === 0;
             }
             case ItemType.Skin: {
                 return true;

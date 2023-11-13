@@ -104,6 +104,11 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         value: true,
         flags: { archive: true, readonly: false, cheat: false }
     },
+    cv_responsive_rotation: {
+        name: "cv_responsive_rotation",
+        value: true,
+        flags: { archive: true, readonly: false, cheat: false }
+    },
     cv_antialias: {
         name: "cv_antialias",
         value: true,
@@ -258,10 +263,10 @@ export const defaultBinds = Object.freeze({
     reload: ["R"],
     "cycle_scopes -1": [] as string[],
     "cycle_scopes +1": [] as string[],
-    "use_consumable gauze": ["5"],
-    "use_consumable medikit": ["6"],
-    "use_consumable cola": ["7"],
-    "use_consumable tablets": ["8"],
+    "use_consumable gauze": ["7"],
+    "use_consumable medikit": ["8"],
+    "use_consumable cola": ["9"],
+    "use_consumable tablets": ["0"],
     cancel_action: ["X"],
     toggle_map: ["G", "M"],
     toggle_minimap: ["N"],

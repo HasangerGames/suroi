@@ -1,5 +1,4 @@
 import { type ExplosionDefinition } from "../../../../common/src/definitions/explosions";
-import { distanceSquared } from "../../../../common/src/utils/math";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -41,11 +40,9 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
         }
     );
 
-    if (game?.activePlayer !== undefined && distanceSquared(game.activePlayer.position, position) <= 4900) {
-        game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
+    game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
 
-        if (definition.sound !== undefined) {
-            game.soundManager.play(definition.sound, position, 0.4);
-        }
+    if (definition.sound !== undefined) {
+        game.soundManager.play(definition.sound, position, 0.4);
     }
 }
