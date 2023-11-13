@@ -339,6 +339,7 @@ export class Game {
         this.particleManager.clear();
         this.map.gasGraphics.clear();
         this.loots.clear();
+        this.playerNames.clear();
 
         this.camera.zoom = Scopes[0].zoomLevel;
 
@@ -394,9 +395,6 @@ export class Game {
     }
 
     processUpdate(updateData: UpdatePacket): void {
-        const playerData = updateData.playerData;
-        if (playerData) this.uiManager.updateUI(playerData);
-
         for (const newPlayer of updateData.newPlayers) {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
@@ -404,6 +402,9 @@ export class Game {
                 nameColor: newPlayer.nameColor
             });
         }
+
+        const playerData = updateData.playerData;
+        if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
             this.playerNames.delete(deletedPlayerId);

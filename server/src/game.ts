@@ -56,9 +56,14 @@ export class Game {
     readonly connectedPlayers: Set<Player> = new Set<Player>();
     /**
      * All players, including disconnected and dead ones
-     * Used to send names on updatePacket and index spectating
      */
     readonly players: Player[] = [];
+
+    /*
+     * Same as players but excluding dead ones
+    */
+    readonly spectablePlayers: Player[] = [];
+
     /**
      * New players created this tick
      */
@@ -346,6 +351,7 @@ export class Game {
 
         this.livingPlayers.add(player);
         this.players.push(player);
+        this.spectablePlayers.push(player);
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
@@ -383,6 +389,7 @@ export class Game {
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.players, player);
+            removeFrom(this.spectablePlayers, player);
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;

@@ -64,6 +64,7 @@ export class InputManager {
     turning = false;
 
     update(): void {
+        if (this.game.gameOver) return;
         const packet = new InputPacket();
         packet.movement = this.movement;
         packet.attacking = this.attacking;
