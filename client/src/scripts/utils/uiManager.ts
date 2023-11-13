@@ -223,17 +223,20 @@ export class UIManager {
         if (inventory.weapons) {
             this.inventory.weapons = inventory.weapons;
             this.inventory.activeWeaponIndex = inventory.activeWeaponIndex;
-            this._updateWeapons();
+            if (!inventory.items) { // No need to update weapons here if items are also updated
+                this.updateWeapons();
+            }
         }
 
         if (inventory.items) {
             this.inventory.items = inventory.items;
             this.inventory.scope = inventory.scope;
-            this._updateItems();
+            this.updateItems();
+            this.updateWeapons();
         }
     }
 
-    private _updateWeapons(): void {
+    updateWeapons(): void {
         const inventory = this.inventory;
 
         const activeIndex = inventory.activeWeaponIndex;
@@ -298,7 +301,7 @@ export class UIManager {
         $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
-    private _updateItems(): void {
+    updateItems(): void {
         const scopeNames = Scopes.map(sc => sc.idString);
 
         for (const item in this.inventory.items) {

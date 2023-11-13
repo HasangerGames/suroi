@@ -560,6 +560,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             container.children(".item-tooltip").html(itemTooltip);
         }
         container.css("visibility", (def?.level ?? 0) > 0 ? "visible" : "hidden");
+        if (equipmentType === "backpack") this.game.uiManager.updateItems();
     }
 
     emote(type: EmoteDefinition): void {
