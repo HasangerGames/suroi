@@ -11,7 +11,7 @@ import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
-import { SpectatePacket } from "../../packets/sending/spectatePacket";
+import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 
@@ -144,7 +144,11 @@ export function setUpCommands(game: Game): void {
             spectateAction
                 ? function(): undefined {
                     this.inputManager.movement[name] = true;
-                    if (this.spectating) this.sendPacket(new SpectatePacket(this, spectateAction));
+                    if (this.spectating) {
+                        const packet = new SpectatePacket();
+                        packet.spectateAction = spectateAction;
+                        this.sendPacket(packet);
+                    }
                 }
                 : function(): undefined {
                     this.inputManager.movement[name] = true;

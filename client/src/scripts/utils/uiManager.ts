@@ -7,10 +7,10 @@ import {
     MAX_ADRENALINE
 } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
-import { LootDefinition, Loots } from "../../../../common/src/definitions/loots";
+import { Loots } from "../../../../common/src/definitions/loots";
 import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
-import { KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
+import { type KillFeedPacket } from "../../../../common/src/packets/killFeedPacket";
 import { type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type Game } from "../game";
@@ -28,7 +28,7 @@ function safeRound(value: number): number {
 /**
  * This class manages the game UI
  */
-export class GameUI {
+export class UIManager {
     readonly game: Game;
 
     maxHealth = DEFAULT_HEALTH;
@@ -49,13 +49,13 @@ export class GameUI {
         this.game = game;
     }
 
-    getPlayerName(id: number): JQuery<HTMLSpanElement> {
+    getPlayerName(id: number): string {
         const element = $("<span>");
         const player = this.game.playerNames.get(id);
 
         let name: string;
 
-        if (player === undefined) {
+        if (!player) {
             console.warn(`Unknown player name with id ${id}`);
             name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
@@ -69,7 +69,7 @@ export class GameUI {
             element.css("color", player.nameColor);
         }
 
-        return element;
+        return element.prop("outerHTML");
     }
 
     private readonly _ui = {
@@ -123,8 +123,8 @@ export class GameUI {
         $("#chicken-dinner").toggle(packet.won);
         $("#game-over-text").text(packet.won ? "Winner winner chicken dinner!" : "You died.");
 
-        const name = this.getPlayerName(packet.playerId);
-        $("#game-over-player-name").html("").append(name);
+        const name = this.getPlayerName(packet.playerID);
+        $("#game-over-player-name").html(name);
 
         $("#game-over-kills").text(packet.kills);
         $("#game-over-damage-done").text(packet.damageDone);
@@ -314,9 +314,9 @@ export class GameUI {
         $(`#${this.inventory.scope.idString}-slot`).addClass("active");
     }
 
-    private _killMsgTimeoutID: number;
+    private _killMessageTimeoutID?: number;
 
-    private _addKillMsg(kills: number, name: string, weaponUsed: string, streak?: number): void {
+    private _addKillMessage(kills: number, name: string, weaponUsed: string, streak?: number): void {
         const killText = `Kills: ${kills}`;
         $("#ui-kills").text(kills);
 
@@ -324,13 +324,13 @@ export class GameUI {
         $("#kill-msg-player-name").html(name);
         $("#kill-msg-weapon-used").text(` with ${weaponUsed}${streak ? ` (streak: ${streak})` : ""}`);
 
-        killModal.fadeIn(350, () => {
+        this._ui.killModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
             // fast if the player makes more than one kill in a short time span
-            if (timeoutID !== undefined) clearTimeout(timeoutID);
+            clearTimeout(this._killMessageTimeoutID);
 
-            timeoutID = window.setTimeout(() => {
-                killModal.fadeOut(350);
+            this._killMessageTimeoutID = window.setTimeout(() => {
+                this._ui.killModal.fadeOut(350);
             }, 3000);
         });
     }
@@ -341,15 +341,10 @@ export class GameUI {
         killFeedItem.html(text);
         killFeedItem.addClass(classes);
 
-        setTimeout(
-            () => killFeedItem.fadeOut(1000, killFeedItem.remove.bind(killFeedItem)),
-            7000
-        );
-
-        killFeed.prepend(killFeedItem);
+        this._ui.killFeed.prepend(killFeedItem);
         if (!UI_DEBUG_MODE) {
-            while (killFeed.children().length > 5) {
-                killFeed.children().last().remove();
+            while (this._ui.killFeed.children().length > 5) {
+                this._ui.killFeed.children().last().remove();
             }
         }
 
@@ -360,43 +355,70 @@ export class GameUI {
     }
 
     processKillFeedPacket(packet: KillFeedPacket): void {
-        const messageType: KillFeedMessageType = packet.messageType;
+        const {
+            messageType,
+            playerID,
+
+            twoPartyInteraction,
+            killerID,
+            kills,
+            weaponUsed,
+            killstreak,
+
+            gasKill
+        } = packet;
+
+        const playerName = this.getPlayerName(playerID);
 
         let messageText: string | undefined;
         const classes: string[] = [];
 
         switch (messageType) {
             case KillFeedMessageType.Kill: {
-                const twoPartyInteraction = packet.killedByID !== undefined;
-
+                const hasKillstreak = killstreak as number > 1;
                 /* eslint-disable @typescript-eslint/no-non-null-assertion */
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
-                        const killedByName = this.getPlayerName(packet.killedByID!).html();
-                        const killedName = this.getPlayerName(packet.id).html();
                         const message = twoPartyInteraction
-                            ? `${killedByName} killed ${killedName}`
-                            : packet.gasKill
-                                ? `${killedName} died to the gas`
-                                : `${killedName} committed suicide`;
-                        messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">${message}${packet.weaponUsed === undefined ? "" : ` with ${packet.weaponUsed.name}`}`;
+                            ? `${this.getPlayerName(killerID as number)} killed ${playerName}`
+                            : gasKill
+                                ? `${playerName} died to the gas`
+                                : `${playerName} committed suicide`;
+
+                        messageText = `
+                        ${hasKillstreak ? killstreak : ""}
+                        <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
+                        ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`;
                         break;
                     }
                     case "icon": {
-                        const killerName = twoPartyInteraction ? this.getPlayerName(packet.killedByID!).html() : "";
-                        const altText = packet.weaponUsed === undefined ? packet.gasKill ? "gas" : "" : ` (${packet.weaponUsed?.name})`;
-                        messageText = `${killerName}<img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">${this.getPlayerName(packet.id)}`;
+                        const killerName = twoPartyInteraction ? this.getPlayerName(killerID as number) : "";
+                        const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
+                        const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : `(${weaponUsed?.name})`;
+                        const killstreakText = hasKillstreak
+                            ? `
+                            <span style="font-size: 80%">(${killstreak}
+                                <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull" height=12>)
+                            </span>`
+                            : "";
+
+                        messageText = `
+                        ${killerName}
+                        <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">
+                        ${killstreakText}
+                        ${playerName}`;
                         break;
                     }
                 }
 
                 switch (true) {
-                    case packet.id === this.game.activePlayerID: { // was killed
+                    case playerID === this.game.activePlayerID: { // was killed
                         classes.push("kill-feed-item-victim");
                         break;
                     }
-                    case packet.killedByID === this.game.activePlayerID: { // killed other
+                    case killerID === this.game.activePlayerID: { // killed other
                         classes.push("kill-feed-item-killer");
+                        this._addKillMessage(kills!, playerName, weaponUsed?.name ?? "", killstreak);
                         break;
                     }
                 }
@@ -404,17 +426,18 @@ export class GameUI {
             }
 
             case KillFeedMessageType.KillLeaderAssigned: {
-                if (packet.id === this.game.activePlayerID) classes.push("kill-feed-item-killer");
-                const name = this.getPlayerName(packet.id).html();
-                $("#kill-leader-leader").html();
-                $("#kill-leader-kills-counter").text(packet.kills!);
-                messageText = `<i class="fa-solid fa-crown"></i> ${name} promoted to Kill Leader!`;
+                if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
+
+                $("#kill-leader-leader").html(playerName);
+                $("#kill-leader-kills-counter").text(kills!);
+
+                messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                 this.game.soundManager.play("kill_leader_assigned");
                 break;
             }
 
             case KillFeedMessageType.KillLeaderUpdated: {
-                $("#kill-leader-kills-counter").text(packet.kills!);
+                $("#kill-leader-kills-counter").text(kills!);
                 break;
             }
 
@@ -422,8 +445,8 @@ export class GameUI {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> The Kill Leader is dead!';
-                // TODO Add who killed the kill leader
+                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}`;
+                if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 this.game.soundManager.play("kill_leader_dead");
                 break;
             }

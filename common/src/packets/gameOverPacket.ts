@@ -7,7 +7,7 @@ export class GameOverPacket extends Packet {
     override readonly type = PacketType.GameOver;
 
     won!: boolean;
-    playerId!: number;
+    playerID!: number;
     kills!: number;
     damageDone!: number;
     damageTaken!: number;
@@ -19,7 +19,7 @@ export class GameOverPacket extends Packet {
         const stream = this.stream;
 
         stream.writeBoolean(this.won);
-        stream.writeObjectID(this.playerId);
+        stream.writeObjectID(this.playerID);
         stream.writeUint8(this.kills);
         stream.writeUint16(this.damageDone);
         stream.writeUint16(this.damageTaken);
@@ -32,7 +32,7 @@ export class GameOverPacket extends Packet {
 
     override deserialize(stream: SuroiBitStream): void {
         this.won = stream.readBoolean();
-        this.playerId = stream.readObjectID();
+        this.playerID = stream.readObjectID();
         this.kills = stream.readUint8();
         this.damageDone = stream.readUint16();
         this.damageTaken = stream.readUint16();

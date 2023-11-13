@@ -10,7 +10,8 @@ import {
     MAX_MOUSE_DISTANCE,
     ObjectCategory,
     PLAYER_RADIUS,
-    PlayerActions, SpectateActions
+    PlayerActions,
+    SpectateActions
 } from "../../../common/src/constants";
 import { type EmoteDefinition, Emotes } from "../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -31,7 +32,6 @@ import { GunItem } from "../inventory/gunItem";
 import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
-import { KillFeedPacket } from "../packets/sending/killFeedPacket";
 import { type PlayerContainer } from "../server";
 import { GameObject } from "../types/gameObject";
 import { removeFrom } from "../utils/misc";
@@ -49,6 +49,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { random } from "../../../common/src/utils/random";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { randomBytes } from "crypto";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 
 export class Player extends GameObject<ObjectCategory.Player> implements PlayerData {
     override readonly type = ObjectCategory.Player;
@@ -810,19 +811,17 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
         }
 
         if (source instanceof Player || source === "gas") {
-            this.game.killFeedMessages.add(
-                new KillFeedPacket(
-                    this,
-                    KillFeedMessageType.Kill,
-                    {
-                        killedBy: source === this ? undefined : source,
-                        weaponUsed,
-                        kills: (weaponUsed instanceof GunItem || weaponUsed instanceof MeleeItem) && weaponUsed.definition.killstreak
-                            ? weaponUsed.stats.kills
-                            : 0
-                    }
-                )
-            );
+            const killFeedPacket = new KillFeedPacket();
+            killFeedPacket.messageType = KillFeedMessageType.Kill;
+            killFeedPacket.playerID = this.id;
+            if (source instanceof Player) {
+                killFeedPacket.killerID = source.id;
+                killFeedPacket.kills = source.kills;
+                killFeedPacket.weaponUsed = weaponUsed?.definition;
+            } else { // if source isn't a Player, it's gas
+                killFeedPacket.gasKill = true;
+            }
+            this.game.killFeedMessages.add(killFeedPacket);
         }
 
         // Destroy physics body; reset movement and attacking variables
@@ -913,7 +912,7 @@ export class Player extends GameObject<ObjectCategory.Player> implements PlayerD
     sendGameOverPacket(won = false): void {
         const packet = new GameOverPacket();
         packet.won = won;
-        packet.playerId = this.id;
+        packet.playerID = this.id;
         packet.kills = this.kills;
         packet.damageDone = this.damageDone;
         packet.damageTaken = this.damageTaken;

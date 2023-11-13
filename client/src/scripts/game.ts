@@ -30,7 +30,7 @@ import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
 import { type GameObject } from "./types/gameObject";
 
-import { GameUI } from "./utils/gameUI";
+import { UIManager } from "./utils/uiManager";
 import { COLORS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
@@ -49,7 +49,7 @@ import { JoinedPacket } from "../../../common/src/packets/joinedPacket";
 import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { KillFeedPacket } from "./packets/receiving/killFeedPacket";
+import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
 
 export class Game {
     socket!: WebSocket;
@@ -71,7 +71,7 @@ export class Game {
     spectating = false;
     error = false;
 
-    uiManager = new GameUI(this);
+    uiManager = new UIManager(this);
 
     lastPingDate = 0;
 

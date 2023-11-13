@@ -1,10 +1,17 @@
 import { Container, Texture, TilingSprite } from "pixi.js";
-import { AnimationType, ObjectCategory, PLAYER_RADIUS, PlayerActions, SpectateActions, ZIndexes } from "../../../../common/src/constants";
+import {
+    AnimationType,
+    ObjectCategory,
+    PLAYER_RADIUS,
+    PlayerActions,
+    SpectateActions,
+    ZIndexes
+} from "../../../../common/src/constants";
 import { type ArmorDefinition } from "../../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../../common/src/definitions/backpacks";
 import { type EmoteDefinition } from "../../../../common/src/definitions/emotes";
 import { type GunDefinition } from "../../../../common/src/definitions/guns";
-import { HealType, type HealingItemDefinition } from "../../../../common/src/definitions/healingItems";
+import { type HealingItemDefinition, HealType } from "../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
@@ -13,16 +20,16 @@ import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../c
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
-import { v, vAdd, vAdd2, vClone, vRotate, type Vector } from "../../../../common/src/utils/vector";
+import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { type Sound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
-import { SpectatePacket } from "../packets/sending/spectatePacket";
-import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
+import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -181,7 +188,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const sendSpectatePacket = (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
 
-            this.game.sendPacket(new SpectatePacket(game, SpectateActions.SpectateSpecific, this.id));
+            const packet = new SpectatePacket();
+            packet.spectateAction = SpectateActions.SpectateSpecific;
+            packet.playerID = this.id;
+            this.game.sendPacket(packet);
         };
 
         this.container.on("pointerdown", sendSpectatePacket);
