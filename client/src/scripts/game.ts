@@ -557,6 +557,8 @@ export class Game {
             }
         }
 
+        if (this.spectating) return;
+
         const object = interactable.object ?? uninteractable.object;
         const offset = object instanceof Obstacle ? object.door?.offset : undefined;
         const canInteract = interactable.object !== undefined;
@@ -581,6 +583,9 @@ export class Game {
             this._cache.offset = offset;
             this._cache.pickupBind = this.inputManager.getPickupBind();
             this._cache.canInteract = canInteract;
+
+            const interactKey = this.uiManager.ui.interactKey;
+            const interactMsg = this.uiManager.ui.interactMsg;
 
             if (object !== undefined) {
                 const prepareInteractText = (): void => {
@@ -630,16 +635,15 @@ export class Game {
                         prepareInteractText();
 
                         if (canInteract) {
-                            $("#interact-key").addClass("active").show();
+                            interactKey.addClass("active").show();
                         } else {
-                            $("#interact-key").removeClass("active").hide();
+                            interactKey.removeClass("active").hide();
                         }
 
-                        $("#interact-message").show();
+                        interactMsg.show();
                         return;
                     }
-                    // noinspection JSJQueryEfficiency
-                    $("#interact-message").hide();
+                    interactMsg.hide();
                 } else { // not mobile
                     prepareInteractText();
 
@@ -650,22 +654,22 @@ export class Game {
                         const icon = InputManager.getIconFromInputName(input);
 
                         if (icon === undefined) {
-                            $("#interact-key").text(input);
+                            interactKey.text(input);
                         } else {
-                            $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
+                            interactKey.html(`<img src="${icon}" alt="${input}"/>`);
                         }
                     }
 
                     if (canInteract) {
-                        $("#interact-key").addClass("active").show();
+                        interactKey.addClass("active").show();
                     } else {
-                        $("#interact-key").removeClass("active").hide();
+                        interactKey.removeClass("active").hide();
                     }
 
-                    $("#interact-message").show();
+                    interactMsg.show();
                 }
             } else { // object is undefined
-                $("#interact-message").hide();
+                interactMsg.hide();
             }
         }
     }
