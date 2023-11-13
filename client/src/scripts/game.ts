@@ -168,8 +168,7 @@ export class Game {
                 $("#kill-msg").hide();
                 $("#ui-kills").text("0");
                 $("#kill-feed").html("");
-                $("#spectating-msg").hide();
-                $("#spectating-buttons-container").hide();
+                $("#spectating-container").hide();
                 $("#joysticks-containers").show();
             }
 
@@ -308,6 +307,7 @@ export class Game {
 
         $("#kill-leader-leader").html("Waiting for leader");
         $("#kill-leader-kills-counter").text("0");
+        $("#btn-spectate-kill-leader").hide();
     }
 
     endGame(): void {
@@ -339,6 +339,7 @@ export class Game {
         this.particleManager.clear();
         this.map.gasGraphics.clear();
         this.loots.clear();
+        this.playerNames.clear();
 
         this.camera.zoom = Scopes[0].zoomLevel;
 
@@ -394,9 +395,6 @@ export class Game {
     }
 
     processUpdate(updateData: UpdatePacket): void {
-        const playerData = updateData.playerData;
-        if (playerData) this.uiManager.updateUI(playerData);
-
         for (const newPlayer of updateData.newPlayers) {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
@@ -404,6 +402,9 @@ export class Game {
                 nameColor: newPlayer.nameColor
             });
         }
+
+        const playerData = updateData.playerData;
+        if (playerData) this.uiManager.updateUI(playerData);
 
         for (const deletedPlayerId of updateData.deletedPlayers) {
             this.playerNames.delete(deletedPlayerId);
@@ -557,6 +558,8 @@ export class Game {
             }
         }
 
+        if (this.spectating) return;
+
         const object = interactable.object ?? uninteractable.object;
         const offset = object instanceof Obstacle ? object.door?.offset : undefined;
         const canInteract = interactable.object !== undefined;
@@ -581,6 +584,9 @@ export class Game {
             this._cache.offset = offset;
             this._cache.pickupBind = this.inputManager.getPickupBind();
             this._cache.canInteract = canInteract;
+
+            const interactKey = this.uiManager.ui.interactKey;
+            const interactMsg = this.uiManager.ui.interactMsg;
 
             if (object !== undefined) {
                 const prepareInteractText = (): void => {
@@ -630,16 +636,15 @@ export class Game {
                         prepareInteractText();
 
                         if (canInteract) {
-                            $("#interact-key").addClass("active").show();
+                            interactKey.addClass("active").show();
                         } else {
-                            $("#interact-key").removeClass("active").hide();
+                            interactKey.removeClass("active").hide();
                         }
 
-                        $("#interact-message").show();
+                        interactMsg.show();
                         return;
                     }
-                    // noinspection JSJQueryEfficiency
-                    $("#interact-message").hide();
+                    interactMsg.hide();
                 } else { // not mobile
                     prepareInteractText();
 
@@ -650,22 +655,22 @@ export class Game {
                         const icon = InputManager.getIconFromInputName(input);
 
                         if (icon === undefined) {
-                            $("#interact-key").text(input);
+                            interactKey.text(input);
                         } else {
-                            $("#interact-key").html(`<img src="${icon}" alt="${input}"/>`);
+                            interactKey.html(`<img src="${icon}" alt="${input}"/>`);
                         }
                     }
 
                     if (canInteract) {
-                        $("#interact-key").addClass("active").show();
+                        interactKey.addClass("active").show();
                     } else {
-                        $("#interact-key").removeClass("active").hide();
+                        interactKey.removeClass("active").hide();
                     }
 
-                    $("#interact-message").show();
+                    interactMsg.show();
                 }
             } else { // object is undefined
-                $("#interact-message").hide();
+                interactMsg.hide();
             }
         }
     }

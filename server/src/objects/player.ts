@@ -647,28 +647,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         let toSpectate: Player | undefined;
 
+        const spectablePlayers = game.spectablePlayers;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
                 if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
-                else if (game.players.length > 1) toSpectate = pickRandomInArray(game.players);
+                else if (spectablePlayers.length > 1) toSpectate = pickRandomInArray(spectablePlayers);
                 break;
             }
             case SpectateActions.SpectatePrevious:
                 if (this.spectating !== undefined) {
-                    let index: number = game.players.indexOf(this.spectating) - 1;
-                    if (index < 0) index = game.players.length - 1;
-                    toSpectate = game.players[index];
+                    let index: number = spectablePlayers.indexOf(this.spectating) - 1;
+                    if (index < 0) index = spectablePlayers.length - 1;
+                    toSpectate = spectablePlayers[index];
                 }
                 break;
             case SpectateActions.SpectateNext:
                 if (this.spectating !== undefined) {
-                    let index: number = game.players.indexOf(this.spectating) + 1;
-                    if (index >= game.players.length) index = 0;
-                    toSpectate = game.players[index];
+                    let index: number = spectablePlayers.indexOf(this.spectating) + 1;
+                    if (index >= spectablePlayers.length) index = 0;
+                    toSpectate = spectablePlayers[index];
                 }
                 break;
             case SpectateActions.SpectateSpecific: {
-                toSpectate = game.players.find(player => player.id === packet.playerID);
+                toSpectate = spectablePlayers.find(player => player.id === packet.playerID);
                 break;
             }
             case SpectateActions.SpectateKillLeader: {
@@ -834,6 +835,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.health = 0;
         this.dead = true;
+        this.canDespawn = false;
 
         // Send kill packets
         if (source instanceof Player) {
@@ -890,8 +892,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.action?.cancel();
 
         this.game.livingPlayers.delete(this);
-        removeFrom(this.game.players, this);
         this.game.removeObject(this);
+        removeFrom(this.game.spectablePlayers, this);
 
         //
         // Drop loot

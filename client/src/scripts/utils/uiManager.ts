@@ -71,7 +71,7 @@ export class UIManager {
         return element.prop("outerHTML");
     }
 
-    private readonly _ui = {
+    readonly ui = {
         activeWeapon: $("#weapon-ammo-container"),
         activeAmmo: $("#weapon-clip-ammo"),
         weaponInventoryAmmo: $("#weapon-inventory-ammo"),
@@ -91,7 +91,10 @@ export class UIManager {
         adrenalineBarPercentage: $("#adrenaline-bar-percentage"),
 
         killModal: $("#kill-msg"),
-        killFeed: $("#kill-feed")
+        killFeed: $("#kill-feed"),
+
+        interactMsg: $("#interact-message"),
+        interactKey: $("#interact-key")
     };
 
     gameOverScreenTimeout: number | undefined;
@@ -154,7 +157,7 @@ export class UIManager {
                 $("#game-over-overlay").fadeOut();
                 $("#spectating-msg-player").html(this.getPlayerName(data.id));
             }
-            $("#spectating-msg, #spectating-buttons-container").toggle(data.spectating);
+            $("#spectating-container").toggle(data.spectating);
         }
 
         if (data.zoom) this.game.camera.zoom = data.zoom;
@@ -165,18 +168,18 @@ export class UIManager {
             this.maxAdrenaline = data.maxAdrenaline;
 
             if (this.maxHealth === DEFAULT_HEALTH) {
-                this._ui.maxHealth.text("").hide();
+                this.ui.maxHealth.text("").hide();
             } else {
-                this._ui.maxHealth.text(safeRound(this.maxHealth)).show();
+                this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
             }
 
             if (
                 this.maxAdrenaline === MAX_ADRENALINE &&
                 this.minAdrenaline === 0
             ) {
-                this._ui.minMaxAdren.text("").hide();
+                this.ui.minMaxAdren.text("").hide();
             } else {
-                this._ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
+                this.ui.minMaxAdren.text(`${this.minAdrenaline === 0 ? "" : `${safeRound(this.minAdrenaline)}/`}${safeRound(this.maxAdrenaline)}`).show();
             }
         }
 
@@ -187,24 +190,24 @@ export class UIManager {
             const realPercentage = 100 * this.health / this.maxHealth;
             const percentage = safeRound(realPercentage);
 
-            this._ui.healthBar.width(`${realPercentage}%`);
+            this.ui.healthBar.width(`${realPercentage}%`);
 
-            if (oldHealth > this.health) this._ui.healthAnim.width(`${realPercentage}%`);
+            if (oldHealth > this.health) this.ui.healthAnim.width(`${realPercentage}%`);
 
-            this._ui.healthBarAmount.text(safeRound(this.health));
+            this.ui.healthBarAmount.text(safeRound(this.health));
 
             if (percentage === 100) {
-                this._ui.healthBar.css("background-color", "#bdc7d0");
+                this.ui.healthBar.css("background-color", "#bdc7d0");
             } else if (percentage < 60 && percentage > 25) {
-                this._ui.healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
+                this.ui.healthBar.css("background-color", `rgb(255, ${(percentage - 10) * 4}, ${(percentage - 10) * 4})`);
             } else if (percentage <= 25) {
-                this._ui.healthBar.css("background-color", "#ff0000");
+                this.ui.healthBar.css("background-color", "#ff0000");
             } else {
-                this._ui.healthBar.css("background-color", "#f8f9fa");
+                this.ui.healthBar.css("background-color", "#f8f9fa");
             }
-            this._ui.healthBar.toggleClass("flashing", percentage <= 25);
+            this.ui.healthBar.toggleClass("flashing", percentage <= 25);
 
-            this._ui.healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
+            this.ui.healthBarAmount.css("color", percentage <= 40 ? "#ffffff" : "#000000");
         }
 
         if (data.dirty.adrenaline) {
@@ -212,9 +215,9 @@ export class UIManager {
 
             const percentage = 100 * this.adrenaline / this.maxAdrenaline;
 
-            this._ui.adrenalineBar.width(`${percentage}%`);
+            this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this._ui.adrenalineBarPercentage.text(safeRound(this.adrenaline))
+            this.ui.adrenalineBarPercentage.text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
@@ -244,11 +247,11 @@ export class UIManager {
         const activeWeapon = inventory.weapons[activeIndex];
 
         if (activeWeapon?.ammo === undefined || UI_DEBUG_MODE) {
-            this._ui.activeWeapon.hide();
+            this.ui.activeWeapon.hide();
         } else {
-            this._ui.activeWeapon.show();
+            this.ui.activeWeapon.show();
             const ammo = activeWeapon?.ammo;
-            this._ui.activeAmmo.text(ammo).css("color", ammo > 0 ? "inherit" : "red");
+            this.ui.activeAmmo.text(ammo).css("color", ammo > 0 ? "inherit" : "red");
 
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
@@ -261,15 +264,15 @@ export class UIManager {
                     }
                 }
 
-                this._ui.weaponInventoryAmmo.text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
+                this.ui.weaponInventoryAmmo.text(totalAmmo).css("visibility", totalAmmo === 0 ? "hidden" : "visible");
             }
         }
 
         if (activeWeapon?.kills === undefined) { // killstreaks
-            this._ui.killStreakIndicator.hide();
+            this.ui.killStreakIndicator.hide();
         } else {
-            this._ui.killStreakIndicator.show();
-            this._ui.killStreakCounter.text(`Streak: ${activeWeapon?.kills}`);
+            this.ui.killStreakIndicator.show();
+            this.ui.killStreakCounter.text(`Streak: ${activeWeapon?.kills}`);
         }
 
         for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
@@ -297,7 +300,7 @@ export class UIManager {
             }
         }
 
-        this._ui.weaponsContainer.children(".inventory-slot").removeClass("active");
+        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active");
         $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
@@ -334,13 +337,13 @@ export class UIManager {
         $("#kill-msg-player-name").html(name);
         $("#kill-msg-weapon-used").text(` with ${weaponUsed}${streak ? ` (streak: ${streak})` : ""}`);
 
-        this._ui.killModal.fadeIn(350, () => {
+        this.ui.killModal.fadeIn(350, () => {
             // clear the previous fade out timeout so it won't fade away too
             // fast if the player makes more than one kill in a short time span
             clearTimeout(this._killMessageTimeoutID);
 
             this._killMessageTimeoutID = window.setTimeout(() => {
-                this._ui.killModal.fadeOut(350);
+                this.ui.killModal.fadeOut(350);
             }, 3000);
         });
     }
@@ -351,10 +354,10 @@ export class UIManager {
         killFeedItem.html(text);
         killFeedItem.addClass(classes);
 
-        this._ui.killFeed.prepend(killFeedItem);
+        this.ui.killFeed.prepend(killFeedItem);
         if (!UI_DEBUG_MODE) {
-            while (this._ui.killFeed.children().length > 5) {
-                this._ui.killFeed.children().last().remove();
+            while (this.ui.killFeed.children().length > 5) {
+                this.ui.killFeed.children().last().remove();
             }
         }
 
@@ -446,6 +449,7 @@ export class UIManager {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }
+                $("#btn-spectate-kill-leader").show();
                 break;
             }
 
@@ -462,6 +466,7 @@ export class UIManager {
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");
+                $("#btn-spectate-kill-leader").hide();
                 break;
             }
         }
