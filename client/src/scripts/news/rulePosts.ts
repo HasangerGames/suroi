@@ -31,7 +31,7 @@ export const rules: RulesPost[] = [
 <p>Change Weapons - 1 through 3 or Scroll Wheel</p>
 <p>Pickup/Loot/Interact - F</p>
 <p>Reload - R</p>
-<p>Use Healing Item - Left-Click on item or 5 through 8</p>
+<p>Use Healing Item - Left-Click on item or 7 through 0</p>
 <p>Cancel Action - X</p>
 <p>Toggle Fullscreen Map - G or M</p>
 <p>Toggle Minimap - N</p>
