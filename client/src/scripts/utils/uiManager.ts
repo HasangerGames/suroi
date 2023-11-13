@@ -150,6 +150,19 @@ export class UIManager {
     updateUI(data: PlayerData): void {
         if (data.id) this.game.activePlayerID = data.id;
 
+        if (data.dirty.id) {
+            this.game.spectating = data.spectating;
+            if (data.spectating) {
+                $("#game-over-overlay").fadeOut();
+                $("#spectating-msg-player").html("").append(this.getPlayerName(data.id));
+
+                // $("#btn-spectate-kill-leader").hide();
+            }
+            $("#spectating-msg").toggle(data.spectating);
+            $("#spectating-msg").toggle(data.spectating);
+            $("#spectating-buttons-container").toggle(data.spectating);
+        }
+
         if (data.zoom) this.game.camera.zoom = data.zoom;
 
         if (data.dirty.maxMinStats) {

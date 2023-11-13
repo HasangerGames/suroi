@@ -37,6 +37,7 @@ export interface PlayerData {
     }
 
     id: number
+    spectating: boolean
 
     health: number
     adrenaline: number
@@ -87,6 +88,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
     stream.writeBoolean(dirty.id);
     if (dirty.id) {
         stream.writeObjectID(data.id);
+        stream.writeBoolean(data.spectating);
     }
 
     stream.writeBoolean(dirty.weapons);
@@ -169,6 +171,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 
     if (data.dirty.id) {
         data.id = stream.readObjectID();
+        data.spectating = stream.readBoolean();
     }
 
     data.dirty.weapons = stream.readBoolean();

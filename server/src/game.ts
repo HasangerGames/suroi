@@ -145,13 +145,14 @@ export class Game {
             case PacketType.Spectate: {
                 const packet = new SpectatePacket();
                 packet.deserialize(stream);
-                player.processSpectatePacket(packet);
+                player.spectate(packet);
                 break;
             }
             case PacketType.Ping: {
                 if (Date.now() - player.lastPingTime < 4000) return;
                 player.lastPingTime = Date.now();
                 player.sendPacket(new PingPacket());
+                break;
             }
         }
     }

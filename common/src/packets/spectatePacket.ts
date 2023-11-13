@@ -1,6 +1,8 @@
-import { Packet } from "./packet";
 import { PacketType, SpectateActions } from "../constants";
-import { SPECTATE_ACTIONS_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { type SuroiBitStream, calculateEnumPacketBits } from "../utils/suroiBitStream";
+import { Packet } from "./packet";
+
+const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 
 export class SpectatePacket extends Packet {
     override readonly allocBytes = 3;
@@ -11,12 +13,19 @@ export class SpectatePacket extends Packet {
 
     override serialize(): void {
         super.serialize();
-        this.stream.writeBits(this.spectateAction, SPECTATE_ACTIONS_BITS);
-        if (this.playerID !== undefined) this.stream.writeObjectID(this.playerID);
+        const stream = this.stream;
+
+        stream.writeBits(this.spectateAction, SPECTATE_ACTIONS_BITS);
+        if (this.playerID !== undefined && this.spectateAction === SpectateActions.SpectateSpecific) {
+            stream.writeObjectID(this.playerID);
+        }
     }
 
     override deserialize(stream: SuroiBitStream): void {
         this.spectateAction = stream.readBits(SPECTATE_ACTIONS_BITS);
-        if (this.spectateAction === SpectateActions.SpectateSpecific) this.playerID = stream.readObjectID();
+
+        if (this.spectateAction === SpectateActions.SpectateSpecific) {
+            this.playerID = stream.readObjectID();
+        }
     }
 }

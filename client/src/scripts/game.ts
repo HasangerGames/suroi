@@ -469,7 +469,7 @@ export class Game {
 
         this.gas.updateFrom(updateData);
 
-        if (updateData.aliveCount) {
+        if (updateData.aliveCount !== undefined) {
             $("#ui-players-alive").text(updateData.aliveCount);
             $("#btn-spectate").toggle(updateData.aliveCount > 1);
         }

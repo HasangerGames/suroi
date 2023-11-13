@@ -185,17 +185,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         });
 
-        const sendSpectatePacket = (): void => {
+        this.container.on("pointerdown", (): void => {
             if (!this.game.spectating || this.game.activePlayerID === this.id) return;
-
             const packet = new SpectatePacket();
             packet.spectateAction = SpectateActions.SpectateSpecific;
             packet.playerID = this.id;
             this.game.sendPacket(packet);
-        };
-
-        this.container.on("pointerdown", sendSpectatePacket);
-        this.container.on("click", sendSpectatePacket);
+        });
         this.updateFromData(data, true);
     }
 
@@ -429,7 +425,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.updateEquipment();
 
             this.updateFistsPosition(true);
-            this.updateWeapon();
+            this.updateWeapon(isNew);
         }
 
         if (HITBOX_DEBUG_MODE) {
@@ -476,20 +472,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
         if (anim) {
-            this.anims.leftFistAnim = new Tween(
-                this.game, {
-                    target: this.images.leftFist,
-                    to: { x: fists.left.x, y: fists.left.y },
-                    duration: fists.animationDuration
-                }
+            this.anims.leftFistAnim = new Tween(this.game, {
+                target: this.images.leftFist,
+                to: { x: fists.left.x, y: fists.left.y },
+                duration: fists.animationDuration
+            }
             );
 
-            this.anims.rightFistAnim = new Tween(
-                this.game, {
-                    target: this.images.rightFist,
-                    to: { x: fists.right.x, y: fists.right.y },
-                    duration: fists.animationDuration
-                }
+            this.anims.rightFistAnim = new Tween(this.game, {
+                target: this.images.rightFist,
+                to: { x: fists.right.x, y: fists.right.y },
+                duration: fists.animationDuration
+            }
             );
         } else {
             this.images.leftFist.setPos(fists.left.x, fists.left.y);
@@ -502,7 +496,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
     }
 
-    updateWeapon(): void {
+    updateWeapon(isNew = false): void {
         const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
@@ -515,7 +509,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.anims.muzzleFlashFadeAnim?.kill();
                 this.anims.muzzleFlashRecoilAnim?.kill();
                 this.images.muzzleFlash.alpha = 0;
-                if (this.isActivePlayer) this.playSound(`${this.activeItem.idString}_switch`, 0);
+                if (this.isActivePlayer && !isNew) this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
         }
 

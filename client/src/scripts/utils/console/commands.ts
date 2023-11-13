@@ -4,6 +4,7 @@ import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../.
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { type ScopeDefinition, Scopes } from "../../../../../common/src/definitions/scopes";
+import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { absMod } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
 import { v } from "../../../../../common/src/utils/vector";
@@ -11,7 +12,6 @@ import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
-import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 

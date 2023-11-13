@@ -1,5 +1,5 @@
 import { BitStream } from "@damienvesper/bit-buffer";
-import { KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType, SpectateActions } from "../constants";
+import { KillFeedMessageType, MAX_OBJECT_SCALE, MIN_OBJECT_SCALE, ObjectCategory, PLAYER_NAME_MAX_LENGTH, PacketType } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import { normalizeAngle } from "./math";
@@ -11,7 +11,6 @@ export const PACKET_TYPE_BITS = calculateEnumPacketBits(PacketType);
 export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
-export const SPECTATE_ACTIONS_BITS = calculateEnumPacketBits(SpectateActions);
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 
 export class SuroiBitStream extends BitStream {
