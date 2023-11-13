@@ -96,14 +96,16 @@ let punishments: Record<string, Punishment> = {};
 function removePunishment(ip: string): void {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete punishments[ip];
-    writeFile(
-        "punishments.json",
-        JSON.stringify(punishments, null, 4),
-        "utf8",
-        (err) => {
-            if (err) console.error(err);
-        }
-    );
+    if (!Config.protection?.punishments?.url) {
+        writeFile(
+            "punishments.json",
+            JSON.stringify(punishments, null, 4),
+            "utf8",
+            (err) => {
+                if (err) console.error(err);
+            }
+        );
+    }
 }
 
 let playerCount = 0;
@@ -133,9 +135,8 @@ app.get("/api/getGame", async(res, req) => {
             if (protection?.punishments?.url) {
                 fetch(`${protection.punishments.url}/api/removePunishment?ip=${ip}`, { headers: { Password: protection.punishments.password } })
                     .catch(e => console.error("Error acknowledging warning. Details: ", e));
-            } else {
-                removePunishment(ip);
             }
+            removePunishment(ip);
         }
     } else {
         let newestGameID = -1;
