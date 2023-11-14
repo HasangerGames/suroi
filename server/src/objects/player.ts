@@ -189,6 +189,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
         zoom: true
     };
 
+    // save current tick dirty status to send to spectators
+    thisTickdirty!: this["dirty"];
+
     readonly inventory = new Inventory(this);
 
     get activeItemIndex(): number {
@@ -487,6 +490,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.isInsideBuilding = isInsideBuilding;
 
         this.turning = false;
+
+        this.thisTickdirty = JSON.parse(JSON.stringify(this.dirty));
     }
 
     private _firstPacket = true;
@@ -553,14 +558,15 @@ export class Player extends GameObject<ObjectCategory.Player> {
             zoom: player.zoom,
             id: player.id,
             spectating: this.spectating !== undefined,
-            dirty: JSON.parse(JSON.stringify(player.dirty)),
+            dirty: JSON.parse(JSON.stringify(player.thisTickdirty)),
             inventory: player.inventory
         };
 
-        if (this.startedSpectating) {
+        if (this.startedSpectating && this.spectating) {
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
+            packet.fullDirtyObjects.push(this.spectating);
             this.startedSpectating = false;
         }
 
@@ -627,10 +633,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // serialize and send update packet
-        packet.serialize();
-
-        const buffer = packet.getBuffer();
-        this.sendData(buffer);
+        this.sendPacket(packet);
 
         // reset stuff
         this._firstPacket = false;
@@ -974,7 +977,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         packet.damageTaken = this.damageTaken;
         packet.timeAlive = (this.game.now - this.joinTime) / 1000;
         packet.rank = this.game.aliveCount + 1;
-        this.sendPacket(packet);
+        packet.serialize();
+        const buffer = packet.getBuffer();
+        this.sendData(buffer);
+        for (const spectator of this.spectators) {
+            spectator.sendData(buffer);
+        }
     }
 
     processInputs(packet: InputPacket): void {
