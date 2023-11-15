@@ -274,7 +274,7 @@ export class Game {
 
         this.socket.onclose = (): void => {
             enablePlayButton();
-            if (this.spectating && !this.gameOver) {
+            if (!this.gameOver || this.spectating) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
