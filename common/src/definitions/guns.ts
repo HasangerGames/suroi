@@ -49,6 +49,25 @@ export type GunDefinition = ItemDefinition & {
         readonly ejectionDelay?: number
     }
 
+    readonly dual?: {
+        readonly capacity?: number
+        readonly reloadTime?: number
+        readonly shotSpread?: number
+        readonly moveSpread?: number // Added to shotSpread if the player is moving
+        readonly fists: {
+            readonly zIndex?: number
+            readonly animationDuration: number
+        }
+        readonly left: {
+            readonly gunPosition: Vector
+            readonly fistPosition: Vector
+        }
+        readonly right: {
+            readonly gunPosition: Vector
+            readonly fistPosition: Vector
+        }
+    }
+
     readonly noMuzzleFlash?: boolean
 
     readonly ballistics: BaseBulletDefinition
@@ -434,6 +453,17 @@ export const Guns: GunDefinition[] = [
             count: 7,
             spawnOnReload: true
         },
+        dual: {
+            fists: { animationDuration: 100 },
+            left: {
+                fistPosition: v(40, -30),
+                gunPosition: v(3.5, -30)
+            },
+            right: {
+                fistPosition: v(40, 30),
+                gunPosition: v(3.5, 30)
+            }
+        },
         capacity: 7,
         reloadTime: 2.1,
         ballistics: {
@@ -469,6 +499,19 @@ export const Guns: GunDefinition[] = [
         casingParticles: {
             position: v(3.5, 0.5)
         },
+        dual: {
+            fists: {
+                animationDuration: 100
+            },
+            left: {
+                gunPosition: v(65, -30),
+                fistPosition: v(40, -30)
+            },
+            right: {
+                gunPosition: v(65, 30),
+                fistPosition: v(40, 30)
+            }
+        },
         capacity: 15,
         reloadTime: 1.5,
         ballistics: {
@@ -503,6 +546,17 @@ export const Guns: GunDefinition[] = [
         image: { position: v(70, -1) },
         casingParticles: {
             position: v(3.5, 0.5)
+        },
+        dual: {
+            fists: { animationDuration: 100 },
+            left: {
+                fistPosition: v(40, -30),
+                gunPosition: v(70, -30)
+            },
+            right: {
+                fistPosition: v(40, 30),
+                gunPosition: v(70, 30)
+            }
         },
         capacity: 16,
         reloadTime: 1.9,

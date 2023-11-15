@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/space-before-blocks */
 import { clearTimeout } from "timers";
 import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
@@ -19,6 +20,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
     declare readonly category: ItemType.Gun;
 
     ammo = 0;
+
+    /**
+     * Value alternates between left and right after each shot
+     */
+    private _dualGun = "left";
 
     private _shots = 0;
 
@@ -98,10 +104,23 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
         const jitter = definition.jitterRadius ?? 0;
+        let offset = 0;
+        if (this.isDual){
+            switch (this._dualGun) {
+                case "left":
+                    offset = definition.dual?.left.gunPosition.y ?? 0;
+                    break;
+                case "right":
+                    offset = definition.dual?.right.gunPosition.y ?? 0;
+                    break;
+                default:
+                    break;
+            }
+        }
 
         let position = vAdd(
             owner.position,
-            vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
+            vRotate(v(definition.length + jitter, offset / 20), owner.rotation) // player radius + gun length
         );
 
         for (
@@ -175,8 +194,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
             this.owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeoutID);
-            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
+            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay / (this.isDual ? 2 : 1));
         }
+
+        this._dualGun = this._dualGun === "left" ? "right" : "left";
     }
 
     override useItem(): void {

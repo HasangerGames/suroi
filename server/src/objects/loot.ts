@@ -174,6 +174,12 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                     if (player.action?.type === PlayerActions.Reload) player.action?.cancel();
                     inventory.addOrReplaceWeapon(inventory.activeWeaponIndex, this.definition.idString);
                 }
+                for (const weapon of inventory.weapons) {
+                    if (weapon?.definition.idString === this.definition.idString && this.definition.dual && !weapon?.isDual) {
+                        weapon.isDual = true;
+                        break;
+                    }
+                }
                 break;
             }
             case ItemType.Healing:

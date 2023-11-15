@@ -38,6 +38,13 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
         this.refreshModifiers();
     }
 
+    private _isDual = false;
+    get isDual(): boolean { return this._isDual; }
+    set isDual(isDual: boolean) {
+        this._isDual = isDual;
+        this.refreshModifiers();
+    }
+
     private readonly _stats = (() => {
         let kills = 0;
         let damage = 0;

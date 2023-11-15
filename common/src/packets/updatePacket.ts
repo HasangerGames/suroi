@@ -61,6 +61,7 @@ export interface PlayerData {
             definition: WeaponDefinition
             ammo?: number
             kills?: number
+            dual: boolean
         }>
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
@@ -111,6 +112,8 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
                 if (weapon.definition.itemType === ItemType.Gun) {
                     stream.writeUint8(weapon.ammo!);
                 }
+
+                if (weapon.definition.dual) stream.writeBoolean(weapon.dual)
 
                 if (weapon.definition.killstreak !== undefined) {
                     stream.writeUint8(weapon.kills!);
@@ -198,12 +201,14 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                     ammo = stream.readUint8();
                 }
 
+                const dual = definition.dual && stream.readBoolean();
+
                 let kills: number | undefined;
                 if (definition.killstreak) {
                     kills = stream.readUint8();
                 }
 
-                data.inventory.weapons[i] = { definition, ammo, kills };
+                data.inventory.weapons[i] = { definition, ammo, kills, dual };
             }
         }
     }
@@ -360,7 +365,7 @@ const UpdateFlags = {
 const UPDATE_FLAGS_BITS = 13;
 
 export class UpdatePacket extends Packet {
-    override readonly allocBytes = 2 ** 13;
+    override readonly allocBytes = 1 << 14;
     override readonly type = PacketType.Update;
 
     playerData!: PlayerData;
@@ -426,18 +431,18 @@ export class UpdatePacket extends Packet {
 
         let flags = 0;
         if (playerDataDirty) flags += UpdateFlags.PlayerData;
-        if (this.deletedObjects?.length) flags += UpdateFlags.DeletedObjects;
-        if (this.fullDirtyObjects?.length) flags += UpdateFlags.FullObjects;
-        if (this.partialDirtyObjects?.length) flags += UpdateFlags.PartialObjects;
-        if (this.bullets?.length) flags += UpdateFlags.Bullets;
-        if (this.explosions?.length) flags += UpdateFlags.Explosions;
-        if (this.emotes?.length) flags += UpdateFlags.Emotes;
+        if (this.deletedObjects.length) flags += UpdateFlags.DeletedObjects;
+        if (this.fullDirtyObjects.length) flags += UpdateFlags.FullObjects;
+        if (this.partialDirtyObjects.length) flags += UpdateFlags.PartialObjects;
+        if (this.bullets.length) flags += UpdateFlags.Bullets;
+        if (this.explosions.length) flags += UpdateFlags.Explosions;
+        if (this.emotes.length) flags += UpdateFlags.Emotes;
         if (this.gas?.dirty) flags += UpdateFlags.Gas;
         if (this.gasPercentage?.dirty) flags += UpdateFlags.GasPercentage;
-        if (this.newPlayers?.length) flags += UpdateFlags.NewPlayers;
-        if (this.deletedPlayers?.length) flags += UpdateFlags.DeletedPlayers;
+        if (this.newPlayers.length) flags += UpdateFlags.NewPlayers;
+        if (this.deletedPlayers.length) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
-        if (this.killFeedMessages?.length) flags += UpdateFlags.KillFeedMessages;
+        if (this.killFeedMessages.length) flags += UpdateFlags.KillFeedMessages;
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
