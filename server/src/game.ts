@@ -362,8 +362,7 @@ export class Game {
 
         const joinedPacket = new JoinedPacket();
         joinedPacket.emotes = player.loadout.emotes;
-        joinedPacket.serialize();
-        player.sendData(joinedPacket.getBuffer());
+        player.sendPacket(joinedPacket);
 
         player.sendData(this.map.buffer);
 

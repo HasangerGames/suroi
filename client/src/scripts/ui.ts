@@ -68,6 +68,14 @@ export function setupUI(game: Game): void {
             link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
         },
         {
+            name: "NAMERIO",
+            link: "https://www.youtube.com/@NAMERIO1"
+        },
+        {
+            name: "AWMZ",
+            link: "https://www.youtube.com/@AWMZ6000"
+        },
+        {
             name: "Ukraines dude",
             link: "https://www.youtube.com/channel/UCAdNONfEL-UOXDQnMkhhlHA"
         },

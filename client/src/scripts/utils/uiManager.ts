@@ -103,6 +103,8 @@ export class UIManager {
         const game = this.game;
 
         $("#interact-message").hide();
+        $("#spectating-container").hide();
+
         const activePlayer = game.activePlayer;
         if (activePlayer?.actionSound) game.soundManager.stop(activePlayer.actionSound);
 
@@ -123,7 +125,9 @@ export class UIManager {
         }
 
         $("#chicken-dinner").toggle(packet.won);
-        $("#game-over-text").text(packet.won ? "Winner winner chicken dinner!" : "You died.");
+
+        const name = this.game.spectating ? this.getPlayerName(packet.playerID) : "You";
+        $("#game-over-text").html(packet.won ? "Winner winner chicken dinner!" : `${name} died.`);
 
         $("#game-over-player-name").html(this.getPlayerName(packet.playerID));
 
