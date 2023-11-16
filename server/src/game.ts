@@ -310,18 +310,15 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = v(this.map.width / 2, this.map.height / 2);
+        const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
                 let foundPosition = false;
                 while (!foundPosition) {
-                    spawnPosition = this.map.getRandomPositionFor(
-                        new CircleHitbox(5),
-                        1,
-                        0,
-                        undefined,
-                        500) ??
-                        spawnPosition;
-                    if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) foundPosition = true;
+                    spawnPosition = this.map.getRandomPositionFor(hitbox, 1, 0, undefined, 500) ?? spawnPosition;
+                    if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) {
+                        foundPosition = true;
+                    }
                 }
                 break;
             }
@@ -330,7 +327,29 @@ export class Game {
                 break;
             }
             case SpawnMode.Radius: {
-                spawnPosition = randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
+                spawnPosition = randomPointInsideCircle(
+                    Config.spawn.position,
+                    Config.spawn.radius
+                );
+                break;
+            }
+            case SpawnMode.PoissonDisc: {
+                let foundPosition = false;
+                let tries = 0;
+                while (!foundPosition) {
+                    spawnPosition = this.map.getRandomPositionFor(hitbox, 1, 0, undefined, 500) ?? spawnPosition;
+                    if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) {
+                        foundPosition = true;
+                    }
+
+                    const radiusHitbox = new CircleHitbox(Config.spawn.radius, spawnPosition);
+                    for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                        if (object instanceof Player && tries < Config.spawn.maxTries) {
+                            foundPosition = false;
+                        }
+                    }
+                    tries++;
+                }
                 break;
             }
         }

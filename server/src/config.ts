@@ -4,7 +4,8 @@ export enum SpawnMode {
     Random,
     Fixed,
     Center,
-    Radius
+    Radius,
+    PoissonDisc
 }
 export enum GasMode {
     Normal,
@@ -18,7 +19,7 @@ export const Config = {
 
     mapName: "main",
 
-    spawn: { mode: SpawnMode.Random },
+    spawn: { mode: SpawnMode.PoissonDisc, radius: 50, maxTries: 100 },
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -66,6 +67,7 @@ export interface ConfigType {
      * SpawnMode.Fixed always spawns the player at the exact position given, ignoring the radius.
      * SpawnMode.Center always spawns the player in the center of the map.
      * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
+     * SpawnMode.PoissonDisc spawns the player at a random location with a minimum distance between players
      */
     readonly spawn: {
         readonly mode: SpawnMode.Random
@@ -78,6 +80,10 @@ export interface ConfigType {
         readonly mode: SpawnMode.Radius
         readonly position: Vector
         readonly radius: number
+    } | {
+        readonly mode: SpawnMode.PoissonDisc
+        readonly radius: number
+        readonly maxTries: number
     }
 
     /**
