@@ -96,7 +96,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         this._lastUse = owner.game.now;
 
-        const spread = degreesToRadians((definition.shotSpread + (this.owner.isMoving ? definition.moveSpread : 0)) / 2);
+        const spread = degreesToRadians((this.owner.isMoving ? definition.moveSpread : definition.shotSpread) / 2);
         const jitter = definition.jitterRadius ?? 0;
 
         let position = vAdd(

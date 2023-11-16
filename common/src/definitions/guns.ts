@@ -79,7 +79,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 150,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 4,
+        moveSpread: 6,
         length: 7.5,
         fists: {
             left: v(120, -2),
@@ -145,7 +145,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 120,
         fireMode: FireMode.Auto,
         shotSpread: 4,
-        moveSpread: 7,
+        moveSpread: 11,
         length: 6.7,
         fists: {
             left: v(105, -2),
@@ -181,7 +181,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 500,
         fireMode: FireMode.Auto,
         shotSpread: 5,
-        moveSpread: 2,
+        moveSpread: 7,
         jitterRadius: 0.5,
         bulletCount: 9,
         length: 7.7,
@@ -218,7 +218,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 550,
         fireMode: FireMode.Single,
         shotSpread: 11,
-        moveSpread: 3,
+        moveSpread: 14,
         jitterRadius: 1.25,
         bulletCount: 10,
         length: 7.9,
@@ -260,8 +260,8 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 600,
         fireMode: FireMode.Single,
         bulletCount: 18,
-        shotSpread: 30,
-        moveSpread: 7,
+        shotSpread: 15,
+        moveSpread: 22,
         jitterRadius: 1.5,
         length: 8,
         fists: {
@@ -300,7 +300,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         bulletCount: 10,
         shotSpread: 11,
-        moveSpread: 3,
+        moveSpread: 14,
         jitterRadius: 1.5,
         length: 6,
         fists: {
@@ -340,8 +340,8 @@ export const Guns: GunDefinition[] = [
         recoilMultiplier: 0.45,
         recoilDuration: 750,
         fireMode: FireMode.Single,
-        shotSpread: 0.8,
-        moveSpread: 0.5,
+        shotSpread: 1,
+        moveSpread: 2,
         length: 8.7,
         shootOnRelease: true,
         fists: {
@@ -381,7 +381,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 1000,
         fireMode: FireMode.Single,
         shotSpread: 0.3,
-        moveSpread: 0.3,
+        moveSpread: 0.6,
         length: 8.2,
         shootOnRelease: true,
         fists: {
@@ -419,7 +419,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 135,
         fireMode: FireMode.Single,
         shotSpread: 2,
-        moveSpread: 3,
+        moveSpread: 5,
         length: 5.1,
         fists: {
             left: v(40, 0),
@@ -456,7 +456,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 90,
         fireMode: FireMode.Single,
         shotSpread: 7,
-        moveSpread: 7,
+        moveSpread: 14,
         length: 4.7,
         fists: {
             left: v(40, 0),
@@ -491,7 +491,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 90,
         fireMode: FireMode.Auto,
         shotSpread: 12,
-        moveSpread: 7,
+        moveSpread: 19,
         length: 5.1,
         fists: {
             left: v(40, 0),
@@ -528,7 +528,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 300,
         fireMode: FireMode.Burst,
         shotSpread: 3,
-        moveSpread: 1,
+        moveSpread: 4,
         length: 5.9,
         fists: {
             left: v(95, -3),
@@ -566,7 +566,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 350,
         fireMode: FireMode.Burst,
         shotSpread: 1,
-        moveSpread: 1.5,
+        moveSpread: 2.5,
         length: 8.6,
         fists: {
             left: v(120, -3),
@@ -604,7 +604,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 60,
         fireMode: FireMode.Auto,
         shotSpread: 9,
-        moveSpread: 10,
+        moveSpread: 19,
         length: 5.8,
         fists: {
             left: v(85, -6),
@@ -638,7 +638,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 150,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 2,
+        moveSpread: 4,
         length: 6.55,
         fists: {
             left: v(103, -2),
@@ -672,7 +672,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 130,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 2,
+        moveSpread: 4,
         length: 7.7,
         fists: {
             left: v(105, -6),
@@ -709,7 +709,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 200,
         fireMode: FireMode.Auto,
         shotSpread: 2,
-        moveSpread: 4,
+        moveSpread: 6,
         length: 11.8,
         fists: {
             left: v(140, -10),
@@ -747,7 +747,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 175,
         fireMode: FireMode.Auto,
         shotSpread: 3,
-        moveSpread: 1.5,
+        moveSpread: 4.5,
         length: 7.7,
         fists: {
             left: v(105, -3),
@@ -785,7 +785,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 140,
         fireMode: FireMode.Single,
         shotSpread: 2,
-        moveSpread: 1.5,
+        moveSpread: 3.5,
         length: 6.9,
         fists: {
             left: v(110, -2),
@@ -901,7 +901,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 525,
         fireMode: FireMode.Auto,
         shotSpread: 5,
-        moveSpread: 9,
+        moveSpread: 14,
         length: 7.7,
         fists: {
             left: v(115, -1),
@@ -1024,7 +1024,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 550,
         fireMode: FireMode.Single,
         shotSpread: 11,
-        moveSpread: 3,
+        moveSpread: 14,
         killstreak: true,
         consistentPatterning: true,
         bulletCount: 10,
