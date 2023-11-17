@@ -54,36 +54,36 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
-        width: 1344,
-        height: 1344,
+        width: 1620,
+        height: 1620,
         oceanSize: 128,
         beachSize: 32,
         rivers: 3,
         buildings: {
             refinery: 1,
-            warehouse: 4,
-            small_house: 5,
-            porta_potty: 10,
+            warehouse: 5,
+            small_house: 10,
+            porta_potty: 15,
             container_3: 1,
-            container_4: 1,
+            container_4: 2,
             container_5: 1,
-            container_6: 1,
+            container_6: 2,
             container_7: 1,
-            container_8: 1,
+            container_8: 2,
             container_9: 1,
-            container_10: 1
+            container_10: 2
         },
         obstacles: {
-            oil_tank: 6,
-            oak_tree: 143,
-            birch_tree: 18,
-            pine_tree: 14,
-            regular_crate: 155,
-            rock: 142,
-            bush: 87,
-            blueberry_bush: 20,
-            barrel: 70,
-            super_barrel: 20,
+            oil_tank: 10,
+            oak_tree: 310,
+            birch_tree: 50,
+            pine_tree: 30,
+            regular_crate: 300,
+            rock: 200,
+            bush: 120,
+            blueberry_bush: 30,
+            barrel: 80,
+            super_barrel: 30,
             melee_crate: 1,
             gold_rock: 1,
             flint_stone: 1
@@ -95,12 +95,12 @@ export const Maps: Record<string, MapDefinition> = {
                 squareRadius: true
             },
             aegis_crate: {
-                min: 3,
-                max: 4
+                min: 5,
+                max: 6
             },
             flint_crate: {
-                min: 3,
-                max: 4
+                min: 5,
+                max: 6
             }
         },
         loots: {

@@ -12,6 +12,7 @@ export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
+export const MAX_POSITION = 1620;
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -158,7 +159,7 @@ export class SuroiBitStream extends BitStream {
      * @param y The y-coordinate of the vector to write
      */
     writePosition2(x: number, y: number): void {
-        this.writeVector2(x, y, 0, 0, 1344, 1344, 16);
+        this.writeVector2(x, y, 0, 0, MAX_POSITION, MAX_POSITION, 16);
     }
 
     /**
@@ -166,7 +167,7 @@ export class SuroiBitStream extends BitStream {
      * @return the position Vector.
      */
     readPosition(): Vector {
-        return this.readVector(0, 0, 1344, 1344, 16);
+        return this.readVector(0, 0, MAX_POSITION, MAX_POSITION, 16);
     }
 
     /**
