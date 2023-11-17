@@ -38,12 +38,12 @@ export const Ammos: AmmoDefinition[] = [
         idString: "50ae",
         name: ".50 AE",
         itemType: ItemType.Ammo
-    },
+    }, */
     {
         idString: "127mm",
         name: "12.7mm",
         itemType: ItemType.Ammo
-    },*/
+    },
 
     // Ephemeral ammo types below
 
