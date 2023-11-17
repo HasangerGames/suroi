@@ -96,7 +96,7 @@ export class Game {
     over = false;
     stopped = false;
 
-    startedTime?: number;
+    startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
 
     startTimeoutID?: NodeJS.Timeout;
 
@@ -115,6 +115,8 @@ export class Game {
     constructor(id: number) {
         this._id = id;
 
+        const start = Date.now();
+
         // Generate map
         this.grid = new Grid(Maps[Config.mapName].width, Maps[Config.mapName].height);
         this.map = new Map(this, Config.mapName);
@@ -122,6 +124,8 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
+
+        Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
         this.tick(TICKS_PER_SECOND);
@@ -257,7 +261,7 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                Logger.log(`Game #${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
+                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
@@ -378,7 +382,7 @@ export class Game {
             }, 3000);
         }
 
-        Logger.log(`Game #${this.id} | "${player.name}" joined`);
+        Logger.log(`Game ${this.id} | "${player.name}" joined`);
     }
 
     removePlayer(player: Player): void {

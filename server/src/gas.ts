@@ -81,7 +81,7 @@ export class Gas {
 
         if (currentStage.preventJoin) {
             newGame();
-            Logger.log(`Game #${this.game.id} | Preventing new players from joining`);
+            Logger.log(`Game ${this.game.id} | Preventing new players from joining`);
             this.game.allowJoin = false;
         }
 

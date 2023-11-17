@@ -45,7 +45,6 @@ export class Map {
     readonly buffer: ArrayBuffer;
 
     constructor(game: Game, mapName: string) {
-        const mapStartTime = Date.now();
         this.game = game;
 
         const mapDefinition = Maps[mapName];
@@ -238,8 +237,6 @@ export class Map {
 
         packet.serialize();
         this.buffer = packet.getBuffer();
-
-        Logger.log(`Game #${this.game.id} | Map generation took ${Date.now() - mapStartTime}ms`);
     }
 
     generateBuildings(
