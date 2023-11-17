@@ -647,7 +647,7 @@ logger.indent("Validating gas stages", () => {
 
             tester.assertNoPointlessValue({
                 obj: stage,
-                field: "createNewGame",
+                field: "preventJoin",
                 defaultValue: false,
                 baseErrorPath: errorPath
             });

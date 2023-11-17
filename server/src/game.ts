@@ -96,6 +96,8 @@ export class Game {
     over = false;
     stopped = false;
 
+    startedTime?: number;
+
     startTimeoutID?: NodeJS.Timeout;
 
     aliveCountDirty = false;
@@ -103,7 +105,7 @@ export class Game {
     /**
      * The value of `Date.now()`, as of the start of the tick.
      */
-    _now = Date.now();
+    private _now = Date.now();
     get now(): number { return this._now; }
 
     tickTimes: number[] = [];
@@ -239,9 +241,11 @@ export class Game {
                 }
 
                 // End the game in 1 second
+                // If allowJoin is true, then a new game hasn't been created by this game, so create one to replace this one
+                const shouldCreateNewGame = this.allowJoin;
                 this.allowJoin = false;
                 this.over = true;
-                setTimeout(() => endGame(this._id), 1000);
+                setTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
             }
 
             // Record performance and start the next tick
@@ -369,6 +373,7 @@ export class Game {
         if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
             this.startTimeoutID = setTimeout(() => {
                 this._started = true;
+                this.startedTime = this.now;
                 this.gas.advanceGas();
             }, 3000);
         }

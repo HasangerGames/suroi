@@ -46,13 +46,22 @@ const games: Array<Game | undefined> = [];
 createNewGame(0);
 
 function createNewGame(id: number): void {
-    if (games[id] === undefined || games[id]?.stopped) {
+    if (!games[id] || games[id]?.stopped) {
         Logger.log(`Game #${id} | Creating...`);
         games[id] = new Game(id);
     }
 }
 
-export function endGame(id: number): void {
+export function newGame(): void {
+    for (let i = 0; i < Config.maxGames; i++) {
+        if (!games[i] || games[i]?.stopped) {
+            createNewGame(i);
+            return;
+        }
+    }
+}
+
+export function endGame(id: number, createNewGame: boolean): void {
     const game = games[id];
     if (game === undefined) return;
     game.allowJoin = false;
@@ -62,13 +71,12 @@ export function endGame(id: number): void {
     for (const player of game.connectedPlayers) {
         player.socket.close();
     }
-    games[id] = undefined;
+    games[id] = createNewGame ? new Game(id) : undefined;
     Logger.log(`Game #${id} | Ended`);
 }
 
-function allowJoin(gameID: number): boolean {
-    const game = games[gameID];
-    return game !== undefined && game.allowJoin && game.aliveCount < Config.maxPlayersPerGame;
+function canJoin(game?: Game): boolean {
+    return game !== undefined && game.aliveCount < Config.maxPlayersPerGame && !game.over;
 }
 
 const decoder = new TextDecoder();
@@ -132,14 +140,23 @@ app.get("/api/getGame", async(res, req) => {
     } else {
         let foundGame = false;
         for (let gameID = 0; gameID < Config.maxGames; gameID++) {
-            if (games[gameID] === undefined) createNewGame(gameID);
-            if (allowJoin(gameID)) {
+            const game = games[gameID];
+            if (canJoin(game) && game?.allowJoin) {
                 response = { success: true, gameID };
                 foundGame = true;
                 break;
             }
         }
-        if (!foundGame) response = { success: false };
+        if (!foundGame) {
+            // Fallback
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            const game = games
+                .filter(g => g && !g.over)
+                .reduce((a, b) => a?.startedTime && b?.startedTime && a.startedTime > b.startedTime ? a : b);
+
+            if (game) response = { success: true, gameID: game.id };
+            else response = { success: false };
+        }
     }
 
     if (!aborted) {
@@ -165,6 +182,7 @@ app.get("/api/removePunishment", (res, req) => {
     if (req.getHeader("password") === Config.protection?.punishments?.password) {
         const ip = new URLSearchParams(req.getQuery()).get("ip");
         if (ip) removePunishment(ip);
+        res.writeStatus("204 No Content").endWithoutBody(0);
     } else {
         forbidden(res);
     }
@@ -229,7 +247,7 @@ app.ws("/play", {
         //
         let gameID = Number(searchParams.get("gameID"));
         if (gameID < 0 || gameID > Config.maxGames - 1) gameID = 0;
-        if (!allowJoin(gameID)) {
+        if (!canJoin(games[gameID])) {
             forbidden(res);
             return;
         }
@@ -364,9 +382,13 @@ app.listen(Config.host, Config.port, (): void => {
                 if (!existsSync("punishments.json")) writeFileSync("punishments.json", "{}");
                 readFile("punishments.json", "utf8", (error, data) => {
                     if (!error) {
-                        punishments = JSON.parse(data);
+                        try {
+                            punishments = data === "" ? {} : JSON.parse(data);
+                        } catch (e) {
+                            console.error("Error: Unable to parse punishment list. Details:", e);
+                        }
                     } else {
-                        console.error(error);
+                        console.error("Error: Unable to load punishment list. Details:", error);
                     }
                 });
             }

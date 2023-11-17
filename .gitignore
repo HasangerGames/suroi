@@ -5,7 +5,7 @@ dist/
 node_modules/
 
 server/reports
-server/punishments.json
+punishments.json
 
 # IDE garbage
 .idea

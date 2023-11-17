@@ -1,10 +1,23 @@
 import { readFileSync, writeFileSync } from "fs";
 import { type Punishment } from "./server";
 
-const punishments: Record<string, Punishment> = JSON.parse(readFileSync("punishments.json", "utf8"));
+const rawPunishments = readFileSync("punishments.json", "utf8");
+const punishments: Record<string, Punishment> = rawPunishments === "" ? {} : JSON.parse(rawPunishments);
 const ip = process.argv[3];
 const now = Date.now();
 
+// Clean up expired bans
+for (const addr of Object.keys(punishments)) {
+    const punishment = punishments[addr];
+    if (
+        punishment.type === "tempBan" &&
+        punishment.expires &&
+        punishment.expires < now
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    ) delete punishments[addr];
+}
+
+// Process the given command
 switch (process.argv[2]) {
     case "warn": {
         punishments[ip] = { type: "warning" };

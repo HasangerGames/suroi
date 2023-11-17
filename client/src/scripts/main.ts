@@ -167,7 +167,7 @@ $(async(): Promise<void> => {
                     case "tempBan":
                         showWarningModal = true;
                         title = "You have been banned for 1 day for teaming!";
-                        message = "Remember, allying with other players for extended periods is not allowed!";
+                        message = "Remember, allying with other players for extended periods is not allowed!<br><br>When your ban is up, reload the page to clear this message.";
                         break;
                     case "permaBan":
                         showWarningModal = true;
@@ -181,7 +181,7 @@ $(async(): Promise<void> => {
                 enablePlayButton();
                 if (showWarningModal) {
                     $("#warning-modal-title").text(title ?? "");
-                    $("#warning-modal-text").text(message ?? "");
+                    $("#warning-modal-text").html(message ?? "");
                     $("#warning-modal-agree-options").toggle(data.message === "warning");
                     $("#warning-modal-agree-checkbox").prop("checked", false);
                     $("#warning-modal").show();
