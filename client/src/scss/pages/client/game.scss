@@ -822,6 +822,9 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
+    display: flex;
+    gap: 10px;
+    flex-direction: row-reverse;
 
     .inventory-container {
         margin-top: 3px;
@@ -829,8 +832,7 @@
 
     .item-slot {
         height: 40px !important;
-        width: 95px !important;
-        justify-content: start;
+        width: 100px !important;
 
         &.full .item-count {
             color: $orange;
@@ -849,6 +851,12 @@
     }
 
     #healing-items-container {
+        padding-top: 50px;
+        flex-wrap: wrap;
+        height: 200px;
+        min-width:75px;
+        max-width: 150px;
+        justify-content: revert;
         .item-image {
             height: 30px;
         }
@@ -865,6 +873,29 @@
         }
     }
 
+    #ammo-container {
+        width: 100px;
+        flex-wrap: wrap;
+        text-align: center;
+        .item-image {
+            height: 30px;
+        }
+
+        .inventory-slot .item-tooltip {
+            width: 125px;
+            bottom: 50px;
+            left: -12.5%;
+        }
+
+        .inventory-slot:first-child .item-tooltip {
+            left: 0;
+        }
+
+        .item-slot {
+            width: 100%;
+        }
+    }
+
     .item-image {
         width: 40px;
         height: 40px;
@@ -877,45 +908,95 @@
     }
 
     @media screen and (max-width: $screen_large) {
-        bottom: 5px;
-        left: 5px;
-        display: flex;
-        gap: 2px;
+        position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    gap: 20px;
+    flex-direction: row-reverse;
 
-        .inventory-container {
-            gap: 2px;
+    .inventory-container {
+        margin-top: 3px;
+    }
+
+    .item-slot {
+        height: 40px !important;
+        width: 100px !important;
+
+        &.full .item-count {
+            color: $orange;
         }
 
-        #healing-items-container {
-            order: 1;
-            margin-right: 3px;
+        opacity: 0.75;
 
-            .item-slot {
-                width: 62px !important;
-            }
-
-            .inventory-slot .item-tooltip {
-                bottom: 0;
-                left: 74px !important;
-            }
-        }
-
-        .item-slot {
-            height: 25px !important;
-            width: 70px !important;
-            justify-content: start;
+        &.has-item {
+            opacity: 1;
         }
     }
 
-    @media screen and (max-width: 550px) {
-        flex-direction: column;
-        gap: 0;
+    .item-count {
+        float: right;
+        margin-left: auto;
+    }
 
-        #healing-items-container {
-            .inventory-slot .item-tooltip {
-                left: 80px !important;
-            }
+    #healing-items-container {
+        padding-top: 50px;
+        flex-wrap: wrap;
+        height: 275px;
+        min-width:75px;
+        max-width: 150px;
+        gap: 20px;
+        margin-top: 10px;
+        justify-content: revert;
+        .item-image {
+            height: 30px;
         }
+
+        .inventory-slot .item-tooltip {
+            width: max-content;
+            max-width: 120px;
+            bottom: 50px;
+            left: -12.5%;
+        }
+
+        .inventory-slot:first-child .item-tooltip {
+            left: 0;
+        }
+    }
+
+    #ammo-container {
+        width: 100px;
+        flex-wrap: wrap;
+        text-align: center;
+        .item-image {
+            height: 30px;
+        }
+
+        .inventory-slot .item-tooltip {
+            width: 125px;
+            bottom: 50px;
+            left: -12.5%;
+        }
+
+        .inventory-slot:first-child .item-tooltip {
+            left: 0;
+        }
+
+        .item-slot {
+            width: 100%;
+        }
+    }
+
+    .item-image {
+        width: 40px;
+        height: 40px;
+        @include drop-shadow;
+
+        @media screen and (max-width: $screen_large) {
+            width: 30px;
+            height: 20px !important;
+        }
+    }
     }
 }
 

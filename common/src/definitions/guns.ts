@@ -367,6 +367,47 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "barret",
+        name: "Barret M95",
+        itemType: ItemType.Gun,
+        ammoType: "127mm",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 3.4,
+        singleReload: true,
+        fireDelay: 1500,
+        switchDelay: 1000,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.3,
+        recoilDuration: 1000,
+        fireMode: FireMode.Single,
+        shotSpread: 0.5,
+        moveSpread: 4,
+        length: 8.7,
+        shootOnRelease: true,
+        fists: {
+            left: v(115, -4),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(90, 6.5) },
+        casingParticles: {
+            position: v(4, 0.6),
+            ejectionDelay: 700
+        },
+        ballistics: {
+            damage: 150,
+            obstacleMultiplier: 1,
+            speed: 0.45,
+            maxDistance: 300,
+            tracer: {
+                width: 1.4,
+                length: 2.5
+            }
+        }
+    },
+    {
         idString: "tango_51",
         name: "Tango 51",
         itemType: ItemType.Gun,
