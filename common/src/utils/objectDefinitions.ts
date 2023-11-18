@@ -37,7 +37,11 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
-        return this.definitions[stream.readBits(this.bitCount)] as U;
+        const id = stream.readBits(this.bitCount);
+        if (id >= this.definitions.length) {
+            console.warn(`Id out of range: ${id}, Max: ${this.definitions.length - 1}`);
+        }
+        return this.definitions[id] as U;
     }
 }
 
@@ -71,6 +75,17 @@ export enum ObstacleSpecialRoles {
     Wall,
     Window,
     Activatable
+}
+
+export enum MapObjectSpawnMode {
+    Grass,
+    /**
+     * Grass, beach and river banks.
+     */
+    GrassAndSand,
+    RiverBank,
+    River,
+    Beach
 }
 
 export const LootRadius: Record<ItemType, number> = {

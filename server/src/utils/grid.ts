@@ -1,4 +1,4 @@
-import { type Hitbox } from "../../../common/src/utils/hitbox";
+import { type RectangleHitbox, type Hitbox } from "../../../common/src/utils/hitbox";
 import { clamp } from "../../../common/src/utils/math";
 import { type Vector, v } from "../../../common/src/utils/vector";
 
@@ -47,8 +47,11 @@ export class Grid<T extends GameObject> {
             xRow[pos.y].set(object.id, object);
             cells.push(pos);
         } else {
+            let rect: RectangleHitbox;
+            if ("spawnHitbox" in object) {
+                rect = (object.spawnHitbox as Hitbox).toRectangle();
+            } else rect = object.hitbox.toRectangle();
             // get the bounds of the hitbox
-            const rect = object.hitbox.toRectangle();
             // round it to the grid cells
             const min = this._roundToCells(rect.min);
             const max = this._roundToCells(rect.max);

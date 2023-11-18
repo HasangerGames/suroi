@@ -262,7 +262,7 @@ export class GameConsole {
 
         this._attachListeners();
 
-        const T = this;
+        /*const T = this;
         // Overrides for native console methods
         {
             const {
@@ -297,7 +297,7 @@ export class GameConsole {
                     ["error", nativeError, "error"]
                 ] as Array<Parameters<typeof makeOverride>>
             ).forEach(args => { makeOverride(...args); });
-        }
+        }*/
 
         window.addEventListener("error", err => {
             if (err.filename) {

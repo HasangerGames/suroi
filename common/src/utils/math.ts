@@ -151,17 +151,6 @@ export function rectangleCollision(min: Vector, max: Vector, pos: Vector, rad: n
     return (distSquared < rad * rad) || (pos.x >= min.x && pos.x <= max.x && pos.y >= min.y && pos.y <= max.y);
 }
 
-export function rectPolyCollision(min: Vector, max: Vector, poly: Vector[]): boolean {
-    for (let i = 0; i < poly.length; i++) {
-        const a = poly[i];
-        const b = i === poly.length - 1 ? poly[0] : poly[i + 1];
-        if (lineIntersectsRect2(a, b, min, max)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 /**
  * Conform a number to specified bounds
  * @param a The number to conform

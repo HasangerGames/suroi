@@ -1,7 +1,7 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
-import { type ObjectDefinition, ObjectDefinitions, ObstacleSpecialRoles } from "../utils/objectDefinitions";
+import { type ObjectDefinition, ObjectDefinitions, ObstacleSpecialRoles, MapObjectSpawnMode } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 
@@ -36,6 +36,8 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly particle?: string
         readonly residue?: string
     }
+
+    readonly spawnMode?: MapObjectSpawnMode
 
     readonly tint?: number
 } & (({
@@ -101,20 +103,19 @@ export enum RotationMode {
 }
 
 function makeCrate(idString: string, name: string, options: Partial<ObstacleDefinition>): ObstacleDefinition {
-    const definition = {
-        ...{
-            idString,
-            name,
-            material: "crate",
-            health: 80,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.5
-            },
-            hitbox: RectangleHitbox.fromRect(9.2, 9.2),
-            hasLoot: true
+    const definition: Partial<ObstacleDefinition> = {
+        idString,
+        name,
+        material: "crate",
+        health: 80,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.5
         },
+        spawnMode: MapObjectSpawnMode.GrassAndSand,
+        hitbox: RectangleHitbox.fromRect(9.2, 9.2),
+        hasLoot: true,
         ...options
     };
     return definition as ObstacleDefinition;
@@ -272,6 +273,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.1,
                 destroy: 0.5
             },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: new CircleHitbox(4),
             spawnHitbox: new CircleHitbox(4.5),
             rotationMode: RotationMode.Full,
@@ -305,6 +307,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: RectangleHitbox.fromRect(6.1, 6.1),
             rotationMode: RotationMode.None,
             particleVariations: 2,
@@ -375,6 +378,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.6
             },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: RectangleHitbox.fromRect(6.1, 6.1),
             rotationMode: RotationMode.None,
             hasLoot: true,
@@ -393,6 +397,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
+
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "barrel_explosion",
@@ -408,6 +414,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
+            spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: new CircleHitbox(3.65),
             rotationMode: RotationMode.Full,
             explosion: "super_barrel_explosion",
