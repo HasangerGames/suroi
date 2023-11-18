@@ -822,6 +822,9 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
+    display: flex;
+    gap: 10px;
+    flex-direction: row-reverse;
 
     .inventory-container {
         margin-top: 3px;
@@ -849,6 +852,12 @@
     }
 
     #healing-items-container {
+        padding-top: 50px;
+        flex-wrap: wrap;
+        height: 200px;
+        min-width:75px;
+        max-width: 150px;
+        justify-content: revert;
         .item-image {
             height: 30px;
         }
@@ -856,6 +865,25 @@
         .inventory-slot .item-tooltip {
             width: max-content;
             max-width: 120px;
+            bottom: 50px;
+            left: -12.5%;
+        }
+
+        .inventory-slot:first-child .item-tooltip {
+            left: 0;
+        }
+    }
+
+    #ammo-container {
+        width: 100px;
+        flex-wrap: wrap;
+        text-align: center;
+        .item-image {
+            height: 30px;
+        }
+
+        .inventory-slot .item-tooltip {
+            width: 120px;
             bottom: 50px;
             left: -12.5%;
         }
