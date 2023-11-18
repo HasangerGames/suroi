@@ -169,6 +169,8 @@ export class Map {
             this.generateLoots(loot, mapDefinition.loots[loot]);
         }
 
+        if (mapDefinition.genCallback) mapDefinition.genCallback(this);
+
         for (const river of terrain.rivers) {
             this.terrainGrid.addFloor("water", river.water);
         }
@@ -177,8 +179,6 @@ export class Map {
         }
         this.terrainGrid.addFloor("grass", terrain.grass);
         this.terrainGrid.addFloor("sand", terrain.beach);
-
-        if (mapDefinition.genCallback) mapDefinition.genCallback(this);
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {

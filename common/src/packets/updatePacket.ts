@@ -360,7 +360,7 @@ const UpdateFlags = {
 const UPDATE_FLAGS_BITS = 13;
 
 export class UpdatePacket extends Packet {
-    override readonly allocBytes = 1 << 14;
+    override readonly allocBytes = 1 << 16;
     override readonly type = PacketType.Update;
 
     playerData!: PlayerData;
@@ -599,7 +599,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.Explosions) !== 0) {
-            const count = stream.readInt8();
+            const count = stream.readUint8();
             this.explosions = Array.from({ length: count }, () => {
                 return {
                     definition: Explosions.readFromStream(stream),
