@@ -309,7 +309,7 @@ export class UIManager {
     }
 
     updateItems(): void {
-        const scopeNames = Scopes.map(sc => sc.idString);
+        const scopeNames = Scopes.definitions.map(sc => sc.idString);
 
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];

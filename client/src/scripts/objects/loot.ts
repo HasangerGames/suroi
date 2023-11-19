@@ -1,5 +1,6 @@
-import { ArmorType, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type AmmoDefinition } from "../../../../common/src/definitions/ammos";
+import { ArmorType } from "../../../../common/src/definitions/armors";
 import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";

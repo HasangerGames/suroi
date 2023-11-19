@@ -3,7 +3,7 @@
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
-import { type ScopeDefinition, Scopes } from "../../../../../common/src/definitions/scopes";
+import { Scopes } from "../../../../../common/src/definitions/scopes";
 import { SpectatePacket } from "../../../../../common/src/packets/spectatePacket";
 import { absMod } from "../../../../../common/src/utils/math";
 import { type ReferenceTo } from "../../../../../common/src/utils/objectDefinitions";
@@ -457,7 +457,7 @@ export function setUpCommands(game: Game): void {
                 return { err: "Expected a string argument, received nothing." };
             }
 
-            if (!(HealingItems as Array<HealingItemDefinition | ScopeDefinition>).concat(Scopes).some(h => h.idString === idString)) {
+            if (![...HealingItems, ...Scopes].some(h => h.idString === idString)) {
                 return { err: `No consumable with idString '${idString}' exists.` };
             }
 

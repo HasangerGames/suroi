@@ -9,7 +9,7 @@ import {
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
 import { type WeaponDefinition, Loots, type LootDefinition } from "../definitions/loots";
-import { type ScopeDefinition } from "../definitions/scopes";
+import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
@@ -131,7 +131,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             }
         }
 
-        Loots.writeToStream(stream, data.inventory.scope);
+        Scopes.writeToStream(stream, data.inventory.scope);
     }
 }
 
@@ -216,7 +216,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
             data.inventory.items[item] = stream.readBoolean() ? stream.readBits(9) : 0;
         }
 
-        data.inventory.scope = Loots.readFromStream(stream);
+        data.inventory.scope = Scopes.readFromStream(stream);
     }
 
     return data;
@@ -554,7 +554,6 @@ export class UpdatePacket extends Packet {
             for (let i = 0; i < count; i++) {
                 this.deletedObjects.add(stream.readObjectID());
             }
-
         }
 
         if ((flags & UpdateFlags.FullObjects) !== 0) {
@@ -596,9 +595,8 @@ export class UpdatePacket extends Packet {
                 this.explosions.add({
                     definition: Explosions.readFromStream(stream),
                     position: stream.readPosition()
-                })
+                });
             }
-
         }
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
@@ -610,7 +608,6 @@ export class UpdatePacket extends Packet {
                     playerId: stream.readObjectID()
                 });
             }
-
         }
 
         if ((flags & UpdateFlags.Gas) !== 0) {
@@ -669,7 +666,5 @@ export class UpdatePacket extends Packet {
                 this.killFeedMessages.add(deserializeKillFeedMessage(stream));
             }
         }
-
     }
-
 }

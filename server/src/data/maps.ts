@@ -332,7 +332,7 @@ export const Maps: Record<string, MapDefinition> = {
                 for (let y = 0; y < 256; y += 16) {
                     const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
                     player.disableInvulnerability();
-                    player.loadout.skin = Skins[random(0, Skins.length - 1)];
+                    player.loadout.skin = Skins.definitions[random(0, Skins.definitions.length - 1)];
                     map.game.grid.addObject(player);
                 }
             }

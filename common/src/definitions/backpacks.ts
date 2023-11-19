@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface BackpackDefinition extends ItemDefinition {
     readonly itemType: ItemType.Backpack
@@ -6,7 +6,7 @@ export interface BackpackDefinition extends ItemDefinition {
     readonly maxCapacity: Record<string, number>
 }
 
-export const Backpacks: BackpackDefinition[] = [
+export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
     {
         idString: "bag",
         name: "Bag",
@@ -76,4 +76,4 @@ export const Backpacks: BackpackDefinition[] = [
             power_cell: Infinity
         }
     }
-];
+]);

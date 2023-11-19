@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
@@ -10,7 +10,7 @@ export interface HealingItemDefinition extends ItemDefinition {
 
 export enum HealType { Health, Adrenaline }
 
-export const HealingItems: HealingItemDefinition[] = [
+export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {
         idString: "gauze",
         name: "Gauze",
@@ -47,4 +47,4 @@ export const HealingItems: HealingItemDefinition[] = [
         useTime: 5,
         useText: "Taking"
     }
-];
+]);

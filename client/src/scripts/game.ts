@@ -341,7 +341,7 @@ export class Game {
         this.loots.clear();
         this.playerNames.clear();
 
-        this.camera.zoom = Scopes[0].zoomLevel;
+        this.camera.zoom = Scopes.definitions[0].zoomLevel;
 
         if (!this.musicPlaying) {
             this.music.stop().play();
