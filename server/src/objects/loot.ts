@@ -1,4 +1,5 @@
-import { ArmorType, ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
+import { ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
+import { ArmorType } from "../../../common/src/definitions/armors";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";

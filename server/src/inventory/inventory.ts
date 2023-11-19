@@ -183,7 +183,7 @@ export class Inventory {
         }
 
         if (this.scope === undefined) {
-            this.scope = Scopes[0].idString;
+            this.scope = Scopes.definitions[0].idString;
         }
     }
 

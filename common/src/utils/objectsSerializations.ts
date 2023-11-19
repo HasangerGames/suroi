@@ -2,15 +2,15 @@ import { ObjectCategory, PlayerActions, AnimationType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { type LootDefinition, Loots } from "../definitions/loots";
 import { type ObstacleDefinition, RotationMode, Obstacles } from "../definitions/obstacles";
-import { type SkinDefinition } from "../definitions/skins";
+import { Skins, type SkinDefinition } from "../definitions/skins";
 import { type Orientation, type Variation } from "../typings";
 import { ObstacleSpecialRoles } from "./objectDefinitions";
 import { calculateEnumPacketBits, type SuroiBitStream } from "./suroiBitStream";
 import { type Vector } from "./vector";
 import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type BuildingDefinition, Buildings } from "../definitions/buildings";
-import { type ArmorDefinition } from "../definitions/armors";
-import { type BackpackDefinition } from "../definitions/backpacks";
+import { Armors, type ArmorDefinition } from "../definitions/armors";
+import { Backpacks, type BackpackDefinition } from "../definitions/backpacks";
 
 const ANIMATION_TYPE_BITS = calculateEnumPacketBits(AnimationType);
 const PLAYER_ACTIONS_BITS = calculateEnumPacketBits(PlayerActions);
@@ -128,8 +128,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const full = data.full;
             stream.writeBoolean(full.invulnerable);
             Loots.writeToStream(stream, full.activeItem);
-            Loots.writeToStream(stream, full.skin);
-            Loots.writeToStream(stream, full.backpack);
+            Skins.writeToStream(stream, full.skin);
+            Backpacks.writeToStream(stream, full.backpack);
 
             stream.writeBits(full.action.type, PLAYER_ACTIONS_BITS);
             stream.writeBits(full.action.seq, 2);
@@ -139,11 +139,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             stream.writeBoolean(full.helmet !== undefined);
             if (full.helmet) {
-                Loots.writeToStream(stream, full.helmet);
+                Armors.writeToStream(stream, full.helmet);
             }
             stream.writeBoolean(full.vest !== undefined);
             if (full.vest) {
-                Loots.writeToStream(stream, full.vest);
+                Armors.writeToStream(stream, full.vest);
             }
         },
         deserializePartial(stream) {
@@ -163,8 +163,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const full: ObjectsNetData[ObjectCategory.Player]["full"] = {
                 invulnerable: stream.readBoolean(),
                 activeItem: Loots.readFromStream(stream),
-                skin: Loots.readFromStream(stream),
-                backpack: Loots.readFromStream(stream),
+                skin: Skins.readFromStream(stream),
+                backpack: Backpacks.readFromStream(stream),
                 action: {
                     type: stream.readBits(PLAYER_ACTIONS_BITS),
                     seq: stream.readBits(2)
@@ -176,10 +176,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             }
 
             if (stream.readBoolean()) {
-                full.helmet = Loots.readFromStream<ArmorDefinition>(stream);
+                full.helmet = Armors.readFromStream<ArmorDefinition>(stream);
             }
             if (stream.readBoolean()) {
-                full.vest = Loots.readFromStream<ArmorDefinition>(stream);
+                full.vest = Armors.readFromStream<ArmorDefinition>(stream);
             }
 
             return {

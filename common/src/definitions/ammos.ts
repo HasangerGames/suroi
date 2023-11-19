@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo
@@ -12,7 +12,7 @@ export interface AmmoDefinition extends ItemDefinition {
     readonly ephemeral?: boolean
 }
 
-export const Ammos: AmmoDefinition[] = [
+export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
         idString: "12g",
         name: "12 gauge",
@@ -59,4 +59,4 @@ export const Ammos: AmmoDefinition[] = [
         itemType: ItemType.Ammo,
         ephemeral: true
     }
-];
+]);

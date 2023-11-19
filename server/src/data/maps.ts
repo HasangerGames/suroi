@@ -1,10 +1,10 @@
 import { Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
-import { Obstacles, RotationMode } from "../../../common/src/definitions/obstacles";
-import { type Orientation, type Variation } from "../../../common/src/typings";
+import { Obstacles } from "../../../common/src/definitions/obstacles";
+import { type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { random, randomPointInsideCircle } from "../../../common/src/utils/random";
+import { random } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 import { Guns } from "../../../common/src/definitions/guns";
@@ -22,24 +22,6 @@ interface MapDefinition {
     readonly rivers?: number
     readonly buildings?: Record<string, number>
     readonly obstacles?: Record<string, number>
-
-    // Obstacles with custom spawn logic
-    /* eslint-disable @typescript-eslint/indent */
-    readonly specialObstacles?: Record<
-        string,
-        {
-            readonly spawnProbability?: number
-            readonly radius?: number
-            readonly squareRadius?: boolean
-        } & (
-            {
-                readonly count: number
-            } | {
-                readonly min: number
-                readonly max: number
-            }
-        )
-    >
 
     readonly loots?: Record<string, number>
 
@@ -60,6 +42,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         rivers: 3,
         buildings: {
+            port_complex: 1,
             refinery: 1,
             warehouse: 5,
             small_house: 10,
@@ -79,6 +62,8 @@ export const Maps: Record<string, MapDefinition> = {
             birch_tree: 50,
             pine_tree: 30,
             regular_crate: 300,
+            flint_crate: 6,
+            aegis_crate: 6,
             rock: 200,
             bush: 120,
             blueberry_bush: 30,
@@ -88,23 +73,8 @@ export const Maps: Record<string, MapDefinition> = {
             gold_rock: 1,
             flint_stone: 1
         },
-        specialObstacles: {
-            oil_tank: {
-                count: 3,
-                radius: 200,
-                squareRadius: true
-            },
-            aegis_crate: {
-                min: 5,
-                max: 6
-            },
-            flint_crate: {
-                min: 5,
-                max: 6
-            }
-        },
         loots: {
-            ground_loot: 40
+            ground_loot: 60
         },
         places: [
             { name: "Banana", position: v(0.23, 0.2) },
@@ -116,39 +86,25 @@ export const Maps: Record<string, MapDefinition> = {
         ]
     },
     debug: {
-        width: 1344,
-        height: 1344,
+        width: 1620,
+        height: 1620,
         oceanSize: 128,
         beachSize: 32,
         genCallback: (map: Map) => {
             // Generate all buildings
 
-            const buildingPos = v(200, map.height - 200);
-            const buildingStartPos = vClone(buildingPos);
-
-            const max = {
-                [RotationMode.Limited]: 4,
-                [RotationMode.Binary]: 2,
-                [RotationMode.None]: 1
-            };
+            const buildingPos = v(200, map.height - 600);
 
             for (const building of Buildings.definitions) {
-                for (
-                    let orientation = 0, limit = max[building.rotationMode ?? RotationMode.Limited];
-                    orientation < limit;
-                    orientation++
-                ) {
-                    map.generateBuilding(
-                        building.idString,
-                        buildingPos,
-                        (building.rotationMode === RotationMode.Binary ? 2 : 1) * orientation as Orientation
-                    );
+                map.generateBuilding(building.idString, buildingPos);
+                const rect = building.spawnHitbox.toRectangle();
+                buildingPos.x += rect.max.x - rect.min.x;
 
-                    buildingPos.y -= 125;
+                buildingPos.x += 20;
+                if (buildingPos.x > map.width - 300) {
+                    buildingPos.x = 200 - 140;
+                    buildingPos.y += 200;
                 }
-
-                buildingPos.y = buildingStartPos.y;
-                buildingPos.x += 125;
             }
 
             // Generate all obstacles
@@ -224,21 +180,6 @@ export const Maps: Record<string, MapDefinition> = {
             flint_stone: 1,
             pumpkin: 75
         },
-        specialObstacles: {
-            oil_tank: {
-                count: 3,
-                radius: 200,
-                squareRadius: true
-            },
-            aegis_crate: {
-                min: 3,
-                max: 4
-            },
-            flint_crate: {
-                min: 3,
-                max: 4
-            }
-        },
         loots: {
             ground_loot: 40
         },
@@ -256,7 +197,7 @@ export const Maps: Record<string, MapDefinition> = {
         width: 512,
         height: 512,
         beachSize: 16,
-        oceanSize: 80,
+        oceanSize: 40,
         genCallback: (map: Map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
@@ -325,28 +266,17 @@ export const Maps: Record<string, MapDefinition> = {
                 super_barrel: 2
             };
 
-            const getPos = (): Vector => {
-                let pos = vClone(center);
-                while (circleCollision(center, 120, pos, 1)) {
-                    pos = randomPointInsideCircle(center, 250);
-                }
-                return pos;
-            };
-
             for (const obstacle in randomObstacles) {
                 for (let i = 0; i < randomObstacles[obstacle]; i++) {
                     const definition = Obstacles.fromString(obstacle);
-                    map.generateObstacle(
-                        definition,
-                        map.getRandomPositionFor(
-                            definition.spawnHitbox ?? definition.hitbox,
-                            1,
-                            0,
-                            getPos
-                        ) ?? v(0, 0),
-                        0,
-                        1
-                    );
+
+                    const pos = map.getRandomPosition(definition.spawnHitbox ?? definition.hitbox, {
+                        collides: pos => circleCollision(center, 120, pos, 1)
+                    });
+
+                    if (!pos) continue;
+
+                    map.generateObstacle(definition, pos, 0, 1);
                 }
             }
         },
@@ -360,7 +290,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 32,
         oceanSize: 32,
         genCallback(map) {
-            map.generateBuilding("port", v(this.width / 2, this.height / 2), 0);
+            map.generateBuilding("port_complex", v(this.width / 2, this.height / 2), 0);
         }
     },
     singleObstacle: {
@@ -402,7 +332,7 @@ export const Maps: Record<string, MapDefinition> = {
                 for (let y = 0; y < 256; y += 16) {
                     const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
                     player.disableInvulnerability();
-                    player.loadout.skin = Skins[random(0, Skins.length - 1)];
+                    player.loadout.skin = Skins.definitions[random(0, Skins.definitions.length - 1)];
                     map.game.grid.addObject(player);
                 }
             }

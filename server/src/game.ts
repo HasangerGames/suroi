@@ -26,7 +26,7 @@ import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
-import { ItemType, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -57,7 +57,7 @@ export class Game {
     /**
      * All players, including disconnected and dead ones
      */
-    readonly players: Player[] = [];
+    readonly players: Set<Player> = new Set<Player>();
 
     /*
      * Same as players but excluding dead ones
@@ -67,11 +67,11 @@ export class Game {
     /**
      * New players created this tick
      */
-    readonly newPlayers: Player[] = [];
+    readonly newPlayers: Set<Player> = new Set<Player>();
     /**
     * Players deleted this tick
     */
-    readonly deletedPlayers: number[] = [];
+    readonly deletedPlayers: Set<number> = new Set<number>();
 
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
@@ -206,8 +206,9 @@ export class Game {
             this.gas.tick();
 
             // First loop over players: Movement, animations, & actions
-            for (const player of this.livingPlayers) {
-                player.update();
+            for (const player of this.players) {
+                if (!player.dead) player.update();
+                player.thisTickdirty = JSON.parse(JSON.stringify(player.dirty));
             }
 
             // Second loop over players: calculate visible objects & send updates
@@ -223,8 +224,8 @@ export class Game {
             this.newBullets.clear();
             this.explosions.clear();
             this.emotes.clear();
-            this.newPlayers.length = 0;
-            this.deletedPlayers.length = 0;
+            this.newPlayers.clear();
+            this.deletedPlayers.clear();
             this.killFeedMessages.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
@@ -310,19 +311,16 @@ export class Game {
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player {
         let spawnPosition = v(this.map.width / 2, this.map.height / 2);
+        const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
             case SpawnMode.Random: {
-                let foundPosition = false;
-                while (!foundPosition) {
-                    spawnPosition = this.map.getRandomPositionFor(
-                        new CircleHitbox(5),
-                        1,
-                        0,
-                        undefined,
-                        500) ??
-                        spawnPosition;
-                    if (!(distanceSquared(spawnPosition, this.gas.currentPosition) >= this.gas.newRadius ** 2)) foundPosition = true;
-                }
+                spawnPosition = this.map.getRandomPosition(hitbox, {
+                    maxAttempts: 500,
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    collides: (position) => {
+                        return distanceSquared(position, this.gas.currentPosition) >= this.gas.newRadius ** 2;
+                    }
+                }) ?? spawnPosition;
                 break;
             }
             case SpawnMode.Fixed: {
@@ -330,7 +328,32 @@ export class Game {
                 break;
             }
             case SpawnMode.Radius: {
-                spawnPosition = randomPointInsideCircle(Config.spawn.position, Config.spawn.radius);
+                spawnPosition = randomPointInsideCircle(
+                    Config.spawn.position,
+                    Config.spawn.radius
+                );
+                break;
+            }
+            case SpawnMode.PoissonDisc: {
+                let foundPosition = false;
+                let tries = 0;
+                while (!foundPosition && tries < Config.spawn.maxTries) {
+                    spawnPosition = this.map.getRandomPosition(hitbox, {
+                        maxAttempts: 500,
+                        spawnMode: MapObjectSpawnMode.GrassAndSand,
+                        collides: (position) => {
+                            return distanceSquared(position, this.gas.currentPosition) >= this.gas.newRadius ** 2;
+                        }
+                    }) ?? spawnPosition;
+
+                    const radiusHitbox = new CircleHitbox(Config.spawn.radius, spawnPosition);
+                    for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
+                        if (object instanceof Player) {
+                            foundPosition = false;
+                        }
+                    }
+                    tries++;
+                }
                 break;
             }
         }
@@ -356,10 +379,10 @@ export class Game {
         player.loadout.emotes = packet.emotes;
 
         this.livingPlayers.add(player);
-        this.players.push(player);
+        this.players.add(player);
         this.spectablePlayers.push(player);
         this.connectedPlayers.add(player);
-        this.newPlayers.push(player);
+        this.newPlayers.add(player);
         this.grid.addObject(player);
         this.fullDirtyObjects.add(player);
         this.aliveCountDirty = true;
@@ -393,8 +416,8 @@ export class Game {
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
             this.removeObject(player);
-            this.deletedPlayers.push(player.id);
-            removeFrom(this.players, player);
+            this.deletedPlayers.add(player.id);
+            this.players.delete(player);
             removeFrom(this.spectablePlayers, player);
         } else {
             player.rotation = 0;

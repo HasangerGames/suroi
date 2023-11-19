@@ -96,7 +96,7 @@ export class InputManager {
 
     cycleScope(offset: number): void {
         const scope = this.game.uiManager.inventory.scope;
-        const scopeId = Scopes.indexOf(scope);
+        const scopeId = Scopes.definitions.indexOf(scope);
         let scopeString = scope.idString;
         let searchIndex = scopeId;
 
@@ -104,10 +104,10 @@ export class InputManager {
         // Prevent possible infinite loops
         while (iterationCount++ < 100) {
             searchIndex = this.game.console.getBuiltInCVar("cv_loop_scope_selection")
-                ? absMod(searchIndex + offset, Scopes.length)
-                : clamp(searchIndex + offset, 0, Scopes.length - 1);
+                ? absMod(searchIndex + offset, Scopes.definitions.length)
+                : clamp(searchIndex + offset, 0, Scopes.definitions.length - 1);
 
-            const scopeCandidate = Scopes[searchIndex].idString;
+            const scopeCandidate = Scopes.definitions[searchIndex].idString;
 
             if (this.game.uiManager.inventory.items[scopeCandidate]) {
                 scopeString = scopeCandidate;

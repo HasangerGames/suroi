@@ -1,5 +1,5 @@
 import { type Orientation } from "../typings";
-import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, rectPolyCollision } from "./math";
+import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2 } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
@@ -77,6 +77,8 @@ export class CircleHitbox extends Hitbox {
             return rectangleCollision(that.min, that.max, this.position, this.radius);
         } else if (that instanceof ComplexHitbox) {
             return that.collidesWith(this);
+        } else if (that instanceof PolygonHitbox) {
+            return that.collidesWith(this.toRectangle());
         }
 
         throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
@@ -179,9 +181,11 @@ export class RectangleHitbox extends Hitbox {
             return rectRectCollision(that.min, that.max, this.min, this.max);
         } else if (that instanceof ComplexHitbox) {
             return that.collidesWith(this);
+        } else if (that instanceof PolygonHitbox) {
+            return that.collidesWith(this);
         }
 
-        return false;
+        throw new Error("Not Implemented");
     }
 
     override resolveCollision(that: Hitbox): void {
@@ -353,7 +357,16 @@ export class PolygonHitbox extends Hitbox {
     }
 
     override collidesWith(that: Hitbox): boolean {
-        if (that instanceof RectangleHitbox) return rectPolyCollision(that.min, that.max, this.points);
+        if (that instanceof RectangleHitbox) {
+            for (let i = 0; i < this.points.length; i++) {
+                const a = this.points[i];
+                const b = i === this.points.length - 1 ? this.points[0] : this.points[i + 1];
+                if (lineIntersectsRect2(b, a, that.min, that.max)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         throw new Error("Not Implemented");
     }
 
@@ -381,7 +394,7 @@ export class PolygonHitbox extends Hitbox {
         }
     }
 
-    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+    override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {
         throw new Error("Not Implemented");
     }
 

@@ -1,4 +1,4 @@
-import { type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objectDefinitions";
 
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
@@ -6,7 +6,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly roleRequired?: string
 }
 
-export const Skins: SkinDefinition[] = [
+export const Skins = new ObjectDefinitions<SkinDefinition>([
     {
         idString: "hasanger",
         name: "Hasanger",
@@ -246,4 +246,4 @@ export const Skins: SkinDefinition[] = [
         roleRequired: "dev",
         notInLoadout: true
     }
-];
+]);

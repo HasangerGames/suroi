@@ -5,8 +5,8 @@ import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
-import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
+import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -16,6 +16,7 @@ import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
 import { Logger, getLootTableLoot } from "./utils/misc";
+import { ObjectCategory } from "../../common/src/constants";
 
 export class Map {
     readonly game: Game;
@@ -26,13 +27,16 @@ export class Map {
     readonly oceanSize: number;
     readonly beachSize: number;
 
-    readonly oceanHitbox: Hitbox;
+    readonly beachHitbox: ComplexHitbox;
 
     readonly seed = random(0, 2 ** 31);
 
     readonly rivers: River[];
 
-    readonly riverSpawnHitboxes: PolygonHitbox[];
+    readonly riversHitboxes: Array<{
+        readonly water: PolygonHitbox
+        readonly bank: PolygonHitbox
+    }>;
 
     readonly terrainGrid: TerrainGrid;
 
@@ -43,6 +47,8 @@ export class Map {
     * Since the map is static, there's no reason to serialize a map packet for each player that joins the game
     */
     readonly buffer: ArrayBuffer;
+
+    private readonly beachPadding;
 
     constructor(game: Game, mapName: string) {
         this.game = game;
@@ -58,13 +64,23 @@ export class Map {
         this.oceanSize = packet.oceanSize = mapDefinition.oceanSize;
         this.beachSize = packet.beachSize = mapDefinition.beachSize;
 
-        const beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize;
+        // + 8 to account for the jagged points
+        const beachPadding = this.beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
+        const oceanSize = this.oceanSize + 8;
 
-        this.oceanHitbox = new ComplexHitbox(
-            new RectangleHitbox(v(0, 0), v(beachPadding, this.height)),
-            new RectangleHitbox(v(0, 0), v(this.width, beachPadding)),
-            new RectangleHitbox(v(this.width - beachPadding, 0), v(this.width, this.height)),
-            new RectangleHitbox(v(0, this.height - beachPadding), v(this.width, this.height))
+        this.beachHitbox = new ComplexHitbox(
+            new RectangleHitbox(
+                v(this.width - beachPadding, oceanSize),
+                v(this.width - oceanSize, this.height - oceanSize)),
+            new RectangleHitbox(
+                v(oceanSize, oceanSize),
+                v(this.width - beachPadding, beachPadding)),
+            new RectangleHitbox(
+                v(oceanSize, oceanSize),
+                v(beachPadding, this.height - beachPadding)),
+            new RectangleHitbox(
+                v(oceanSize, this.height - beachPadding),
+                v(this.width - beachPadding, this.height - oceanSize))
         );
 
         this.terrainGrid = new TerrainGrid(this.width, this.height);
@@ -79,7 +95,7 @@ export class Map {
         );
 
         this.rivers = packet.rivers = Array.from(
-            { length: mapDefinition.rivers ?? 0 },
+            { length: 3 },
             () => {
                 const riverPoints: Vector[] = [];
 
@@ -137,77 +153,11 @@ export class Map {
             this.rivers
         );
 
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("water", river.water);
-        }
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("sand", river.bank);
-        }
-        this.terrainGrid.addFloor("grass", terrain.grass);
-        this.terrainGrid.addFloor("sand", terrain.beach);
-
-        this.riverSpawnHitboxes = terrain.riverSpawnHitboxes;
-
-        // TODO Make a specialBuildings property
-        if (mapName === "main" || mapName === "halloween") {
-            const width = this.width; const height = this.height; const shoreDist = 285; const sideDist = 1024;
-            const initialHitbox = Buildings.fromString("port").spawnHitbox;
-            let collided = true;
-            let position: Vector | undefined;
-            let orientation: Orientation | undefined;
-            for (let attempts = 0; collided && attempts < 200; attempts++) {
-                orientation = random(0, 3) as Orientation;
-                switch (orientation) {
-                    case 0:
-                        position = v(width - shoreDist, randomFloat(sideDist, height - sideDist));
-                        break;
-                    case 1:
-                        position = v(randomFloat(sideDist, width - sideDist), shoreDist);
-                        break;
-                    case 2:
-                        position = v(shoreDist, randomFloat(sideDist, height - sideDist));
-                        break;
-                    case 3:
-                        position = v(randomFloat(sideDist, width - sideDist), height - shoreDist);
-                        break;
-                }
-
-                collided = false;
-                const hitbox = initialHitbox.transform(position, 1, orientation);
-                for (const river of this.riverSpawnHitboxes) {
-                    if (river.isPointInside(position) || river.collidesWith(hitbox)) {
-                        collided = true;
-                        break;
-                    }
-                }
-            }
-            if (position !== undefined && orientation !== undefined) this.generateBuilding("port", position, orientation);
-        }
+        this.riversHitboxes = terrain.rivers;
 
         // Generate buildings
         for (const building in mapDefinition.buildings) {
             this.generateBuildings(building, mapDefinition.buildings[building]);
-        }
-
-        // Generate Obstacles
-        for (const obstacle in mapDefinition.specialObstacles) {
-            const spawnConfig = mapDefinition.specialObstacles[obstacle];
-
-            let count: number;
-
-            if ("count" in spawnConfig) {
-                count = spawnConfig.count;
-            } else {
-                count = random(spawnConfig.min, spawnConfig.max);
-            }
-
-            this.generateObstacles(
-                obstacle,
-                count,
-                spawnConfig.spawnProbability,
-                spawnConfig.radius,
-                spawnConfig.squareRadius
-            );
         }
 
         for (const obstacle in mapDefinition.obstacles) {
@@ -220,6 +170,15 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
+
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("water", river.water);
+        }
+        for (const river of terrain.rivers) {
+            this.terrainGrid.addFloor("sand", river.bank);
+        }
+        this.terrainGrid.addFloor("grass", terrain.grass);
+        this.terrainGrid.addFloor("sand", terrain.beach);
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
@@ -239,22 +198,20 @@ export class Map {
         this.buffer = packet.getBuffer();
     }
 
-    generateBuildings(
-        definition: ReifiableDef<BuildingDefinition>,
-        count: number
-    ): void {
+    generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
         definition = Buildings.reify(definition);
         const rotationMode = definition.rotationMode ?? RotationMode.Limited;
 
         for (let i = 0; i < count; i++) {
-            const orientation = Map.getRandomBuildingOrientation(rotationMode);
+            let orientation = Map.getRandomBuildingOrientation(rotationMode);
 
-            const position = this.getRandomPositionFor(
-                definition.spawnHitbox,
-                1,
-                orientation
-            );
-
+            const position = this.getRandomPosition(definition.spawnHitbox, {
+                orientation,
+                spawnMode: definition.spawnMode,
+                getOrientation: (newOrientation: Orientation) => {
+                    orientation = newOrientation;
+                }
+            });
             if (!position) {
                 Logger.warn(`Failed to find valid position for building ${definition.idString}`);
                 continue;
@@ -353,52 +310,34 @@ export class Map {
         return building;
     }
 
-    generateObstacles(
-        definition: ReferenceTo<ObstacleDefinition> | ObstacleDefinition,
-        count: number,
-        spawnProbability?: number,
-        radius?: number,
-        squareRadius?: boolean
-    ): void {
+    generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
         definition = Obstacles.reify(definition);
 
         for (let i = 0; i < count; i++) {
-            if (Math.random() < (spawnProbability ??= 1)) {
-                const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
-                const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
-                const rotation = Map.getRandomRotation(definition.rotationMode);
+            const scale = randomFloat(definition.scale.spawnMin, definition.scale.spawnMax);
+            const variation = (definition.variations !== undefined ? random(0, definition.variations - 1) : 0) as Variation;
+            const rotation = Map.getRandomRotation(definition.rotationMode);
 
-                let orientation: Orientation = 0;
+            let orientation: Orientation = 0;
 
-                if (definition.rotationMode === RotationMode.Limited) {
-                    orientation = rotation as Orientation;
-                }
-
-                const hitbox = definition.spawnHitbox ?? definition.hitbox;
-
-                let position: Vector | undefined;
-                if (radius !== undefined) {
-                    position = this.getRandomPositionInRadiusFor(
-                        hitbox,
-                        scale,
-                        orientation,
-                        radius,
-                        squareRadius);
-                } else {
-                    position = this.getRandomPositionFor(
-                        hitbox,
-                        scale,
-                        orientation
-                    );
-                }
-
-                if (!position) {
-                    Logger.warn(`Failed to find valid position for obstacle ${definition.idString}`);
-                    continue;
-                }
-
-                this.generateObstacle(definition, position, undefined, scale, variation);
+            if (definition.rotationMode === RotationMode.Limited) {
+                orientation = rotation as Orientation;
             }
+
+            const hitbox = definition.spawnHitbox ?? definition.hitbox;
+
+            const position = this.getRandomPosition(hitbox, {
+                scale,
+                orientation,
+                spawnMode: definition.spawnMode
+            });
+
+            if (!position) {
+                Logger.warn(`Failed to find valid position for obstacle ${definition.idString}`);
+                continue;
+            }
+
+            this.generateObstacle(definition, position, undefined, scale, variation);
         }
     }
 
@@ -430,6 +369,7 @@ export class Map {
             lootSpawnOffset,
             parentBuilding
         );
+
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
         return obstacle;
@@ -443,7 +383,9 @@ export class Map {
         for (let i = 0; i < count; i++) {
             const loot = getLootTableLoot(LootTables[table].loot.flat());
 
-            const position = this.getRandomPositionFor(new CircleHitbox(5));
+            const position = this.getRandomPosition(new CircleHitbox(5), {
+                spawnMode: MapObjectSpawnMode.GrassAndSand
+            });
 
             if (!position) {
                 Logger.warn(`Failed to find valid position for loot ${loot[0].idString}`);
@@ -459,86 +401,161 @@ export class Map {
         }
     }
 
-    getRandomPositionFor(
-        initialHitbox: Hitbox,
-        scale = 1,
-        orientation: Orientation = 0,
-        getPosition?: () => Vector,
-        maxAttempts = 200
-    ): Vector | undefined {
-        let collided = true;
-        let position: Vector = v(0, 0);
+    getRandomPosition(initialHitbox: Hitbox, params?: {
+        getPosition?: () => Vector
+        collides?: (position: Vector) => boolean
+        collidableObjects?: Partial<Record<ObjectCategory, boolean>>
+        spawnMode?: MapObjectSpawnMode
+        scale?: number
+        orientation?: Orientation
+        maxAttempts?: number
+        // used for beach spawn mode
+        // so it can retry on different orientations
+        getOrientation?: (orientation: Orientation) => void
+    }): Vector | undefined {
+        let position = v(0, 0);
+
+        const scale = params?.scale ?? 1;
+        let orientation = params?.orientation ?? 0;
+        const maxAttempts = params?.maxAttempts ?? 200;
+
+        const collidableObjects = params?.collidableObjects ?? {
+            [ObjectCategory.Obstacle]: true,
+            [ObjectCategory.Building]: true
+        };
+
+        const spawnMode = params?.spawnMode ?? MapObjectSpawnMode.Grass;
+
+        let getPosition: () => Vector;
+
+        const rect = initialHitbox.toRectangle();
+        const width = rect.max.x - rect.min.x;
+        const height = rect.max.y - rect.min.y;
+
+        switch (spawnMode) {
+            case MapObjectSpawnMode.Grass: {
+                getPosition = () => randomVector(
+                    this.beachPadding + width,
+                    this.width - this.beachPadding - width,
+                    this.beachPadding + height,
+                    this.height - this.beachPadding - height
+                );
+                break;
+            }
+            case MapObjectSpawnMode.GrassAndSand: {
+                getPosition = () => randomVector(
+                    this.oceanSize + width,
+                    this.width - this.oceanSize - width,
+                    this.oceanSize + height,
+                    this.height - this.oceanSize - height
+                );
+                break;
+            }
+            // TODO: evenly distribute objects based on river size
+            case MapObjectSpawnMode.River: {
+                getPosition = () =>
+                    pickRandomInArray(this.riversHitboxes).water.randomPoint();
+                break;
+            }
+            case MapObjectSpawnMode.RiverBank: {
+                getPosition = () =>
+                    pickRandomInArray(this.riversHitboxes).bank.randomPoint();
+                break;
+            }
+            case MapObjectSpawnMode.Beach: {
+                getPosition = () => {
+                    if (params?.getOrientation) {
+                        orientation = Map.getRandomBuildingOrientation(RotationMode.Limited);
+                        params.getOrientation(orientation);
+                    }
+
+                    const beachRect = this.beachHitbox.hitboxes[orientation].clone() as RectangleHitbox;
+                    switch (orientation) {
+                        case 1:
+                        case 3:
+                            beachRect.min.x += width;
+                            beachRect.max.x -= width;
+                            break;
+                        case 0:
+                        case 2:
+                            beachRect.min.y += width;
+                            beachRect.max.y -= height;
+                            break;
+                    }
+
+                    return beachRect.randomPoint();
+                };
+                break;
+            }
+        }
+
         let attempts = 0;
+        let collided = true;
 
-        const padding = this.oceanSize + this.beachSize;
-
-        getPosition = getPosition ?? ((): Vector => randomVector(padding, this.width - padding, padding, this.height - padding));
-
-        // Find a valid position
         while (collided && attempts < maxAttempts) {
             attempts++;
-
             collided = false;
+
             position = getPosition();
 
-            const hitbox = initialHitbox.transform(position, scale, orientation);
-            const rectHitbox = hitbox.toRectangle();
-
-            if (hitbox.collidesWith(this.oceanHitbox)) {
+            if (params?.collides?.(position)) {
                 collided = true;
                 continue;
             }
 
-            for (const object of this.game.grid.intersectsHitbox(rectHitbox)) {
-                if (object instanceof Obstacle || object instanceof Building) {
-                    if (object.spawnHitbox.collidesWith(hitbox)) {
-                        collided = true;
-                        break;
-                    }
-                }
-            }
+            const hitbox = initialHitbox.transform(position, scale, orientation);
 
-            for (const river of this.riverSpawnHitboxes) {
-                if (river.isPointInside(position) || river.collidesWith(rectHitbox)) {
+            const objects = this.game.grid.intersectsHitbox(hitbox);
+            for (const object of objects) {
+                let objectHitbox: Hitbox | undefined;
+                if ("spawnHitbox" in object) {
+                    objectHitbox = object.spawnHitbox as Hitbox;
+                } else if (object.hitbox) {
+                    objectHitbox = object.hitbox;
+                }
+                if (objectHitbox === undefined) continue;
+
+                if (collidableObjects[object.type] && hitbox.collidesWith(objectHitbox)) {
                     collided = true;
                     break;
                 }
             }
-        }
 
-        if (attempts > maxAttempts) return undefined;
+            if (collided) continue;
 
-        return position;
-    }
+            switch (spawnMode) {
+                case MapObjectSpawnMode.Grass:
+                case MapObjectSpawnMode.GrassAndSand:
+                case MapObjectSpawnMode.Beach:
+                    for (const river of this.riversHitboxes) {
+                        if (spawnMode !== MapObjectSpawnMode.GrassAndSand &&
+                            (river.bank.isPointInside(position) ||
+                                hitbox.collidesWith(river.bank))) {
+                            collided = true;
+                            break;
+                        }
 
-    getRandomPositionInRadiusFor(
-        hitbox: Hitbox,
-        scale = 1,
-        orientation: Orientation = 0,
-        radius: number,
-        squareRadius?: boolean
-    ): Vector | undefined {
-        if (radius > this.width || radius > this.height) {
-            radius = Math.min(this.width, this.height);
-        }
-
-        let getPosition: () => Vector;
-        switch (true) {
-            case radius === 0: {
-                getPosition = () => v(0, 0);
-                break;
+                        if (spawnMode === MapObjectSpawnMode.GrassAndSand &&
+                            (river.water.isPointInside(position) ||
+                                hitbox.collidesWith(river.water))) {
+                            collided = true;
+                            break;
+                        }
+                    }
+                    break;
+                case MapObjectSpawnMode.RiverBank: {
+                    for (const river of this.riversHitboxes) {
+                        if (river.water.isPointInside(position) ||
+                            hitbox.collidesWith(river.water)) {
+                            collided = true;
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
-            case squareRadius: {
-                getPosition = () => randomVector(this.width / 2 - radius, this.width / 2 + radius, this.height / 2 - radius, this.height / 2 + radius);
-                break;
-            }
-            default: {
-                getPosition = () => randomPointInsideCircle(v(this.width / 2, this.height / 2), radius);
-                break;
-            }
         }
-
-        return this.getRandomPositionFor(hitbox, scale, orientation, getPosition);
+        return attempts < maxAttempts ? position : undefined;
     }
 
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {

@@ -7,14 +7,20 @@ import { type SuroiBitStream } from "./suroiBitStream";
  */
 export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     readonly bitCount: number;
-    readonly definitions: T[] = [];
+    readonly definitions: T[];
     readonly idStringToNumber: Record<string, number> = {};
 
     constructor(definitions: T[]) {
         this.bitCount = Math.ceil(Math.log2(definitions.length));
 
-        for (let i = 0, l = definitions.length; i < l; i++) {
-            this.idStringToNumber[(this.definitions[i] = definitions[i]).idString] = i;
+        this.definitions = definitions;
+
+        for (let i = 0; i < definitions.length; i++) {
+            const idString = definitions[i].idString;
+            if (this.idStringToNumber[idString] !== undefined) {
+                throw new Error(`Duplicated idString: ${idString}`);
+            }
+            this.idStringToNumber[idString] = i;
         }
     }
 
@@ -37,7 +43,15 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
-        return this.definitions[stream.readBits(this.bitCount)] as U;
+        const id = stream.readBits(this.bitCount);
+        if (id >= this.definitions.length) {
+            console.warn(`Id out of range: ${id}, Max: ${this.definitions.length - 1}`);
+        }
+        return this.definitions[id] as U;
+    }
+
+    [Symbol.iterator](): Iterator<T> {
+        return this.definitions[Symbol.iterator]();
     }
 }
 
@@ -71,6 +85,17 @@ export enum ObstacleSpecialRoles {
     Wall,
     Window,
     Activatable
+}
+
+export enum MapObjectSpawnMode {
+    Grass,
+    /**
+     * Grass, beach and river banks.
+     */
+    GrassAndSand,
+    RiverBank,
+    River,
+    Beach
 }
 
 export const LootRadius: Record<ItemType, number> = {

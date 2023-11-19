@@ -21,7 +21,7 @@ type MapObject = {
 });
 
 export class MapPacket extends Packet {
-    override readonly allocBytes = 1 << 14;
+    override readonly allocBytes = 1 << 16;
     override readonly type = PacketType.Map;
 
     seed!: number;
@@ -60,7 +60,7 @@ export class MapPacket extends Packet {
             }
         }
 
-        stream.writeBits(this.objects.length, 11);
+        stream.writeUint16(this.objects.length);
 
         for (const object of this.objects) {
             stream.writeObjectType(object.type);
@@ -110,11 +110,8 @@ export class MapPacket extends Packet {
             )
         );
 
-        for (
-            let i = 0, numObstacles = stream.readBits(11);
-            i < numObstacles;
-            i++
-        ) {
+        const objectCount = stream.readUint16();
+        for (let i = 0; i < objectCount; i++) {
             const type = stream.readObjectType();
             const position = stream.readPosition();
 

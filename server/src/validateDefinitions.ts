@@ -9,13 +9,11 @@ import { Emotes } from "../../common/src/definitions/emotes";
 import { Explosions } from "../../common/src/definitions/explosions";
 import { Guns } from "../../common/src/definitions/guns";
 import { HealingItems } from "../../common/src/definitions/healingItems";
-import { Helmets } from "../../common/src/definitions/helmets";
 import { Loots } from "../../common/src/definitions/loots";
 import { Melees } from "../../common/src/definitions/melees";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
-import { Vests } from "../../common/src/definitions/vests";
 import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { FloorTypes } from "../../common/src/utils/mapUtils";
 import { ObstacleSpecialRoles, type BaseBulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
@@ -27,6 +25,7 @@ import { Maps } from "./data/maps";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/unbound-method */
 
 const absStart = Date.now();
 const tester = (() => {
@@ -880,104 +879,6 @@ logger.indent("Validating map definitions", () => {
 
             tester.assertNoPointlessValue({
                 obj: definition,
-                field: "specialObstacles",
-                defaultValue: {},
-                equalityFunction: a => Object.keys(a).length === 0,
-                baseErrorPath: errorPath
-            });
-
-            if (definition.specialObstacles) {
-                const errorPath2 = tester.createPath(errorPath, "special obstacles");
-
-                logger.indent("Validating special obstacles", () => {
-                    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-                    for (const [obstacle, config] of Object.entries(definition.specialObstacles!)) {
-                        logger.indent(`Validating config for obstacle '${obstacle}'`, () => {
-                            tester.assertReferenceExists({
-                                obj: { [obstacle]: obstacle },
-                                field: obstacle,
-                                baseErrorPath: errorPath2,
-                                collection: Obstacles
-                            });
-
-                            tester.assertNoPointlessValue({
-                                obj: config,
-                                field: "spawnProbability",
-                                defaultValue: 1,
-                                baseErrorPath: errorPath
-                            });
-
-                            if (config.spawnProbability) {
-                                tester.assertInBounds({
-                                    obj: config,
-                                    field: "spawnProbability",
-                                    min: 0,
-                                    max: 1,
-                                    includeMin: true,
-                                    includeMax: true,
-                                    baseErrorPath: errorPath2
-                                });
-                            }
-
-                            if ("count" in config) {
-                                tester.assertIsPositiveFiniteReal({
-                                    obj: config,
-                                    field: "count",
-                                    baseErrorPath: errorPath2
-                                });
-                            } else {
-                                tester.assertInBounds({
-                                    obj: config,
-                                    field: "min",
-                                    min: 0,
-                                    max: config.max,
-                                    includeMin: true,
-                                    includeMax: true,
-                                    baseErrorPath: errorPath2
-                                });
-
-                                tester.assertInBounds({
-                                    obj: config,
-                                    field: "max",
-                                    min: config.min,
-                                    max: Infinity,
-                                    includeMin: true,
-                                    baseErrorPath: errorPath2
-                                });
-                            }
-
-                            tester.assertNoPointlessValue({
-                                obj: config,
-                                field: "radius",
-                                defaultValue: 0,
-                                baseErrorPath: errorPath
-                            });
-
-                            if (config.radius) {
-                                tester.assertIsPositiveReal({
-                                    obj: config,
-                                    field: "radius",
-                                    baseErrorPath: errorPath2
-                                });
-                            }
-
-                            tester.assertNoPointlessValue({
-                                obj: config,
-                                field: "squareRadius",
-                                defaultValue: false,
-                                baseErrorPath: errorPath
-                            });
-
-                            if (config.squareRadius) {
-                                tester.assert(config.radius !== undefined, "squareRadius shouldn't be specified without radius", errorPath2);
-                            }
-                        });
-                    }
-                });
-            }
-
-            tester.assertNoPointlessValue({
-                obj: definition,
                 field: "loots",
                 defaultValue: {},
                 equalityFunction: a => Object.keys(a).length === 0,
@@ -1203,7 +1104,7 @@ function validateWearerAttributes(baseErrorPath: string, definition: ItemDefinit
 }
 
 logger.indent("Validating ammo types", () => {
-    tester.assertNoDuplicateIDStrings(Ammos, "Ammos", "ammos");
+    tester.assertNoDuplicateIDStrings(Ammos.definitions, "Ammos", "ammos");
 
     for (const ammo of Ammos) {
         logger.indent(`Validating ammo '${ammo.idString}'`, () => {
@@ -1220,7 +1121,7 @@ logger.indent("Validating ammo types", () => {
 });
 
 logger.indent("Validating armors", () => {
-    tester.assertNoDuplicateIDStrings(Armors, "Armors", "armors");
+    tester.assertNoDuplicateIDStrings(Armors.definitions, "Armors", "armors");
 });
 
 logger.indent("Validating armor definitions", () => {
@@ -1247,22 +1148,15 @@ logger.indent("Validating armor definitions", () => {
     }
 
     logger.indent("Validating helmet definitions", () => {
-        const errorPath = tester.createPath("armors", "helmets");
+        const errorPath = tester.createPath("armors");
 
-        tester.assertNoDuplicateIDStrings(Helmets, "Helmets", errorPath);
-        Helmets.forEach(validateArmorDefinition.bind(null, errorPath));
-    });
-
-    logger.indent("Validating vest definitions", () => {
-        const errorPath = tester.createPath("armors", "vests");
-
-        tester.assertNoDuplicateIDStrings(Vests, "Vests", errorPath);
-        Vests.forEach(validateArmorDefinition.bind(null, errorPath));
+        tester.assertNoDuplicateIDStrings(Armors.definitions, "Helmets", errorPath);
+        Armors.definitions.forEach(validateArmorDefinition.bind(null, errorPath));
     });
 });
 
 logger.indent("Validating backpack definitions", () => {
-    tester.assertNoDuplicateIDStrings(Backpacks, "Backpacks", "backpacks");
+    tester.assertNoDuplicateIDStrings(Backpacks.definitions, "Backpacks", "backpacks");
 
     for (const backpack of Backpacks) {
         const errorPath = tester.createPath("backpacks", `backpack '${backpack.idString}'`);
@@ -1284,7 +1178,7 @@ logger.indent("Validating backpack definitions", () => {
                         obj: { [item]: item },
                         field: item,
                         baseErrorPath: errorPath2,
-                        collection: (HealingItems as ObjectDefinition[]).concat(Ammos),
+                        collection: (HealingItems.definitions as ObjectDefinition[]).concat(Ammos.definitions),
                         collectionName: "HealingItems and Ammos"
                     });
 
@@ -1719,7 +1613,7 @@ logger.indent("Validating guns", () => {
             tester.assertReferenceExistsArray({
                 obj: gun,
                 field: "ammoType",
-                collection: Ammos,
+                collection: Ammos.definitions,
                 collectionName: "Ammos",
                 baseErrorPath: errorPath
             });
@@ -1988,7 +1882,7 @@ logger.indent("Validating guns", () => {
 });
 
 logger.indent("Validating healing items", () => {
-    tester.assertNoDuplicateIDStrings(HealingItems, "HealingItems", "healing items");
+    tester.assertNoDuplicateIDStrings(HealingItems.definitions, "HealingItems", "healing items");
 
     for (const healingItem of HealingItems) {
         const errorPath = tester.createPath("healing items", `healing item '${healingItem.idString}'`);
@@ -2352,7 +2246,7 @@ logger.indent("Validating obstacles", () => {
 });
 
 logger.indent("Validating scopes", () => {
-    tester.assertNoDuplicateIDStrings(Scopes, "Scopes", "scopes");
+    tester.assertNoDuplicateIDStrings(Scopes.definitions, "Scopes", "scopes");
 
     for (const scope of Scopes) {
         const errorPath = tester.createPath("scopes", `scope '${scope.idString}'`);
@@ -2382,7 +2276,7 @@ logger.indent("Validating scopes", () => {
 });
 
 logger.indent("Validating skins", () => {
-    tester.assertNoDuplicateIDStrings(Skins, "Skins", "skins");
+    tester.assertNoDuplicateIDStrings(Skins.definitions, "Skins", "skins");
 
     for (const skin of Skins) {
         logger.indent(`Validating skin '${skin.idString}'`, () => {

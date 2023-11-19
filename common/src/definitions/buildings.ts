@@ -1,7 +1,7 @@
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type FloorTypes } from "../utils/mapUtils";
-import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { type ObstacleDefinition, type RotationMode } from "./obstacles";
 import { ZIndexes } from "../constants";
@@ -38,6 +38,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly ceilingHitbox?: Hitbox
     readonly scopeHitbox?: Hitbox
     readonly hideOnMap?: boolean
+    readonly spawnMode?: MapObjectSpawnMode
 
     readonly obstacles?: BuildingObstacle[]
     readonly lootSpawners?: LootSpawner[]
@@ -1483,7 +1484,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port",
         name: "Port",
-        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(50, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(315, 425, v(0, 0)),
         groundGraphics: [
             { color: 0x626262, hitbox: RectangleHitbox.fromRect(315, 425, v(0, 0)) },
             { color: 0x525252, hitbox: RectangleHitbox.fromRect(310, 420, v(0, 0)) },
@@ -1889,9 +1890,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
 
         ],
         subBuildings: [
-            { idString: "ship", position: v(205, -50) },
-            { idString: "crane", position: v(100, -95) },
-
             { idString: "porta_potty", position: v(171.2, -12.34), orientation: 1 },
             { idString: "porta_potty", position: v(151.2, -12.34), orientation: 1 },
             { idString: "porta_potty", position: v(131.2, -12.34), orientation: 1 },
@@ -2094,6 +2092,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 position: v(-25.67, -101.15),
                 orientation: 1
             }
+        ]
+    },
+    {
+        idString: "port_complex",
+        name: "Port Complex",
+        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-68, 0)),
+        spawnMode: MapObjectSpawnMode.Beach,
+        subBuildings: [
+            { idString: "port", position: v(-125, 0), orientation: 0 },
+            { idString: "ship", position: v(80, -50), orientation: 0 },
+            { idString: "crane", position: v(-25, -95), orientation: 0 }
         ]
     }
 

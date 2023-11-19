@@ -861,7 +861,7 @@ export const Guns: GunDefinition[] = [
         recoilDuration: 155,
         fireMode: FireMode.Single,
         shotSpread: 1,
-        moveSpread: 2.5,
+        moveSpread: 3.5,
         length: 7.4,
         fists: {
             left: v(96, -2),

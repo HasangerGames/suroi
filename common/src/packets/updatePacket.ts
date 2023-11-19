@@ -9,7 +9,7 @@ import {
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
 import { type WeaponDefinition, Loots, type LootDefinition } from "../definitions/loots";
-import { type ScopeDefinition } from "../definitions/scopes";
+import { Scopes, type ScopeDefinition } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
@@ -131,7 +131,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
             }
         }
 
-        Loots.writeToStream(stream, data.inventory.scope);
+        Scopes.writeToStream(stream, data.inventory.scope);
     }
 }
 
@@ -216,7 +216,7 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
             data.inventory.items[item] = stream.readBoolean() ? stream.readBits(9) : 0;
         }
 
-        data.inventory.scope = Loots.readFromStream(stream);
+        data.inventory.scope = Scopes.readFromStream(stream);
     }
 
     return data;
@@ -360,7 +360,7 @@ const UpdateFlags = {
 const UPDATE_FLAGS_BITS = 13;
 
 export class UpdatePacket extends Packet {
-    override readonly allocBytes = 1 << 14;
+    override readonly allocBytes = 1 << 16;
     override readonly type = PacketType.Update;
 
     playerData!: PlayerData;
@@ -369,20 +369,20 @@ export class UpdatePacket extends Packet {
     // used to store previous sent max and min health / adrenaline
     previousData!: PreviousData;
 
-    deletedObjects: number[] = [];
+    deletedObjects = new Set<number>();
 
-    fullDirtyObjects: ObjectFullData[] = [];
+    fullDirtyObjects = new Set<ObjectFullData>();
 
-    partialDirtyObjects: ObjectPartialData[] = [];
+    partialDirtyObjects = new Set<ObjectPartialData>();
 
     // server side only
-    bullets: BaseBullet[] = [];
+    bullets = new Set<BaseBullet>();
 
-    deserializedBullets: BulletOptions[] = [];
+    deserializedBullets = new Set<BulletOptions>();
 
-    explosions: Array<{ definition: ExplosionDefinition, position: Vector }> = [];
+    explosions = new Set<{ definition: ExplosionDefinition, position: Vector }>();
 
-    emotes: Array<{ definition: EmoteDefinition, playerId: number }> = [];
+    emotes = new Set<{ definition: EmoteDefinition, playerId: number }>();
 
     gas?: {
         state: GasState
@@ -399,19 +399,19 @@ export class UpdatePacket extends Packet {
         value: number
     };
 
-    newPlayers: Array<{
+    newPlayers = new Set<{
         id: number
         name: string
         hasColor: boolean
         nameColor: string
-    }> = [];
+    }>();
 
-    deletedPlayers: number[] = [];
+    deletedPlayers = new Set<number>();
 
     aliveCountDirty?: boolean;
     aliveCount?: number;
 
-    killFeedMessages: KillFeedMessage[] = [];
+    killFeedMessages = new Set<KillFeedMessage>();
 
     override serialize(): void {
         super.serialize();
@@ -426,18 +426,18 @@ export class UpdatePacket extends Packet {
 
         let flags = 0;
         if (playerDataDirty) flags += UpdateFlags.PlayerData;
-        if (this.deletedObjects.length) flags += UpdateFlags.DeletedObjects;
-        if (this.fullDirtyObjects.length) flags += UpdateFlags.FullObjects;
-        if (this.partialDirtyObjects.length) flags += UpdateFlags.PartialObjects;
-        if (this.bullets.length) flags += UpdateFlags.Bullets;
-        if (this.explosions.length) flags += UpdateFlags.Explosions;
-        if (this.emotes.length) flags += UpdateFlags.Emotes;
+        if (this.deletedObjects.size) flags += UpdateFlags.DeletedObjects;
+        if (this.fullDirtyObjects.size) flags += UpdateFlags.FullObjects;
+        if (this.partialDirtyObjects.size) flags += UpdateFlags.PartialObjects;
+        if (this.bullets.size) flags += UpdateFlags.Bullets;
+        if (this.explosions.size) flags += UpdateFlags.Explosions;
+        if (this.emotes.size) flags += UpdateFlags.Emotes;
         if (this.gas?.dirty) flags += UpdateFlags.Gas;
         if (this.gasPercentage?.dirty) flags += UpdateFlags.GasPercentage;
-        if (this.newPlayers.length) flags += UpdateFlags.NewPlayers;
-        if (this.deletedPlayers.length) flags += UpdateFlags.DeletedPlayers;
+        if (this.newPlayers.size) flags += UpdateFlags.NewPlayers;
+        if (this.deletedPlayers.size) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
-        if (this.killFeedMessages.length) flags += UpdateFlags.KillFeedMessages;
+        if (this.killFeedMessages.size) flags += UpdateFlags.KillFeedMessages;
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
@@ -446,12 +446,12 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.DeletedObjects) !== 0) {
-            stream.writeUint16(this.deletedObjects.length);
+            stream.writeUint16(this.deletedObjects.size);
             for (const id of this.deletedObjects) stream.writeObjectID(id);
         }
 
         if ((flags & UpdateFlags.FullObjects) !== 0) {
-            stream.writeUint16(this.fullDirtyObjects.length);
+            stream.writeUint16(this.fullDirtyObjects.size);
             for (const object of this.fullDirtyObjects) {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
@@ -461,7 +461,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.PartialObjects) !== 0) {
-            stream.writeUint16(this.partialDirtyObjects.length);
+            stream.writeUint16(this.partialDirtyObjects.size);
             for (const object of this.partialDirtyObjects) {
                 stream.writeObjectID(object.id);
                 stream.writeObjectType(object.type);
@@ -471,14 +471,14 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.Bullets) !== 0) {
-            stream.writeUint8(this.bullets.length);
+            stream.writeUint8(this.bullets.size);
             for (const bullet of this.bullets) {
                 bullet.serialize(stream);
             }
         }
 
         if ((flags & UpdateFlags.Explosions) !== 0) {
-            stream.writeUint8(this.explosions.length);
+            stream.writeUint8(this.explosions.size);
             for (const explosion of this.explosions) {
                 Explosions.writeToStream(stream, explosion.definition);
                 stream.writePosition(explosion.position);
@@ -486,7 +486,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
-            stream.writeBits(this.emotes.length, 7);
+            stream.writeBits(this.emotes.size, 7);
             for (const emote of this.emotes) {
                 Emotes.writeToStream(stream, emote.definition);
                 stream.writeObjectID(emote.playerId);
@@ -508,7 +508,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.NewPlayers) !== 0) {
-            stream.writeUint8(this.newPlayers.length);
+            stream.writeUint8(this.newPlayers.size);
 
             for (const player of this.newPlayers) {
                 stream.writeObjectID(player.id);
@@ -521,7 +521,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.DeletedPlayers) !== 0) {
-            stream.writeUint8(this.deletedPlayers.length);
+            stream.writeUint8(this.deletedPlayers.size);
 
             for (const player of this.deletedPlayers) {
                 stream.writeObjectID(player);
@@ -533,7 +533,7 @@ export class UpdatePacket extends Packet {
         }
 
         if ((flags & UpdateFlags.KillFeedMessages) !== 0) {
-            stream.writeUint8(this.killFeedMessages.length);
+            stream.writeUint8(this.killFeedMessages.size);
 
             for (const message of this.killFeedMessages) {
                 serializeKillFeedMessage(stream, message);
@@ -550,72 +550,64 @@ export class UpdatePacket extends Packet {
 
         if ((flags & UpdateFlags.DeletedObjects) !== 0) {
             const count = stream.readUint16();
-            this.deletedObjects = Array.from(
-                { length: count },
-                () => stream.readObjectID());
+
+            for (let i = 0; i < count; i++) {
+                this.deletedObjects.add(stream.readObjectID());
+            }
         }
 
         if ((flags & UpdateFlags.FullObjects) !== 0) {
             const count = stream.readUint16();
-
-            this.fullDirtyObjects = new Array(count);
 
             for (let i = 0; i < count; i++) {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializeFull(stream);
 
-                this.fullDirtyObjects[i] = {
-                    id,
-                    type,
-                    data
-                };
+                this.fullDirtyObjects.add({ id, type, data });
             }
         }
 
         if ((flags & UpdateFlags.PartialObjects) !== 0) {
             const count = stream.readUint16();
 
-            this.partialDirtyObjects = new Array(count);
-
             for (let i = 0; i < count; i++) {
                 const id = stream.readObjectID();
                 const type = stream.readObjectType();
                 const data = ObjectSerializations[type].deserializePartial(stream);
 
-                this.partialDirtyObjects[i] = {
-                    id,
-                    type,
-                    data
-                };
+                this.partialDirtyObjects.add({ id, type, data });
             }
         }
 
         if ((flags & UpdateFlags.Bullets) !== 0) {
             const count = stream.readUint8();
-            this.deserializedBullets = Array.from(
-                { length: count },
-                () => BaseBullet.deserialize(stream));
+
+            for (let i = 0; i < count; i++) {
+                this.deserializedBullets.add(BaseBullet.deserialize(stream));
+            }
         }
 
         if ((flags & UpdateFlags.Explosions) !== 0) {
-            const count = stream.readInt8();
-            this.explosions = Array.from({ length: count }, () => {
-                return {
+            const count = stream.readUint8();
+
+            for (let i = 0; i < count; i++) {
+                this.explosions.add({
                     definition: Explosions.readFromStream(stream),
                     position: stream.readPosition()
-                };
-            });
+                });
+            }
         }
 
         if ((flags & UpdateFlags.Emotes) !== 0) {
             const count = stream.readBits(7);
-            this.emotes = Array.from({ length: count }, () => {
-                return {
+
+            for (let i = 0; i < count; i++) {
+                this.emotes.add({
                     definition: Emotes.readFromStream(stream),
                     playerId: stream.readObjectID()
-                };
-            });
+                });
+            }
         }
 
         if ((flags & UpdateFlags.Gas) !== 0) {
@@ -645,7 +637,7 @@ export class UpdatePacket extends Packet {
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
                 const nameColor = hasColor ? stream.readUTF8String(10) : "";
-                this.newPlayers.push({
+                this.newPlayers.add({
                     id,
                     name,
                     hasColor,
@@ -658,7 +650,7 @@ export class UpdatePacket extends Packet {
             const size = stream.readUint8();
 
             for (let i = 0; i < size; i++) {
-                this.deletedPlayers.push(stream.readObjectID());
+                this.deletedPlayers.add(stream.readObjectID());
             }
         }
 
@@ -671,7 +663,7 @@ export class UpdatePacket extends Packet {
             const count = stream.readUint8();
 
             for (let i = 0; i < count; i++) {
-                this.killFeedMessages.push(deserializeKillFeedMessage(stream));
+                this.killFeedMessages.add(deserializeKillFeedMessage(stream));
             }
         }
     }

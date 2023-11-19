@@ -490,8 +490,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.isInsideBuilding = isInsideBuilding;
 
         this.turning = false;
-
-        this.thisTickdirty = JSON.parse(JSON.stringify(this.dirty));
     }
 
     private _firstPacket = true;
@@ -500,9 +498,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
      * Calculate visible objects and send packets
      */
     secondUpdate(): void {
-        const fullDirtyObjects = new Set<GameObject>();
-        const partialDirtyObjects = new Set<GameObject>();
-
         const packet = new UpdatePacket();
 
         const player = this.spectating ?? this;
@@ -524,27 +519,27 @@ export class Player extends GameObject<ObjectCategory.Player> {
             for (const object of this.visibleObjects) {
                 if (!newVisibleObjects.has(object)) {
                     this.visibleObjects.delete(object);
-                    packet.deletedObjects.push(object.id);
+                    packet.deletedObjects.add(object.id);
                 }
             }
 
             for (const object of newVisibleObjects) {
                 if (!this.visibleObjects.has(object)) {
                     this.visibleObjects.add(object);
-                    fullDirtyObjects.add(object);
+                    packet.fullDirtyObjects.add(object);
                 }
             }
         }
 
         for (const object of this.game.fullDirtyObjects) {
             if (this.visibleObjects.has(object)) {
-                fullDirtyObjects.add(object);
+                packet.fullDirtyObjects.add(object);
             }
         }
 
         for (const object of this.game.partialDirtyObjects) {
-            if (this.visibleObjects.has(object) && !fullDirtyObjects.has(object)) {
-                partialDirtyObjects.add(object);
+            if (this.visibleObjects.has(object) && !packet.fullDirtyObjects.has(object)) {
+                packet.partialDirtyObjects.add(object);
             }
         }
 
@@ -566,13 +561,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             for (const key in packet.playerData.dirty) {
                 packet.playerData.dirty[key as keyof PlayerData["dirty"]] = true;
             }
-            packet.fullDirtyObjects.push(this.spectating);
+            packet.fullDirtyObjects.add(this.spectating);
             this.startedSpectating = false;
         }
-
-        // objects
-        packet.fullDirtyObjects.push(...fullDirtyObjects);
-        packet.partialDirtyObjects.push(...partialDirtyObjects);
 
         // Cull bullets
         for (const bullet of this.game.newBullets) {
@@ -580,7 +571,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 bullet.finalPosition,
                 this.screenHitbox.min,
                 this.screenHitbox.max)) {
-                packet.bullets.push(bullet);
+                packet.bullets.add(bullet);
             }
         }
 
@@ -588,14 +579,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
         for (const explosion of this.game.explosions) {
             if (this.screenHitbox.isPointInside(explosion.position) ||
                 distanceSquared(explosion.position, this.position) < 16384) {
-                packet.explosions.push(explosion);
+                packet.explosions.add(explosion);
             }
         }
 
         // Emotes
         for (const emote of this.game.emotes) {
             if (this.visibleObjects.has(emote.player)) {
-                packet.emotes.push(emote);
+                packet.emotes.add(emote);
             }
         }
 
@@ -621,10 +612,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
         packet.aliveCountDirty = this.game.aliveCountDirty || this._firstPacket;
 
         // kill feed messages
-        packet.killFeedMessages = [...this.game.killFeedMessages];
+        packet.killFeedMessages = this.game.killFeedMessages;
         const killLeader = this.game.killLeader;
+
         if (this._firstPacket && killLeader) {
-            packet.killFeedMessages.push({
+            packet.killFeedMessages.add({
                 messageType: KillFeedMessageType.KillLeaderAssigned,
                 playerID: killLeader.id,
                 kills: killLeader.kills,

@@ -81,15 +81,9 @@ export enum PlayerActions {
     UseItem
 }
 
-// ArmorType has to be in constants.ts and not armors.ts, or it'll cause recursive import issues
-export enum ArmorType {
-    Helmet,
-    Vest
-}
-
 // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
 // or a new item is added to a definition list
-export const PROTOCOL_VERSION = 4;
+export const PROTOCOL_VERSION = 5;
 
 export const MIN_OBJECT_SCALE = 0.25;
 export const MAX_OBJECT_SCALE = 2;
