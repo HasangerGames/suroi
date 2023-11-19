@@ -93,6 +93,10 @@ $(async(): Promise<void> => {
     let selectedRegion: RegionInfo;
 
     const updateServerSelector = (): void => {
+        if (!selectedRegion) { // Handle invalid region
+            selectedRegion = regionInfo[Config.defaultRegion];
+            game.console.setBuiltInCVar("cv_region", undefined);
+        }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
         //$("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
