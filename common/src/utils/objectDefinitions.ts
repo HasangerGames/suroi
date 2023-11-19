@@ -17,7 +17,7 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
 
         for (let i = 0; i < definitions.length; i++) {
             const idString = definitions[i].idString;
-            if (this.idStringToNumber[idString]) {
+            if (this.idStringToNumber[idString] !== undefined) {
                 throw new Error(`Duplicated idString: ${idString}`);
             }
             this.idStringToNumber[idString] = i;
