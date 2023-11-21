@@ -335,7 +335,7 @@ const validators = Object.freeze({
 
         tester.assertIsPositiveFiniteReal({
             obj: ballistics,
-            field: "maxDistance",
+            field: "range",
             baseErrorPath
         });
 
