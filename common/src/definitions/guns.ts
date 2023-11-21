@@ -167,6 +167,40 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "acr",
+        name: "ACR",
+        itemType: ItemType.Gun,
+        ammoType: "556mm",
+        ammoSpawnAmount: 90,
+        fireDelay: 72.5,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 130,
+        fireMode: FireMode.Auto,
+        shotSpread: 2,
+        moveSpread: 7,
+        length: 6.2,
+        fists: {
+            left: v(95, -2),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(75, -1) },
+        casingParticles: {
+            position: v(4, 0.5)
+        },
+        capacity: 30,
+        reloadTime: 3,
+        ballistics: {
+            damage: 14.5,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            maxDistance: 160
+        }
+    },
+    {
         idString: "m3k",
         name: "M3K",
         itemType: ItemType.Gun,
