@@ -1,11 +1,12 @@
 import $ from "jquery";
-import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
 import { loadTextures } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
+
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 
 const playButton: JQuery = $("#btn-play-solo");
 
