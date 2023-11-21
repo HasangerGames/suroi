@@ -1,4 +1,5 @@
 // noinspection JSConstantReassignment
+import $ from "jquery";
 
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";

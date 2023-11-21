@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { Container, Texture, TilingSprite } from "pixi.js";
 import {
     AnimationType,
