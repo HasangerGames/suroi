@@ -407,6 +407,46 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "barrett",
+        name: "Barrett M95",
+        itemType: ItemType.Gun,
+        ammoType: "127mm",
+        ammoSpawnAmount: 20,
+        capacity: 5,
+        reloadTime: 3.4,
+        fireDelay: 1400,
+        switchDelay: 1800,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.3,
+        recoilDuration: 1500,
+        fireMode: FireMode.Single,
+        shotSpread: 0.5,
+        moveSpread: 4,
+        length: 9.2,
+        shootOnRelease: true,
+        fists: {
+            left: v(115, -4),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(90, 4) },
+        casingParticles: {
+            position: v(4, 0.6),
+            ejectionDelay: 700
+        },
+        ballistics: {
+            damage: 142.75,
+            obstacleMultiplier: 1,
+            speed: 0.45,
+            maxDistance: 300,
+            tracer: {
+                width: 2.5,
+                length: 4
+            }
+        }
+    },
+    {
         idString: "m1895",
         name: "M1895",
         itemType: ItemType.Gun,
