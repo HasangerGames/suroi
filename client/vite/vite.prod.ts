@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "crypto";
 import { mergeConfig, type UserConfig } from "vite";
 
-import { spritesheet } from "../node_modules/vite-spritesheet-plugin/dist/index.js";
+import { spritesheet } from "vite-spritesheet-plugin";
 
 import common from "./vite.common";
 
