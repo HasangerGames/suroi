@@ -164,9 +164,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^6.12.0
         version: 6.12.0(eslint@8.54.0)(typescript@5.3.2)
-      eslint:
-        specifier: ^8.54.0
-        version: 8.54.0
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@20.9.3)(typescript@5.3.2)
