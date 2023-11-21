@@ -845,6 +845,44 @@ export const Guns: GunDefinition[] = [
         }
     },
     {
+        idString: "m1_garand",
+        name: "M1 Garand",
+        itemType: ItemType.Gun,
+        ammoType: "762mm",
+        ammoSpawnAmount: 40,
+        capacity: 8,
+        reloadTime: 2.1,
+        fireDelay: 200,
+        switchDelay: 400,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.75,
+        recoilDuration: 200,
+        fireMode: FireMode.Single,
+        shotSpread: 1,
+        moveSpread: 3.5,
+        length: 7.8,
+        fists: {
+            left: v(110, -3),
+            right: v(40, 0),
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(87, 1) },
+        casingParticles: {
+            position: v(4, 0.6)
+        },
+        ballistics: {
+            damage: 39,
+            obstacleMultiplier: 1.5,
+            speed: 0.3,
+            range: 230,
+            tracer: {
+                length: 2
+            },
+            lastShotFX: true
+        }
+    },
+    {
         idString: "vss",
         name: "VSS",
         itemType: ItemType.Gun,

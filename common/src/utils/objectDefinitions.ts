@@ -132,6 +132,7 @@ export interface BaseBulletDefinition {
     readonly shrapnel?: boolean
     readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
     readonly goToMouse?: boolean
+    readonly lastShotFX?: boolean
 }
 
 export interface WearerAttributes {

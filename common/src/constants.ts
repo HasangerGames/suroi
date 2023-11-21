@@ -29,7 +29,8 @@ export enum AnimationType {
     None,
     Melee,
     Gun,
-    GunClick
+    GunClick,
+    LastShot
 }
 
 export enum KillFeedMessageType {
