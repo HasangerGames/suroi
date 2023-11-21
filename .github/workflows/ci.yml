@@ -37,6 +37,12 @@ jobs:
       - name: Build
         working-directory: ./client
         run: pnpm build
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: Client
+          path: client/dist/
   server:
     name: Server
     runs-on: ubuntu-latest
