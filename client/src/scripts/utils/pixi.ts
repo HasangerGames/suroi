@@ -33,7 +33,7 @@ export async function loadTextures(): Promise<void> {
     textures = await Assets.loadBundle("buildings");
 
     for (const atlas of ["main"]) {
-        const path = `/assets/lib/${atlas}.${ATLAS_HASH}`;
+        const path = `/assets/img/atlases/${atlas}.${ATLAS_HASH}`;
         const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
 
         console.log(`Loading atlas: ${location.toString()}${path}.png`);
