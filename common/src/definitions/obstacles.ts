@@ -1154,7 +1154,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
-                destroy: 0.95
+                destroy: 0.5
             },
             hitbox: new CircleHitbox(17.15),
             rotationMode: RotationMode.Full,
