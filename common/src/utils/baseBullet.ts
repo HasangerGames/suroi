@@ -1,4 +1,4 @@
-import { type BulletDefiniton, Bullets } from "../definitions/bullets";
+import { type BulletDefinition, Bullets } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
@@ -8,7 +8,7 @@ import { v, vAdd, vClone, vMul, type Vector } from "./vector";
 export interface BulletOptions {
     readonly position: Vector
     readonly rotation: number
-    readonly source: ReifiableDef<BulletDefiniton>
+    readonly source: ReifiableDef<BulletDefinition>
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
@@ -52,7 +52,7 @@ export class BaseBullet {
 
     dead = false;
 
-    readonly definition: BulletDefiniton;
+    readonly definition: BulletDefinition;
 
     readonly canHitShooter: boolean;
 
