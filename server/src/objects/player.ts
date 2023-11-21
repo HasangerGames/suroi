@@ -21,7 +21,7 @@ import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { FloorTypes } from "../../../common/src/utils/mapUtils";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
-import { type ExtendedWearerAttributes, ItemType } from "../../../common/src/utils/objectDefinitions";
+import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
@@ -358,18 +358,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.inventory.scope = "4x_scope";
         }
 
-        /*
-        const giveWeapon = (idString: ReferenceTo<GunDefinition>, index: number): void => {
-            this.inventory.addOrReplaceWeapon(index, idString);
-            const primaryItem = this.inventory.getWeapon(index) as GunItem;
-            const primaryDefinition = primaryItem.definition;
-            primaryItem.ammo = primaryDefinition.capacity;
-            this.inventory.items[primaryDefinition.ammoType] = Infinity;
-        };
-        */
-
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
+    }
+
+    giveGun(idString: ReferenceTo<GunDefinition>): void {
+        const slot = this.inventory.appendWeapon(idString);
+        const primaryItem = this.inventory.getWeapon(slot) as GunItem;
+        const primaryDefinition = primaryItem.definition;
+        primaryItem.ammo = primaryDefinition.capacity;
+        this.inventory.items[primaryDefinition.ammoType] = Infinity;
     }
 
     emote(slot: number): void {
