@@ -113,7 +113,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         super(game, id);
 
         this.images = {
-            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), //SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
+            aimTrail: new TilingSprite(Texture.from("aimTrail.svg"), 20, 6000), // SuroiSprite().setFrame("aimTrail").setVisible(false).setZIndex(1000).setAngle(90).setPos(1800,0)
             vest: new SuroiSprite().setVisible(false),
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
@@ -419,7 +419,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 }
                 if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
             }
-            //@ts-expect-error 'item' not existing is okay
+            // @ts-expect-error 'item' not existing is okay
             this.action = action;
 
             this.updateEquipment();
@@ -551,7 +551,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const container = $(`#${equipmentType}-slot`);
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
-            container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
+            container.children(".item-image").attr("src", `/assets/img/game/loot/${def.idString}.svg`);
 
             let itemTooltip = def.name;
             if (def.itemType === ItemType.Armor) {

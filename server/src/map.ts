@@ -561,13 +561,13 @@ export class Map {
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
         switch (mode) {
             case RotationMode.Full:
-                //@ts-expect-error not sure why ts thinks the return type should be 0
+                // @ts-expect-error not sure why ts thinks the return type should be 0
                 return randomRotation();
             case RotationMode.Limited:
-                //@ts-expect-error see above
+                // @ts-expect-error see above
                 return random(0, 3);
             case RotationMode.Binary:
-                //@ts-expect-error see above
+                // @ts-expect-error see above
                 return random(0, 1);
             case RotationMode.None:
             default:

@@ -67,9 +67,9 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
             true
         );
 
-        //@ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as not mutable
         plus._inverse = minus;
-        //@ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as not mutable
         minus._inverse = plus;
     }
 
@@ -584,7 +584,7 @@ export function setUpCommands(game: Game): void {
                 //                              ___|> mystery constant (hint: use translate(-50%, 50%) if you're trynna center)
                 .css("left", `${mouseX - 143}px`)
                 .css("top", `${mouseY - 143}px`)
-                .css("background-image", 'url("./img/misc/emote_wheel.svg")')
+                .css("background-image", 'url("/assets/img/misc/emote_wheel.svg")')
                 .show();
             this.inputManager.emoteWheelActive = true;
             this.inputManager.emoteWheelPosition = v(mouseX, mouseY);

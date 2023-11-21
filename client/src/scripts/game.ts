@@ -298,7 +298,7 @@ export class Game {
             $(`#emote-wheel > ${selectors[i]}`)
                 .css(
                     "background-image",
-                    `url("./img/game/emotes/${packet.emotes[i].idString}.svg")`
+                    `url("/assets/img/game/emotes/${packet.emotes[i].idString}.svg")`
                 );
         }
 

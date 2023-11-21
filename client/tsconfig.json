@@ -1,19 +1,21 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "lib": ["DOM", "ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "outDir": "./dist",
-    "sourceMap": true,
-    "esModuleInterop": true,
+    "newLine": "lf",
     "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
     "resolveJsonModule": true,
-    "strictNullChecks": true,
-    "strict": true
+    "isolatedModules": true,
+    "allowJs": true,
+    "checkJs": true
   },
-  "exclude": ["node_modules"],
   "include": [
-    ".",
-    "../common/src"
+    "src/**/*.ts",
+    "src/**/*.js"
   ]
 }

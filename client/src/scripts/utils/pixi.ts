@@ -19,12 +19,12 @@ function loadImage(key: string, path: string): void {
 export async function loadTextures(): Promise<void> {
     for (const building of Buildings.definitions) {
         for (const image of building.floorImages ?? []) {
-            loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
+            loadImage(image.key, new URL(`../../img/buildings/${image.key}.svg`, import.meta.url).href);
         }
 
         for (const image of building.ceilingImages ?? []) {
-            loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
-            if (image.residue) loadImage(image.residue, require(`/public/img/buildings/${image.residue}.svg`));
+            loadImage(image.key, new URL(`../../img/buildings/${image.key}.svg`, import.meta.url).href);
+            if (image.residue) loadImage(image.residue, new URL(`../../img/buildings/${image.residue}.svg`, import.meta.url).href);
         }
     }
 
@@ -33,7 +33,7 @@ export async function loadTextures(): Promise<void> {
     textures = await Assets.loadBundle("buildings");
 
     for (const atlas of ["main"]) {
-        const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
+        const path = `/assets/lib/${atlas}.${ATLAS_HASH}`;
         const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
 
         console.log(`Loading atlas: ${location.toString()}${path}.png`);

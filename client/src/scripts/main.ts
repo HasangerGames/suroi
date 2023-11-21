@@ -42,15 +42,15 @@ $(async(): Promise<void> => {
                 <li class="server-list-item" data-region="${regionID}">
                     <span class="server-name">${region.name}</span>
                     <span style="margin-left: auto">
-                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                      <img src="/assets/img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
                     </span>
                 </li>
             `);
-        /*<span style="margin-left: 5px">
-          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+        /* <span style="margin-left: 5px">
+          <img src="/assets/img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
           <span class="server-ping">-</span>
-        </span>*/
+        </span> */
         serverList.append(listItem);
     }
 
@@ -77,7 +77,7 @@ $(async(): Promise<void> => {
                 };
 
                 listItem.find(".server-player-count").text(playerCount);
-                //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+                // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
                 if (ping < bestPing) {
                     bestPing = ping;
@@ -99,7 +99,7 @@ $(async(): Promise<void> => {
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
-        //$("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
+        // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
     const region = game.console.getBuiltInCVar("cv_region");

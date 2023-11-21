@@ -1,34 +1,27 @@
 {
     "env": {
-        "browser": true,
         "es2022": true
     },
     "extends": [
         "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript",
         "eslint:recommended",
         "standard-with-typescript"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
+        "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": "./tsconfig.json",
-        "extraFileExtensions": ".js"
+        "project": [
+            "tsconfig.json",
+            "./client/tsconfig.json",
+            "./client/tsconfig.node.json",
+            "./common/tsconfig.json",
+            "./server/tsconfig.json"
+        ]
     },
     "plugins": [
         "@typescript-eslint"
-    ],
-    "overrides": [
-        {
-            "files": ["*.js"],
-            "parser": "@babel/eslint-parser",
-            "parserOptions": {
-                "requireConfigFile": false
-            }
-        }
     ],
     "rules": {
         "indent": [1, 4, { "SwitchCase": 1 }],
@@ -47,8 +40,7 @@
         "prefer-arrow-callback": 1,
         "prefer-template": 1,
         "@typescript-eslint/strict-boolean-expressions": 0,
-        "@typescript-eslint/no-var-requires": 0,
-        "import/no-absolute-path": 0,
-        "spaced-comment": "off"
+        "@typescript-eslint/no-for-in-array": 0,
+        "@typescript-eslint/no-confusing-void-expression": 0
     }
 }

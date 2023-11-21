@@ -38,11 +38,11 @@ export class ConVar<Value = string> {
                 return { err: `Cannot set value of readonly CVar '${this.name}'` };
             }
             case this.flags.replicated: {
-                //todo allow server operators to modify replicated cvars
+                // todo allow server operators to modify replicated cvars
                 return { err: `Value of replicated CVar '${this.name}' can only be modified by server operators.` };
             }
             case this.flags.cheat: {
-                //todo allow modification of value when cheats are enabled
+                // todo allow modification of value when cheats are enabled
                 return { err: `Cannot set value of cheat CVar '${this.name}' because cheats are disabled.` };
             }
         }
@@ -68,7 +68,7 @@ export class ConsoleVariables {
         for (const [name, value] of Object.entries(defaultClientCVars)) {
             if (varExists(name)) continue;
 
-            //@ts-expect-error This is init code, so shove it
+            // @ts-expect-error This is init code, so shove it
             this._builtInCVars[name as keyof CVarTypeMapping] = ConVar.from<Stringable>(value, console);
         }
     }

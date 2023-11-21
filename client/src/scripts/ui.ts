@@ -40,13 +40,13 @@ export function setupUI(game: Game): void {
             killFeedItem.addClass("kill-feed-item");
             // noinspection HtmlUnknownTarget
             killFeedItem.html(
-                '<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
+                '<img class="kill-icon" src="/assets/img/misc/skull_icon.svg" alt="Skull"> Player killed Player with Mosin-Nagant'
             );
             $("#kill-feed").prepend(killFeedItem);
         }
     }
 
-    //createDropdown("#splash-more");
+    // createDropdown("#splash-more");
 
     const usernameField = $("#username-input");
 
@@ -233,11 +233,11 @@ Video evidence is required.`)) {
     const updateSplashCustomize = (skinID: string): void => {
         $("#skin-base").css(
             "background-image",
-            `url("./img/game/skins/${skinID}_base.svg")`
+            `url("/assets/img/game/skins/${skinID}_base.svg")`
         );
         $("#skin-left-fist, #skin-right-fist").css(
             "background-image",
-            `url("./img/game/skins/${skinID}_fist.svg")`
+            `url("/assets/img/game/skins/${skinID}_fist.svg")`
         );
     };
     updateSplashCustomize(game.console.getBuiltInCVar("cv_loadout_skin"));
@@ -250,9 +250,9 @@ Video evidence is required.`)) {
         const skinItem =
             $(`<div id="skin-${skin.idString}" class="skins-list-item-container">
   <div class="skins-list-item">
-    <div class="skin-base" style="background-image: url('./img/game/skins/${skin.idString}_base.svg')"></div>
-    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
-    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-base" style="background-image: url('/assets/img/game/skins/${skin.idString}_base.svg')"></div>
+    <div class="skin-left-fist" style="background-image: url('/assets/img/game/skins/${skin.idString}_fist.svg')"></div>
+    <div class="skin-right-fist" style="background-image: url('/assets/img/game/skins/${skin.idString}_fist.svg')"></div>
   </div>
   <span class="skin-name">${skin.name}</span>
 </div>`);
@@ -280,7 +280,7 @@ Video evidence is required.`)) {
             $(this).addClass("selected").siblings().removeClass("selected");
             $(`#emote-customize-wheel > .emote-${selectedEmoteSlot}`).css(
                 "background-image",
-                `url("./img/game/emotes/${emote.idString}.svg")`
+                `url("/assets/img/game/emotes/${emote.idString}.svg")`
             );
         });
         $("#emotes-list").append(emoteItem);
@@ -290,18 +290,18 @@ Video evidence is required.`)) {
         const emote = game.console.getBuiltInCVar(`cv_loadout_${slot}_emote`);
 
         $(`#emote-customize-wheel > .emote-${slot}`)
-            .css("background-image", `url("./img/game/emotes/${emote}.svg")`)
+            .css("background-image", `url("/assets/img/game/emotes/${emote}.svg")`)
             .on("click", () => {
                 if (selectedEmoteSlot !== slot) {
                     selectedEmoteSlot = slot;
-                    $("#emote-customize-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
+                    $("#emote-customize-wheel").css("background-image", `url("/assets/img/misc/emote_wheel_highlight_${slot}.svg"), url("/img/misc/emote_wheel.svg")`);
                     $(".emotes-list-item-container").removeClass("selected").css("cursor", "pointer");
                     $(`#emote-${emote}`).addClass("selected");
                 } else {
                     selectedEmoteSlot = undefined;
                     $("#emote-customize-wheel").css(
                         "background-image",
-                        'url("./img/misc/emote_wheel.svg")'
+                        'url("/assets/img/misc/emote_wheel.svg")'
                     );
                     $(".emotes-list-item-container")
                         .removeClass("selected")
@@ -590,7 +590,7 @@ Video evidence is required.`)) {
     for (const scope of Scopes) {
         $("#scopes-container").append(`
         <div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-            <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
+            <img class="item-image" src="/assets/img/game/loot/${scope.idString}.svg" draggable="false">
             <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
         </div>`);
 
@@ -609,7 +609,7 @@ Video evidence is required.`)) {
     for (const item of HealingItems) {
         $("#healing-items-container").append(`
         <div class="inventory-slot item-slot" id="${item.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
+            <img class="item-image" src="/assets/img/game/loot/${item.idString}.svg" draggable="false">
             <span class="item-count" id="${item.idString}-count">0</span>
             <div class="item-tooltip">
                 ${item.name}
@@ -632,7 +632,7 @@ Video evidence is required.`)) {
 
         $("#ammo-container").append(`
         <div class="inventory-slot item-slot ammo-slot" id="${ammo.idString}-slot">
-            <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
+            <img class="item-image" src="/assets/img/game/loot/${ammo.idString}.svg" draggable="false">
             <span class="item-count" id="${ammo.idString}-count">0</span>
         </div>`);
     }
@@ -647,7 +647,7 @@ Video evidence is required.`)) {
             game.console.handleQuery("interact");
         });
         // noinspection HtmlUnknownTarget
-        $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');
+        $("#interact-key").html('<img src="/assets/img/misc/tap-icon.svg" alt="Tap">');
 
         // Reload button
         $("#btn-reload")

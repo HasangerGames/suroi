@@ -290,7 +290,7 @@ export class UIManager {
                 container.children(".item-name").text(weapon.definition.name);
                 container.children(".item-image").attr(
                     "src",
-                    `./img/game/weapons/${weapon.definition.idString}.svg`).show();
+                    `/assets/img/game/weapons/${weapon.definition.idString}.svg`).show();
 
                 if (weapon.ammo !== undefined) {
                     container.children(".item-ammo").text(weapon.ammo)
@@ -405,7 +405,7 @@ export class UIManager {
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
-                        <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
+                        <img class="kill-icon" src="/assets/img/misc/skull_icon.svg" alt="Skull">
                         ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`;
                         break;
                     }
@@ -416,13 +416,13 @@ export class UIManager {
                         const killstreakText = hasKillstreak
                             ? `
                             <span style="font-size: 80%">(${killstreak}
-                                <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull" height=12>)
+                                <img class="kill-icon" src="/assets/img/misc/skull_icon.svg" alt="Skull" height=12>)
                             </span>`
                             : "";
 
                         messageText = `
                         ${killerName}
-                        <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">
+                        <img class="kill-icon" src="/assets/img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">
                         ${killstreakText}
                         ${playerName}`;
                         break;
@@ -466,7 +466,7 @@ export class UIManager {
                 $("#kill-leader-leader").text("Waiting for leader");
                 $("#kill-leader-kills-counter").text("0");
                 // noinspection HtmlUnknownTarget
-                messageText = `<img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}`;
+                messageText = `<img class="kill-icon" src="/assets/img/misc/skull_icon.svg" alt="Skull"> ${killerID ? `${this.getPlayerName(killerID)} killed Kill Leader!` : "The Kill Leader is dead!"}`;
                 if (killerID === this.game.activePlayerID) classes.push("kill-feed-item-killer");
                 else if (playerID === this.game.activePlayerID) classes.push("kill-feed-item-victim");
                 this.game.soundManager.play("kill_leader_dead");

@@ -180,7 +180,7 @@ export class SoundManager {
         }
 
         for (const [name, path] of soundsToLoad) {
-            this.load(name, path);
+            this.load(name, `/assets/${path}`);
         }
     }
 }

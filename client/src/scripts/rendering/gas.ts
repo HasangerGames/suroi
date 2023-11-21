@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 import { Graphics } from "pixi.js";
 import { GasState, TICKS_PER_SECOND, ZIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
@@ -77,10 +79,10 @@ export class Gas {
 
             if (isAdvancing) {
                 this._ui.timer.addClass("advancing");
-                this._ui.timerImg.attr("src", "./img/misc/gas-advancing-icon.svg");
+                this._ui.timerImg.attr("src", "/assets/img/misc/gas-advancing-icon.svg");
             } else {
                 this._ui.timer.removeClass("advancing");
-                this._ui.timerImg.attr("src", "./img/misc/gas-waiting-icon.svg");
+                this._ui.timerImg.attr("src", "/assets/img/misc/gas-waiting-icon.svg");
             }
 
             if (

@@ -1,7 +1,3 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow: /audio
-Disallow: /css
-Disallow: /fonts
-Disallow: /img
-Disallow: /js
+Disallow: /assets
