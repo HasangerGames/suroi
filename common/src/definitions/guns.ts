@@ -95,7 +95,7 @@ export const Guns: GunDefinition[] = [
             damage: 14,
             obstacleMultiplier: 1.5,
             speed: 0.26,
-            maxDistance: 160
+            range: 160
         }
     },
     {
@@ -129,7 +129,7 @@ export const Guns: GunDefinition[] = [
             damage: 13,
             obstacleMultiplier: 1.5,
             speed: 0.26,
-            maxDistance: 160
+            range: 160
         }
     },
     {
@@ -163,7 +163,7 @@ export const Guns: GunDefinition[] = [
             damage: 11.25,
             obstacleMultiplier: 1.5,
             speed: 0.28,
-            maxDistance: 160
+            range: 160
         }
     },
     {
@@ -197,7 +197,7 @@ export const Guns: GunDefinition[] = [
             damage: 14.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 160
+            range: 160
         }
     },
     {
@@ -234,7 +234,7 @@ export const Guns: GunDefinition[] = [
             damage: 9,
             obstacleMultiplier: 1,
             speed: 0.2,
-            maxDistance: 80
+            range: 80
         }
     },
     {
@@ -272,7 +272,7 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 48,
+            range: 48,
             tracer: {
                 length: 0.7
             }
@@ -312,7 +312,7 @@ export const Guns: GunDefinition[] = [
             damage: 5,
             obstacleMultiplier: 0.5,
             speed: 0.12,
-            maxDistance: 40,
+            range: 40,
             tracer: {
                 length: 0.5
             }
@@ -353,7 +353,7 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 40,
+            range: 40,
             tracer: {
                 length: 0.5
             }
@@ -393,7 +393,7 @@ export const Guns: GunDefinition[] = [
             damage: 70,
             obstacleMultiplier: 1,
             speed: 0.33,
-            maxDistance: 250,
+            range: 250,
             tracer: {
                 width: 1.4,
                 length: 2.5
@@ -433,7 +433,7 @@ export const Guns: GunDefinition[] = [
             damage: 79,
             obstacleMultiplier: 1,
             speed: 0.4,
-            maxDistance: 280,
+            range: 280,
             tracer: {
                 width: 1.6,
                 length: 3.5
@@ -473,7 +473,7 @@ export const Guns: GunDefinition[] = [
             damage: 142.75,
             obstacleMultiplier: 1,
             speed: 0.45,
-            maxDistance: 300,
+            range: 300,
             tracer: {
                 width: 2.5,
                 length: 4
@@ -514,7 +514,7 @@ export const Guns: GunDefinition[] = [
             damage: 24.5,
             obstacleMultiplier: 1.5,
             speed: 0.26,
-            maxDistance: 160
+            range: 160
         }
     },
     {
@@ -549,7 +549,7 @@ export const Guns: GunDefinition[] = [
             damage: 11.75,
             obstacleMultiplier: 1,
             speed: 0.14,
-            maxDistance: 120
+            range: 120
         }
     },
     {
@@ -584,7 +584,7 @@ export const Guns: GunDefinition[] = [
             damage: 9,
             obstacleMultiplier: 1,
             speed: 0.22,
-            maxDistance: 85
+            range: 85
         }
     },
     {
@@ -618,7 +618,7 @@ export const Guns: GunDefinition[] = [
             damage: 15.5,
             obstacleMultiplier: 1,
             speed: 0.25,
-            maxDistance: 130
+            range: 130
         },
         burstProperties: {
             shotsPerBurst: 3,
@@ -656,7 +656,7 @@ export const Guns: GunDefinition[] = [
             damage: 21,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 180
+            range: 180
         },
         burstProperties: {
             shotsPerBurst: 3,
@@ -694,7 +694,7 @@ export const Guns: GunDefinition[] = [
             damage: 7.75,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 85
+            range: 85
         }
     },
     {
@@ -728,7 +728,7 @@ export const Guns: GunDefinition[] = [
             damage: 11,
             obstacleMultiplier: 1,
             speed: 0.25,
-            maxDistance: 130
+            range: 130
         }
     },
     {
@@ -762,7 +762,7 @@ export const Guns: GunDefinition[] = [
             damage: 16,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 180,
+            range: 180,
             tracer: {
                 length: 1.4
             }
@@ -799,7 +799,7 @@ export const Guns: GunDefinition[] = [
             damage: 16,
             obstacleMultiplier: 2.5,
             speed: 0.3,
-            maxDistance: 180,
+            range: 180,
             tracer: {
                 width: 1.1,
                 length: 1.4
@@ -837,7 +837,7 @@ export const Guns: GunDefinition[] = [
             damage: 14.25,
             obstacleMultiplier: 2,
             speed: 0.28,
-            maxDistance: 180,
+            range: 180,
             tracer: {
                 width: 1.1,
                 length: 1.4
@@ -876,7 +876,7 @@ export const Guns: GunDefinition[] = [
             damage: 22,
             obstacleMultiplier: 1.5,
             speed: 0.22,
-            maxDistance: 160,
+            range: 160,
             tracer: {
                 opacity: 0.5,
                 length: 1.5
@@ -914,7 +914,7 @@ export const Guns: GunDefinition[] = [
             damage: 28.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 230,
+            range: 230,
             tracer: {
                 length: 1.5
             }
@@ -951,7 +951,7 @@ export const Guns: GunDefinition[] = [
             damage: 25.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            maxDistance: 230,
+            range: 230,
             tracer: {
                 length: 1.5
             }
@@ -991,7 +991,7 @@ export const Guns: GunDefinition[] = [
             damage: 8,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 55,
+            range: 55,
             onHitExplosion: "usas_explosion",
             goToMouse: true,
             tracer: {
@@ -1029,7 +1029,7 @@ export const Guns: GunDefinition[] = [
             damage: 2,
             obstacleMultiplier: 0.5,
             speed: 0.1,
-            maxDistance: 70,
+            range: 70,
             tracer: {
                 width: 0.7,
                 opacity: 0.85,
@@ -1072,7 +1072,7 @@ export const Guns: GunDefinition[] = [
             damage: 800,
             obstacleMultiplier: 2,
             speed: 4,
-            maxDistance: 400,
+            range: 400,
             penetration: {
                 players: true,
                 obstacles: true
@@ -1119,7 +1119,7 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            maxDistance: 48
+            range: 48
         },
         wearerAttributes: {
             passive: {

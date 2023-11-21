@@ -48,7 +48,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 10,
                 obstacleMultiplier: 1,
                 speed: 0.08,
-                maxDistance: 20,
+                range: 20,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -76,7 +76,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 10,
                 obstacleMultiplier: 1,
                 speed: 0.08,
-                maxDistance: 20,
+                range: 20,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -104,7 +104,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 10,
                 obstacleMultiplier: 1,
                 speed: 0.08,
-                maxDistance: 20,
+                range: 20,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -132,7 +132,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 10,
                 obstacleMultiplier: 2,
                 speed: 0.08,
-                maxDistance: 30,
+                range: 30,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -160,7 +160,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 12,
                 obstacleMultiplier: 2,
                 speed: 0.08,
-                maxDistance: 30,
+                range: 30,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -188,7 +188,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 15,
                 obstacleMultiplier: 3,
                 speed: 0.08,
-                maxDistance: 60,
+                range: 60,
                 rangeVariance: 1,
                 shrapnel: true
             }
@@ -216,7 +216,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
                 damage: 3,
                 obstacleMultiplier: 2,
                 speed: 0.06,
-                maxDistance: 10,
+                range: 10,
                 rangeVariance: 1,
                 shrapnel: true
             },

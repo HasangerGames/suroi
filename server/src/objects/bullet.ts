@@ -58,7 +58,7 @@ export class Bullet extends BaseBullet {
             variance: variance ? randomFloat(0, variance) : undefined
         });
 
-        this.clipDistance = options.clipDistance ?? this.definition.maxDistance;
+        this.clipDistance = options.clipDistance ?? this.definition.range;
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
