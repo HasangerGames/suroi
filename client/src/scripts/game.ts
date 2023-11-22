@@ -603,7 +603,11 @@ export class Game {
                                 interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
                                 break;
                             case ObstacleSpecialRoles.Activatable:
-                                interactText = `Activate ${object.definition.name}`;
+                                if(object.definition.idString == "generator") {
+                                    interactText = `Activate ${object.definition.name}`;
+                                } else {
+                                    interactText = `Open ${object.definition.name}`;
+                                }
                                 break;
                         }
                     } else { // object must be Loot

@@ -103,10 +103,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     if (this.destroyed) return;
                     if(this.definition.idString == "generator") {
                         this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
-                    } else {
-                        let texture = `aegis_crate_residue`;
-                        this.image.setFrame(texture);
-                        console.log(texture)
                     }
                     firstRun = false;
                 };
@@ -118,6 +114,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.updateDoor(full, isNew);
             this.openAirdrop(full, isNew);
         }
+
         const definition = this.definition;
 
         this.scale = data.scale;
@@ -189,11 +186,16 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-        this.image.setVisible(!(this.dead && !!definition.noResidue));
+       this.image.setVisible(!(this.dead && !!definition.noResidue));
 
         let texture;
-        if (!this.dead) texture = definition.frames?.base ?? `${definition.idString}`;
-        else texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+        if (this.activated) {
+            texture = definition.frames?.opened ?? `${definition.idString}`
+        } else if (!this.dead) {
+            texture = definition.frames?.base ?? `${definition.idString}`
+        } else {
+            texture = definition.frames?.residue ?? `${definition.idString}_residue`
+        }
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
 
