@@ -35,6 +35,7 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly base?: string
         readonly particle?: string
         readonly residue?: string
+        readonly opened?: string
     }
 
     readonly spawnMode?: MapObjectSpawnMode
@@ -444,6 +445,32 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             noResidue: true,
             frames: {
                 particle: "metal_particle"
+            },
+            reflectBullets: true
+        },
+        {
+            idString: "airdrop_crate",
+            name: "Airdrop Crate",
+            material: "metal",
+            health: 100,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.8, 8.8)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            role: ObstacleSpecialRoles.Activatable,
+            requiredItem: "fists",
+            hasLoot: true,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle",
+                opened: "airdrop_crate_opened"
             },
             reflectBullets: true
         },

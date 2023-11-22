@@ -17,9 +17,9 @@ export const Config = {
     host: "127.0.0.1",
     port: 8000,
 
-    mapName: "main",
+    mapName: "singleObstacle",
 
-    spawn: { mode: SpawnMode.PoissonDisc, radius: 50, maxTries: 100 },
+    spawn: { mode: SpawnMode.Center },
 
     maxPlayersPerGame: 80,
     maxGames: 3,

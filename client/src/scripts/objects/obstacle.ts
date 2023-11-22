@@ -96,11 +96,18 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
 
             if (!this.activated && full.activated) {
+                console.log(this.activated)
                 this.activated = full.activated;
                 let firstRun = !isNew;
                 const playGeneratorSound = (): void => {
                     if (this.destroyed) return;
-                    this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
+                    if(this.definition.idString == "generator") {
+                        this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
+                    } else {
+                        let texture = `aegis_crate_residue`;
+                        this.image.setFrame(texture);
+                        console.log(texture)
+                    }
                     firstRun = false;
                 };
                 playGeneratorSound();
@@ -109,6 +116,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.isDoor = definition.role === ObstacleSpecialRoles.Door;
 
             this.updateDoor(full, isNew);
+            this.openAirdrop(full, isNew);
         }
         const definition = this.definition;
 
@@ -138,6 +146,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     let texture = definition.frames?.residue ?? `${definition.idString}_residue`;
                     if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
                     this.image.setFrame(texture);
+                    console.log(texture)
                 }
 
                 this.container.rotation = this.rotation;
@@ -307,6 +316,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 });
             }
         }
+    }
+
+    
+    openAirdrop(data: ObjectsNetData[ObjectCategory.Obstacle]["full"], isNew = false): void {
+        
     }
 
     canInteract(player: Player): boolean {
