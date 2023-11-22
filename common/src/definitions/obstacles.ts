@@ -474,6 +474,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle",
                 opened: "airdrop_crate_opened"
             },
+            interactDelay: 2000,
             reflectBullets: true
         },
         {

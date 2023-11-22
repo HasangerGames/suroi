@@ -118,7 +118,7 @@ export class Bullet extends BaseBullet {
                 if (!object.definition.noCollisions) {
                     this.position = collision.intersection.point;
 
-                    if (object.definition.reflectBullets && this.reflectionCount < 3) {
+                    if (object.definition.reflectBullets && this.reflectionCount < 3 && object.indestructible) {
                         this.reflect(collision.intersection.normal);
                         this.reflected = true;
                     }

@@ -97,6 +97,10 @@ export class SoundManager {
                 "audio/sfx/vault_door_open"
             ],
             [
+                "airdrop_crate_open",
+                "audio/sfx/airdrop_crate_open"
+            ],
+            [
                 "generator_starting",
                 "audio/sfx/generator_starting"
             ],

@@ -101,12 +101,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 let firstRun = !isNew;
                 const playGeneratorSound = (): void => {
                     if (this.destroyed) return;
-                    if(this.definition.idString == "generator") {
-                        this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
-                    }
+                    this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
                     firstRun = false;
                 };
-                playGeneratorSound();
+                const playCrateOpenSound = (): void => {
+                    if (this.destroyed) return;
+                    this.playSound(`airdrop_crate_open`, 0.2, 96);
+                };
+
+                playCrateOpenSound();
             }
 
             this.isDoor = definition.role === ObstacleSpecialRoles.Door;
