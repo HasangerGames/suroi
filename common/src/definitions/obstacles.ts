@@ -60,6 +60,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 })) | {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly requiredItem?: string
+    readonly interactText?: string
     // obstacle will interact will all obstacles with that id string from the parent building
     readonly interactType?: string
     readonly interactDelay?: number
@@ -466,6 +467,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Activatable,
             requiredItem: "fists",
+            interactText: "Open",
             hasLoot: true,
             noResidue: true,
             frames: {
@@ -1627,6 +1629,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             emitParticles: true,
             requiredItem: "gas_can",
+            interactText: "Open",
             interactType: "vault_door",
             interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)
