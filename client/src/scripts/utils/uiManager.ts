@@ -8,7 +8,7 @@ import {
 } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
-import { Scopes, type ScopeDefinition } from "../../../../common/src/definitions/scopes";
+import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";
 import { type GameOverPacket } from "../../../../common/src/packets/gameOverPacket";
 import { type KillFeedMessage, type PlayerData } from "../../../../common/src/packets/updatePacket";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
@@ -309,10 +309,10 @@ export class UIManager {
     }
 
     updateItems(): void {
-        const scopeNames = Scopes.definitions.map(sc => sc.idString);
-
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
+
+            const itemDef = Loots.fromString(item);
 
             $(`#${item}-count`).text(count);
 
@@ -323,7 +323,11 @@ export class UIManager {
             }
             itemSlot.toggleClass("has-item", count > 0);
 
-            if (scopeNames.includes(item) && !UI_DEBUG_MODE) {
+            if (itemDef.itemType === ItemType.Ammo && itemDef.hideUnlessPresent) {
+                itemSlot.toggle(count > 0);
+            }
+
+            if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
                 itemSlot.toggle(count > 0).removeClass("active");
             }
         }
