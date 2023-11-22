@@ -1125,7 +1125,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }, // Bathroom Toilet
             {
-                idString: "toilet",
+                idString: { toilet: 2, used_toilet: 1 },
                 position: v(3.6, 23.5),
                 rotation: 2
             }, // Front Door
