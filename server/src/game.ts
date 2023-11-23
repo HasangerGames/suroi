@@ -364,7 +364,12 @@ export class Game {
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
         let name = packet.name;
-        if (name.length === 0 || (Config.censorUsernames && hasBadWords(name))) name = DEFAULT_USERNAME;
+        if (
+            name.length === 0 ||
+            (Config.censorUsernames && hasBadWords(name)) ||
+            // eslint-disable-next-line no-control-regex
+            /[^\x00-\x7F]/g.test(name) // extended ASCII chars
+        ) name = DEFAULT_USERNAME;
         player.name = name;
 
         player.isMobile = packet.isMobile;
