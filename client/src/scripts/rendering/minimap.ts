@@ -60,8 +60,6 @@ export class Minimap {
 
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMiniMap();
 
-        this.indicator.scale.set(0.1);
-
         this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.indicator).sortChildren();
 
         this.borderContainer.on("click", e => {
@@ -391,6 +389,8 @@ export class Minimap {
 
             const closeButton = $("#btn-close-minimap");
             closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
+
+            this.indicator.scale.set(0.2);
         } else {
             if (!this.visible) return;
 
@@ -406,6 +406,8 @@ export class Minimap {
             } else {
                 this.container.scale.set(1 / 2);
             }
+
+            this.indicator.scale.set(0.1);
         }
 
         this.mask.clear();
@@ -449,6 +451,7 @@ export class Minimap {
         this.container.visible = true;
         this.borderContainer.hide();
         $("#scopes-container").hide();
+        $("#spectating-container").hide();
         $("#gas-msg-info").hide();
         $("#ui-kill-leader").hide();
         $("#btn-close-minimap").show();
@@ -463,6 +466,7 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+        if (this.game.spectating) $("#spectating-container").show();
         $("#ui-kill-leader").show();
         $("#kill-counter").hide();
         if (!this.visible) {
