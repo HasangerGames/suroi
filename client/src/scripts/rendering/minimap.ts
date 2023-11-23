@@ -449,6 +449,7 @@ export class Minimap {
         this.container.visible = true;
         this.borderContainer.hide();
         $("#scopes-container").hide();
+        $("#spectating-container").hide();
         $("#gas-msg-info").hide();
         $("#ui-kill-leader").hide();
         $("#btn-close-minimap").show();
@@ -463,6 +464,7 @@ export class Minimap {
         $("#center-bottom-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
+        if (this.game.spectating) $("#spectating-container").show();
         $("#ui-kill-leader").show();
         $("#kill-counter").hide();
         if (!this.visible) {
