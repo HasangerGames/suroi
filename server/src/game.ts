@@ -276,7 +276,7 @@ export class Game {
     updateKillLeader(player: Player): void {
         const oldKillLeader = this._killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+        if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1)) && !player.dead) {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
@@ -291,7 +291,7 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { twoPartyInteraction: true, killerID: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1))) {
+            if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1)) && !player.dead) {
                 newKillLeader = player;
             }
         }
