@@ -19,11 +19,7 @@ export const Config = {
 
     mapName: "singleObstacle",
 
-<<<<<<< HEAD
     spawn: { mode: SpawnMode.Center },
-=======
-    spawn: { mode: SpawnMode.Normal },
->>>>>>> a8beec6aedca7c0aced5e690062b25e898145c16
 
     maxPlayersPerGame: 80,
     maxGames: 3,
