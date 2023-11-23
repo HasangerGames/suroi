@@ -249,7 +249,11 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
                     Loots.writeToStream(stream, message.weaponUsed as LootDefinition);
                 }
 
-                if ("killstreak" in message.weaponUsed! && message.weaponUsed.killstreak) {
+                if (
+                    message.weaponUsed !== undefined &&
+                    "killstreak" in message.weaponUsed &&
+                    message.weaponUsed.killstreak
+                ) {
                     stream.writeBits(message.killstreak!, 7);
                 }
             }
@@ -312,7 +316,11 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                     ? Explosions.readFromStream(stream)
                     : Loots.readFromStream(stream);
 
-                if ("killstreak" in message.weaponUsed && message.weaponUsed.killstreak) {
+                if (
+                    message.weaponUsed !== undefined &&
+                    "killstreak" in message.weaponUsed &&
+                    message.weaponUsed.killstreak
+                ) {
                     message.killstreak = stream.readBits(7);
                 }
             }
