@@ -313,40 +313,20 @@ export class Game {
         let spawnPosition = v(this.map.width / 2, this.map.height / 2);
         const hitbox = new CircleHitbox(5);
         switch (Config.spawn.mode) {
-            case SpawnMode.Random: {
-                spawnPosition = this.map.getRandomPosition(hitbox, {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: (position) => {
-                        return distanceSquared(position, this.gas.currentPosition) >= this.gas.newRadius ** 2;
-                    }
-                }) ?? spawnPosition;
-                break;
-            }
-            case SpawnMode.Fixed: {
-                spawnPosition = Config.spawn.position;
-                break;
-            }
-            case SpawnMode.Radius: {
-                spawnPosition = randomPointInsideCircle(
-                    Config.spawn.position,
-                    Config.spawn.radius
-                );
-                break;
-            }
-            case SpawnMode.PoissonDisc: {
+            case SpawnMode.Normal: {
+                const gasRadius = this.gas.newRadius ** 2;
                 let foundPosition = false;
                 let tries = 0;
-                while (!foundPosition && tries < Config.spawn.maxTries) {
+                while (!foundPosition && tries < 100) {
                     spawnPosition = this.map.getRandomPosition(hitbox, {
                         maxAttempts: 500,
                         spawnMode: MapObjectSpawnMode.GrassAndSand,
                         collides: (position) => {
-                            return distanceSquared(position, this.gas.currentPosition) >= this.gas.newRadius ** 2;
+                            return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
                         }
                     }) ?? spawnPosition;
 
-                    const radiusHitbox = new CircleHitbox(Config.spawn.radius, spawnPosition);
+                    const radiusHitbox = new CircleHitbox(50, spawnPosition);
                     for (const object of this.grid.intersectsHitbox(radiusHitbox)) {
                         if (object instanceof Player) {
                             foundPosition = false;
@@ -356,6 +336,29 @@ export class Game {
                 }
                 break;
             }
+            case SpawnMode.Random: {
+                const gasRadius = this.gas.newRadius ** 2;
+                spawnPosition = this.map.getRandomPosition(hitbox, {
+                    maxAttempts: 500,
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    collides: (position) => {
+                        return distanceSquared(position, this.gas.currentPosition) >= gasRadius;
+                    }
+                }) ?? spawnPosition;
+                break;
+            }
+            case SpawnMode.Radius: {
+                spawnPosition = randomPointInsideCircle(
+                    Config.spawn.position,
+                    Config.spawn.radius
+                );
+                break;
+            }
+            case SpawnMode.Fixed: {
+                spawnPosition = Config.spawn.position;
+                break;
+            }
+            // No case for SpawnMode.Center because that's the default
         }
         // Player is added to the players array when a JoinPacket is received from the client
         return new Player(this, socket, spawnPosition);
@@ -364,7 +367,12 @@ export class Game {
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacket): void {
         let name = packet.name;
-        if (name.length === 0 || (Config.censorUsernames && hasBadWords(name))) name = DEFAULT_USERNAME;
+        if (
+            name.length === 0 ||
+            (Config.censorUsernames && hasBadWords(name)) ||
+            // eslint-disable-next-line no-control-regex
+            /[^\x00-\x7F]/g.test(name) // extended ASCII chars
+        ) name = DEFAULT_USERNAME;
         player.name = name;
 
         player.isMobile = packet.isMobile;
