@@ -11,6 +11,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@damienvesper/bit-buffer": "^1.0.0",
+    "greiner-hormann": "^1.4.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.34.0"
   },
   "devDependencies": {

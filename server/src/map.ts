@@ -4,7 +4,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/s
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
-import { addAdjust, addOrientations, angleBetweenPoints, velFromAngle } from "../../common/src/utils/math";
+import { addAdjust, addOrientations, angleBetweenPoints, distance, velFromAngle } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
@@ -87,62 +87,44 @@ export class Map {
 
         const randomGenerator = new SeededRandom(this.seed);
 
-        let hasWideRiver = false;
+        let hasWideRiver = true;
+        const riverPadding = mapDefinition.oceanSize - 30;
 
         const mapRect = new RectangleHitbox(
-            v(mapDefinition.oceanSize, mapDefinition.oceanSize),
-            v(this.width - mapDefinition.oceanSize, this.height - mapDefinition.oceanSize)
+            v(riverPadding, riverPadding),
+            v(this.width - riverPadding, this.height - riverPadding)
         );
 
-        this.rivers = packet.rivers = Array.from(
-            { length: mapDefinition.rivers ?? 0 },
-            () => {
-                const riverPoints: Vector[] = [];
+        this.rivers = [];
 
-                const padding = mapDefinition.oceanSize - 10;
-                let start: Vector;
+        while (this.rivers.length < (mapDefinition.rivers ?? 0)) {
+            let start: Vector;
+            const horizontal = randomBoolean();
+            const reverse = randomBoolean();
 
-                const horizontal = randomBoolean();
-                const reverse = randomBoolean();
-
-                const halfWidth = this.width / 2;
-                const halfHeight = this.height / 2;
-                const width = this.width - padding;
-                const height = this.height - padding;
-                if (horizontal) {
-                    const topHalf = randomFloat(padding, halfHeight);
-                    const bottomHalf = randomFloat(halfHeight, height);
-                    start = v(padding, reverse ? bottomHalf : topHalf);
-                } else {
-                    const leftHalf = randomFloat(padding, halfWidth);
-                    const rightHalf = randomFloat(halfWidth, width);
-                    start = v(reverse ? rightHalf : leftHalf, padding);
-                }
-
-                riverPoints.push(start);
-
-                const mainAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), start);
-                const maxDeviation = 0.5;
-
-                for (
-                    let i = 1, angle = mainAngle + randomGenerator.get(-maxDeviation, maxDeviation);
-                    i < 50;
-                    i++, angle = angle + randomGenerator.get(-maxDeviation, maxDeviation)
-                ) {
-                    riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
-
-                    if (!mapRect.isPointInside(riverPoints[i])) break;
-                }
-
-                const wide = !hasWideRiver && randomBoolean();
-                if (wide) hasWideRiver = true;
-                return new River(
-                    wide ? randomGenerator.get(50, 60) : randomGenerator.get(20, 30),
-                    wide ? 15 : 9,
-                    riverPoints
-                );
+            const halfWidth = this.width / 2;
+            const halfHeight = this.height / 2;
+            const width = this.width - riverPadding;
+            const height = this.height - riverPadding;
+            if (horizontal) {
+                const topHalf = randomFloat(riverPadding, halfHeight);
+                const bottomHalf = randomFloat(halfHeight, height);
+                start = v(riverPadding, reverse ? bottomHalf : topHalf);
+            } else {
+                const leftHalf = randomFloat(riverPadding, halfWidth);
+                const rightHalf = randomFloat(halfWidth, width);
+                start = v(reverse ? rightHalf : leftHalf, riverPadding);
             }
-        );
+
+            const startAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), start);
+            this.generateRiver(start,
+                startAngle,
+                hasWideRiver ? randomGenerator.get(50, 60) : randomGenerator.get(20, 30),
+                randomGenerator,
+                mapRect);
+            hasWideRiver = false;
+        }
+        this.packet.rivers = this.rivers;
 
         const terrain = generateTerrain(
             this.width,
@@ -196,6 +178,59 @@ export class Map {
 
         packet.serialize();
         this.buffer = packet.getBuffer();
+    }
+
+    generateRiver(startPos: Vector,
+        startAngle: number,
+        width: number,
+        randomGenerator: SeededRandom,
+        mapRect: RectangleHitbox): void {
+        const riverPoints: Vector[] = [];
+
+        const maxDeviation = 0.4;
+        const minDeviation = 0.2;
+
+        const minSplitDeviation = 0.5;
+        const maxSplitDeviation = 0.8;
+
+        riverPoints.push(startPos);
+
+        let angle = startAngle;
+
+        let distanceSinceLastSplit = 0;
+
+        for (let i = 1; i < 100; i++) {
+            distanceSinceLastSplit++;
+
+            angle = angle + randomGenerator.get(
+                -randomGenerator.get(minDeviation, maxDeviation),
+                randomGenerator.get(minDeviation, maxDeviation));
+
+            const pos = riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
+
+            if (width > 40 &&
+                distanceSinceLastSplit > 5 &&
+                distance(pos, v(this.width / 2, this.height / 2)) < 400 &&
+                Math.random() < 0.3) {
+                distanceSinceLastSplit = 0;
+
+                this.generateRiver(pos,
+                    angle + randomGenerator.get(
+                        -randomGenerator.get(minSplitDeviation, maxSplitDeviation),
+                        randomGenerator.get(minSplitDeviation, maxSplitDeviation)),
+                    width / 2,
+                    randomGenerator,
+                    mapRect);
+            }
+
+            if (!mapRect.isPointInside(pos)) break;
+        }
+
+        this.rivers.push(new River(
+            width,
+            width / 3,
+            riverPoints
+        ));
     }
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {

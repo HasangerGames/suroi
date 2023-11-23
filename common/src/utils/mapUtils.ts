@@ -1,5 +1,6 @@
+import { intersection } from "greiner-hormann";
 import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
-import { angleBetweenPoints, clamp, distanceSquared } from "./math";
+import { angleBetweenPoints, clamp } from "./math";
 import { SeededRandom } from "./random";
 import { v, vAdd, vClone, vRotate, vSub, type Vector } from "./vector";
 
@@ -131,24 +132,6 @@ export function generateTerrain(
                 )
             );
 
-            // TODO: ray cast to find an intersection position instead
-            const findClosestBeachPoint = (i: number): void => {
-                const pos = points[i];
-
-                let dist = Number.MAX_VALUE;
-                let closestPoint = v(0, 0);
-
-                for (const point of beach.points) {
-                    const newDist = distanceSquared(pos, point);
-                    if (newDist < dist) {
-                        closestPoint = point;
-                        dist = newDist;
-                    }
-                }
-
-                points[i] = closestPoint;
-            };
-            findClosestBeachPoint(0);
             // first loop, add points from start to end
             for (let i = 1, l = river.points.length - 1; i < l; i++) {
                 const prev = river.points[i - 1];
@@ -198,8 +181,7 @@ export function generateTerrain(
                     )
                 )
             );
-            findClosestBeachPoint(points.length - 2);
-            findClosestBeachPoint(points.length - 1);
+
             // second loop, same thing but reverse and with inverted point
             for (let l = river.points.length, i = l - 2; i > 0; i--) {
                 const prev = river.points[i - 1];
@@ -239,9 +221,8 @@ export function generateTerrain(
                     )
                 )
             );
-            findClosestBeachPoint(points.length - 1);
 
-            return new PolygonHitbox(...points);
+            return new PolygonHitbox(...intersection(points, beach.points)[0]);
         };
 
         generatedRivers.push({
