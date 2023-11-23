@@ -36,7 +36,7 @@ import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas, GasRender } from "./rendering/gas";
-import { Minimap } from "./rendering/map";
+import { Minimap } from "./rendering/minimap";
 import { type Tween } from "./utils/tween";
 import { GameConsole } from "./utils/console/gameConsole";
 import { setUpCommands } from "./utils/console/commands";
