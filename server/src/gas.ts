@@ -91,8 +91,8 @@ export class Gas {
                 if (Config.gas.mode === GasMode.Debug) {
                     this.newPosition = v(this.game.map.width / 2, this.game.map.height / 2);
                 } else {
-                    this.newPosition = randomPointInsideCircle(this.oldPosition, currentStage.oldRadius - currentStage.newRadius);
-                    const radius = currentStage.newRadius;
+                    this.newPosition = randomPointInsideCircle(this.oldPosition, (currentStage.oldRadius - currentStage.newRadius) * this.mapSize);
+                    const radius = currentStage.newRadius * this.mapSize;
                     this.newPosition.x = clamp(this.newPosition.x, radius, this.game.map.width - radius);
                     this.newPosition.y = clamp(this.newPosition.y, radius, this.game.map.height - radius);
                 }

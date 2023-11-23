@@ -125,7 +125,7 @@ export function setupUI(game: Game): void {
                 .replaceAll(/[\u2013\u2014]/g, "-")
                 // Strip out non-ASCII chars
                 // eslint-disable-next-line no-control-regex
-                .replace(/[^\x00-\xFF]/g, "")
+                .replace(/[^\x00-\x7F]/g, "")
         );
 
         game.console.setBuiltInCVar("cv_player_name", usernameField.val() as string);

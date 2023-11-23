@@ -1,11 +1,11 @@
 import { type Vector } from "../../common/src/utils/vector";
 
 export enum SpawnMode {
+    Normal,
     Random,
-    Fixed,
-    Center,
     Radius,
-    PoissonDisc
+    Fixed,
+    Center
 }
 export enum GasMode {
     Normal,
@@ -19,7 +19,11 @@ export const Config = {
 
     mapName: "singleObstacle",
 
+<<<<<<< HEAD
     spawn: { mode: SpawnMode.Center },
+=======
+    spawn: { mode: SpawnMode.Normal },
+>>>>>>> a8beec6aedca7c0aced5e690062b25e898145c16
 
     maxPlayersPerGame: 80,
     maxGames: 3,
@@ -62,28 +66,26 @@ export interface ConfigType {
     readonly mapName: string
 
     /**
-     * There are 4 spawn modes: Random, Fixed, Center, and Radius.
-     * SpawnMode.Random spawns the player at a random location, ignoring the position and radius.
-     * SpawnMode.Fixed always spawns the player at the exact position given, ignoring the radius.
-     * SpawnMode.Center always spawns the player in the center of the map.
+     * There are 5 spawn modes: Normal, Random, Radius, Fixed, and Center.
+     * SpawnMode.Normal spawns the player at a random location with a minimum distance between players.
+     * SpawnMode.Random spawns the player at a random location.
      * SpawnMode.Radius spawns the player at a random location within the circle with the given position and radius.
-     * SpawnMode.PoissonDisc spawns the player at a random location with a minimum distance between players
+     * SpawnMode.Fixed always spawns the player at the exact position given.
+     * SpawnMode.Center always spawns the player in the center of the map.
      */
     readonly spawn: {
+        readonly mode: SpawnMode.Normal
+    } | {
         readonly mode: SpawnMode.Random
-    } | {
-        readonly mode: SpawnMode.Fixed
-        readonly position: Vector
-    } | {
-        readonly mode: SpawnMode.Center
     } | {
         readonly mode: SpawnMode.Radius
         readonly position: Vector
         readonly radius: number
     } | {
-        readonly mode: SpawnMode.PoissonDisc
-        readonly radius: number
-        readonly maxTries: number
+        readonly mode: SpawnMode.Fixed
+        readonly position: Vector
+    } | {
+        readonly mode: SpawnMode.Center
     }
 
     /**
