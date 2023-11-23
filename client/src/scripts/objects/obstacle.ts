@@ -16,7 +16,6 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter } from "./particles";
 import { MODE } from "../../../../common/src/definitions/modes";
-import { type Sound } from "../utils/soundManager";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -24,7 +23,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
-    hitSound?: Sound;
     smokeEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
@@ -106,6 +104,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
                     firstRun = false;
                 };
+                
                 const playCrateOpenSound = (): void => {
                     if (this.destroyed) return;
                     this.playSound(`airdrop_crate_open`, 0.2, 96);
@@ -335,8 +334,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        if (this.hitSound) this.game.soundManager.stop(this.hitSound);
-        this.hitSound = this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
+        this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
