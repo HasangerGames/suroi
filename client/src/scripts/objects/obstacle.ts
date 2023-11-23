@@ -127,7 +127,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&
-                (("emitParticles" in definition && this.activated) ?? scaleFactor < 0.5);
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = lerp(150, 3000, scaleFactor);

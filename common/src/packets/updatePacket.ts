@@ -60,7 +60,9 @@ export interface PlayerData {
         weapons: Array<undefined | {
             definition: WeaponDefinition
             ammo?: number
-            kills?: number
+            stats?: {
+                kills?: number
+            }
         }>
         items: typeof DEFAULT_INVENTORY
         scope: ScopeDefinition
@@ -113,7 +115,7 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
                 }
 
                 if (weapon.definition.killstreak !== undefined) {
-                    stream.writeUint8(weapon.kills!);
+                    stream.writeBits(weapon.stats!.kills!, 7);
                 }
             }
         }
@@ -200,10 +202,10 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 
                 let kills: number | undefined;
                 if (definition.killstreak) {
-                    kills = stream.readUint8();
+                    kills = stream.readBits(7);
                 }
 
-                data.inventory.weapons[i] = { definition, ammo, kills };
+                data.inventory.weapons[i] = { definition, ammo, stats: { kills } };
             }
         }
     }
@@ -247,9 +249,7 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
                     Loots.writeToStream(stream, message.weaponUsed as LootDefinition);
                 }
 
-                const trackKillstreak = !isExplosion && "killstreak" in message.weaponUsed! && message.weaponUsed.killstreak === true;
-                stream.writeBoolean(trackKillstreak);
-                if (trackKillstreak) {
+                if ("killstreak" in message.weaponUsed! && message.weaponUsed.killstreak) {
                     stream.writeBits(message.killstreak!, 7);
                 }
             }
@@ -312,7 +312,7 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                     ? Explosions.readFromStream(stream)
                     : Loots.readFromStream(stream);
 
-                if (stream.readBoolean()) { // track killstreak
+                if ("killstreak" in message.weaponUsed && message.weaponUsed.killstreak) {
                     message.killstreak = stream.readBits(7);
                 }
             }
@@ -357,7 +357,7 @@ const UpdateFlags = {
     AliveCount: 1 << 11,
     KillFeedMessages: 1 << 12
 };
-const UPDATE_FLAGS_BITS = 13;
+const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
 export class UpdatePacket extends Packet {
     override readonly allocBytes = 1 << 16;
@@ -382,7 +382,7 @@ export class UpdatePacket extends Packet {
 
     explosions = new Set<{ definition: ExplosionDefinition, position: Vector }>();
 
-    emotes = new Set<{ definition: EmoteDefinition, playerId: number }>();
+    emotes = new Set<{ definition: EmoteDefinition, playerID: number }>();
 
     gas?: {
         state: GasState
@@ -489,7 +489,7 @@ export class UpdatePacket extends Packet {
             stream.writeBits(this.emotes.size, 7);
             for (const emote of this.emotes) {
                 Emotes.writeToStream(stream, emote.definition);
-                stream.writeObjectID(emote.playerId);
+                stream.writeObjectID(emote.playerID);
             }
         }
 
@@ -605,7 +605,7 @@ export class UpdatePacket extends Packet {
             for (let i = 0; i < count; i++) {
                 this.emotes.add({
                     definition: Emotes.readFromStream(stream),
-                    playerId: stream.readObjectID()
+                    playerID: stream.readObjectID()
                 });
             }
         }

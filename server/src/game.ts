@@ -208,7 +208,7 @@ export class Game {
             // First loop over players: Movement, animations, & actions
             for (const player of this.players) {
                 if (!player.dead) player.update();
-                player.thisTickdirty = JSON.parse(JSON.stringify(player.dirty));
+                player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
 
             // Second loop over players: calculate visible objects & send updates

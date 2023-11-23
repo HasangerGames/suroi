@@ -471,7 +471,7 @@ export class Game {
         }
 
         for (const emote of updateData.emotes) {
-            const player = this.objects.get(emote.playerId);
+            const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
                 player.emote(emote.definition);
             } else {

@@ -190,7 +190,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     };
 
     // save current tick dirty status to send to spectators
-    thisTickdirty!: this["dirty"];
+    thisTickDirty!: this["dirty"];
 
     readonly inventory = new Inventory(this);
 
@@ -551,7 +551,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             zoom: player.zoom,
             id: player.id,
             spectating: this.spectating !== undefined,
-            dirty: JSON.parse(JSON.stringify(player.thisTickdirty)),
+            dirty: JSON.parse(JSON.stringify(player.thisTickDirty)),
             inventory: player.inventory
         };
 
@@ -867,6 +867,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             if (source instanceof Player && source !== this) {
                 killFeedMessage.killerID = source.id;
                 killFeedMessage.kills = source.kills;
+                if (source.activeItem.definition.killstreak) {
+                    killFeedMessage.killstreak = source.activeItem.stats.kills;
+                }
             } else if (source === "gas") {
                 killFeedMessage.gasKill = true;
             }

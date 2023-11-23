@@ -19,7 +19,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         return {
             position: this.position,
             isNew: this.isNew,
-            playerId: this.player.id
+            playerID: this.player.id
         };
     }
 
