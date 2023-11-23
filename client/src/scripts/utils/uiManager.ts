@@ -272,11 +272,11 @@ export class UIManager {
             }
         }
 
-        if (activeWeapon?.kills === undefined) { // killstreaks
+        if (activeWeapon?.stats?.kills === undefined) { // killstreaks
             this.ui.killStreakIndicator.hide();
         } else {
             this.ui.killStreakIndicator.show();
-            this.ui.killStreakCounter.text(`Streak: ${activeWeapon?.kills}`);
+            this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
         for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {

@@ -80,7 +80,7 @@ export interface ObjectsNetData {
     //
     [ObjectCategory.DeathMarker]: {
         position: Vector
-        playerId: number
+        playerID: number
         isNew: boolean
     }
     //
@@ -277,7 +277,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data): void {
             stream.writePosition(data.position);
             stream.writeBoolean(data.isNew);
-            stream.writeObjectID(data.playerId);
+            stream.writeObjectID(data.playerID);
         },
         serializeFull(stream, data): void {
             this.serializePartial(stream, data);
@@ -285,12 +285,12 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializePartial(stream) {
             const position = stream.readPosition();
             const isNew = stream.readBoolean();
-            const playerId = stream.readObjectID();
+            const playerID = stream.readObjectID();
 
             return {
                 position,
                 isNew,
-                playerId
+                playerID
             };
         },
         deserializeFull(stream) {
