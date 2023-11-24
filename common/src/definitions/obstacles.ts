@@ -29,6 +29,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
+    readonly textureChangeDelay?: number
     readonly reflectBullets?: boolean
 
     readonly frames?: {
@@ -451,7 +452,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
         },
         {
             idString: "airdrop_crate",
-            name: "Airdrop Crate",
+            name: "Airdrop",
             material: "metal",
             health: 100,
             indestructible: true,
@@ -466,7 +467,6 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Activatable,
-            requiredItem: "fists",
             interactText: "Open",
             hasLoot: true,
             noResidue: true,
@@ -474,7 +474,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle",
                 opened: "airdrop_crate_opened"
             },
-            interactDelay: 2000,
+            textureChangeDelay: 1300,
             reflectBullets: true
         },
         {

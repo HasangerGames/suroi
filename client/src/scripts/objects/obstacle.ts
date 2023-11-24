@@ -104,19 +104,19 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
                     firstRun = false;
                 };
-                
-                const playCrateOpenSound = (): void => {
-                    if (this.destroyed) return;
+
+                const playAirdropSound = (): void => {
+                    if (this.destroyed || !firstRun) return;
                     this.playSound(`airdrop_crate_open`, 0.2, 96);
+                    firstRun = false;
                 };
 
-                playCrateOpenSound();
+                eval(`play${definition.name}Sound()`);
             }
 
             this.isDoor = definition.role === ObstacleSpecialRoles.Door;
 
             this.updateDoor(full, isNew);
-            this.openAirdrop(full, isNew);
         }
 
         const definition = this.definition;
@@ -193,12 +193,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
        this.image.setVisible(!(this.dead && !!definition.noResidue));
 
-        let texture;
+        let texture: string;
         if (this.activated) {
             texture = definition.frames?.opened ?? `${definition.idString}`
-        } else if (!this.dead) {
-            texture = definition.frames?.base ?? `${definition.idString}`
         } else {
+            texture = definition.frames?.base ?? `${definition.idString}`
+        } 
+
+        if (this.dead) {
             texture = definition.frames?.residue ?? `${definition.idString}_residue`
         }
 
@@ -206,8 +208,15 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
+        let textureFirstRun = !isNew;
+
         // Update the obstacle image
-        this.image.setFrame(texture);
+        if (definition.textureChangeDelay && textureFirstRun) {
+            setTimeout(() => { this.image.setFrame(texture) }, definition.textureChangeDelay)
+            textureFirstRun = false;
+        } else {
+            this.image.setFrame(texture);
+        }
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 
@@ -325,13 +334,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         }
     }
 
-    
-    openAirdrop(data: ObjectsNetData[ObjectCategory.Obstacle]["full"], isNew = false): void {
-        
-    }
-
     canInteract(player: Player): boolean {
-        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && player.activeItem.idString === this.definition.requiredItem && !this.activated));
+        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated));
     }
 
     hitEffect(position: Vector, angle: number): void {

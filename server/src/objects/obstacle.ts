@@ -222,7 +222,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     canInteract(player?: Player): boolean {
         return !this.dead && (
             (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (this.definition.role === ObstacleSpecialRoles.Activatable && player?.activeItem.definition.idString === this.definition.requiredItem && !this.activated)
+            (this.definition.role === ObstacleSpecialRoles.Activatable && (player?.activeItem.definition.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated)
         );
     }
 

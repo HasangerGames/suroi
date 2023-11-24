@@ -300,7 +300,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 8,
         genCallback(map) {
             map.generateObstacle("airdrop_crate", v(this.width / 2, this.height / 2), 0);
-            map.generateObstacle("airdrop_crate", v(this.width / 2 - 20, this.height / 2), 0);
+            map.generateObstacle("generator", v(this.width / 2 - 20, this.height / 2), 0);
         }
     },
     guns_test: {
