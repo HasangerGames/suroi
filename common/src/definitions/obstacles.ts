@@ -29,12 +29,14 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
+    readonly textureChangeDelay?: number
     readonly reflectBullets?: boolean
 
     readonly frames?: {
         readonly base?: string
         readonly particle?: string
         readonly residue?: string
+        readonly opened?: string
     }
 
     readonly spawnMode?: MapObjectSpawnMode
@@ -59,6 +61,7 @@ export type ObstacleDefinition = ObjectDefinition & {
 })) | {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly requiredItem?: string
+    readonly interactText?: string
     // obstacle will interact will all obstacles with that id string from the parent building
     readonly interactType?: string
     readonly interactDelay?: number
@@ -67,7 +70,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
 });
 
-export const Materials: string[] = [
+export const Materials = [
     "tree",
     "stone",
     "bush",
@@ -80,7 +83,7 @@ export const Materials: string[] = [
     "cardboard",
     "appliance",
     "large_refinery_barrel"
-];
+] as const;
 
 export enum RotationMode {
     /**
@@ -445,6 +448,33 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "metal_particle"
             },
+            reflectBullets: true
+        },
+        {
+            idString: "airdrop_crate",
+            name: "Airdrop",
+            material: "metal",
+            health: 100,
+            indestructible: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.8, 8.8)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Open",
+            hasLoot: true,
+            noResidue: true,
+            frames: {
+                particle: "metal_particle",
+                opened: "airdrop_crate_opened"
+            },
+            textureChangeDelay: 1300,
             reflectBullets: true
         },
         {
@@ -1600,6 +1630,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             emitParticles: true,
             requiredItem: "gas_can",
+            interactText: "Open",
             interactType: "vault_door",
             interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)

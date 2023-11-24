@@ -11,7 +11,12 @@ export type WeightedItem =
         readonly spawnSeparately?: boolean
         readonly weight: number
     };
-export interface LootTable { min: number, max: number, loot: WeightedItem[] | WeightedItem[][] }
+
+export interface LootTable {
+    readonly min: number
+    readonly max: number
+    readonly loot: WeightedItem[] | WeightedItem[][]
+}
 
 export const LootTables: Record<string, LootTable> = {
     gas_can: {
@@ -19,6 +24,15 @@ export const LootTables: Record<string, LootTable> = {
         max: 1,
         loot: [
             { item: "gas_can", weight: 1 }
+        ]
+    },
+    airdrop_crate: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "acr", weight: 1 },
+            { item: "barrett", weight: 1 },
+            { item: "m1_garand", weight: 1 }
         ]
     },
     ground_loot: {

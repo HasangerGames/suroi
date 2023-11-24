@@ -1,11 +1,12 @@
 import { FireMode } from "../constants";
-import { type BaseBulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
+import { type AmmoDefinition } from "./ammos";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
-    readonly ammoType: string
+    readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount?: number
     readonly capacity: number
     readonly reloadTime: number
@@ -19,7 +20,7 @@ export type GunDefinition = ItemDefinition & {
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
-    readonly moveSpread: number // Added to shotSpread if the player is moving
+    readonly moveSpread: number
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
@@ -50,7 +51,6 @@ export type GunDefinition = ItemDefinition & {
     }
 
     readonly noMuzzleFlash?: boolean
-
     readonly ballistics: BaseBulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -540,6 +540,41 @@ export const Guns: GunDefinition[] = [
             animationDuration: 100
         },
         image: { position: v(65, 0) },
+        casingParticles: {
+            position: v(3.5, 0.5)
+        },
+        capacity: 15,
+        reloadTime: 1.5,
+        ballistics: {
+            damage: 11.75,
+            obstacleMultiplier: 1,
+            speed: 0.14,
+            range: 120
+        }
+    },
+    {
+        idString: "radio",
+        name: "Radio",
+        itemType: ItemType.Gun,
+        ammoType: "9mm",
+        ammoSpawnAmount: 60,
+        fireDelay: 110,
+        switchDelay: 250,
+        speedMultiplier: 0.92,
+        recoilMultiplier: 0.8,
+        recoilDuration: 90,
+        fireMode: FireMode.Single,
+        shotSpread: 7,
+        moveSpread: 14,
+        length: 4.7,
+        fists: {
+            left: v(38, -35),
+            right: v(38, 35),
+            leftZIndex: 4,
+            rightZIndex: 4,
+            animationDuration: 100
+        },
+        image: { position: v(65, 35), },
         casingParticles: {
             position: v(3.5, 0.5)
         },
@@ -1157,7 +1192,10 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            range: 48
+            range: 48,
+            tracer: {
+                length: 0.7
+            }
         },
         wearerAttributes: {
             passive: {

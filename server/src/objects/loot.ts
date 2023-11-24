@@ -116,24 +116,26 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
             case ItemType.Healing:
             case ItemType.Ammo: {
                 const idString = this.definition.idString;
-                const currentCount = inventory.items[idString];
-                const maxCapacity = inventory.backpack?.maxCapacity[idString] ?? 0;
-                return currentCount + 1 <= maxCapacity;
+
+                return inventory.items[idString] + 1 <= (inventory.backpack?.maxCapacity[idString] ?? 0);
             }
             case ItemType.Melee: {
                 return this.definition !== inventory.getWeapon(2)?.definition;
             }
             case ItemType.Armor: {
-                switch (true) {
-                    case this.definition.armorType === ArmorType.Helmet: {
-                        return this.definition.level > (inventory.helmet?.level ?? 0);
+                let threshold = -Infinity;
+                switch (this.definition.armorType) {
+                    case ArmorType.Helmet: {
+                        threshold = inventory.helmet?.level ?? 0;
+                        break;
                     }
-                    case this.definition.armorType === ArmorType.Vest: {
-                        return this.definition.level > (inventory.vest?.level ?? 0);
+                    case ArmorType.Vest: {
+                        threshold = inventory.vest?.level ?? 0;
+                        break;
                     }
                 }
 
-                return false;
+                return this.definition.level > threshold;
             }
             case ItemType.Backpack: {
                 return this.definition.level > (inventory.backpack?.level ?? 0);

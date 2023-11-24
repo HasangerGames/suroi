@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/indent */
 import { Color } from "pixi.js";
-import { MODE } from "../../../../common/src/definitions/modes";
+import { type ColorKeys, MODE } from "../../../../common/src/definitions/modes";
 
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = true;
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),
@@ -16,12 +17,15 @@ export const HITBOX_COLORS = {
 };
 
 // Converts the strings in the mode definition to Color objects
-/* eslint-disable @typescript-eslint/indent */
-export const COLORS = Object.keys(MODE.colors)
-    .reduce<Record<string, Color>>((result, key) => {
-        result[key] = new Color(MODE.colors[key]);
-        return result;
-    }, {});
+export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
+    .reduce(
+        (result, key) => {
+            result[key] = new Color(MODE.colors[key]);
+            return result;
+        },
+        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter, @typescript-eslint/consistent-type-assertions
+        {} as Record<ColorKeys, Color>
+    );
 
 export const PIXI_SCALE = 20;
 

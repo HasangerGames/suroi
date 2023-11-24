@@ -48,7 +48,7 @@ export class Map {
     */
     readonly buffer: ArrayBuffer;
 
-    private readonly beachPadding;
+    private readonly _beachPadding;
 
     constructor(game: Game, mapName: string) {
         this.game = game;
@@ -65,22 +65,26 @@ export class Map {
         this.beachSize = packet.beachSize = mapDefinition.beachSize;
 
         // + 8 to account for the jagged points
-        const beachPadding = this.beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
+        const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
         const oceanSize = this.oceanSize + 8;
 
         this.beachHitbox = new ComplexHitbox(
             new RectangleHitbox(
                 v(this.width - beachPadding, oceanSize),
-                v(this.width - oceanSize, this.height - oceanSize)),
+                v(this.width - oceanSize, this.height - oceanSize)
+            ),
             new RectangleHitbox(
                 v(oceanSize, oceanSize),
-                v(this.width - beachPadding, beachPadding)),
+                v(this.width - beachPadding, beachPadding)
+            ),
             new RectangleHitbox(
                 v(oceanSize, oceanSize),
-                v(beachPadding, this.height - beachPadding)),
+                v(beachPadding, this.height - beachPadding)
+            ),
             new RectangleHitbox(
                 v(oceanSize, this.height - beachPadding),
-                v(this.width - beachPadding, this.height - oceanSize))
+                v(this.width - beachPadding, this.height - oceanSize)
+            )
         );
 
         this.terrainGrid = new TerrainGrid(this.width, this.height);
@@ -97,7 +101,8 @@ export class Map {
 
         this.rivers = [];
 
-        while (this.rivers.length < (mapDefinition.rivers ?? 0)) {
+        const riverCount = mapDefinition.rivers ?? 0;
+        while (this.rivers.length < riverCount) {
             let start: Vector;
             const horizontal = randomBoolean();
             const reverse = randomBoolean();
@@ -117,11 +122,13 @@ export class Map {
             }
 
             const startAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), start);
-            this.generateRiver(start,
+            this.generateRiver(
+                start,
                 startAngle,
                 hasWideRiver ? randomGenerator.get(50, 60) : randomGenerator.get(20, 30),
                 randomGenerator,
-                mapRect);
+                mapRect
+            );
             hasWideRiver = false;
         }
         this.packet.rivers = this.rivers;
@@ -180,11 +187,13 @@ export class Map {
         this.buffer = packet.getBuffer();
     }
 
-    generateRiver(startPos: Vector,
+    generateRiver(
+        startPos: Vector,
         startAngle: number,
         width: number,
         randomGenerator: SeededRandom,
-        mapRect: RectangleHitbox): void {
+        mapRect: RectangleHitbox
+    ): void {
         const riverPoints: Vector[] = [];
 
         const maxDeviation = 0.4;
@@ -204,7 +213,8 @@ export class Map {
 
             angle = angle + randomGenerator.get(
                 -randomGenerator.get(minDeviation, maxDeviation),
-                randomGenerator.get(minDeviation, maxDeviation));
+                randomGenerator.get(minDeviation, maxDeviation)
+            );
 
             const pos = riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
 
@@ -214,23 +224,27 @@ export class Map {
                 Math.random() < 0.3) {
                 distanceSinceLastSplit = 0;
 
-                this.generateRiver(pos,
+                this.generateRiver(
+                    pos,
                     angle + randomGenerator.get(
                         -randomGenerator.get(minSplitDeviation, maxSplitDeviation),
                         randomGenerator.get(minSplitDeviation, maxSplitDeviation)),
                     width / 2,
                     randomGenerator,
-                    mapRect);
+                    mapRect
+                );
             }
 
             if (!mapRect.isPointInside(pos)) break;
         }
 
-        this.rivers.push(new River(
-            width,
-            width / 3,
-            riverPoints
-        ));
+        this.rivers.push(
+            new River(
+                width,
+                width / 3,
+                riverPoints
+            )
+        );
     }
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
@@ -337,7 +351,7 @@ export class Map {
         }
 
         for (const decal of definition.decals ?? []) {
-            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.rotation ?? 0)));
+            this.game.grid.addObject(new Decal(this.game, Decals.reify(decal.id), addAdjust(position, decal.position, orientation), addOrientations(orientation, decal.orientation ?? 0)));
         }
 
         if (!definition.hideOnMap) this.packet.objects.push(building);
@@ -410,22 +424,25 @@ export class Map {
         return obstacle;
     }
 
-    generateLoots(table: string, count: number): void {
-        if (LootTables[table] === undefined) {
-            throw new Error(`Unknown Loot Table: ${table}`);
+    generateLoots(table: keyof typeof LootTables, count: number): void {
+        if (!(table in LootTables)) {
+            throw new Error(`Unknown loot table: '${table}'`);
         }
 
         for (let i = 0; i < count; i++) {
             const loot = getLootTableLoot(LootTables[table].loot.flat());
+            //                                                   ^^^^^^ dubious?
 
-            const position = this.getRandomPosition(new CircleHitbox(5), {
-                spawnMode: MapObjectSpawnMode.GrassAndSand
-            });
+            const position = this.getRandomPosition(
+                new CircleHitbox(5),
+                { spawnMode: MapObjectSpawnMode.GrassAndSand }
+            );
 
             if (!position) {
-                Logger.warn(`Failed to find valid position for loot ${loot[0].idString}`);
+                Logger.warn(`Failed to find valid position for loot generated from table '${table}'`);
                 continue;
             }
+
             for (const item of loot) {
                 this.game.addLoot(
                     item.idString,
@@ -470,10 +487,10 @@ export class Map {
         switch (spawnMode) {
             case MapObjectSpawnMode.Grass: {
                 getPosition = () => randomVector(
-                    this.beachPadding + width,
-                    this.width - this.beachPadding - width,
-                    this.beachPadding + height,
-                    this.height - this.beachPadding - height
+                    this._beachPadding + width,
+                    this.width - this._beachPadding - width,
+                    this._beachPadding + height,
+                    this.height - this._beachPadding - height
                 );
                 break;
             }
@@ -488,13 +505,11 @@ export class Map {
             }
             // TODO: evenly distribute objects based on river size
             case MapObjectSpawnMode.River: {
-                getPosition = () =>
-                    pickRandomInArray(this.riversHitboxes).water.randomPoint();
+                getPosition = () => pickRandomInArray(this.riversHitboxes).water.randomPoint();
                 break;
             }
             case MapObjectSpawnMode.RiverBank: {
-                getPosition = () =>
-                    pickRandomInArray(this.riversHitboxes).bank.randomPoint();
+                getPosition = () => pickRandomInArray(this.riversHitboxes).bank.randomPoint();
                 break;
             }
             case MapObjectSpawnMode.Beach: {
@@ -507,15 +522,17 @@ export class Map {
                     const beachRect = this.beachHitbox.hitboxes[orientation].clone() as RectangleHitbox;
                     switch (orientation) {
                         case 1:
-                        case 3:
+                        case 3: {
                             beachRect.min.x += width;
                             beachRect.max.x -= width;
                             break;
+                        }
                         case 0:
-                        case 2:
+                        case 2: {
                             beachRect.min.y += width;
                             beachRect.max.y -= height;
                             break;
+                        }
                     }
 
                     return beachRect.randomPoint();
@@ -561,7 +578,7 @@ export class Map {
             switch (spawnMode) {
                 case MapObjectSpawnMode.Grass:
                 case MapObjectSpawnMode.GrassAndSand:
-                case MapObjectSpawnMode.Beach:
+                case MapObjectSpawnMode.Beach: {
                     for (const river of this.riversHitboxes) {
                         if (spawnMode !== MapObjectSpawnMode.GrassAndSand &&
                             (river.bank.isPointInside(position) ||
@@ -578,6 +595,7 @@ export class Map {
                         }
                     }
                     break;
+                }
                 case MapObjectSpawnMode.RiverBank: {
                     for (const river of this.riversHitboxes) {
                         if (river.water.isPointInside(position) ||

@@ -42,6 +42,8 @@ export async function loadTextures(): Promise<void> {
 
         await spriteSheet.parse();
 
+        console.log(textures)
+
         for (const frame in spriteSheet.textures) {
             const frameName = frame.replace(/(\.svg|\.png)/, "");
             if (frameName in textures) console.warn(`Duplicated atlas frame key: ${frame}`);
