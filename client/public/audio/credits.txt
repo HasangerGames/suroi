@@ -79,6 +79,18 @@ Helmet pickup - "subircasco" from Pixabay: https://pixabay.com/sound-effects/sub
 Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pixabay.com/sound-effects/cloth-flapping-on-a-clothesline-thickly-6025/
 Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
+Airdrops:
+  Ping - "Notification Sound" from Pixabay: https://pixabay.com/sound-effects/notification-sound-7062/
+  Plane - "Aeroplane Passing Close" from Pixabay: https://pixabay.com/sound-effects/aeroplane-passing-close-40921/
+  Fall:
+    "Cloth Flaps" by Sauron974: https://freesound.org/people/Sauron974/sounds/188733/
+    TODO Add fall sound credit
+  Land - "Vine boom" from Pixabay: https://pixabay.com/sound-effects/vine-boom-162668/
+  Unlock:
+    TODO Add first sound credit
+    "Metal Door Slam - Sound Effect for editing" by Sound Library: https://www.youtube.com/watch?v=IalewYDjffY
+    "Air Pressure Release" by Sound Effects for Video Editing: https://www.youtube.com/watch?v=lVEmBU-U9h4
+
 Footsteps:
   Grass, wood, stone - Katloo
   Metal - "Metal Footsteps" from Pixabay: https://pixabay.com/sound-effects/metal-footsteps-14727/

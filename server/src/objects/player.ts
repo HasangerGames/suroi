@@ -622,6 +622,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
+        // airdrops
+        packet.airdrops = this.game.airdrops;
+
         // serialize and send update packet
         this.sendPacket(packet);
 

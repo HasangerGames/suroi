@@ -1,6 +1,6 @@
 import { Graphics } from "pixi.js";
 import { GasState, TICKS_PER_SECOND, ZIndexes } from "../../../../common/src/constants";
-import { clamp, lerp, vecLerp } from "../../../../common/src/utils/math";
+import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";
 import { v, type Vector, vMul, vClone } from "../../../../common/src/utils/vector";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { type UpdatePacket } from "../../../../common/src/packets/updatePacket";
@@ -111,7 +111,7 @@ export class Gas {
             if (this.state === GasState.Advancing) {
                 this.lastPosition = vClone(this.position);
                 this.lastRadius = this.radius;
-                this.position = vecLerp(this.oldPosition, this.newPosition, gasPercentage);
+                this.position = vLerp(this.oldPosition, this.newPosition, gasPercentage);
                 this.radius = lerp(this.oldRadius, this.newRadius, gasPercentage);
                 this.lastUpdateTime = Date.now();
             }
@@ -159,7 +159,7 @@ export class GasRender {
 
         if (gas.state === GasState.Advancing) {
             const interpFactor = clamp((Date.now() - gas.lastUpdateTime) / TICKS_PER_SECOND, 0, 1);
-            position = vecLerp(gas.lastPosition, gas.position, interpFactor);
+            position = vLerp(gas.lastPosition, gas.position, interpFactor);
             radius = lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {
             position = gas.position;

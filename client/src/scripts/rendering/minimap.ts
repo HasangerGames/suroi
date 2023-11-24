@@ -3,7 +3,7 @@ import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, is
 import { GRID_SIZE, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
-import { addAdjust } from "../../../../common/src/utils/math";
+import { addAdjust, lerp } from "../../../../common/src/utils/math";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
@@ -45,6 +45,9 @@ export class Minimap {
     readonly placesContainer = new Container();
     terrainGrid: TerrainGrid;
 
+    readonly pings = new Set<Ping>();
+    pingGraphics = new Graphics();
+
     constructor(game: Game) {
         this.game = game;
         game.pixi.stage.addChild(this.container);
@@ -58,9 +61,9 @@ export class Minimap {
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
 
-        if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMiniMap();
+        if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
-        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.indicator).sortChildren();
+        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.pingGraphics, this.indicator).sortChildren();
 
         this.borderContainer.on("click", e => {
             if (!this.game.inputManager.isMobile) return;
@@ -340,6 +343,30 @@ export class Minimap {
     }
 
     update(): void {
+        if (this.pings.size > 0) {
+            this.pingGraphics.clear();
+            this.pingGraphics.lineStyle({
+                color: 0x00ffff,
+                width: 5,
+                cap: LINE_CAP.ROUND
+            });
+            const now = Date.now();
+            for (const ping of this.pings) {
+                if (!ping.initialized) {
+                    this.objectsContainer.addChild(ping.image);
+                    ping.initialized = true;
+                }
+                const radius = lerp(0, 2048, (now - ping.startTime) / 7000);
+                if (radius >= 2048) {
+                    this.pings.delete(ping);
+                    setTimeout(() => { ping.image.destroy(); }, 5000);
+                    continue;
+                }
+                this.pingGraphics.arc(ping.position.x, ping.position.y, radius, 0, Math.PI * 2);
+                this.pingGraphics.endFill();
+            }
+        }
+
         this.gasRender.update(this.game.gas);
         // only re-render gas line and circle if something changed
         if (
@@ -481,7 +508,7 @@ export class Minimap {
         this.container.alpha = this.game.console.getBuiltInCVar(this.expanded ? "cv_map_transparency" : "cv_minimap_transparency");
     }
 
-    toggleMiniMap(noSwitchToggle = false): void {
+    toggleMinimap(noSwitchToggle = false): void {
         this.visible = !this.visible;
 
         this.switchToSmallMap();
@@ -491,5 +518,19 @@ export class Minimap {
         if (!noSwitchToggle) {
             $("#toggle-hide-minimap").prop("checked", !this.visible);
         }
+    }
+}
+
+export class Ping {
+    position: Vector;
+    startTime: number;
+    image: SuroiSprite;
+    initialized: boolean;
+
+    constructor(position: Vector) {
+        this.position = position;
+        this.startTime = Date.now();
+        this.image = new SuroiSprite("airdrop_ping").setVPos(position);
+        this.initialized = false;
     }
 }

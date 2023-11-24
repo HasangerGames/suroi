@@ -1,7 +1,7 @@
 import { BaseTexture, Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpriteSheetJson, Assets } from "pixi.js";
 import { Buildings } from "../../../../common/src/definitions/buildings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
-import { type Vector, vMul } from "../../../../common/src/utils/vector";
+import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
 declare const ATLAS_HASH: string;
@@ -95,6 +95,11 @@ export class SuroiSprite extends Sprite {
 
     setRotation(rotation?: number): SuroiSprite {
         this.rotation = rotation ?? 0;
+        return this;
+    }
+
+    setScale(scale?: number): SuroiSprite {
+        this.scale = v(scale ?? 1, scale ?? 1);
         return this;
     }
 

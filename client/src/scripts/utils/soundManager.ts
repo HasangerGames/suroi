@@ -167,6 +167,26 @@ export class SoundManager {
             [
                 "kill_leader_dead",
                 "audio/sfx/kill_leader_dead"
+            ],
+            [
+                "airdrop_ping",
+                "audio/sfx/airdrop/airdrop_ping"
+            ],
+            [
+                "airdrop_plane",
+                "audio/sfx/airdrop/airdrop_plane"
+            ],
+            [
+                "airdrop_fall",
+                "audio/sfx/airdrop/airdrop_fall"
+            ],
+            [
+                "airdrop_unlock",
+                "audio/sfx/airdrop/airdrop_unlock"
+            ],
+            [
+                "airdrop_land",
+                "audio/sfx/airdrop/airdrop_land"
             ]
         ];
 

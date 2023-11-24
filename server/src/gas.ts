@@ -1,5 +1,5 @@
 import { GasState } from "../../common/src/constants";
-import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
+import { clamp, distanceSquared, lerp, vLerp } from "../../common/src/utils/math";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
@@ -62,7 +62,7 @@ export class Gas {
             this.ticksSinceLastDamage = 0;
             this.doDamage = true;
             if (this.state === GasState.Advancing) {
-                this.currentPosition = vecLerp(this.oldPosition, this.newPosition, this.percentage);
+                this.currentPosition = vLerp(this.oldPosition, this.newPosition, this.percentage);
                 this.currentRadius = lerp(this.oldRadius, this.newRadius, this.percentage);
             }
         }

@@ -19,7 +19,7 @@ import { Config, SpawnMode } from "./config";
 import { Map } from "./map";
 import { endGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
-import { randomPointInsideCircle } from "../../common/src/utils/random";
+import { randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
@@ -90,6 +90,11 @@ export class Game {
      * All kill feed messages this tick
      */
     readonly killFeedMessages = new Set<KillFeedMessage>();
+
+    /**
+     * All airdrops this tick
+     */
+    airdrops = new Set<{ position: Vector, direction: number }>();
 
     private _started = false;
     allowJoin = false;
@@ -211,6 +216,11 @@ export class Game {
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
             }
 
+            if (this.emotes.size > 0) {
+                const position = randomVector(0, 1620, 0, 1620); // angleBetweenPoints(position, [...this.livingPlayers][0].position)
+                this.airdrops.add({ position: [...this.livingPlayers][0].position, direction: randomRotation() });
+            }
+
             // Second loop over players: calculate visible objects & send updates
             for (const player of this.connectedPlayers) {
                 if (!player.joined) continue;
@@ -227,6 +237,7 @@ export class Game {
             this.newPlayers.clear();
             this.deletedPlayers.clear();
             this.killFeedMessages.clear();
+            this.airdrops.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
