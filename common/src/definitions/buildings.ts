@@ -35,8 +35,8 @@ interface BuildingDecal {
 
 export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
-    readonly ceilingHitbox?: Hitbox
     readonly scopeHitbox?: Hitbox
+    readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
 
@@ -77,15 +77,12 @@ export interface BuildingDefinition extends ObjectDefinition {
 
 function makeContainer(id: number, tint: number, wallsID: number, open: "open2" | "open1" | "closed", damaged?: boolean): BuildingDefinition {
     let spawnHitbox: Hitbox;
-    let ceilingHitbox: Hitbox | undefined;
     switch (open) {
         case "open2":
             spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
-            ceilingHitbox = RectangleHitbox.fromRect(14, 37.9);
             break;
         case "open1":
             spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 7));
-            ceilingHitbox = RectangleHitbox.fromRect(14, 32.9, v(0, 5));
             break;
         case "closed":
         default:
@@ -97,8 +94,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         idString: `container_${id}`,
         name: `Container ${id}`,
         spawnHitbox,
-        ceilingHitbox,
-        scopeHitbox: RectangleHitbox.fromRect(13.9, 27.9),
+        scopeHitbox: RectangleHitbox.fromRect(13.9, 27),
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
@@ -155,7 +151,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "porta_potty",
         name: "Porta Potty",
         spawnHitbox: RectangleHitbox.fromRect(20, 32),
-        ceilingHitbox: RectangleHitbox.fromRect(14, 18),
         scopeHitbox: RectangleHitbox.fromRect(14, 18),
         floorImages: [{
             key: "porta_potty_floor",
@@ -216,14 +211,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(41, 51, v(31.50, -14.50)), // Garage
             RectangleHitbox.fromRect(68, 68, v(-18, -6)), // Main House
             RectangleHitbox.fromRect(28, 17, v(-31, 31.50)) // Doorstep
-        ),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(34.50, 42, v(29.25, -15.50)), // Garage
-            RectangleHitbox.fromRect(60.50, 56, v(-17.25, -8.50)), // Main House
-            RectangleHitbox.fromRect(21, 16, v(-31.50, 27)), // Doorstep
-            new CircleHitbox(5, v(-1.5, -37)), // Living room window
-            new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
-            new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(34.50, 42, v(29.25, -15.50)), // Garage
@@ -472,7 +459,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "warehouse",
         name: "Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(60, 88),
-        ceilingHitbox: RectangleHitbox.fromRect(40, 80),
         scopeHitbox: RectangleHitbox.fromRect(40, 70),
         floorImages: [{
             key: "warehouse_floor",
@@ -591,11 +577,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_warehouse",
         name: "Port Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(60.00, 120.00),
-            RectangleHitbox.fromRect(12, 30, v(29.3, -30.3)),
-            RectangleHitbox.fromRect(12, 30, v(29.3, 30.4))
-        ),
         scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
         floorImages: [{
             key: "port_warehouse_floor",
@@ -768,12 +749,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(33.50, 72, v(-32.75, 0)),
             RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
-        ),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(33.50, 72, v(-32.75, 0)),
-            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
-            RectangleHitbox.fromRect(13, 7, v(28.50, -3.50)), // door
-            new CircleHitbox(5, v(-16, 18.5)) // window
         ),
         floorImages: [
             {
@@ -1055,14 +1030,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "small_house",
         name: "Small House",
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
-            new CircleHitbox(5, v(-7.2, -29.5)),
-            new CircleHitbox(5, v(-31, 7.5)),
-            new CircleHitbox(5, v(31, 15.4)),
-            new CircleHitbox(5, v(31, -15.9))
-        ),
-        scopeHitbox: RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
+        scopeHitbox: RectangleHitbox.fromRect(60, 56),
         floorImages: [{
             key: "house_floor_small",
             position: v(0, 0)
@@ -1268,11 +1236,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_shed",
         name: "Port Shed",
         spawnHitbox: RectangleHitbox.fromRect(27, 37, v(-0.8, 0)),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
-            new CircleHitbox(5, v(9.45, -2.6))
-        ),
-        scopeHitbox: RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
+        scopeHitbox: RectangleHitbox.fromRect(20, 27.5, v(-0.8, -1.5)),
         floorImages: [{
             key: "port_shed_floor",
             position: v(0, 0)
@@ -1334,18 +1298,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
-            RectangleHitbox.fromRect(10, 13, v(35, -73)),
-            RectangleHitbox.fromRect(10, 19, v(-17, -63)),
-
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2)),
-
-            new CircleHitbox(5, v(-17.3, -50.3)),
-            new CircleHitbox(5, v(-7.4, -50.3)),
-            new CircleHitbox(5, v(5.4, -50.3)),
-            new CircleHitbox(5, v(15.3, -50.3))
-        ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
             RectangleHitbox.fromRect(60, 25, v(8, 93.2))

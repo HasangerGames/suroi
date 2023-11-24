@@ -1914,7 +1914,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new ComplexHitbox(
                 RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
-                RectangleHitbox.fromRect(1.75, 29.5, v(10.23, -1.7)), // Right wall
+                RectangleHitbox.fromRect(1.75, 9.2, v(10.23, -11.9)), // Right wall above window
+                RectangleHitbox.fromRect(1.75, 10.7, v(10.23, 7.6)), // Right wall below window
                 RectangleHitbox.fromRect(20, 1.75, v(0, -15.56)), // Top wall
                 RectangleHitbox.fromRect(9, 1.75, v(-5.25, 12.19)) // Bottom wall
             ),
