@@ -131,8 +131,8 @@ export interface ConfigType {
          * If the limit is exceeded, the IP is temporarily banned.
          */
         readonly maxJoinAttempts?: {
-            count: number
-            duration: number
+            readonly count: number
+            readonly duration: number
         }
 
         /**
@@ -166,7 +166,10 @@ export interface ConfigType {
      * To use roles, add `?password=PASSWORD&role=ROLE` to the URL, for example: `http://127.0.0.1:3000/?password=dev&role=dev`
      * Dev cheats can be enabled using the `lobbyClearing` option: `http://127.0.0.1:3000/?password=dev&role=dev&lobbyClearing=true`
      */
-    readonly roles: Record<string, { password: string, noPrivileges?: boolean }>
+    readonly roles: Record<string, {
+        readonly password: string
+        readonly noPrivileges?: boolean
+    }>
 
     /**
      * Disables the lobbyClearing option if set to true

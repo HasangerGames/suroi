@@ -1,11 +1,12 @@
 import { FireMode } from "../constants";
-import { type BaseBulletDefinition, type ItemDefinition, ItemType } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
+import { type AmmoDefinition } from "./ammos";
 
 export type GunDefinition = ItemDefinition & {
     readonly itemType: ItemType.Gun
 
-    readonly ammoType: string
+    readonly ammoType: ReferenceTo<AmmoDefinition>
     readonly ammoSpawnAmount?: number
     readonly capacity: number
     readonly reloadTime: number
@@ -19,7 +20,7 @@ export type GunDefinition = ItemDefinition & {
     readonly recoilMultiplier: number
     readonly recoilDuration: number
     readonly shotSpread: number
-    readonly moveSpread: number // Added to shotSpread if the player is moving
+    readonly moveSpread: number
     readonly jitterRadius?: number // Jitters the bullet position, mainly for shotguns
     readonly consistentPatterning?: boolean
 
@@ -50,7 +51,6 @@ export type GunDefinition = ItemDefinition & {
     }
 
     readonly noMuzzleFlash?: boolean
-
     readonly ballistics: BaseBulletDefinition
 } & ({
     readonly fireMode: FireMode.Auto | FireMode.Single
@@ -1157,7 +1157,10 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            range: 48
+            range: 48,
+            tracer: {
+                length: 0.7
+            }
         },
         wearerAttributes: {
             passive: {
