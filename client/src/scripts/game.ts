@@ -11,7 +11,6 @@ import {
 } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { distanceSquared } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -36,7 +35,7 @@ import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas, GasRender } from "./rendering/gas";
-import { Minimap } from "./rendering/map";
+import { Minimap } from "./rendering/minimap";
 import { type Tween } from "./utils/tween";
 import { GameConsole } from "./utils/console/gameConsole";
 import { setUpCommands } from "./utils/console/commands";
@@ -50,6 +49,7 @@ import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { distanceSquared } from "../../../common/src/utils/math";
 
 export class Game {
     socket!: WebSocket;
@@ -254,6 +254,14 @@ export class Game {
                         case ItemType.Scope:
                             soundID = "scope_pickup";
                             break;
+                        case ItemType.Armor:
+                            //fixme idString check
+                            if (packet.item.idString.includes("helmet")) soundID = "helmet_pickup";
+                            else soundID = "vest_pickup";
+                            break;
+                        case ItemType.Backpack:
+                            soundID = "backpack_pickup";
+                            break;
                         default:
                             soundID = "pickup";
                             break;
@@ -274,7 +282,7 @@ export class Game {
 
         this.socket.onclose = (): void => {
             enablePlayButton();
-            if (!this.gameOver || this.spectating) {
+            if (!this.gameOver) {
                 if (this.gameStarted) {
                     $("#splash-ui").fadeIn();
                     $("#splash-server-message-text").html("Connection lost.");
@@ -471,7 +479,7 @@ export class Game {
         }
 
         for (const emote of updateData.emotes) {
-            const player = this.objects.get(emote.playerId);
+            const player = this.objects.get(emote.playerID);
             if (player instanceof Player) {
                 player.emote(emote.definition);
             } else {
@@ -517,14 +525,9 @@ export class Game {
      */
     private _bindChangeAcknowledged = false;
 
-    private _skipUpdate = true;
-
     tick(): void {
         if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
         this.inputManager.update();
-
-        this._skipUpdate = !this._skipUpdate;
-        if (this._skipUpdate) return;
 
         const player = this.activePlayer;
         if (!player) return;
@@ -554,7 +557,7 @@ export class Game {
                     uninteractable.object = object;
                 }
             } else if (object instanceof Building && !object.dead) {
-                object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
+                object.toggleCeiling();
             }
         }
 

@@ -1,11 +1,23 @@
+/* eslint-disable @typescript-eslint/indent */
+import { type ReferenceTo } from "../utils/objectDefinitions";
+import { type ObstacleDefinition } from "./obstacles";
+
 const mode = "fall";
 
+export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
+
 export interface ModeDefinition {
-    idString: string
-    colors: Record<string, string>
-    reskin?: {
-        suffix: string
-        obstacles: Record<string, { defaultParticles?: boolean, defaultResidue?: boolean }>
+    readonly idString: string
+    readonly colors: Record<ColorKeys, string>
+    readonly reskin?: {
+        readonly suffix: string
+        readonly obstacles: Record<
+            ReferenceTo<ObstacleDefinition>,
+            {
+                readonly defaultParticles?: boolean
+                readonly defaultResidue?: boolean
+            }
+        >
     }
 }
 
@@ -36,7 +48,10 @@ export const Modes: ModeDefinition[] = [
             obstacles: {
                 oak_tree: {},
                 birch_tree: {},
-                blueberry_bush: { defaultParticles: true, defaultResidue: true }
+                blueberry_bush: {
+                    defaultParticles: true,
+                    defaultResidue: true
+                }
             }
         }
     },

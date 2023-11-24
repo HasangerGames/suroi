@@ -30,7 +30,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     readonly variation: Variation;
 
-    readonly spawnHitbox: Hitbox;
+    spawnHitbox: Hitbox;
 
     readonly loot: LootItem[] = [];
     readonly lootSpawnOffset?: Vector;
@@ -304,6 +304,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             this.door.offset = 0;
             this.hitbox = this.door.closedHitbox.clone();
         }
+        this.spawnHitbox = this.hitbox;
         this.game.grid.addObject(this);
     }
 

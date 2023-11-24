@@ -10,9 +10,16 @@ export interface AmmoDefinition extends ItemDefinition {
      * - It can always be picked up
      */
     readonly ephemeral?: boolean
+    readonly hideUnlessPresent?: boolean
 }
 
 export const Ammos = new ObjectDefinitions<AmmoDefinition>([
+    {
+        idString: "127mm",
+        name: "12.7mm",
+        itemType: ItemType.Ammo,
+        hideUnlessPresent: true
+    },
     {
         idString: "12g",
         name: "12 gauge",
@@ -38,12 +45,7 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         idString: "50ae",
         name: ".50 AE",
         itemType: ItemType.Ammo
-    },
-    {
-        idString: "127mm",
-        name: "12.7mm",
-        itemType: ItemType.Ammo
-    },*/
+    }, */
 
     // Ephemeral ammo types below
 

@@ -122,20 +122,21 @@ export class Gas {
 }
 
 export class GasRender {
-    graphics: Graphics;
+    private readonly _graphics: Graphics;
+    public get graphics(): Graphics { return this._graphics; }
 
-    scale: number;
+    private readonly _scale: number;
 
     constructor(scale: number) {
-        this.scale = scale;
+        this._scale = scale;
 
-        this.graphics = new Graphics();
+        this._graphics = new Graphics();
 
-        this.graphics.zIndex = ZIndexes.Gas;
+        this._graphics.zIndex = ZIndexes.Gas;
 
         // Generate a giant planar mesh with a tiny circular hole in
         // the center to act as the gas overlay
-        this.graphics.clear()
+        this._graphics.clear()
             .beginFill(COLORS.gas)
             .moveTo(-kOverdraw, -kOverdraw)
             .lineTo(kOverdraw, -kOverdraw)
@@ -144,13 +145,15 @@ export class GasRender {
             .closePath()
             .beginHole()
             .moveTo(0, 1);
+
         for (let i = 1; i < kSegments; i++) {
             const theta = i / kSegments;
             const s = Math.sin(2 * Math.PI * theta);
             const c = Math.cos(2 * Math.PI * theta);
-            this.graphics.lineTo(s, c);
+            this._graphics.lineTo(s, c);
         }
-        this.graphics.endHole()
+
+        this._graphics.endHole()
             .closePath()
             .endFill();
     }
@@ -168,15 +171,15 @@ export class GasRender {
             radius = gas.radius;
         }
 
-        const center = vMul(position, this.scale);
+        const center = vMul(position, this._scale);
         // Once the hole gets small enough, just fill the entire
         // screen with some random part of the geometry
-        let rad = radius * this.scale;
+        let rad = radius * this._scale;
         if (rad < 0.1) {
             rad = 1.0;
             center.x += 0.5 * kOverdraw;
         }
-        this.graphics.position.copyFrom(center);
-        this.graphics.scale.set(rad);
+        this._graphics.position.copyFrom(center);
+        this._graphics.scale.set(rad);
     }
 }

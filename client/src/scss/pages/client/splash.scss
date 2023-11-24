@@ -176,7 +176,7 @@
         border-bottom: 2px solid $orange_bg;
         box-shadow: inset 0 -2px $orange_bg;
 
-        & > .pulsating-circle {
+        &>.pulsating-circle {
             display: block !important;
         }
     }
@@ -237,7 +237,8 @@
     }
 }
 
-#splash-news, #splash-customize {
+#splash-news,
+#splash-customize {
     height: 312px;
 }
 
@@ -266,7 +267,7 @@
         margin-bottom: 15px;
     }
 
-    > div {
+    >div {
         height: 240px;
         overflow-y: auto;
         padding-right: 10px;
@@ -339,7 +340,8 @@
             transform: rotate(90deg);
         }
 
-        #skin-left-fist, #skin-right-fist {
+        #skin-left-fist,
+        #skin-right-fist {
             position: absolute;
             top: 96px;
             width: 50px;
@@ -441,6 +443,7 @@
             cursor: pointer;
 
             background-color: rgba($color: #000000, $alpha: 0.8);
+
             &:hover {
                 filter: brightness(80%);
             }

@@ -114,7 +114,7 @@ export interface BaseBulletDefinition {
     readonly damage: number
     readonly obstacleMultiplier: number
     readonly speed: number
-    readonly maxDistance: number
+    readonly range: number
     readonly penetration?: {
         readonly players?: boolean
         readonly obstacles?: boolean
@@ -132,6 +132,7 @@ export interface BaseBulletDefinition {
     readonly shrapnel?: boolean
     readonly onHitExplosion?: ReferenceTo<ExplosionDefinition>
     readonly goToMouse?: boolean
+    readonly lastShotFX?: boolean
 }
 
 export interface WearerAttributes {

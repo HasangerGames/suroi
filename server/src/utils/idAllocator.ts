@@ -84,7 +84,7 @@ export class IDAllocator {
      */
     give(value: number): void {
         if (value % 1 !== 0 || value < 0 || value > this._max) {
-            throw new RangeError(`Cannot give back a value thats not in range (value: ${value})`);
+            throw new RangeError(`Cannot give back a value that is not in range (value: ${value})`);
         }
 
         const node: ListNode = {

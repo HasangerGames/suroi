@@ -29,14 +29,14 @@ interface SubBuilding {
 interface BuildingDecal {
     readonly id: string
     readonly position: Vector
-    readonly rotation?: Orientation
+    readonly orientation?: Orientation
     readonly scale?: number
 }
 
 export interface BuildingDefinition extends ObjectDefinition {
     readonly spawnHitbox: Hitbox
-    readonly ceilingHitbox?: Hitbox
     readonly scopeHitbox?: Hitbox
+    readonly ceilingHitbox?: Hitbox
     readonly hideOnMap?: boolean
     readonly spawnMode?: MapObjectSpawnMode
 
@@ -77,15 +77,12 @@ export interface BuildingDefinition extends ObjectDefinition {
 
 function makeContainer(id: number, tint: number, wallsID: number, open: "open2" | "open1" | "closed", damaged?: boolean): BuildingDefinition {
     let spawnHitbox: Hitbox;
-    let ceilingHitbox: Hitbox | undefined;
     switch (open) {
         case "open2":
             spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
-            ceilingHitbox = RectangleHitbox.fromRect(14, 37.9);
             break;
         case "open1":
             spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 7));
-            ceilingHitbox = RectangleHitbox.fromRect(14, 32.9, v(0, 5));
             break;
         case "closed":
         default:
@@ -97,8 +94,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         idString: `container_${id}`,
         name: `Container ${id}`,
         spawnHitbox,
-        ceilingHitbox,
-        scopeHitbox: RectangleHitbox.fromRect(13.9, 27.9),
+        scopeHitbox: RectangleHitbox.fromRect(13.9, 27),
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
@@ -155,7 +151,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "porta_potty",
         name: "Porta Potty",
         spawnHitbox: RectangleHitbox.fromRect(20, 32),
-        ceilingHitbox: RectangleHitbox.fromRect(14, 18),
         scopeHitbox: RectangleHitbox.fromRect(14, 18),
         floorImages: [{
             key: "porta_potty_floor",
@@ -216,14 +211,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(41, 51, v(31.50, -14.50)), // Garage
             RectangleHitbox.fromRect(68, 68, v(-18, -6)), // Main House
             RectangleHitbox.fromRect(28, 17, v(-31, 31.50)) // Doorstep
-        ),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(34.50, 42, v(29.25, -15.50)), // Garage
-            RectangleHitbox.fromRect(60.50, 56, v(-17.25, -8.50)), // Main House
-            RectangleHitbox.fromRect(21, 16, v(-31.50, 27)), // Doorstep
-            new CircleHitbox(5, v(-1.5, -37)), // Living room window
-            new CircleHitbox(5, v(-28.5, -37)), // Bedroom window
-            new CircleHitbox(5, v(-47.5, -8.5)) // Dining Room Window
         ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(34.50, 42, v(29.25, -15.50)), // Garage
@@ -472,7 +459,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "warehouse",
         name: "Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(60, 88),
-        ceilingHitbox: RectangleHitbox.fromRect(40, 80),
         scopeHitbox: RectangleHitbox.fromRect(40, 70),
         floorImages: [{
             key: "warehouse_floor",
@@ -591,11 +577,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_warehouse",
         name: "Port Warehouse",
         spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(60.00, 120.00),
-            RectangleHitbox.fromRect(12, 30, v(29.3, -30.3)),
-            RectangleHitbox.fromRect(12, 30, v(29.3, 30.4))
-        ),
         scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
         floorImages: [{
             key: "port_warehouse_floor",
@@ -768,12 +749,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(33.50, 72, v(-32.75, 0)),
             RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
-        ),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(33.50, 72, v(-32.75, 0)),
-            RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25)),
-            RectangleHitbox.fromRect(13, 7, v(28.50, -3.50)), // door
-            new CircleHitbox(5, v(-16, 18.5)) // window
         ),
         floorImages: [
             {
@@ -1055,14 +1030,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "small_house",
         name: "Small House",
         spawnHitbox: RectangleHitbox.fromRect(80, 80),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
-            new CircleHitbox(5, v(-7.2, -29.5)),
-            new CircleHitbox(5, v(-31, 7.5)),
-            new CircleHitbox(5, v(31, 15.4)),
-            new CircleHitbox(5, v(31, -15.9))
-        ),
-        scopeHitbox: RectangleHitbox.fromRect(62, 58, v(0, -0.3)),
+        scopeHitbox: RectangleHitbox.fromRect(60, 56),
         floorImages: [{
             key: "house_floor_small",
             position: v(0, 0)
@@ -1125,7 +1093,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 2
             }, // Bathroom Toilet
             {
-                idString: "toilet",
+                idString: { toilet: 2, used_toilet: 1 },
                 position: v(3.6, 23.5),
                 rotation: 2
             }, // Front Door
@@ -1268,11 +1236,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "port_shed",
         name: "Port Shed",
         spawnHitbox: RectangleHitbox.fromRect(27, 37, v(-0.8, 0)),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
-            new CircleHitbox(5, v(9.45, -2.6))
-        ),
-        scopeHitbox: RectangleHitbox.fromRect(20, 28.1, v(-0.8, -1)),
+        scopeHitbox: RectangleHitbox.fromRect(20, 27.5, v(-0.8, -1.5)),
         floorImages: [{
             key: "port_shed_floor",
             position: v(0, 0)
@@ -1334,18 +1298,6 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
-        ceilingHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
-            RectangleHitbox.fromRect(10, 13, v(35, -73)),
-            RectangleHitbox.fromRect(10, 19, v(-17, -63)),
-
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2)),
-
-            new CircleHitbox(5, v(-17.3, -50.3)),
-            new CircleHitbox(5, v(-7.4, -50.3)),
-            new CircleHitbox(5, v(5.4, -50.3)),
-            new CircleHitbox(5, v(15.3, -50.3))
-        ),
         scopeHitbox: new ComplexHitbox(
             RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
             RectangleHitbox.fromRect(60, 25, v(8, 93.2))
@@ -1437,8 +1389,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(-15, 20),
-                orientation: 0
+                position: v(-15, 20)
             },
             {
                 idString: randomContainer1,
@@ -1452,8 +1403,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(16, -22),
-                orientation: 0
+                position: v(16, -22)
             },
             {
                 idString: randomContainer1,
@@ -1467,13 +1417,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(16, -110),
-                orientation: 0
+                position: v(16, -110)
             },
             {
                 idString: randomContainer1,
-                position: v(31, -110),
-                orientation: 0
+                position: v(31, -110)
             }
         ],
         lootSpawners: [{
@@ -1534,191 +1482,167 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Group 1
             {
                 id: "container_mark",
-                position: v(37.52, -184.72),
-                rotation: 0
+                position: v(37.52, -184.72)
             },
             {
                 id: "container_mark",
-                position: v(51.98, -184.73),
-                rotation: 0
+                position: v(51.98, -184.73)
             },
             {
                 id: "container_mark",
-                position: v(37.83, -157.25),
-                rotation: 0
+                position: v(37.83, -157.25)
             },
             {
                 id: "container_mark",
-                position: v(52.23, -157.25),
-                rotation: 0
+                position: v(52.23, -157.25)
             },
             // Group 2
             {
                 id: "container_mark",
-                position: v(98.38, -184.09),
-                rotation: 0
+                position: v(98.38, -184.09)
             },
             {
                 id: "container_mark",
-                position: v(112.84, -184.09),
-                rotation: 0
+                position: v(112.84, -184.09)
             },
             {
                 id: "container_mark",
-                position: v(98.69, -156.62),
-                rotation: 0
+                position: v(98.69, -156.62)
             },
             {
                 id: "container_mark",
-                position: v(113.09, -156.62),
-                rotation: 0
+                position: v(113.09, -156.62)
             },
             // Group 3
             {
                 id: "container_mark",
                 position: v(45.04, -110.4),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(45.04, -96.9),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(45.04, -83.32),
-                rotation: 1
+                orientation: 1
             },
             // Group 4
             {
                 id: "container_mark",
                 position: v(110, -110.4),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(110, -96.9),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(110, -83.32),
-                rotation: 1
+                orientation: 1
             },
             // Group 5
             {
                 id: "container_mark",
-                position: v(6.21, -45.74),
-                rotation: 0
+                position: v(6.21, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(20.57, -45.74),
-                rotation: 0
+                position: v(20.57, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(35.03, -45.74),
-                rotation: 0
+                position: v(35.03, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(6.21, -18.22),
-                rotation: 0
+                position: v(6.21, -18.22)
             },
             {
                 id: "container_mark",
-                position: v(20.88, -18.22),
-                rotation: 0
+                position: v(20.88, -18.22)
             },
             {
                 id: "container_mark",
-                position: v(35.28, -18.22),
-                rotation: 0
+                position: v(35.28, -18.22)
             },
             // Group 6
             {
                 id: "container_mark",
-                position: v(104.35, -18.42),
-                rotation: 0
+                position: v(104.35, -18.42)
             },
             {
                 id: "container_mark",
-                position: v(119.01, -18.42),
-                rotation: 0
+                position: v(119.01, -18.42)
             },
             // Group 7
             {
                 id: "container_mark",
-                position: v(116.82, 83),
-                rotation: 0
+                position: v(116.82, 83)
             },
             {
                 id: "container_mark",
-                position: v(131.21, 83),
-                rotation: 0
+                position: v(131.21, 83)
             },
             {
                 id: "container_mark",
-                position: v(116.82, 110.65),
-                rotation: 0
+                position: v(116.82, 110.65)
             },
             {
                 id: "container_mark",
-                position: v(131.21, 110.65),
-                rotation: 0
+                position: v(131.21, 110.65)
             },
             // Group 8
             {
                 id: "container_mark",
-                position: v(116.79, 150.27),
-                rotation: 0
+                position: v(116.79, 150.27)
             },
             {
                 id: "container_mark",
-                position: v(131.18, 150.27),
-                rotation: 0
+                position: v(131.18, 150.27)
             },
             {
                 id: "container_mark",
-                position: v(116.59, 178.02),
-                rotation: 0
+                position: v(116.59, 178.02)
             },
             {
                 id: "container_mark",
-                position: v(130.97, 178.02),
-                rotation: 0
+                position: v(130.97, 178.02)
             },
             // Group 9
             {
                 id: "container_mark",
                 position: v(-128.55, 25.76),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 40.31),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 55.18),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 55.18),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 40.44),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 25.67),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "floor_oil_01",
@@ -1915,13 +1839,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(37.83, -157.25),
-                orientation: 0
+                position: v(37.83, -157.25)
             },
             {
                 idString: randomContainer2,
-                position: v(51.98, -157.25),
-                orientation: 0
+                position: v(51.98, -157.25)
             },
             // Group 2
             {
@@ -1936,13 +1858,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(113.09, -156.62),
-                orientation: 0
+                position: v(113.09, -156.62)
             },
             {
                 idString: randomContainer2,
-                position: v(98.38, -156.62),
-                orientation: 0
+                position: v(98.38, -156.62)
             },
             // Group 3
             {
@@ -1994,29 +1914,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(6.21, -18.22),
-                orientation: 0
+                position: v(6.21, -18.22)
             },
             {
                 idString: randomContainer2,
-                position: v(20.88, -18.22),
-                orientation: 0
+                position: v(20.88, -18.22)
             },
             {
                 idString: randomContainer2,
-                position: v(35.28, -18.22),
-                orientation: 0
+                position: v(35.28, -18.22)
             },
             // Group 6
             {
                 idString: randomContainer2,
-                position: v(104.35, -18.42),
-                orientation: 0
+                position: v(104.35, -18.42)
             },
             {
                 idString: randomContainer2,
-                position: v(119.01, -18.42),
-                orientation: 0
+                position: v(119.01, -18.42)
             },
             // Group 7
             {
@@ -2031,13 +1946,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(116.82, 110.65),
-                orientation: 0
+                position: v(116.82, 110.65)
             },
             {
                 idString: randomContainer2,
-                position: v(131.21, 110.65),
-                orientation: 0
+                position: v(131.21, 110.65)
             },
 
             // Group 8
@@ -2053,13 +1966,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(130.97, 178.02),
-                orientation: 0
+                position: v(130.97, 178.02)
             },
             {
                 idString: randomContainer2,
-                position: v(116.59, 178.02),
-                orientation: 0
+                position: v(116.59, 178.02)
             },
             // Group 9
             {
@@ -2100,9 +2011,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-68, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: v(-125, 0), orientation: 0 },
-            { idString: "ship", position: v(80, -50), orientation: 0 },
-            { idString: "crane", position: v(-25, -95), orientation: 0 }
+            { idString: "port", position: v(-125, 0) },
+            { idString: "ship", position: v(80, -50) },
+            { idString: "crane", position: v(-25, -95) }
         ]
     }
 

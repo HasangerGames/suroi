@@ -129,6 +129,18 @@ export class SoundManager {
                 "audio/sfx/pickup/scope_pickup"
             ],
             [
+                "helmet_pickup",
+                "audio/sfx/pickup/helmet_pickup"
+            ],
+            [
+                "vest_pickup",
+                "audio/sfx/pickup/vest_pickup"
+            ],
+            [
+                "backpack_pickup",
+                "audio/sfx/pickup/backpack_pickup"
+            ],
+            [
                 "gauze_pickup",
                 "audio/sfx/pickup/gauze_pickup"
             ],
@@ -168,6 +180,7 @@ export class SoundManager {
             soundsToLoad.push([`${gun.idString}_fire`, `audio/sfx/weapons/${gun.idString}_fire`]);
             soundsToLoad.push([`${gun.idString}_switch`, `audio/sfx/weapons/${gun.idString}_switch`]);
             soundsToLoad.push([`${gun.idString}_reload`, `audio/sfx/weapons/${gun.idString}_reload`]);
+            if (gun.ballistics.lastShotFX) soundsToLoad.push([`${gun.idString}_last_shot`, `audio/sfx/weapons/${gun.idString}_last_shot`]);
         }
 
         for (const healingItem of HealingItems) {

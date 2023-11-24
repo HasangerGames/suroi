@@ -16,6 +16,7 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter } from "./particles";
 import { MODE } from "../../../../common/src/definitions/modes";
+import { type Sound } from "../utils/soundManager";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -23,6 +24,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
+    hitSound?: Sound;
     smokeEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
@@ -118,7 +120,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         if (this.smokeEmitter) {
             this.smokeEmitter.active = !this.dead &&
-                (("emitParticles" in definition && this.activated) ?? scaleFactor < 0.5);
+                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                (("emitParticles" in definition && this.activated) || scaleFactor < 0.5);
 
             if ("emitParticles" in definition) this.smokeEmitter.delay = 300;
             else this.smokeEmitter.delay = lerp(150, 3000, scaleFactor);
@@ -314,7 +317,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
+        if (this.hitSound) this.game.soundManager.stop(this.hitSound);
+        this.hitSound = this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,

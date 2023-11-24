@@ -683,9 +683,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 break;
             }
-            case AnimationType.Gun: {
+            case AnimationType.Gun:
+            case AnimationType.LastShot: {
                 const weaponDef = this.activeItem as GunDefinition;
                 this.playSound(`${weaponDef.idString}_fire`, 0.5);
+                if (anim === AnimationType.LastShot) this.playSound(`${weaponDef.idString}_last_shot`, 0.5);
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     this.updateFistsPosition(false);

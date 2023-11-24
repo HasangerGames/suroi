@@ -8,7 +8,10 @@ export interface HealingItemDefinition extends ItemDefinition {
     readonly useText: string
 }
 
-export enum HealType { Health, Adrenaline }
+export enum HealType {
+    Health,
+    Adrenaline
+}
 
 export const HealingItems = new ObjectDefinitions<HealingItemDefinition>([
     {

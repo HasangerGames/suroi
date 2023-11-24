@@ -86,7 +86,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        owner.animation.type = AnimationType.Gun;
+        owner.animation.type = definition.ballistics.lastShotFX && this.ammo === 1 ? AnimationType.LastShot : AnimationType.Gun;
         owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
 

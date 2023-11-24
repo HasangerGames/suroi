@@ -1,4 +1,4 @@
-import { type BulletDefiniton, Bullets } from "../definitions/bullets";
+import { type BulletDefinition, Bullets } from "../definitions/bullets";
 import { type Hitbox } from "./hitbox";
 import { clamp, distanceSquared } from "./math";
 import { type ReifiableDef } from "./objectDefinitions";
@@ -8,7 +8,7 @@ import { v, vAdd, vClone, vMul, type Vector } from "./vector";
 export interface BulletOptions {
     readonly position: Vector
     readonly rotation: number
-    readonly source: ReifiableDef<BulletDefiniton>
+    readonly source: ReifiableDef<BulletDefinition>
     readonly sourceID: number
     readonly reflectionCount?: number
     readonly variance?: number
@@ -52,7 +52,7 @@ export class BaseBullet {
 
     dead = false;
 
-    readonly definition: BulletDefiniton;
+    readonly definition: BulletDefinition;
 
     readonly canHitShooter: boolean;
 
@@ -66,10 +66,10 @@ export class BaseBullet {
 
         this.definition = Bullets.reify(options.source);
 
-        let range = this.definition.maxDistance;
+        let range = this.definition.range;
 
         if (this.definition.goToMouse && options.clipDistance !== undefined) {
-            range = clamp(options.clipDistance, 0, this.definition.maxDistance);
+            range = clamp(options.clipDistance, 0, this.definition.range);
         }
         this.maxDistance = (range * (this.rangeVariance + 1)) / (this.reflectionCount + 1);
         this.maxDistanceSquared = this.maxDistance ** 2;
@@ -135,7 +135,7 @@ export class BaseBullet {
         stream.writeObjectID(this.sourceID);
 
         if (this.definition.goToMouse) {
-            stream.writeFloat(this.maxDistance, 0, this.definition.maxDistance, 16);
+            stream.writeFloat(this.maxDistance, 0, this.definition.range, 16);
         }
     }
 
@@ -150,7 +150,7 @@ export class BaseBullet {
         let clipDistance: number | undefined;
 
         if (source.goToMouse) {
-            clipDistance = stream.readFloat(0, source.maxDistance, 16);
+            clipDistance = stream.readFloat(0, source.range, 16);
         }
 
         return {

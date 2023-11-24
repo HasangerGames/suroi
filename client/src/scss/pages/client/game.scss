@@ -64,7 +64,7 @@
     top: 10px;
     left: 10px;
 
-    & > div {
+    &>div {
         margin-bottom: 10px;
     }
 
@@ -72,7 +72,7 @@
         top: 5px;
         left: 5px;
 
-        & > div {
+        &>div {
             margin-bottom: 5px;
         }
     }
@@ -347,7 +347,7 @@
     @include text-shadow;
 }
 
-#interact-key.active + #interact-text {
+#interact-key.active+#interact-text {
     position: relative;
     top: 3px;
 }
@@ -478,9 +478,17 @@
     }
 
     @keyframes flashing {
-        0% {background-color: #000000;}
-        50% {background-color: #ff0000;}
-        100% {background-color: #000000;}
+        0% {
+            background-color: #000000;
+        }
+
+        50% {
+            background-color: #ff0000;
+        }
+
+        100% {
+            background-color: #000000;
+        }
     }
 
 }
@@ -600,7 +608,7 @@
     flex-wrap: wrap;
 
     @media screen and (max-width: $screen_large) {
-        & > button {
+        &>button {
             height: fit-content;
             padding: 8px 12px;
             font-size: 14px;
@@ -667,11 +675,6 @@
     justify-content: space-between;
     gap: 10px;
 
-    @media screen and (max-width: $screen_large) {
-        flex-direction: column;
-        gap: 4px;
-    }
-
     .inventory-slot {
         background: $transparent_bg;
         width: 110px;
@@ -680,15 +683,7 @@
         font-size: 15px;
 
         &.item-slot {
-            width: auto !important;
-            height: auto !important;
             padding: 0 8px 0 8px;
-
-            @media screen and (max-width: $screen_large) {
-                padding: 3px 5px 3px 5px;
-                border-radius: 5px;
-                justify-content: left;
-            }
         }
 
         @media screen and (max-width: $screen_large) {
@@ -822,15 +817,13 @@
     position: absolute;
     bottom: 10px;
     left: 10px;
-
-    .inventory-container {
-        margin-top: 3px;
-    }
+    display: flex;
+    gap: 10px;
+    flex-direction: row-reverse;
 
     .item-slot {
-        height: 40px !important;
-        width: 95px !important;
-        justify-content: start;
+        height: 40px;
+        width: 100px;
 
         &.full .item-count {
             color: $orange;
@@ -841,6 +834,12 @@
         &.has-item {
             opacity: 1;
         }
+
+        @media screen and (max-width: $screen_large) {
+            height: 30px;
+            width: 75px;
+            border-radius: 8px;
+        }
     }
 
     .item-count {
@@ -848,73 +847,29 @@
         margin-left: auto;
     }
 
-    #healing-items-container {
+    .inventory-container {
+        flex-direction: column;
+        justify-content: end;
+
         .item-image {
+            width: 40px;
             height: 30px;
+            @include drop-shadow;
+
+            @media screen and (max-width: $screen_large) {
+                width: 30px;
+                height: 20px;
+            }
         }
 
         .inventory-slot .item-tooltip {
             width: max-content;
             max-width: 120px;
-            bottom: 50px;
-            left: -12.5%;
+            left: 110px;
         }
 
-        .inventory-slot:first-child .item-tooltip {
-            left: 0;
-        }
-    }
-
-    .item-image {
-        width: 40px;
-        height: 40px;
-        @include drop-shadow;
-
-        @media screen and (max-width: $screen_large) {
-            width: 30px;
-            height: 20px !important;
-        }
-    }
-
-    @media screen and (max-width: $screen_large) {
-        bottom: 5px;
-        left: 5px;
-        display: flex;
-        gap: 2px;
-
-        .inventory-container {
-            gap: 2px;
-        }
-
-        #healing-items-container {
-            order: 1;
-            margin-right: 3px;
-
-            .item-slot {
-                width: 62px !important;
-            }
-
-            .inventory-slot .item-tooltip {
-                bottom: 0;
-                left: 74px !important;
-            }
-        }
-
-        .item-slot {
-            height: 25px !important;
-            width: 70px !important;
-            justify-content: start;
-        }
-    }
-
-    @media screen and (max-width: 550px) {
-        flex-direction: column;
-        gap: 0;
-
-        #healing-items-container {
-            .inventory-slot .item-tooltip {
-                left: 80px !important;
-            }
+        .inventory-slot:last-child .item-tooltip {
+            bottom: 3px;
         }
     }
 }
@@ -1062,7 +1017,7 @@
     //noinspection CssUnknownTarget
     background-image: url("/assets/img/misc/emote_wheel.svg");
 
-    & > div {
+    &>div {
         width: 84px;
         height: 84px;
         position: absolute;
@@ -1227,13 +1182,7 @@
 }
 
 #joysticks-containers {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                        ssupported by Chrome, Edge, Opera and Firefox */
+    user-select: none;
     width: 100vw;
     height: 100vh;
     position: absolute;

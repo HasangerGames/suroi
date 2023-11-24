@@ -2,17 +2,18 @@ import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } f
 import { Explosions } from "./explosions";
 import { Guns } from "./guns";
 
-export type BulletDefiniton = BaseBulletDefinition & ObjectDefinition;
+export type BulletDefinition = BaseBulletDefinition & ObjectDefinition;
 
 const bulletColors: Record<string, number> = {
     "9mm": 0xffff80,
     "12g": 0xffc8c8,
     "556mm": 0x80ff80,
     "762mm": 0x80ffff,
+    "127mm": 0x408000,
     shrapnel: 0x1d1d1d
 };
 
-export const Bullets = new ObjectDefinitions<BulletDefiniton>([
+export const Bullets = new ObjectDefinitions<BulletDefinition>([
     ...Guns,
     ...Explosions.definitions
 ].map(def => {
@@ -28,7 +29,7 @@ export const Bullets = new ObjectDefinitions<BulletDefiniton>([
         }
     }
 
-    const bullet: BulletDefiniton = {
+    return {
         idString: `${def.idString}_bullet`,
         name: `${def.name} Bullet`,
         ...def.ballistics,
@@ -37,6 +38,4 @@ export const Bullets = new ObjectDefinitions<BulletDefiniton>([
             ...def.ballistics.tracer
         }
     };
-
-    return bullet;
 }));

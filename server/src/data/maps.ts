@@ -1,10 +1,10 @@
-import { Buildings } from "../../../common/src/definitions/buildings";
+import { type BuildingDefinition, Buildings } from "../../../common/src/definitions/buildings";
 import { Loots } from "../../../common/src/definitions/loots";
-import { Obstacles } from "../../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { random } from "../../../common/src/utils/random";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { pickRandomInArray, random } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 import { Guns } from "../../../common/src/definitions/guns";
@@ -13,6 +13,7 @@ import { type PlayerContainer } from "../server";
 import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { Skins } from "../../../common/src/definitions/skins";
+import { type LootTables } from "./lootTables";
 
 interface MapDefinition {
     readonly width: number
@@ -20,10 +21,10 @@ interface MapDefinition {
     readonly oceanSize: number
     readonly beachSize: number
     readonly rivers?: number
-    readonly buildings?: Record<string, number>
-    readonly obstacles?: Record<string, number>
 
-    readonly loots?: Record<string, number>
+    readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
+    readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly loots?: Record<keyof typeof LootTables, number>
 
     readonly places?: Array<{
         readonly name: string
@@ -332,8 +333,9 @@ export const Maps: Record<string, MapDefinition> = {
                 for (let y = 0; y < 256; y += 16) {
                     const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
                     player.disableInvulnerability();
-                    player.loadout.skin = Skins.definitions[random(0, Skins.definitions.length - 1)];
+                    player.loadout.skin = pickRandomInArray(Skins.definitions);
                     map.game.grid.addObject(player);
+                    if (random(0, 1) === 1) map.generateObstacle("barrel", v(x, y));
                 }
             }
         }

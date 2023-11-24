@@ -5,7 +5,7 @@ Most sound effects edited by Henry Sanger
 
 Guns:
   M3K switch - Dablux
-  M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302 -> https://www.fesliyanstudios.com/play-mp3/7548
+  M3K reload - "Pushing Magazine Into Gun" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/gun-reloading-302
 
   AUG reload & switch: Dablux
 
@@ -25,6 +25,9 @@ Guns:
   USAS-12 fire - "Small Explosion" from Pixabay: https://pixabay.com/sound-effects/small-explosion-103931/
   USAS-12 switch & explosion - "Cannon Fire" from Pixabay: https://pixabay.com/sound-effects/cannon-fire-161072/
   USAS-12 reload - Yeet120
+
+  ACR fire - "Beefy Suppressed Bushmaster ACR 5.56 Close Gunshot A Sound Effect" by Fesliyan Studios: https://www.fesliyanstudios.com/royalty-free-sound-effects-download/bushmaster-acr-5.56-combat-rifle-298
+  ACR reload & switch - "Bushmaster ACR remake" by Tyrannotitan Fan: https://gamebanana.com/sounds/68939
 
   All other gun sound effects - Surviv.io Custom Sounds & Textures Resource Pack: https://github.com/humphreygaming/survivcustomsoundsandtextures
 
@@ -68,9 +71,13 @@ Gauze:
   Use - hasanger
   Pickup - 1092384
 
-Pills:
+Tablets:
   Use - hasanger
   Pickup - hasanger and 1092384
+
+Helmet pickup - "subircasco" from Pixabay: https://pixabay.com/sound-effects/subircasco-44661/
+Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pixabay.com/sound-effects/cloth-flapping-on-a-clothesline-thickly-6025/
+Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
 Footsteps:
   Grass, wood, stone - Katloo

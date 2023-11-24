@@ -11,9 +11,9 @@ export const Config = {
 
 export interface ConfigType {
     readonly regions: Record<string, {
-        name: string
-        address: string
-        https: boolean
+        readonly name: string
+        readonly address: string
+        readonly https: boolean
     }>
     readonly defaultRegion: string
 }
