@@ -16,7 +16,7 @@ export interface MeleeDefinition extends ItemDefinition {
     readonly maxTargets: number
     readonly fists: {
         readonly animationDuration: number
-        readonly randomFist: boolean
+        readonly randomFist?: boolean
         readonly left: Vector
         readonly right: Vector
         readonly useLeft: Vector
@@ -68,7 +68,6 @@ export const Melees: MeleeDefinition[] = [
         maxTargets: 1,
         fists: {
             animationDuration: 150,
-            randomFist: false,
             left: v(55, -15),
             right: v(45, 0),
             useLeft: v(28, -15),
@@ -95,7 +94,6 @@ export const Melees: MeleeDefinition[] = [
         maxTargets: 1,
         fists: {
             animationDuration: 100,
-            randomFist: false,
             left: v(38, -35),
             right: v(38, 35),
             useLeft: v(38, -35),
@@ -123,7 +121,6 @@ export const Melees: MeleeDefinition[] = [
         maxTargets: 1,
         fists: {
             animationDuration: 150,
-            randomFist: false,
             left: v(35, -25),
             right: v(35, 5),
             useLeft: v(35, -15),
@@ -157,7 +154,6 @@ export const Melees: MeleeDefinition[] = [
         },
         fists: {
             animationDuration: 125,
-            randomFist: false,
             left: v(38, -35),
             right: v(38, 35),
             useLeft: v(38, -35),
@@ -179,7 +175,6 @@ export const Melees: MeleeDefinition[] = [
         maxTargets: Infinity,
         fists: {
             animationDuration: 150,
-            randomFist: false,
             left: v(38, -35),
             right: v(38, 35),
             useLeft: v(38, -35),

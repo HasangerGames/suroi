@@ -222,11 +222,11 @@ app.ws("/play", {
         //
         const ip = getIP(res, req);
         if (Config.protection) {
-            const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections;
+            const maxSimultaneousConnections = Config.protection.maxSimultaneousConnections ?? Infinity;
             const maxJoinAttempts = Config.protection.maxJoinAttempts;
             const exceededRateLimits =
-                (maxSimultaneousConnections !== undefined && simultaneousConnections[ip] >= maxSimultaneousConnections) ||
-                (maxJoinAttempts !== undefined && connectionAttempts[ip] >= maxJoinAttempts.count);
+                (simultaneousConnections[ip] >= maxSimultaneousConnections) ||
+                (connectionAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity));
 
             if (
                 punishments[ip] ||
@@ -241,6 +241,7 @@ app.ws("/play", {
                     simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
                     Logger.log(`${simultaneousConnections[ip]}/${maxSimultaneousConnections} simultaneous connections: ${ip}`);
                 }
+
                 if (maxJoinAttempts) {
                     connectionAttempts[ip] = (connectionAttempts[ip] ?? 0) + 1;
                     Logger.log(`${connectionAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);

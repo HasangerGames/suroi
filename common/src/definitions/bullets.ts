@@ -29,7 +29,7 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>([
         }
     }
 
-    const bullet: BulletDefinition = {
+    return {
         idString: `${def.idString}_bullet`,
         name: `${def.name} Bullet`,
         ...def.ballistics,
@@ -38,6 +38,4 @@ export const Bullets = new ObjectDefinitions<BulletDefinition>([
             ...def.ballistics.tracer
         }
     };
-
-    return bullet;
 }));

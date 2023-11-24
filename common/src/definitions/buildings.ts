@@ -29,7 +29,7 @@ interface SubBuilding {
 interface BuildingDecal {
     readonly id: string
     readonly position: Vector
-    readonly rotation?: Orientation
+    readonly orientation?: Orientation
     readonly scale?: number
 }
 
@@ -1389,8 +1389,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(-15, 20),
-                orientation: 0
+                position: v(-15, 20)
             },
             {
                 idString: randomContainer1,
@@ -1404,8 +1403,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(16, -22),
-                orientation: 0
+                position: v(16, -22)
             },
             {
                 idString: randomContainer1,
@@ -1419,13 +1417,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer1,
-                position: v(16, -110),
-                orientation: 0
+                position: v(16, -110)
             },
             {
                 idString: randomContainer1,
-                position: v(31, -110),
-                orientation: 0
+                position: v(31, -110)
             }
         ],
         lootSpawners: [{
@@ -1486,191 +1482,167 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             // Group 1
             {
                 id: "container_mark",
-                position: v(37.52, -184.72),
-                rotation: 0
+                position: v(37.52, -184.72)
             },
             {
                 id: "container_mark",
-                position: v(51.98, -184.73),
-                rotation: 0
+                position: v(51.98, -184.73)
             },
             {
                 id: "container_mark",
-                position: v(37.83, -157.25),
-                rotation: 0
+                position: v(37.83, -157.25)
             },
             {
                 id: "container_mark",
-                position: v(52.23, -157.25),
-                rotation: 0
+                position: v(52.23, -157.25)
             },
             // Group 2
             {
                 id: "container_mark",
-                position: v(98.38, -184.09),
-                rotation: 0
+                position: v(98.38, -184.09)
             },
             {
                 id: "container_mark",
-                position: v(112.84, -184.09),
-                rotation: 0
+                position: v(112.84, -184.09)
             },
             {
                 id: "container_mark",
-                position: v(98.69, -156.62),
-                rotation: 0
+                position: v(98.69, -156.62)
             },
             {
                 id: "container_mark",
-                position: v(113.09, -156.62),
-                rotation: 0
+                position: v(113.09, -156.62)
             },
             // Group 3
             {
                 id: "container_mark",
                 position: v(45.04, -110.4),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(45.04, -96.9),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(45.04, -83.32),
-                rotation: 1
+                orientation: 1
             },
             // Group 4
             {
                 id: "container_mark",
                 position: v(110, -110.4),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(110, -96.9),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(110, -83.32),
-                rotation: 1
+                orientation: 1
             },
             // Group 5
             {
                 id: "container_mark",
-                position: v(6.21, -45.74),
-                rotation: 0
+                position: v(6.21, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(20.57, -45.74),
-                rotation: 0
+                position: v(20.57, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(35.03, -45.74),
-                rotation: 0
+                position: v(35.03, -45.74)
             },
             {
                 id: "container_mark",
-                position: v(6.21, -18.22),
-                rotation: 0
+                position: v(6.21, -18.22)
             },
             {
                 id: "container_mark",
-                position: v(20.88, -18.22),
-                rotation: 0
+                position: v(20.88, -18.22)
             },
             {
                 id: "container_mark",
-                position: v(35.28, -18.22),
-                rotation: 0
+                position: v(35.28, -18.22)
             },
             // Group 6
             {
                 id: "container_mark",
-                position: v(104.35, -18.42),
-                rotation: 0
+                position: v(104.35, -18.42)
             },
             {
                 id: "container_mark",
-                position: v(119.01, -18.42),
-                rotation: 0
+                position: v(119.01, -18.42)
             },
             // Group 7
             {
                 id: "container_mark",
-                position: v(116.82, 83),
-                rotation: 0
+                position: v(116.82, 83)
             },
             {
                 id: "container_mark",
-                position: v(131.21, 83),
-                rotation: 0
+                position: v(131.21, 83)
             },
             {
                 id: "container_mark",
-                position: v(116.82, 110.65),
-                rotation: 0
+                position: v(116.82, 110.65)
             },
             {
                 id: "container_mark",
-                position: v(131.21, 110.65),
-                rotation: 0
+                position: v(131.21, 110.65)
             },
             // Group 8
             {
                 id: "container_mark",
-                position: v(116.79, 150.27),
-                rotation: 0
+                position: v(116.79, 150.27)
             },
             {
                 id: "container_mark",
-                position: v(131.18, 150.27),
-                rotation: 0
+                position: v(131.18, 150.27)
             },
             {
                 id: "container_mark",
-                position: v(116.59, 178.02),
-                rotation: 0
+                position: v(116.59, 178.02)
             },
             {
                 id: "container_mark",
-                position: v(130.97, 178.02),
-                rotation: 0
+                position: v(130.97, 178.02)
             },
             // Group 9
             {
                 id: "container_mark",
                 position: v(-128.55, 25.76),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 40.31),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-128.55, 55.18),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 55.18),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 40.44),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "container_mark",
                 position: v(-101.15, 25.67),
-                rotation: 1
+                orientation: 1
             },
             {
                 id: "floor_oil_01",
@@ -1867,13 +1839,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(37.83, -157.25),
-                orientation: 0
+                position: v(37.83, -157.25)
             },
             {
                 idString: randomContainer2,
-                position: v(51.98, -157.25),
-                orientation: 0
+                position: v(51.98, -157.25)
             },
             // Group 2
             {
@@ -1888,13 +1858,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(113.09, -156.62),
-                orientation: 0
+                position: v(113.09, -156.62)
             },
             {
                 idString: randomContainer2,
-                position: v(98.38, -156.62),
-                orientation: 0
+                position: v(98.38, -156.62)
             },
             // Group 3
             {
@@ -1946,29 +1914,24 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(6.21, -18.22),
-                orientation: 0
+                position: v(6.21, -18.22)
             },
             {
                 idString: randomContainer2,
-                position: v(20.88, -18.22),
-                orientation: 0
+                position: v(20.88, -18.22)
             },
             {
                 idString: randomContainer2,
-                position: v(35.28, -18.22),
-                orientation: 0
+                position: v(35.28, -18.22)
             },
             // Group 6
             {
                 idString: randomContainer2,
-                position: v(104.35, -18.42),
-                orientation: 0
+                position: v(104.35, -18.42)
             },
             {
                 idString: randomContainer2,
-                position: v(119.01, -18.42),
-                orientation: 0
+                position: v(119.01, -18.42)
             },
             // Group 7
             {
@@ -1983,13 +1946,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(116.82, 110.65),
-                orientation: 0
+                position: v(116.82, 110.65)
             },
             {
                 idString: randomContainer2,
-                position: v(131.21, 110.65),
-                orientation: 0
+                position: v(131.21, 110.65)
             },
 
             // Group 8
@@ -2005,13 +1966,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: randomContainer2,
-                position: v(130.97, 178.02),
-                orientation: 0
+                position: v(130.97, 178.02)
             },
             {
                 idString: randomContainer2,
-                position: v(116.59, 178.02),
-                orientation: 0
+                position: v(116.59, 178.02)
             },
             // Group 9
             {
@@ -2052,9 +2011,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-68, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: v(-125, 0), orientation: 0 },
-            { idString: "ship", position: v(80, -50), orientation: 0 },
-            { idString: "crane", position: v(-25, -95), orientation: 0 }
+            { idString: "port", position: v(-125, 0) },
+            { idString: "ship", position: v(80, -50) },
+            { idString: "crane", position: v(-25, -95) }
         ]
     }
 

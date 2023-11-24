@@ -1,4 +1,5 @@
-import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions } from "../utils/objectDefinitions";
+import { type BaseBulletDefinition, type ObjectDefinition, ObjectDefinitions, type ReferenceTo } from "../utils/objectDefinitions";
+import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
@@ -20,7 +21,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
 
     readonly shrapnelCount: number
     readonly ballistics: BaseBulletDefinition
-    readonly decal?: string
+    readonly decal?: ReferenceTo<DecalDefinition>
 }
 
 export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
