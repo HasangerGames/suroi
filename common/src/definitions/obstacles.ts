@@ -67,7 +67,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
 });
 
-export const Materials: string[] = [
+export const Materials = [
     "tree",
     "stone",
     "bush",
@@ -80,7 +80,7 @@ export const Materials: string[] = [
     "cardboard",
     "appliance",
     "large_refinery_barrel"
-];
+] as const;
 
 export enum RotationMode {
     /**

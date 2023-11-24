@@ -5,28 +5,29 @@ import { LootTiers, type WeightedItem } from "../data/lootTables";
 import { ColorStyles, styleText } from "./ansiColoring";
 
 export class LootItem {
-    readonly idString: ReferenceTo<LootDefinition>;
-    readonly count: number;
-
-    constructor(idString: ReferenceTo<LootDefinition>, count: number) {
-        this.idString = idString;
-        this.count = count;
-    }
+    constructor(
+        public readonly idString: ReferenceTo<LootDefinition>,
+        public readonly count: number
+    ) {}
 }
 
 export const Logger = {
     log(...message: string[]): void {
-        this._log(message.join(" "));
+        internalLog(message.join(" "));
     },
     warn(...message: string[]): void {
-        this._log(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), message.join(" "));
-    },
-    _log(...message: string[]): void {
-        const date = new Date();
-        const dateString = `[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`;
-        console.log(styleText(dateString, ColorStyles.foreground.green.bright), message.join(" "));
+        internalLog(styleText("[WARNING]", ColorStyles.foreground.yellow.normal), message.join(" "));
     }
 };
+
+function internalLog(...message: string[]): void {
+    const date = new Date();
+
+    console.log(
+        styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
+        message.join(" ")
+    );
+}
 
 export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     let loot: LootItem[] = [];

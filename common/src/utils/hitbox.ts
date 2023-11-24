@@ -5,58 +5,62 @@ import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
 export abstract class Hitbox {
     /**
-     * Checks if this `Hitbox` collides with another one
-     * @param that The other `Hitbox`
-     * @return True if both `Hitbox`es collide
+     * Checks if this {@link Hitbox} collides with another one
+     * @param that The other {@link Hitbox}
+     * @return `true` if both {@link Hitbox}es collide
      */
     abstract collidesWith(that: Hitbox): boolean;
     /**
-     * Resolve collision between `Hitbox`es.
-     * @param that The other `Hitbox`
+     * Resolve collision between {@link Hitbox}es.
+     * @param that The other {@link Hitbox}
      */
     abstract resolveCollision(that: Hitbox): void;
     /**
-     * Get the distance from this `Hitbox` from another `Hitbox`.
-     * @param that The other `Hitbox`
-     * @return a CollisionRecord with the distance and if both `Hitbox`es collide
+     * Get the distance from this {@link Hitbox} from another {@link Hitbox}.
+     * @param that The other {@link Hitbox}
+     * @return A {@link CollisionRecord} with the distance and if both {@link Hitbox}es collide
      */
     abstract distanceTo(that: Hitbox): CollisionRecord;
     /**
-     * Clone this `Hitbox`.
-     * @return a new `Hitbox` cloned from this one
+     * Clone this {@link Hitbox}.
+     * @return a new {@link Hitbox} cloned from this one
      */
     abstract clone(): Hitbox;
     /**
-     * Transform this `Hitbox` and returns a new `Hitbox`.
-     * NOTE: This doesn't change the initial `Hitbox`
-     * @param position The position to transform the `Hitbox` by
-     * @param scale The scale to transform the `Hitbox`
-     * @param orientation The orientation to transform the `Hitbox`
-     * @return A new `Hitbox` transformed by the parameters
+     * Transform this {@link Hitbox} and returns a new {@link Hitbox}.
+     * NOTE: This doesn't change the initial {@link Hitbox}
+     * @param position The position to transform the {@link Hitbox} by
+     * @param scale The scale to transform the {@link Hitbox}
+     * @param orientation The orientation to transform the {@link Hitbox}
+     * @return A new {@link Hitbox} transformed by the parameters
      */
     abstract transform(position: Vector, scale?: number, orientation?: Orientation): Hitbox;
     /**
-     * Scale this `Hitbox`.
-     * NOTE: This does change the initial `Hitbox`
+     * Scale this {@link Hitbox}.
+     * NOTE: This does change the initial {@link Hitbox}
      * @param scale The scale
      */
     abstract scale(scale: number): void;
     /**
-     * Check if a line intersects with this `Hitbox`.
+     * Check if a line intersects with this {@link Hitbox}.
      * @param a the start point of the line
      * @param b the end point of the line
      * @return An intersection response containing the intersection position and normal
      */
     abstract intersectsLine(a: Vector, b: Vector): IntersectionResponse;
     /**
-     * Get a random position inside this `Hitbox`.
-     * @return A Vector of a random position inside this `Hitbox`
+     * Get a random position inside this {@link Hitbox}.
+     * @return A Vector of a random position inside this {@link Hitbox}
      */
     abstract randomPoint(): Vector;
 
     abstract toRectangle(): RectangleHitbox;
 
     abstract isPointInside(point: Vector): boolean;
+
+    protected throwUnknownSubclassError(that: Hitbox): never {
+        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
+    }
 }
 
 export class CircleHitbox extends Hitbox {
@@ -81,7 +85,7 @@ export class CircleHitbox extends Hitbox {
             return that.collidesWith(this.toRectangle());
         }
 
-        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
+        this.throwUnknownSubclassError(that);
     }
 
     override resolveCollision(that: Hitbox): void {
@@ -109,7 +113,7 @@ export class CircleHitbox extends Hitbox {
             return distanceToRectangle(that.min, that.max, this.position, this.radius);
         }
 
-        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
+        this.throwUnknownSubclassError(that);
     }
 
     override clone(): CircleHitbox {
@@ -185,7 +189,7 @@ export class RectangleHitbox extends Hitbox {
             return that.collidesWith(this);
         }
 
-        throw new Error("Not Implemented");
+        this.throwUnknownSubclassError(that);
     }
 
     override resolveCollision(that: Hitbox): void {
@@ -193,7 +197,7 @@ export class RectangleHitbox extends Hitbox {
             return that.resolveCollision(this);
         }
 
-        throw new Error("Not Implemented");
+        this.throwUnknownSubclassError(that);
     }
 
     override distanceTo(that: Hitbox): CollisionRecord {
@@ -203,7 +207,7 @@ export class RectangleHitbox extends Hitbox {
             return rectangleDistanceToRectangle(that.min, that.max, this.min, this.max);
         }
 
-        throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
+        this.throwUnknownSubclassError(that);
     }
 
     override clone(): RectangleHitbox {
@@ -261,7 +265,7 @@ export class ComplexHitbox extends Hitbox {
             return that.resolveCollision(this);
         }
 
-        throw new Error("Not Implemented");
+        this.throwUnknownSubclassError(that);
     }
 
     override distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
@@ -367,15 +371,15 @@ export class PolygonHitbox extends Hitbox {
             }
             return false;
         }
-        throw new Error("Not Implemented");
+        this.throwUnknownSubclassError(that);
     }
 
-    override resolveCollision(_that: Hitbox): void {
-        throw new Error("Not Implemented");
+    override resolveCollision(that: Hitbox): void {
+        this.throwUnknownSubclassError(that);
     }
 
-    override distanceTo(_that: CircleHitbox | RectangleHitbox): CollisionRecord {
-        throw new Error("Not Implemented");
+    override distanceTo(that: CircleHitbox | RectangleHitbox): CollisionRecord {
+        this.throwUnknownSubclassError(that);
     }
 
     override clone(): PolygonHitbox {
@@ -394,8 +398,8 @@ export class PolygonHitbox extends Hitbox {
         }
     }
 
-    override intersectsLine(_a: Vector, _b: Vector): IntersectionResponse {
-        throw new Error("Not Implemented");
+    override intersectsLine(a: Vector, b: Vector): IntersectionResponse {
+        throw new Error("Operation not supported");
     }
 
     override randomPoint(): Vector {
