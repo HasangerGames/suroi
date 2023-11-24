@@ -11,7 +11,6 @@ import {
 } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { distanceSquared } from "../../../common/src/utils/math";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
 import { SuroiBitStream } from "../../../common/src/utils/suroiBitStream";
@@ -50,6 +49,7 @@ import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
 import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
+import { distanceSquared } from "../../../common/src/utils/math";
 
 export class Game {
     socket!: WebSocket;
@@ -517,14 +517,9 @@ export class Game {
      */
     private _bindChangeAcknowledged = false;
 
-    private _skipUpdate = true;
-
     tick(): void {
         if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
         this.inputManager.update();
-
-        this._skipUpdate = !this._skipUpdate;
-        if (this._skipUpdate) return;
 
         const player = this.activePlayer;
         if (!player) return;
@@ -554,7 +549,7 @@ export class Game {
                     uninteractable.object = object;
                 }
             } else if (object instanceof Building && !object.dead) {
-                object.toggleCeiling(!object.ceilingHitbox?.collidesWith(player.hitbox));
+                object.toggleCeiling();
             }
         }
 

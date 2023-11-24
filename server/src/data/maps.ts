@@ -4,7 +4,7 @@ import { Obstacles } from "../../../common/src/definitions/obstacles";
 import { type Variation } from "../../../common/src/typings";
 import { circleCollision } from "../../../common/src/utils/math";
 import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { random } from "../../../common/src/utils/random";
+import { pickRandomInArray, random } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../../common/src/utils/vector";
 import { type Map } from "../map";
 import { Guns } from "../../../common/src/definitions/guns";
@@ -346,8 +346,9 @@ export const Maps: Record<string, MapDefinition> = {
                 for (let y = 0; y < 256; y += 16) {
                     const player = new Player(map.game, { getUserData: () => { return {}; } } as unknown as WebSocket<PlayerContainer>, v(x, y));
                     player.disableInvulnerability();
-                    player.loadout.skin = Skins.definitions[random(0, Skins.definitions.length - 1)];
+                    player.loadout.skin = pickRandomInArray(Skins.definitions);
                     map.game.grid.addObject(player);
+                    if (random(0, 1) === 1) map.generateObstacle("barrel", v(x, y));
                 }
             }
         }
