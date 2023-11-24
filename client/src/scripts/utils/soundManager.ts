@@ -129,6 +129,18 @@ export class SoundManager {
                 "audio/sfx/pickup/scope_pickup"
             ],
             [
+                "helmet_pickup",
+                "audio/sfx/pickup/helmet_pickup"
+            ],
+            [
+                "vest_pickup",
+                "audio/sfx/pickup/vest_pickup"
+            ],
+            [
+                "backpack_pickup",
+                "audio/sfx/pickup/backpack_pickup"
+            ],
+            [
                 "gauze_pickup",
                 "audio/sfx/pickup/gauze_pickup"
             ],
