@@ -71,9 +71,13 @@ Gauze:
   Use - hasanger
   Pickup - 1092384
 
-Pills:
+Tablets:
   Use - hasanger
   Pickup - hasanger and 1092384
+
+Helmet pickup - "subircasco" from Pixabay: https://pixabay.com/sound-effects/subircasco-44661/
+Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pixabay.com/sound-effects/cloth-flapping-on-a-clothesline-thickly-6025/
+Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
 Footsteps:
   Grass, wood, stone - Katloo
