@@ -13,6 +13,7 @@ import { type PlayerContainer } from "../server";
 import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { Skins } from "../../../common/src/definitions/skins";
+import { Melees } from "../../../common/src/definitions/melees";
 
 interface MapDefinition {
     readonly width: number
@@ -301,6 +302,7 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             map.generateObstacle("airdrop_crate", v(this.width / 2, this.height / 2), 0);
             map.generateObstacle("generator", v(this.width / 2 - 20, this.height / 2), 0);
+            map.game.addLoot("radio", v(this.width / 2 - 20, this.height / 2 - 20), 0);
         }
     },
     guns_test: {
