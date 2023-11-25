@@ -22,8 +22,8 @@
   "devDependencies": {
     "@tsconfig/svelte": "^5.0.2",
     "@types/howler": "^2.2.11",
-    "@types/jquery": "^3.5.28",
-    "@types/node": "^20.9.3",
+    "@types/jquery": "^3.5.29",
+    "@types/node": "^20.10.0",
     "postcss": "^8.4.31",
     "postcss-import": "^15.1.0",
     "postcss-loader": "^7.3.3",
