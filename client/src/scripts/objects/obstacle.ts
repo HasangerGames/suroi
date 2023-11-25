@@ -16,6 +16,7 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { MODE } from "../../../../common/src/definitions/modes";
+import { type Sound } from "../utils/soundManager";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -42,6 +43,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     activated?: boolean;
     hitbox!: Hitbox;
     orientation: Orientation = 0;
+
+    hitSound?: Sound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Obstacle]>) {
         super(game, id);
@@ -361,7 +364,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
+        if (this.hitSound) this.game.soundManager.stop(this.hitSound);
+        this.hitSound = this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
