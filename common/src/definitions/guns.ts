@@ -29,6 +29,7 @@ export type GunDefinition = ItemDefinition & {
     readonly length: number
     readonly killstreak?: boolean
     readonly shootOnRelease?: boolean
+    readonly summonAirdrop?: boolean
 
     readonly fists: {
         readonly left: Vector
@@ -556,13 +557,14 @@ export const Guns: GunDefinition[] = [
         idString: "radio",
         name: "Radio",
         itemType: ItemType.Gun,
-        ammoType: "9mm",
-        ammoSpawnAmount: 60,
-        fireDelay: 110,
-        switchDelay: 250,
+        summonAirdrop: true,
+        ammoType: "curadell",
+        ammoSpawnAmount: 1,
+        fireDelay: 500,
+        switchDelay: 0,
         speedMultiplier: 0.92,
-        recoilMultiplier: 0.8,
-        recoilDuration: 90,
+        recoilMultiplier: 1,
+        recoilDuration: 0,
         fireMode: FireMode.Single,
         shotSpread: 7,
         moveSpread: 14,
@@ -574,17 +576,19 @@ export const Guns: GunDefinition[] = [
             rightZIndex: 4,
             animationDuration: 100
         },
-        image: { position: v(65, 35), },
+        image: { position: v(65, 35) },
         casingParticles: {
-            position: v(3.5, 0.5)
+            position: v(3.5, 1),
+            ejectionDelay: 500
         },
-        capacity: 15,
-        reloadTime: 1.5,
+        noMuzzleFlash: true,
+        capacity: 1,
+        reloadTime: 1.4,
         ballistics: {
-            damage: 11.75,
+            damage: 0,
             obstacleMultiplier: 1,
-            speed: 0.14,
-            range: 120
+            speed: 1,
+            range: 0
         }
     },
     {

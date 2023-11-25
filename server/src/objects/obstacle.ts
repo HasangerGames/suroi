@@ -238,7 +238,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 break;
             case ObstacleSpecialRoles.Activatable:
                 this.activated = true;
-                this.indestructible = false;
 
                 if (this.parentBuilding && this.definition.interactType) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
@@ -246,6 +245,23 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             setTimeout(() => { obstacle.interact(); }, this.definition.interactDelay);
                         }
                     }
+                }
+
+                if (this.definition.replaceWith) {
+                    setTimeout(() => {
+                        this.dead = true;
+                        this.collidable = false;
+                        this.game.fullDirtyObjects.add(this);
+                        this.game.grid.addObject(
+                            new Obstacle(
+                                this.game,
+                                Obstacles.fromString("replaceWith" in this.definition && this.definition.replaceWith ? this.definition.replaceWith.idString : ""),
+                                this.position,
+                                this.rotation,
+                                1
+                            )
+                        );
+                    }, this.definition.replaceWith.delay);
                 }
                 break;
         }

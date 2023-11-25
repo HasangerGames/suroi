@@ -80,12 +80,16 @@ Vest pickup - "Cloth Flapping On A Clothesline Thickly" from Pixabay: https://pi
 Backpack pickup - "backpack" from Pixabay: https://pixabay.com/sound-effects/backpack-34942/
 
 Airdrops:
+  Radio:
+    "Fire" - "088524_Walkie Talkie" from Pixabay: https://pixabay.com/sound-effects/088524-walkie-talkie-83500/
+    Reload & switch - eiπ
   Ping - "Notification Sound" from Pixabay: https://pixabay.com/sound-effects/notification-sound-7062/
-  Plane - "Aeroplane Passing Close" from Pixabay: https://pixabay.com/sound-effects/aeroplane-passing-close-40921/
+  Plane - "Prop Plane" from Pixabay: https://pixabay.com/sound-effects/prop-plane-14513/
   Fall:
     "Cloth Flaps" by Sauron974: https://freesound.org/people/Sauron974/sounds/188733/
     TODO Add fall sound credit
-  Land - "Vine boom" from Pixabay: https://pixabay.com/sound-effects/vine-boom-162668/
+  Land - "box-dropping-with-stones" from Pixabay: https://pixabay.com/sound-effects/box-dropping-with-stones-46880/
+  Land in water - "Dunking in Water" by Sheyvan: https://freesound.org/people/Sheyvan/sounds/519006/
   Unlock:
     TODO Add first sound credit
     "Metal Door Slam - Sound Effect for editing" by Sound Library: https://www.youtube.com/watch?v=IalewYDjffY

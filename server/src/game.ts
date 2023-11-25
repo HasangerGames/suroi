@@ -8,6 +8,8 @@ import { Loot } from "./objects/loot";
 import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import {
+    AIRDROP_FALL_TIME,
+    AIRDROP_TOTAL_TIME,
     DEFAULT_USERNAME,
     KILL_LEADER_MIN_KILLS,
     KillFeedMessageType,
@@ -19,14 +21,19 @@ import { Config, SpawnMode } from "./config";
 import { Map } from "./map";
 import { endGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
-import { randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
+import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
 import { distanceSquared } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
 import { IDAllocator } from "./utils/idAllocator";
-import { ItemType, MapObjectSpawnMode, type ReferenceTo, type ReifiableDef } from "../../common/src/utils/objectDefinitions";
+import {
+    ItemType,
+    MapObjectSpawnMode,
+    type ReferenceTo,
+    type ReifiableDef
+} from "../../common/src/utils/objectDefinitions";
 import { type ExplosionDefinition } from "../../common/src/definitions/explosions";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -36,6 +43,8 @@ import { InputPacket } from "../../common/src/packets/inputPacket";
 import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
+import { Obstacle } from "./objects/obstacle";
+import { Obstacles } from "../../common/src/definitions/obstacles";
 
 export class Game {
     readonly _id: number;
@@ -214,11 +223,6 @@ export class Game {
             for (const player of this.players) {
                 if (!player.dead) player.update();
                 player.thisTickDirty = JSON.parse(JSON.stringify(player.dirty));
-            }
-
-            if (this.emotes.size > 0) {
-                const position = randomVector(0, 1620, 0, 1620); // angleBetweenPoints(position, [...this.livingPlayers][0].position)
-                this.airdrops.add({ position: [...this.livingPlayers][0].position, direction: randomRotation() });
             }
 
             // Second loop over players: calculate visible objects & send updates
@@ -513,6 +517,21 @@ export class Game {
         this.grid.removeObject(object);
         this.idAllocator.give(object.id);
         this.updateObjects = true;
+    }
+
+    summonAirdrop(position: Vector): void {
+        this.airdrops.add({ position, direction: randomRotation() });
+        setTimeout(() => {
+            const crate = new Obstacle(this, Obstacles.fromString("airdrop_crate_locked"), position, 0, 1);
+            this.grid.addObject(crate);
+
+            // Crush damage
+            for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
+                if (object.hitbox?.collidesWith(crate.hitbox)) {
+                    object.damage(object instanceof Player ? 100 : Infinity, crate);
+                }
+            }
+        }, (AIRDROP_TOTAL_TIME / 2) + AIRDROP_FALL_TIME);
     }
 
     get aliveCount(): number {

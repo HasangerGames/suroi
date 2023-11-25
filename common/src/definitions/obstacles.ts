@@ -1,7 +1,13 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
-import { type ObjectDefinition, ObjectDefinitions, ObstacleSpecialRoles, MapObjectSpawnMode } from "../utils/objectDefinitions";
+import {
+    type ObjectDefinition,
+    ObjectDefinitions,
+    ObstacleSpecialRoles,
+    MapObjectSpawnMode,
+    type ReferenceTo
+} from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 
@@ -29,7 +35,6 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly spawnWithLoot?: boolean
     readonly explosion?: string
     readonly noMeleeCollision?: boolean
-    readonly textureChangeDelay?: number
     readonly reflectBullets?: boolean
 
     readonly frames?: {
@@ -66,6 +71,10 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly interactType?: string
     readonly interactDelay?: number
     readonly emitParticles?: boolean
+    readonly replaceWith?: {
+        idString: ReferenceTo<ObstacleDefinition>
+        delay: number
+    }
 } | {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
 });
@@ -451,31 +460,49 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             reflectBullets: true
         },
         {
-            idString: "airdrop_crate",
+            idString: "airdrop_crate_locked",
             name: "Airdrop",
             material: "metal",
-            health: 100,
+            health: 10000,
             indestructible: true,
+            reflectBullets: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
                 destroy: 0.9
             },
             hitbox: new ComplexHitbox(
-                RectangleHitbox.fromRect(8.8, 8.8)
+                RectangleHitbox.fromRect(8.7, 8.7)
             ),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
             rotationMode: RotationMode.Limited,
             role: ObstacleSpecialRoles.Activatable,
             interactText: "Open",
-            hasLoot: true,
+            replaceWith: {
+                idString: "airdrop_crate",
+                delay: 800
+            },
             noResidue: true,
             frames: {
-                particle: "metal_particle",
-                opened: "airdrop_crate_opened"
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "airdrop_crate",
+            name: "Airdrop Crate",
+            material: "crate",
+            health: 150,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
             },
-            textureChangeDelay: 1300,
-            reflectBullets: true
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.7, 8.7)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true
         },
         {
             idString: "gold_rock",

@@ -22,7 +22,8 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "762mm": 90,
             "9mm": 120,
             "127mm": 10,
-            power_cell: Infinity
+            power_cell: Infinity,
+            curadell: 1
         },
         noDrop: true
     },
@@ -41,7 +42,8 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "762mm": 180,
             "9mm": 240,
             "127mm": 20,
-            power_cell: Infinity
+            power_cell: Infinity,
+            curadell: 2
         }
     },
     {
@@ -59,7 +61,8 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "762mm": 240,
             "9mm": 330,
             "127mm": 40,
-            power_cell: Infinity
+            power_cell: Infinity,
+            curadell: 3
         }
     },
     {
@@ -77,7 +80,8 @@ export const Backpacks = new ObjectDefinitions<BackpackDefinition>([
             "762mm": 300,
             "9mm": 420,
             "127mm": 80,
-            power_cell: Infinity
+            power_cell: Infinity,
+            curadell: 4
         }
     }
 ]);

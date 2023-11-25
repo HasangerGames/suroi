@@ -3,8 +3,7 @@ import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
 import { degreesToRadians, distanceSquared } from "../../../common/src/utils/math";
-import { ItemType } from "../../../common/src/utils/objectDefinitions";
-import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, vSub } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
@@ -159,6 +158,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
         owner.recoil.active = true;
         owner.recoil.time = owner.game.now + definition.recoilDuration;
         owner.recoil.multiplier = definition.recoilMultiplier;
+
+        if (definition.summonAirdrop) {
+            this.owner.game.summonAirdrop(owner.position);
+        }
 
         if (!definition.infiniteAmmo) {
             --this.ammo;

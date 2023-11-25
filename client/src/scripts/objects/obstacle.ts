@@ -14,7 +14,7 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
-import { type ParticleEmitter } from "./particles";
+import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { MODE } from "../../../../common/src/definitions/modes";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
@@ -54,6 +54,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {
         const reskin = MODE.reskin;
+
+        let texture;
 
         if (data.full) {
             const full = data.full;
@@ -96,22 +98,56 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
 
             if (!this.activated && full.activated) {
-                console.log(this.activated)
                 this.activated = full.activated;
                 let firstRun = !isNew;
-                const playGeneratorSound = (): void => {
-                    if (this.destroyed) return;
-                    this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
-                    firstRun = false;
-                };
 
-                const playAirdropSound = (): void => {
+                // fixme idString check, hard coded behavior
+                if (this.definition.idString === "generator") {
+                    const playGeneratorSound = (): void => {
+                        if (this.destroyed) return;
+                        this.playSound(firstRun ? "generator_starting" : "generator_running", 2, 512, true, playGeneratorSound);
+                        firstRun = false;
+                    };
+                    playGeneratorSound();
+                } else if (this.definition.idString === "airdrop_crate_locked") {
                     if (this.destroyed || !firstRun) return;
-                    this.playSound(`airdrop_crate_open`, 0.2, 96);
                     firstRun = false;
-                };
 
-                eval(`play${definition.name}Sound()`);
+                    const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
+                        zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                        lifetime: 1000,
+                        scale: {
+                            start: randomFloat(0.85, 0.95),
+                            end: 0,
+                            ease: EaseFunctions.quartIn
+                        },
+                        alpha: {
+                            start: 1,
+                            end: 0,
+                            ease: EaseFunctions.sextIn
+                        },
+                        rotation: { start: randomRotation(), end: randomRotation() },
+                        speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
+                    });
+
+                    /* eslint-disable @typescript-eslint/consistent-type-assertions */
+                    this.game.particleManager.spawnParticle({
+                        frames: "airdrop_particle_1",
+                        position: this.position,
+                        ...options(8, 18)
+                    } as ParticleOptions);
+
+                    this.playSound("airdrop_unlock", 0.2, 96);
+                    texture = "airdrop_crate_unlocking";
+
+                    setTimeout(() => {
+                        this.game.particleManager.spawnParticles(4, () => ({
+                            frames: "airdrop_particle_2",
+                            position: this.hitbox.randomPoint(),
+                            ...options(4, 9)
+                        } as ParticleOptions));
+                    }, 800);
+                }
             }
 
             this.isDoor = definition.role === ObstacleSpecialRoles.Door;
@@ -139,7 +175,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
-            if (!isNew) {
+            if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
                 this.playSound(`${definition.material}_destroyed`, 0.2, 96);
 
                 if (definition.noResidue) {
@@ -148,7 +184,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     let texture = definition.frames?.residue ?? `${definition.idString}_residue`;
                     if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
                     this.image.setFrame(texture);
-                    console.log(texture)
                 }
 
                 this.container.rotation = this.rotation;
@@ -191,32 +226,19 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const pos = toPixiCoords(this.position);
         this.container.position.copyFrom(pos);
 
-       this.image.setVisible(!(this.dead && !!definition.noResidue));
+        this.image.setVisible(!(this.dead && !!definition.noResidue));
 
-        let texture: string;
-        if (this.activated) {
-            texture = definition.frames?.opened ?? `${definition.idString}`
-        } else {
-            texture = definition.frames?.base ?? `${definition.idString}`
-        } 
-
-        if (this.dead) {
-            texture = definition.frames?.residue ?? `${definition.idString}_residue`
+        if (!texture) {
+            texture = !this.dead
+                ? definition.frames?.base ?? `${definition.idString}`
+                : definition.frames?.residue ?? `${definition.idString}_residue`;
         }
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
 
         if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
-        let textureFirstRun = !isNew;
-
-        // Update the obstacle image
-        if (definition.textureChangeDelay && textureFirstRun) {
-            setTimeout(() => { this.image.setFrame(texture) }, definition.textureChangeDelay)
-            textureFirstRun = false;
-        } else {
-            this.image.setFrame(texture);
-        }
+        this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
 

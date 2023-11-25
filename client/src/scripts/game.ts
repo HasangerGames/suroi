@@ -341,9 +341,11 @@ export class Game {
 
         // reset stuff
         for (const object of this.objects) object.destroy();
+        for (const airdrop of this.airdrops) airdrop.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
+        this.airdrops.clear();
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
@@ -537,6 +539,7 @@ export class Game {
     tick(): void {
         if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
         this.inputManager.update();
+        this.soundManager.update();
 
         const player = this.activePlayer;
         if (!player) return;
