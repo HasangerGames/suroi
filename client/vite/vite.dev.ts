@@ -10,7 +10,8 @@ const config: UserConfig = {
     },
     preview: {
         port: 3000,
-        strictPort: true
+        strictPort: true,
+        host: "0.0.0.0"
     },
 
     define: {

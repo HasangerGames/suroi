@@ -6,22 +6,29 @@ import { PIXI_SCALE } from "./constants";
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
-    const svgs = import.meta.glob("../../../public/assets/img/game/*/*.svg");
+    const svgs = import.meta.glob("../../../public/assets/img/game/*/*.svg", {
+        eager: true,
+        as: "url"
+    });
 
-    for (const path in svgs) {
-        const nameArray = path.split("/");
-        const name = nameArray[nameArray.length - 1].replace(".svg", "");
+    for (const key in svgs) {
+        const svg = svgs[key];
 
-        Texture.fromURL(path, {
+        const pathsArray = key.split("/");
+        const name = pathsArray[pathsArray.length - 1].replace(".svg", "");
+
+        const texture = textures[name] = Texture.from(svg, {
             resolution: 1,
             resourceOptions: {
                 scale: 1
             }
-        }).then(texture => {
-            console.log(`Loaded image ${path}`);
-            textures[name] = texture;
-        }).catch(() => {
-            console.error(`Failed to load texture ${path}`);
+        });
+
+        texture.baseTexture.on("loaded", () => {
+            console.log(`Texture ${name} loaded.`);
+        });
+        texture.baseTexture.on("error", (error: ErrorEvent) => {
+            console.log(`Texture ${name} failed to load. Error: ${error.message}`);
         });
     }
 }
