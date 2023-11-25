@@ -115,7 +115,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
         }
 
-        // eslint-disable-next-line no-cond-assign
+        /* eslint-disable no-cond-assign */
+        // noinspection JSAssignmentUsedAsCondition
         if (this.isDoor = (definition.role === ObstacleSpecialRoles.Door)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
 
