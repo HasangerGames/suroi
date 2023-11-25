@@ -50,6 +50,7 @@ export type GunDefinition = ItemDefinition & {
         readonly spawnOnReload?: boolean
         readonly ejectionDelay?: number
     }
+    readonly specialParticle?: string
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -581,6 +582,7 @@ export const Guns: GunDefinition[] = [
             position: v(3.5, 1),
             ejectionDelay: 500
         },
+        specialParticle: "radio_wave",
         noMuzzleFlash: true,
         capacity: 1,
         reloadTime: 1.4,

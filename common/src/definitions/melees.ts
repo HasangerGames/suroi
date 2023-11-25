@@ -187,5 +187,5 @@ export const Melees: MeleeDefinition[] = [
             useAngle: -20,
             lootScale: 0.6
         }
-    },
+    }
 ];
