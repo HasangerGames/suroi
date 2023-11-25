@@ -1,52 +1,28 @@
-import { BaseTexture, Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpriteSheetJson, Assets } from "pixi.js";
-import { Buildings } from "../../../../common/src/definitions/buildings";
+import { Sprite, Texture, type ColorSource, type Graphics } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
-declare const ATLAS_HASH: string;
-
 let textures: Record<string, Texture> = {};
 
-const assetsToLoad: Record<string, string> = {};
-
-function loadImage(key: string, path: string): void {
-    if (assetsToLoad[key]) return;
-    assetsToLoad[key] = path;
-    console.log(`Loading image ${path}`);
-}
-
 export async function loadTextures(): Promise<void> {
-    for (const building of Buildings.definitions) {
-        for (const image of building.floorImages ?? []) {
-            loadImage(image.key, new URL(`../../img/buildings/${image.key}.svg`, import.meta.url).href);
-        }
+    const svgs = import.meta.glob("../../../public/assets/img/game/*/*.svg");
 
-        for (const image of building.ceilingImages ?? []) {
-            loadImage(image.key, new URL(`../../img/buildings/${image.key}.svg`, import.meta.url).href);
-            if (image.residue) loadImage(image.residue, new URL(`../../img/buildings/${image.residue}.svg`, import.meta.url).href);
-        }
-    }
+    for (const path in svgs) {
+        const nameArray = path.split("/");
+        const name = nameArray[nameArray.length - 1].replace(".svg", "");
 
-    Assets.addBundle("buildings", assetsToLoad);
-
-    textures = await Assets.loadBundle("buildings");
-
-    for (const atlas of ["main"]) {
-        const path = `/assets/img/atlases/${atlas}.${ATLAS_HASH}`;
-        const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
-
-        console.log(`Loading atlas: ${location.toString()}${path}.png`);
-
-        const spriteSheet = new Spritesheet(BaseTexture.from(`./${path}.png`), spritesheetData);
-
-        await spriteSheet.parse();
-
-        for (const frame in spriteSheet.textures) {
-            const frameName = frame.replace(/(\.svg|\.png)/, "");
-            if (frameName in textures) console.warn(`Duplicated atlas frame key: ${frame}`);
-            textures[frameName] = spriteSheet.textures[frame];
-        }
+        Texture.fromURL(path, {
+            resolution: 1,
+            resourceOptions: {
+                scale: 1
+            }
+        }).then(texture => {
+            console.log(`Loaded image ${path}`);
+            textures[name] = texture;
+        }).catch(() => {
+            console.error(`Failed to load texture ${path}`);
+        })
     }
 }
 

@@ -1,7 +1,6 @@
 import pkg from "../../package.json";
 
 import type { UserConfig } from "vite";
-
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -18,7 +17,6 @@ const config: UserConfig = {
             ]
         }
     },
-
     define: {
         APP_VERSION: JSON.stringify(`${pkg.version}`)
     }

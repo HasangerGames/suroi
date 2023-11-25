@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
-<svg
-   width="398.99167mm"
-   height="9.5897551mm"
-   viewBox="0 0 398.99167 9.5897553"
-   version="1.1"
-   id="svg5"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs2" />
-  <g
-     id="layer1"
-     transform="translate(560.50322,-483.97895)">
-    <rect
-       style="fill:#4f4f4f;fill-opacity:1;stroke:#323232;stroke-width:1.97653;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2402-5"
-       width="7.6132255"
-       height="397.01514"
-       x="-492.58044"
-       y="-559.51495"
-       transform="rotate(-90)" />
+<svg width="373.64429mm" height="8.9805317mm" viewBox="0 0 373.64429 8.9805319" version="1.1" id="svg5" sodipodi:docname="warehouse_wall_1.svg" inkscape:version="1.3.1 (91b66b0783, 2023-11-16, custom)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview id="namedview1" pagecolor="#ffffff" bordercolor="#000000" borderopacity="0.25" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:document-units="mm" inkscape:zoom="0.49933687" inkscape:cx="754" inkscape:cy="19.025233" inkscape:window-width="1440" inkscape:window-height="840" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="svg5" />
+  <defs id="defs2" />
+  <g id="layer1" transform="matrix(0.93647137,0,0,0.93647137,524.89522,-453.23243)">
+    <rect style="fill:#4f4f4f;fill-opacity:1;stroke:#323232;stroke-width:1.97653;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" id="rect2402-5" width="7.6132255" height="397.01514" x="-492.58044" y="-559.51495" transform="rotate(-90)" />
   </g>
 </svg>
