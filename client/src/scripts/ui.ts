@@ -86,6 +86,10 @@ export function setupUI(game: Game): void {
         {
             name: "Pablo_Fan_",
             link: "https://www.youtube.com/@Pablo_Fan_"
+        },
+        {
+            name: "g0dak",
+            link: "https://www.youtube.com/@g0dak"
         }
     ];
 
