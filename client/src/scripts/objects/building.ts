@@ -88,7 +88,6 @@ export class Building extends GameObject<ObjectCategory.Building> {
             const direction = getIntersection(this.ceilingHitbox);
 
             if (direction) {
-
                 let graphics: Graphics | undefined;
                 if (HITBOX_DEBUG_MODE) {
                     graphics = new Graphics();
@@ -129,7 +128,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                             object.damageable &&
                             !object.dead &&
                             object.definition.role !== ObstacleSpecialRoles.Window &&
-                            object.hitbox.intersectsLine(player.position, end)) {
+                            object.hitbox?.intersectsLine(player.position, end)) {
                             collided = true;
                             break;
                         }

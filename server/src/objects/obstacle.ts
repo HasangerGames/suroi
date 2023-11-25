@@ -115,7 +115,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
         }
 
-        // eslint-disable-next-line no-cond-assign
+        /* eslint-disable no-cond-assign */
+        // noinspection JSAssignmentUsedAsCondition
         if (this.isDoor = (definition.role === ObstacleSpecialRoles.Door)) {
             const hitboxes = calculateDoorHitboxes(definition, this.position, this.rotation as Orientation);
 
@@ -218,7 +219,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     canInteract(player?: Player): boolean {
         return !this.dead && (
             (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (this.definition.role === ObstacleSpecialRoles.Activatable && player?.activeItem.definition.idString === this.definition.requiredItem && !this.activated)
+            (this.definition.role === ObstacleSpecialRoles.Activatable && (player?.activeItem.definition.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated)
         );
     }
 
@@ -241,6 +242,23 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                             setTimeout(() => { obstacle.interact(); }, this.definition.interactDelay);
                         }
                     }
+                }
+
+                if (this.definition.replaceWith) {
+                    setTimeout(() => {
+                        this.dead = true;
+                        this.collidable = false;
+                        this.game.fullDirtyObjects.add(this);
+                        this.game.grid.addObject(
+                            new Obstacle(
+                                this.game,
+                                Obstacles.fromString("replaceWith" in this.definition && this.definition.replaceWith ? this.definition.replaceWith.idString : ""),
+                                this.position,
+                                this.rotation,
+                                1
+                            )
+                        );
+                    }, this.definition.replaceWith.delay);
                 }
                 break;
         }

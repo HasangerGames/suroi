@@ -114,6 +114,9 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
     DEFAULT_INVENTORY[item.idString] = amount;
 }
 
+export const AIRDROP_TOTAL_TIME = 60000;
+export const AIRDROP_FALL_TIME = 8000;
+
 export enum ZIndexes {
     Ground,
     Decals,
