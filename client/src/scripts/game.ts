@@ -255,7 +255,7 @@ export class Game {
                             soundID = "scope_pickup";
                             break;
                         case ItemType.Armor:
-                            //fixme idString check
+                            // fixme idString check
                             if (packet.item.idString.includes("helmet")) soundID = "helmet_pickup";
                             else soundID = "vest_pickup";
                             break;

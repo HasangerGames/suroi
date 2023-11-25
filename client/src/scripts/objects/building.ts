@@ -88,7 +88,6 @@ export class Building extends GameObject<ObjectCategory.Building> {
             const direction = getIntersection(this.ceilingHitbox);
 
             if (direction) {
-
                 let graphics: Graphics | undefined;
                 if (HITBOX_DEBUG_MODE) {
                     graphics = new Graphics();

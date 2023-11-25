@@ -14,7 +14,7 @@ const config: UserConfig = {
     },
 
     define: {
-        API_URL: JSON.stringify("http://localhost:8080/api"),
+        API_URL: JSON.stringify("http://localhost:8080/api")
     }
 };
 

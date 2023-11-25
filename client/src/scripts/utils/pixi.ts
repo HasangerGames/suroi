@@ -3,7 +3,7 @@ import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbo
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
-let textures: Record<string, Texture> = {};
+const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
     const svgs = import.meta.glob("../../../public/assets/img/game/*/*.svg");
@@ -22,7 +22,7 @@ export async function loadTextures(): Promise<void> {
             textures[name] = texture;
         }).catch(() => {
             console.error(`Failed to load texture ${path}`);
-        })
+        });
     }
 }
 
