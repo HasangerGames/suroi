@@ -50,8 +50,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     activated?: boolean;
 
-    indestructible?: boolean;
-
     parentBuilding?: Building;
 
     hitbox: Hitbox;
@@ -77,8 +75,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.parentBuilding = parentBuilding;
 
         const definition = this.definition = Obstacles.reify(type);
-
-        this.indestructible = definition.indestructible;
 
         this.health = this.maxHealth = this.definition.health;
 
@@ -139,7 +135,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     damage(amount: number, source: GameObject, weaponUsed?: GunItem | MeleeItem | Explosion, position?: Vector): void {
         const definition = this.definition;
 
-        if (this.indestructible) return;
+        if (this.health === 0 || definition.indestructible) return;
 
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
