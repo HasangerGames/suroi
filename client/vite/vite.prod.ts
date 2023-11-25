@@ -20,7 +20,7 @@ const config: UserConfig = {
     },
 
     define: {
-        API_URL: JSON.stringify("/api"),
+        API_URL: JSON.stringify("/api")
     }
 };
 

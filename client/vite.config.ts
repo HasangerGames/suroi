@@ -17,6 +17,7 @@ export default defineConfig(({ command, mode }) => {
         VITE_APP_VERSION: pkg.version
     };
 
+    // So output directory isn't included (thanks Vite).
     if (command === "serve" && mode === "development") {
         if (existsSync(resolve(DIRNAME, "./dist"))) { rmSync(resolve(DIRNAME, "./dist"), { recursive: true, force: true }); }
     }
