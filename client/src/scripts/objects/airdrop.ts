@@ -4,7 +4,7 @@ import { type Game } from "../game";
 import { lerp, vLerp } from "../../../../common/src/utils/math";
 import { PIXI_SCALE } from "../utils/constants";
 import { Ping } from "../rendering/minimap";
-import { AIRDROP_FALL_TIME, AIRDROP_TOTAL_TIME } from "../../../../common/src/constants";
+import { AIRDROP_FALL_TIME, AIRDROP_TOTAL_TIME, ZIndexes } from "../../../../common/src/constants";
 import { type Sound } from "../utils/soundManager";
 
 export class Airdrop {
@@ -39,7 +39,7 @@ export class Airdrop {
             startPosition,
             endPosition,
             image: new SuroiSprite("airdrop_plane")
-                .setZIndex(98)
+                .setZIndex(ZIndexes.Gas + 1)
                 .setRotation(direction),
             sound: game.soundManager.play("airdrop_plane", startPosition, 0.5, 256, true)
         };
@@ -49,7 +49,7 @@ export class Airdrop {
             deployTime: -1,
             image: new SuroiSprite("airdrop_parachute")
                 .setVPos(vMul(position, PIXI_SCALE))
-                .setZIndex(97)
+                .setZIndex(ZIndexes.ObstaclesLayer5)
                 .setVisible(false)
         };
 
