@@ -227,6 +227,32 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
     };
 }
 
+function makeGunMount(idString: string, name: string): ObstacleDefinition {
+    return {
+        idString,
+        name,
+        material: "wood",
+        health: 60,
+        scale: {
+            spawnMin: 1,
+            spawnMax: 1,
+            destroy: 0.95
+        },
+        hasLoot: true,
+        hitbox: new ComplexHitbox(
+            RectangleHitbox.fromRect(8.2, 0.95, v(0, -1.32)), // Base
+            RectangleHitbox.fromRect(0.75, 2.75, v(0, 0.48)), // Center post
+            RectangleHitbox.fromRect(0.75, 2.75, v(-3.11, 0.48)), // Left post
+            RectangleHitbox.fromRect(0.75, 2.75, v(3.17, 0.48)) // Right post
+        ),
+        rotationMode: RotationMode.Limited,
+        frames: {
+            particle: "furniture_particle",
+            residue: "gun_mount_residue"
+        }
+    };
+}
+
 export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
     [
         {
@@ -1313,28 +1339,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "barrel_particle"
             }
         },
-        {
-            idString: "gun_mount",
-            name: "Gun Mount",
-            material: "wood",
-            health: 60,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.95
-            },
-            hasLoot: true,
-            hitbox: new ComplexHitbox(
-                RectangleHitbox.fromRect(8.2, 0.95, v(0, -1.32)), // Base
-                RectangleHitbox.fromRect(0.75, 2.75, v(0, 0.48)), // Center post
-                RectangleHitbox.fromRect(0.75, 2.75, v(-3.11, 0.48)), // Left post
-                RectangleHitbox.fromRect(0.75, 2.75, v(3.17, 0.48)) // Right post
-            ),
-            rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "furniture_particle"
-            }
-        },
+        makeGunMount("gun_mount_mcx_spear", "Gun Mount MCX Spear"),
+        makeGunMount("gun_mount_stoner_63", "Gun Mount Stoner 63"),
         {
             idString: "small_house_exterior",
             name: "Small House Exterior",

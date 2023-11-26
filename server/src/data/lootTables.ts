@@ -222,11 +222,18 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.05 }
         ]
     },
-    gun_mount: {
+    gun_mount_mcx_spear: {
         min: 1,
         max: 1,
         loot: [
             { item: "mcx_spear", weight: 1 }
+        ]
+    },
+    gun_mount_stoner_63: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "stoner_63", weight: 1 }
         ]
     },
     gas_can: {
