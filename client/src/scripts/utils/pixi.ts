@@ -1,35 +1,28 @@
-import { Sprite, Texture, type ColorSource, type Graphics } from "pixi.js";
+import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
+import { atlases } from "virtual:spritesheets-jsons";
+
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
-    const svgs = import.meta.glob("../../../public/assets/img/game/*/*.svg", {
-        eager: true,
-        as: "url"
-    });
+    for (const atlas of atlases) {
 
-    for (const key in svgs) {
-        const svg = svgs[key];
+        const image = atlas.meta.image!;
 
-        const pathsArray = key.split("/");
-        const name = pathsArray[pathsArray.length - 1].replace(".svg", "");
+        console.log(`Loading atlas ${image}`);
 
-        const texture = textures[name] = Texture.from(svg, {
-            resolution: 1,
-            resourceOptions: {
-                scale: 1
-            }
-        });
+        const texture = await Texture.fromURL(image);
 
-        texture.baseTexture.on("loaded", () => {
-            console.log(`Texture ${name} loaded.`);
-        });
-        texture.baseTexture.on("error", (error: ErrorEvent) => {
-            console.log(`Texture ${name} failed to load. Error: ${error.message}`);
-        });
+        const spriteSheet = new Spritesheet(texture, atlas);
+
+        await spriteSheet.parse();
+
+        for (const frame in spriteSheet.textures) {
+            textures[frame] = spriteSheet.textures[frame];
+        }
     }
 }
 
