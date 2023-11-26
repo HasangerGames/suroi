@@ -60,7 +60,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
             (!skipAttackCheck && !owner.attacking) ||
             owner.dead ||
             owner.disconnected ||
-            this !== this.owner.activeItem
+            this !== this.owner.activeItem ||
+            (definition.summonAirdrop && owner.isInsideBuilding)
         ) {
             this._shots = 0;
             return;
@@ -160,7 +161,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         owner.recoil.multiplier = definition.recoilMultiplier;
 
         if (definition.summonAirdrop) {
-            this.owner.game.summonAirdrop(owner.position);
+            owner.game.summonAirdrop(owner.position);
         }
 
         if (!definition.infiniteAmmo) {
