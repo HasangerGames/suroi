@@ -12,7 +12,7 @@ export async function loadTextures(): Promise<void> {
 
         const image = atlas.meta.image!;
 
-        console.log(`Loading atlas ${image}`);
+        console.log(`Loading atlas ${location.origin}/${image}`);
 
         const texture = await Texture.fromURL(image);
 
