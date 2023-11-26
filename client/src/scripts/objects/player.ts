@@ -211,6 +211,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (casings === undefined) return;
 
+        if (weaponDef.specialParticle) {
+            this.game.particleManager.spawnParticle({
+                frames: `${weaponDef.specialParticle}`,
+                position: vAdd(this.position, vRotate(casings.position, this.rotation)),
+                speed: vRotate(v(10, 0), this.rotation),
+                lifetime: 4000,
+                zIndex: ZIndexes.Players,
+                scale: {
+                    start: 0.8,
+                    end: 3
+                },
+                alpha: {
+                    start: 1, end: 0
+                },
+                rotation: this.rotation
+            });
+        }
+
         const spawnCasings = (): void => {
             this.game.particleManager.spawnParticles(
                 casings.count ?? 1,

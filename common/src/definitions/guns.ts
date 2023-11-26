@@ -50,6 +50,7 @@ export type GunDefinition = ItemDefinition & {
         readonly spawnOnReload?: boolean
         readonly ejectionDelay?: number
     }
+    readonly specialParticle?: string
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -354,7 +355,7 @@ export const Guns: GunDefinition[] = [
             damage: 10,
             obstacleMultiplier: 1,
             speed: 0.16,
-            range: 40,
+            range: 48,
             tracer: {
                 length: 0.5
             }
@@ -371,7 +372,7 @@ export const Guns: GunDefinition[] = [
         singleReload: true,
         fireDelay: 900,
         switchDelay: 900,
-        speedMultiplier: 0.9,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.45,
         recoilDuration: 750,
         fireMode: FireMode.Single,
@@ -411,7 +412,7 @@ export const Guns: GunDefinition[] = [
         reloadTime: 2.6,
         fireDelay: 900,
         switchDelay: 900,
-        speedMultiplier: 0.9,
+        speedMultiplier: 0.92,
         recoilMultiplier: 0.4,
         recoilDuration: 1000,
         fireMode: FireMode.Single,
@@ -581,6 +582,7 @@ export const Guns: GunDefinition[] = [
             position: v(3.5, 1),
             ejectionDelay: 500
         },
+        specialParticle: "radio_wave",
         noMuzzleFlash: true,
         capacity: 1,
         reloadTime: 1.4,
