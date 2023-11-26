@@ -312,8 +312,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             name: "Flint Stone",
             material: "stone",
             health: 200,
-            indestructible: true,
-            noResidue: true,
+            impenetrable: true,
+            hasLoot: true,
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
@@ -322,10 +322,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnMode: MapObjectSpawnMode.GrassAndSand,
             hitbox: RectangleHitbox.fromRect(6.1, 6.1),
             rotationMode: RotationMode.None,
-            particleVariations: 2,
-            frames: {
-                particle: "rock_particle"
-            }
+            particleVariations: 2
         },
         {
             idString: "bush",

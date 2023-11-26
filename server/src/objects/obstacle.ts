@@ -141,7 +141,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         const weaponDef = weaponUsed instanceof InventoryItem ? weaponUsed.definition : undefined;
         if (
             definition.impenetrable &&
-            !(weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined)
+            !(
+                (weaponDef?.itemType === ItemType.Melee && weaponDef.piercingMultiplier !== undefined) ||
+                source instanceof Obstacle
+            )
         ) {
             return;
         }
