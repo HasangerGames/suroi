@@ -154,7 +154,7 @@ export function setupUI(game: Game): void {
     // Event listener for rules button
     rulesBtn.on("click", () => {
         game.console.setBuiltInCVar("cv_rules_acknowledged", true);
-        location.href = "/rules";
+        location.href = "/rules/";
     });
 
     $("#btn-quit-game").on("click", () => { game.endGame(); });
