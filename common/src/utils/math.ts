@@ -113,7 +113,7 @@ export function lerp(start: number, end: number, interpFactor: number): number {
  * @param interpFactor The interpolation factor ranging from 0 to 1
  *
  */
-export function vecLerp(start: Vector, end: Vector, interpFactor: number): Vector {
+export function vLerp(start: Vector, end: Vector, interpFactor: number): Vector {
     return vAdd(vMul(start, 1 - interpFactor), vMul(end, interpFactor));
 }
 

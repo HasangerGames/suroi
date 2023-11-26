@@ -14,7 +14,7 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
-import { type ParticleEmitter } from "./particles";
+import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { MODE } from "../../../../common/src/definitions/modes";
 import { type Sound } from "../utils/soundManager";
 
@@ -24,7 +24,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly damageable = true;
 
     readonly image: SuroiSprite;
-    hitSound?: Sound;
     smokeEmitter?: ParticleEmitter;
     particleFrames!: string[];
 
@@ -45,6 +44,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
+    hitSound?: Sound;
+
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Obstacle]>) {
         super(game, id);
 
@@ -56,6 +57,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {
         const reskin = MODE.reskin;
+
+        let texture;
 
         if (data.full) {
             const full = data.full;
@@ -100,18 +103,61 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (!this.activated && full.activated) {
                 this.activated = full.activated;
                 let firstRun = !isNew;
-                const playGeneratorSound = (): void => {
-                    if (this.destroyed) return;
-                    this.playSound(firstRun ? "generator_starting" : "generator_running", undefined, undefined, playGeneratorSound);
+
+                // fixme idString check, hard coded behavior
+                if (this.definition.idString === "generator") {
+                    const playGeneratorSound = (): void => {
+                        if (this.destroyed) return;
+                        this.playSound(firstRun ? "generator_starting" : "generator_running", 2, 512, true, playGeneratorSound);
+                        firstRun = false;
+                    };
+                    playGeneratorSound();
+                } else if (this.definition.idString === "airdrop_crate_locked") {
+                    if (this.destroyed || !firstRun) return;
                     firstRun = false;
-                };
-                playGeneratorSound();
+
+                    const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
+                        zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                        lifetime: 1000,
+                        scale: {
+                            start: randomFloat(0.85, 0.95),
+                            end: 0,
+                            ease: EaseFunctions.quartIn
+                        },
+                        alpha: {
+                            start: 1,
+                            end: 0,
+                            ease: EaseFunctions.sextIn
+                        },
+                        rotation: { start: randomRotation(), end: randomRotation() },
+                        speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
+                    });
+
+                    /* eslint-disable @typescript-eslint/consistent-type-assertions */
+                    this.game.particleManager.spawnParticle({
+                        frames: "airdrop_particle_1",
+                        position: this.position,
+                        ...options(8, 18)
+                    } as ParticleOptions);
+
+                    this.playSound("airdrop_unlock", 0.2, 96);
+                    texture = "airdrop_crate_unlocking";
+
+                    setTimeout(() => {
+                        this.game.particleManager.spawnParticles(4, () => ({
+                            frames: "airdrop_particle_2",
+                            position: this.hitbox.randomPoint(),
+                            ...options(4, 9)
+                        } as ParticleOptions));
+                    }, 800);
+                }
             }
 
             this.isDoor = definition.role === ObstacleSpecialRoles.Door;
 
             this.updateDoor(full, isNew);
         }
+
         const definition = this.definition;
 
         this.scale = data.scale;
@@ -132,7 +178,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
-            if (!isNew) {
+            if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
                 this.playSound(`${definition.material}_destroyed`, 0.2, 96);
 
                 if (definition.noResidue) {
@@ -185,15 +231,16 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         this.image.setVisible(!(this.dead && !!definition.noResidue));
 
-        let texture;
-        if (!this.dead) texture = definition.frames?.base ?? `${definition.idString}`;
-        else texture = definition.frames?.residue ?? `${definition.idString}_residue`;
+        if (!texture) {
+            texture = !this.dead
+                ? definition.frames?.base ?? `${definition.idString}`
+                : definition.frames?.residue ?? `${definition.idString}_residue`;
+        }
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
 
         if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
-        // Update the obstacle image
         this.image.setFrame(texture);
 
         if (definition.tint !== undefined) this.image.setTint(definition.tint);
@@ -313,7 +360,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     canInteract(player: Player): boolean {
-        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && player.activeItem.idString === this.definition.requiredItem && !this.activated));
+        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated));
     }
 
     hitEffect(position: Vector, angle: number): void {

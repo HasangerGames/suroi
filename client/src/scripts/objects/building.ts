@@ -128,7 +128,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                             object.damageable &&
                             !object.dead &&
                             object.definition.role !== ObstacleSpecialRoles.Window &&
-                            object.hitbox.intersectsLine(player.position, end)) {
+                            object.hitbox?.intersectsLine(player.position, end)) {
                             collided = true;
                             break;
                         }

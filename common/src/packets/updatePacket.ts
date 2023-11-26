@@ -363,7 +363,8 @@ const UpdateFlags = {
     NewPlayers: 1 << 9,
     DeletedPlayers: 1 << 10,
     AliveCount: 1 << 11,
-    KillFeedMessages: 1 << 12
+    KillFeedMessages: 1 << 12,
+    Airdrops: 1 << 13
 };
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
@@ -421,6 +422,8 @@ export class UpdatePacket extends Packet {
 
     killFeedMessages = new Set<KillFeedMessage>();
 
+    airdrops = new Set<{ position: Vector, direction: number }>();
+
     override serialize(): void {
         super.serialize();
         const stream = this.stream;
@@ -446,6 +449,7 @@ export class UpdatePacket extends Packet {
         if (this.deletedPlayers.size) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
         if (this.killFeedMessages.size) flags += UpdateFlags.KillFeedMessages;
+        if (this.airdrops.size) flags += UpdateFlags.Airdrops;
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
@@ -545,6 +549,15 @@ export class UpdatePacket extends Packet {
 
             for (const message of this.killFeedMessages) {
                 serializeKillFeedMessage(stream, message);
+            }
+        }
+
+        if ((flags & UpdateFlags.Airdrops) !== 0) {
+            stream.writeBits(this.airdrops.size, 4);
+
+            for (const airdrop of this.airdrops) {
+                stream.writePosition(airdrop.position);
+                stream.writeRotation(airdrop.direction, 8);
             }
         }
     }
@@ -672,6 +685,17 @@ export class UpdatePacket extends Packet {
 
             for (let i = 0; i < count; i++) {
                 this.killFeedMessages.add(deserializeKillFeedMessage(stream));
+            }
+        }
+
+        if ((flags & UpdateFlags.Airdrops) !== 0) {
+            const count = stream.readBits(4);
+
+            for (let i = 0; i < count; i++) {
+                this.airdrops.add({
+                    position: stream.readPosition(),
+                    direction: stream.readRotation(8)
+                });
             }
         }
     }

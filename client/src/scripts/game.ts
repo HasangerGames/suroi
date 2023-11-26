@@ -50,6 +50,7 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { distanceSquared } from "../../../common/src/utils/math";
+import { Airdrop } from "./objects/airdrop";
 
 export class Game {
     socket!: WebSocket;
@@ -87,6 +88,8 @@ export class Game {
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
+
+    readonly airdrops = new Set<Airdrop>();
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
@@ -338,9 +341,11 @@ export class Game {
 
         // reset stuff
         for (const object of this.objects) object.destroy();
+        for (const airdrop of this.airdrops) airdrop.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
+        this.airdrops.clear();
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
@@ -398,6 +403,8 @@ export class Game {
 
         this.map.update();
         this.gasRender.update(this.gas);
+
+        for (const airdrop of this.airdrops) airdrop.update();
 
         this.camera.update();
     }
@@ -497,6 +504,10 @@ export class Game {
         for (const message of updateData.killFeedMessages) {
             this.uiManager.processKillFeedMessage(message);
         }
+
+        for (const airdrop of updateData.airdrops) {
+            this.airdrops.add(new Airdrop(this, airdrop.position, airdrop.direction));
+        }
     }
 
     /**
@@ -528,6 +539,7 @@ export class Game {
     tick(): void {
         if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
         this.inputManager.update();
+        this.soundManager.update();
 
         const player = this.activePlayer;
         if (!player) return;
@@ -606,7 +618,7 @@ export class Game {
                                 interactText = object.door?.offset === 0 ? "Open Door" : "Close Door";
                                 break;
                             case ObstacleSpecialRoles.Activatable:
-                                interactText = `Activate ${object.definition.name}`;
+                                interactText = `${object.definition.interactText} ${object.definition.name}`;
                                 break;
                         }
                     } else { // object must be Loot

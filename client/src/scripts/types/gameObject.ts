@@ -1,13 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 import { TICKS_PER_SECOND, type ObjectCategory } from "../../../../common/src/constants";
-import { vecLerp } from "../../../../common/src/utils/math";
+import { vLerp } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
-import { type HowlCallback, type HowlErrorCallback } from "howler";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -33,7 +32,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
         const interpFactor = (Date.now() - this.lastPositionChange) / TICKS_PER_SECOND;
-        this.container.position = toPixiCoords(vecLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
+        this.container.position = toPixiCoords(vLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
     oldRotation!: Vector;
@@ -54,7 +53,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
         const interpFactor = (Date.now() - this.lastRotationChange) / TICKS_PER_SECOND;
 
-        const interpolated = vecLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
+        const interpolated = vLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 
         this.container.rotation = Math.atan2(interpolated.y, interpolated.x);
     }
@@ -86,8 +85,14 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         this.container.destroy();
     }
 
-    playSound(key: string, fallOff?: number, maxDistance?: number, onend?: HowlCallback | HowlErrorCallback): Sound {
-        return this.game.soundManager.play(key, this.position, fallOff, maxDistance, onend);
+    playSound(
+        key: string,
+        fallOff?: number,
+        maxDistance?: number,
+        dynamic?: boolean,
+        onend?: () => void
+    ): Sound {
+        return this.game.soundManager.play(key, this.position, fallOff, maxDistance, dynamic, onend);
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;

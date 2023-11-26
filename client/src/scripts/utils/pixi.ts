@@ -1,6 +1,6 @@
 import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
-import { type Vector, vMul } from "../../../../common/src/utils/vector";
+import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
 import { atlases } from "virtual:spritesheets-jsons";
@@ -71,6 +71,11 @@ export class SuroiSprite extends Sprite {
 
     setRotation(rotation?: number): SuroiSprite {
         this.rotation = rotation ?? 0;
+        return this;
+    }
+
+    setScale(scale?: number): SuroiSprite {
+        this.scale = v(scale ?? 1, scale ?? 1);
         return this;
     }
 

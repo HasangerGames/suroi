@@ -1,5 +1,5 @@
 import { GasState } from "../../common/src/constants";
-import { clamp, distanceSquared, lerp, vecLerp } from "../../common/src/utils/math";
+import { clamp, distanceSquared, lerp, vLerp } from "../../common/src/utils/math";
 import { randomPointInsideCircle } from "../../common/src/utils/random";
 import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
@@ -7,6 +7,8 @@ import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
 import { Logger } from "./utils/misc";
 import { newGame } from "./server";
+import { CircleHitbox } from "../../common/src/utils/hitbox";
+import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 
 export class Gas {
     stage = 0;
@@ -62,7 +64,7 @@ export class Gas {
             this.ticksSinceLastDamage = 0;
             this.doDamage = true;
             if (this.state === GasState.Advancing) {
-                this.currentPosition = vecLerp(this.oldPosition, this.newPosition, this.percentage);
+                this.currentPosition = vLerp(this.oldPosition, this.newPosition, this.percentage);
                 this.currentRadius = lerp(this.oldRadius, this.newRadius, this.percentage);
             }
         }
@@ -83,6 +85,20 @@ export class Gas {
             newGame();
             Logger.log(`Game ${this.game.id} | Preventing new players from joining`);
             this.game.allowJoin = false;
+        }
+
+        if (currentStage.summonAirdrop) {
+            let spawnPosition = this.newPosition;
+            const hitbox = new CircleHitbox(15);
+            const gasRadius = this.newRadius ** 2;
+            spawnPosition = this.game.map.getRandomPosition(hitbox, {
+                maxAttempts: 500,
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                collides: (position) => {
+                    return distanceSquared(position, this.currentPosition) >= gasRadius;
+                }
+            }) ?? spawnPosition;
+            this.game.summonAirdrop(spawnPosition);
         }
 
         if (currentStage.state === GasState.Waiting) {

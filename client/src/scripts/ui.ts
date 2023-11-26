@@ -495,7 +495,7 @@ Video evidence is required.`)) {
     });
 
     addCheckboxListener("#toggle-hide-minimap", "cv_minimap_minimized", () => {
-        game.map.toggleMiniMap(true);
+        game.map.toggleMinimap(true);
     });
 
     // Leave warning

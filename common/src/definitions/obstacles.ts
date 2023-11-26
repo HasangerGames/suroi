@@ -1,7 +1,13 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
-import { type ObjectDefinition, ObjectDefinitions, ObstacleSpecialRoles, MapObjectSpawnMode } from "../utils/objectDefinitions";
+import {
+    type ObjectDefinition,
+    ObjectDefinitions,
+    ObstacleSpecialRoles,
+    MapObjectSpawnMode,
+    type ReferenceTo
+} from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
 
@@ -35,6 +41,7 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly base?: string
         readonly particle?: string
         readonly residue?: string
+        readonly opened?: string
     }
 
     readonly spawnMode?: MapObjectSpawnMode
@@ -59,10 +66,15 @@ export type ObstacleDefinition = ObjectDefinition & {
 })) | {
     readonly role: ObstacleSpecialRoles.Activatable
     readonly requiredItem?: string
+    readonly interactText?: string
     // obstacle will interact will all obstacles with that id string from the parent building
     readonly interactType?: string
     readonly interactDelay?: number
     readonly emitParticles?: boolean
+    readonly replaceWith?: {
+        idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
+        delay: number
+    }
 } | {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
 });
@@ -446,6 +458,71 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             reflectBullets: true
+        },
+        {
+            idString: "airdrop_crate_locked",
+            name: "Airdrop",
+            material: "metal",
+            health: 10000,
+            indestructible: true,
+            reflectBullets: true,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.9
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.7, 8.7)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            role: ObstacleSpecialRoles.Activatable,
+            interactText: "Open",
+            replaceWith: {
+                idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
+                delay: 800
+            },
+            noResidue: true,
+            frames: {
+                particle: "metal_particle"
+            }
+        },
+        {
+            idString: "airdrop_crate",
+            name: "Airdrop Crate",
+            material: "crate",
+            health: 150,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.7, 8.7)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true
+        },
+        {
+            idString: "gold_airdrop_crate",
+            name: "Gold Airdrop Crate",
+            material: "crate",
+            health: 170,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.7, 8.7)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            frames: {
+                particle: "airdrop_crate_particle"
+            }
         },
         {
             idString: "gold_rock",
@@ -1600,6 +1677,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             emitParticles: true,
             requiredItem: "gas_can",
+            interactText: "Open",
             interactType: "vault_door",
             interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)

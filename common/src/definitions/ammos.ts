@@ -21,6 +21,12 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         hideUnlessPresent: true
     },
     {
+        idString: "curadell",
+        name: "Curadell",
+        itemType: ItemType.Ammo,
+        hideUnlessPresent: true
+    },
+    {
         idString: "12g",
         name: "12 gauge",
         itemType: ItemType.Ammo

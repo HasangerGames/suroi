@@ -524,7 +524,7 @@ export function setUpCommands(game: Game): void {
     Command.createCommand(
         "toggle_minimap",
         function(): undefined {
-            game.map.toggleMiniMap();
+            game.map.toggleMinimap();
         },
         game,
         {

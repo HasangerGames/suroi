@@ -3,6 +3,8 @@ import { type ItemDefinition, ItemType, ObjectDefinitions } from "../utils/objec
 export interface SkinDefinition extends ItemDefinition {
     readonly itemType: ItemType.Skin
     readonly notInLoadout?: boolean
+    readonly grassTint?: boolean
+    readonly hideEquipment?: boolean
     readonly roleRequired?: string
 }
 
@@ -240,10 +242,17 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         notInLoadout: true
     },
     {
-        idString: "debug",
-        name: "Debug",
+        idString: "stardust",
+        name: "Stardust",
         itemType: ItemType.Skin,
-        roleRequired: "dev",
+        notInLoadout: true
+    },
+    {
+        idString: "ghillie_suit",
+        name: "Ghillie Suit",
+        itemType: ItemType.Skin,
+        grassTint: true,
+        hideEquipment: true,
         notInLoadout: true
     }
 ]);

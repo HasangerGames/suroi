@@ -14,6 +14,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { Skins } from "../../../common/src/definitions/skins";
 import { type LootTables } from "./lootTables";
+import { Melees } from "../../../common/src/definitions/melees";
 
 interface MapDefinition {
     readonly width: number
@@ -300,7 +301,9 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("pumpkin", v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("airdrop_crate", v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("generator", v(this.width / 2 - 20, this.height / 2), 0);
+            map.game.addLoot("radio", v(this.width / 2 - 20, this.height / 2 - 20), 0);
         }
     },
     guns_test: {
@@ -320,6 +323,19 @@ export const Maps: Record<string, MapDefinition> = {
                 map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
                 map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
+            }
+        }
+    },
+    obstacles_test: {
+        width: 128,
+        height: 48 + (32 * Obstacles.definitions.length),
+        beachSize: 4,
+        oceanSize: 4,
+        genCallback(map) {
+            for (let i = 0; i < Obstacles.definitions.length; i++) {
+                const obstacle = Obstacles.definitions[i];
+                //setInterval(() => player.activeItem.useItem(), 30);
+                map.generateObstacle(obstacle.idString, v(map.width / 2, 40 * i), 0, 1, i as Variation);
             }
         }
     },

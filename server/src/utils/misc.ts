@@ -51,6 +51,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
             loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
         } else {
             const item = selection.item;
+            if (item === "nothing") continue;
             loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
             const definition = Loots.fromString(item);
@@ -65,6 +66,18 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     }
 
     return loot;
+}
+
+export function getRandomIDString(table: Record<string, number> | string): string {
+    if (typeof table === "string") return table;
+
+    const items: string[] = [];
+    const weights: number[] = [];
+    for (const item in table) {
+        items.push(item);
+        weights.push(table[item]);
+    }
+    return weightedRandom(items, weights);
 }
 
 /**
