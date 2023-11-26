@@ -107,7 +107,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { tier: "equipment", weight: 1 },
+            { tier: "special_equipment", weight: 1 },
             { tier: "healing_items", weight: 1 },
             { tier: "scopes", weight: 1 }
         ]
@@ -431,6 +431,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     airdrop_skins: [
         { item: "nothing", weight: 1 },
         { item: "stardust", weight: 0.5 },
+        { item: "aurora", weight: 0.5 },
         { item: "ghillie_suit", weight: 0.1 },
         { item: "basic_outfit", weight: 0.001 }
     ],
