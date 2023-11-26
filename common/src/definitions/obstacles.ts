@@ -72,7 +72,7 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly interactDelay?: number
     readonly emitParticles?: boolean
     readonly replaceWith?: {
-        idString: ReferenceTo<ObstacleDefinition>
+        idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
         delay: number
     }
 } | {
@@ -479,7 +479,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             interactText: "Open",
             replaceWith: {
-                idString: "airdrop_crate",
+                idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
                 delay: 800
             },
             noResidue: true,
@@ -503,6 +503,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
             rotationMode: RotationMode.Limited,
             hasLoot: true
+        },
+        {
+            idString: "gold_airdrop_crate",
+            name: "Gold Airdrop Crate",
+            material: "crate",
+            health: 170,
+            scale: {
+                spawnMin: 1,
+                spawnMax: 1,
+                destroy: 0.5
+            },
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(8.7, 8.7)
+            ),
+            spawnHitbox: RectangleHitbox.fromRect(10, 10),
+            rotationMode: RotationMode.Limited,
+            hasLoot: true,
+            frames: {
+                particle: "airdrop_crate_particle"
+            }
         },
         {
             idString: "gold_rock",
