@@ -242,8 +242,8 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         notInLoadout: true
     },
     {
-        idString: "celestial",
-        name: "Celestial",
+        idString: "stardust",
+        name: "Stardust",
         itemType: ItemType.Skin,
         notInLoadout: true
     },

@@ -430,9 +430,9 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     ],
     airdrop_skins: [
         { item: "nothing", weight: 1 },
-        { item: "celestial", weight: 0.5 },
+        { item: "stardust", weight: 0.5 },
         { item: "ghillie_suit", weight: 0.1 },
-        { item: "basic_outfit", weight: 0.01 }
+        { item: "basic_outfit", weight: 0.001 }
     ],
     airdrop_melee: [
         { item: "nothing", weight: 1 },
