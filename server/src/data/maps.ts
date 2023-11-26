@@ -14,7 +14,6 @@ import { type WebSocket } from "uWebSockets.js";
 import { type GunItem } from "../inventory/gunItem";
 import { Skins } from "../../../common/src/definitions/skins";
 import { type LootTables } from "./lootTables";
-import { Melees } from "../../../common/src/definitions/melees";
 
 interface MapDefinition {
     readonly width: number
@@ -301,9 +300,10 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("airdrop_crate", v(this.width / 2, this.height / 2), 0);
+            map.generateObstacle("flint_stone", v(this.width / 2, this.height / 2), 0);
             map.generateObstacle("generator", v(this.width / 2 - 20, this.height / 2), 0);
-            map.game.addLoot("radio", v(this.width / 2 - 20, this.height / 2 - 20), 0);
+            map.game.addLoot("radio", v(this.width / 2 + 10, this.height / 2 + 10), 0);
+            map.game.addLoot("curadell", v(this.width / 2 + 10, this.height / 2 + 10), 1);
         }
     },
     guns_test: {

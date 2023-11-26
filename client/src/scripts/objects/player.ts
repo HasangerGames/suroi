@@ -28,8 +28,9 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
-import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
+import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
+import { type SkinDefinition } from "../../../../common/src/definitions/skins";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -79,6 +80,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly emoteImage: SuroiSprite
         readonly waterOverlay: SuroiSprite
     };
+
+    hideEquipment? = false;
 
     readonly emoteContainer: Container;
     healingParticlesEmitter: ParticleEmitter;
@@ -207,6 +210,24 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const casings = weaponDef.casingParticles;
 
         if (casings === undefined) return;
+
+        if (weaponDef.specialParticle) {
+            this.game.particleManager.spawnParticle({
+                frames: `${weaponDef.specialParticle}`,
+                position: vAdd(this.position, vRotate(casings.position, this.rotation)),
+                speed: vRotate(v(10, 0), this.rotation),
+                lifetime: 4000,
+                zIndex: ZIndexes.Players,
+                scale: {
+                    start: 0.8,
+                    end: 3
+                },
+                alpha: {
+                    start: 1, end: 0
+                },
+                rotation: this.rotation
+            });
+        }
 
         const spawnCasings = (): void => {
             this.game.particleManager.spawnParticles(
@@ -362,9 +383,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
 
             const skinID = full.skin.idString;
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            const skinDef = Loots.fromString(skinID) as SkinDefinition;
+
             this.images.body.setFrame(`${skinID}_base`);
             this.images.leftFist.setFrame(`${skinID}_fist`);
             this.images.rightFist.setFrame(`${skinID}_fist`);
+
+            const tint = skinDef.grassTint ? GHILLIE_TINT : 0xffffff;
+            this.images.body.setTint(tint);
+            this.images.leftFist.setTint(tint);
+            this.images.rightFist.setTint(tint);
+
+            this.hideEquipment = skinDef.hideEquipment;
 
             this.equipment.helmet = full.helmet;
             this.equipment.vest = full.vest;
@@ -540,7 +571,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     updateEquipmentWorldImage(type: "helmet" | "vest" | "backpack", def?: ArmorDefinition | BackpackDefinition): void {
         const image = this.images[type];
-        if (def && def.level > 0) {
+        if (def && def.level > 0 && !this.hideEquipment) {
             image.setFrame(`${def.idString}_world`).setVisible(true);
         } else {
             image.setVisible(false);

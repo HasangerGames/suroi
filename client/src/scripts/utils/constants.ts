@@ -27,6 +27,8 @@ export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
         {} as Record<ColorKeys, Color>
     );
 
+export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+
 export const PIXI_SCALE = 20;
 
 export const FIRST_EMOTE_ANGLE = Math.atan2(-1, -1);

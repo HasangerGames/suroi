@@ -46,7 +46,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             shrapnelCount: 10,
             ballistics: {
-                damage: 10,
+                damage: 2,
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 range: 20,
@@ -116,8 +116,8 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             damage: 160,
             obstacleMultiplier: 3,
             radius: {
-                min: 12,
-                max: 36
+                min: 8,
+                max: 25
             },
             cameraShake: {
                 duration: 500,
@@ -130,7 +130,7 @@ export const Explosions = new ObjectDefinitions<ExplosionDefinition>(
             },
             shrapnelCount: 20,
             ballistics: {
-                damage: 10,
+                damage: 4,
                 obstacleMultiplier: 2,
                 speed: 0.08,
                 range: 30,

@@ -21,29 +21,29 @@
     position: absolute;
     bottom: 5px;
 
+    @media screen and (max-width: 1500px) {
+        bottom: 5px;
+        right: 240px;
+    }
+
     @media screen and (min-width: $screen_large) {
         width: 70px;
         height: 60px;
         bottom: 130px;
-        right: 10px;
+        right: 290px;
     }
 
-    @media screen and (max-width: 1500px) {
-        bottom: 10px;
-        right: 368px;
-    }
-
-    @media screen and (max-width: $screen_large) {
-        bottom: 69px;
-        right: 87px;
-    }
-
-    @media screen and (max-width: $screen_small) {
+    @media screen and (max-width: $screen_medium) {
         width: 50px;
         height: 40px;
         font-size: 20px;
-        bottom: 5px;
-        right: 132px;
+        bottom: 3px;
+        right: 240px;
+    }
+
+    @media screen and (max-width: $screen_small) {
+        bottom: 62px;
+        right: 3px;
     }
 
     z-index: 1000;
@@ -377,6 +377,10 @@
         width: 120px;
     }
 
+    @media screen and (max-width: $screen_medium) {
+        display: none !important;
+    }
+
     #weapon-clip-ammo {
         font-size: xx-large;
         width: 100px;
@@ -423,6 +427,13 @@
         bottom: 5px;
 
         border-width: 5px;
+    }
+
+    @media screen and (max-width: $screen_medium) {
+        bottom: 3px;
+        left: unset;
+        right: 3px;
+        transform: none;
     }
 
     display: flex;
@@ -507,6 +518,12 @@
         width: 230px;
         height: 16px;
         bottom: 42px;
+    }
+
+    @media screen and (max-width: $screen_medium) {
+        left: unset;
+        right: 3px;
+        transform: none;
     }
 
     display: flex;
@@ -673,7 +690,11 @@
 .inventory-container {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
+
+    @media screen and (max-width: $screen_large) {
+        gap: 3px;
+    }
 
     .inventory-slot {
         background: $transparent_bg;
@@ -684,11 +705,20 @@
 
         &.item-slot {
             padding: 0 8px 0 8px;
+
+            @media screen and (max-width: $screen_large) {
+                padding: 0 4px 0 4px;
+            }
         }
 
         @media screen and (max-width: $screen_large) {
             width: 75px;
             height: 75px;
+        }
+
+        @media screen and (max-width: $screen_medium) {
+            width: 60px;
+            height: 60px;
         }
 
         position: relative;
@@ -793,6 +823,14 @@
         right: 5px;
     }
 
+    @media screen and (max-width: $screen_medium) {
+        right: 3px;
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        height: fit-content;
+    }
+
     .item-image {
         width: 90px;
         height: 90px;
@@ -800,6 +838,11 @@
         @media screen and (max-width: $screen_large) {
             width: 50px;
             height: 50px;
+        }
+
+        @media screen and (max-width: $screen_medium) {
+            width: 35px;
+            height: 35px;
         }
     }
 
@@ -818,8 +861,18 @@
     bottom: 10px;
     left: 10px;
     display: flex;
-    gap: 10px;
-    flex-direction: row-reverse;
+    gap: 5px;
+    flex-direction: column;
+
+    @media screen and (max-width: $screen_large) {
+        bottom: 3px;
+        left: 3px;
+        gap: 3px;
+    }
+
+    @media screen and (max-width: $screen_small) {
+        flex-direction: row-reverse;
+    }
 
     .item-slot {
         height: 40px;
@@ -836,9 +889,15 @@
         }
 
         @media screen and (max-width: $screen_large) {
-            height: 30px;
+            height: 25px;
             width: 75px;
             border-radius: 8px;
+        }
+
+        @media screen and (max-width: $screen_large) {
+            height: 25px;
+            width: 64px;
+            border-radius: 5px;
         }
     }
 
@@ -848,8 +907,12 @@
     }
 
     .inventory-container {
-        flex-direction: column;
+        flex-direction: row;
         justify-content: end;
+
+        @media screen and (max-width: $screen_small) {
+            flex-direction: column;
+        }
 
         .item-image {
             width: 40px;
@@ -865,11 +928,18 @@
         .inventory-slot .item-tooltip {
             width: max-content;
             max-width: 120px;
-            left: 110px;
-        }
 
-        .inventory-slot:last-child .item-tooltip {
-            bottom: 3px;
+            left: 0;
+            bottom: 50px;
+
+            @media screen and (max-width: $screen_large) {
+                bottom: 30px;
+            }
+
+            @media screen and (max-width: $screen_small) {
+                left: 70px;
+                bottom: 0;
+            }
         }
     }
 }
@@ -885,13 +955,19 @@
     }
 
     @media screen and (max-width: $screen_large) {
+        bottom: 85px;
+        right: -37px;
+    }
+
+    @media screen and (max-width: $screen_medium) {
         flex-direction: row;
-        bottom: 5px;
-        right: 86px;
+        left: 5px;
+        bottom: 58px;
+        width: fit-content;
     }
 
     @media screen and (max-width: $screen_small) {
-        flex-direction: column;
+        bottom: 115px;
     }
 
     .inventory-slot {
@@ -905,15 +981,6 @@
         .item-tooltip {
             bottom: 85px;
             width: max-content;
-        }
-
-        @media screen and (max-width: $screen_small) {
-            width: 44px;
-            height: 44px !important;
-
-            .item-name {
-                display: none;
-            }
         }
 
         @media screen and (max-width: $screen_large) {
@@ -930,6 +997,15 @@
             }
         }
 
+        @media screen and (max-width: $screen_medium) {
+            width: 36px;
+            height: 36px !important;
+
+            .item-name {
+                display: none;
+            }
+        }
+
         .item-image {
             width: 45px;
             height: 45px;
@@ -939,6 +1015,11 @@
             @media screen and (max-width: $screen_large) {
                 width: 32px;
                 height: 32px;
+            }
+
+            @media screen and (max-width: $screen_medium) {
+                width: 28px;
+                height: 28px;
             }
         }
     }
@@ -996,9 +1077,9 @@
                     height: 50px;
                 }
 
-                @media screen and (max-width: $screen_small) {
-                    width: 40px;
-                    height: 40px;
+                @media screen and (max-width: $screen_medium) {
+                    width: 35px;
+                    height: 35px;
                 }
             }
 
