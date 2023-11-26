@@ -472,7 +472,7 @@ export const Guns: GunDefinition[] = [
             ejectionDelay: 700
         },
         ballistics: {
-            damage: 142.75,
+            damage: 129,
             obstacleMultiplier: 1,
             speed: 0.45,
             range: 300,
