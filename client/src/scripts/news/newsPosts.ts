@@ -23,10 +23,11 @@ Erosion has worked its magic on the island, and rivers look much cleaner than th
   <li>Tweaked loot tables. Higher level equipment and powerful weapons are now much rarer.</li>
   <li>Better building visibility! You can now see inside buildings from further away, and through open doors.</li>
   <li>Better river generation! Rivers can now branch, and the ends meet the ocean more cleanly.</li>
-  <li>UI design improvements.</li>
+  <li>Mobile layout improvements.</li>
   <li>Migrated from Webpack to Vite.</li>
   <li>The Stoner 63 now has a 1 in 100 chance of spawning in the refinery.</li>
   <li>Rebalanced some guns.</li>
+  <li>Added unique pickup sounds for helmets, vests, and packs.</li>
   <li>Tweaked kill feed icons.</li>
   <li>New M1895 switch sound.</li>
   <li>Updated MP40 reload sound.</li>
