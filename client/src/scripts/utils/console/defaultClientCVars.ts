@@ -1,247 +1,120 @@
 import { type Stringable } from "./gameConsole";
-import { type CVarFlags, type CVarTypeMapping, type ExtractConVarValue } from "./variables";
+import { type CVarFlags, type ExtractConVarValue, type ConVar } from "./variables";
 
 export interface JSONCVar<Value extends Stringable> {
-    readonly name: string
     readonly value: Value
     readonly flags: Partial<CVarFlags>
 }
 
-type SimpleCVarMapping = { [K in keyof CVarTypeMapping]: JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>> };
+export interface CVarTypeMapping {
+    readonly cv_player_name: ConVar<string>
+    readonly cv_loadout_skin: ConVar<string>
+    readonly cv_loadout_crosshair: ConVar<number>
+    readonly cv_loadout_top_emote: ConVar<string>
+    readonly cv_loadout_right_emote: ConVar<string>
+    readonly cv_loadout_bottom_emote: ConVar<string>
+    readonly cv_loadout_left_emote: ConVar<string>
+    readonly cv_loop_scope_selection: ConVar<boolean>
+    readonly cv_anonymize_player_names: ConVar<boolean>
+    readonly cv_master_volume: ConVar<number>
+    readonly cv_music_volume: ConVar<number>
+    readonly cv_sfx_volume: ConVar<number>
+    readonly cv_mute_audio: ConVar<boolean>
+    readonly cv_use_old_menu_music: ConVar<boolean>
+    readonly cv_language: ConVar<string>
+    readonly cv_region: ConVar<string | undefined>
+    readonly cv_camera_shake_fx: ConVar<boolean>
+    readonly cv_killfeed_style: ConVar<"text" | "icon">
+    readonly cv_movement_smoothing: ConVar<boolean>
+    readonly cv_responsive_rotation: ConVar<boolean>
+    readonly cv_antialias: ConVar<boolean>
+    readonly cv_minimap_minimized: ConVar<boolean>
+    readonly cv_leave_warning: ConVar<boolean>
+    readonly cv_minimap_transparency: ConVar<number>
+    readonly cv_map_transparency: ConVar<number>
+    readonly cv_draw_hud: ConVar<boolean>
+    readonly cv_rules_acknowledged: ConVar<boolean>
+    readonly cv_hide_rules_button: ConVar<boolean>
+    readonly cv_console_width: ConVar<number>
+    readonly cv_console_height: ConVar<number>
+    readonly cv_console_left: ConVar<number>
+    readonly cv_console_top: ConVar<number>
+    readonly cv_crosshair_color: ConVar<string>
+    readonly cv_crosshair_size: ConVar<number>
+    readonly cv_crosshair_stroke_color: ConVar<string>
+    readonly cv_crosshair_stroke_size: ConVar<number>
+
+    readonly pf_show_fps: ConVar<boolean>
+    readonly pf_show_ping: ConVar<boolean>
+    readonly pf_show_pos: ConVar<boolean>
+
+    readonly mb_controls_enabled: ConVar<boolean>
+    readonly mb_joystick_size: ConVar<number>
+    readonly mb_joystick_transparency: ConVar<number>
+
+    readonly dv_password: ConVar<string>
+    readonly dv_role: ConVar<string>
+    readonly dv_name_color: ConVar<string>
+    readonly dv_lobby_clearing: ConVar<boolean>
+}
+
+type SimpleCVarMapping = {
+    [K in keyof CVarTypeMapping]: ExtractConVarValue<CVarTypeMapping[K]> | JSONCVar<ExtractConVarValue<CVarTypeMapping[K]>>
+};
+
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
-    cv_player_name: {
-        name: "cv_player_name",
-        value: "",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_skin: {
-        name: "cv_loadout_skin",
-        value: "hazel_jumpsuit",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_crosshair: {
-        name: "cv_loadout_crosshair",
-        value: 0,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_top_emote: {
-        name: "cv_loadout_top_emote",
-        value: "happy_face",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_right_emote: {
-        name: "cv_loadout_right_emote",
-        value: "thumbs_up",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_bottom_emote: {
-        name: "cv_loadout_bottom_emote",
-        value: "suroi_logo",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loadout_left_emote: {
-        name: "cv_loadout_left_emote",
-        value: "sad_face",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_loop_scope_selection: {
-        name: "cv_loop_scope_selection",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_anonymize_player_names: {
-        name: "cv_anonymize_player_names",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_master_volume: {
-        name: "cv_master_volume",
-        value: 1,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_music_volume: {
-        name: "cv_music_volume",
-        value: 1,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_sfx_volume: {
-        name: "cv_sfx_volume",
-        value: 1,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_mute_audio: {
-        name: "cv_mute_audio",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_use_old_menu_music: {
-        name: "cv_use_old_menu_music",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_language: {
-        name: "cv_language",
-        value: "en",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_region: {
-        name: "cv_region",
-        value: undefined,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_camera_shake_fx: {
-        name: "cv_camera_shake_fx",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_killfeed_style: {
-        name: "cv_killfeed_style",
-        value: "text",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_movement_smoothing: {
-        name: "cv_movement_smoothing",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_responsive_rotation: {
-        name: "cv_responsive_rotation",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_antialias: {
-        name: "cv_antialias",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_minimap_minimized: {
-        name: "cv_minimap_minimized",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_leave_warning: {
-        name: "cv_leave_warning",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_minimap_transparency: {
-        name: "cv_minimap_transparency",
-        value: 0.8,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_map_transparency: {
-        name: "cv_map_transparency",
-        value: 0.9,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_draw_hud: {
-        name: "cv_draw_hud",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_rules_acknowledged: {
-        name: "cv_rules_acknowledged",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_hide_rules_button: {
-        name: "cv_hide_rules_button",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_console_width: {
-        name: "cv_console_width",
-        value: window.innerWidth / 2,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_console_height: {
-        name: "cv_console_height",
-        value: window.innerWidth / 2,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_console_left: {
-        name: "cv_console_left",
-        value: window.innerWidth / 4,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_console_top: {
-        name: "cv_console_top",
-        value: window.innerWidth / 4,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_crosshair_color: {
-        name: "cv_crosshair_color",
-        value: "#000000",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_crosshair_size: {
-        name: "cv_crosshair_size",
-        value: 30,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_crosshair_stroke_color: {
-        name: "cv_crosshair_stroke_color",
-        value: "#000000",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    cv_crosshair_stroke_size: {
-        name: "cv_crosshair_stroke_size",
-        value: 0,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
+    cv_player_name: "",
+    cv_loadout_skin: "hazel_jumpsuit",
+    cv_loadout_crosshair: 0,
+    cv_loadout_top_emote: "happy_face",
+    cv_loadout_right_emote: "thumbs_up",
+    cv_loadout_bottom_emote: "suroi_logo",
+    cv_loadout_left_emote: "sad_face",
+    cv_loop_scope_selection: false,
+    cv_anonymize_player_names: false,
+    cv_master_volume: 1,
+    cv_music_volume: 1,
+    cv_sfx_volume: 1,
+    cv_use_old_menu_music: false,
+    cv_region: undefined,
+    cv_camera_shake_fx: true,
+    cv_killfeed_style: "text",
+    cv_movement_smoothing: true,
+    cv_responsive_rotation: true,
+    cv_antialias: true,
+    cv_minimap_minimized: false,
+    cv_leave_warning: true,
+    cv_minimap_transparency: 0.8,
+    cv_map_transparency: 0.9,
+    cv_rules_acknowledged: false,
+    cv_hide_rules_button: false,
+    cv_console_width: window.innerWidth / 2,
+    cv_console_height: window.innerWidth / 2,
+    cv_console_left: window.innerWidth / 4,
+    cv_console_top: window.innerWidth / 4,
+    cv_crosshair_color: "#000000",
+    cv_crosshair_size: 30,
+    cv_crosshair_stroke_color: "#000000",
+    cv_crosshair_stroke_size: 0,
 
-    pf_show_fps: {
-        name: "pf_show_fps",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    pf_show_ping: {
-        name: "pf_show_ping",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    pf_show_pos: {
-        name: "pf_show_pos",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
+    // unused for now
+    cv_draw_hud: true,
+    cv_language: "en",
+    cv_mute_audio: false,
+    //
 
-    mb_controls_enabled: {
-        name: "mb_controls_enabled",
-        value: true,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    mb_joystick_size: {
-        name: "mb_joystick_size",
-        value: 150,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    mb_joystick_transparency: {
-        name: "mb_joystick_transparency",
-        value: 0.8,
-        flags: { archive: true, readonly: false, cheat: false }
-    },
+    pf_show_fps: false,
+    pf_show_ping: false,
+    pf_show_pos: false,
 
-    dv_password: {
-        name: "dv_password",
-        value: "",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    dv_role: {
-        name: "dv_role",
-        value: "",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    dv_name_color: {
-        name: "dv_name_color",
-        value: "",
-        flags: { archive: true, readonly: false, cheat: false }
-    },
-    dv_lobby_clearing: {
-        name: "dv_lobby_clearing",
-        value: false,
-        flags: { archive: true, readonly: false, cheat: false }
-    }
+    mb_controls_enabled: true,
+    mb_joystick_size: 150,
+    mb_joystick_transparency: 0.8,
+
+    dv_password: "",
+    dv_role: "",
+    dv_name_color: "",
+    dv_lobby_clearing: false
 } satisfies SimpleCVarMapping);
 
 export const defaultBinds = Object.freeze({

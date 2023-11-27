@@ -3,8 +3,8 @@ import $ from "jquery";
 import { clamp } from "../../../../../common/src/utils/math";
 import { type Game } from "../../game";
 import { type Command } from "./commands";
-import { defaultBinds, defaultClientCVars } from "./defaultClientCVars";
-import { ConVar, ConsoleVariables, type CVarFlags, type CVarTypeMapping } from "./variables";
+import { defaultBinds, defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
+import { ConVar, ConsoleVariables, type CVarFlags } from "./variables";
 
 enum MessageType {
     Log = "log",
@@ -27,7 +27,7 @@ export type Stringable = string | number | boolean | bigint | undefined | null;
 export type PossibleError<E = never> = undefined | { readonly err: E };
 
 export interface GameSettings {
-    variables: Record<string, { value: Stringable, flags?: CVarFlags }>
+    variables: Record<string, Stringable | { value: Stringable, flags?: CVarFlags }>
     aliases: Record<string, string>
     binds: Record<string, string[]>
 }
@@ -181,11 +181,20 @@ export class GameConsole {
             for (const name in config.variables) {
                 const variable = config.variables[name];
 
-                if (defaultClientCVars[name as keyof CVarTypeMapping]) {
-                    this.variables.set.builtIn(name as keyof CVarTypeMapping, variable.value as string, false);
+                const value = typeof variable === "object" ? variable?.value : variable;
+
+                if (name in defaultClientCVars) {
+                    this.variables.set.builtIn(name as keyof CVarTypeMapping, value as string, false);
                 } else {
+                    const flags = typeof variable === "object" ? variable?.flags : {};
+
                     this.variables.declareCVar(
-                        new ConVar(name, variable.value, this, variable.flags)
+                        new ConVar(name, value, this, {
+                            archive: true,
+                            cheat: false,
+                            readonly: false,
+                            ...flags
+                        })
                     );
                     rewriteToLS = true;
                 }

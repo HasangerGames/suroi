@@ -1,5 +1,5 @@
 import { type GameConsole, type GameSettings, type PossibleError, type Stringable } from "./gameConsole";
-import { defaultClientCVars, type JSONCVar } from "./defaultClientCVars";
+import { defaultClientCVars, type CVarTypeMapping } from "./defaultClientCVars";
 
 export interface CVarFlags {
     readonly archive: boolean
@@ -16,14 +16,11 @@ export class ConVar<Value = string> {
     readonly console: GameConsole;
     get value(): Value { return this._value; }
 
-    static from<Value extends Stringable>(json: JSONCVar<Value>, console: GameConsole): ConVar<Value> {
-        return new ConVar<Value>(json.name, json.value, console, json.flags);
-    }
-
     constructor(name: string, value: Value, console: GameConsole, flags?: Partial<CVarFlags>) {
         this.name = name;
         this._value = value;
         this.console = console;
+
         this.flags = {
             archive: flags?.archive ?? false,
             readonly: flags?.readonly ?? true,
@@ -65,12 +62,31 @@ export class ConsoleVariables {
     constructor(console: GameConsole) {
         const varExists = this.has.bind(this);
         this.console = console;
-        for (const [name, value] of Object.entries(defaultClientCVars)) {
-            if (varExists(name)) continue;
 
-            // @ts-expect-error This is init code, so shove it
-            this._builtInCVars[name as keyof CVarTypeMapping] = ConVar.from<Stringable>(value, console);
+        const vars: Record<string, ConVar<Stringable>> = {};
+
+        for (const variable in defaultClientCVars) {
+            if (varExists(variable)) continue;
+
+            const name = variable as keyof CVarTypeMapping;
+
+            const defaultVar = defaultClientCVars[name];
+            const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
+            const flags = typeof defaultVar === "object" ? defaultVar.flags : {};
+
+            vars[name] = new ConVar(
+                name,
+                defaultValue,
+                console,
+                {
+                    archive: true,
+                    readonly: false,
+                    cheat: false,
+                    ...flags
+                });
         }
+
+        this._builtInCVars = vars as unknown as CVarTypeMapping;
     }
 
     readonly get = (() => {
@@ -177,8 +193,11 @@ export class ConsoleVariables {
             const cvarName = varName as keyof CVarTypeMapping;
             const cvar = this._builtInCVars[cvarName];
 
-            if (cvar.value !== defaultClientCVars[cvarName].value) {
-                variables[varName] = { value: cvar.value };
+            const defaultVar = defaultClientCVars[cvarName];
+            const defaultValue = typeof defaultVar === "object" ? defaultVar.value : defaultVar;
+
+            if (cvar.value !== defaultValue) {
+                variables[varName] = cvar.value;
             }
         }
 
@@ -196,56 +215,4 @@ export class ConsoleVariables {
                 ].join(" ")} => ${cvar.value}</li>`
             ).join("");
     }
-}
-
-export interface CVarTypeMapping {
-    readonly cv_player_name: ConVar<string>
-    readonly cv_loadout_skin: ConVar<string>
-    readonly cv_loadout_crosshair: ConVar<number>
-    readonly cv_loadout_top_emote: ConVar<string>
-    readonly cv_loadout_right_emote: ConVar<string>
-    readonly cv_loadout_bottom_emote: ConVar<string>
-    readonly cv_loadout_left_emote: ConVar<string>
-    readonly cv_loop_scope_selection: ConVar<boolean>
-    readonly cv_anonymize_player_names: ConVar<boolean>
-    readonly cv_master_volume: ConVar<number>
-    readonly cv_music_volume: ConVar<number>
-    readonly cv_sfx_volume: ConVar<number>
-    readonly cv_mute_audio: ConVar<boolean>
-    readonly cv_use_old_menu_music: ConVar<boolean>
-    readonly cv_language: ConVar<string>
-    readonly cv_region: ConVar<string | undefined>
-    readonly cv_camera_shake_fx: ConVar<boolean>
-    readonly cv_killfeed_style: ConVar<"text" | "icon">
-    readonly cv_movement_smoothing: ConVar<boolean>
-    readonly cv_responsive_rotation: ConVar<boolean>
-    readonly cv_antialias: ConVar<boolean>
-    readonly cv_minimap_minimized: ConVar<boolean>
-    readonly cv_leave_warning: ConVar<boolean>
-    readonly cv_minimap_transparency: ConVar<number>
-    readonly cv_map_transparency: ConVar<number>
-    readonly cv_draw_hud: ConVar<boolean>
-    readonly cv_rules_acknowledged: ConVar<boolean>
-    readonly cv_hide_rules_button: ConVar<boolean>
-    readonly cv_console_width: ConVar<number>
-    readonly cv_console_height: ConVar<number>
-    readonly cv_console_left: ConVar<number>
-    readonly cv_console_top: ConVar<number>
-    readonly cv_crosshair_color: ConVar<string>
-    readonly cv_crosshair_size: ConVar<number>
-    readonly cv_crosshair_stroke_color: ConVar<string>
-    readonly cv_crosshair_stroke_size: ConVar<number>
-
-    readonly pf_show_fps: ConVar<boolean>
-    readonly pf_show_ping: ConVar<boolean>
-    readonly pf_show_pos: ConVar<boolean>
-
-    readonly mb_controls_enabled: ConVar<boolean>
-    readonly mb_joystick_size: ConVar<number>
-    readonly mb_joystick_transparency: ConVar<number>
-
-    readonly dv_password: ConVar<string>
-    readonly dv_role: ConVar<string>
-    readonly dv_name_color: ConVar<string>
-    readonly dv_lobby_clearing: ConVar<boolean>
 }

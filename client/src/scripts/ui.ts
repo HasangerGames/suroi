@@ -11,8 +11,8 @@ import { type Game } from "./game";
 import { Skins } from "../../../common/src/definitions/skins";
 import { body, createDropdown } from "./uiHelpers";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
-import { type CVarTypeMapping } from "./utils/console/variables";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
+import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -124,9 +124,9 @@ export function setupUI(game: Game): void {
         usernameField.val(
             (usernameField.val() as string)
                 // Replace fancy quotes & dashes, so they don't get stripped out
-                .replaceAll(/[\u201c\u201d\u201f]/g, '"')
-                .replaceAll(/[\u2018\u2019\u201b]/g, "'")
-                .replaceAll(/[\u2013\u2014]/g, "-")
+                .replace(/[\u201c\u201d\u201f]/g, '"')
+                .replace(/[\u2018\u2019\u201b]/g, "'")
+                .replace(/[\u2013\u2014]/g, "-")
                 // Strip out non-ASCII chars
                 // eslint-disable-next-line no-control-regex
                 .replace(/[^\x00-\x7F]/g, "")
