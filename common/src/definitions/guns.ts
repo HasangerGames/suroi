@@ -455,7 +455,7 @@ export const Guns: GunDefinition[] = [
         capacity: 5,
         reloadTime: 3.4,
         fireDelay: 1400,
-        switchDelay: 1800,
+        switchDelay: 1150,
         speedMultiplier: 0.92,
         recoilMultiplier: 0.3,
         recoilDuration: 1500,
