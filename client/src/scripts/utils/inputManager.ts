@@ -1,4 +1,7 @@
+import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
+import { isMobile } from "pixi.js";
+
 import { absMod, angleBetweenPoints, clamp, distance, distanceSquared } from "../../../../common/src/utils/math";
 import { v, vDiv } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -6,7 +9,6 @@ import { defaultBinds } from "./console/defaultClientCVars";
 import { type GameSettings } from "./console/gameConsole";
 import { FIRST_EMOTE_ANGLE, FOURTH_EMOTE_ANGLE, PIXI_SCALE, SECOND_EMOTE_ANGLE, THIRD_EMOTE_ANGLE } from "./constants";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
-import { isMobile } from "pixi.js";
 import { InputActions } from "../../../../common/src/constants";
 import { Scopes } from "../../../../common/src/definitions/scopes";
 import { Loots } from "../../../../common/src/definitions/loots";
@@ -130,7 +132,7 @@ export class InputManager {
 
     private mWheelStopTimer: number | undefined;
     setupInputs(): void {
-        //@ts-expect-error init code
+        // @ts-expect-error init code
         // noinspection JSConstantReassignment
         this.isMobile = isMobile.any && this.game.console.getBuiltInCVar("mb_controls_enabled");
 

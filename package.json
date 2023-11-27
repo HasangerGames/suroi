@@ -7,23 +7,18 @@
     "build": "pnpm -r build",
     "build:client": "cd client && pnpm build",
     "build:server": "cd server && pnpm build",
-
     "start": "node --enable-source-maps server/dist/server/src/server.js",
-
     "moderation": "node --enable-source-maps server/dist/server/src/moderation.js",
     "warn": "pnpm moderation warn",
     "ban": "pnpm moderation ban",
     "unban": "pnpm moderation unban",
-
     "dev": "pnpm -r dev",
     "dev:client": "cd client && pnpm dev",
     "dev:server": "cd server && pnpm dev",
     "dev:test": "cd server && pnpm dev:test",
-
-    "lint": "pnpm -r lint",
-    "lint:ci": "pnpm -r lint:ci",
+    "lint": "eslint . --fix --ext .js,.ts",
+    "lint:ci": "eslint . --ext .js,.ts",
     "validateDefinitions": "cd server && pnpm validateDefinitions",
-
     "full-reinstall": "rm -r node_modules pnpm-lock.yaml client/node_modules server/node_modules common/node_modules && pnpm install"
   },
   "keywords": [
@@ -32,6 +27,13 @@
   ],
   "license": "GPL-3.0",
   "devDependencies": {
-    "typescript": "5.3.0-beta"
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "eslint": "^8.54.0",
+    "eslint-config-standard-with-typescript": "^40.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.3.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "typescript": "5.3.2"
   }
 }

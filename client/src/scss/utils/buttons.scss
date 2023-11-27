@@ -87,44 +87,38 @@
     text-align: center;
 }
 
-.btn-facebook {
-    background-image: url("../../../public/img/socials/facebook.svg");
-    background-color: $facebook;
-    box-shadow: inset 0 -4px $facebook_bg;
-}
-
 .btn-twitter {
-    background-image: url("../../../public/img/socials/twitter.svg");
+    background-image: url("/img/socials/twitter.svg");
     background-color: $twitter;
     box-shadow: inset 0 -4px $twitter_bg;
 }
 
 .btn-instagram {
-    background-image: url("../../../public/img/socials/instagram.svg");
+    background-image: url("/img/socials/instagram.svg");
     background-color: $instagram;
     box-shadow: inset 0 -4px $instagram_bg;
 }
 
 .btn-reddit {
-    background-image: url("../../../public/img/socials/reddit.svg");
+    background-image: url("/img/socials/reddit.svg");
     background-color: $reddit;
     box-shadow: inset 0 -4px $reddit_bg;
 }
 
 .btn-discord {
-    background-image: url("../../../public/img/socials/discord.svg");
+    background-image: url("/img/socials/discord.svg");
     background-color: $discord;
     box-shadow: inset 0 -4px $discord_bg;
 }
 
 .btn-youtube {
-    background-image: url("../../../public/img/socials/youtube.svg");
+    background-image: url("/img/socials/youtube.svg");
     background-color: $youtube;
     box-shadow: inset 0 -4px $youtube_bg;
 }
 
 .btn-github {
-    background-image: url("../../../public/img/socials/github.svg");
+    background-image: url("/img/socials/github.svg");
     background-color: $github;
     box-shadow: inset 0 -4px $github_bg;
 }

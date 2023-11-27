@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 import { Graphics } from "pixi.js";
 import { GasState, TICKS_PER_SECOND, ZIndexes } from "../../../../common/src/constants";
 import { clamp, lerp, vLerp } from "../../../../common/src/utils/math";

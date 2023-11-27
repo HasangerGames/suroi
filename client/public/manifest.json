@@ -32,7 +32,7 @@
   "shortcuts": [
     {
       "name": "News",
-      "url": "/news"
+      "url": "/news/"
     }
   ]
 }

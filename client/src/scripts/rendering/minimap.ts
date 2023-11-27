@@ -1,5 +1,7 @@
-import "@pixi/graphics-extras";
+import $ from "jquery";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
+import "@pixi/graphics-extras";
+
 import { GRID_SIZE, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
