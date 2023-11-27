@@ -229,6 +229,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!this.canInteract(player)) return;
 
         const definition = this.definition;
+        const replaceWith = definition.replaceWith;
 
         switch (definition.role) {
             case ObstacleSpecialRoles.Door:
@@ -248,7 +249,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     }
                 }
 
-                const replaceWith = definition.replaceWith;
                 if (replaceWith !== undefined) {
                     setTimeout(() => {
                         this.dead = true;
