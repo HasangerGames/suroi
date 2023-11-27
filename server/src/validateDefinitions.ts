@@ -22,11 +22,17 @@ import { ObstacleSpecialRoles, type BaseBulletDefinition, type ItemDefinition, t
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
 import { GasStages } from "./data/gasStages";
-import { LootTables, LootTiers } from "./data/lootTables";
+import { LootTables, LootTiers, type WeightedItem } from "./data/lootTables";
 import { Maps } from "./data/maps";
 import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/unbound-method */
+/*
+    eslint-disable
+
+    @typescript-eslint/no-non-null-assertion,
+    @typescript-eslint/unbound-method,
+    object-shorthand
+*/
 
 const absStart = Date.now();
 const tester = (() => {
@@ -43,8 +49,8 @@ const tester = (() => {
         assert(condition: boolean, errorMessage: string, errorPath: string): void {
             if (!condition) errors.push([errorPath, errorMessage]);
         },
-        assertWarn(condition: boolean, warningMessage: string, errorPath: string): void {
-            if (!condition) warnings.push([errorPath, warningMessage]);
+        assertWarn(warningCondition: boolean, warningMessage: string, errorPath: string): void {
+            if (warningCondition) warnings.push([errorPath, warningMessage]);
         },
         assertNoDuplicateIDStrings(collection: Array<{ readonly idString: string }>, collectionName: string, errorPath: string): void {
             const { foundDupes, dupes } = findDupes(collection.map(v => v.idString));
@@ -323,7 +329,7 @@ const tester = (() => {
 
             // technically we should do "field in obj" here, but meh…
             tester.assertWarn(
-                (obj[field] === undefined) || !(equalityFunction ?? ((a, b) => a === b))(obj[field]!, defaultValue),
+                (obj[field] !== undefined) && (equalityFunction ?? ((a, b) => a === b))(obj[field]!, defaultValue),
                 `This field is optional and has a default value (${JSON.stringify(defaultValue)}); specifying its default value serves no purpose`,
                 errorPath
             );
@@ -557,6 +563,82 @@ const validators = Object.freeze({
         } else if (hitbox instanceof PolygonHitbox) {
             hitbox.points.map(v => this.vector(baseErrorPath, v));
         }
+    },
+    weightedItem(baseErrorPath: string, weightedItem: WeightedItem): void {
+        tester.assertNoPointlessValue({
+            obj: weightedItem,
+            field: "count",
+            defaultValue: 1,
+            baseErrorPath: baseErrorPath
+        });
+
+        if (weightedItem.count !== undefined) {
+            tester.assertIntAndInBounds({
+                obj: weightedItem,
+                field: "count",
+                min: 1,
+                max: Infinity,
+                includeMin: true,
+                includeMax: true,
+                baseErrorPath: baseErrorPath
+            });
+        }
+
+        tester.assertNoPointlessValue({
+            obj: weightedItem,
+            field: "spawnSeparately",
+            defaultValue: false,
+            baseErrorPath: baseErrorPath
+        });
+
+        tester.assertWarn(
+            weightedItem.spawnSeparately === true && weightedItem.count === 1,
+            "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
+            baseErrorPath
+        );
+
+        tester.assertIsPositiveFiniteReal({
+            obj: weightedItem,
+            field: "weight",
+            baseErrorPath: baseErrorPath
+        });
+
+        if ("item" in weightedItem) {
+            switch (weightedItem.item) {
+                case null: {
+                    tester.assertWarn(
+                        weightedItem.count !== undefined,
+                        "Specifying a count for a no-item drop is pointless",
+                        baseErrorPath
+                    );
+
+                    tester.assertWarn(
+                        weightedItem.spawnSeparately !== undefined,
+                        "Specifying 'spawnSeparately' for a no-item drop is pointless",
+                        baseErrorPath
+                    );
+                    break;
+                }
+                default: {
+                    tester.assertReferenceExistsArray({
+                        obj: weightedItem,
+                        field: "item",
+                        baseErrorPath: baseErrorPath,
+                        collection: Loots.definitions,
+                        collectionName: "Loots"
+                    });
+                    break;
+                }
+            }
+        } else {
+            tester.assertReferenceExistsObject({
+                obj: weightedItem,
+                field: "tier",
+                baseErrorPath: baseErrorPath,
+                collection: LootTiers,
+                collectionName: "LootTiers"
+            });
+        }
     }
 });
 
@@ -713,61 +795,7 @@ logger.indent("Validating loot table references", () => {
                     tester.runTestOnArray(
                         lootData.loot.flat(),
                         (entry, errorPath) => {
-                            tester.assertNoPointlessValue({
-                                obj: entry,
-                                field: "count",
-                                defaultValue: 1,
-                                baseErrorPath: errorPath
-                            });
-
-                            if (entry.count !== undefined) {
-                                tester.assertIntAndInBounds({
-                                    obj: entry,
-                                    field: "count",
-                                    min: 1,
-                                    max: Infinity,
-                                    includeMin: true,
-                                    includeMax: true,
-                                    baseErrorPath: errorPath
-                                });
-                            }
-
-                            tester.assertNoPointlessValue({
-                                obj: entry,
-                                field: "spawnSeparately",
-                                defaultValue: false,
-                                baseErrorPath: errorPath
-                            });
-
-                            tester.assertWarn(
-                                entry.spawnSeparately !== true || entry.count !== 1,
-                                "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
-                                errorPath
-                            );
-
-                            tester.assertIsPositiveFiniteReal({
-                                obj: entry,
-                                field: "weight",
-                                baseErrorPath: errorPath
-                            });
-
-                            if ("item" in entry) {
-                                tester.assertReferenceExistsArray({
-                                    obj: entry,
-                                    field: "item",
-                                    baseErrorPath: errorPath,
-                                    collection: Loots.definitions,
-                                    collectionName: "Loots"
-                                });
-                            } else {
-                                tester.assertReferenceExistsObject({
-                                    obj: entry,
-                                    field: "tier",
-                                    baseErrorPath: errorPath,
-                                    collection: LootTiers,
-                                    collectionName: "LootTiers"
-                                });
-                            }
+                            validators.weightedItem(errorPath, entry);
                         },
                         errorPath2
                     );
@@ -784,61 +812,7 @@ logger.indent("Validating loot table references", () => {
                 tester.runTestOnArray(
                     lootTierData,
                     (entry, errorPath) => {
-                        tester.assertNoPointlessValue({
-                            obj: entry,
-                            field: "count",
-                            defaultValue: 1,
-                            baseErrorPath: errorPath
-                        });
-
-                        if (entry.count !== undefined) {
-                            tester.assertIntAndInBounds({
-                                obj: entry,
-                                field: "count",
-                                min: 1,
-                                max: Infinity,
-                                includeMin: true,
-                                includeMax: true,
-                                baseErrorPath: errorPath
-                            });
-                        }
-
-                        tester.assertNoPointlessValue({
-                            obj: entry,
-                            field: "spawnSeparately",
-                            defaultValue: false,
-                            baseErrorPath: errorPath
-                        });
-
-                        tester.assertWarn(
-                            entry.spawnSeparately !== true || entry.count !== 1,
-                            "Specifying 'spawnSeparately' for a drop declaration with 'count' 1 is pointless",
-                            errorPath
-                        );
-
-                        tester.assertIsPositiveFiniteReal({
-                            obj: entry,
-                            field: "weight",
-                            baseErrorPath: errorPath
-                        });
-
-                        if ("item" in entry) {
-                            tester.assertReferenceExistsArray({
-                                obj: entry,
-                                field: "item",
-                                baseErrorPath: errorPath,
-                                collection: Loots.definitions,
-                                collectionName: "Loots"
-                            });
-                        } else {
-                            tester.assertReferenceExistsObject({
-                                obj: entry,
-                                field: "tier",
-                                baseErrorPath: errorPath,
-                                collection: LootTiers,
-                                collectionName: "LootTiers"
-                            });
-                        }
+                        validators.weightedItem(errorPath, entry);
                     },
                     errorPath
                 );
@@ -990,7 +964,7 @@ logger.indent("Validating map definitions", () => {
             if (definition.places) {
                 logger.indent("Validating place names", () => {
                     tester.assertWarn(
-                        definition.places!.length < 1 << 4,
+                        definition.places!.length >= 1 << 4,
                         `Only the first 16 place names are sent; this map provided ${definition.places!.length} names`,
                         errorPath
                     );
@@ -1001,7 +975,7 @@ logger.indent("Validating map definitions", () => {
                             validators.vector(errorPath, place.position);
 
                             tester.assertWarn(
-                                place.name.length <= 24,
+                                place.name.length > 24,
                                 `Place names are limited to 24 characters long, and extra characters will not be sent; received a place name containing ${place.name.length} characters`,
                                 errorPath
                             );
@@ -2486,13 +2460,13 @@ logger.indent("Validating obstacles", () => {
             });
 
             tester.assertWarn(
-                obstacle.noResidue !== true || obstacle.frames?.residue === undefined,
+                obstacle.noResidue === true && obstacle.frames?.residue !== undefined,
                 `Obstacle '${obstacle.idString}' specified a residue image, but also specified the 'noResidue' attribute.`,
                 errorPath
             );
 
             tester.assertWarn(
-                obstacle.invisible !== true || obstacle.frames?.base === undefined,
+                obstacle.invisible === true && obstacle.frames?.base !== undefined,
                 `Obstacle '${obstacle.idString}' specified a base image, but also specified the 'invisible' attribute.`,
                 errorPath
             );

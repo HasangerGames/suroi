@@ -3,7 +3,7 @@ import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 
 export type WeightedItem =
     (
-        { readonly item: ReferenceTo<LootDefinition> } |
+        { readonly item: ReferenceTo<LootDefinition> | null } |
         { readonly tier: string }
     ) &
     {
@@ -431,19 +431,19 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     ],
     airdrop_healing_items: [
         { item: "gauze", count: 5, weight: 1.5 },
-        { item: "medikit", count: 1, weight: 1 },
-        { item: "cola", count: 1, weight: 1 },
-        { item: "tablets", count: 1, weight: 1 }
+        { item: "medikit", weight: 1 },
+        { item: "cola", weight: 1 },
+        { item: "tablets", weight: 1 }
     ],
     airdrop_skins: [
-        { item: "nothing", weight: 1 },
+        { item: null, weight: 1 },
         { item: "stardust", weight: 0.5 },
         { item: "aurora", weight: 0.5 },
         { item: "ghillie_suit", weight: 0.1 },
         { item: "basic_outfit", weight: 0.001 }
     ],
     airdrop_melee: [
-        { item: "nothing", weight: 1 },
+        { item: null, weight: 1 },
         { item: "kbar", weight: 0.1 }
     ],
     airdrop_guns: [

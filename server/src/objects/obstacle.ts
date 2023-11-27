@@ -13,7 +13,7 @@ import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { GameObject } from "../types/gameObject";
-import { getLootTableLoot, getRandomIDString, type LootItem } from "../utils/misc";
+import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
 import { Player } from "./player";
@@ -255,7 +255,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         this.game.grid.addObject(
                             new Obstacle(
                                 this.game,
-                                Obstacles.fromString("replaceWith" in this.definition && this.definition.replaceWith ? getRandomIDString(this.definition.replaceWith.idString) : ""),
+                                Obstacles.fromString("replaceWith" in this.definition && this.definition.replaceWith ? getRandomIdString(this.definition.replaceWith.idString) : ""),
                                 this.position,
                                 this.rotation,
                                 1
