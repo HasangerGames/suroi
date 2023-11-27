@@ -1,5 +1,5 @@
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
-import { type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
+import { type ObjectDefinition, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { weightedRandom } from "../../../common/src/utils/random";
 import { LootTiers, type WeightedItem } from "../data/lootTables";
 import { ColorStyles, styleText } from "./ansiColoring";
@@ -51,7 +51,7 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
             loot = loot.concat(getLootTableLoot(LootTiers[selection.tier]));
         } else {
             const item = selection.item;
-            if (item === "nothing") continue;
+            if (item === null) continue;
             loot.push(new LootItem(item, selection.spawnSeparately ? 1 : (selection.count ?? 1)));
 
             const definition = Loots.fromString(item);
@@ -68,14 +68,14 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     return loot;
 }
 
-export function getRandomIDString(table: Record<string, number> | string): string {
+export function getRandomIdString<T extends ObjectDefinition>(table: Record<ReferenceTo<T>, number> | ReferenceTo<T>): ReferenceTo<T> {
     if (typeof table === "string") return table;
 
     const items: string[] = [];
     const weights: number[] = [];
     for (const item in table) {
         items.push(item);
-        weights.push(table[item]);
+        weights.push(table[item as ReferenceTo<T>]);
     }
     return weightedRandom(items, weights);
 }

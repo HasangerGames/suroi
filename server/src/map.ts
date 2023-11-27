@@ -15,7 +15,7 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Decal } from "./objects/decal";
 import { Obstacle } from "./objects/obstacle";
-import { Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { Logger, getLootTableLoot, getRandomIdString } from "./utils/misc";
 import { ObjectCategory } from "../../common/src/constants";
 
 export class Map {
@@ -280,7 +280,7 @@ export class Map {
         const building = new Building(this.game, definition, vClone(position), orientation);
 
         for (const obstacleData of definition.obstacles ?? []) {
-            const obstacleDef = Obstacles.fromString(getRandomIDString(obstacleData.idString));
+            const obstacleDef = Obstacles.fromString(getRandomIdString(obstacleData.idString));
             let obstacleRotation = obstacleData.rotation ?? Map.getRandomRotation(obstacleDef.rotationMode);
 
             if (obstacleDef.rotationMode === RotationMode.Limited) {
@@ -328,7 +328,7 @@ export class Map {
         for (const subBuilding of definition.subBuildings ?? []) {
             const finalOrientation = addOrientations(orientation, subBuilding.orientation ?? 0);
             this.generateBuilding(
-                getRandomIDString(subBuilding.idString),
+                getRandomIdString(subBuilding.idString),
                 addAdjust(position, subBuilding.position, finalOrientation),
                 finalOrientation
             );
