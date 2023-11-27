@@ -3,6 +3,51 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1701085392000,
+        author: "HAZEL",
+        title: "Terminal Velocity",
+        bannerImage: "../img/news/v0.13.0.png",
+        content: `Expect routine supply shipments from the A.E.G.I.S. aeronautical division, complete with everything you need to win a savory chicken dinner! Or, notify them directly by using a radio to get your own personal airdrop. If you're lucky, you'll get one of the 3 new and very powerful guns!<br><br>
+
+Erosion has worked its magic on the island, and rivers look much cleaner than they ever have before. We've made a whole host of changes and bug fixes, including better mobile layout and building visibility. Get out there, these airdrops are comin' in hot!`,
+        longContent: `<h2>Suroi v0.13.0</h2>
+<h3>New features</h3>
+<ul>
+  <li>Airdrops! Two airdrops now spawn every game. They can also be called with radios, which are a rare drop from crates.</li>
+  <li>More guns! Added 3 guns, which spawn only in airdrops: the Barrett M95 (a sniper rifle; equivalent to surviv.io's AWM-S), the M1 Garand (a DMR), and the ACR (an assault rifle; equivalent to surviv.io's M4A1-S).</li>
+  <li>More skins! Added 3 airdrop exclusive skins, including the Ghillie Suit.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Tweaked loot tables. Higher level equipment and powerful weapons are now much rarer.</li>
+  <li>Better building visibility! You can now see inside buildings from further away, and through open doors.</li>
+  <li>Better river generation! Rivers can now branch, and the ends meet the ocean more cleanly.</li>
+  <li>UI design improvements.</li>
+  <li>Migrated from Webpack to Vite.</li>
+  <li>The Stoner 63 now has a 1 in 100 chance of spawning in the refinery.</li>
+  <li>Rebalanced some guns.</li>
+  <li>Tweaked kill feed icons.</li>
+  <li>New M1895 switch sound.</li>
+  <li>Updated MP40 reload sound.</li>
+  <li>Obstacles now play only one hit sound at once.</li>
+  <li>2 blocks of ammo are now dropped along with guns, instead of 1.</li>
+  <li>Increased maximum size of ammo stacks dropped by dead players.</li>
+  <li>Disallowed extended ASCII characters in usernames.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed the gas always shrinking to the center of the map.</li>
+  <li>Fixed barrel smoke particles not showing.</li>
+  <li>Fixed door hitbox issues.</li>
+  <li>Fixed used toilets never spawning in the house.</li>
+  <li>Fixed "Connection lost" issue when spectating a winning player.</li>
+  <li>Fixed spectate options not hiding when fullscreen map is shown.</li>
+  <li>Fixed players being promoted to kill leader after death.</li>
+</ul>`
+    },
+    {
         date: 1698602400000,
         author: "HAZEL",
         title: "Trick-or-Tweak",
