@@ -361,7 +361,7 @@ export class Minimap {
                 const radius = lerp(0, 2048, (now - ping.startTime) / 7000);
                 if (radius >= 2048) {
                     this.pings.delete(ping);
-                    setTimeout(() => { ping.image.destroy(); }, 5000);
+                    this.game.addTimeout(() => { ping.image.destroy(); }, 5000);
                     continue;
                 }
                 this.pingGraphics.arc(ping.position.x, ping.position.y, radius, 0, Math.PI * 2);

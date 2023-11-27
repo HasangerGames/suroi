@@ -7,6 +7,7 @@ import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 import { type Sound } from "../utils/soundManager";
+import type { Timeout } from "../../../../common/src/utils/misc";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -62,6 +63,14 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     readonly container: Container;
 
+    readonly timeouts = new Set<Timeout>();
+
+    addTimeout(callback: () => void, delay?: number): Timeout {
+        const timeout = this.game.addTimeout(callback, delay);
+        this.timeouts.add(timeout);
+        return timeout;
+    }
+
     protected constructor(game: Game, id: number) {
         this.game = game;
         this.id = id;
@@ -81,6 +90,9 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         this.destroyed = true;
         if (HITBOX_DEBUG_MODE) {
             this.debugGraphics.destroy();
+        }
+        for (const timeout of this.timeouts) {
+            timeout.kill();
         }
         this.container.destroy();
     }

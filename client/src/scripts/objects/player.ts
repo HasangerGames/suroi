@@ -32,6 +32,7 @@ import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { COLORS, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE, UI_DEBUG_MODE } from "../utils/constants";
 import { SpectatePacket } from "../../../../common/src/packets/spectatePacket";
 import { type SkinDefinition } from "../../../../common/src/definitions/skins";
+import type { Timeout } from "../../../../common/src/utils/misc";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -98,7 +99,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         muzzleFlashRecoilAnim?: Tween<SuroiSprite>
     } = {};
 
-    _emoteHideTimeoutID?: NodeJS.Timeout;
+    _emoteHideTimeout?: Timeout;
 
     distSinceLastFootstep = 0;
 
@@ -260,7 +261,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             spawnCasings();
         } else {
             const reference = weaponDef.idString;
-            setTimeout(
+            this.addTimeout(
                 () => {
                     if (reference !== this.activeItem.idString) return;
 
@@ -597,7 +598,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     emote(type: EmoteDefinition): void {
         this.anims.emoteAnim?.kill();
         this.anims.emoteHideAnim?.kill();
-        clearTimeout(this._emoteHideTimeoutID);
+        this._emoteHideTimeout?.kill();
         this.playSound("emote", 0.4, 128);
         this.images.emoteImage.setFrame(`${type.idString}`);
 
@@ -615,7 +616,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         });
 
-        this._emoteHideTimeoutID = setTimeout(() => {
+        this._emoteHideTimeout = this.addTimeout(() => {
             this.anims.emoteHideAnim = new Tween(this.game, {
                 target: this.emoteContainer,
                 to: { alpha: 0 },
@@ -677,7 +678,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
                 this.playSound("swing", 0.4, 96);
 
-                setTimeout(() => {
+                this.addTimeout(() => {
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
                     const rotated = vRotate(weaponDef.offset, this.rotation);
@@ -817,7 +818,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.healingParticlesEmitter.destroy();
         if (this.actionSound) this.game.soundManager.stop(this.actionSound);
         if (this.isActivePlayer) $("#action-container").hide();
-        clearTimeout(this._emoteHideTimeoutID);
         this.waterOverlayAnim?.kill();
         this.anims.emoteHideAnim?.kill();
         this.anims.emoteAnim?.kill();

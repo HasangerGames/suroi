@@ -14,7 +14,7 @@ import { InventoryItem } from "./inventoryItem";
 export class MeleeItem extends InventoryItem<MeleeDefinition> {
     declare readonly category: ItemType.Melee;
 
-    private _autoUseTimeoutID: NodeJS.Timeout | undefined;
+    private _autoUseTimeoutID?: NodeJS.Timeout;
 
     /**
      * Constructs a new melee weapon
@@ -46,7 +46,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         owner.action?.cancel();
 
-        setTimeout((): void => {
+        this.owner.game.addTimeout((): void => {
             if (
                 this.owner.activeItem === this &&
                 (owner.attacking || skipAttackCheck) &&
@@ -97,7 +97,10 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {
                     clearTimeout(this._autoUseTimeoutID);
-                    this._autoUseTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.cooldown);
+                    this._autoUseTimeoutID = setTimeout(
+                        this._useItemNoDelayCheck.bind(this, false),
+                        definition.cooldown
+                    );
                 }
             }
         }, 50);

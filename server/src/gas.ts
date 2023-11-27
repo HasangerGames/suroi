@@ -34,7 +34,6 @@ export class Gas {
     doDamage = false;
 
     game: Game;
-    timeoutID: NodeJS.Timeout | undefined;
     mapSize: number;
 
     constructor(game: Game) {
@@ -126,7 +125,7 @@ export class Gas {
 
         // Start the next stage
         if (duration !== 0) {
-            this.timeoutID = setTimeout(() => this.advanceGas(), duration * 1000);
+            this.game.addTimeout(() => this.advanceGas(), duration * 1000);
         }
     }
 

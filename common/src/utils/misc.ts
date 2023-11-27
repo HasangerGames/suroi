@@ -38,3 +38,18 @@ export function cloneDeep<T>(object: T): T {
 
     return clone;
 }
+
+export class Timeout {
+    callback: () => void;
+    end: number;
+    killed = false;
+
+    constructor(callback: () => void, end: number) {
+        this.end = end;
+        this.callback = callback;
+    }
+
+    kill(): void {
+        this.killed = true;
+    }
+}

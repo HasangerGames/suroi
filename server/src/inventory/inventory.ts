@@ -8,6 +8,7 @@ import { Loots, type WeaponDefinition } from "../../../common/src/definitions/lo
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/scopes";
 import { absMod } from "../../../common/src/utils/math";
+import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
@@ -72,7 +73,7 @@ export class Inventory {
      * A reference to the timeout object responsible for scheduling the action
      * of reloading, kept here in case said action needs to be cancelled
      */
-    private _reloadTimeoutID?: NodeJS.Timeout;
+    private _reloadTimeout?: Timeout;
 
     /**
      * Returns the index pointing to the active weapon
@@ -98,11 +99,11 @@ export class Inventory {
 
         this._lastWeaponIndex = old;
 
-        clearTimeout(this._reloadTimeoutID);
+        this._reloadTimeout?.kill();
         if (this.activeWeapon.category === ItemType.Gun) {
             (this.activeWeapon as GunItem).cancelAllTimers();
         }
-        clearTimeout(owner.bufferedAttack);
+        owner.bufferedAttack?.kill();
 
         if (item !== undefined) {
             const oldItem = this.weapons[old];
@@ -130,7 +131,10 @@ export class Inventory {
             owner.lastSwitch = item.switchDate = now;
 
             if (item instanceof GunItem && item.ammo <= 0) {
-                this._reloadTimeoutID = setTimeout(item.reload.bind(item), owner.effectiveSwitchDelay);
+                this._reloadTimeout = this.owner.game.addTimeout(
+                    item.reload.bind(item),
+                    owner.effectiveSwitchDelay
+                );
             }
         }
 

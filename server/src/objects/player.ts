@@ -50,6 +50,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { randomBytes } from "crypto";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { pickRandomInArray } from "../../../common/src/utils/random";
+import { type Timeout } from "../../../common/src/utils/misc";
 
 export class Player extends GameObject<ObjectCategory.Player> {
     override readonly type = ObjectCategory.Player;
@@ -207,7 +208,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         return this.activeItem.definition;
     }
 
-    bufferedAttack?: ReturnType<typeof setTimeout>;
+    bufferedAttack?: Timeout;
 
     readonly animation = {
         type: AnimationType.None,

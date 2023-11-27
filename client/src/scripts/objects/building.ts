@@ -101,7 +101,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     graphics.beginFill();
                     graphics.scale.set(PIXI_SCALE);
 
-                    setTimeout(() => {
+                    this.addTimeout(() => {
                         graphics?.destroy();
                     }, 30);
                 }

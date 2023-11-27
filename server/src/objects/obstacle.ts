@@ -244,16 +244,14 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 if (this.parentBuilding && definition.interactType) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
                         if (obstacle.definition.idString === definition.interactType) {
-                            setTimeout(() => {
-                                obstacle.interact();
-                            }, definition.interactDelay);
+                            this.game.addTimeout(() => { obstacle.interact(); }, definition.interactDelay);
                         }
                     }
                 }
 
                 const replaceWith = definition.replaceWith;
                 if (replaceWith !== undefined) {
-                    setTimeout(() => {
+                    this.game.addTimeout(() => {
                         this.dead = true;
                         this.collidable = false;
                         this.game.fullDirtyObjects.add(this);

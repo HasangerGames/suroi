@@ -46,6 +46,7 @@ import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { Obstacle } from "./objects/obstacle";
 import { Obstacles } from "../../common/src/definitions/obstacles";
+import { Timeout } from "../../common/src/utils/misc";
 
 export class Game {
     readonly _id: number;
@@ -110,6 +111,14 @@ export class Game {
      */
     newAirdrops = new Set<{ position: Vector, direction: number }>();
 
+    private readonly _timeouts = new Set<Timeout>();
+
+    addTimeout(callback: () => void, delay?: number): Timeout {
+        const timeout = new Timeout(callback, this.now + (delay ?? 0));
+        this._timeouts.add(timeout);
+        return timeout;
+    }
+
     private _started = false;
     allowJoin = false;
     over = false;
@@ -117,7 +126,7 @@ export class Game {
 
     startedTime = Number.MAX_VALUE; // Default of Number.MAX_VALUE makes it so games that haven't started yet are joined first
 
-    startTimeoutID?: NodeJS.Timeout;
+    startTimeout?: Timeout;
 
     aliveCountDirty = false;
 
@@ -189,6 +198,18 @@ export class Game {
             this._now = Date.now();
 
             if (this.stopped) return;
+
+            // execute timeouts
+            for (const timeout of this._timeouts) {
+                if (timeout.killed) {
+                    this._timeouts.delete(timeout);
+                    continue;
+                }
+                if (this.now > timeout.end) {
+                    timeout.callback();
+                    this._timeouts.delete(timeout);
+                }
+            }
 
             // Update loots
             for (const loot of this.loot) {
@@ -270,7 +291,8 @@ export class Game {
                 const shouldCreateNewGame = this.allowJoin;
                 this.allowJoin = false;
                 this.over = true;
-                setTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
+
+                this.addTimeout(() => endGame(this._id, shouldCreateNewGame), 1000);
             }
 
             // Record performance and start the next tick
@@ -423,10 +445,10 @@ export class Game {
 
         player.sendData(this.map.buffer);
 
-        setTimeout(() => { player.disableInvulnerability(); }, 5000);
+        this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
-        if (this.aliveCount > 1 && !this._started && this.startTimeoutID === undefined) {
-            this.startTimeoutID = setTimeout(() => {
+        if (this.aliveCount > 1 && !this._started && this.startTimeout === undefined) {
+            this.startTimeout = this.addTimeout(() => {
                 this._started = true;
                 this.startedTime = this.now;
                 this.gas.advanceGas();
@@ -459,8 +481,8 @@ export class Game {
         }
 
         if (this.aliveCount < 2) {
-            clearTimeout(this.startTimeoutID);
-            this.startTimeoutID = undefined;
+            this.startTimeout?.kill();
+            this.startTimeout = undefined;
         }
         try {
             player.socket.close();
@@ -573,7 +595,7 @@ export class Game {
         this.airdrops.add(airdrop);
         this.newAirdrops.add(airdrop);
 
-        setTimeout(() => {
+        this.addTimeout(() => {
             this.airdrops.delete(airdrop);
 
             const crate = this.map.generateObstacle(crateDef, position);

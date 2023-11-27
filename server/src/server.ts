@@ -64,8 +64,6 @@ export function endGame(id: number, createNewGame: boolean): void {
     if (game === undefined) return;
     game.allowJoin = false;
     game.stopped = true;
-    clearTimeout(game.startTimeoutID);
-    clearTimeout(game.gas.timeoutID);
     for (const player of game.connectedPlayers) {
         player.socket.close();
     }

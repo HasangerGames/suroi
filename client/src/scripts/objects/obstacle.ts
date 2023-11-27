@@ -143,7 +143,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     this.playSound("airdrop_unlock", 0.2, 96);
                     texture = "airdrop_crate_unlocking";
 
-                    setTimeout(() => {
+                    this.addTimeout(() => {
                         this.game.particleManager.spawnParticles(4, () => ({
                             frames: "airdrop_particle_2",
                             position: this.hitbox.randomPoint(),

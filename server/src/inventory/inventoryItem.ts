@@ -165,14 +165,14 @@ export abstract class InventoryItem<Def extends WeaponDefinition = WeaponDefinit
             // We only honor buffered inputs shorter than 200ms
             if (bufferDuration >= 200) return;
 
-            clearTimeout(owner.bufferedAttack);
-            owner.bufferedAttack = setTimeout(
+            owner.bufferedAttack?.kill();
+            owner.bufferedAttack = this.owner.game.addTimeout(
                 () => {
                     if (
                         owner.activeItem === this &&
                         owner.attacking
                     ) {
-                        clearTimeout(owner.bufferedAttack);
+                        owner.bufferedAttack?.kill();
                         this.useItem();
                     }
                 },

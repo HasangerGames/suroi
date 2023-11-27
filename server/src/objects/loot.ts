@@ -46,7 +46,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         this.push(randomRotation(), 1);
 
-        setTimeout((): void => { this.isNew = false; }, 100);
+        this.game.addTimeout(() => { this.isNew = false; }, 100);
     }
 
     update(): void {

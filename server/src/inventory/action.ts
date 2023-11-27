@@ -1,26 +1,27 @@
 import { PlayerActions } from "../../../common/src/constants";
 import { HealType, type HealingItemDefinition } from "../../../common/src/definitions/healingItems";
 import { Loots } from "../../../common/src/definitions/loots";
+import { type Timeout } from "../../../common/src/utils/misc";
 import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
 
 export abstract class Action {
     readonly player: Player;
-    private readonly _timeoutId: ReturnType<typeof setTimeout>;
+    private readonly _timeout: Timeout;
     abstract get type(): PlayerActions;
     readonly speedMultiplier = 1 as number;
 
     protected constructor(player: Player, time: number) {
         this.player = player;
-        this._timeoutId = setTimeout(this.execute.bind(this), time * 1000);
+        this._timeout = player.game.addTimeout(this.execute.bind(this), time * 1000);
         this.player.actionSeq++;
         this.player.actionSeq %= 4;
         this.player.game.fullDirtyObjects.add(this.player);
     }
 
     cancel(): void {
-        clearTimeout(this._timeoutId);
+        this._timeout.kill();
         this.player.action = undefined;
         this.player.actionSeq++;
         this.player.actionSeq %= 4;

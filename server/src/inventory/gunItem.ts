@@ -1,4 +1,3 @@
-import { clearTimeout } from "timers";
 import { AnimationType, FireMode } from "../../../common/src/constants";
 import { type GunDefinition } from "../../../common/src/definitions/guns";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
@@ -10,6 +9,7 @@ import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { type Timeout } from "../../../common/src/utils/misc";
 
 /**
  * A class representing a firearm
@@ -21,17 +21,19 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
     private _shots = 0;
 
-    private _reloadTimeoutID?: NodeJS.Timeout;
-    private _burstTimeoutID?: NodeJS.Timeout;
-    private _autoFireTimeoutID?: NodeJS.Timeout;
+    private _reloadTimeout?: Timeout;
+
+    // those need to be nodejs timeouts because some guns fire rate are too close to the tick rate
+    private _burstTimeout?: NodeJS.Timeout;
+    private _autoFireTimeout?: NodeJS.Timeout;
 
     cancelAllTimers(): void {
-        clearTimeout(this._reloadTimeoutID);
-        clearTimeout(this._burstTimeoutID);
-        clearTimeout(this._autoFireTimeoutID);
+        this._reloadTimeout?.kill();
+        clearTimeout(this._burstTimeout);
+        clearTimeout(this._autoFireTimeout);
     }
 
-    cancelReload(): void { clearTimeout(this._reloadTimeoutID); }
+    cancelReload(): void { this._reloadTimeout?.kill(); }
 
     /**
      * Constructs a new gun
@@ -78,11 +80,14 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         this.owner.action?.cancel();
-        clearTimeout(this._burstTimeoutID);
+        clearTimeout(this._burstTimeout);
 
         if (definition.fireMode === FireMode.Burst && this._shots >= definition.burstProperties.shotsPerBurst) {
             this._shots = 0;
-            this._burstTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.burstProperties.burstCooldown);
+            this._burstTimeout = setTimeout(
+                this._useItemNoDelayCheck.bind(this, false),
+                definition.burstProperties.burstCooldown
+            );
             return;
         }
 
@@ -169,7 +174,10 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (this.ammo <= 0) {
-            this._reloadTimeoutID = setTimeout(this.reload.bind(this, true), this.definition.fireDelay);
+            this._reloadTimeout = this.owner.game.addTimeout(
+                this.reload.bind(this, true),
+                this.definition.fireDelay
+            );
             this._shots = 0;
             return;
         }
@@ -178,8 +186,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
             (definition.fireMode !== FireMode.Single || this.owner.isMobile) &&
             this.owner.activeItem === this
         ) {
-            clearTimeout(this._autoFireTimeoutID);
-            this._autoFireTimeoutID = setTimeout(this._useItemNoDelayCheck.bind(this, false), definition.fireDelay);
+            clearTimeout(this._autoFireTimeout);
+            this._autoFireTimeout = setTimeout(
+                this._useItemNoDelayCheck.bind(this, false),
+                definition.fireDelay
+            );
         }
     }
 

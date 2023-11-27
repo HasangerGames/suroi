@@ -51,6 +51,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { distanceSquared } from "../../../common/src/utils/math";
 import { Airdrop } from "./objects/airdrop";
+import { Timeout } from "../../../common/src/utils/misc";
 
 export class Game {
     socket!: WebSocket;
@@ -100,6 +101,14 @@ export class Game {
     musicPlaying = false;
 
     readonly tweens = new Set<Tween<unknown>>();
+
+    private readonly _timeouts = new Set<Timeout>();
+
+    addTimeout(callback: () => void, delay?: number): Timeout {
+        const timeout = new Timeout(callback, Date.now() + (delay ?? 0));
+        this._timeouts.add(timeout);
+        return timeout;
+    }
 
     constructor() {
         this.console.readFromLocalStorage();
@@ -353,6 +362,7 @@ export class Game {
         this.map.gasGraphics.clear();
         this.loots.clear();
         this.playerNames.clear();
+        this._timeouts.clear();
 
         this.camera.zoom = Scopes.definitions[0].zoomLevel;
 
@@ -379,6 +389,19 @@ export class Game {
     render(): void {
         if (!this.gameStarted) return;
         const delta = this.pixi.ticker.deltaMS;
+
+        // execute timeouts
+        const now = Date.now();
+        for (const timeout of this._timeouts) {
+            if (timeout.killed) {
+                this._timeouts.delete(timeout);
+                continue;
+            }
+            if (now > timeout.end) {
+                timeout.callback();
+                this._timeouts.delete(timeout);
+            }
+        }
 
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
             for (const player of this.players) {
