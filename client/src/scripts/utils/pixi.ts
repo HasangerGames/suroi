@@ -3,6 +3,7 @@ import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbo
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
+// @ts-ignore
 import { atlases } from "virtual:spritesheets-jsons";
 
 const textures: Record<string, Texture> = {};
