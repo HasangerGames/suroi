@@ -229,26 +229,29 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!this.canInteract(player)) return;
 
         const definition = this.definition;
-        const replaceWith = definition.replaceWith;
 
         switch (definition.role) {
-            case ObstacleSpecialRoles.Door:
+            case ObstacleSpecialRoles.Door: {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 if (!(this.door!.open && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;
-            case ObstacleSpecialRoles.Activatable:
+            }
+            case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
                 if (this.parentBuilding && definition.interactType) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
                         if (obstacle.definition.idString === definition.interactType) {
-                            setTimeout(() => { obstacle.interact(); }, definition.interactDelay);
+                            setTimeout(() => {
+                                obstacle.interact();
+                            }, definition.interactDelay);
                         }
                     }
                 }
 
+                const replaceWith = definition.replaceWith;
                 if (replaceWith !== undefined) {
                     setTimeout(() => {
                         this.dead = true;
@@ -263,6 +266,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     }, replaceWith.delay);
                 }
                 break;
+            }
         }
 
         this.game.fullDirtyObjects.add(this);
