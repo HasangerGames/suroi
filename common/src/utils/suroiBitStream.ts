@@ -21,7 +21,7 @@ export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
 export const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
 export const KILL_TYPE_BITS = calculateEnumPacketBits(KillType);
-export const MAX_POSITION = 1620;
+export const MAX_POSITION = 1616;
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
