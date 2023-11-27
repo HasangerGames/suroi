@@ -52,20 +52,12 @@ export function setupUI(game: Game): void {
 
     const youtubers = [
         {
-            name: "Summit",
-            link: "https://www.youtube.com/@SummitNewsNetwork"
-        },
-        {
             name: "123OP",
             link: "https://www.youtube.com/@123op."
         },
         {
-            name: "Gonester",
-            link: "https://www.youtube.com/@gonester"
-        },
-        {
             name: "TEAMFIGHTER 27",
-            link: "https://www.youtube.com/channel/UCJF75th14wo3O4YvH8GfFXw"
+            link: "https://www.youtube.com/@TEAMFIGHTER27"
         },
         {
             name: "NAMERIO",
@@ -77,7 +69,7 @@ export function setupUI(game: Game): void {
         },
         {
             name: "Ukraines dude",
-            link: "https://www.youtube.com/channel/UCAdNONfEL-UOXDQnMkhhlHA"
+            link: "https://www.youtube.com/@Ukrainesdude"
         },
         {
             name: "monet",
@@ -86,6 +78,18 @@ export function setupUI(game: Game): void {
         {
             name: "Tuncres",
             link: "https://www.youtube.com/@Tuncres2022"
+        },
+        {
+            name: "silverdotware",
+            link: "https://www.youtube.com/@silverdotware"
+        },
+        {
+            name: "Pablo_Fan_",
+            link: "https://www.youtube.com/@Pablo_Fan_"
+        },
+        {
+            name: "g0dak",
+            link: "https://www.youtube.com/@g0dak"
         }
     ];
 
@@ -95,8 +99,8 @@ export function setupUI(game: Game): void {
 
     const streamers = [
         {
-            name: "iMoRTaL_Mafia",
-            link: "https://www.twitch.tv/imortal_mafia"
+            name: "ikou",
+            link: "https://www.twitch.tv/ikou_yt"
         }
     ];
 

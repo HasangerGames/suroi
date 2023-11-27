@@ -15,18 +15,6 @@ export interface AmmoDefinition extends ItemDefinition {
 
 export const Ammos = new ObjectDefinitions<AmmoDefinition>([
     {
-        idString: "127mm",
-        name: "12.7mm",
-        itemType: ItemType.Ammo,
-        hideUnlessPresent: true
-    },
-    {
-        idString: "curadell",
-        name: "Curadell",
-        itemType: ItemType.Ammo,
-        hideUnlessPresent: true
-    },
-    {
         idString: "12g",
         name: "12 gauge",
         itemType: ItemType.Ammo
@@ -45,6 +33,18 @@ export const Ammos = new ObjectDefinitions<AmmoDefinition>([
         idString: "9mm",
         name: "9mm",
         itemType: ItemType.Ammo
+    },
+    {
+        idString: "127mm",
+        name: "12.7mm",
+        itemType: ItemType.Ammo,
+        hideUnlessPresent: true
+    },
+    {
+        idString: "curadell",
+        name: "Curadell",
+        itemType: ItemType.Ammo,
+        hideUnlessPresent: true
     },
     /*
     {

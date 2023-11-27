@@ -8,7 +8,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
-import { HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
@@ -78,6 +78,9 @@ export class Loot extends GameObject {
                 case ItemType.Scope:
                 case ItemType.Skin: {
                     backgroundTexture = "loot_background_equipment";
+                    if (definition.itemType === ItemType.Skin && definition.grassTint) {
+                        this.images.item.setTint(GHILLIE_TINT);
+                    }
                     break;
                 }
             }

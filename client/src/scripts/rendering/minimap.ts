@@ -482,7 +482,6 @@ export class Minimap {
         $("#scopes-container").hide();
         $("#spectating-container").hide();
         $("#gas-msg-info").hide();
-        $("#ui-kill-leader").hide();
         $("#btn-close-minimap").show();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();

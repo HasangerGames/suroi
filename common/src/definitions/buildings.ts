@@ -813,7 +813,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 rotation: 3
             },
             {
-                idString: "gun_mount",
+                idString: { gun_mount_mcx_spear: 0.99, gun_mount_stoner_63: 0.01 },
                 position: v(-46.8, 28),
                 rotation: 1
             },

@@ -528,7 +528,7 @@ export class Game {
             // Crush damage
             for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
-                    object.damage(object instanceof Player ? 100 : Infinity, crate);
+                    object.damage(object instanceof Player ? 300 : Infinity, crate);
                 }
             }
         }, (AIRDROP_TOTAL_TIME / 2) + AIRDROP_FALL_TIME);

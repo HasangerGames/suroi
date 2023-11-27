@@ -182,6 +182,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 7,
+        noMuzzleFlash: true,
         length: 6.2,
         fists: {
             left: v(95, -2),
@@ -199,7 +200,10 @@ export const Guns: GunDefinition[] = [
             damage: 14.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            range: 160
+            range: 160,
+            tracer: {
+                opacity: 0.5
+            }
         }
     },
     {
@@ -215,7 +219,7 @@ export const Guns: GunDefinition[] = [
         speedMultiplier: 0.92,
         recoilMultiplier: 0.5,
         recoilDuration: 500,
-        fireMode: FireMode.Auto,
+        fireMode: FireMode.Single,
         shotSpread: 5,
         moveSpread: 7,
         jitterRadius: 0.5,
@@ -451,7 +455,7 @@ export const Guns: GunDefinition[] = [
         capacity: 5,
         reloadTime: 3.4,
         fireDelay: 1400,
-        switchDelay: 1800,
+        switchDelay: 1150,
         speedMultiplier: 0.92,
         recoilMultiplier: 0.3,
         recoilDuration: 1500,
@@ -472,7 +476,7 @@ export const Guns: GunDefinition[] = [
             ejectionDelay: 700
         },
         ballistics: {
-            damage: 142.75,
+            damage: 129,
             obstacleMultiplier: 1,
             speed: 0.45,
             range: 300,

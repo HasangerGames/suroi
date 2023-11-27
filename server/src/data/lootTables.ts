@@ -107,7 +107,7 @@ export const LootTables: Record<string, LootTable> = {
         min: 1,
         max: 1,
         loot: [
-            { tier: "equipment", weight: 1 },
+            { tier: "special_equipment", weight: 1 },
             { tier: "healing_items", weight: 1 },
             { tier: "scopes", weight: 1 }
         ]
@@ -222,11 +222,18 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "guns", weight: 0.05 }
         ]
     },
-    gun_mount: {
+    gun_mount_mcx_spear: {
         min: 1,
         max: 1,
         loot: [
             { item: "mcx_spear", weight: 1 }
+        ]
+    },
+    gun_mount_stoner_63: {
+        min: 1,
+        max: 1,
+        loot: [
+            { item: "stoner_63", weight: 1 }
         ]
     },
     gas_can: {
@@ -431,6 +438,7 @@ export const LootTiers: Record<string, WeightedItem[]> = {
     airdrop_skins: [
         { item: "nothing", weight: 1 },
         { item: "stardust", weight: 0.5 },
+        { item: "aurora", weight: 0.5 },
         { item: "ghillie_suit", weight: 0.1 },
         { item: "basic_outfit", weight: 0.001 }
     ],
