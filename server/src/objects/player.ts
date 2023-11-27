@@ -913,13 +913,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
-                    const maxCountPerPacket = 60;
-
                     let left = count;
                     let subtractAmount = 0;
 
                     do {
-                        left -= subtractAmount = Math.min(left, maxCountPerPacket);
+                        left -= subtractAmount = Math.min(left, def.maxStackSize);
                         this.game.addLoot(item, this.position, subtractAmount);
                     } while (left > 0);
 
