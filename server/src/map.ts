@@ -6,7 +6,7 @@ import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type 
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, distance, velFromAngle } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";

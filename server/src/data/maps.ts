@@ -334,7 +334,7 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
-                //setInterval(() => player.activeItem.useItem(), 30);
+                // setInterval(() => player.activeItem.useItem(), 30);
                 map.generateObstacle(obstacle.idString, v(map.width / 2, 40 * i), 0, 1, i as Variation);
             }
         }
