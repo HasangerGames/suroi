@@ -908,7 +908,7 @@
 
     .inventory-container {
         flex-direction: row;
-        justify-content: end;
+        justify-content: start;
 
         @media screen and (max-width: $screen_small) {
             flex-direction: column;
