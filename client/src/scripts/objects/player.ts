@@ -583,7 +583,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const container = $(`#${equipmentType}-slot`);
         if (def && def.level > 0) {
             container.children(".item-name").text(`Lvl. ${def.level}`);
-            container.children(".item-image").attr("src", `/assets/img/game/loot/${def.idString}.svg`);
+            container.children(".item-image").attr("src", `./img/game/loot/${def.idString}.svg`);
 
             let itemTooltip = def.name;
             if (def.itemType === ItemType.Armor) {

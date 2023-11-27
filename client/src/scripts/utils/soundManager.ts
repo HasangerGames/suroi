@@ -252,7 +252,7 @@ export class SoundManager {
         }
 
         for (const [name, path] of soundsToLoad) {
-            this.load(name, `/assets/${path}`);
+            this.load(name, `./${path}`);
         }
     }
 }

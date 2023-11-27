@@ -6,7 +6,7 @@ export const news: NewsPost[] = [
         date: 1698602400000,
         author: "HAZEL",
         title: "Trick-or-Tweak",
-        bannerImage: "/assets/img/news/v0.12.0.png",
+        bannerImage: "../img/news/v0.12.0.png",
         content: `The island grows dark. The trees begin to turn, the rivers run red, and the full moon rises. A new spooky orange obstacle drops one of two new weapons: a training weapon from A.E.G.I.S. stores, and a very powerful shotgun specially modified by H.A.Z.E.L.'s R&D team.<br><br>
 
 After checking out these frightening additions, enjoy your candy while reading all the bug fixes and QoL changes this update brings. Happy Halloween!`,
@@ -52,7 +52,7 @@ After checking out these frightening additions, enjoy your candy while reading a
         date: 1698001957000,
         author: "HAZEL",
         title: "Making Waves",
-        bannerImage: "/assets/img/news/v0.11.0.png",
+        bannerImage: "../img/news/v0.11.0.png",
         content: `The island grows ever busier with the newest structure, the port. Search the warehouses and shipping containers for loot, 'cause they’re packed! Containers can also be found throughout the island. But the most valuable loot is contained in the bow of the massive container ship. A highly prized sniper lies within, but you’ll need to solve a puzzle to get in.<br><br>
 
 If you like swimming, you’re in luck! Rivers now snake through the landscape, and the ocean is now accessible.<br><br>
@@ -105,7 +105,7 @@ In addition, we've made many quality of life changes, including shorter guns, cu
         date: 1694706686000,
         author: "HAZEL",
         title: "Back with a Bang",
-        bannerImage: "/assets/img/news/v0.10.0.png",
+        bannerImage: "../img/news/v0.10.0.png",
         content: `Despite the construction delays, we're back on the island to officially open the newest building: the refinery! Full of plenty of loot, but watch out or the whole place could go ka-boom...<br><br>
 
 We're also happy to announce a large shipment containing 4 new types of guns, including two new DMRs! One gun is Italian, and three are American. Sources indicate the new LMG is particularly potent...<br><br>
@@ -142,7 +142,7 @@ Special thanks to Leia and platonthek. This update wouldn't have been possible w
         date: 1690748181000,
         author: "HAZEL",
         title: "Behind Closed Doors",
-        bannerImage: "/assets/img/news/v0.9.0.png",
+        bannerImage: "../img/news/v0.9.0.png",
         content: `We at HAZEL are proud to announce the construction of 3 new structures on the island. The cozy house is a great place to spend the night…although you’ll want to leave before the gas catches you. The warehouse, though abandoned, still contains some unopened shipments, just waiting to be looted. Lastly, if you need to do some “business”, there are plenty of porta potties around for that purpose.<br><br>
 
 There are also two new Austrian arrivals to the island. Like the Micro Uzi but want something that packs more of a punch? The Steyr AUG might be for you. If you prefer a challenge, grab the all-new full auto pistol, the CZ-75A.<br><br>
@@ -236,7 +236,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1687625334000,
         author: "HAZEL",
         title: "Locked & Loaded",
-        bannerImage: "/assets/img/news/v0.5.0.png",
+        bannerImage: "../img/news/v0.5.0.png",
         content: `The newest supply shipment to the island has arrived, along with a slew of new weapons! Blast enemies all day long with the 47 round pan on the Lewis gun, or test your marksmanship with the Tango 51. Prefer hand-to-hand combat? The K-bar or the baseball bat may be for you. A glint of gold may yield a fruitful surprise...`,
         longContent: `<h2>Suroi v0.5.0</h2>
 
@@ -254,7 +254,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1687026036000,
         author: "Dr. Felix Sterling",
         title: "Supplies received",
-        bannerImage: "/assets/img/news/v0.4.0.png",
+        bannerImage: "../img/news/v0.4.0.png",
         content: `We have received the new arms and supply shipment from Mr. Flint. In the crates were all four weapons promised: the Mosin-Nagant, Ithaca Model 37, SAF-200, and Glock 19. These should help us dramatically, as we were in great need of additional and varied firepower. Additionally, the new medical items, gauze, colas, and medikits, will allow better treatment of injuries. However, they were not of the portable variety we requested, and we hope to resolve this soon.`,
         longContent: `<h2>Suroi v0.4.0</h2>
 
@@ -281,7 +281,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1685914769000,
         author: "Dr. Petrova",
         title: "2, 8, 18, 7",
-        bannerImage: "/assets/img/news/v0.3.0.png",
+        bannerImage: "../img/news/v0.3.0.png",
         content: `A mysterious orange gas is now being reported around the island. We collected a sample and were able to convert it to a solid at -7.2°C, but found it to be very toxic. You’ve been warned! In other news, if you’re the last one on the island left, you’ll get your very own chicken dinner courtesy of HAZEL, the perfect meal to enjoy your victory!`,
         longContent: `<h2>Suroi v0.3.0</h2>
 <h3>New features</h3>
@@ -304,7 +304,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1685317752000,
         author: "hasanger",
         title: "Fun guns",
-        bannerImage: "/assets/img/news/v0.2.0.png",
+        bannerImage: "../img/news/v0.2.0.png",
         content: `This week's update introduces guns, health crates, and keybinds! There are only 2 guns for now: the AK-47 and the M3K. More will be added soon.<br>If you're having issues with textures, try <a href="https://its.uiowa.edu/support/article/719">clearing your cache.</a>`,
         longContent: `<h2>Suroi v0.2.0</h2>
 <h3>New features</h3>
@@ -323,7 +323,7 @@ Surians can now customize their skins, and express themselves with emotes too! E
         date: 1684625426000,
         author: "hasanger",
         title: "We're back, baby",
-        bannerImage: "/assets/img/news/v0.1.0.png",
+        bannerImage: "../img/news/v0.1.0.png",
         content: `Kongregate may have shut down Surviv Reloaded, but that's not gonna stop me! Today, I'm releasing the first ever beta version of Suroi, an open-source 2D battle royale game inspired by surviv.io.
 To report a bug or suggest something, <a href="https://discord.suroi.io" target="_blank" rel="noopener noreferrer">join the Discord server</a>. If you have any questions, check out the FAQ on <a href="https://suroi.io/news" target="_blank" rel="noopener noreferrer">the news page</a>.`,
         longContent: `<h2>FAQ</h2>

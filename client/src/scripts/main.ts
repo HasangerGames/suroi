@@ -43,13 +43,13 @@ $(async(): Promise<void> => {
                 <li class="server-list-item" data-region="${regionID}">
                     <span class="server-name">${region.name}</span>
                     <span style="margin-left: auto">
-                      <img src="/assets/img/misc/player_icon.svg" width="16" height="16" alt="Player count">
+                      <img src="./img/misc/player_icon.svg" width="16" height="16" alt="Player count">
                       <span class="server-player-count">-</span>
                     </span>
                 </li>
             `);
         /* <span style="margin-left: 5px">
-          <img src="/assets/img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
+          <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
           <span class="server-ping">-</span>
         </span> */
         serverList.append(listItem);

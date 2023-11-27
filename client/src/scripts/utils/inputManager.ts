@@ -172,10 +172,10 @@ export class InputManager {
                         this.selectedEmote = InputActions.LeftEmoteSlot;
                         slotName = "left";
                     }
-                    $("#emote-wheel").css("background-image", `url("/assets/img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("/assets/img/misc/emote_wheel.svg")`);
+                    $("#emote-wheel").css("background-image", `url("./img/misc/emote_wheel_highlight_${slotName ?? "top"}.svg"), url("./img/misc/emote_wheel.svg")`);
                 } else {
                     this.selectedEmote = undefined;
-                    $("#emote-wheel").css("background-image", 'url("/assets/img/misc/emote_wheel.svg")');
+                    $("#emote-wheel").css("background-image", 'url("./img/misc/emote_wheel.svg")');
                 }
             }
 
@@ -561,7 +561,7 @@ export class InputManager {
             }
         }
 
-        return name === undefined ? name : `/assets/img/misc/${name}_icon.svg`;
+        return name === undefined ? name : `./img/misc/${name}_icon.svg`;
     }
 
     readonly getPickupBind = (): string => this.binds.getInputsBoundToAction("interact")[0];

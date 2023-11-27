@@ -79,10 +79,10 @@ export class Gas {
 
             if (isAdvancing) {
                 this._ui.timer.addClass("advancing");
-                this._ui.timerImg.attr("src", "/assets/img/misc/gas-advancing-icon.svg");
+                this._ui.timerImg.attr("src", "./img/misc/gas-advancing-icon.svg");
             } else {
                 this._ui.timer.removeClass("advancing");
-                this._ui.timerImg.attr("src", "/assets/img/misc/gas-waiting-icon.svg");
+                this._ui.timerImg.attr("src", "./img/misc/gas-waiting-icon.svg");
             }
 
             if (

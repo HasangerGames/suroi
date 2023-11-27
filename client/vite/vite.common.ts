@@ -26,7 +26,7 @@ const config: UserConfig = {
         }),
         spritesheet({
             patterns: [{
-                rootDir: "public/assets/img/game"
+                rootDir: "public/img/game"
             }],
             options: {
                 outputFormat: "png",
