@@ -227,6 +227,7 @@ export class InputManager {
                     this.turning = true;
                     if (game.console.getBuiltInCVar("cv_responsive_rotation") && !game.gameOver && game.activePlayer) {
                         game.activePlayer.container.rotation = this.rotation;
+                        game.map.indicator.rotation = this.rotation;
                     }
                 }
             });

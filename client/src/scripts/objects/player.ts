@@ -287,10 +287,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.game.soundManager.position = this.position;
             this.game.map.setPosition(this.position);
 
-            if (noMovementSmoothing) {
-                this.game.camera.position = toPixiCoords(this.position);
-                if (!this.game.console.getBuiltInCVar("cv_responsive_rotation")) this.game.map.indicator.setRotation(data.rotation);
-            }
+            if (noMovementSmoothing) this.game.camera.position = toPixiCoords(this.position);
+
+            if (!this.game.console.getBuiltInCVar("cv_responsive_rotation")) this.game.map.indicator.setRotation(data.rotation);
 
             if (this.game.console.getBuiltInCVar("pf_show_pos")) {
                 $("#coordinates-hud").text(`X: ${this.position.x.toFixed(2)} Y: ${this.position.y.toFixed(2)}`);
