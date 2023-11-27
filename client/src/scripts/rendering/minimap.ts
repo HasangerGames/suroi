@@ -483,6 +483,7 @@ export class Minimap {
         $("#spectating-container").hide();
         $("#gas-msg-info").hide();
         $("#btn-close-minimap").show();
+        $("#ui-kill-leader").hide();
         $("#center-bottom-container").hide();
         $("#kill-counter").show();
         this.resize();
@@ -495,7 +496,8 @@ export class Minimap {
         $("#gas-msg-info").show();
         $("#scopes-container").show();
         if (this.game.spectating) $("#spectating-container").show();
-        $("#ui-kill-leader").show();
+        const width = $(window).width();
+        if (width && width > 1200) $("#ui-kill-leader").show();
         $("#kill-counter").hide();
         if (!this.visible) {
             this.container.visible = false;
