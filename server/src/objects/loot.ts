@@ -52,7 +52,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     update(): void {
         const oldPosition = vClone(this.position);
 
-        const moving = Math.abs(this.velocity.x) > 0.001 || Math.abs(this.velocity.y) > 0.001;
+        const moving = Math.abs(this.velocity.x) > 0.001 ||
+        Math.abs(this.velocity.y) > 0.001 ||
+        vEqual(oldPosition, this.position);
 
         if (moving) {
             this.velocity = vMul(this.velocity, 0.9);

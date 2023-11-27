@@ -14,7 +14,7 @@ import { type ScopeDefinition, Scopes } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
-import { KILL_FEED_MESSAGE_TYPE_BITS, KILL_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
@@ -224,6 +224,9 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
 
     return data;
 }
+
+const KILL_FEED_MESSAGE_TYPE_BITS = calculateEnumPacketBits(KillFeedMessageType);
+const KILL_TYPE_BITS = calculateEnumPacketBits(KillType);
 
 function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessage): void {
     stream.writeBits(message.messageType, KILL_FEED_MESSAGE_TYPE_BITS);

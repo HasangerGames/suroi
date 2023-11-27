@@ -89,6 +89,10 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     }
 
                     closestObject.damage(definition.damage * multiplier, owner, this);
+
+                    if (closestObject instanceof Obstacle && !closestObject.dead) {
+                        closestObject.interact(this.owner);
+                    }
                 }
 
                 if (definition.fireMode === FireMode.Auto || owner.isMobile) {

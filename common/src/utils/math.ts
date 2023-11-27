@@ -547,6 +547,31 @@ export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, ra
     return null;
 }
 
+export function rectRectIntersection(min0: Vector, max0: Vector, min1: Vector, max1: Vector): CollisionResponse {
+    const e0 = vMul(vSub(max0, min0), 0.5);
+    const c0 = vAdd(min0, e0);
+    const e1 = vMul(vSub(max1, min1), 0.5);
+    const c1 = vAdd(min1, e1);
+    const n = vSub(c1, c0);
+    const xo = e0.x + e1.x - Math.abs(n.x);
+    if (xo > 0.0) {
+        const yo = e0.y + e1.y - Math.abs(n.y);
+        if (yo > 0.0) {
+            if (xo > yo) {
+                return {
+                    dir: n.x < 0 ? v(-1, 0) : v(1, 0),
+                    pen: xo
+                };
+            }
+            return {
+                dir: n.y < 0 ? v(0, -1) : v(0, 1),
+                pen: yo
+            };
+        }
+    }
+    return null;
+}
+
 export function calculateDoorHitboxes<
     // tf are you talking about
     // eslint-disable-next-line space-before-function-paren

@@ -1,5 +1,5 @@
 import { type Orientation } from "../typings";
-import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2 } from "./math";
+import { addAdjust, circleCircleIntersection, circleCollision, type CollisionRecord, distanceSquared, distanceToCircle, distanceToRectangle, type IntersectionResponse, lineIntersectsCircle, lineIntersectsRect, rectangleCollision, rectangleDistanceToRectangle, rectCircleIntersection, rectRectCollision, transformRectangle, distance, lineIntersectsRect2, rectRectIntersection } from "./math";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
 import { v, vAdd, vClone, type Vector, vMul, vSub } from "./vector";
 
@@ -58,6 +58,8 @@ export abstract class Hitbox {
 
     abstract isPointInside(point: Vector): boolean;
 
+    abstract getCenter(): Vector;
+
     protected throwUnknownSubclassError(that: Hitbox): never {
         throw new Error(`Invalid hitbox object (Received an instance of ${Object.getPrototypeOf(that)?.constructor?.name ?? "an unknown prototype"})`);
     }
@@ -101,7 +103,7 @@ export class CircleHitbox extends Hitbox {
             }
         } else if (that instanceof ComplexHitbox) {
             for (const hitbox of that.hitboxes) {
-                this.resolveCollision(hitbox);
+                if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
             }
         }
     }
@@ -142,6 +144,10 @@ export class CircleHitbox extends Hitbox {
 
     override isPointInside(point: Vector): boolean {
         return distance(point, this.position) < this.radius;
+    }
+
+    override getCenter(): Vector {
+        return this.position;
     }
 }
 
@@ -194,10 +200,26 @@ export class RectangleHitbox extends Hitbox {
 
     override resolveCollision(that: Hitbox): void {
         if (that instanceof CircleHitbox) {
-            return that.resolveCollision(this);
+            const collision = rectCircleIntersection(this.min, this.max, that.position, that.radius);
+            if (collision) {
+                const rect = this.transform(vMul(collision.dir, collision.pen));
+                this.min = rect.min;
+                this.max = rect.max;
+            }
+        } else if (that instanceof RectangleHitbox) {
+            const collision = rectRectIntersection(this.min, this.max, that.min, that.max);
+            if (collision) {
+                const rect = this.transform(vMul(collision.dir, collision.pen));
+                this.min = rect.min;
+                this.max = rect.max;
+            }
+        } else if (that instanceof ComplexHitbox) {
+            for (const hitbox of that.hitboxes) {
+                if (this.collidesWith(hitbox)) this.resolveCollision(hitbox);
+            }
+        } else {
+            this.throwUnknownSubclassError(that);
         }
-
-        this.throwUnknownSubclassError(that);
     }
 
     override distanceTo(that: Hitbox): CollisionRecord {
@@ -244,6 +266,13 @@ export class RectangleHitbox extends Hitbox {
 
     override isPointInside(point: Vector): boolean {
         return point.x > this.min.x && point.y > this.min.y && point.x < this.max.x && point.y < this.max.y;
+    }
+
+    override getCenter(): Vector {
+        return {
+            x: this.min.x + ((this.max.x - this.min.x) / 2),
+            y: this.min.y + ((this.max.y - this.min.y) / 2)
+        };
     }
 }
 
@@ -350,6 +379,10 @@ export class ComplexHitbox extends Hitbox {
         }
         return false;
     }
+
+    override getCenter(): Vector {
+        return this.toRectangle().getCenter();
+    }
 }
 
 export class PolygonHitbox extends Hitbox {
@@ -443,5 +476,9 @@ export class PolygonHitbox extends Hitbox {
         }
 
         return inside;
+    }
+
+    override getCenter(): Vector {
+        return this.toRectangle().getCenter();
     }
 }

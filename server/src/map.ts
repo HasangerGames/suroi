@@ -409,6 +409,7 @@ export class Map {
 
         if (!definition.hideOnMap) this.packet.objects.push(obstacle);
         this.game.grid.addObject(obstacle);
+        this.game.updateObjects = true;
         return obstacle;
     }
 
