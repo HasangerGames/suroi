@@ -1,19 +1,20 @@
 import {
-    type GasState,
-    type ObjectCategory,
-    PacketType,
     DEFAULT_INVENTORY,
+    type GasState,
     INVENTORY_MAX_WEAPONS,
-    KillFeedMessageType
+    KillFeedMessageType,
+    KillType,
+    type ObjectCategory,
+    PacketType
 } from "../constants";
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
-import { type WeaponDefinition, Loots, type LootDefinition } from "../definitions/loots";
-import { Scopes, type ScopeDefinition } from "../definitions/scopes";
+import { type LootDefinition, Loots, type WeaponDefinition } from "../definitions/loots";
+import { type ScopeDefinition, Scopes } from "../definitions/scopes";
 import { BaseBullet, type BulletOptions } from "../utils/baseBullet";
 import { ItemType } from "../utils/objectDefinitions";
 import { ObjectSerializations, type ObjectsNetData } from "../utils/objectsSerializations";
-import { KILL_FEED_MESSAGE_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
+import { KILL_FEED_MESSAGE_TYPE_BITS, KILL_TYPE_BITS, type SuroiBitStream } from "../utils/suroiBitStream";
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
@@ -230,9 +231,8 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
         case KillFeedMessageType.Kill: {
             stream.writeObjectID(message.playerID!);
 
-            message.twoPartyInteraction = message.killerID !== undefined;
-            stream.writeBoolean(message.twoPartyInteraction);
-            if (message.twoPartyInteraction) {
+            stream.writeBits(message.killType ?? KillType.Suicide, KILL_TYPE_BITS);
+            if (message.killType === KillType.TwoPartyInteraction) {
                 stream.writeObjectID(message.killerID as number);
                 stream.writeBits(message.kills as number, 7);
             }
@@ -257,8 +257,6 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
                     stream.writeBits(message.killstreak!, 7);
                 }
             }
-
-            stream.writeBoolean(message.gasKill ?? false);
             break;
         }
 
@@ -286,13 +284,11 @@ export interface KillFeedMessage {
     messageType: KillFeedMessageType
     playerID?: number
 
-    twoPartyInteraction?: boolean
+    killType?: KillType
     killerID?: number
     kills?: number
     weaponUsed?: LootDefinition | ExplosionDefinition
     killstreak?: number
-
-    gasKill?: boolean
 
     hideInKillFeed?: boolean
 }
@@ -305,8 +301,8 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
         case KillFeedMessageType.Kill: {
             message.playerID = stream.readObjectID();
 
-            message.twoPartyInteraction = stream.readBoolean();
-            if (message.twoPartyInteraction) {
+            message.killType = stream.readBits(KILL_TYPE_BITS);
+            if (message.killType === KillType.TwoPartyInteraction) {
                 message.killerID = stream.readObjectID();
                 message.kills = stream.readBits(7);
             }
@@ -324,8 +320,6 @@ function deserializeKillFeedMessage(stream: SuroiBitStream): KillFeedMessage {
                     message.killstreak = stream.readBits(7);
                 }
             }
-
-            message.gasKill = stream.readBoolean();
             break;
         }
 

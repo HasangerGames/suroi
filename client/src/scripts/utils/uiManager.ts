@@ -4,6 +4,7 @@ import {
     DEFAULT_USERNAME,
     INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
+    KillType,
     MAX_ADRENALINE
 } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
@@ -380,13 +381,12 @@ export class UIManager {
             messageType,
             playerID,
 
-            twoPartyInteraction,
+            killType,
             killerID,
             kills,
             weaponUsed,
             killstreak,
 
-            gasKill,
             hideInKillFeed
         } = message;
 
@@ -401,11 +401,21 @@ export class UIManager {
                 /* eslint-disable @typescript-eslint/no-non-null-assertion */
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
-                        const message = twoPartyInteraction
-                            ? `${this.getPlayerName(killerID as number)} killed ${playerName}`
-                            : gasKill
-                                ? `${playerName} died to the gas`
-                                : `${playerName} committed suicide`;
+                        let message = "";
+                        switch (killType) {
+                            case KillType.Suicide:
+                                message = `${playerName} committed suicide`;
+                                break;
+                            case KillType.TwoPartyInteraction:
+                                message = `${this.getPlayerName(killerID as number)} killed ${playerName}`;
+                                break;
+                            case KillType.Gas:
+                                message = `${playerName} died to the gas`;
+                                break;
+                            case KillType.Airdrop:
+                                message = `${playerName} was crushed by an airdrop`;
+                                break;
+                        }
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
@@ -414,9 +424,20 @@ export class UIManager {
                         break;
                     }
                     case "icon": {
-                        const killerName = twoPartyInteraction ? this.getPlayerName(killerID as number) : "";
-                        const iconSrc = gasKill ? "gas" : weaponUsed?.idString;
-                        const altText = weaponUsed === undefined ? gasKill ? "gas" : "" : `(${weaponUsed?.name})`;
+                        const killerName = killType === KillType.TwoPartyInteraction ? this.getPlayerName(killerID as number) : "";
+                        let iconName = "";
+                        switch (killType) {
+                            case KillType.Gas:
+                                iconName = "gas";
+                                break;
+                            case KillType.Airdrop:
+                                iconName = "airdrop";
+                                break;
+                            default:
+                                iconName = weaponUsed?.idString ?? "";
+                                break;
+                        }
+                        const altText = weaponUsed ? weaponUsed.name : iconName;
                         const killstreakText = hasKillstreak
                             ? `
                             <span style="font-size: 80%">(${killstreak}
@@ -426,7 +447,7 @@ export class UIManager {
 
                         messageText = `
                         ${killerName}
-                        <img class="kill-icon" src="./img/killfeed/${iconSrc}_killfeed.svg" alt="${altText}">
+                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">
                         ${killstreakText}
                         ${playerName}`;
                         break;

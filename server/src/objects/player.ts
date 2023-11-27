@@ -6,6 +6,7 @@ import {
     InputActions,
     INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
+    KillType,
     MAX_ADRENALINE,
     MAX_MOUSE_DISTANCE,
     ObjectCategory,
@@ -358,6 +359,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.inventory.scope = "4x_scope";
         }
 
+        this.giveGun("radio");
+
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
     }
@@ -467,7 +470,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         // Gas damage
         if (this.game.gas.doDamage && this.game.gas.isInGas(this.position)) {
-            this.piercingDamage(this.game.gas.dps, "gas");
+            this.piercingDamage(this.game.gas.dps, KillType.Gas);
         }
 
         let isInsideBuilding = false;
@@ -748,7 +751,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     /**
      * Deals damage whilst ignoring protective modifiers but not invulnerability
      */
-    piercingDamage(amount: number, source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    piercingDamage(amount: number, source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
         if (this.invulnerable) return;
 
         amount = this._clampDamageAmount(amount);
@@ -825,7 +828,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     }
 
     // dies of death
-    die(source?: GameObject | "gas", weaponUsed?: GunItem | MeleeItem | Explosion): void {
+    die(source?: GameObject | KillType.Gas | KillType.Airdrop, weaponUsed?: GunItem | MeleeItem | Explosion): void {
         // Death logic
         if (this.health > 0 || this.dead) return;
 
@@ -861,20 +864,23 @@ export class Player extends GameObject<ObjectCategory.Player> {
             */
         }
 
-        if (source instanceof Player || source === "gas") {
+        if (source instanceof Player || source === KillType.Gas || source === KillType.Airdrop) {
             const killFeedMessage: KillFeedMessage = {
                 messageType: KillFeedMessageType.Kill,
                 playerID: this.id,
                 weaponUsed: weaponUsed?.definition
             };
-            if (source instanceof Player && source !== this) {
-                killFeedMessage.killerID = source.id;
-                killFeedMessage.kills = source.kills;
-                if (source.activeItem.definition.killstreak) {
-                    killFeedMessage.killstreak = source.activeItem.stats.kills;
+            if (source instanceof Player) {
+                if (source !== this) {
+                    killFeedMessage.killType = KillType.TwoPartyInteraction;
+                    killFeedMessage.killerID = source.id;
+                    killFeedMessage.kills = source.kills;
+                    if (source.activeItem.definition.killstreak) {
+                        killFeedMessage.killstreak = source.activeItem.stats.kills;
+                    }
                 }
-            } else if (source === "gas") {
-                killFeedMessage.gasKill = true;
+            } else {
+                killFeedMessage.killType = source;
             }
             this.game.killFeedMessages.add(killFeedMessage);
         }

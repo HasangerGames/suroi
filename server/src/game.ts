@@ -13,6 +13,7 @@ import {
     DEFAULT_USERNAME,
     KILL_LEADER_MIN_KILLS,
     KillFeedMessageType,
+    KillType,
     PacketType,
     TICKS_PER_SECOND
 } from "../../common/src/constants";
@@ -303,7 +304,7 @@ export class Game {
     }
 
     killLeaderDead(killer?: Player): void {
-        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { twoPartyInteraction: true, killerID: killer?.id });
+        this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { killType: KillType.TwoPartyInteraction, killerID: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1)) && !player.dead) {
@@ -528,7 +529,11 @@ export class Game {
             // Crush damage
             for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
-                    object.damage(object instanceof Player ? 300 : Infinity, crate);
+                    if (object instanceof Player) {
+                        object.piercingDamage(300, KillType.Airdrop);
+                    } else {
+                        object.damage(Infinity, crate);
+                    }
                 }
             }
         }, (AIRDROP_TOTAL_TIME / 2) + AIRDROP_FALL_TIME);
