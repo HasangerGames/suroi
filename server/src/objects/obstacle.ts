@@ -11,12 +11,12 @@ import { LootTables, type WeightedItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
-import { MeleeItem } from "../inventory/meleeItem";
+import { type MeleeItem } from "../inventory/meleeItem";
 import { GameObject } from "../types/gameObject";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";
-import { Player } from "./player";
+import { type Player } from "./player";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -213,55 +213,54 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             // Calculate new scale & scale hitbox
             this.scale = this.health / this.maxHealth * (this.maxScale - definition.scale.destroy) + definition.scale.destroy;
             this.hitbox.scale(this.scale / oldScale);
-
-            // Punch doors to open
-            if (this.isDoor && source instanceof Player && weaponUsed instanceof MeleeItem) this.interact(source);
         }
     }
 
     canInteract(player?: Player): boolean {
         return !this.dead && (
             (this.isDoor && (!this.door?.locked || player === undefined)) ||
-            (this.definition.role === ObstacleSpecialRoles.Activatable && (player?.activeItem.definition.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated)
+            (this.definition.role === ObstacleSpecialRoles.Activatable &&
+                (player?.activeItemDefinition.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
+                !this.activated)
         );
     }
 
     interact(player?: Player): void {
         if (!this.canInteract(player)) return;
 
-        switch (this.definition.role) {
+        const definition = this.definition;
+
+        switch (definition.role) {
             case ObstacleSpecialRoles.Door:
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                if (!(this.door!.open && this.definition.openOnce)) {
+                if (!(this.door!.open && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
                 break;
             case ObstacleSpecialRoles.Activatable:
                 this.activated = true;
 
-                if (this.parentBuilding && this.definition.interactType) {
+                if (this.parentBuilding && definition.interactType) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
-                        if (obstacle.definition.idString === this.definition.interactType) {
-                            setTimeout(() => { obstacle.interact(); }, this.definition.interactDelay);
+                        if (obstacle.definition.idString === definition.interactType) {
+                            setTimeout(() => { obstacle.interact(); }, definition.interactDelay);
                         }
                     }
                 }
 
-                if (this.definition.replaceWith) {
+                const replaceWith = definition.replaceWith;
+                if (replaceWith !== undefined) {
                     setTimeout(() => {
                         this.dead = true;
                         this.collidable = false;
                         this.game.fullDirtyObjects.add(this);
-                        this.game.grid.addObject(
-                            new Obstacle(
-                                this.game,
-                                Obstacles.fromString("replaceWith" in this.definition && this.definition.replaceWith ? getRandomIdString(this.definition.replaceWith.idString) : ""),
-                                this.position,
-                                this.rotation,
-                                1
-                            )
+
+                        this.game.map.generateObstacle(
+                            getRandomIdString(replaceWith.idString),
+                            this.position,
+                            this.rotation
                         );
-                    }, this.definition.replaceWith.delay);
+                    }, replaceWith.delay);
                 }
                 break;
         }

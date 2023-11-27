@@ -24,7 +24,7 @@ import { endGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { v, type Vector } from "../../common/src/utils/vector";
-import { distanceSquared } from "../../common/src/utils/math";
+import { clamp, distanceSquared } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
@@ -102,9 +102,13 @@ export class Game {
     readonly killFeedMessages = new Set<KillFeedMessage>();
 
     /**
-     * All airdrops this tick
+     * All airdrops
      */
     airdrops = new Set<{ position: Vector, direction: number }>();
+    /**
+     * All airdrops this tick
+     */
+    newAirdrops = new Set<{ position: Vector, direction: number }>();
 
     private _started = false;
     allowJoin = false;
@@ -242,7 +246,7 @@ export class Game {
             this.newPlayers.clear();
             this.deletedPlayers.clear();
             this.killFeedMessages.clear();
-            this.airdrops.clear();
+            this.newAirdrops.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
@@ -521,10 +525,58 @@ export class Game {
     }
 
     summonAirdrop(position: Vector): void {
-        this.airdrops.add({ position, direction: randomRotation() });
+        const crateDef = Obstacles.fromString("airdrop_crate_locked");
+        const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
+        let thisHitbox = crateHitbox.clone();
+
+        let collided = true;
+        let attempts = 0;
+
+        while (collided && attempts < 500) {
+            attempts++;
+            collided = false;
+
+            for (const airdrop of this.airdrops) {
+                thisHitbox = crateHitbox.transform(position);
+                const thatHitbox = crateHitbox.transform(airdrop.position);
+
+                if (thisHitbox.collidesWith(thatHitbox)) {
+                    collided = true;
+                    thisHitbox.resolveCollision(thatHitbox);
+                }
+                position = thisHitbox.getCenter();
+            }
+
+            thisHitbox = crateHitbox.transform(position);
+            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
+                if (object instanceof Obstacle &&
+                    !object.dead &&
+                    object.definition.indestructible &&
+                    object.spawnHitbox.collidesWith(thisHitbox)) {
+                    collided = true;
+                    thisHitbox.resolveCollision(object.spawnHitbox);
+                }
+                if (collided) break;
+            }
+
+            position = thisHitbox.getCenter();
+
+            const { min, max } = thisHitbox.toRectangle();
+            const width = max.x - min.x;
+            const height = max.y - min.y;
+            position.x = clamp(position.x, width, this.map.width - width);
+            position.y = clamp(position.y, height, this.map.height - height);
+        }
+
+        const airdrop = { position, direction: randomRotation() };
+
+        this.airdrops.add(airdrop);
+        this.newAirdrops.add(airdrop);
+
         setTimeout(() => {
-            const crate = new Obstacle(this, Obstacles.fromString("airdrop_crate_locked"), position, 0, 1);
-            this.grid.addObject(crate);
+            this.airdrops.delete(airdrop);
+
+            const crate = this.map.generateObstacle(crateDef, position);
 
             // Crush damage
             for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
@@ -534,6 +586,13 @@ export class Game {
                     } else {
                         object.damage(Infinity, crate);
                     }
+                }
+            }
+
+            // loop again to make sure loot added by destroyed obstacles is checked
+            for (const loot of this.grid.intersectsHitbox(crate.hitbox)) {
+                if (loot instanceof Loot && crate.spawnHitbox.collidesWith(loot.hitbox)) {
+                    loot.hitbox.resolveCollision(crate.spawnHitbox);
                 }
             }
         }, (AIRDROP_TOTAL_TIME / 2) + AIRDROP_FALL_TIME);

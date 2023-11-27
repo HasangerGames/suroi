@@ -494,11 +494,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
-                RectangleHitbox.fromRect(8.7, 8.7)
-            ),
+            hitbox: RectangleHitbox.fromRect(8.7, 8.7),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
-            rotationMode: RotationMode.Limited,
+            rotationMode: RotationMode.None,
+            hideOnMap: true,
             role: ObstacleSpecialRoles.Activatable,
             interactText: "Open",
             replaceWith: {
@@ -524,7 +523,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(8.7, 8.7)
             ),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
-            rotationMode: RotationMode.Limited,
+            hideOnMap: true,
+            rotationMode: RotationMode.None,
             hasLoot: true
         },
         {
@@ -541,7 +541,8 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(8.7, 8.7)
             ),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
-            rotationMode: RotationMode.Limited,
+            rotationMode: RotationMode.None,
+            hideOnMap: true,
             hasLoot: true,
             frames: {
                 particle: "airdrop_crate_particle"
