@@ -131,7 +131,7 @@ export class Game {
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
         this.music = new Howl({
-            src: this.console.getBuiltInCVar("cv_use_old_menu_music") ? "./audio/music/old_menu_music.mp3" : "./audio/music/menu_music.mp3",
+            src: `../audio/music/${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "old_" : ""}menu_music.mp3`,
             loop: true
         });
 
@@ -258,7 +258,7 @@ export class Game {
                             soundID = "scope_pickup";
                             break;
                         case ItemType.Armor:
-                            //fixme idString check
+                            // fixme idString check
                             if (packet.item.idString.includes("helmet")) soundID = "helmet_pickup";
                             else soundID = "vest_pickup";
                             break;

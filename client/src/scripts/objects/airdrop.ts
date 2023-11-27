@@ -40,7 +40,8 @@ export class Airdrop {
             endPosition,
             image: new SuroiSprite("airdrop_plane")
                 .setZIndex(ZIndexes.Gas + 1)
-                .setRotation(direction),
+                .setRotation(direction)
+                .setScale(2),
             sound: game.soundManager.play("airdrop_plane", startPosition, 0.5, 256, true)
         };
 

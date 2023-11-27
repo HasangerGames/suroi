@@ -1,11 +1,12 @@
 import $ from "jquery";
-import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
-import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 import { Config } from "./config";
 import { Game } from "./game";
 import { loadTextures } from "./utils/pixi";
 import { stringIsPositiveNumber } from "./utils/misc";
+
+import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
+import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
 
 const playButton: JQuery = $("#btn-play-solo");
 
@@ -47,10 +48,10 @@ $(async(): Promise<void> => {
                     </span>
                 </li>
             `);
-        /*<span style="margin-left: 5px">
+        /* <span style="margin-left: 5px">
           <img src="./img/misc/ping_icon.svg" width="16" height="16" alt="Ping">
           <span class="server-ping">-</span>
-        </span>*/
+        </span> */
         serverList.append(listItem);
     }
 
@@ -77,7 +78,7 @@ $(async(): Promise<void> => {
                 };
 
                 listItem.find(".server-player-count").text(playerCount);
-                //listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
+                // listItem.find(".server-ping").text(typeof playerCount === "string" ? ping : "-");
 
                 if (ping < bestPing) {
                     bestPing = ping;
@@ -99,7 +100,7 @@ $(async(): Promise<void> => {
         }
         $("#server-name").text(selectedRegion.name);
         $("#server-player-count").text(selectedRegion.playerCount ?? "-");
-        //$("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
+        // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
     };
 
     const region = game.console.getBuiltInCVar("cv_region");

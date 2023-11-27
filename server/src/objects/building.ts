@@ -22,7 +22,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
     interactableObstacles = new Set<Obstacle>();
 
-    //@ts-expect-error it makes the typings work :3
+    // @ts-expect-error it makes the typings work :3
     declare rotation: Orientation;
 
     constructor(game: Game, definition: ReifiableDef<BuildingDefinition>, position: Vector, orientation: Orientation) {

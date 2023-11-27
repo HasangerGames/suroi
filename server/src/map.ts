@@ -6,7 +6,7 @@ import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type 
 import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
 import { addAdjust, addOrientations, angleBetweenPoints, distance, velFromAngle } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector, weightedRandom } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -602,13 +602,13 @@ export class Map {
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
         switch (mode) {
             case RotationMode.Full:
-                //@ts-expect-error not sure why ts thinks the return type should be 0
+                // @ts-expect-error not sure why ts thinks the return type should be 0
                 return randomRotation();
             case RotationMode.Limited:
-                //@ts-expect-error see above
+                // @ts-expect-error see above
                 return random(0, 3);
             case RotationMode.Binary:
-                //@ts-expect-error see above
+                // @ts-expect-error see above
                 return random(0, 1);
             case RotationMode.None:
             default:

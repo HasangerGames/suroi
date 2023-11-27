@@ -1,51 +1,27 @@
-import { BaseTexture, Sprite, Spritesheet, type Texture, type ColorSource, type Graphics, type SpriteSheetJson, Assets } from "pixi.js";
-import { Buildings } from "../../../../common/src/definitions/buildings";
+import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
-declare const ATLAS_HASH: string;
+// @ts-expect-error me when eslint wants a description
+import { atlases } from "virtual:spritesheets-jsons";
 
-let textures: Record<string, Texture> = {};
-
-const assetsToLoad: Record<string, string> = {};
-
-function loadImage(key: string, path: string): void {
-    if (assetsToLoad[key]) return;
-    assetsToLoad[key] = path;
-    console.log(`Loading image ${path}`);
-}
+const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
-    for (const building of Buildings.definitions) {
-        for (const image of building.floorImages ?? []) {
-            loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
-        }
+    for (const atlas of atlases) {
+        const image = atlas.meta.image;
 
-        for (const image of building.ceilingImages ?? []) {
-            loadImage(image.key, require(`/public/img/buildings/${image.key}.svg`));
-            if (image.residue) loadImage(image.residue, require(`/public/img/buildings/${image.residue}.svg`));
-        }
-    }
+        console.log(`Loading atlas ${location.origin}/${image}`);
 
-    Assets.addBundle("buildings", assetsToLoad);
+        const texture = await Texture.fromURL(image);
 
-    textures = await Assets.loadBundle("buildings");
-
-    for (const atlas of ["main"]) {
-        const path = `img/atlases/${atlas}.${ATLAS_HASH}`;
-        const spritesheetData = await (await fetch(`./${path}.json`)).json() as SpriteSheetJson;
-
-        console.log(`Loading atlas: ${location.toString()}${path}.png`);
-
-        const spriteSheet = new Spritesheet(BaseTexture.from(`./${path}.png`), spritesheetData);
+        const spriteSheet = new Spritesheet(texture, atlas);
 
         await spriteSheet.parse();
 
         for (const frame in spriteSheet.textures) {
-            const frameName = frame.replace(/(\.svg|\.png)/, "");
-            if (frameName in textures) console.warn(`Duplicated atlas frame key: ${frame}`);
-            textures[frameName] = spriteSheet.textures[frame];
+            textures[frame] = spriteSheet.textures[frame];
         }
     }
 }

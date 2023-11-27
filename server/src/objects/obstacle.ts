@@ -97,12 +97,12 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     for (const drop of getLootTableLoot(lootTable.loot as WeightedItem[])) this.loot.push(drop);
                 }
             }
-            /*const drops = lootTable.loot.flat();
+            /* const drops = lootTable.loot.flat();
 
             this.loot = Array.from(
                 { length: random(lootTable.min, lootTable.max) },
                 () => getLootTableLoot(drops)
-            ).flat();*/
+            ).flat(); */
         }
 
         if (definition.spawnWithLoot) {
@@ -126,7 +126,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 locked: definition.locked,
                 closedHitbox: this.hitbox.clone(),
                 openHitbox: hitboxes.openHitbox,
-                //@ts-expect-error undefined is okay here
+                // @ts-expect-error undefined is okay here
                 openAltHitbox: hitboxes.openAltHitbox,
                 offset: 0
             };
@@ -191,7 +191,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         const definition = object.definition;
                         switch (definition.operationStyle) {
                             case "slide": {
-                                //todo this ig?
+                                // todo this ig?
                                 break;
                             }
                             case "swivel":

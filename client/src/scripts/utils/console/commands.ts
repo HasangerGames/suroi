@@ -1,4 +1,5 @@
 // noinspection JSConstantReassignment
+import $ from "jquery";
 
 import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
@@ -67,9 +68,9 @@ export class Command<Invertible extends boolean = false, ErrorType extends Strin
             true
         );
 
-        //@ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as not mutable
         plus._inverse = minus;
-        //@ts-expect-error not worth marking the field as not mutable
+        // @ts-expect-error not worth marking the field as not mutable
         minus._inverse = plus;
     }
 

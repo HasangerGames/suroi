@@ -319,7 +319,7 @@ export const Maps: Record<string, MapDefinition> = {
                 (player.inventory.getWeapon(0) as GunItem).ammo = gun.capacity;
                 player.inventory.items[gun.ammoType] = Infinity;
                 player.disableInvulnerability();
-                //setInterval(() => player.activeItem.useItem(), 30);
+                // setInterval(() => player.activeItem.useItem(), 30);
                 map.game.addLoot(gun.idString, v(16, 32 + (16 * i)));
                 map.game.addLoot(gun.ammoType, v(16, 32 + (16 * i)), Infinity);
                 map.game.grid.addObject(player);
@@ -334,7 +334,7 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback(map) {
             for (let i = 0; i < Obstacles.definitions.length; i++) {
                 const obstacle = Obstacles.definitions[i];
-                //setInterval(() => player.activeItem.useItem(), 30);
+                // setInterval(() => player.activeItem.useItem(), 30);
                 map.generateObstacle(obstacle.idString, v(map.width / 2, 40 * i), 0, 1, i as Variation);
             }
         }
