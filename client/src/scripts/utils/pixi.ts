@@ -3,7 +3,6 @@ import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbo
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
 
-// @ts-expect-error me when eslint wants a description
 import { atlases } from "virtual:spritesheets-jsons";
 
 const textures: Record<string, Texture> = {};
