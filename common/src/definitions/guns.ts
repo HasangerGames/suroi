@@ -182,6 +182,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 2,
         moveSpread: 7,
+        noMuzzleFlash: true,
         length: 6.2,
         fists: {
             left: v(95, -2),
@@ -199,7 +200,10 @@ export const Guns: GunDefinition[] = [
             damage: 14.5,
             obstacleMultiplier: 1.5,
             speed: 0.3,
-            range: 160
+            range: 160,
+            tracer: {
+                opacity: 0.5
+            }
         }
     },
     {
