@@ -60,10 +60,14 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
             }
 
             if ("ammoSpawnAmount" in definition && "ammoType" in definition && definition.ammoSpawnAmount) {
-                loot.push(
-                    new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2),
-                    new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2)
-                );
+                if (definition.ammoSpawnAmount > 1) {
+                    loot.push(
+                        new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2),
+                        new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2)
+                    );
+                } else {
+                    loot.push(new LootItem(definition.ammoType, definition.ammoSpawnAmount / 2));
+                }
             }
         }
     }

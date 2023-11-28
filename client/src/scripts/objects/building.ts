@@ -56,8 +56,12 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
-            // find the direction to cast rays
-            const getIntersection = (hitbox: Hitbox): Vector | null => {
+            const hitboxes = this.ceilingHitbox instanceof ComplexHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
+
+            for (const hitbox of hitboxes) {
+                // find the direction to cast rays
+                let direction: Vector | null = null;
+
                 if (hitbox instanceof CircleHitbox) {
                     const intersection = circleCircleIntersection(
                         hitbox.position,
@@ -65,79 +69,69 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         playerHitbox.position,
                         playerHitbox.radius);
 
-                    return intersection?.dir ?? null;
+                    direction = intersection?.dir ?? null;
                 } else if (hitbox instanceof RectangleHitbox) {
                     const intersection = rectCircleIntersection(hitbox.min,
                         hitbox.max,
                         playerHitbox.position,
                         playerHitbox.radius);
 
-                    return intersection?.dir ?? null;
-                } else if (hitbox instanceof ComplexHitbox) {
-                    for (const hitbox2 of hitbox.hitboxes) {
-                        const intersection = getIntersection(hitbox2);
-                        if (intersection) {
-                            return intersection;
-                        }
-                    }
+                    direction = intersection?.dir ?? null;
                 }
 
-                return null;
-            };
+                if (direction) {
+                    let graphics: Graphics | undefined;
+                    if (HITBOX_DEBUG_MODE) {
+                        graphics = new Graphics();
+                        this.game.camera.addObject(graphics);
 
-            const direction = getIntersection(this.ceilingHitbox);
+                        graphics.lineStyle({
+                            color: 0xff0000,
+                            width: 0.1
+                        });
 
-            if (direction) {
-                let graphics: Graphics | undefined;
-                if (HITBOX_DEBUG_MODE) {
-                    graphics = new Graphics();
-                    this.game.camera.addObject(graphics);
+                        graphics.beginFill();
+                        graphics.scale.set(PIXI_SCALE);
 
-                    graphics.lineStyle({
-                        color: 0xff0000,
-                        width: 0.1
-                    });
-
-                    graphics.beginFill();
-                    graphics.scale.set(PIXI_SCALE);
-
-                    this.addTimeout(() => {
-                        graphics?.destroy();
-                    }, 30);
-                }
-
-                const angle = Math.atan2(direction.y, direction.x);
-
-                let collided = false;
-
-                for (let i = angle - 0.8; i < angle + 0.8; i += 0.2) {
-                    collided = false;
-                    const vec = vAdd(player.position, vMul(v(Math.cos(i), Math.sin(i)), visionSize));
-                    const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
-                    if (!end) {
-                        collided = true;
-                        continue;
+                        this.addTimeout(() => {
+                            graphics?.destroy();
+                        }, 30);
                     }
 
-                    graphics?.moveTo(player.position.x, player.position.y);
-                    graphics?.lineTo(end.x, end.y);
-                    graphics?.endFill();
+                    const angle = Math.atan2(direction.y, direction.x);
 
-                    for (const object of this.game.objects) {
-                        if (object instanceof Obstacle &&
-                            object.damageable &&
-                            !object.dead &&
-                            object.definition.role !== ObstacleSpecialRoles.Window &&
-                            object.hitbox?.intersectsLine(player.position, end)) {
+                    let collided = false;
+
+                    for (let i = angle - 0.8; i < angle + 0.8; i += 0.2) {
+                        collided = false;
+                        const vec = vAdd(player.position, vMul(v(Math.cos(i), Math.sin(i)), visionSize));
+                        const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
+                        if (!end) {
                             collided = true;
-                            break;
+                            continue;
                         }
+
+                        graphics?.moveTo(player.position.x, player.position.y);
+                        graphics?.lineTo(end.x, end.y);
+                        graphics?.endFill();
+
+                        for (const object of this.game.objects) {
+                            if (object instanceof Obstacle &&
+                                object.damageable &&
+                                !object.dead &&
+                                object.definition.role !== ObstacleSpecialRoles.Window &&
+                                object.hitbox?.intersectsLine(player.position, end)) {
+                                collided = true;
+                                break;
+                            }
+                        }
+                        if (!collided) break;
                     }
-                    if (!collided) break;
+                    visible = !collided;
+                } else {
+                    visible = false;
                 }
-                visible = !collided;
-            } else {
-                visible = false;
+                if (visible) break;
             }
         }
 
