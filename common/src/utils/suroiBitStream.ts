@@ -1,9 +1,7 @@
 import { BitStream } from "@damienvesper/bit-buffer";
 import {
-    MAX_OBJECT_SCALE,
-    MIN_OBJECT_SCALE,
+    GameConstants,
     ObjectCategory,
-    PLAYER_NAME_MAX_LENGTH,
     PacketType
 } from "../constants";
 import { RotationMode } from "../definitions/obstacles";
@@ -18,6 +16,8 @@ export const OBJECT_CATEGORY_BITS = calculateEnumPacketBits(ObjectCategory);
 export const OBJECT_ID_BITS = 12;
 export const VARIATION_BITS = 3;
 export const MAX_POSITION = 1616;
+export const MIN_OBJECT_SCALE = 0.25;
+export const MAX_OBJECT_SCALE = 2;
 
 export class SuroiBitStream extends BitStream {
     constructor(source: ArrayBuffer, byteOffset = 0, byteLength = 0) {
@@ -278,7 +278,7 @@ export class SuroiBitStream extends BitStream {
      * @param name The player name.
      */
     writePlayerName(name: string): void {
-        this.writeASCIIString(name, PLAYER_NAME_MAX_LENGTH);
+        this.writeASCIIString(name, GameConstants.player.nameMaxLength);
     }
 
     /**
@@ -286,6 +286,6 @@ export class SuroiBitStream extends BitStream {
      * @return The player name.
      */
     readPlayerName(): string {
-        return this.readASCIIString(PLAYER_NAME_MAX_LENGTH);
+        return this.readASCIIString(GameConstants.player.nameMaxLength);
     }
 }

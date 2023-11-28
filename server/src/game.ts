@@ -8,14 +8,10 @@ import { Loot } from "./objects/loot";
 import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import {
-    AIRDROP_FALL_TIME,
-    AIRDROP_TOTAL_TIME,
-    DEFAULT_USERNAME,
-    KILL_LEADER_MIN_KILLS,
+    GameConstants,
     KillFeedMessageType,
     KillType,
-    PacketType,
-    TICKS_PER_SECOND
+    PacketType
 } from "../../common/src/constants";
 import { Maps } from "./data/maps";
 import { Config, SpawnMode } from "./config";
@@ -47,6 +43,7 @@ import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { Obstacle } from "./objects/obstacle";
 import { Obstacles } from "../../common/src/definitions/obstacles";
 import { Timeout } from "../../common/src/utils/misc";
+import { Building } from "./objects/building";
 
 export class Game {
     readonly _id: number;
@@ -138,7 +135,7 @@ export class Game {
 
     tickTimes: number[] = [];
 
-    tickDelta = 1000 / TICKS_PER_SECOND;
+    tickDelta = 1000 / GameConstants.tps;
 
     constructor(id: number) {
         this._id = id;
@@ -156,7 +153,7 @@ export class Game {
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
-        this.tick(TICKS_PER_SECOND);
+        this.tick(GameConstants.tps);
     }
 
     handlePacket(stream: SuroiBitStream, player: Player): void {
@@ -304,11 +301,11 @@ export class Game {
             if (this.tickTimes.length >= 200) {
                 const mspt = this.tickTimes.reduce((a, b) => a + b) / this.tickTimes.length;
 
-                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / TICKS_PER_SECOND) * 100).toFixed(1)}%`);
+                Logger.log(`Game ${this._id} | Avg ms/tick: ${mspt.toFixed(2)} | Load: ${((mspt / GameConstants.tps) * 100).toFixed(1)}%`);
                 this.tickTimes = [];
             }
 
-            this.tick(Math.max(0, TICKS_PER_SECOND - tickTime));
+            this.tick(Math.max(0, GameConstants.tps - tickTime));
         }, delay);
     }
 
@@ -318,7 +315,7 @@ export class Game {
     updateKillLeader(player: Player): void {
         const oldKillLeader = this._killLeader;
 
-        if (player.kills > (this._killLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1)) && !player.dead) {
+        if (player.kills > (this._killLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
@@ -333,7 +330,7 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderDead, { killType: KillType.TwoPartyInteraction, killerID: killer?.id });
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
-            if (player.kills > (newKillLeader?.kills ?? (KILL_LEADER_MIN_KILLS - 1)) && !player.dead) {
+            if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
                 newKillLeader = player;
             }
         }
@@ -414,7 +411,7 @@ export class Game {
             (Config.censorUsernames && hasBadWords(name)) ||
             // eslint-disable-next-line no-control-regex
             /[^\x00-\x7F]/g.test(name) // extended ASCII chars
-        ) name = DEFAULT_USERNAME;
+        ) name = GameConstants.player.defaultName;
         player.name = name;
 
         player.isMobile = packet.isMobile;
@@ -604,9 +601,13 @@ export class Game {
             for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
                 if (object.hitbox?.collidesWith(crate.hitbox)) {
                     if (object instanceof Player) {
-                        object.piercingDamage(300, KillType.Airdrop);
-                    } else {
+                        object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
+                    } else if (object instanceof Obstacle) {
                         object.damage(Infinity, crate);
+                    } else if (object instanceof Building &&
+                        object.scopeHitbox &&
+                        crate.hitbox.collidesWith(object.scopeHitbox)) {
+                        object.damage(Infinity);
                     }
                 }
             }
@@ -617,7 +618,7 @@ export class Game {
                     loot.hitbox.resolveCollision(crate.spawnHitbox);
                 }
             }
-        }, (AIRDROP_TOTAL_TIME / 2) + AIRDROP_FALL_TIME);
+        }, (GameConstants.airdrop.totalTime / 2) + GameConstants.airdrop.fallTime);
     }
 
     get aliveCount(): number {

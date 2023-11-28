@@ -1,4 +1,4 @@
-import { DEFAULT_INVENTORY, INVENTORY_MAX_WEAPONS } from "../../../common/src/constants";
+import { DEFAULT_INVENTORY, GameConstants } from "../../../common/src/constants";
 import { Ammos, type AmmoDefinition } from "../../../common/src/definitions/ammos";
 import { type ArmorDefinition } from "../../../common/src/definitions/armors";
 import { type BackpackDefinition } from "../../../common/src/definitions/backpacks";
@@ -52,7 +52,7 @@ export class Inventory {
     /**
      * An internal array storing weapons
      */
-    readonly weapons = new Array<InventoryItem | undefined>(INVENTORY_MAX_WEAPONS);
+    readonly weapons = new Array<InventoryItem | undefined>(GameConstants.player.maxWeapons);
 
     /**
      * Private variable storing the index pointing to the last active weapon
@@ -199,7 +199,7 @@ export class Inventory {
     static isValidWeaponSlot(slot: number): boolean {
         return slot % 0 !== 0 || // If it's not an integer
             slot < 0 || // Or it's negative
-            slot > INVENTORY_MAX_WEAPONS - 1; // Or it's beyond the max slot number
+            slot > GameConstants.player.maxWeapons - 1; // Or it's beyond the max slot number
     }
 
     /**
@@ -277,7 +277,7 @@ export class Inventory {
      * @returns The slot in which the item was added, or `-1` if it could not be added
      */
     appendWeapon(item: ReifiableItem): number {
-        for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
+        for (let slot = 0; slot < GameConstants.player.maxWeapons; slot++) {
             if (this.weapons[slot] === undefined) {
                 this._setWeapon(slot, this._reifyItem(item));
                 return slot;

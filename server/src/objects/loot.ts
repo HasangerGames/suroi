@@ -1,4 +1,4 @@
-import { ObjectCategory, PlayerActions, TICKS_PER_SECOND } from "../../../common/src/constants";
+import { GameConstants, ObjectCategory, PlayerActions } from "../../../common/src/constants";
 import { ArmorType } from "../../../common/src/definitions/armors";
 import { Loots, type LootDefinition } from "../../../common/src/definitions/loots";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
@@ -58,7 +58,7 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         if (moving) {
             this.velocity = vMul(this.velocity, 0.9);
-            const velocity = vMul(this.velocity, 1 / TICKS_PER_SECOND);
+            const velocity = vMul(this.velocity, 1 / GameConstants.tps);
             velocity.x = clamp(velocity.x, -1, 1);
             velocity.y = clamp(velocity.y, -1, 1);
             this.position = vAdd(this.position, velocity);

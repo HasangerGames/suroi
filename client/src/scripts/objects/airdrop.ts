@@ -4,7 +4,7 @@ import { type Game } from "../game";
 import { lerp, vLerp } from "../../../../common/src/utils/math";
 import { PIXI_SCALE } from "../utils/constants";
 import { Ping } from "../rendering/minimap";
-import { AIRDROP_FALL_TIME, AIRDROP_TOTAL_TIME, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, ZIndexes } from "../../../../common/src/constants";
 import { type Sound } from "../utils/soundManager";
 
 export class Airdrop {
@@ -61,10 +61,13 @@ export class Airdrop {
         const now = Date.now();
         const timeElapsed = now - this.startTime;
 
-        const position = this.plane.sound.position = vLerp(this.plane.startPosition, this.plane.endPosition, timeElapsed / AIRDROP_TOTAL_TIME);
+        const position = this.plane.sound.position = vLerp(
+            this.plane.startPosition,
+            this.plane.endPosition,
+            timeElapsed / GameConstants.airdrop.totalTime);
         this.plane.image.setVPos(vMul(position, PIXI_SCALE));
 
-        if (timeElapsed >= AIRDROP_TOTAL_TIME / 2) {
+        if (timeElapsed >= GameConstants.airdrop.totalTime / 2) {
             if (!this.parachute.deployed) {
                 this.parachute.deployed = true;
                 this.parachute.deployTime = now;
@@ -76,9 +79,9 @@ export class Airdrop {
                 this.game.soundManager.play("airdrop_fall", this.position, 1, 256, true);
             }
             const parachuteTimeElapsed = now - this.parachute.deployTime;
-            this.parachute.image.setScale(lerp(1, 0.5, parachuteTimeElapsed / AIRDROP_FALL_TIME));
+            this.parachute.image.setScale(lerp(1, 0.5, parachuteTimeElapsed / GameConstants.airdrop.fallTime));
 
-            if (parachuteTimeElapsed >= AIRDROP_FALL_TIME) {
+            if (parachuteTimeElapsed >= GameConstants.airdrop.fallTime) {
                 this.game.soundManager.play(this.game.map.terrainGrid.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land", this.position);
                 this.destroy();
                 this.game.airdrops.delete(this);

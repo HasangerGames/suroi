@@ -1,5 +1,5 @@
 import { Text, type Container } from "pixi.js";
-import { DEFAULT_USERNAME, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -24,7 +24,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
 
         this.image = new SuroiSprite("death_marker");
         this.playerNameText = new Text(
-            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? DEFAULT_USERNAME : "",
+            this.game.console.getBuiltInCVar("cv_anonymize_player_names") ? GameConstants.player.defaultName : "",
             {
                 fontSize: 36,
                 fontFamily: "Inter",

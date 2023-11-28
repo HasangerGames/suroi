@@ -1,4 +1,4 @@
-import { PROTOCOL_VERSION, PacketType } from "../constants";
+import { GameConstants, PacketType } from "../constants";
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type SuroiBitStream } from "../utils/suroiBitStream";
 import { Packet } from "./packet";
@@ -15,7 +15,7 @@ export class JoinedPacket extends Packet {
         super.serialize();
         const stream = this.stream;
 
-        stream.writeUint16(PROTOCOL_VERSION);
+        stream.writeUint16(GameConstants.protocolVersion);
 
         for (const emote of this.emotes) {
             Emotes.writeToStream(stream, emote);

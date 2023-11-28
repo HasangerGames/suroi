@@ -1,11 +1,11 @@
 import {
     DEFAULT_INVENTORY,
     type GasState,
-    INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
     KillType,
     type ObjectCategory,
-    PacketType
+    PacketType,
+    GameConstants
 } from "../constants";
 import { type EmoteDefinition, Emotes } from "../definitions/emotes";
 import { type ExplosionDefinition, Explosions } from "../definitions/explosions";
@@ -188,9 +188,9 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
     if (data.dirty.weapons) {
         data.inventory.activeWeaponIndex = stream.readBits(2);
 
-        data.inventory.weapons = new Array(INVENTORY_MAX_WEAPONS).fill(undefined);
+        data.inventory.weapons = new Array(GameConstants.player.maxWeapons).fill(undefined);
 
-        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
+        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
             const hasItem = stream.readBoolean();
 
             if (hasItem) {

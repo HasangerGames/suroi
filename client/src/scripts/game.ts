@@ -2,11 +2,10 @@ import $ from "jquery";
 
 import { Application, Container } from "pixi.js";
 import {
+    GameConstants,
     InputActions,
     ObjectCategory,
     PacketType,
-    PROTOCOL_VERSION,
-    TICKS_PER_SECOND,
     ZIndexes
 } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
@@ -202,7 +201,7 @@ export class Game {
 
             this.map.indicator.setFrame("player_indicator");
 
-            this._tickTimeoutID = window.setInterval(this.tick.bind(this), TICKS_PER_SECOND);
+            this._tickTimeoutID = window.setInterval(this.tick.bind(this), GameConstants.tps);
         };
 
         // Handle incoming messages
@@ -307,7 +306,7 @@ export class Game {
     }
 
     startGame(packet: JoinedPacket): void {
-        if (packet.protocolVersion !== PROTOCOL_VERSION) {
+        if (packet.protocolVersion !== GameConstants.protocolVersion) {
             alert("Invalid game version.");
             // reload the page with a time stamp to try clearing cache
             location.search = `t=${Date.now()}`;

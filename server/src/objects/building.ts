@@ -40,10 +40,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
         }
     }
 
-    override damage(): void {
+    override damage(damage = 1): void {
         if (this._wallsToDestroy === undefined || this.dead) return;
 
-        this._wallsToDestroy--;
+        this._wallsToDestroy -= damage;
 
         if (this._wallsToDestroy <= 0) {
             this.dead = true;
