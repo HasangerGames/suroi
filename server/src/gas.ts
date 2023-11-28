@@ -86,20 +86,6 @@ export class Gas {
             this.game.allowJoin = false;
         }
 
-        if (currentStage.summonAirdrop) {
-            let spawnPosition = this.newPosition;
-            const hitbox = new CircleHitbox(15);
-            const gasRadius = this.newRadius ** 2;
-            spawnPosition = this.game.map.getRandomPosition(hitbox, {
-                maxAttempts: 500,
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                collides: (position) => {
-                    return distanceSquared(position, this.currentPosition) >= gasRadius;
-                }
-            }) ?? spawnPosition;
-            this.game.summonAirdrop(spawnPosition);
-        }
-
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = vClone(this.newPosition);
             if (currentStage.newRadius !== 0) {
@@ -122,6 +108,20 @@ export class Gas {
         this.dps = currentStage.dps;
         this.dirty = true;
         this.percentageDirty = true;
+
+        if (currentStage.summonAirdrop) {
+            let spawnPosition = this.newPosition;
+            const hitbox = new CircleHitbox(15);
+            const gasRadius = this.newRadius ** 2;
+            spawnPosition = this.game.map.getRandomPosition(hitbox, {
+                maxAttempts: 500,
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                collides: (position) => {
+                    return distanceSquared(position, this.currentPosition) >= gasRadius;
+                }
+            }) ?? spawnPosition;
+            this.game.summonAirdrop(spawnPosition);
+        }
 
         // Start the next stage
         if (duration !== 0) {
