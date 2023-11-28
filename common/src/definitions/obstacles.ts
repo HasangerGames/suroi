@@ -565,7 +565,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             hasLoot: true
         },
         {
-            idString: "warehouse_wall_1",
+            idString: "warehouse_walls",
             name: "Warehouse Wall",
             material: "metal",
             health: 1000,
@@ -576,30 +576,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.95
             },
-            hitbox: RectangleHitbox.fromRect(70.5, 1.6),
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(1.7, 70.6),
+                RectangleHitbox.fromRect(12, 1.7, v(5.5, -34.5)),
+                RectangleHitbox.fromRect(12, 1.7, v(5.5, 34.5))
+            ),
             rotationMode: RotationMode.Limited,
             reflectBullets: true,
             noResidue: true,
-            frames: {
-                particle: "metal_particle"
-            }
-        },
-        {
-            idString: "warehouse_wall_2",
-            name: "Warehouse Wall",
-            material: "metal",
-            health: 1000,
-            indestructible: true,
-            hideOnMap: true,
-            scale: {
-                spawnMin: 1,
-                spawnMax: 1,
-                destroy: 0.95
-            },
-            hitbox: RectangleHitbox.fromRect(10.6, 1.6),
-            rotationMode: RotationMode.Limited,
-            reflectBullets: true,
-            noResidue: true,
+            invisible: true,
             frames: {
                 particle: "metal_particle"
             }
@@ -633,7 +618,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.8
             },
-            hitbox: RectangleHitbox.fromRect(24, 6.6),
+            hitbox: RectangleHitbox.fromRect(25.5, 6.6),
             rotationMode: RotationMode.Limited,
             noResidue: true,
             frames: {

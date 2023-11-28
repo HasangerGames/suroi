@@ -477,34 +477,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             {
-                idString: "warehouse_wall_1",
-                position: v(-20, 0),
-                rotation: 1
-            },
-            {
-                idString: "warehouse_wall_1",
-                position: v(20, 0),
-                rotation: 1
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(14, -34.4),
+                idString: "warehouse_walls",
+                position: v(-19.8, 0),
                 rotation: 0
             },
             {
-                idString: "warehouse_wall_2",
-                position: v(-14, -34.4),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(14, 34.4),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(-14, 34.4),
-                rotation: 0
+                idString: "warehouse_walls",
+                position: v(19.8, 0),
+                rotation: 2
             },
             {
                 idString: "regular_crate",
@@ -527,7 +507,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "metal_shelf",
-                position: v(-16, 0),
+                position: v(-15.8, 0),
                 rotation: 1
             },
             {
@@ -547,7 +527,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "metal_shelf",
-                position: v(16, 0),
+                position: v(15.8, 0),
                 rotation: 1
             },
             {
