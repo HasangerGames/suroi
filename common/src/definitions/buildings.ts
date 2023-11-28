@@ -1260,14 +1260,18 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: RectangleHitbox.fromRect(82, 260, v(8.5, 0))
+                hitbox: RectangleHitbox.fromRect(82, 220, v(8.5, -20))
             },
             {
                 type: "stone",
+                hitbox: RectangleHitbox.fromRect(54, 20, v(8.5, 95))
+            },
+            {
+                type: "metal",
                 hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, -33.7))
             },
             {
-                type: "stone",
+                type: "metal",
                 hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, 43))
             }
         ],
