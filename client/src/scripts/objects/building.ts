@@ -169,6 +169,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 const sprite = new SuroiSprite(image.key);
                 sprite.setVPos(toPixiCoords(image.position));
                 if (image.tint !== undefined) sprite.setTint(image.tint);
+                if (image.rotation) sprite.setRotation(image.rotation);
                 this.container.addChild(sprite);
             }
 

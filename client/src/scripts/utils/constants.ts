@@ -3,7 +3,7 @@ import { Color } from "pixi.js";
 import { type ColorKeys, MODE } from "../../../../common/src/definitions/modes";
 
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
+export const HITBOX_DEBUG_MODE = true;
 
 export const HITBOX_COLORS = {
     obstacle: new Color("red"),

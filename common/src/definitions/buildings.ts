@@ -48,6 +48,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floorImages?: Array<{
         readonly key: string
         readonly position: Vector
+        readonly rotation?: number
         readonly tint?: number
     }>
 
@@ -576,100 +577,53 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_warehouse",
         name: "Port Warehouse",
-        spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
-        floorImages: [{
-            key: "port_warehouse_floor",
-            position: v(0, 0)
-        }],
+        spawnHitbox: RectangleHitbox.fromRect(70, 130),
+        scopeHitbox: RectangleHitbox.fromRect(58, 115),
+        floorImages: [
+            {
+                key: "port_warehouse_floor",
+                position: v(0, -30.2)
+            },
+            {
+                key: "port_warehouse_floor",
+                position: v(0, 30.2),
+                rotation: Math.PI
+            }
+        ],
         ceilingImages: [{
             key: "port_warehouse_ceiling",
             position: v(0, 0)
         }],
         obstacles: [
             {
-                idString: "port_warehouse_wall_short",
-                position: v(29.3, -51),
-                rotation: 0,
-                scale: 1.076
+                idString: "port_warehouse_walls",
+                position: v(0, -30),
+                rotation: 0
             },
             {
-                idString: "port_warehouse_wall_short",
-                position: v(-29.3, -51),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_windows",
-                position: v(-29.3, -30.3),
-                rotation: 0,
-                scale: 1.076
-            },
-            // {
-            //     id: "port_warehouse_windows",
-            //     position: v(29.3, -30.3),
-            //     rotation: 0,
-            //     scale: 1.076
-            // },
-            {
-                idString: "port_warehouse_wall_long",
-                position: v(29.3, 0),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_long",
-                position: v(-29.3, 0),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_short",
-                position: v(20.4, 16.3),
-                rotation: 1,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_short",
-                position: v(-20.4, 16.3),
-                rotation: 1,
-                scale: 1.076
+                idString: "port_warehouse_walls",
+                position: v(0, 30),
+                rotation: 2
             },
             {
                 idString: "port_warehouse_windows",
-                position: v(-29.3, 30.4),
-                rotation: 0,
-                scale: 1.076
+                position: v(-29.3, -31.9),
+                rotation: 0
             },
-            // {
-            //     id: "port_warehouse_windows",
-            //     position: v(29.3, 30.4),
-            //     rotation: 0,
-            //     scale: 1.076
-            // },
             {
-                idString: "port_warehouse_wall_short",
-                position: v(29.3, 51),
-                rotation: 0,
-                scale: 1.076
+                idString: "port_warehouse_windows",
+                position: v(-29.3, 31.9),
+                rotation: 0
             },
             {
                 idString: "port_warehouse_wall_short",
-                position: v(-29.3, 51),
-                rotation: 0,
-                scale: 1.076
+                position: v(21, 16.3),
+                rotation: 1
             },
             {
-                idString: "port_warehouse_wall_superlong",
-                position: v(0, -59.5),
-                rotation: 1,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_superlong",
-                position: v(0, 59.5),
-                rotation: 1,
-                scale: 1.076
+                idString: "port_warehouse_wall_short",
+                position: v(-21, 16.3),
+                rotation: 1
             },
             {
                 idString: "super_barrel",
@@ -722,7 +676,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "barrel",
-                position: v(25, 52)
+                position: v(23, 52)
             },
             {
                 idString: "barrel",

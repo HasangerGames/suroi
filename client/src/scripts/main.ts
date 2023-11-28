@@ -23,7 +23,7 @@ function disablePlayButton(text: string): void {
 $(async(): Promise<void> => {
     const game = new Game();
 
-    loadTextures().then(enablePlayButton);
+    void loadTextures().then(enablePlayButton);
 
     interface RegionInfo {
         name: string

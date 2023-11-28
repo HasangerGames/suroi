@@ -8,12 +8,14 @@ import { atlases } from "virtual:spritesheets-jsons";
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
-    await Promise.all(atlases.map((atlas: ISpritesheetData) => {
+    const promises: Array<Promise<void>> = [];
+
+    for (const atlas of atlases as ISpritesheetData[]) {
         const image = atlas.meta.image as string;
 
         console.log(`Loading atlas ${location.origin}/${image}`);
 
-        return new Promise<void>((resolve) => {
+        promises.push(new Promise<void>((resolve) => {
             Texture.fromURL(image).then((texture) => {
                 const spriteSheet = new Spritesheet(texture, atlas);
 
@@ -26,8 +28,10 @@ export async function loadTextures(): Promise<void> {
                     resolve();
                 }).catch(console.error);
             }).catch(console.error);
-        });
-    }));
+        }));
+    }
+
+    await Promise.all(promises);
 }
 
 export class SuroiSprite extends Sprite {

@@ -2040,15 +2040,15 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(1.5, 14.5),
+            hitbox: RectangleHitbox.fromRect(1.8, 14.5),
             rotationMode: RotationMode.Limited,
             frames: {
                 particle: "barrel_particle"
             }
         },
         {
-            idString: "port_warehouse_wall_long",
-            name: "Port warehouse long wall",
+            idString: "port_warehouse_walls",
+            name: "Port warehouse walls",
             material: "metal",
             health: 1000,
             hideOnMap: true,
@@ -2059,27 +2059,16 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: RectangleHitbox.fromRect(1.5, 32.2),
+            hitbox: new ComplexHitbox(
+                RectangleHitbox.fromRect(2, 16.3, v(-29.3, -22.3)),
+                RectangleHitbox.fromRect(60, 2, v(0, -29.4)),
+                RectangleHitbox.fromRect(2, 16.3, v(29.3, -22.3)),
+
+                RectangleHitbox.fromRect(2, 20, v(-29.3, 20.2)),
+                RectangleHitbox.fromRect(2, 20, v(29.3, 20.2))
+            ),
             rotationMode: RotationMode.Limited,
-            frames: {
-                particle: "barrel_particle"
-            }
-        },
-        {
-            idString: "port_warehouse_wall_superlong",
-            name: "Port warehouse long super wall",
-            material: "metal",
-            health: 1000,
-            hideOnMap: true,
-            indestructible: true,
-            reflectBullets: true,
-            scale: {
-                spawnMin: 1.0,
-                spawnMax: 1.0,
-                destroy: 0.7
-            },
-            hitbox: RectangleHitbox.fromRect(1.5, 56),
-            rotationMode: RotationMode.Limited,
+            invisible: true,
             frames: {
                 particle: "barrel_particle"
             }
