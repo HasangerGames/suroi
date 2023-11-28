@@ -499,6 +499,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             rotationMode: RotationMode.None,
             hideOnMap: true,
             role: ObstacleSpecialRoles.Activatable,
+            zIndex: ZIndexes.ObstaclesLayer2,
             interactText: "Open",
             replaceWith: {
                 idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },

@@ -9,7 +9,8 @@ export enum ObjectCategory {
     DeathMarker,
     Loot,
     Building,
-    Decal
+    Decal,
+    Parachute
 }
 
 export enum PacketType {
@@ -22,7 +23,8 @@ export enum PacketType {
     Pickup,
     Ping,
     Spectate,
-    Report
+    Report,
+    MapPing
 }
 
 export enum AnimationType {
@@ -109,6 +111,7 @@ export const GameConstants = {
     gridSize: 16,
     // ticks per second
     tps: 30,
+    maxPosition: 1616,
     player: {
         radius: 2.25,
         nameMaxLength: 16,
@@ -121,7 +124,7 @@ export const GameConstants = {
     },
     airdrop: {
         fallTime: 8000,
-        totalTime: 6000,
+        flyTime: 30000,
         damage: 300
     }
 };

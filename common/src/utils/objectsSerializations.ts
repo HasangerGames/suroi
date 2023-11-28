@@ -102,6 +102,13 @@ export interface ObjectsNetData {
         rotation: number
         definition: DecalDefinition
     }
+    //
+    // Parachute data
+    //
+    [ObjectCategory.Parachute]: {
+        height: number
+        full?: { position: Vector }
+    }
 }
 
 interface ObjectSerialization<T extends ObjectCategory> {
@@ -348,6 +355,28 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializeFull(stream) {
             return this.deserializePartial(stream);
+        }
+    },
+    [ObjectCategory.Parachute]: {
+        serializePartial(stream, data) {
+            stream.writeFloat(data.height, 0, 1, 8);
+        },
+        serializeFull(stream, data) {
+            this.serializePartial(stream, data);
+            stream.writePosition(data.full.position);
+        },
+        deserializePartial(stream) {
+            return {
+                height: stream.readFloat(0, 1, 8)
+            };
+        },
+        deserializeFull(stream) {
+            return {
+                ...this.deserializePartial(stream),
+                full: {
+                    position: stream.readPosition()
+                }
+            };
         }
     }
 };

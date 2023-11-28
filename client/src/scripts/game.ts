@@ -34,7 +34,7 @@ import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
 import { Gas, GasRender } from "./rendering/gas";
-import { Minimap } from "./rendering/minimap";
+import { Minimap, Ping } from "./rendering/minimap";
 import { type Tween } from "./utils/tween";
 import { GameConsole } from "./utils/console/gameConsole";
 import { setUpCommands } from "./utils/console/commands";
@@ -49,8 +49,9 @@ import { PingPacket } from "../../../common/src/packets/pingPacket";
 import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { PickupPacket } from "../../../common/src/packets/pickupPacket";
 import { distanceSquared } from "../../../common/src/utils/math";
-import { Airdrop } from "./objects/airdrop";
+import { Plane } from "./objects/plane";
 import { Timeout } from "../../../common/src/utils/misc";
+import { Parachute } from "./objects/parachute";
 
 export class Game {
     socket!: WebSocket;
@@ -89,7 +90,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly airdrops = new Set<Airdrop>();
+    readonly planes = new Set<Plane>();
 
     // Since all players and bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
@@ -349,16 +350,18 @@ export class Game {
 
         // reset stuff
         for (const object of this.objects) object.destroy();
-        for (const airdrop of this.airdrops) airdrop.destroy();
+        for (const airdrop of this.planes) airdrop.destroy();
         this.objects.clear();
         this.players.clear();
         this.bullets.clear();
-        this.airdrops.clear();
+        this.planes.clear();
         this.camera.container.removeChildren();
         this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();
+        this.map.pings.clear();
+        this.map.pingsContainer.removeChildren();
         this.loots.clear();
         this.playerNames.clear();
         this._timeouts.clear();
@@ -426,7 +429,7 @@ export class Game {
         this.map.update();
         this.gasRender.update(this.gas);
 
-        for (const airdrop of this.airdrops) airdrop.update();
+        for (const plane of this.planes) plane.update();
 
         this.camera.update();
     }
@@ -457,7 +460,8 @@ export class Game {
                     [ObjectCategory.DeathMarker]: DeathMarker,
                     [ObjectCategory.Loot]: Loot,
                     [ObjectCategory.Building]: Building,
-                    [ObjectCategory.Decal]: Decal
+                    [ObjectCategory.Decal]: Decal,
+                    [ObjectCategory.Parachute]: Parachute
                 };
 
                 type K = typeof type;
@@ -527,8 +531,13 @@ export class Game {
             this.uiManager.processKillFeedMessage(message);
         }
 
-        for (const airdrop of updateData.airdrops) {
-            this.airdrops.add(new Airdrop(this, airdrop.position, airdrop.direction));
+        for (const plane of updateData.planes) {
+            this.planes.add(new Plane(this, plane.position, plane.direction));
+        }
+
+        for (const ping of updateData.mapPings) {
+            this.soundManager.play("airdrop_ping");
+            this.map.pings.add(new Ping(ping));
         }
     }
 

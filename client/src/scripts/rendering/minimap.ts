@@ -48,6 +48,7 @@ export class Minimap {
     terrainGrid: TerrainGrid;
 
     readonly pings = new Set<Ping>();
+    readonly pingsContainer = new Container();
     pingGraphics = new Graphics();
 
     constructor(game: Game) {
@@ -65,7 +66,15 @@ export class Minimap {
 
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
-        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.pingGraphics, this.indicator).sortChildren();
+        this.objectsContainer.addChild(
+            this.sprite,
+            this.placesContainer,
+            this.gasRender.graphics,
+            this.gasGraphics,
+            this.pingGraphics,
+            this.pingsContainer,
+            this.indicator
+        ).sortChildren();
 
         this.borderContainer.on("click", e => {
             if (!this.game.inputManager.isMobile) return;
@@ -355,7 +364,7 @@ export class Minimap {
             const now = Date.now();
             for (const ping of this.pings) {
                 if (!ping.initialized) {
-                    this.objectsContainer.addChild(ping.image);
+                    this.pingsContainer.addChild(ping.image);
                     ping.initialized = true;
                 }
                 const radius = lerp(0, 2048, (now - ping.startTime) / 7000);

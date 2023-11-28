@@ -19,8 +19,8 @@ import { Map } from "./map";
 import { endGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
-import { v, type Vector } from "../../common/src/utils/vector";
-import { clamp, distanceSquared } from "../../common/src/utils/math";
+import { v, vAdd, type Vector } from "../../common/src/utils/vector";
+import { clamp, distanceSquared, velFromAngle } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
@@ -41,9 +41,10 @@ import { PingPacket } from "../../common/src/packets/pingPacket";
 import { SpectatePacket } from "../../common/src/packets/spectatePacket";
 import { type KillFeedMessage } from "../../common/src/packets/updatePacket";
 import { Obstacle } from "./objects/obstacle";
-import { Obstacles } from "../../common/src/definitions/obstacles";
+import { type ObstacleDefinition, Obstacles } from "../../common/src/definitions/obstacles";
 import { Timeout } from "../../common/src/utils/misc";
 import { Building } from "./objects/building";
+import { Parachute } from "./objects/parachute";
 
 export class Game {
     readonly _id: number;
@@ -84,6 +85,7 @@ export class Game {
     readonly loot: Set<Loot> = new Set<Loot>();
     readonly explosions: Set<Explosion> = new Set<Explosion>();
     readonly emotes: Set<Emote> = new Set<Emote>();
+    readonly parachutes = new Set<Parachute>();
 
     /**
      * All bullets that currently exist
@@ -102,11 +104,17 @@ export class Game {
     /**
      * All airdrops
      */
-    airdrops = new Set<{ position: Vector, direction: number }>();
+    readonly airdrops = new Set<Airdrop>();
+
     /**
-     * All airdrops this tick
+     * All planes this tick
      */
-    newAirdrops = new Set<{ position: Vector, direction: number }>();
+    readonly planes = new Set<{ position: Vector, direction: number }>();
+
+    /**
+     * All map pings this tick
+     */
+    readonly mapPings = new Set<Vector>();
 
     private readonly _timeouts = new Set<Timeout>();
 
@@ -213,6 +221,10 @@ export class Game {
                 loot.update();
             }
 
+            for (const parachute of this.parachutes) {
+                parachute.update();
+            }
+
             // Update bullets
             let records: DamageRecord[] = [];
             for (const bullet of this.bullets) {
@@ -264,7 +276,8 @@ export class Game {
             this.newPlayers.clear();
             this.deletedPlayers.clear();
             this.killFeedMessages.clear();
-            this.newAirdrops.clear();
+            this.planes.clear();
+            this.mapPings.clear();
             this.aliveCountDirty = false;
             this.gas.dirty = false;
             this.gas.percentageDirty = false;
@@ -557,7 +570,7 @@ export class Game {
 
             for (const airdrop of this.airdrops) {
                 thisHitbox = crateHitbox.transform(position);
-                const thatHitbox = crateHitbox.transform(airdrop.position);
+                const thatHitbox = (airdrop.type.spawnHitbox ?? airdrop.type.hitbox).transform(airdrop.position);
 
                 if (thisHitbox.collidesWith(thatHitbox)) {
                     collided = true;
@@ -575,6 +588,17 @@ export class Game {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
                 }
+
+                if (collided) break;
+
+                if (object instanceof Building &&
+                    object.scopeHitbox &&
+                    !object.definition.wallsToDestroy &&
+                    object.scopeHitbox.collidesWith(thisHitbox)) {
+                    collided = true;
+                    thisHitbox.resolveCollision(object.scopeHitbox);
+                }
+
                 if (collided) break;
             }
 
@@ -587,38 +611,25 @@ export class Game {
             position.y = clamp(position.y, height, this.map.height - height);
         }
 
-        const airdrop = { position, direction: randomRotation() };
+        const direction = randomRotation();
+
+        const planePos = vAdd(
+            position,
+            velFromAngle(direction, -GameConstants.maxPosition)
+        );
+
+        const airdrop = { position, type: crateDef };
 
         this.airdrops.add(airdrop);
-        this.newAirdrops.add(airdrop);
+
+        this.planes.add({ position: planePos, direction });
 
         this.addTimeout(() => {
-            this.airdrops.delete(airdrop);
-
-            const crate = this.map.generateObstacle(crateDef, position);
-
-            // Crush damage
-            for (const object of this.grid.intersectsHitbox(crate.hitbox)) {
-                if (object.hitbox?.collidesWith(crate.hitbox)) {
-                    if (object instanceof Player) {
-                        object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
-                    } else if (object instanceof Obstacle) {
-                        object.damage(Infinity, crate);
-                    } else if (object instanceof Building &&
-                        object.scopeHitbox &&
-                        crate.hitbox.collidesWith(object.scopeHitbox)) {
-                        object.damage(Infinity);
-                    }
-                }
-            }
-
-            // loop again to make sure loot added by destroyed obstacles is checked
-            for (const loot of this.grid.intersectsHitbox(crate.hitbox)) {
-                if (loot instanceof Loot && crate.spawnHitbox.collidesWith(loot.hitbox)) {
-                    loot.hitbox.resolveCollision(crate.spawnHitbox);
-                }
-            }
-        }, (GameConstants.airdrop.totalTime / 2) + GameConstants.airdrop.fallTime);
+            const parachute = new Parachute(this, position, airdrop);
+            this.grid.addObject(parachute);
+            this.parachutes.add(parachute);
+            this.mapPings.add(position);
+        }, GameConstants.airdrop.flyTime);
     }
 
     get aliveCount(): number {
@@ -630,4 +641,9 @@ export class Game {
     get nextObjectID(): number {
         return this.idAllocator.takeNext();
     }
+}
+
+export interface Airdrop {
+    position: Vector
+    type: ObstacleDefinition
 }

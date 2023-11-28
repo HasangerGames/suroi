@@ -361,8 +361,10 @@ const UpdateFlags = {
     DeletedPlayers: 1 << 10,
     AliveCount: 1 << 11,
     KillFeedMessages: 1 << 12,
-    Airdrops: 1 << 13
+    Planes: 1 << 13,
+    MapPings: 1 << 14
 };
+
 const UPDATE_FLAGS_BITS = Object.keys(UpdateFlags).length;
 
 export class UpdatePacket extends Packet {
@@ -419,7 +421,9 @@ export class UpdatePacket extends Packet {
 
     killFeedMessages = new Set<KillFeedMessage>();
 
-    airdrops = new Set<{ position: Vector, direction: number }>();
+    planes = new Set<{ position: Vector, direction: number }>();
+
+    mapPings = new Set<Vector>();
 
     override serialize(): void {
         super.serialize();
@@ -446,7 +450,8 @@ export class UpdatePacket extends Packet {
         if (this.deletedPlayers.size) flags += UpdateFlags.DeletedPlayers;
         if (this.aliveCountDirty) flags += UpdateFlags.AliveCount;
         if (this.killFeedMessages.size) flags += UpdateFlags.KillFeedMessages;
-        if (this.airdrops.size) flags += UpdateFlags.Airdrops;
+        if (this.planes.size) flags += UpdateFlags.Planes;
+        if (this.mapPings.size) flags += UpdateFlags.MapPings;
 
         stream.writeBits(flags, UPDATE_FLAGS_BITS);
 
@@ -549,12 +554,26 @@ export class UpdatePacket extends Packet {
             }
         }
 
-        if ((flags & UpdateFlags.Airdrops) !== 0) {
-            stream.writeBits(this.airdrops.size, 4);
+        if ((flags & UpdateFlags.Planes) !== 0) {
+            stream.writeBits(this.planes.size, 4);
 
-            for (const airdrop of this.airdrops) {
-                stream.writePosition(airdrop.position);
-                stream.writeRotation(airdrop.direction, 8);
+            for (const plane of this.planes) {
+                stream.writeVector(
+                    plane.position,
+                    -GameConstants.maxPosition,
+                    -GameConstants.maxPosition,
+                    GameConstants.maxPosition * 2,
+                    GameConstants.maxPosition * 2,
+                    24);
+                stream.writeRotation(plane.direction, 16);
+            }
+        }
+
+        if ((flags & UpdateFlags.MapPings) !== 0) {
+            stream.writeBits(this.mapPings.size, 4);
+
+            for (const ping of this.mapPings) {
+                stream.writePosition(ping);
             }
         }
     }
@@ -685,14 +704,27 @@ export class UpdatePacket extends Packet {
             }
         }
 
-        if ((flags & UpdateFlags.Airdrops) !== 0) {
+        if ((flags & UpdateFlags.Planes) !== 0) {
             const count = stream.readBits(4);
 
             for (let i = 0; i < count; i++) {
-                this.airdrops.add({
-                    position: stream.readPosition(),
-                    direction: stream.readRotation(8)
-                });
+                const position = stream.readVector(
+                    -GameConstants.maxPosition,
+                    -GameConstants.maxPosition,
+                    GameConstants.maxPosition * 2,
+                    GameConstants.maxPosition * 2,
+                    24
+                );
+                const direction = stream.readRotation(16);
+
+                this.planes.add({ position, direction });
+            }
+        }
+
+        if ((flags & UpdateFlags.MapPings) !== 0) {
+            const count = stream.readBits(4);
+            for (let i = 0; i < count; i++) {
+                this.mapPings.add(stream.readPosition());
             }
         }
     }
