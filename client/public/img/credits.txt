@@ -19,94 +19,127 @@ Loot:
   Cola: Asultra
   Medikit: Asultra
 Weapons:
-  ACR (Loot Image): ScaredPenguinXXL, supressor by cobby
-  ACR (World Image):
+  940 Pro (Loot Image): jchen
+  940 Pro (World Image):
+  940 Pro (Killfeed icon): eiπ
+  
+  ACR (Loot Image): ScaredPenguinXXL, suppressor by cobby
+  ACR (World Image): cobby
+  ACR (Killfeed icon): eiπ
 
   AK-47 (Loot Image): eiπ
   AK-47 (World Image): TacomyLoh, shortened by jchen
+  AK-47 (Killfeed icon):  eiπ
 
   ARX-160 (Loot Image): ScaredPenguinXXL
   ARX-160 (World Image): ScaredPenguinXXL, shortened by cobby
+  ARX-160 (Killfeed icon): eiπ
 
   AUG (Loot Image): jchen
-  AUG (World Image):
+  AUG (World Image): Slapdap, shortened by jchen
+  AUG (Killfeed icon): eiπ
 
   Barrett M95 (Loot Image): jchen
-  Barrett M95 (World Image): 
+  Barrett M95 (World Image): jchen
+  Barrett M95 (Killfeed icon): eiπ
 
   CZ-75A (Loot Image): jchen
-  CZ-75A (World Image):
+  CZ-75A (World Image): jchen, modified by Astronautical
+  CZ-75A (Killfeed icon): eiπ
 
   Death Ray (Loot Image): eiπ
   Death Ray (World Image): eiπ
+  Death Ray (Killfeed icon): eiπ
 
   Flues (Loot Image): jchen
   Flues (World Image): ScaredPenguinXXL, shortened by jchen
+  Flues (Killfeed icon): eiπ
 
   G17 (scoped) (Loot Image): eiπ
   G17 (scoped) (World Image): eiπ
+  G17 (scoped) (Killfeed icon): eiπ
 
   G19 (Loot Image): jchen
-  G19 (World Image):
+  G19 (World Image): 
+  G19 (Killfeed icon): eiπ
 
   HP18 (Loot Image): eiπ
-  HP18 (World Image):
+  HP18 (World Image): jchen, modified by astronautical_
+  HP18 (Killfeed icon): eiπ
 
   Lewis Gun (Loot Image): jchen
   Lewis Gun (World Image): Nugg4ec, modified by jchen, shortened by jchen
+  Lewis Gun (Killfeed icon): eiπ
 
   M16A4 (Loot Image): eiπ
-  M16A4 (World Image):
+  M16A4 (World Image): ItzBlover, modified by jchen, shortened by jchen
+  M16A4 (Killfeed icon): eiπ
 
   M1895 (Loot Image): cobby
-  M1895 (World Image):
+  M1895 (World Image): cobby
+  M1895 (Killfeed icon): eiπ
 
   M1 Garand (Loot Image): eiπ, modified by jchen & cobby
-  M1 Garand (World Image):
+  M1 Garand (World Image): cobby
+  M1 Garand (Killfeed icon): eiπ
 
   M3K (Loot Image): eiπ
   M3K (World Image): TacomyLoh, shortened by jchen
+  M3K (Killfeed icon): eiπ
 
   MCX Spear (Loot Image): megashark25098
-  MCX Spear (World Image):
+  MCX Spear (World Image): cobby
+  MCX Spear (Killfeed icon): eiπ
 
   Micro Uzi (Loot Image): Glek
-  Micro Uzi (World Image):
+  Micro Uzi (World Image): jchen, modified by astronautical_
+  Micro Uzi (Killfeed icon): eiπ
 
   Mini-14 (Loot Image): vp
-  Mini-14 (World Image):
+  Mini-14 (World Image): 1092384, modified by jchen, shortened by jchen
+  Mini-14 (Killfeed icon): eiπ
 
   Model 37 (Loot Image): eiπ
   Model 37 (World Image): TacomyLoh, shortened by jchen & cobby
+  Model 37 (Killfeed icon): eiπ
 
   Mosin-Nagant (Loot Image): eiπ
   Mosin-Nagant (World Image): TacomyLoh, shortened by jchen
+  Mosin-Nagant (Killfeed icon): eiπ
 
   MP40 (Loot Image): jchen
-  MP40 (World Image):
+  MP40 (World Image): 
+  MP40 (Killfeed icon): eiπ
 
   Revitalizer (Loot Image): eiπ
   Revitalizer (World Image):
+  Revitalizer (Killfeed icon): eiπ
 
   SAF-200 (Loot Image): eiπ
-  SAF-200 (World Image):
+  SAF-200 (World Image): nontakenusername1234, shortened by jchen, modified by astronautical_ & jchen 
+  SAF-200 (Killfeed icon): eiπ
 
   SR-25 (Loot Image): jchen
-  SR-25 (World Image):
+  SR-25 (World Image): 1092384, shortened by jchen
+  SR-25 (Killfeed icon): eiπ
 
   Stoner 63 (Loot Image): jchen
-  Stoner 63 (World Image):
+  Stoner 63 (World Image): 1092384, shortened by jchen
+  Stoner 63 (Killfeed icon): eiπ
 
   Tango 51 (Loot Image): jchen
-  Tango 51 (World Image):
+  Tango 51 (World Image): ItzBlover, shortened by jchen
+  Tango 51 (Killfeed icon): eiπ
 
   USAS-12 (Loot Image): eiπ
-  USAS-12 (World Image):
+  USAS-12 (World Image): cobby
+  USAS-12 (Killfeed icon): eiπ
 
   VSS (Loot Image): jchen
   VSS (World Image):
+  VSS (Killfeed icon): eiπ
 
-  Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
+  Gun top down images: Tacomy Loh, jchen, ItzBlover, megashark25098, 1092384, DogEnjoyer
   Melee weapons: Radians
 
 Obstacles:
@@ -142,6 +175,9 @@ Obstacles:
   Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, Henry Sanger
   Stove: 1092384
   Residues for above obstacles: platonthek
+
+  Pumpkin: redcoder09
+  Pumpkin residue: Radians
 
 Building designs:
   Small House: platonthek
