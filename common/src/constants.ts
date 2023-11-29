@@ -10,7 +10,7 @@ export enum ObjectCategory {
     Loot,
     Building,
     Decal,
-    Throwable
+    Parachute
 }
 
 export enum PacketType {
@@ -23,7 +23,8 @@ export enum PacketType {
     Pickup,
     Ping,
     Spectate,
-    Report
+    Report,
+    MapPing
 }
 
 export enum AnimationType {
@@ -90,25 +91,6 @@ export enum KillType {
     Airdrop
 }
 
-// !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
-// or a new item is added to a definition list
-export const PROTOCOL_VERSION = 8;
-
-export const MIN_OBJECT_SCALE = 0.25;
-export const MAX_OBJECT_SCALE = 2;
-
-export const TICKS_PER_SECOND = 30;
-export const GRID_SIZE = 16;
-
-export const PLAYER_RADIUS = 2.25;
-export const PLAYER_NAME_MAX_LENGTH = 16;
-export const DEFAULT_USERNAME = "Player";
-export const DEFAULT_HEALTH = 100;
-export const MAX_ADRENALINE = 100;
-export const INVENTORY_MAX_WEAPONS = 3;
-export const KILL_LEADER_MIN_KILLS = 3;
-export const MAX_MOUSE_DISTANCE = 128;
-
 export const DEFAULT_INVENTORY: Record<string, number> = {};
 
 for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
@@ -122,8 +104,30 @@ for (const item of [...HealingItems, ...Ammos, ...Scopes]) {
     DEFAULT_INVENTORY[item.idString] = amount;
 }
 
-export const AIRDROP_TOTAL_TIME = 60000;
-export const AIRDROP_FALL_TIME = 8000;
+export const GameConstants = {
+    // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
+    // or a new item is added to a definition list
+    protocolVersion: 9,
+    gridSize: 16,
+    // ticks per second
+    tps: 30,
+    maxPosition: 1616,
+    player: {
+        radius: 2.25,
+        nameMaxLength: 16,
+        defaultName: "player",
+        defaultHealth: 100,
+        maxAdrenaline: 100,
+        maxWeapons: 3,
+        killLeaderMinKills: 3,
+        maxMouseDist: 128
+    },
+    airdrop: {
+        fallTime: 8000,
+        flyTime: 30000,
+        damage: 300
+    }
+};
 
 export enum ZIndexes {
     Ground,

@@ -2,8 +2,8 @@ import $ from "jquery";
 import { Container, Texture, TilingSprite } from "pixi.js";
 import {
     AnimationType,
+    GameConstants,
     ObjectCategory,
-    PLAYER_RADIUS,
     PlayerActions,
     SpectateActions,
     ZIndexes
@@ -107,9 +107,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     vestLevel = 0;
     backpackLevel = 0;
 
-    readonly radius = PLAYER_RADIUS;
-
-    hitbox = new CircleHitbox(this.radius);
+    hitbox = new CircleHitbox(GameConstants.player.radius);
 
     floorType = "grass";
     waterOverlayAnim?: Tween<SuroiSprite>;

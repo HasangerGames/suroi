@@ -48,6 +48,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floorImages?: Array<{
         readonly key: string
         readonly position: Vector
+        readonly rotation?: number
         readonly tint?: number
     }>
 
@@ -82,7 +83,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
             spawnHitbox = RectangleHitbox.fromRect(16, 39.9);
             break;
         case "open1":
-            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 7));
+            spawnHitbox = RectangleHitbox.fromRect(16, 34.9, v(0, 2));
             break;
         case "closed":
         default:
@@ -476,34 +477,14 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         obstacles: [
             {
-                idString: "warehouse_wall_1",
-                position: v(-20, 0),
-                rotation: 1
-            },
-            {
-                idString: "warehouse_wall_1",
-                position: v(20, 0),
-                rotation: 1
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(14, -34.4),
+                idString: "warehouse_walls",
+                position: v(-19.8, 0),
                 rotation: 0
             },
             {
-                idString: "warehouse_wall_2",
-                position: v(-14, -34.4),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(14, 34.4),
-                rotation: 0
-            },
-            {
-                idString: "warehouse_wall_2",
-                position: v(-14, 34.4),
-                rotation: 0
+                idString: "warehouse_walls",
+                position: v(19.8, 0),
+                rotation: 2
             },
             {
                 idString: "regular_crate",
@@ -526,7 +507,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "metal_shelf",
-                position: v(-16, 0),
+                position: v(-15.8, 0),
                 rotation: 1
             },
             {
@@ -546,7 +527,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "metal_shelf",
-                position: v(16, 0),
+                position: v(15.8, 0),
                 rotation: 1
             },
             {
@@ -576,100 +557,53 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_warehouse",
         name: "Port Warehouse",
-        spawnHitbox: RectangleHitbox.fromRect(70.00, 130.00),
-        scopeHitbox: RectangleHitbox.fromRect(55.00, 115.00),
-        floorImages: [{
-            key: "port_warehouse_floor",
-            position: v(0, 0)
-        }],
+        spawnHitbox: RectangleHitbox.fromRect(70, 130),
+        scopeHitbox: RectangleHitbox.fromRect(58, 115),
+        floorImages: [
+            {
+                key: "port_warehouse_floor",
+                position: v(0, -30.2)
+            },
+            {
+                key: "port_warehouse_floor",
+                position: v(0, 30.2),
+                rotation: Math.PI
+            }
+        ],
         ceilingImages: [{
             key: "port_warehouse_ceiling",
             position: v(0, 0)
         }],
         obstacles: [
             {
-                idString: "port_warehouse_wall_short",
-                position: v(29.3, -51),
-                rotation: 0,
-                scale: 1.076
+                idString: "port_warehouse_walls",
+                position: v(0, -30),
+                rotation: 0
             },
             {
-                idString: "port_warehouse_wall_short",
-                position: v(-29.3, -51),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_windows",
-                position: v(-29.3, -30.3),
-                rotation: 0,
-                scale: 1.076
-            },
-            // {
-            //     id: "port_warehouse_windows",
-            //     position: v(29.3, -30.3),
-            //     rotation: 0,
-            //     scale: 1.076
-            // },
-            {
-                idString: "port_warehouse_wall_long",
-                position: v(29.3, 0),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_long",
-                position: v(-29.3, 0),
-                rotation: 0,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_short",
-                position: v(20.4, 16.3),
-                rotation: 1,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_short",
-                position: v(-20.4, 16.3),
-                rotation: 1,
-                scale: 1.076
+                idString: "port_warehouse_walls",
+                position: v(0, 30),
+                rotation: 2
             },
             {
                 idString: "port_warehouse_windows",
-                position: v(-29.3, 30.4),
-                rotation: 0,
-                scale: 1.076
+                position: v(-29.3, -31.9),
+                rotation: 0
             },
-            // {
-            //     id: "port_warehouse_windows",
-            //     position: v(29.3, 30.4),
-            //     rotation: 0,
-            //     scale: 1.076
-            // },
             {
-                idString: "port_warehouse_wall_short",
-                position: v(29.3, 51),
-                rotation: 0,
-                scale: 1.076
+                idString: "port_warehouse_windows",
+                position: v(-29.3, 31.9),
+                rotation: 0
             },
             {
                 idString: "port_warehouse_wall_short",
-                position: v(-29.3, 51),
-                rotation: 0,
-                scale: 1.076
+                position: v(21, 16.3),
+                rotation: 1
             },
             {
-                idString: "port_warehouse_wall_superlong",
-                position: v(0, -59.5),
-                rotation: 1,
-                scale: 1.076
-            },
-            {
-                idString: "port_warehouse_wall_superlong",
-                position: v(0, 59.5),
-                rotation: 1,
-                scale: 1.076
+                idString: "port_warehouse_wall_short",
+                position: v(-21, 16.3),
+                rotation: 1
             },
             {
                 idString: "super_barrel",
@@ -722,7 +656,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 idString: "barrel",
-                position: v(25, 52)
+                position: v(23, 52)
             },
             {
                 idString: "barrel",
@@ -1217,19 +1151,19 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         ],
         ceilingZIndex: ZIndexes.BuildingsCeiling + 1, // makes the crane ceiling render above container ceilings
         obstacles: [
-            { idString: "crane_base_end", position: v(-31.6, -106.15), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(-31.55, -87.3), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(-31.55, -35.6), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(-31.55, 32), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(-31.55, 83.7), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_end", position: v(-31.6, 106.15), rotation: 0, scale: 1.07 },
+            { idString: "crane_base_end", position: v(-31.6, -106.15), rotation: 0 },
+            { idString: "crane_base_part", position: v(-31.55, -87.3), rotation: 0 },
+            { idString: "crane_base_part", position: v(-31.55, -35.6), rotation: 0 },
+            { idString: "crane_base_part", position: v(-31.55, 32), rotation: 0 },
+            { idString: "crane_base_part", position: v(-31.55, 83.7), rotation: 0 },
+            { idString: "crane_base_end", position: v(-31.6, 106.15), rotation: 0 },
 
-            { idString: "crane_base_end", position: v(31.5, -106.15), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(31.55, -87.3), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(31.55, -35.6), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(31.55, 32), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_part", position: v(31.55, 83.7), rotation: 0, scale: 1.07 },
-            { idString: "crane_base_end", position: v(31.5, 106.15), rotation: 0, scale: 1.07 }
+            { idString: "crane_base_end", position: v(31.5, -106.15), rotation: 0 },
+            { idString: "crane_base_part", position: v(31.55, -87.3), rotation: 0 },
+            { idString: "crane_base_part", position: v(31.55, -35.6), rotation: 0 },
+            { idString: "crane_base_part", position: v(31.55, 32), rotation: 0 },
+            { idString: "crane_base_part", position: v(31.55, 83.7), rotation: 0 },
+            { idString: "crane_base_end", position: v(31.5, 106.15), rotation: 0 }
         ]
     },
     {
@@ -1299,8 +1233,9 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
         scopeHitbox: new ComplexHitbox(
-            RectangleHitbox.fromRect(45.5, 39, v(9.5, -70.5)),
-            RectangleHitbox.fromRect(60, 25, v(8, 93.2))
+            RectangleHitbox.fromRect(44, 38, v(9.5, -70.5)),
+            RectangleHitbox.fromRect(10, 15, v(-17, -60)),
+            RectangleHitbox.fromRect(50, 24, v(8, 93.2))
         ),
         floorImages: [
             {
@@ -1325,31 +1260,35 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         floors: [
             {
                 type: "stone",
-                hitbox: RectangleHitbox.fromRect(82, 260, v(8.5, 0))
+                hitbox: RectangleHitbox.fromRect(82, 220, v(8.5, -20))
             },
             {
                 type: "stone",
+                hitbox: RectangleHitbox.fromRect(54, 20, v(8.5, 95))
+            },
+            {
+                type: "metal",
                 hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, -33.7))
             },
             {
-                type: "stone",
+                type: "metal",
                 hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, 43))
             }
         ],
         obstacles: [
             // Tango room
-            { idString: "vault_door", position: v(7.55, 81.5), rotation: 0, scale: 1.07 },
-            { idString: { tango_crate: 1, aegis_crate: 1 }, position: v(9, 93.5), rotation: 0, scale: 0.90 },
+            { idString: "vault_door", position: v(7.45, 81.5), rotation: 0 },
+            { idString: { tango_crate: 1, aegis_crate: 1 }, position: v(9, 93.5), rotation: 0 },
             { idString: "super_barrel", position: v(-12, 89) },
             { idString: "box", position: v(28.5, 87) },
-            { idString: "box", position: v(31.5, 92) },
-            { idString: "box", position: v(-12, 101) },
+            { idString: "box", position: v(30, 93) },
+            { idString: "box", position: v(-12, 99) },
 
             // Main hitbox
             { idString: "ship", position: v(0, 0), rotation: 0 },
 
-            { idString: "ship_thing_1", position: v(-14, -111), rotation: 0, scale: 1.07 },
-            { idString: "generator", position: v(23, 75), rotation: 0, scale: 1.07 },
+            { idString: "ship_thing_1", position: v(-14, -111), rotation: 0 },
+            { idString: "generator", position: v(23, 75), rotation: 0 },
             { idString: "barrel", position: v(24, 66) },
             {
                 idString: { barrel: 1, super_barrel: 1 },
@@ -1359,26 +1298,17 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             { idString: "regular_crate", position: v(-4, 61) },
 
             // Captain's cabin
-            { idString: "panel_with_a_button", position: v(24.8, -55.9), rotation: 2 },
-            { idString: "panel_without_button_small", position: v(15, -55.9), rotation: 2 },
-            { idString: "panel_without_button", position: v(5.5, -55.9), rotation: 2 },
-            { idString: "regular_crate", position: v(-7, -83) },
-            { idString: "barrel", position: v(2, -84) },
-            { idString: "bookshelf", position: v(22, -85), rotation: 2 },
+            { idString: "panel_with_a_button", position: v(24, -57), rotation: 2 },
+            { idString: "panel_without_button_small", position: v(14.5, -57), rotation: 2 },
+            { idString: "panel_without_button", position: v(5, -57), rotation: 2 },
+            { idString: "regular_crate", position: v(-7, -84) },
+            { idString: "barrel", position: v(2, -85) },
+            { idString: "bookshelf", position: v(23.5, -86.5), rotation: 2 },
 
-            { idString: "ship_cabin_windows", position: v(3.9, -51), rotation: 1, scale: 1.07 },
-            { idString: "ship_cabin_window", position: v(-17.3, -50.3), rotation: 1, scale: 1.07 },
-            { idString: "ship_cabin_window", position: v(-7.4, -50.3), rotation: 1, scale: 1.07 },
-            { idString: "ship_cabin_window", position: v(5.4, -50.3), rotation: 1, scale: 1.07 },
-            { idString: "ship_cabin_window", position: v(15.3, -50.3), rotation: 1, scale: 1.07 },
-            { idString: "ship_small_wall", position: v(-23.6, -58.6), rotation: 0, scale: 1.07 },
-            { idString: "ship_medium_wall", position: v(31.5, -60.5), rotation: 0, scale: 1.07 },
-            { idString: "ship_exterior_long_wall", position: v(41, -65.6), rotation: 0, scale: 1.07 },
-            { idString: "ship_exterior_small_wall", position: v(37.15, -82), rotation: 1, scale: 1.07 },
-            { idString: "ship_tiny_wall", position: v(31.5, -84.8), rotation: 0, scale: 1.07 },
-            { idString: "ship_long_wall", position: v(9.2, -89.5), rotation: 1, scale: 1.07 },
-            { idString: "ship_medium_wall2", position: v(-13.1, -77.8), rotation: 0, scale: 1.07 },
-            { idString: "ship_exterior_medium_wall", position: v(-23.6, -77.8), rotation: 0, scale: 1.07 }
+            { idString: "ship_cabin_window", position: v(-16, -50.5), rotation: 1 },
+            { idString: "ship_cabin_window", position: v(-6, -50.5), rotation: 1 },
+            { idString: "ship_cabin_window", position: v(7, -50.5), rotation: 1 },
+            { idString: "ship_cabin_window", position: v(18, -50.5), rotation: 1 }
 
         ],
         subBuildings: [
@@ -1788,18 +1718,16 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
                 { length: 11 },
                 (_, i) => ({
                     idString: "inner_concrete_wall_1",
-                    position: v(-26.23, -204 + 11.6 * i),
-                    rotation: 1,
-                    scale: 1.07
+                    position: v(-26.23, -204 + 10.7 * i),
+                    rotation: 1
                 })
             ),
             ...Array.from(
                 { length: 4 },
                 (_, i) => ({
                     idString: "inner_concrete_wall_1",
-                    position: v(-148 + 11.6 * i, -82.4),
-                    rotation: 0,
-                    scale: 1.07
+                    position: v(-148 + 10.7 * i, -82.4),
+                    rotation: 0
                 })
             ),
 

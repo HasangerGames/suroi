@@ -1,4 +1,4 @@
-import { InputActions, MAX_MOUSE_DISTANCE, PacketType } from "../constants";
+import { GameConstants, InputActions, PacketType } from "../constants";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots } from "../definitions/loots";
 import { type ScopeDefinition } from "../definitions/scopes";
@@ -61,7 +61,9 @@ export class InputPacket extends Packet {
         stream.writeBoolean(this.turning);
         if (this.turning) {
             stream.writeRotation(this.rotation, 16);
-            if (!this.isMobile) stream.writeFloat(this.distanceToMouse, 0, MAX_MOUSE_DISTANCE, 8);
+            if (!this.isMobile) {
+                stream.writeFloat(this.distanceToMouse, 0, GameConstants.player.maxMouseDist, 8);
+            }
         }
 
         stream.writeBits(this.actions.length, 3);
@@ -101,7 +103,7 @@ export class InputPacket extends Packet {
         this.turning = stream.readBoolean();
         if (this.turning) {
             this.rotation = stream.readRotation(16);
-            if (!this.isMobile) this.distanceToMouse = stream.readFloat(0, MAX_MOUSE_DISTANCE, 8);
+            if (!this.isMobile) this.distanceToMouse = stream.readFloat(0, GameConstants.player.maxMouseDist, 8);
         }
 
         // Actions

@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { UI_DEBUG_MODE } from "./utils/constants";
 import { requestFullscreen } from "./utils/misc";
-import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { HealingItems, HealType } from "../../../common/src/definitions/healingItems";
 import { isMobile } from "pixi.js";
@@ -574,7 +574,7 @@ Video evidence is required.`)) {
     });
 
     // Switch weapon slots by clicking
-    for (let slot = 0; slot < INVENTORY_MAX_WEAPONS; slot++) {
+    for (let slot = 0; slot < GameConstants.player.maxWeapons; slot++) {
         const slotElement = $(`#weapon-slot-${slot + 1}`);
         slotElement[0].addEventListener(
             "pointerdown",

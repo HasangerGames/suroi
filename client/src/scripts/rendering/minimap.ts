@@ -2,7 +2,7 @@ import $ from "jquery";
 import { Container, Graphics, LINE_CAP, RenderTexture, Sprite, Text, Texture, isMobile } from "pixi.js";
 import "@pixi/graphics-extras";
 
-import { GRID_SIZE, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
+import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
 import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
 import { addAdjust, lerp } from "../../../../common/src/utils/math";
@@ -48,6 +48,7 @@ export class Minimap {
     terrainGrid: TerrainGrid;
 
     readonly pings = new Set<Ping>();
+    readonly pingsContainer = new Container();
     pingGraphics = new Graphics();
 
     constructor(game: Game) {
@@ -65,7 +66,15 @@ export class Minimap {
 
         if (this.game.console.getBuiltInCVar("cv_minimap_minimized")) this.toggleMinimap();
 
-        this.objectsContainer.addChild(this.sprite, this.placesContainer, this.gasRender.graphics, this.gasGraphics, this.pingGraphics, this.indicator).sortChildren();
+        this.objectsContainer.addChild(
+            this.sprite,
+            this.placesContainer,
+            this.gasRender.graphics,
+            this.gasGraphics,
+            this.pingGraphics,
+            this.pingsContainer,
+            this.indicator
+        ).sortChildren();
 
         this.borderContainer.on("click", e => {
             if (!this.game.inputManager.isMobile) return;
@@ -162,12 +171,12 @@ export class Minimap {
                 width: gridWidth
             });
 
-            for (let x = 0; x <= width; x += GRID_SIZE) {
+            for (let x = 0; x <= width; x += GameConstants.gridSize) {
                 ctx.moveTo(x * scale, 0);
                 ctx.lineTo(x * scale, height * scale);
             }
 
-            for (let y = 0; y <= height; y += GRID_SIZE) {
+            for (let y = 0; y <= height; y += GameConstants.gridSize) {
                 ctx.moveTo(0, y * scale);
                 ctx.lineTo(width * scale, y * scale);
             }
@@ -355,7 +364,7 @@ export class Minimap {
             const now = Date.now();
             for (const ping of this.pings) {
                 if (!ping.initialized) {
-                    this.objectsContainer.addChild(ping.image);
+                    this.pingsContainer.addChild(ping.image);
                     ping.initialized = true;
                 }
                 const radius = lerp(0, 2048, (now - ping.startTime) / 7000);

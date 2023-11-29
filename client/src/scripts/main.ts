@@ -23,7 +23,7 @@ function disablePlayButton(text: string): void {
 $(async(): Promise<void> => {
     const game = new Game();
 
-    await loadTextures();
+    void loadTextures().then(enablePlayButton);
 
     interface RegionInfo {
         name: string
@@ -226,6 +226,4 @@ $(async(): Promise<void> => {
         game.console.setBuiltInCVar("dv_role", role);
         location.search = "";
     }
-
-    enablePlayButton();
 });

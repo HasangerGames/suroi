@@ -137,7 +137,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     this.game.particleManager.spawnParticle({
                         frames: "airdrop_particle_1",
                         position: this.position,
-                        ...options(8, 18)
+                        ...options(8, 18),
+                        rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                     } as ParticleOptions);
 
                     this.playSound("airdrop_unlock", 0.2, 96);

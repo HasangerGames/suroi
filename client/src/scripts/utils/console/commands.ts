@@ -1,7 +1,7 @@
 // noinspection JSConstantReassignment
 import $ from "jquery";
 
-import { InputActions, INVENTORY_MAX_WEAPONS, SpectateActions } from "../../../../../common/src/constants";
+import { GameConstants, InputActions, SpectateActions } from "../../../../../common/src/constants";
 import { type HealingItemDefinition, HealingItems } from "../../../../../common/src/definitions/healingItems";
 import { Loots } from "../../../../../common/src/definitions/loots";
 import { Scopes } from "../../../../../common/src/definitions/scopes";
@@ -303,11 +303,11 @@ export function setUpCommands(game: Game): void {
                 return { err: `Attempted to cycle items by an invalid offset of '${offset}' slots` };
             }
 
-            let index = absMod((this.uiManager.inventory.activeWeaponIndex + step), INVENTORY_MAX_WEAPONS);
+            let index = absMod((this.uiManager.inventory.activeWeaponIndex + step), GameConstants.player.maxWeapons);
 
             let iterationCount = 0;
             while (!this.uiManager.inventory.weapons[index]) {
-                index = absMod((index + step), INVENTORY_MAX_WEAPONS);
+                index = absMod((index + step), GameConstants.player.maxWeapons);
 
                 /*
                     If, through some weirdness/oversight, the while loop were

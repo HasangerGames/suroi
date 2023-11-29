@@ -1,11 +1,8 @@
 import {
-    DEFAULT_HEALTH,
     DEFAULT_INVENTORY,
-    DEFAULT_USERNAME,
-    INVENTORY_MAX_WEAPONS,
+    GameConstants,
     KillFeedMessageType,
-    KillType,
-    MAX_ADRENALINE
+    KillType
 } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
@@ -31,16 +28,16 @@ function safeRound(value: number): number {
 export class UIManager {
     readonly game: Game;
 
-    maxHealth = DEFAULT_HEALTH;
-    health = DEFAULT_HEALTH;
+    maxHealth = GameConstants.player.defaultHealth;
+    health = GameConstants.player.defaultHealth;
 
-    maxAdrenaline = MAX_ADRENALINE;
+    maxAdrenaline = GameConstants.player.maxAdrenaline;
     minAdrenaline = 0;
     adrenaline = 0;
 
     inventory = {
         activeWeaponIndex: 0,
-        weapons: new Array(INVENTORY_MAX_WEAPONS).fill(undefined) as PlayerData["inventory"]["weapons"],
+        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"],
         items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
@@ -59,7 +56,7 @@ export class UIManager {
             console.warn(`Unknown player name with id ${id}`);
             name = "[Unknown Player]";
         } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            name = DEFAULT_USERNAME;
+            name = GameConstants.player.defaultName;
         } else {
             name = player.name;
         }
@@ -172,14 +169,14 @@ export class UIManager {
             this.minAdrenaline = data.minAdrenaline;
             this.maxAdrenaline = data.maxAdrenaline;
 
-            if (this.maxHealth === DEFAULT_HEALTH) {
+            if (this.maxHealth === GameConstants.player.defaultHealth) {
                 this.ui.maxHealth.text("").hide();
             } else {
                 this.ui.maxHealth.text(safeRound(this.maxHealth)).show();
             }
 
             if (
-                this.maxAdrenaline === MAX_ADRENALINE &&
+                this.maxAdrenaline === GameConstants.player.maxAdrenaline &&
                 this.minAdrenaline === 0
             ) {
                 this.ui.minMaxAdren.text("").hide();
@@ -280,7 +277,7 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
-        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
+        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
 
             const weapon = inventory.weapons[i];

@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { TICKS_PER_SECOND, type ObjectCategory } from "../../../../common/src/constants";
+import { GameConstants, type ObjectCategory } from "../../../../common/src/constants";
 import { vLerp } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
@@ -32,7 +32,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerPosition(): void {
         if (this.destroyed || this.oldPosition === undefined || this.container.position === undefined) return;
-        const interpFactor = (Date.now() - this.lastPositionChange) / TICKS_PER_SECOND;
+        const interpFactor = (Date.now() - this.lastPositionChange) / GameConstants.tps;
         this.container.position = toPixiCoords(vLerp(this.oldPosition, this.position, Math.min(interpFactor, 1)));
     }
 
@@ -52,7 +52,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
 
     updateContainerRotation(): void {
         if (this.oldRotation === undefined || this.container.rotation === undefined) return;
-        const interpFactor = (Date.now() - this.lastRotationChange) / TICKS_PER_SECOND;
+        const interpFactor = (Date.now() - this.lastRotationChange) / GameConstants.tps;
 
         const interpolated = vLerp(this.oldRotation, this.rotationVector, Math.min(interpFactor, 1));
 

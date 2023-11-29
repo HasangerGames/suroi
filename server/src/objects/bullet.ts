@@ -1,4 +1,4 @@
-import { TICKS_PER_SECOND } from "../../../common/src/constants";
+import { GameConstants } from "../../../common/src/constants";
 import { Bullets } from "../../../common/src/definitions/bullets";
 import { BaseBullet } from "../../../common/src/utils/baseBullet";
 import { RectangleHitbox } from "../../../common/src/utils/hitbox";
@@ -67,10 +67,10 @@ export class Bullet extends BaseBullet {
     }
 
     update(): DamageRecord[] {
-        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, TICKS_PER_SECOND)));
+        const lineRect = RectangleHitbox.fromLine(this.position, vAdd(this.position, vMul(this.velocity, GameConstants.tps)));
 
         const objects = this.game.grid.intersectsHitbox(lineRect);
-        const collisions = this.updateAndGetCollisions(TICKS_PER_SECOND, objects);
+        const collisions = this.updateAndGetCollisions(GameConstants.tps, objects);
 
         // Bullets from dead players should not deal damage so delete them
         // Also delete bullets out of map bounds

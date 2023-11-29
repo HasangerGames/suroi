@@ -1,4 +1,4 @@
-import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet } from "pixi.js";
+import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { PIXI_SCALE } from "./constants";
@@ -8,21 +8,30 @@ import { atlases } from "virtual:spritesheets-jsons";
 const textures: Record<string, Texture> = {};
 
 export async function loadTextures(): Promise<void> {
-    for (const atlas of atlases) {
-        const image = atlas.meta.image;
+    const promises: Array<Promise<void>> = [];
+
+    for (const atlas of atlases as ISpritesheetData[]) {
+        const image = atlas.meta.image as string;
 
         console.log(`Loading atlas ${location.origin}/${image}`);
 
-        const texture = await Texture.fromURL(image);
+        promises.push(new Promise<void>((resolve) => {
+            Texture.fromURL(image).then((texture) => {
+                const spriteSheet = new Spritesheet(texture, atlas);
 
-        const spriteSheet = new Spritesheet(texture, atlas);
+                spriteSheet.parse().then((sheetTextures) => {
+                    for (const frame in sheetTextures) {
+                        textures[frame] = sheetTextures[frame];
+                    }
+                    console.log(`Atlas ${image} loaded.`);
 
-        await spriteSheet.parse();
-
-        for (const frame in spriteSheet.textures) {
-            textures[frame] = spriteSheet.textures[frame];
-        }
+                    resolve();
+                }).catch(console.error);
+            }).catch(console.error);
+        }));
     }
+
+    await Promise.all(promises);
 }
 
 export class SuroiSprite extends Sprite {

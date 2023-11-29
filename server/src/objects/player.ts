@@ -1,16 +1,11 @@
 import { type WebSocket } from "uWebSockets.js";
 import {
     AnimationType,
-    DEFAULT_HEALTH,
-    DEFAULT_USERNAME,
+    GameConstants,
     InputActions,
-    INVENTORY_MAX_WEAPONS,
     KillFeedMessageType,
     KillType,
-    MAX_ADRENALINE,
-    MAX_MOUSE_DISTANCE,
     ObjectCategory,
-    PLAYER_RADIUS,
     PlayerActions,
     SpectateActions
 } from "../../../common/src/constants";
@@ -76,7 +71,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.updateKillLeader(this);
     }
 
-    private _maxHealth = DEFAULT_HEALTH;
+    private _maxHealth = GameConstants.player.defaultHealth;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
@@ -92,7 +87,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.dirty.health = true;
     }
 
-    private _maxAdrenaline = MAX_ADRENALINE;
+    private _maxAdrenaline = GameConstants.player.maxAdrenaline;
     get maxAdrenaline(): number { return this._maxAdrenaline; }
     set maxAdrenaline(maxAdrenaline: number) {
         this._maxAdrenaline = maxAdrenaline;
@@ -174,7 +169,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     /**
      * The distance from the player position to the player mouse in game units
      */
-    distanceToMouse = MAX_MOUSE_DISTANCE;
+    distanceToMouse = GameConstants.player.maxMouseDist;
 
     /**
      * Keeps track of various fields which are "dirty"
@@ -315,7 +310,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const userData = socket.getUserData();
         this.socket = socket;
-        this.name = DEFAULT_USERNAME;
+        this.name = GameConstants.player.defaultName;
         this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
@@ -336,7 +331,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         this.joinTime = game.now;
 
-        this.hitbox = new CircleHitbox(PLAYER_RADIUS, position);
+        this.hitbox = new CircleHitbox(GameConstants.player.radius, position);
 
         this.inventory.addOrReplaceWeapon(2, "fists");
 
@@ -624,8 +619,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             });
         }
 
-        // airdrops
-        packet.airdrops = this.game.newAirdrops;
+        packet.planes = this.game.planes;
+        packet.mapPings = this.game.mapPings;
 
         // serialize and send update packet
         this.sendPacket(packet);
@@ -809,7 +804,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             minAdrenaline: 0
         };
 
-        for (let i = 0; i < INVENTORY_MAX_WEAPONS; i++) {
+        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
 
             if (weapon === undefined) continue;
@@ -821,8 +816,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         this._modifiers = newModifiers;
-        this.maxHealth = DEFAULT_HEALTH * this._modifiers.maxHealth;
-        this.maxAdrenaline = MAX_ADRENALINE * this._modifiers.maxAdrenaline;
+        this.maxHealth = GameConstants.player.defaultHealth * this._modifiers.maxHealth;
+        this.maxAdrenaline = GameConstants.player.maxAdrenaline * this._modifiers.maxAdrenaline;
         this.minAdrenaline = this.modifiers.minAdrenaline;
     }
 
