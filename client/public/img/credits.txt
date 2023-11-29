@@ -13,14 +13,15 @@ Loot:
   Level 3 Helmet (Loot Image): Slapdap
   Level 3 Helmet (World Image): Slapdap, modified by Leia
 
-  1x, 2x, 4x, 8x, 15x Scopes: Sladap
+  1x, 2x, 4x, 8x, 15x Scopes: Slapdap
 
   Tablets: jchen
   Cola: Asultra
   Medikit: Asultra
+
 Weapons:
   ACR (Loot Image): ScaredPenguinXXL, supressor by cobby
-  ACR (World Image):
+  ACR (World Image): ScaredPenguinXXL, shortened by jchen
 
   AK-47 (Loot Image): eiπ
   AK-47 (World Image): TacomyLoh, shortened by jchen
@@ -29,13 +30,13 @@ Weapons:
   ARX-160 (World Image): ScaredPenguinXXL, shortened by cobby
 
   AUG (Loot Image): jchen
-  AUG (World Image):
+  AUG (World Image): Slapdap, shortened by jchen
 
   Barrett M95 (Loot Image): jchen
-  Barrett M95 (World Image): 
+  Barrett M95 (World Image): jchen
 
   CZ-75A (Loot Image): jchen
-  CZ-75A (World Image):
+  CZ-75A (World Image): jchen
 
   Death Ray (Loot Image): eiπ
   Death Ray (World Image): eiπ
@@ -47,22 +48,22 @@ Weapons:
   G17 (scoped) (World Image): eiπ
 
   G19 (Loot Image): jchen
-  G19 (World Image):
+  G19 (World Image): ItzBlover, shortened by jchen
 
   HP18 (Loot Image): eiπ
-  HP18 (World Image):
+  HP18 (World Image): eiπ, shortened by jchen
 
   Lewis Gun (Loot Image): jchen
   Lewis Gun (World Image): Nugg4ec, modified by jchen, shortened by jchen
 
   M16A4 (Loot Image): eiπ
-  M16A4 (World Image):
+  M16A4 (World Image): ItzBlover
 
   M1895 (Loot Image): cobby
-  M1895 (World Image):
+  M1895 (World Image): cobby
 
   M1 Garand (Loot Image): eiπ, modified by jchen & cobby
-  M1 Garand (World Image):
+  M1 Garand (World Image): cobby, 
 
   M3K (Loot Image): eiπ
   M3K (World Image): TacomyLoh, shortened by jchen
@@ -71,10 +72,10 @@ Weapons:
   MCX Spear (World Image):
 
   Micro Uzi (Loot Image): Glek
-  Micro Uzi (World Image):
+  Micro Uzi (World Image): TacomyLoh, modified by Astronautical, shortened by jchen
 
   Mini-14 (Loot Image): vp
-  Mini-14 (World Image):
+  Mini-14 (World Image): 1092384, shortened by jchen
 
   Model 37 (Loot Image): eiπ
   Model 37 (World Image): TacomyLoh, shortened by jchen & cobby
@@ -83,39 +84,44 @@ Weapons:
   Mosin-Nagant (World Image): TacomyLoh, shortened by jchen
 
   MP40 (Loot Image): jchen
-  MP40 (World Image):
+  MP40 (World Image): Yeet120
 
   Revitalizer (Loot Image): eiπ
-  Revitalizer (World Image):
+  Revitalizer (World Image): eiπ
 
   SAF-200 (Loot Image): eiπ
-  SAF-200 (World Image):
+  SAF-200 (World Image): otter hater, shortened by jchen, modified by Astronautical & jchen
 
   SR-25 (Loot Image): jchen
-  SR-25 (World Image):
+  SR-25 (World Image): 1092384, shortened by jchen
 
   Stoner 63 (Loot Image): jchen
-  Stoner 63 (World Image):
+  Stoner 63 (World Image): 1092384, shortened by jchen
 
   Tango 51 (Loot Image): jchen
-  Tango 51 (World Image):
+  Tango 51 (World Image): ItzBlover, shortened by jchen
 
   USAS-12 (Loot Image): eiπ
-  USAS-12 (World Image):
+  USAS-12 (World Image): cobby
 
   VSS (Loot Image): jchen
-  VSS (World Image):
+  VSS (World Image): ItzBlover, shortened by jchen
 
-  Gun top down images: Tacomy Loh, jchen, ItzBlover, Megashark25098, 1092384, DogEnjoyer
-  Melee weapons: Radians
+  All killfeed icons: eiπ
+  
+  Baseball Bat: Radians
+  HE-AP Sword: Radians
+  K-bar: Radians
+  Maul: Radians
+
 
 Obstacles:
   Barrel: 123OP, Asultra, Henry Sanger
-  Barrel residue: Dachselt, Leo, Henry Sanger
+  Barrel Residue: Dachselt, Leo, Henry Sanger
 
   Bush: Glek
-  Bush particles: Asultra, Radians
-  Bush residue: Henry Sanger, Asultra, Radians
+  Bush Particles: Asultra, Radians
+  Bush Residue: Henry Sanger, Asultra, Radians
   Blueberry bush: Katloo
 
   Regular crate: Henry Sanger, 123OP
@@ -124,7 +130,7 @@ Obstacles:
   Barrel explosion: Leia
   Barrel explosion particles: Radians
 
-  Soviet crate: Henry Sanger, DogEnjoyer, 123OP
+  AEGIS/Flint crates: Henry Sanger, DogEnjoyer, 123OP
 
   Rocks: Leia
   Rock particles: Radians
@@ -142,6 +148,8 @@ Obstacles:
   Bed, Drawers, Couch, Chair, Table, Fridge, Walls, Door, Window, Ceramic Toilet, Garage, Washing Machine: platonthek, Henry Sanger
   Stove: 1092384
   Residues for above obstacles: platonthek
+
+  Pumpkin: RedCoder09
 
 Building designs:
   Small House: platonthek
