@@ -23,16 +23,16 @@ Weapons:
   ACR (World Image):
 
   AK-47 (Loot Image): eiπ
-  AK-47 (World Image):
+  AK-47 (World Image): TacomyLoh, shortened by jchen
 
   ARX-160 (Loot Image): ScaredPenguinXXL
-  ARX-160 (World Image):
+  ARX-160 (World Image): ScaredPenguinXXL, shortened by cobby
 
   AUG (Loot Image): jchen
   AUG (World Image):
 
   Barrett M95 (Loot Image): jchen
-  Barrett M95 (World Image):
+  Barrett M95 (World Image): 
 
   CZ-75A (Loot Image): jchen
   CZ-75A (World Image):
@@ -65,7 +65,7 @@ Weapons:
   M1 Garand (World Image):
 
   M3K (Loot Image): eiπ
-  M3K (World Image):
+  M3K (World Image): TacomyLoh, shortened by jchen
 
   MCX Spear (Loot Image): megashark25098
   MCX Spear (World Image):
@@ -77,10 +77,10 @@ Weapons:
   Mini-14 (World Image):
 
   Model 37 (Loot Image): eiπ
-  Model 37 (World Image):
+  Model 37 (World Image): TacomyLoh, shortened by jchen & cobby
 
   Mosin-Nagant (Loot Image): eiπ
-  Mosin-Nagant (World Image):
+  Mosin-Nagant (World Image): TacomyLoh, shortened by jchen
 
   MP40 (Loot Image): jchen
   MP40 (World Image):
