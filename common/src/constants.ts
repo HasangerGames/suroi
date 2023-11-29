@@ -9,7 +9,8 @@ export enum ObjectCategory {
     DeathMarker,
     Loot,
     Building,
-    Decal
+    Decal,
+    Throwable
 }
 
 export enum PacketType {

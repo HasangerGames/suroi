@@ -6,6 +6,7 @@ import { PIXI_SCALE } from "../utils/constants";
 import { Ping } from "../rendering/minimap";
 import { AIRDROP_FALL_TIME, AIRDROP_TOTAL_TIME, ZIndexes } from "../../../../common/src/constants";
 import { type Sound } from "../utils/soundManager";
+import { MODE } from "../../../../common/src/definitions/modes";
 
 export class Airdrop {
     game: Game;
@@ -31,6 +32,14 @@ export class Airdrop {
         this.game = game;
         this.startTime = Date.now();
 
+        const reskin = MODE.reskin;
+
+        let suffix: String;
+
+        if(reskin?.suffix) {
+           suffix = reskin.suffix
+        }
+
         this.position = vClone(position);
 
         const startPosition = vAdd(this.position, v(Math.cos(direction + Math.PI) * 1620, Math.sin(direction + Math.PI) * 1620));
@@ -48,7 +57,7 @@ export class Airdrop {
         this.parachute = {
             deployed: false,
             deployTime: -1,
-            image: new SuroiSprite("airdrop_parachute")
+            image: new SuroiSprite(reskin?.suffix ? `airdrop_parachute_${reskin.suffix}` : `airdrop_parachute`)
                 .setVPos(vMul(position, PIXI_SCALE))
                 .setZIndex(ZIndexes.ObstaclesLayer5)
                 .setVisible(false)

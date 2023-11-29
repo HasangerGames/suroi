@@ -16,7 +16,8 @@ export const GasStages: GasStage[] = [
         duration: 0,
         oldRadius: 0.762,
         newRadius: 0.762,
-        dps: 0
+        dps: 0,
+        summonAirdrop: true
     },
     {
         state: GasState.Waiting,

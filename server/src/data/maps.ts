@@ -301,9 +301,7 @@ export const Maps: Record<string, MapDefinition> = {
         oceanSize: 8,
         genCallback(map) {
             map.generateObstacle("flint_stone", v(this.width / 2, this.height / 2), 0);
-            map.generateObstacle("generator", v(this.width / 2 - 20, this.height / 2), 0);
-            map.game.addLoot("radio", v(this.width / 2 + 10, this.height / 2 + 10), 0);
-            map.game.addLoot("curadell", v(this.width / 2 + 10, this.height / 2 + 10), 1);
+
         }
     },
     guns_test: {
