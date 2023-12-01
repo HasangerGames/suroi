@@ -36,7 +36,7 @@ Weapons:
   Barrett M95 (World Image): jchen
 
   CZ-75A (Loot Image): jchen
-  CZ-75A (World Image): eiπ, modified by Astronautical, shortened by jchen
+  CZ-75A (World Image): jchen, modified by Astronautical, shortened by jchen
 
   Death Ray (Loot Image): eiπ
   Death Ray (World Image): eiπ
