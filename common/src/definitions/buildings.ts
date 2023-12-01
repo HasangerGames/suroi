@@ -1936,12 +1936,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
-        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-68, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-63, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: v(-125, 0) },
-            { idString: "ship", position: v(80, -50) },
-            { idString: "crane", position: v(-25, -95) }
+            { idString: "port", position: v(-120, 0) },
+            { idString: "ship", position: v(75, -50) },
+            { idString: "crane", position: v(-20, -95) }
         ]
     }
 
