@@ -49,7 +49,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         }
 
         if (data.height === 0) {
-            this.playSound(this.game.map.terrainGrid.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land");
+            this.playSound(this.game.map.terrain.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land");
         }
     }
 

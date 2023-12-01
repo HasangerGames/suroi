@@ -15,7 +15,7 @@ import { Loots } from "../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../common/src/definitions/melees";
 import { type SkinDefinition } from "../../../common/src/definitions/skins";
 import { CircleHitbox, RectangleHitbox } from "../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../common/src/utils/mapUtils";
+import { FloorTypes } from "../../../common/src/utils/terrain";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
 import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
@@ -440,7 +440,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.game.partialDirtyObjects.add(this);
 
             if (this.isMoving) {
-                this.floor = this.game.map.terrainGrid.getFloor(this.position);
+                this.floor = this.game.map.terrain.getFloor(this.position);
             }
         }
 

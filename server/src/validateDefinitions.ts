@@ -16,7 +16,7 @@ import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles"
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
 import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { FloorTypes } from "../../common/src/utils/mapUtils";
+import { FloorTypes } from "../../common/src/utils/terrain";
 import { ObstacleSpecialRoles, type BaseBulletDefinition, type ItemDefinition, type ObjectDefinition, type ObjectDefinitions, type WearerAttributes } from "../../common/src/utils/objectDefinitions";
 import { type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode, Config as ServerConfig, SpawnMode } from "./config";
@@ -847,21 +847,6 @@ logger.indent("Validating map definitions", () => {
                 field: "beachSize",
                 baseErrorPath: errorPath
             });
-
-            tester.assertNoPointlessValue({
-                obj: definition,
-                field: "rivers",
-                defaultValue: 0,
-                baseErrorPath: errorPath
-            });
-
-            if (definition.rivers !== undefined) {
-                tester.assertIsNaturalFiniteNumber({
-                    obj: definition,
-                    field: "rivers",
-                    baseErrorPath: errorPath
-                });
-            }
 
             tester.assertNoPointlessValue({
                 obj: definition,

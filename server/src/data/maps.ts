@@ -20,7 +20,15 @@ interface MapDefinition {
     readonly height: number
     readonly oceanSize: number
     readonly beachSize: number
-    readonly rivers?: number
+    readonly rivers?: {
+        readonly minAmount: number
+        readonly maxAmount: number
+        readonly wideChance: number
+        readonly minWidth: number
+        readonly maxWidth: number
+        readonly minWideWidth: number
+        readonly maxWideWidth: number
+    }
 
     readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
     readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
@@ -41,7 +49,15 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1632,
         oceanSize: 128,
         beachSize: 32,
-        rivers: 3,
+        rivers: {
+            minAmount: 3,
+            maxAmount: 3,
+            wideChance: 0.15,
+            minWidth: 12,
+            maxWidth: 18,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
         buildings: {
             port_complex: 1,
             refinery: 1,
@@ -150,7 +166,15 @@ export const Maps: Record<string, MapDefinition> = {
         height: 1344,
         oceanSize: 128,
         beachSize: 32,
-        rivers: 3,
+        rivers: {
+            minAmount: 1,
+            maxAmount: 3,
+            wideChance: 0.2,
+            minWidth: 10,
+            maxWidth: 16,
+            minWideWidth: 25,
+            maxWideWidth: 30
+        },
         buildings: {
             refinery: 1,
             warehouse: 4,

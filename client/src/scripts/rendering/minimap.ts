@@ -4,7 +4,7 @@ import "@pixi/graphics-extras";
 
 import { GameConstants, GasState, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { CircleHitbox, RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes, TerrainGrid, generateTerrain } from "../../../../common/src/utils/mapUtils";
+import { FloorTypes, River, Terrain } from "../../../../common/src/utils/terrain";
 import { addAdjust, lerp } from "../../../../common/src/utils/math";
 import { v, vClone, vMul, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
@@ -44,12 +44,17 @@ export class Minimap {
 
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
-    terrainGrid: TerrainGrid;
+
+    terrain = new Terrain(0, 0, 0, 0, 0, []);
 
     readonly pings = new Set<Ping>();
     readonly border = new Graphics();
     readonly pingsContainer = new Container();
     readonly pingGraphics = new Graphics();
+
+    readonly terrainGraphics = new Graphics();
+
+    readonly debugGraphics = new Graphics();
 
     constructor(game: Game) {
         this.game = game;
@@ -85,42 +90,35 @@ export class Minimap {
             this.switchToSmallMap();
             e.stopImmediatePropagation();
         });
-
-        this.terrainGrid = new TerrainGrid(0, 0);
     }
 
     updateFromPacket(mapPacket: MapPacket): void {
+        console.log(`Joining game with seed: ${mapPacket.seed}`);
+
         const width = this.width = mapPacket.width;
         const height = this.height = mapPacket.height;
 
-        const terrain = generateTerrain(
+        const rivers: River[] = [];
+        for (const riverData of mapPacket.rivers) {
+            rivers.push(new River(riverData.width, riverData.points, rivers));
+        }
+
+        const terrain = this.terrain = new Terrain(
             width,
             height,
             mapPacket.oceanSize,
             mapPacket.beachSize,
             mapPacket.seed,
-            mapPacket.rivers
+            rivers
         );
 
-        this.terrainGrid = new TerrainGrid(width, height);
-
         // Draw the terrain graphics
-        const terrainGraphics = new Graphics();
+        const terrainGraphics = this.terrainGraphics;
+        terrainGraphics.clear();
         const mapGraphics = new Graphics();
 
-        const beachPoints = terrain.beach.points;
-        const grassPoints = terrain.grass.points;
-
-        // drawn map borders
-        const margin = 5120;
-        const realWidth = width * PIXI_SCALE;
-        const realHeight = height * PIXI_SCALE;
-        terrainGraphics.beginFill(COLORS.border);
-        terrainGraphics.drawRect(-margin, -margin, realWidth + margin * 2, margin);
-        terrainGraphics.drawRect(-margin, realHeight, realWidth + margin * 2, margin);
-        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + margin * 2);
-        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + margin * 2);
-        terrainGraphics.endFill();
+        const beachPoints = terrain.beachHitbox.points;
+        const grassPoints = terrain.grassHitbox.points;
 
         const drawTerrain = (ctx: Graphics, scale: number, gridLineWidth: number): void => {
             ctx.zIndex = ZIndexes.Ground;
@@ -148,21 +146,33 @@ export class Minimap {
 
             ctx.endHole();
 
-            for (const river of terrain.rivers) {
-                const bank = river.bank.points;
+            // gets the river polygon with the middle 2 points not rounded
+            // so it joins nicely with other rivers
+            function getRiverPoly(points: Vector[]): Array<Vector & { radius: number }> {
+                const half = points.length / 2;
+                return points.map((point, index) => {
+                    return {
+                        x: point.x * scale,
+                        y: point.y * scale,
+                        radius: (index === half || index === half - 1) ? 0 : radius
+                    };
+                });
+            }
 
+            // river bank needs to be draw first
+            for (const river of rivers) {
                 ctx.fill.color = COLORS.riverBank.toNumber();
-
-                ctx.drawPolygon(scale === 1 ? bank : bank.map(point => vMul(point, scale)));
+                ctx.drawRoundedShape?.(getRiverPoly(river.bankHitbox.points), 0, true);
             }
-
-            for (const river of terrain.rivers) {
-                const water = river.water.points;
-
+            for (const river of rivers) {
                 ctx.fill.color = COLORS.water.toNumber();
-
-                ctx.drawPolygon(scale === 1 ? water : water.map(point => vMul(point, scale)));
+                ctx.drawRoundedShape?.(getRiverPoly(river.waterHitbox.points), 0, true);
             }
+            // clip the river polygons
+            ctx.drawRect(0, 0, width * scale, height * scale);
+            ctx.beginHole();
+            ctx.drawRoundedShape?.(beach, radius);
+            ctx.endHole();
 
             ctx.lineStyle({
                 color: 0x000000,
@@ -210,6 +220,17 @@ export class Minimap {
         };
         drawTerrain(terrainGraphics, PIXI_SCALE, 6);
         drawTerrain(mapGraphics, 1, 2);
+
+        // drawn map borders
+        const margin = 5120;
+        const realWidth = width * PIXI_SCALE;
+        const realHeight = height * PIXI_SCALE;
+        terrainGraphics.beginFill(COLORS.border);
+        terrainGraphics.drawRect(-margin, -margin, realWidth + margin * 2, margin);
+        terrainGraphics.drawRect(-margin, realHeight, realWidth + margin * 2, margin);
+        terrainGraphics.drawRect(-margin, -margin, margin, realHeight + margin * 2);
+        terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + margin * 2);
+        terrainGraphics.endFill();
 
         this.game.camera.addObject(terrainGraphics);
 
@@ -266,7 +287,7 @@ export class Minimap {
 
                     for (const floor of definition.floors ?? []) {
                         const hitbox = floor.hitbox.transform(mapObject.position, 1, mapObject.rotation as Orientation);
-                        this.terrainGrid.addFloor(floor.type, hitbox);
+                        this.terrain.addFloor(floor.type, hitbox);
                     }
                 }
                     break;
@@ -274,17 +295,6 @@ export class Minimap {
         }
 
         mapRender.sortChildren();
-
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("water", river.water);
-        }
-
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("sand", river.bank);
-        }
-
-        this.terrainGrid.addFloor("grass", terrain.grass);
-        this.terrainGrid.addFloor("sand", terrain.beach);
 
         // Render all obstacles and buildings to a texture
         const renderTexture = RenderTexture.create({
@@ -326,26 +336,42 @@ export class Minimap {
         this.resize();
 
         if (HITBOX_DEBUG_MODE) {
-            const debugGraphics = new Graphics();
+            const debugGraphics = this.debugGraphics;
+            debugGraphics.clear();
             debugGraphics.zIndex = 99;
-            for (const [hitbox, type] of this.terrainGrid.floors) {
+            for (const [hitbox, type] of this.terrain.floors) {
                 drawHitbox(hitbox, FloorTypes[type].debugColor, debugGraphics);
             }
 
-            for (const river of mapPacket.rivers) {
+            drawHitbox(terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
+            drawHitbox(terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
+
+            for (const river of rivers) {
                 const points = river.points.map(point => vMul(point, PIXI_SCALE));
+
+                drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
+                drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
 
                 debugGraphics.lineStyle({
                     width: 10,
                     color: 0
                 });
 
-                for (let i = 0, l = points.length; i < l; i++) {
+                debugGraphics.moveTo(points[0].x, points[0].y);
+                for (let i = 1; i < points.length; i++) {
                     const point = points[i];
-                    debugGraphics[i ? "lineTo" : "moveTo"](point.x, point.y);
+                    debugGraphics.lineTo(point.x, point.y);
                 }
 
                 debugGraphics.endFill();
+
+                debugGraphics.lineStyle();
+                debugGraphics.fill.alpha = 1;
+                for (const point of points) {
+                    debugGraphics.beginFill(0xff0000);
+                    debugGraphics.arc(point.x, point.y, 20, 0, Math.PI * 2);
+                    debugGraphics.endFill();
+                }
             }
 
             this.game.camera.addObject(debugGraphics);

@@ -1,6 +1,6 @@
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
-import { type FloorTypes } from "../utils/mapUtils";
+import { type FloorTypes } from "../utils/terrain";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { type ObstacleDefinition, type RotationMode } from "./obstacles";
