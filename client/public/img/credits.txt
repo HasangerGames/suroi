@@ -20,8 +20,8 @@ Loot:
   Medikit: Asultra
 
 Weapons:
-  ACR (Loot Image): ScaredPenguinXXL, supressor by cobby
-  ACR (World Image): ScaredPenguinXXL, shortened by jchen
+  ACR (Loot Image): ScaredPenguinXXL, suppressor by cobby
+  ACR (World Image): ScaredPenguinXXL, shortened by cobby
 
   AK-47 (Loot Image): eiπ
   AK-47 (World Image): TacomyLoh, shortened by jchen
@@ -60,7 +60,7 @@ Weapons:
   M16A4 (World Image): ItzBlover
 
   M1895 (Loot Image): cobby
-  M1895 (World Image): cobby
+  M1895 (World Image): jchen
 
   M1 Garand (Loot Image): eiπ, modified by jchen & cobby
   M1 Garand (World Image): cobby, 
