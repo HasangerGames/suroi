@@ -123,7 +123,7 @@ export class Minimap {
         terrainGraphics.drawRect(realWidth, -margin, margin, realHeight + margin * 2);
         terrainGraphics.endFill();
 
-        const drawTerrain = (ctx: Graphics, scale: number, gridWidth: number): void => {
+        const drawTerrain = (ctx: Graphics, scale: number, gridLineWidth: number): void => {
             ctx.zIndex = ZIndexes.Ground;
             ctx.beginFill();
 
@@ -167,18 +167,21 @@ export class Minimap {
 
             ctx.lineStyle({
                 color: 0x000000,
-                alpha: 0.25,
-                width: gridWidth
+                alpha: 0.1,
+                width: gridLineWidth
             });
 
-            for (let x = 0; x <= width; x += GameConstants.gridSize) {
-                ctx.moveTo(x * scale, 0);
-                ctx.lineTo(x * scale, height * scale);
+            const gridSize = GameConstants.gridSize * scale;
+            const gridWidth = height * scale;
+            const gridHeight = height * scale;
+            for (let x = 0; x <= gridWidth; x += gridSize) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, gridHeight);
             }
 
-            for (let y = 0; y <= height; y += GameConstants.gridSize) {
-                ctx.moveTo(0, y * scale);
-                ctx.lineTo(width * scale, y * scale);
+            for (let y = 0; y <= gridHeight; y += gridSize) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(gridWidth, y);
             }
 
             ctx.endFill();
@@ -206,7 +209,7 @@ export class Minimap {
                 }
             }
         };
-        drawTerrain(terrainGraphics, PIXI_SCALE, this.game.console.getBuiltInCVar("cv_antialias") ? 2 : 4);
+        drawTerrain(terrainGraphics, PIXI_SCALE, 6);
         drawTerrain(mapGraphics, 1, 2);
 
         this.game.camera.addObject(terrainGraphics);
