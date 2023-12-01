@@ -201,7 +201,7 @@ export class GameConsole {
             }
 
             if (config.binds) {
-                for (const key in defaultBinds) {
+                for (const key in config.binds) {
                     if (!(key in config.binds)) continue;
 
                     binds[key] = config.binds[key];
