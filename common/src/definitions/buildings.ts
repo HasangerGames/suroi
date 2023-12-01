@@ -467,7 +467,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         ceilingImages: [{
             key: "warehouse_ceiling",
-            position: v(0, -1.5)
+            position: v(0, 0)
         }],
         floors: [
             {
