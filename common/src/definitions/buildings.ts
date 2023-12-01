@@ -95,7 +95,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         idString: `container_${id}`,
         name: `Container ${id}`,
         spawnHitbox,
-        scopeHitbox: RectangleHitbox.fromRect(13.9, 27),
+        scopeHitbox: RectangleHitbox.fromRect(12, 27),
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),

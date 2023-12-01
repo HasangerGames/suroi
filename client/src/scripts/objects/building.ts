@@ -58,6 +58,13 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
             const hitboxes = this.ceilingHitbox instanceof ComplexHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
+            let graphics: Graphics | undefined;
+            if (HITBOX_DEBUG_MODE) {
+                graphics = new Graphics();
+                graphics.zIndex = 100;
+                this.game.camera.addObject(graphics);
+            }
+
             for (const hitbox of hitboxes) {
                 // find the direction to cast rays
                 let direction: Vector | null = null;
@@ -80,18 +87,14 @@ export class Building extends GameObject<ObjectCategory.Building> {
                 }
 
                 if (direction) {
-                    let graphics: Graphics | undefined;
                     if (HITBOX_DEBUG_MODE) {
-                        graphics = new Graphics();
-                        this.game.camera.addObject(graphics);
-
-                        graphics.lineStyle({
+                        graphics?.lineStyle({
                             color: 0xff0000,
                             width: 0.1
                         });
 
-                        graphics.beginFill();
-                        graphics.scale.set(PIXI_SCALE);
+                        graphics?.beginFill();
+                        graphics?.scale.set(PIXI_SCALE);
 
                         this.addTimeout(() => {
                             graphics?.destroy();
@@ -102,7 +105,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
                     let collided = false;
 
-                    for (let i = angle - 0.8; i < angle + 0.8; i += 0.2) {
+                    const halfPi = Math.PI / 2;
+                    for (let i = angle - halfPi; i < angle + halfPi; i += 0.1) {
                         collided = false;
                         const vec = vAdd(player.position, vMul(v(Math.cos(i), Math.sin(i)), visionSize));
                         const end = this.ceilingHitbox.intersectsLine(player.position, vec)?.point;
@@ -110,7 +114,6 @@ export class Building extends GameObject<ObjectCategory.Building> {
                             collided = true;
                             continue;
                         }
-
                         graphics?.moveTo(player.position.x, player.position.y);
                         graphics?.lineTo(end.x, end.y);
                         graphics?.endFill();
@@ -144,7 +147,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
             {
                 target: this.ceilingContainer,
                 to: { alpha: visible ? 0 : 1 },
-                duration: 200,
+                duration: visible ? 120 : 300,
                 ease: EaseFunctions.sineOut,
                 onComplete: () => {
                     this.ceilingVisible = visible;
