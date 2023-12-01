@@ -151,7 +151,7 @@ export class UIManager {
     }
 
     updateUI(data: PlayerData): void {
-        if (data.id) this.game.activePlayerID = data.id;
+        if (data.id !== undefined) this.game.activePlayerID = data.id;
 
         if (data.dirty.id) {
             this.game.spectating = data.spectating;
