@@ -95,7 +95,7 @@ function makeContainer(id: number, tint: number, wallsID: number, open: "open2" 
         idString: `container_${id}`,
         name: `Container ${id}`,
         spawnHitbox,
-        scopeHitbox: RectangleHitbox.fromRect(13.9, 27),
+        scopeHitbox: RectangleHitbox.fromRect(12, 27),
         ceilingImages: [{
             key: `container_ceiling_${open}${damaged ? "_damaged" : ""}`,
             position: v(0, 0),
@@ -467,7 +467,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         }],
         ceilingImages: [{
             key: "warehouse_ceiling",
-            position: v(0, -1.5)
+            position: v(0, 0)
         }],
         floors: [
             {
@@ -1936,12 +1936,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "port_complex",
         name: "Port Complex",
-        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-68, 0)),
+        spawnHitbox: RectangleHitbox.fromRect(430, 425, v(-63, 0)),
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
-            { idString: "port", position: v(-125, 0) },
-            { idString: "ship", position: v(80, -50) },
-            { idString: "crane", position: v(-25, -95) }
+            { idString: "port", position: v(-120, 0) },
+            { idString: "ship", position: v(75, -50) },
+            { idString: "crane", position: v(-20, -95) }
         ]
     }
 

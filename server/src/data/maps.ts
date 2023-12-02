@@ -37,8 +37,8 @@ interface MapDefinition {
 
 export const Maps: Record<string, MapDefinition> = {
     main: {
-        width: 1616,
-        height: 1616,
+        width: 1632,
+        height: 1632,
         oceanSize: 128,
         beachSize: 32,
         rivers: 3,

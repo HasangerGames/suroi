@@ -13,6 +13,8 @@ import { type Game } from "../../game";
 import { type InputManager } from "../inputManager";
 import { type PossibleError, type Stringable } from "./gameConsole";
 import { ConVar } from "./variables";
+import { Graphics, Rectangle, Sprite } from "pixi.js";
+import { COLORS } from "../constants";
 
 type CommandExecutor<ErrorType = never> = (this: Game, ...args: Array<string | undefined>) => PossibleError<ErrorType>;
 
@@ -236,12 +238,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Attempts to switch to the last item the player deployed.",
             long: "When invoked, the player's last active slot will be switched to, if possible.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -265,12 +262,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Attempts to switch to the other weapon in the player's inventory.",
             long: "When invoked, the player will swap to the other weapon slot if there is a weapon there. If not, melee will be switched to.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -284,12 +276,7 @@ export function setUpCommands(game: Game): void {
             short: "Exchanges the guns' slots in the player's inventory.",
             long: "When invoked, the item in slot 0 will be placed in slot 1 and vice versa. Empty slots are treated normally, meaning " +
                 "that invoking this command with only one gun in an inventory will send it to the other slot, leaving the original slot empty.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -353,12 +340,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Interacts with an object, if there is one",
             long: "When invoked, the player will attempt to interact with the closest interactable object that is in range",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -378,22 +360,12 @@ export function setUpCommands(game: Game): void {
         {
             short: "Starts attacking",
             long: "When invoked, the player will start trying to attack as if the attack button was held down. Does nothing if the player isn't attacking.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Stops attacking",
             long: "When invoked, the player will stop trying to attack, as if the attack button was released. Does nothing if the player isn't attacking.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -409,12 +381,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Drops the current active item",
             long: "When invoked, the player will attempt to drop the item they're currently holding",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -494,12 +461,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Cancels the action (reloading and or consuming) the player is currently executing",
             long: "When invoked, the current action the player is executing will be stopped, if there is one.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -512,12 +474,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Toggles the game map",
             long: "When invoked, the fullscreen map will be toggled.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -530,12 +487,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Toggles the game minimap",
             long: "When invoked, the minimap will be toggled.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -548,12 +500,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Reloads the current active item",
             long: "When invoked, the player will attempt to reload the item they're currently holding",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -566,12 +513,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Toggles the game's console.",
             long: "When invoked, this command will close the console if it is open, and will open the console if it is closed.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -603,22 +545,73 @@ export function setUpCommands(game: Game): void {
         {
             short: "Opens the emote wheel",
             long: "When invoked, the emote wheel will be opened, allowing the user to pick an emote",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         },
         {
             short: "Closes the emote wheel, using the designated emote, if any",
             long: "When invoked, the emote wheel will be closed, and if an emote has been selected, it will be displayed",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
+        }
+    );
+
+    Command.createCommand(
+        "screenshot_map",
+        function() {
+            // create a new sprite since the map one has opacity
+            const sprite = new Sprite();
+            sprite.texture = game.map.sprite.texture;
+            const canvas = game.pixi.renderer.extract.canvas(sprite);
+            if (canvas.toBlob) {
+                canvas.toBlob((blob) => {
+                    if (blob) window.open(URL.createObjectURL(blob));
+                });
+            } else {
+                return { err: "canvas.toBlob is undefined" };
+            }
+            sprite.destroy();
+        },
+        game,
+        {
+            short: "Screenshot the game map texture and open it on a new tab as a blob image",
+            long: "Attempts to generate a downloadable image from the minimap's contents, then opening that image in a new tab",
+            signatures: [{ args: [], noexcept: false }]
+        }
+    );
+
+    Command.createCommand(
+        "screenshot_game",
+        function() {
+            const { width, height } = game.camera;
+            const container = game.camera.container;
+
+            // add a temporary background with the grass color
+            // because the grass color is actually the canvas clear color
+            // and pixi doesn't draw the clear color when extracting something
+            const graphics = new Graphics();
+
+            graphics.beginFill(COLORS.grass);
+            graphics.drawRect(0, 0, width, height);
+            graphics.zIndex = -999;
+            container.addChild(graphics);
+            container.sortChildren();
+
+            const rectangle = new Rectangle(0, 0, width, height);
+
+            const canvas = game.pixi.renderer.extract.canvas(container, rectangle);
+            graphics.destroy();
+            if (canvas.toBlob) {
+                canvas.toBlob((blob) => {
+                    if (blob) window.open(URL.createObjectURL(blob));
+                });
+            } else {
+                return { err: "canvas.toBlob is undefined" };
+            }
+        },
+        game,
+        {
+            short: "Screenshot the game camera and open it on a new tab as a blob image",
+            long: "Attempts to take a screenshot of the game without any of its HUD elements, and then attempts to open this image in a new tab",
+            signatures: [{ args: [], noexcept: false }]
         }
     );
 
@@ -631,12 +624,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Clears the console",
             long: "When invoked, the game console's contents will be erased.",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -741,12 +729,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "Removes all keybinds.",
             long: "When invoked, all inputs will have their actions removed. <b>This is a very dangerous command!!</b>",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 
@@ -855,12 +838,7 @@ export function setUpCommands(game: Game): void {
         {
             short: "",
             long: "",
-            signatures: [
-                {
-                    args: [],
-                    noexcept: true
-                }
-            ]
+            signatures: [{ args: [], noexcept: true }]
         }
     );
 

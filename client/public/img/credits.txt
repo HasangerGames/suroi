@@ -36,7 +36,7 @@ Weapons:
   Barrett M95 (World Image): jchen
 
   CZ-75A (Loot Image): jchen
-  CZ-75A (World Image): jchen
+  CZ-75A (World Image): jchen, modified by Astronautical, shortened by jchen
 
   Death Ray (Loot Image): eiπ
   Death Ray (World Image): eiπ
@@ -51,7 +51,7 @@ Weapons:
   G19 (World Image): ItzBlover, shortened by jchen
 
   HP18 (Loot Image): eiπ
-  HP18 (World Image): eiπ, shortened by jchen
+  HP18 (World Image): eiπ, modified by Astronautical shortened by jchen
 
   Lewis Gun (Loot Image): jchen
   Lewis Gun (World Image): Nugg4ec, modified by jchen, shortened by jchen
@@ -90,7 +90,7 @@ Weapons:
   Revitalizer (World Image): eiπ
 
   SAF-200 (Loot Image): eiπ
-  SAF-200 (World Image): otter hater, shortened by jchen, modified by Astronautical & jchen
+  SAF-200 (World Image): otter hater, shortened by jchen, modified by Astronautical, jchen, & Yeet120
 
   SR-25 (Loot Image): jchen
   SR-25 (World Image): 1092384, shortened by jchen
