@@ -1130,6 +1130,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 backpack: this.inventory.backpack,
                 skin: this.loadout.skin,
                 activeItem: this.activeItem.definition,
+                activeItemIsdual: this.activeItem instanceof GunItem && this.activeItem.dual,
                 action: {
                     seq: this.actionSeq,
                     ...(() => {

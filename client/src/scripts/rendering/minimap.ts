@@ -17,11 +17,9 @@ import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
 
 export class Minimap {
-    container = new Container();
     game: Game;
     expanded = false;
     visible = true;
-    mask = new Graphics();
     position = v(0, 0);
     lastPosition = v(0, 0);
 
@@ -31,6 +29,8 @@ export class Minimap {
     gasGraphics = new Graphics();
 
     readonly objectsContainer = new Container();
+    readonly container = new Container();
+    readonly mask = new Graphics();
 
     readonly sprite = new Sprite(Texture.EMPTY);
     readonly indicator = new SuroiSprite("player_indicator.svg");
@@ -48,8 +48,9 @@ export class Minimap {
     terrainGrid: TerrainGrid;
 
     readonly pings = new Set<Ping>();
+    readonly border = new Graphics();
     readonly pingsContainer = new Container();
-    pingGraphics = new Graphics();
+    readonly pingGraphics = new Graphics();
 
     constructor(game: Game) {
         this.game = game;
@@ -58,8 +59,7 @@ export class Minimap {
         this.objectsContainer.mask = this.mask;
 
         this.container.addChild(this.objectsContainer);
-
-        this.container.addChild(this.gasRender.graphics);
+        this.container.addChild(this.border);
 
         window.addEventListener("resize", this.resize.bind(this));
         this.resize();
@@ -418,6 +418,7 @@ export class Minimap {
     borderContainer = $("#minimap-border");
 
     resize(): void {
+        this.border.visible = this.expanded;
         if (this.expanded) {
             const screenWidth = window.innerWidth;
             const screenHeight = window.innerHeight;
@@ -432,6 +433,14 @@ export class Minimap {
             closeButton.css("left", `${Math.min(this.margins.x + this.minimapWidth + 16, screenWidth - (closeButton.outerWidth() ?? 0))}px`);
 
             this.indicator.scale.set(0.2);
+
+            this.border.clear();
+            this.border.fill.alpha = 0;
+            this.border.lineStyle({
+                width: 4,
+                color: 0x00000
+            });
+            this.border.drawRect(-this.sprite.width / 2, 0, this.sprite.width, this.sprite.height);
         } else {
             if (!this.visible) return;
 
@@ -493,6 +502,8 @@ export class Minimap {
         this.borderContainer.hide();
         $("#scopes-container").hide();
         $("#spectating-container").hide();
+        $("#weapons-container").hide();
+        $("#items-container").hide();
         $("#gas-msg-info").hide();
         $("#btn-close-minimap").show();
         $("#ui-kill-leader").hide();
@@ -505,6 +516,8 @@ export class Minimap {
         this.expanded = false;
         $("#btn-close-minimap").hide();
         $("#center-bottom-container").show();
+        $("#weapons-container").show();
+        $("#items-container").show();
         $("#gas-msg-info").show();
         $("#scopes-container").show();
         if (this.game.spectating) $("#spectating-container").show();

@@ -131,6 +131,15 @@ export class Loot extends GameObject {
 
         switch (definition.itemType) {
             case ItemType.Gun: {
+                for (const weapon of inventory.weapons) {
+                    if (weapon?.definition.itemType === ItemType.Gun &&
+                        weapon.definition.dual &&
+                        !weapon.dual &&
+                        weapon.definition.idString === this.definition.idString) {
+                        return true;
+                    }
+                }
+
                 return !inventory.weapons[0] ||
                     !inventory.weapons[1] ||
                     (inventory.activeWeaponIndex < 2 && this.definition.idString !== inventory.weapons[inventory.activeWeaponIndex]?.definition.idString);

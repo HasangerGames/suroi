@@ -61,6 +61,7 @@ export interface PlayerData {
         weapons: Array<undefined | {
             definition: WeaponDefinition
             ammo?: number
+            dual?: boolean
             stats?: {
                 kills?: number
             }
@@ -113,6 +114,10 @@ function serializePlayerData(stream: SuroiBitStream, data: Required<PlayerData>)
 
                 if (weapon.definition.itemType === ItemType.Gun) {
                     stream.writeUint8(weapon.ammo!);
+                }
+
+                if ("dual" in weapon.definition) {
+                    stream.writeBoolean(weapon.dual!);
                 }
 
                 if (weapon.definition.killstreak !== undefined) {
@@ -201,12 +206,17 @@ function deserializePlayerData(stream: SuroiBitStream, previousData: PreviousDat
                     ammo = stream.readUint8();
                 }
 
+                let dual = false;
+                if ("dual" in definition) {
+                    dual = stream.readBoolean();
+                }
+
                 let kills: number | undefined;
                 if (definition.killstreak) {
                     kills = stream.readBits(7);
                 }
 
-                data.inventory.weapons[i] = { definition, ammo, stats: { kills } };
+                data.inventory.weapons[i] = { definition, ammo, stats: { kills }, dual };
             }
         }
     }

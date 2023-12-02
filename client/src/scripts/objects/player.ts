@@ -40,6 +40,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     name!: string;
 
     activeItem = Loots.fromString("fists");
+    activeItemIsDual = false;
 
     oldItem = this.activeItem;
 
@@ -77,6 +78,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
+        readonly altWeapon: SuroiSprite
         readonly muzzleFlash: SuroiSprite
         readonly emoteBackground: SuroiSprite
         readonly emoteImage: SuroiSprite
@@ -124,6 +126,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             backpack: new SuroiSprite().setPos(-55, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
+            altWeapon: new SuroiSprite().setZIndex(3),
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(v(0, 0.5)),
             emoteBackground: new SuroiSprite("emote_background").setPos(0, 0),
             emoteImage: new SuroiSprite().setPos(0, 0),
@@ -138,6 +141,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.images.leftFist,
             this.images.rightFist,
             this.images.weapon,
+            this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.backpack,
             this.images.helmet
@@ -203,7 +207,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         if (!this.destroyed) this.emoteContainer.position = vAdd2(this.container.position, 0, -175);
     }
 
-    spawnCasingParticles(): void {
+    spawnCasingParticles(altFire = false): void {
         const weaponDef = this.activeItem as GunDefinition;
         const initialRotation = this.rotation + Math.PI / 2;
         const spinAmount = randomFloat(Math.PI / 2, Math.PI);
@@ -211,10 +215,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         if (casings === undefined) return;
 
+        const position = vClone(casings.position);
+        if (weaponDef.dual && this.activeItemIsDual) {
+            position.y += (altFire ? -weaponDef.dual.offset : weaponDef.dual.offset);
+        }
         if (weaponDef.specialParticle) {
             this.game.particleManager.spawnParticle({
                 frames: `${weaponDef.specialParticle}`,
-                position: vAdd(this.position, vRotate(casings.position, this.rotation)),
+                position: vAdd(this.position, vRotate(position, this.rotation)),
                 speed: vRotate(v(10, 0), this.rotation),
                 lifetime: 4000,
                 zIndex: ZIndexes.Players,
@@ -235,7 +243,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 () => ({
                     frames: `${weaponDef.ammoType}_particle`,
                     zIndex: ZIndexes.Players,
-                    position: vAdd(this.position, vRotate(casings.position, this.rotation)),
+                    position: vAdd(this.position, vRotate(position, this.rotation)),
                     lifetime: 400,
                     scale: {
                         start: 0.8,
@@ -377,6 +385,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
             this.oldItem = this.activeItem;
             this.activeItem = full.activeItem;
+            this.activeItemIsDual = full.activeItemIsdual ?? false;
             if (this.isActivePlayer && !UI_DEBUG_MODE) {
                 $("#weapon-ammo-container").toggle(this.activeItem.itemType === ItemType.Gun);
             }
@@ -412,10 +421,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let actionName = "";
                 this.healingParticlesEmitter.active = false;
 
+                if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+
                 switch (action.type) {
                     case PlayerActions.None: {
                         if (this.isActivePlayer) $("#action-container").hide().stop();
-                        if (this.actionSound) this.game.soundManager.stop(this.actionSound);
                         break;
                     }
                     case PlayerActions.Reload: {
@@ -424,6 +434,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${weaponDef.idString}_reload`;
                         actionTime = weaponDef.reloadTime;
+                        if (this.activeItemIsDual) actionTime *= 2;
                         break;
                     }
                     case PlayerActions.UseItem: {
@@ -447,7 +458,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         });
                     }
                 }
-                if (actionSoundName) this.actionSound = this.playSound(actionSoundName, 0.6, 48);
+                if (actionSoundName) {
+                    this.actionSound = this.playSound(actionSoundName, 0.6, 48, false, () => {
+                        if (this.activeItemIsDual && action.type === PlayerActions.Reload) {
+                            this.actionSound = this.playSound(actionSoundName, 0.6, 48, false);
+                        }
+                    });
+                }
             }
             // @ts-expect-error 'item' not existing is okay
             this.action = action;
@@ -501,27 +518,34 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         const fists = weaponDef.fists;
+
+        let offset = 0;
+        if (weaponDef.itemType === ItemType.Gun && weaponDef.dual && this.activeItemIsDual) {
+            offset = weaponDef.dual.offset * PIXI_SCALE;
+        }
+
         if (anim) {
             this.anims.leftFistAnim = new Tween(this.game, {
                 target: this.images.leftFist,
-                to: { x: fists.left.x, y: fists.left.y },
+                to: { x: fists.left.x, y: fists.left.y - offset },
                 duration: fists.animationDuration
             }
             );
 
             this.anims.rightFistAnim = new Tween(this.game, {
                 target: this.images.rightFist,
-                to: { x: fists.right.x, y: fists.right.y },
+                to: { x: fists.right.x, y: fists.right.y + offset },
                 duration: fists.animationDuration
             }
             );
         } else {
-            this.images.leftFist.setPos(fists.left.x, fists.left.y);
-            this.images.rightFist.setPos(fists.right.x, fists.right.y);
+            this.images.leftFist.setPos(fists.left.x, fists.left.y - offset);
+            this.images.rightFist.setPos(fists.right.x, fists.right.y + offset);
         }
 
         if (weaponDef.image) {
-            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
+            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y + offset);
+            this.images.altWeapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y - offset);
             this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
         }
     }
@@ -530,9 +554,12 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem as GunDefinition | MeleeDefinition;
         this.images.weapon.setVisible(weaponDef.image !== undefined);
         this.images.muzzleFlash.setVisible(weaponDef.image !== undefined);
+
         if (weaponDef.image) {
-            this.images.weapon.setFrame(`${weaponDef.idString}${weaponDef.itemType === ItemType.Gun || weaponDef.image.separateWorldImage ? "_world" : ""}`);
-            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y);
+            const frame = `${weaponDef.idString}${weaponDef.itemType === ItemType.Gun || weaponDef.image.separateWorldImage ? "_world" : ""}`;
+
+            this.images.weapon.setFrame(frame);
+            this.images.altWeapon.setFrame(frame);
             this.images.weapon.setAngle(weaponDef.image.angle ?? 0);
 
             if (this.activeItem !== this.oldItem) {
@@ -541,12 +568,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.images.muzzleFlash.alpha = 0;
                 if (this.isActivePlayer && !isNew) this.playSound(`${this.activeItem.idString}_switch`, 0);
             }
+
+            let offset = 0;
+            if (weaponDef.itemType === ItemType.Gun && weaponDef.dual && this.activeItemIsDual) {
+                offset = weaponDef.dual.offset * PIXI_SCALE;
+            }
+            this.images.weapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y + offset);
+            this.images.altWeapon.setPos(weaponDef.image.position.x, weaponDef.image.position.y - offset);
         }
+
+        this.images.altWeapon.setVisible(this.activeItemIsDual);
 
         if (weaponDef.itemType === ItemType.Gun) {
             this.images.rightFist.setZIndex(weaponDef.fists.rightZIndex ?? 1);
             this.images.leftFist.setZIndex(weaponDef.fists.leftZIndex ?? 1);
             this.images.weapon.setZIndex(2);
+            this.images.altWeapon.setZIndex(2);
             this.images.body.setZIndex(3);
         } else if (weaponDef.itemType === ItemType.Melee) {
             this.images.leftFist.setZIndex(4);
@@ -713,16 +750,19 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.Gun:
+            case AnimationType.GunAlt:
             case AnimationType.LastShot: {
                 const weaponDef = this.activeItem as GunDefinition;
                 this.playSound(`${weaponDef.idString}_fire`, 0.5);
                 if (anim === AnimationType.LastShot) this.playSound(`${weaponDef.idString}_last_shot`, 0.5);
 
                 if (weaponDef.itemType === ItemType.Gun) {
+                    const isAltFire = anim === AnimationType.GunAlt;
+
                     this.updateFistsPosition(false);
                     const recoilAmount = PIXI_SCALE * (1 - weaponDef.recoilMultiplier);
                     this.anims.weaponAnim = new Tween(this.game, {
-                        target: this.images.weapon,
+                        target: isAltFire ? this.images.altWeapon : this.images.weapon,
                         to: { x: weaponDef.image.position.x - recoilAmount },
                         duration: 50,
                         yoyo: true
@@ -732,7 +772,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         const muzzleFlash = this.images.muzzleFlash;
                         const scale = randomFloat(0.75, 1);
 
+                        let offset = 0;
+                        if (weaponDef.dual && this.activeItemIsDual) {
+                            offset = weaponDef.dual.offset * PIXI_SCALE;
+                        }
+
                         muzzleFlash.x = weaponDef.length * PIXI_SCALE;
+                        muzzleFlash.y = isAltFire ? -offset : offset;
                         muzzleFlash.setVisible(true);
                         muzzleFlash.alpha = 0.95;
                         muzzleFlash.scale = v(scale, scale * (randomBoolean() ? 1 : -1));
@@ -760,27 +806,31 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         );
                     }
 
-                    this.anims.leftFistAnim = new Tween(
-                        this.game,
-                        {
-                            target: this.images.leftFist,
-                            to: { x: weaponDef.fists.left.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
-                        }
-                    );
+                    if (isAltFire || !this.activeItemIsDual) {
+                        this.anims.leftFistAnim = new Tween(
+                            this.game,
+                            {
+                                target: this.images.leftFist,
+                                to: { x: weaponDef.fists.left.x - recoilAmount },
+                                duration: 50,
+                                yoyo: true
+                            }
+                        );
+                    }
 
-                    this.anims.rightFistAnim = new Tween(
-                        this.game,
-                        {
-                            target: this.images.rightFist,
-                            to: { x: weaponDef.fists.right.x - recoilAmount },
-                            duration: 50,
-                            yoyo: true
-                        }
-                    );
+                    if (!isAltFire || !this.activeItemIsDual) {
+                        this.anims.rightFistAnim = new Tween(
+                            this.game,
+                            {
+                                target: this.images.rightFist,
+                                to: { x: weaponDef.fists.right.x - recoilAmount },
+                                duration: 50,
+                                yoyo: true
+                            }
+                        );
+                    }
 
-                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
+                    if (!weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles(isAltFire);
                 }
                 break;
             }

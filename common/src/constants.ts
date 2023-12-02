@@ -31,6 +31,7 @@ export enum AnimationType {
     None,
     Melee,
     Gun,
+    GunAlt,
     GunClick,
     LastShot
 }

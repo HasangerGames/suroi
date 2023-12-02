@@ -834,6 +834,15 @@
     .item-image {
         width: 90px;
         height: 90px;
+        position: absolute;
+
+        &.dual {
+            transform: translate(-12%);
+        }
+
+        &.dual-image {
+            transform: scaleX(-1) translate(-12%);
+        }
 
         @media screen and (max-width: $screen_large) {
             width: 50px;
@@ -844,6 +853,7 @@
             width: 35px;
             height: 35px;
         }
+
     }
 
     .inventory-slot {
