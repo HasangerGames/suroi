@@ -27,6 +27,19 @@ export class GunItem extends InventoryItem<GunDefinition> {
     private _burstTimeout?: NodeJS.Timeout;
     private _autoFireTimeout?: NodeJS.Timeout;
 
+    private _dual = false;
+
+    set dual(dual: boolean) {
+        if (this.definition.dual === undefined) {
+            throw new Error(`Tried to set dual on a weapon with no dual properties: ${this.definition.idString}`);
+        }
+        this._dual = dual;
+    }
+
+    get dual(): boolean { return this._dual; }
+
+    altFire = false;
+
     cancelAllTimers(): void {
         this._reloadTimeout?.kill();
         clearTimeout(this._burstTimeout);
@@ -91,7 +104,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
             return;
         }
 
-        owner.animation.type = definition.ballistics.lastShotFX && this.ammo === 1 ? AnimationType.LastShot : AnimationType.Gun;
+        owner.animation.type = definition.ballistics.lastShotFX && this.ammo === 1
+            ? AnimationType.LastShot
+            : this.altFire ? AnimationType.GunAlt : AnimationType.Gun;
         owner.animation.seq = !this.owner.animation.seq;
         owner.game.partialDirtyObjects.add(owner);
 
@@ -101,17 +116,28 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         this._lastUse = owner.game.now;
 
-        const spread = degreesToRadians((this.owner.isMoving ? definition.moveSpread : definition.shotSpread) / 2);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const { moveSpread, shotSpread } = this.dual ? definition.dual! : definition;
+
+        const spread = degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);
         const jitter = definition.jitterRadius ?? 0;
+
+        let offset = 0;
+        if (definition.dual && this.dual) {
+            offset = this.altFire ? -definition.dual.offset : definition.dual.offset;
+            this.altFire = !this.altFire;
+        }
+
+        const startPosition = vRotate(v(0, offset), owner.rotation);
 
         let position = vAdd(
             owner.position,
-            vRotate(v(definition.length + jitter, 0), owner.rotation) // player radius + gun length
+            vRotate(v(definition.length + jitter, offset), owner.rotation) // player radius + gun length
         );
 
         for (
             const object of
-            this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(owner.position, position))
+            this.owner.game.grid.intersectsHitbox(RectangleHitbox.fromLine(startPosition, position))
         ) {
             if (
                 object.dead ||
@@ -176,7 +202,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         if (this.ammo <= 0) {
             this._reloadTimeout = this.owner.game.addTimeout(
                 this.reload.bind(this, true),
-                this.definition.fireDelay
+                this.fireDelay
             );
             this._shots = 0;
             return;
@@ -189,7 +215,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             clearTimeout(this._autoFireTimeout);
             this._autoFireTimeout = setTimeout(
                 this._useItemNoDelayCheck.bind(this, false),
-                definition.fireDelay
+                this.fireDelay
             );
         }
     }
@@ -200,7 +226,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         super._bufferAttack(
             def.fireMode === FireMode.Burst
                 ? def.burstProperties.burstCooldown
-                : def.fireDelay,
+                : this.fireDelay,
             this._useItemNoDelayCheck.bind(this, true)
         );
     }
@@ -208,13 +234,22 @@ export class GunItem extends InventoryItem<GunDefinition> {
     reload(skipFireDelayCheck = false): void {
         if (
             this.definition.infiniteAmmo === true ||
-            this.ammo >= this.definition.capacity ||
+            this.ammo >= this.capacity ||
             this.owner.inventory.items[this.definition.ammoType] <= 0 ||
             this.owner.action !== undefined ||
             this.owner.activeItem !== this ||
-            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.definition.fireDelay)
+            (!skipFireDelayCheck && this.owner.game.now - this._lastUse < this.fireDelay)
         ) return;
 
         this.owner.executeAction(new ReloadAction(this.owner, this));
+    }
+
+    get capacity(): number {
+        return this.definition.capacity * (this.dual ? 2 : 1);
+    }
+
+    get fireDelay(): number {
+        const def = this.definition;
+        return def.dual && this.dual ? def.dual.fireDelay : def.fireDelay;
     }
 }

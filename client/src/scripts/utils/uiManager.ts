@@ -285,10 +285,11 @@ export class UIManager {
             if (weapon) {
                 container.addClass("has-item");
 
-                container.children(".item-name").text(weapon.definition.name);
-                container.children(".item-image").attr(
-                    "src",
-                    `./img/game/weapons/${weapon.definition.idString}.svg`).show();
+                container.children(".item-name").text((weapon.dual ? "Dual " : "") + weapon.definition.name);
+
+                const imagePath = `./img/game/weapons/${weapon.definition.idString}.svg`;
+                container.children(".item-image").attr("src", imagePath).show().toggleClass("dual", weapon.dual);
+                container.children(".dual-image").toggle(weapon.dual);
 
                 if (weapon.ammo !== undefined) {
                     container.children(".item-ammo").text(weapon.ammo)

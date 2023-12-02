@@ -302,6 +302,12 @@ export class Inventory {
             .addLoot(item.definition, this.owner.position)
             .push(this.owner.rotation, pushForce);
 
+        if (item instanceof GunItem && item.dual) {
+            this.owner.game
+                .addLoot(item.definition, this.owner.position)
+                .push(this.owner.rotation, pushForce);
+        }
+
         if (item instanceof GunItem && item.ammo > 0) {
             // Put the ammo in the gun back in the inventory
             const ammoType = item.definition.ammoType;

@@ -53,8 +53,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         const oldPosition = vClone(this.position);
 
         const moving = Math.abs(this.velocity.x) > 0.001 ||
-        Math.abs(this.velocity.y) > 0.001 ||
-        vEqual(oldPosition, this.position);
+            Math.abs(this.velocity.y) > 0.001 ||
+            vEqual(oldPosition, this.position);
 
         if (moving) {
             this.velocity = vMul(this.velocity, 0.9);
@@ -111,6 +111,15 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
         switch (this.definition.itemType) {
             case ItemType.Gun: {
+                for (const weapon of inventory.weapons) {
+                    if (weapon instanceof GunItem &&
+                        weapon.definition.dual &&
+                        !weapon.dual &&
+                        this.definition.idString === weapon.definition.idString) {
+                        return true;
+                    }
+                }
+
                 return !inventory.hasWeapon(0) ||
                     !inventory.hasWeapon(1) ||
                     (inventory.activeWeaponIndex < 2 && this.definition !== inventory.activeWeapon.definition);
@@ -172,6 +181,26 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 break;
             }
             case ItemType.Gun: {
+                let gotDual = false;
+                for (const weapon of inventory.weapons) {
+                    if (weapon instanceof GunItem &&
+                        weapon?.definition.idString === this.definition.idString &&
+                        weapon.definition.dual && !weapon.dual) {
+                        weapon.dual = true;
+                        player.dirty.weapons = true;
+                        player.game.fullDirtyObjects.add(player);
+                        if (player.action?.type === PlayerActions.Reload &&
+                            player.activeItem === weapon) {
+                            player.action?.cancel();
+                            if ((player.activeItem as GunItem).ammo <= 0) {
+                                (player.activeItem as GunItem).reload();
+                            }
+                        }
+                        gotDual = true;
+                    }
+                }
+                if (gotDual) break;
+
                 if (!inventory.hasWeapon(0) || !inventory.hasWeapon(1)) {
                     const slot = inventory.appendWeapon(this.definition.idString);
                     if (inventory.activeWeaponIndex > 1) inventory.setActiveWeaponIndex(slot);

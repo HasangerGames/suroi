@@ -44,6 +44,13 @@ export type GunDefinition = ItemDefinition & {
         readonly angle?: number
     }
 
+    readonly dual?: {
+        readonly offset: number
+        readonly fireDelay: number
+        readonly shotSpread: number
+        readonly moveSpread: number
+    }
+
     readonly casingParticles?: {
         readonly position: Vector
         readonly count?: number
@@ -521,6 +528,12 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1.5,
             speed: 0.26,
             range: 160
+        },
+        dual: {
+            offset: 1.3,
+            fireDelay: 200,
+            shotSpread: 4,
+            moveSpread: 8
         }
     },
     {
@@ -556,6 +569,12 @@ export const Guns: GunDefinition[] = [
             obstacleMultiplier: 1,
             speed: 0.14,
             range: 120
+        },
+        dual: {
+            offset: 1.3,
+            fireDelay: 60,
+            shotSpread: 12,
+            moveSpread: 20
         }
     },
     {
@@ -628,8 +647,14 @@ export const Guns: GunDefinition[] = [
         ballistics: {
             damage: 9,
             obstacleMultiplier: 1,
-            speed: 0.22,
+            speed: 0.16,
             range: 85
+        },
+        dual: {
+            offset: 1.3,
+            fireDelay: 35,
+            shotSpread: 20,
+            moveSpread: 25
         }
     },
     {

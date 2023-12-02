@@ -42,7 +42,7 @@ export class ReloadAction extends Action {
     readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
-        super(player, item.definition.reloadTime);
+        super(player, item.definition.reloadTime * (item.dual ? 2 : 1));
         this.item = item;
     }
 
@@ -51,7 +51,7 @@ export class ReloadAction extends Action {
 
         const items = this.player.inventory.items;
         const definition = this.item.definition;
-        const reloadAmount = definition.singleReload ? 1 : definition.capacity - this.item.ammo;
+        const reloadAmount = definition.singleReload ? 1 : this.item.capacity - this.item.ammo;
         const difference = Math.min(items[definition.ammoType], reloadAmount);
         this.item.ammo += difference;
         items[definition.ammoType] -= difference;
