@@ -5,6 +5,7 @@ import { distanceSquared, vLerp, velFromAngle } from "../../../../common/src/uti
 import { PIXI_SCALE } from "../utils/constants";
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
 import { type Sound } from "../utils/soundManager";
+import { MODE } from "../../../../common/src/definitions/modes";
 
 export class Plane {
     game: Game;
@@ -19,6 +20,9 @@ export class Plane {
     static maxDistance = (GameConstants.maxPosition * 2) ** 2;
 
     constructor(game: Game, startPosition: Vector, direction: number) {
+
+        const reskin = MODE.reskin;
+
         this.game = game;
 
         this.startPosition = startPosition;
@@ -28,12 +32,12 @@ export class Plane {
             velFromAngle(direction, GameConstants.maxPosition * 2)
         );
 
-        this.image = new SuroiSprite("airdrop_plane")
+        this.image = new SuroiSprite(reskin?.suffix ? `airdrop_plane_${reskin.suffix}` : `airdrop_plane`)
             .setZIndex(ZIndexes.Gas + 1)
             .setRotation(direction)
             .setScale(2);
 
-        this.sound = game.soundManager.play("airdrop_plane", startPosition, 0.5, 256, true);
+        this.sound = game.soundManager.play(reskin?.suffix ? `airdrop_plane_${reskin.suffix}` : `airdrop_plane`, startPosition, 0.5, 256, true);
 
         game.camera.addObject(this.image);
     }

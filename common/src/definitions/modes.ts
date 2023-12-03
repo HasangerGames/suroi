@@ -2,7 +2,7 @@
 import { type ReferenceTo } from "../utils/objectDefinitions";
 import { type ObstacleDefinition } from "./obstacles";
 
-const mode = "fall";
+const mode = "winter";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
 
@@ -72,7 +72,37 @@ export const Modes: ModeDefinition[] = [
                 birch_tree: {}
             }
         }
-    }
+    },
+    {
+        idString: "winter",
+        colors: {
+            grass: "hsl(210, 18%, 82%)",
+            water: "hsl(208, 94%, 72%)",
+            border: "hsl(208, 94%, 45%)",
+            beach: "hsl(210, 18%, 75%)",
+            riverBank: "hsl(210, 18%, 70%)",
+            gas: "hsla(17, 100%, 50%, 0.55)"
+        },
+        reskin: {
+            suffix: "winter",
+            obstacles: {
+                blueberry_bush: {},
+                bush: {},
+                airdrop_crate: { defaultResidue: true  },
+                airdrop_crate_locked: {},
+                airdrop_crate_unlocking: {},
+                gold_airdrop_crate: { defaultResidue: true  },
+                aegis_crate: { 
+                    defaultParticles: true,
+                    defaultResidue: true 
+                },
+                flint_crate: { 
+                    defaultParticles: true,
+                    defaultResidue: true
+                },
+            }
+        }
+    },
 ];
 
 export const MODE = Modes.find(m => m.idString === mode) as ModeDefinition;

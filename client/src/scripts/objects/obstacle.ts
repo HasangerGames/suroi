@@ -84,6 +84,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
                 : [particleImage];
 
+            console.log(this.particleFrames)
+
             if ((definition.explosion ?? ("emitParticles" in definition)) && !this.smokeEmitter) {
                 this.smokeEmitter = this.game.particleManager.addEmitter({
                     delay: 400,
@@ -135,18 +137,18 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                     /* eslint-disable @typescript-eslint/consistent-type-assertions */
                     this.game.particleManager.spawnParticle({
-                        frames: "airdrop_particle_1",
+                        frames: reskin?.suffix ? `airdrop_particle_${reskin.suffix}_1` : `airdrop_particle_1`,
                         position: this.position,
                         ...options(8, 18),
                         rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                     } as ParticleOptions);
 
                     this.playSound("airdrop_unlock", 0.2, 96);
-                    texture = "airdrop_crate_unlocking";
+                    texture = reskin?.suffix ? `airdrop_crate_unlocking_${reskin.suffix}` : `airdrop_crate_unlocking` ;
 
                     this.addTimeout(() => {
                         this.game.particleManager.spawnParticles(4, () => ({
-                            frames: "airdrop_particle_2",
+                            frames: reskin?.suffix ? `airdrop_particle_${reskin.suffix}_2` : `airdrop_particle_2`,
                             position: this.hitbox.randomPoint(),
                             ...options(4, 9)
                         } as ParticleOptions));
@@ -186,7 +188,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     this.image.setVisible(false);
                 } else {
                     let texture = definition.frames?.residue ?? `${definition.idString}_residue`;
-                    if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
+                    //if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
+                    //console.log(texture)
                     this.image.setFrame(texture);
                 }
 

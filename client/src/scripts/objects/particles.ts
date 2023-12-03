@@ -100,6 +100,7 @@ export class Particle {
         this.position = options.position;
         const frames = options.frames;
         const frame = typeof frames === "string" ? frames : frames[random(0, frames.length - 1)];
+        console.log(frame)
         this.image = new SuroiSprite(frame);
         this.image.setZIndex(options.zIndex);
 
