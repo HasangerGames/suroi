@@ -42,7 +42,7 @@ export class ReloadAction extends Action {
     readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
-        super(player, item.definition.reloadTime * (item.dual ? 2 : 1));
+        super(player, (item.dual ? item.definition.dual : item.definition)!.reloadTime);
         this.item = item;
     }
 

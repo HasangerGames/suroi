@@ -18,9 +18,6 @@ import { calculateEnumPacketBits, type SuroiBitStream } from "../utils/suroiBitS
 import { type Vector } from "../utils/vector";
 import { Packet } from "./packet";
 
-// SHUT UP SHUT UP SHUT UP SHUT UP
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 interface ObjectFullData {
     readonly id: number
     readonly type: ObjectCategory
@@ -250,11 +247,10 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
                 stream.writeBits(message.kills as number, 7);
             }
 
-            /* eslint-disable @typescript-eslint/no-non-null-assertion */
             const weaponWasUsed = message.weaponUsed !== undefined;
             stream.writeBoolean(weaponWasUsed);
             if (weaponWasUsed) {
-                const isExplosion = "shrapnelCount" in message.weaponUsed!; //fixme hack to check if weapon used is an explosion
+                const isExplosion = "shrapnelCount" in message.weaponUsed!; // fixme hack to check if weapon used is an explosion
                 stream.writeBoolean(isExplosion);
                 if (isExplosion) {
                     Explosions.writeToStream(stream, message.weaponUsed as ExplosionDefinition);

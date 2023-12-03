@@ -29,7 +29,6 @@ import { ColorStyles, FontStyles, styleText } from "./utils/ansiColoring";
 /*
     eslint-disable
 
-    @typescript-eslint/no-non-null-assertion,
     @typescript-eslint/unbound-method,
     object-shorthand
 */

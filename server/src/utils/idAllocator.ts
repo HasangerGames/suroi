@@ -1,6 +1,3 @@
-// kindly shut it
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 interface ListNode {
     prev: ListNode | null
     next: ListNode | null

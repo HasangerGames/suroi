@@ -155,7 +155,6 @@ export class Inventory {
      * It will never be undefined since the only place that sets the active weapon has an undefined check
      */
     get activeWeapon(): InventoryItem<WeaponDefinition> {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.weapons[this._activeWeaponIndex]!;
     }
 

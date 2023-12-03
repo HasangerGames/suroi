@@ -185,7 +185,6 @@ export class ConsoleVariables {
         const variables: GameSettings["variables"] = {};
 
         for (const varName in this._userCVars.entries()) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const cvar = this._userCVars.get(varName)!;
             variables[varName] = { value: cvar.value, flags: cvar.flags };
         }
