@@ -144,7 +144,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                     } as ParticleOptions);
 
                     this.playSound("airdrop_unlock", 0.2, 96);
-                    texture = "airdrop_crate_unlocking";
+                    texture = reskin?.suffix ? `airdrop_crate_unlocking_${reskin.suffix}` : `airdrop_crate_unlocking` ;
 
                     this.addTimeout(() => {
                         this.game.particleManager.spawnParticles(4, () => ({
