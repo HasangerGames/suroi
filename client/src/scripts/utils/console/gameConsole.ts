@@ -493,7 +493,6 @@ export class GameConsole {
                         case "\"": {
                             if (inString) {
                                 current.args.push("");
-                                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             } else if (current.args.at(-1)!.length) {
                                 // If we encounter a " in the middle of an argument
                                 // such as `say hel"lo`

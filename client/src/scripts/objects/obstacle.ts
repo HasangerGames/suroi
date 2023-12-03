@@ -301,7 +301,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 break;
             }
             case 3: {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 backupHitbox = this.door.openAltHitbox!.clone();
                 break;
             }

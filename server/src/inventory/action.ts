@@ -42,7 +42,6 @@ export class ReloadAction extends Action {
     readonly item: GunItem;
 
     constructor(player: Player, item: GunItem) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         super(player, (item.dual ? item.definition.dual : item.definition)!.reloadTime);
         this.item = item;
     }

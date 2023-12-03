@@ -73,7 +73,6 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     if (a instanceof Obstacle && a.definition.noMeleeCollision) return Infinity;
                     if (b instanceof Obstacle && b.definition.noMeleeCollision) return -Infinity;
 
-                    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
                     return a.hitbox!.distanceTo(this.owner.hitbox).distance - b.hitbox!.distanceTo(this.owner.hitbox).distance;
                 });
 

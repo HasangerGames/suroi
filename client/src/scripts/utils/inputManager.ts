@@ -621,7 +621,6 @@ class InputMapper {
         if (actions === undefined) return false;
 
         actions.delete(action);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this._actionToInput.get(action)!.delete(input);
         return true;
     }

@@ -232,7 +232,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
         switch (definition.role) {
             case ObstacleSpecialRoles.Door: {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 if (!(this.door!.open && definition.openOnce)) {
                     this.toggleDoor(player);
                 }
@@ -299,7 +298,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
                         if (isOnOtherSide) {
                             this.door.offset = 3;
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                             this.hitbox = this.door.openAltHitbox!.clone();
                         } else {
                             this.door.offset = 1;

@@ -317,7 +317,6 @@ export class ComplexHitbox extends Hitbox {
                     newRecord = rectangleDistanceToRectangle(that.min, that.max, hitbox.min, hitbox.max);
                 }
             }
-            /* eslint-disable @typescript-eslint/no-non-null-assertion */
             if (newRecord!.distance < distance) {
                 record = newRecord!;
                 distance = newRecord!.distance;

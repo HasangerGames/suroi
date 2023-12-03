@@ -778,10 +778,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(2.5),
             // TODO Figure out why this doesn't work
-            /*hitbox: new ComplexHitbox([
+            /* hitbox: new ComplexHitbox([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
-            ]),*/
+            ]), */
             rotationMode: RotationMode.Limited,
             hasLoot: true
         },
@@ -797,10 +797,10 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(2.5),
             // TODO Figure out why this doesn't work
-            /*hitbox: new ComplexHitbox([
+            /* hitbox: new ComplexHitbox([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
-            ]),*/
+            ]), */
             rotationMode: RotationMode.Limited,
             hasLoot: true,
             frames: {
@@ -1713,9 +1713,9 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(1, 40, v(-31, 69)), // Left wall (bottom)
                 RectangleHitbox.fromRect(1, 90, v(-31, -85)), // Left wall (top)
 
-                RectangleHitbox.fromRect(32.2, 2, v(31.7, 81.6)), //bottom
-                RectangleHitbox.fromRect(33, 2, v(-14.8, 81.6)), //bottom
-                RectangleHitbox.fromRect(80, 1, v(8, -128)), //top
+                RectangleHitbox.fromRect(32.2, 2, v(31.7, 81.6)), // bottom
+                RectangleHitbox.fromRect(33, 2, v(-14.8, 81.6)), // bottom
+                RectangleHitbox.fromRect(80, 1, v(8, -128)), // top
 
                 // Captain's cabin
                 RectangleHitbox.fromRect(46, 2, v(9, -90.2)), // top

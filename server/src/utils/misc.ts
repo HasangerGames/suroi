@@ -37,7 +37,6 @@ export function getLootTableLoot(loots: WeightedItem[]): LootItem[] {
     for (const item of loots) {
         items.push(
             item.spawnSeparately && (item.count ?? 1) > 1
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 ? new Array<WeightedItem>(item.count!).fill(item)
                 : item
         );

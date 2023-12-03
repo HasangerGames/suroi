@@ -116,7 +116,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         this._lastUse = owner.game.now;
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const { moveSpread, shotSpread } = this.dual ? definition.dual! : definition;
 
         const spread = degreesToRadians((this.owner.isMoving ? moveSpread : shotSpread) / 2);

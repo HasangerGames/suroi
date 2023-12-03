@@ -396,7 +396,6 @@ export class UIManager {
         switch (messageType) {
             case KillFeedMessageType.Kill: {
                 const hasKillstreak = killstreak as number > 1;
-                /* eslint-disable @typescript-eslint/no-non-null-assertion */
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
                         let message = "";
