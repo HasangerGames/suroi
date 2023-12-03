@@ -140,7 +140,7 @@ export class Game {
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
         this.music = new Howl({
-            src: `../audio/music/${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "old_" : ""}menu_music.mp3`,
+            src: `../audio/music/${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "old_" : "christmas_"}menu_music.mp3`,
             loop: true
         });
 

@@ -87,8 +87,19 @@ export const Modes: ModeDefinition[] = [
             suffix: "winter",
             obstacles: {
                 blueberry_bush: {},
-                airdrop_crate: {},
+                bush: {},
+                airdrop_crate: { defaultResidue: true  },
                 airdrop_crate_locked: {},
+                airdrop_crate_unlocking: {},
+                gold_airdrop_crate: { defaultResidue: true  },
+                aegis_crate: { 
+                    defaultParticles: true,
+                    defaultResidue: true 
+                },
+                flint_crate: { 
+                    defaultParticles: true,
+                    defaultResidue: true
+                },
             }
         }
     },
