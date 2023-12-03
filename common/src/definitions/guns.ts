@@ -49,6 +49,7 @@ export type GunDefinition = ItemDefinition & {
         readonly fireDelay: number
         readonly shotSpread: number
         readonly moveSpread: number
+        readonly reloadTime: number
     }
 
     readonly casingParticles?: {
@@ -533,7 +534,8 @@ export const Guns: GunDefinition[] = [
             offset: 1.3,
             fireDelay: 200,
             shotSpread: 4,
-            moveSpread: 8
+            moveSpread: 8,
+            reloadTime: 4.2
         }
     },
     {
@@ -574,7 +576,8 @@ export const Guns: GunDefinition[] = [
             offset: 1.3,
             fireDelay: 60,
             shotSpread: 12,
-            moveSpread: 20
+            moveSpread: 20,
+            reloadTime: 3
         }
     },
     {
@@ -654,7 +657,8 @@ export const Guns: GunDefinition[] = [
             offset: 1.3,
             fireDelay: 35,
             shotSpread: 20,
-            moveSpread: 25
+            moveSpread: 25,
+            reloadTime: 3.8
         }
     },
     {

@@ -433,8 +433,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
                         actionName = "Reloading...";
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${weaponDef.idString}_reload`;
-                        actionTime = weaponDef.reloadTime;
-                        if (this.activeItemIsDual) actionTime *= 2;
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        actionTime = this.activeItemIsDual ? weaponDef.dual!.reloadTime : weaponDef.reloadTime;
                         break;
                     }
                     case PlayerActions.UseItem: {
