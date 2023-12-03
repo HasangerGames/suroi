@@ -116,7 +116,7 @@ export const GameConstants = {
     player: {
         radius: 2.25,
         nameMaxLength: 16,
-        defaultName: "player",
+        defaultName: "Player",
         defaultHealth: 100,
         maxAdrenaline: 100,
         maxWeapons: 3,
