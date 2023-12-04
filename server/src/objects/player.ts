@@ -355,8 +355,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.inventory.scope = "4x_scope";
         }
 
-        this.giveGun("radio");
-
         this.updateAndApplyModifiers();
         this.dirty.weapons = true;
     }
