@@ -132,6 +132,10 @@ export const GameConstants = {
 
 export enum ZIndexes {
     Ground,
+    UnderWaterObstacles,
+    UnderWaterLoot,
+    UnderwaterPlayers,
+    BuildingsFloor,
     Decals,
     DeadObstacles,
     DeathMarkers,

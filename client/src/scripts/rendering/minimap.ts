@@ -267,7 +267,7 @@ export class Minimap {
                         const sprite = new SuroiSprite(image.key)
                             .setVPos(addAdjust(mapObject.position, image.position, mapObject.rotation as Orientation))
                             .setRotation(rotation)
-                            .setZIndex(ZIndexes.Ground);
+                            .setZIndex(ZIndexes.BuildingsFloor);
 
                         if (image.tint !== undefined) sprite.setTint(image.tint);
                         sprite.scale.set(1 / PIXI_SCALE);

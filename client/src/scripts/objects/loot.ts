@@ -5,6 +5,7 @@ import { type LootDefinition } from "../../../../common/src/definitions/loots";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
 import { ItemType, LootRadius } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "../types/gameObject";
@@ -108,6 +109,10 @@ export class Loot extends GameObject {
 
         this.position = data.position;
         this.hitbox.position = this.position;
+
+        const floorType = this.game.map.terrain.getFloor(this.position);
+
+        this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderWaterLoot : ZIndexes.Loot;
 
         if (!this.game.console.getBuiltInCVar("cv_movement_smoothing") || isNew) {
             this.container.position = toPixiCoords(this.position);

@@ -92,9 +92,8 @@ export class Game {
 
     readonly planes = new Set<Plane>();
 
-    // Since all players and bullets have the same zIndex
+    // Since all bullets have the same zIndex
     // Add all to a container so pixi has to do less sorting of zIndexes
-    readonly playersContainer = new Container();
     readonly bulletsContainer = new Container();
 
     readonly music: Howl;
@@ -136,7 +135,6 @@ export class Game {
         this.camera = new Camera(this);
         this.map = new Minimap(this);
 
-        this.playersContainer.zIndex = ZIndexes.Players;
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
         this.music = new Howl({
@@ -198,7 +196,7 @@ export class Game {
 
             this.sendPacket(joinPacket);
 
-            this.camera.addObject(this.playersContainer, this.bulletsContainer, this.gasRender.graphics);
+            this.camera.addObject(this.bulletsContainer, this.gasRender.graphics);
 
             this.map.indicator.setFrame("player_indicator");
 
@@ -356,7 +354,6 @@ export class Game {
         this.bullets.clear();
         this.planes.clear();
         this.camera.container.removeChildren();
-        this.playersContainer.removeChildren();
         this.bulletsContainer.removeChildren();
         this.particleManager.clear();
         this.map.gasGraphics.clear();

@@ -1268,11 +1268,11 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 type: "metal",
-                hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, -33.7))
+                hitbox: RectangleHitbox.fromRect(20, 14, v(-40.6, -33.7))
             },
             {
                 type: "metal",
-                hitbox: RectangleHitbox.fromRect(20, 10.8, v(-40.6, 43))
+                hitbox: RectangleHitbox.fromRect(20, 14, v(-40.6, 43))
             }
         ],
         obstacles: [
@@ -1940,7 +1940,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         spawnMode: MapObjectSpawnMode.Beach,
         subBuildings: [
             { idString: "port", position: v(-120, 0) },
-            { idString: "ship", position: v(75, -50) },
+            { idString: "ship", position: v(82, -50) },
             { idString: "crane", position: v(-20, -95) }
         ]
     }

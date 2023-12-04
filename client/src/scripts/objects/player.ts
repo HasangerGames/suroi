@@ -153,9 +153,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.aimTrail.alpha = 0;
         if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
 
-        this.game.camera.container.removeChild(this.container);
-        this.game.playersContainer.addChild(this.container);
-
         this.emoteContainer = new Container();
         this.game.camera.addObject(this.emoteContainer);
         this.emoteContainer.addChild(this.images.emoteBackground, this.images.emoteImage);
@@ -304,6 +301,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         const floorType = this.game.map.terrain.getFloor(this.position);
+
+        this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderwaterPlayers : ZIndexes.Players;
 
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);

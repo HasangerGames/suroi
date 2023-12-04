@@ -34,7 +34,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Building]>) {
         super(game, id);
 
-        this.container.zIndex = ZIndexes.Ground;
+        this.container.zIndex = ZIndexes.BuildingsFloor;
 
         this.ceilingContainer = new Container();
         this.game.camera.addObject(this.ceilingContainer);
