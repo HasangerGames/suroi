@@ -125,6 +125,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
             name: "ez"
         },
         {
+            idString: "duel",
+            name: "Duel"
+        },
+        {
             idString: "question_mark",
             name: "Question Mark"
         },
@@ -179,6 +183,10 @@ export const Emotes = new ObjectDefinitions<EmoteDefinition>(
         {
             idString: "squid",
             name: "Squid"
+        },
+        {
+            idString: "wave",
+            name: "Wave"
         },
         {
             idString: "melting_face",

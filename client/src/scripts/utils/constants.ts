@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/indent */
 import { Color } from "pixi.js";
-import { type ColorKeys, MODE } from "../../../../common/src/definitions/modes";
+import { type ColorKeys, type ModeDefinition, Modes } from "../../../../common/src/definitions/modes";
+import { Config } from "../config";
 
 export const UI_DEBUG_MODE = false;
 export const HITBOX_DEBUG_MODE = false;
@@ -15,6 +16,8 @@ export const HITBOX_COLORS = {
     player: new Color("blue"),
     playerWeapon: new Color("lime")
 };
+
+export const MODE = Modes.find(m => m.idString === Config.mode) as ModeDefinition;
 
 // Converts the strings in the mode definition to Color objects
 export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])

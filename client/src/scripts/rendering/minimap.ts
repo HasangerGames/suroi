@@ -11,7 +11,6 @@ import { type Game } from "../game";
 import { COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox } from "../utils/pixi";
 import { GasRender } from "./gas";
-import { MODE } from "../../../../common/src/definitions/modes";
 import { type MapPacket } from "../../../../common/src/packets/mapPacket";
 import { type Orientation } from "../../../../common/src/typings";
 import { orientationToRotation } from "../utils/misc";
@@ -226,9 +225,6 @@ export class Minimap {
                     let texture = definition.frames?.base ?? definition.idString;
 
                     if (mapObject.variation !== undefined) texture += `_${mapObject.variation + 1}`;
-
-                    const reskin = MODE.reskin;
-                    if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
                     const image = new SuroiSprite(texture)
                         .setVPos(mapObject.position).setRotation(mapObject.rotation)

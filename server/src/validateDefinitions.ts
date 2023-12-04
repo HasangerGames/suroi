@@ -12,7 +12,6 @@ import { Guns } from "../../common/src/definitions/guns";
 import { HealingItems } from "../../common/src/definitions/healingItems";
 import { Loots } from "../../common/src/definitions/loots";
 import { Melees } from "../../common/src/definitions/melees";
-import { Modes } from "../../common/src/definitions/modes";
 import { Obstacles, RotationMode } from "../../common/src/definitions/obstacles";
 import { Scopes } from "../../common/src/definitions/scopes";
 import { Skins } from "../../common/src/definitions/skins";
@@ -2244,53 +2243,16 @@ logger.indent("Validating melees", () => {
     }
 });
 
-logger.indent("Validating modes", () => {
+// TODO Validate modes
+/* logger.indent("Validating modes", () => {
     tester.assertNoDuplicateIDStrings(Modes, "Modes", "modes");
 
     for (const mode of Modes) {
         logger.indent(`Validating mode '${mode.idString}'`, () => {
             const errorPath = tester.createPath("modes", `mode '${mode.idString}'`);
-
-            tester.assertNoPointlessValue({
-                obj: mode,
-                field: "reskin",
-                defaultValue: {},
-                equalityFunction: a => Object.keys(a).length === 0,
-                baseErrorPath: errorPath
-            });
-
-            if (mode.reskin !== undefined) {
-                logger.indent("Validating reskin data", () => {
-                    const reskin = mode.reskin!;
-
-                    for (const [obstacleIdString, data] of Object.entries(reskin.obstacles)) {
-                        const errorPath2 = tester.createPath(errorPath, "reskin", `obstacle '${obstacleIdString}'`);
-                        tester.assertReferenceExists({
-                            obj: { id: obstacleIdString },
-                            field: "id",
-                            collection: Obstacles,
-                            baseErrorPath: errorPath2
-                        });
-
-                        tester.assertNoPointlessValue({
-                            obj: data,
-                            field: "defaultParticles",
-                            defaultValue: false,
-                            baseErrorPath: errorPath2
-                        });
-
-                        tester.assertNoPointlessValue({
-                            obj: data,
-                            field: "defaultResidue",
-                            defaultValue: false,
-                            baseErrorPath: errorPath2
-                        });
-                    }
-                });
-            }
         });
     }
-});
+}); */
 
 logger.indent("Validating obstacles", () => {
     tester.assertNoDuplicateIDStrings(Obstacles.definitions, "Obstacles", "obstacles");

@@ -230,6 +230,31 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         itemType: ItemType.Skin
     },
     {
+        idString: "peppermint",
+        name: "Peppermint",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "spearmint",
+        name: "Spearmint",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "coal",
+        name: "Coal",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "henrys_little_helper",
+        name: "Henry's Little Helper",
+        itemType: ItemType.Skin
+    },
+    {
+        idString: "candy_cane",
+        name: "Candy Cane",
+        itemType: ItemType.Skin
+    },
+    {
         idString: "verified",
         name: "Verified",
         itemType: ItemType.Skin,

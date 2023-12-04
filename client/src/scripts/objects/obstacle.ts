@@ -15,7 +15,6 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
-import { MODE } from "../../../../common/src/definitions/modes";
 import { type Sound } from "../utils/soundManager";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
@@ -56,8 +55,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     override updateFromData(data: ObjectsNetData[ObjectCategory.Obstacle], isNew = false): void {
-        const reskin = MODE.reskin;
-
         let texture;
 
         if (data.full) {
@@ -72,13 +69,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (definition.invisible) this.container.visible = false;
 
             // If there are multiple particle variations, generate a list of variation image names
-            let particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
-
-            if (
-                reskin &&
-                this.definition.idString in reskin.obstacles &&
-                !reskin.obstacles[definition.idString].defaultParticles
-            ) particleImage += `_${reskin.suffix}`;
+            const particleImage = definition.frames?.particle ?? `${definition.idString}_particle`;
 
             this.particleFrames = definition.particleVariations !== undefined
                 ? Array.from({ length: definition.particleVariations }, (_, i) => `${particleImage}_${i + 1}`)
@@ -185,9 +176,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 if (definition.noResidue) {
                     this.image.setVisible(false);
                 } else {
-                    let texture = definition.frames?.residue ?? `${definition.idString}_residue`;
-                    if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
-                    this.image.setFrame(texture);
+                    this.image.setFrame(definition.frames?.residue ?? `${definition.idString}_residue`);
                 }
 
                 this.container.rotation = this.rotation;
@@ -239,8 +228,6 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         }
 
         if (this.variation !== undefined && !this.dead) texture += `_${this.variation + 1}`;
-
-        if (reskin && definition.idString in reskin.obstacles) texture += `_${reskin.suffix}`;
 
         this.image.setFrame(texture);
 

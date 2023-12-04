@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1060.9919"
-   height="353.07001"
-   viewBox="0 0 280.72077 93.416442"
+   width="750"
+   height="290.07001"
+   viewBox="0 0 198.43749 76.747692"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-   sodipodi:docname="suroi.svg"
+   sodipodi:docname="suroi_nobeta.svg"
    inkscape:export-filename="/home/desktopgeek/Downloads/suroi.png"
    inkscape:export-xdpi="768"
    inkscape:export-ydpi="768"
@@ -138,7 +138,7 @@
        style="color-interpolation-filters:sRGB"
        inkscape:label="Drop Shadow"
        id="filter12025"
-       x="-0.032561472"
+       x="-0.032561474"
        y="-0.11884911"
        width="1.0790267"
        height="1.2707981">
@@ -182,7 +182,7 @@
        transform="translate(-3.9072956)" />
     <g
        id="g879"
-       transform="matrix(2.2273929,0,0,2.2273929,29.860815,11.491539)">
+       transform="matrix(2.2273929,0,0,2.2273929,-11.280827,-5.7063772)">
       <path
          d="m 14.16491,17.866448 q 6.611456,0.361941 8.952008,0.361941 0.554976,0 0.868658,-0.313682 0.337812,-0.337811 0.337812,-0.892788 v -2.171646 h -5.549762 q -2.533587,0 -3.691799,-1.134081 -1.134081,-1.158212 -1.134081,-3.691799 V 9.3005114 q 0,-2.5335871 1.134081,-3.6676689 1.158212,-1.1582112 3.691799,-1.1582112 h 8.469419 v 3.378116 h -7.504243 q -1.447764,0 -1.447764,1.4477641 v 0.482588 q 0,1.4477636 1.447764,1.4477636 h 4.343292 q 2.364681,0 3.474633,1.109953 1.109953,1.109952 1.109953,3.474633 v 1.20647 q 0,2.364682 -1.109953,3.474634 -1.109952,1.109952 -3.474633,1.109952 -1.2306,0 -2.605976,-0.04826 l -2.219904,-0.09652 Q 16.795015,21.341082 14.16491,21.123917 Z"
          style="font-size:24.1294px;line-height:1.25;font-family:'Russo One';-inkscape-font-specification:'Russo One';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.85;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter32941)"
@@ -261,28 +261,6 @@
            style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
            id="path1159" />
       </g>
-    </g>
-    <g
-       aria-label="BETA"
-       transform="rotate(30,-11.624905,85.398028)"
-       id="text2861"
-       style="font-size:21.5797px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#ffffff;stroke:#000000;stroke-width:1.19062;filter:url(#filter12025)">
-      <path
-         d="m 156.23007,-107.2904 h 8.63188 q 2.11481,0 3.10748,0.97109 0.99266,0.9495 0.99266,2.91326 0,1.29478 -0.56107,2.11481 -0.56107,0.79845 -1.3811,1.12214 1.74796,0.474756 2.37377,2.33061 0.21579,0.668971 0.21579,1.553738 0,2.114811 -0.99266,3.107477 -0.99267,0.992667 -3.10748,0.992667 h -9.27927 z m 9.49507,10.358257 q 0,-1.294782 -1.29478,-1.294782 h -4.31594 v 3.021158 h 4.31594 q 1.29478,0 1.29478,-1.294782 z m -0.64739,-6.042317 q 0,-1.29478 -1.29479,-1.29478 h -3.66854 v 3.02116 h 3.66854 q 1.29479,0 1.29479,-1.29478 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
-         id="path865" />
-      <path
-         d="M 183.52837,-92.184608 H 171.55164 V -107.2904 h 11.97673 v 3.02116 h -8.09239 v 2.91326 h 6.36601 v 3.021157 h -6.36601 v 3.129056 h 8.09239 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
-         id="path867" />
-      <path
-         d="m 192.59181,-92.184608 h -3.88435 v -12.084632 h -4.53173 v -3.02116 h 12.94782 v 3.02116 h -4.53174 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
-         id="path869" />
-      <path
-         d="m 199.82095,-92.184608 h -4.20804 l 5.71862,-15.105792 h 4.31594 l 5.71862,15.105792 h -4.20804 l -0.97109,-2.697463 h -5.39492 z m 1.94217,-5.502824 h 3.45275 l -1.72637,-5.071228 z"
-         style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
-         id="path871" />
     </g>
   </g>
 </svg>

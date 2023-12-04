@@ -6,6 +6,8 @@ import { clamp } from "../../../../common/src/utils/math";
 import { FloorTypes } from "../../../../common/src/utils/mapUtils";
 import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
+import { MODE } from "./constants";
+import { Reskins } from "../../../../common/src/definitions/modes";
 
 export interface Sound {
     readonly name: string
@@ -33,6 +35,7 @@ export class SoundManager {
     }
 
     load(name: string, path: string): void {
+        if (MODE.reskin && Reskins[MODE.reskin]?.sounds?.includes(name)) path += `_${MODE.reskin}`;
         this.sounds[name] = new Howl({ src: `./${path}.mp3` }).load();
     }
 
