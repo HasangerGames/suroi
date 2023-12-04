@@ -29,7 +29,7 @@ import { Player } from "./objects/player";
 import { type GameObject } from "./types/gameObject";
 
 import { UIManager } from "./utils/uiManager";
-import { COLORS, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
+import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { InputManager } from "./utils/inputManager";
 import { Camera } from "./rendering/camera";
 import { SoundManager } from "./utils/soundManager";
@@ -140,7 +140,7 @@ export class Game {
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
         this.music = new Howl({
-            src: `../audio/music/${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "old_" : "christmas_"}menu_music.mp3`,
+            src: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
             loop: true
         });
 

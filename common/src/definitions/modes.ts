@@ -1,25 +1,15 @@
 /* eslint-disable @typescript-eslint/indent */
-import { type ReferenceTo } from "../utils/objectDefinitions";
-import { type ObstacleDefinition } from "./obstacles";
-
-const mode = "winter";
 
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "gas";
 
 export interface ModeDefinition {
     readonly idString: string
     readonly colors: Record<ColorKeys, string>
-    readonly reskin?: {
-        readonly suffix: string
-        readonly obstacles: Record<
-            ReferenceTo<ObstacleDefinition>,
-            {
-                readonly defaultParticles?: boolean
-                readonly defaultResidue?: boolean
-            }
-        >
-    }
+    readonly specialMenuMusic?: boolean
+    readonly reskin?: string
 }
+
+export interface ReskinDefinition { textures: string[], sounds?: string[] }
 
 export const Modes: ModeDefinition[] = [
     {
@@ -43,17 +33,8 @@ export const Modes: ModeDefinition[] = [
             riverBank: "hsl(33, 50%, 30%)",
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
-        reskin: {
-            suffix: "fall",
-            obstacles: {
-                oak_tree: {},
-                birch_tree: {},
-                blueberry_bush: {
-                    defaultParticles: true,
-                    defaultResidue: true
-                }
-            }
-        }
+        specialMenuMusic: true,
+        reskin: "fall"
     },
     {
         idString: "fall",
@@ -65,13 +46,7 @@ export const Modes: ModeDefinition[] = [
             riverBank: "hsl(33, 50%, 30%)",
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
-        reskin: {
-            suffix: "fall",
-            obstacles: {
-                oak_tree: {},
-                birch_tree: {}
-            }
-        }
+        reskin: "fall"
     },
     {
         idString: "winter",
@@ -83,26 +58,33 @@ export const Modes: ModeDefinition[] = [
             riverBank: "hsl(210, 18%, 70%)",
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
-        reskin: {
-            suffix: "winter",
-            obstacles: {
-                blueberry_bush: {},
-                bush: {},
-                airdrop_crate: { defaultResidue: true  },
-                airdrop_crate_locked: {},
-                airdrop_crate_unlocking: {},
-                gold_airdrop_crate: { defaultResidue: true  },
-                aegis_crate: { 
-                    defaultParticles: true,
-                    defaultResidue: true 
-                },
-                flint_crate: { 
-                    defaultParticles: true,
-                    defaultResidue: true
-                },
-            }
-        }
-    },
+        specialMenuMusic: true,
+        reskin: "winter"
+    }
 ];
 
-export const MODE = Modes.find(m => m.idString === mode) as ModeDefinition;
+export const Reskins: Record<string, ReskinDefinition> = {
+    fall: { // TODO
+        textures: []
+    },
+    winter: {
+        textures: [
+            "oak_tree_1", "oak_tree_2", "oak_tree_3", "oak_tree_particle", "oak_tree_residue",
+            "birch_tree", "birch_tree_particle", "birch_tree_residue",
+            "bush", "bush_particle_1", "bush_particle_2", "bush_residue",
+            "blueberry_bush",
+            "rock_6",
+            "regular_crate",
+            "aegis_crate",
+            "flint_crate",
+            "airdrop_plane",
+            "airdrop_parachute",
+            "airdrop_crate_locked", "airdrop_crate_unlocking", "airdrop_particle_1", "airdrop_particle_2",
+            "airdrop_crate", "airdrop_crate_particle", "airdrop_crate_residue",
+            "gold_airdrop_crate", "gold_airdrop_crate_particle", "gold_airdrop_crate_residue"
+        ],
+        sounds: [
+            "airdrop_plane"
+        ]
+    }
+};

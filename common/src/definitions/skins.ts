@@ -285,5 +285,5 @@ export const Skins = new ObjectDefinitions<SkinDefinition>([
         grassTint: true,
         hideEquipment: true,
         notInLoadout: true
-    },
+    }
 ]);

@@ -1,9 +1,10 @@
 import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
-import { PIXI_SCALE } from "./constants";
+import { MODE, PIXI_SCALE } from "./constants";
 
 import { atlases } from "virtual:spritesheets-jsons";
+import { Reskins } from "../../../../common/src/definitions/modes";
 
 const textures: Record<string, Texture> = {};
 
@@ -36,19 +37,19 @@ export async function loadTextures(): Promise<void> {
 
 export class SuroiSprite extends Sprite {
     constructor(frame?: string) {
-        let texture: Texture | undefined;
-
-        if (frame) {
-            texture = textures[frame] ?? textures._missing_texture;
-        }
-        super(texture);
+        super(frame ? SuroiSprite._getTexture(frame) : undefined);
 
         this.anchor.set(0.5);
         this.setPos(0, 0);
     }
 
+    private static _getTexture(frame: string): Texture {
+        if (MODE.reskin && Reskins[MODE.reskin]?.textures.includes(frame)) frame += `_${MODE.reskin}`;
+        return textures[frame] ?? textures._missing_texture;
+    }
+
     setFrame(frame: string): SuroiSprite {
-        this.texture = textures[frame] ?? textures._missing_texture;
+        this.texture = SuroiSprite._getTexture(frame);
         return this;
     }
 

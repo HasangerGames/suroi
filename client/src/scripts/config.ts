@@ -6,7 +6,8 @@ export const Config = {
         sa: { name: "South America", address: "sa.suroi.io", https: true },
         as: { name: "Asia", address: "as.suroi.io", https: true }
     },
-    defaultRegion: "na"
+    defaultRegion: "na",
+    mode: "winter"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
@@ -16,4 +17,5 @@ export interface ConfigType {
         readonly https: boolean
     }>
     readonly defaultRegion: string
+    readonly mode: string
 }
