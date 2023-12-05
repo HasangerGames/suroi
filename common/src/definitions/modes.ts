@@ -52,7 +52,7 @@ export const Modes: ModeDefinition[] = [
         idString: "winter",
         colors: {
             grass: "hsl(210, 18%, 82%)",
-            water: "hsl(208, 94%, 72%)",
+            water: "hsl(211, 63%, 42%)",
             border: "hsl(208, 94%, 45%)",
             beach: "hsl(210, 18%, 75%)",
             riverBank: "hsl(210, 18%, 70%)",
