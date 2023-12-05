@@ -220,10 +220,9 @@ export class River {
     readonly waterHitbox: PolygonHitbox;
     readonly bankHitbox: PolygonHitbox;
 
-    constructor(width: number, points: Vector[], otherRivers: River[], reverse = false) {
+    constructor(width: number, points: Vector[], otherRivers: River[]) {
         this.width = width;
         this.points = points;
-        this.reverse = reverse;
 
         const length = this.points.length - 1;
 
