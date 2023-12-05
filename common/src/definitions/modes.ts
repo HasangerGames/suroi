@@ -71,6 +71,7 @@ export const Reskins: Record<string, ReskinDefinition> = {
         textures: [
             "oak_tree_1", "oak_tree_2", "oak_tree_3", "oak_tree_particle", "oak_tree_residue",
             "birch_tree", "birch_tree_particle", "birch_tree_residue",
+            "pine_tree",
             "bush", "bush_particle_1", "bush_particle_2", "bush_residue",
             "blueberry_bush",
             "rock_6",
