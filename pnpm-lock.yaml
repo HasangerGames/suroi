@@ -44,9 +44,6 @@ importers:
       '@pixi/graphics-extras':
         specifier: ^7.3.2
         version: 7.3.2(@pixi/core@7.3.2)(@pixi/graphics@7.3.2)
-      greiner-hormann:
-        specifier: ^1.4.2
-        version: 1.4.2
       howler:
         specifier: ^2.2.4
         version: 2.2.4
@@ -117,9 +114,6 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.0
         version: 1.0.0
-      greiner-hormann:
-        specifier: ^1.4.2
-        version: 1.4.2
       uWebSockets.js:
         specifier: github:uNetworking/uWebSockets.js#v20.34.0
         version: github.com/uNetworking/uWebSockets.js/fca27c05066342b01951782248640c8013b37196
@@ -154,9 +148,6 @@ importers:
       '@damienvesper/bit-buffer':
         specifier: ^1.0.0
         version: 1.0.0
-      greiner-hormann:
-        specifier: ^1.4.2
-        version: 1.4.2
       uWebSockets.js:
         specifier: github:uNetworking/uWebSockets.js#v20.34.0
         version: github.com/uNetworking/uWebSockets.js/fca27c05066342b01951782248640c8013b37196
@@ -3020,10 +3011,6 @@ packages:
   /graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
-
-  /greiner-hormann@1.4.2:
-    resolution: {integrity: sha512-5O8TM9kVj7NjLfhLjYeaCWQzsVZfTgDrKL2+S82eqIXELIKQDAmZaiT6uCCql1ZcbHUw+L+hYhObRwTmxkgudg==}
-    dev: false
 
   /has-bigints@1.0.2:
     resolution: {integrity: sha512-tSvCKtBr9lkF0Ex0aQiP9N+OpV4zi2r/Nee5VkRDbaqv35RLYMzbwQfFSZZH0kR+Rd6302UJZ2p/bJCEoR3VoQ==}

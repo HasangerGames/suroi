@@ -218,7 +218,7 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
         rotationMode: RotationMode.Limited,
         role: ObstacleSpecialRoles.Wall,
         reflectBullets: true,
-        zIndex: ZIndexes.Ground + 1,
+        zIndex: ZIndexes.BuildingsFloor + 1,
         frames: {
             base: invisible ? undefined : `container_walls_${style}`,
             particle: "metal_particle"
@@ -1518,7 +1518,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            zIndex: ZIndexes.Ground,
+            zIndex: ZIndexes.BuildingsFloor,
             hitbox: RectangleHitbox.fromRect(4.5, 1.8),
             rotationMode: RotationMode.Limited,
             frames: {

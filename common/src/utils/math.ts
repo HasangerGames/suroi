@@ -547,6 +547,49 @@ export function rectCircleIntersection(min: Vector, max: Vector, pos: Vector, ra
     return null;
 }
 
+export function distanceToLine(p: Vector, a: Vector, b: Vector): number {
+    const ab = vSub(b, a);
+    const c = vDot(vSub(p, a), ab) / vDot(ab, ab);
+    const d = vAdd(a, vMul(ab, clamp(c, 0, 1)));
+    const e = vSub(d, p);
+    return vDot(e, e);
+}
+
+// http://ahamnett.blogspot.com/2012/06/raypolygon-intersections.html
+export function rayIntersectsLine(origin: Vector, direction: Vector, lineA: Vector, lineB: Vector): number | null {
+    const segment = vSub(lineB, lineA);
+    const segmentPerp = v(segment.y, -segment.x);
+    const perpDotDir = vDot(direction, segmentPerp);
+
+    // If lines are parallel, no intersection
+    if (Math.abs(perpDotDir) <= 0.000001) return null;
+
+    const d = vSub(lineA, origin);
+
+    const distanceAlongRay = vDot(segmentPerp, d) / perpDotDir;
+
+    const distanceAlongLine = vDot(v(direction.y, -direction.x), d) / perpDotDir;
+
+    // If t is positive and s lies within the line it intersects; returns t
+    return distanceAlongRay >= 0 && distanceAlongLine >= 0 && distanceAlongLine <= 1 ? distanceAlongRay : null;
+}
+
+export function rayIntersectsPolygon(origin: Vector, direction: Vector, polygon: Vector[]): number | null {
+    let t = Number.MAX_VALUE;
+
+    let intersected = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const dist = rayIntersectsLine(origin, direction, polygon[j], polygon[i]);
+        if (dist !== null && dist < t) {
+            intersected = true;
+            t = dist;
+        }
+    }
+
+    // Returns closest intersection
+    return intersected ? t : null;
+}
+
 export function rectRectIntersection(min0: Vector, max0: Vector, min1: Vector, max1: Vector): CollisionResponse {
     const e0 = vMul(vSub(max0, min0), 0.5);
     const c0 = vAdd(min0, e0);

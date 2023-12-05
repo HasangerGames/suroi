@@ -16,7 +16,7 @@ import { type HealingItemDefinition, HealType } from "../../../../common/src/def
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type MeleeDefinition } from "../../../../common/src/definitions/melees";
 import { CircleHitbox } from "../../../../common/src/utils/hitbox";
-import { FloorTypes } from "../../../../common/src/utils/mapUtils";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { angleBetweenPoints, distanceSquared, velFromAngle } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
@@ -152,9 +152,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.images.aimTrail.position = v(6000, -8);
         this.images.aimTrail.alpha = 0;
         if (!this.isActivePlayer) this.images.aimTrail.alpha = 0;
-
-        this.game.camera.container.removeChild(this.container);
-        this.game.playersContainer.addChild(this.container);
 
         this.emoteContainer = new Container();
         this.game.camera.addObject(this.emoteContainer);
@@ -303,7 +300,9 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
 
-        const floorType = this.game.map.terrainGrid.getFloor(this.position);
+        const floorType = this.game.map.terrain.getFloor(this.position);
+
+        this.container.zIndex = FloorTypes[floorType].overlay ? ZIndexes.UnderwaterPlayers : ZIndexes.Players;
 
         if (floorType !== this.floorType) {
             if (FloorTypes[floorType].overlay) this.images.waterOverlay.setVisible(true);

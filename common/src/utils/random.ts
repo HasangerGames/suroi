@@ -99,4 +99,8 @@ export class SeededRandom {
         this.rng = this.rng * 16807 % 2147483647;
         return lerp(min, max, (this.rng / 2147483647));
     }
+
+    getInt(min?: number, max?: number): number {
+        return Math.round(this.get(min, max));
+    }
 }

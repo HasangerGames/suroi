@@ -3,7 +3,7 @@ import { Guns } from "../../../../common/src/definitions/guns";
 import { HealingItems } from "../../../../common/src/definitions/healingItems";
 import { Materials } from "../../../../common/src/definitions/obstacles";
 import { clamp } from "../../../../common/src/utils/math";
-import { FloorTypes } from "../../../../common/src/utils/mapUtils";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { v, type Vector, vLength, vSub } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { MODE } from "./constants";

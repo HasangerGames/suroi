@@ -2,11 +2,11 @@ import { Buildings, type BuildingDefinition } from "../../common/src/definitions
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, type PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
-import { River, TerrainGrid, generateTerrain } from "../../common/src/utils/mapUtils";
-import { addAdjust, addOrientations, angleBetweenPoints, distance, velFromAngle } from "../../common/src/utils/math";
+import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { River, Terrain } from "../../common/src/utils/terrain";
+import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, velFromAngle } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomBoolean, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
 import { MapPacket } from "../../common/src/packets/mapPacket";
 import { LootTables, type WeightedItem } from "./data/lootTables";
@@ -29,16 +29,9 @@ export class Map {
 
     readonly beachHitbox: ComplexHitbox;
 
-    readonly seed = random(0, 2 ** 31);
+    readonly seed: number;
 
-    readonly rivers: River[];
-
-    readonly riversHitboxes: Array<{
-        readonly water: PolygonHitbox
-        readonly bank: PolygonHitbox
-    }>;
-
-    readonly terrainGrid: TerrainGrid;
+    readonly terrain: Terrain;
 
     readonly packet: MapPacket;
 
@@ -58,6 +51,8 @@ export class Map {
         const packet = this.packet = new MapPacket();
 
         this.seed = packet.seed = random(0, 2 ** 31);
+
+        Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
 
         this.width = packet.width = mapDefinition.width;
         this.height = packet.height = mapDefinition.height;
@@ -87,62 +82,79 @@ export class Map {
             )
         );
 
-        this.terrainGrid = new TerrainGrid(this.width, this.height);
+        const rivers: River[] = [];
 
-        const randomGenerator = new SeededRandom(this.seed);
+        if (mapDefinition.rivers) {
+            const riverDef = mapDefinition.rivers;
 
-        let hasWideRiver = true;
-        const riverPadding = mapDefinition.oceanSize - 30;
+            const riverPadding = 64;
 
-        const mapRect = new RectangleHitbox(
-            v(riverPadding, riverPadding),
-            v(this.width - riverPadding, this.height - riverPadding)
-        );
+            const riverRect = new RectangleHitbox(
+                v(riverPadding, riverPadding),
+                v(this.width - riverPadding, this.height - riverPadding)
+            );
 
-        this.rivers = [];
+            const randomGenerator = new SeededRandom(this.seed);
 
-        const riverCount = mapDefinition.rivers ?? 0;
-        while (this.rivers.length < riverCount) {
-            let start: Vector;
-            const horizontal = randomBoolean();
-            const reverse = randomBoolean();
+            const widths: number[] = [];
+            const amount = randomGenerator.getInt(riverDef.minAmount, riverDef.maxAmount);
+
+            // generate a list of widths and sort by biggest, to make sure wide rivers generate first
+            for (let i = 0; i < amount; i++) {
+                const wide = randomGenerator.get() < riverDef.wideChance;
+                widths.push(wide
+                    ? randomGenerator.getInt(riverDef.minWideWidth, riverDef.maxWideWidth)
+                    : randomGenerator.getInt(riverDef.minWidth, riverDef.maxWidth));
+            }
+            widths.sort((a, b) => b - a);
 
             const halfWidth = this.width / 2;
             const halfHeight = this.height / 2;
+            const center = v(halfWidth, halfHeight);
             const width = this.width - riverPadding;
             const height = this.height - riverPadding;
-            if (horizontal) {
-                const topHalf = randomFloat(riverPadding, halfHeight);
-                const bottomHalf = randomFloat(halfHeight, height);
-                start = v(riverPadding, reverse ? bottomHalf : topHalf);
-            } else {
-                const leftHalf = randomFloat(riverPadding, halfWidth);
-                const rightHalf = randomFloat(halfWidth, width);
-                start = v(reverse ? rightHalf : leftHalf, riverPadding);
+
+            let attempts = 0;
+            while (rivers.length < amount && attempts < 100) {
+                attempts++;
+                let start: Vector;
+
+                const horizontal = !!randomGenerator.getInt();
+                const reverse = !!randomGenerator.getInt();
+
+                if (horizontal) {
+                    const topHalf = randomGenerator.get(riverPadding, halfHeight);
+                    const bottomHalf = randomGenerator.get(halfHeight, height);
+                    start = v(riverPadding, reverse ? bottomHalf : topHalf);
+                } else {
+                    const leftHalf = randomGenerator.get(riverPadding, halfWidth);
+                    const rightHalf = randomGenerator.get(halfWidth, width);
+                    start = v(reverse ? rightHalf : leftHalf, riverPadding);
+                }
+
+                const startAngle = angleBetweenPoints(center, start) + (reverse ? 0 : Math.PI);
+
+                this.generateRiver(
+                    start,
+                    startAngle,
+                    widths[rivers.length],
+                    riverRect,
+                    rivers,
+                    randomGenerator
+                );
             }
-
-            const startAngle = angleBetweenPoints(v(this.width / 2, this.height / 2), start);
-            this.generateRiver(
-                start,
-                startAngle,
-                hasWideRiver ? randomGenerator.get(50, 60) : randomGenerator.get(20, 30),
-                randomGenerator,
-                mapRect
-            );
-            hasWideRiver = false;
         }
-        this.packet.rivers = this.rivers;
 
-        const terrain = generateTerrain(
+        this.packet.rivers = rivers;
+
+        this.terrain = new Terrain(
             this.width,
             this.height,
-            this.oceanSize,
-            this.beachSize,
+            mapDefinition.oceanSize,
+            mapDefinition.beachSize,
             this.seed,
-            this.rivers
+            rivers
         );
-
-        this.riversHitboxes = terrain.rivers;
 
         // Generate buildings
         for (const building in mapDefinition.buildings) {
@@ -159,15 +171,6 @@ export class Map {
         }
 
         if (mapDefinition.genCallback) mapDefinition.genCallback(this);
-
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("water", river.water);
-        }
-        for (const river of terrain.rivers) {
-            this.terrainGrid.addFloor("sand", river.bank);
-        }
-        this.terrainGrid.addFloor("grass", terrain.grass);
-        this.terrainGrid.addFloor("sand", terrain.beach);
 
         if (mapDefinition.places) {
             for (const place of mapDefinition.places) {
@@ -191,60 +194,56 @@ export class Map {
         startPos: Vector,
         startAngle: number,
         width: number,
-        randomGenerator: SeededRandom,
-        mapRect: RectangleHitbox
+        bounds: RectangleHitbox,
+        rivers: River[],
+        randomGenerator: SeededRandom
     ): void {
         const riverPoints: Vector[] = [];
-
-        const maxDeviation = 0.4;
-        const minDeviation = 0.2;
-
-        const minSplitDeviation = 0.5;
-        const maxSplitDeviation = 0.8;
 
         riverPoints.push(startPos);
 
         let angle = startAngle;
 
-        let distanceSinceLastSplit = 0;
+        for (let i = 1; i < 60; i++) {
+            const lastPoint = riverPoints[i - 1];
+            const center = v(this.width / 2, this.height / 2);
 
-        for (let i = 1; i < 100; i++) {
-            distanceSinceLastSplit++;
+            const distFactor = distance(lastPoint, center) / (this.width / 2);
+
+            const maxDeviation = lerp(0.8, 0.1, distFactor);
+            const minDeviation = lerp(0.3, 0.1, distFactor);
 
             angle = angle + randomGenerator.get(
                 -randomGenerator.get(minDeviation, maxDeviation),
                 randomGenerator.get(minDeviation, maxDeviation)
             );
 
-            const pos = riverPoints[i] = vAdd(riverPoints[i - 1], velFromAngle(angle, randomGenerator.get(50, 60)));
+            const pos = vAdd(lastPoint, velFromAngle(angle, randomGenerator.getInt(30, 80)));
 
-            if (width > 40 &&
-                distanceSinceLastSplit > 5 &&
-                distance(pos, v(this.width / 2, this.height / 2)) < 400 &&
-                Math.random() < 0.3) {
-                distanceSinceLastSplit = 0;
+            let collided = false;
 
-                this.generateRiver(
-                    pos,
-                    angle + randomGenerator.get(
-                        -randomGenerator.get(minSplitDeviation, maxSplitDeviation),
-                        randomGenerator.get(minSplitDeviation, maxSplitDeviation)),
-                    width / 2,
-                    randomGenerator,
-                    mapRect
-                );
+            // end the river if it collides with another river
+            for (const river of rivers) {
+                const points = river.points;
+                for (let j = 1; j < points.length; j++) {
+                    const intersection = lineIntersectsLine(lastPoint, pos, points[j - 1], points[j]);
+                    if (intersection) {
+                        const dist = distance(intersection, riverPoints[i - 1]);
+                        if (dist > 16) riverPoints[i] = intersection;
+                        collided = true;
+                        break;
+                    }
+                }
+                if (collided) break;
             }
+            if (collided) break;
+            riverPoints[i] = pos;
 
-            if (!mapRect.isPointInside(pos)) break;
+            if (!bounds.isPointInside(pos)) break;
         }
+        if (riverPoints.length < 20 || riverPoints.length > 59) return;
 
-        this.rivers.push(
-            new River(
-                width,
-                width / 3,
-                riverPoints
-            )
-        );
+        rivers.push(new River(width, riverPoints, rivers));
     }
 
     generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number): void {
@@ -259,7 +258,8 @@ export class Map {
                 spawnMode: definition.spawnMode,
                 getOrientation: (newOrientation: Orientation) => {
                     orientation = newOrientation;
-                }
+                },
+                maxAttempts: 400
             });
             if (!position) {
                 Logger.warn(`Failed to find valid position for building ${definition.idString}`);
@@ -335,7 +335,7 @@ export class Map {
         }
 
         for (const floor of definition.floors ?? []) {
-            this.terrainGrid.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation));
         }
 
         for (const decal of definition.decals ?? []) {
@@ -494,11 +494,11 @@ export class Map {
             }
             // TODO: evenly distribute objects based on river size
             case MapObjectSpawnMode.River: {
-                getPosition = () => pickRandomInArray(this.riversHitboxes).water.randomPoint();
+                getPosition = () => pickRandomInArray(this.terrain.rivers).waterHitbox.randomPoint();
                 break;
             }
             case MapObjectSpawnMode.RiverBank: {
-                getPosition = () => pickRandomInArray(this.riversHitboxes).bank.randomPoint();
+                getPosition = () => pickRandomInArray(this.terrain.rivers).bankHitbox.randomPoint();
                 break;
             }
             case MapObjectSpawnMode.Beach: {
@@ -529,6 +529,8 @@ export class Map {
                 break;
             }
         }
+
+        if (params?.getPosition) getPosition = params?.getPosition;
 
         let attempts = 0;
         let collided = true;
@@ -568,17 +570,17 @@ export class Map {
                 case MapObjectSpawnMode.Grass:
                 case MapObjectSpawnMode.GrassAndSand:
                 case MapObjectSpawnMode.Beach: {
-                    for (const river of this.riversHitboxes) {
+                    for (const river of this.terrain.getRiversInHitbox(hitbox)) {
                         if (spawnMode !== MapObjectSpawnMode.GrassAndSand &&
-                            (river.bank.isPointInside(position) ||
-                                hitbox.collidesWith(river.bank))) {
+                            (river.bankHitbox.isPointInside(position) ||
+                                hitbox.collidesWith(river.bankHitbox))) {
                             collided = true;
                             break;
                         }
 
                         if (spawnMode === MapObjectSpawnMode.GrassAndSand &&
-                            (river.water.isPointInside(position) ||
-                                hitbox.collidesWith(river.water))) {
+                            (river.waterHitbox.isPointInside(position) ||
+                                hitbox.collidesWith(river.waterHitbox))) {
                             collided = true;
                             break;
                         }
@@ -586,9 +588,9 @@ export class Map {
                     break;
                 }
                 case MapObjectSpawnMode.RiverBank: {
-                    for (const river of this.riversHitboxes) {
-                        if (river.water.isPointInside(position) ||
-                            hitbox.collidesWith(river.water)) {
+                    for (const river of this.terrain.getRiversInHitbox(hitbox)) {
+                        if (river.waterHitbox.isPointInside(position) ||
+                            hitbox.collidesWith(river.waterHitbox)) {
                             collided = true;
                             break;
                         }

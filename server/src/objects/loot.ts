@@ -35,6 +35,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
         this.hitbox.position = pos;
     }
 
+    private oldPosition = v(0, 0);
+
     constructor(game: Game, definition: ReifiableDef<LootDefinition>, position: Vector, count?: number) {
         super(game, position);
 
@@ -50,20 +52,33 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
     }
 
     update(): void {
-        const oldPosition = vClone(this.position);
-
         const moving = Math.abs(this.velocity.x) > 0.001 ||
             Math.abs(this.velocity.y) > 0.001 ||
-            vEqual(oldPosition, this.position);
+            !vEqual(this.oldPosition, this.position);
 
-        if (moving) {
-            this.velocity = vMul(this.velocity, 0.9);
-            const velocity = vMul(this.velocity, 1 / GameConstants.tps);
-            velocity.x = clamp(velocity.x, -1, 1);
-            velocity.y = clamp(velocity.y, -1, 1);
-            this.position = vAdd(this.position, velocity);
+        if (!moving) return;
+
+        this.oldPosition = vClone(this.position);
+
+        if (this.game.map.terrain.groundRect.isPointInside(this.position)) {
+            const rivers = this.game.map.terrain.getRiversInPosition(this.position);
+            for (const river of rivers) {
+                if (river.waterHitbox.isPointInside(this.position)) {
+                    const t = river.getClosestT(this.position);
+
+                    const tangent = river.getTangent(t);
+
+                    this.push(Math.atan2(tangent.y, tangent.x), -1);
+                    break;
+                }
+            }
         }
 
+        this.velocity = vMul(this.velocity, 0.9);
+        const velocity = vMul(this.velocity, 1 / GameConstants.tps);
+        velocity.x = clamp(velocity.x, -1, 1);
+        velocity.y = clamp(velocity.y, -1, 1);
+        this.position = vAdd(this.position, velocity);
         this.position.x = clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
@@ -78,7 +93,9 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
 
             if (object instanceof Loot && object !== this && object.hitbox.collidesWith(this.hitbox)) {
                 const collision = circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
-                if (collision) this.velocity = vSub(this.velocity, vMul(collision.dir, 0.45));
+                if (collision) {
+                    this.velocity = vSub(this.velocity, vMul(collision.dir, 0.45));
+                }
 
                 const dist = Math.max(distance(object.position, this.position), 1);
                 const vecCollision = v(object.position.x - this.position.x, object.position.y - this.position.y);
@@ -95,7 +112,8 @@ export class Loot extends GameObject<ObjectCategory.Loot> {
                 object.velocity.y += (speed * vecCollisionNorm.y);
             }
         }
-        if (!vEqual(oldPosition, this.position)) {
+
+        if (!vEqual(this.oldPosition, this.position)) {
             this.game.partialDirtyObjects.add(this);
             this.game.grid.addObject(this);
         }

@@ -394,8 +394,10 @@ export class PolygonHitbox extends Hitbox {
 
     override collidesWith(that: Hitbox): boolean {
         if (that instanceof RectangleHitbox) {
+            if (this.isPointInside(that.min) || this.isPointInside(that.max)) return true;
             for (let i = 0; i < this.points.length; i++) {
                 const a = this.points[i];
+                if (that.isPointInside(a)) return true;
                 const b = i === this.points.length - 1 ? this.points[0] : this.points[i + 1];
                 if (lineIntersectsRect2(b, a, that.min, that.max)) {
                     return true;
