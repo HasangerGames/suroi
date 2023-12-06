@@ -532,10 +532,10 @@ export const Guns: GunDefinition[] = [
         },
         dual: {
             offset: 1.3,
-            fireDelay: 200,
-            shotSpread: 4,
-            moveSpread: 8,
-            reloadTime: 4.2
+            fireDelay: 187.5,
+            shotSpread: 3,
+            moveSpread: 6,
+            reloadTime: 4
         }
     },
     {
@@ -574,10 +574,10 @@ export const Guns: GunDefinition[] = [
         },
         dual: {
             offset: 1.3,
-            fireDelay: 60,
-            shotSpread: 12,
-            moveSpread: 20,
-            reloadTime: 3
+            fireDelay: 75,
+            shotSpread: 10,
+            moveSpread: 18,
+            reloadTime: 2.9
         }
     },
     {
@@ -655,10 +655,10 @@ export const Guns: GunDefinition[] = [
         },
         dual: {
             offset: 1.3,
-            fireDelay: 35,
-            shotSpread: 20,
-            moveSpread: 25,
-            reloadTime: 3.8
+            fireDelay: 30,
+            shotSpread: 17,
+            moveSpread: 35,
+            reloadTime: 3.7
         }
     },
     {

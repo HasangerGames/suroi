@@ -784,6 +784,7 @@
         position: absolute;
         top: 5px;
         right: 8px;
+        z-index: 1;
         @include text-shadow;
 
         @media screen and (max-width: $screen_large) {
@@ -841,7 +842,7 @@
         }
 
         &.dual-image {
-            transform: scaleX(-1) translate(-12%);
+            transform: translate(12%);
         }
 
         @media screen and (max-width: $screen_large) {
