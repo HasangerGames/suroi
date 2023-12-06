@@ -1,7 +1,9 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { lerp } from "../../../../common/src/utils/math";
 import type { ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import type { Vector } from "../../../../common/src/utils/vector";
+import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
+import { v, type Vector } from "../../../../common/src/utils/vector";
 import type { Game } from "../game";
 import { GameObject } from "../types/gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
@@ -50,6 +52,26 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
         if (data.height === 0) {
             this.playSound(this.game.map.terrain.getFloor(this.position) === "water" ? "airdrop_land_water" : "airdrop_land");
+
+            const floor = this.game.map.terrain.getFloor(this.position);
+
+            if (FloorTypes[floor].particles) {
+                this.game.particleManager.spawnParticles(6, () => ({
+                    frames: "ripple_particle",
+                    zIndex: ZIndexes.Ground,
+                    position: randomPointInsideCircle(this.position, 6),
+                    lifetime: 1000,
+                    speed: v(0, 0),
+                    scale: {
+                        start: randomFloat(0.45, 0.55),
+                        end: randomFloat(2.95, 3.05)
+                    },
+                    alpha: {
+                        start: randomFloat(0.55, 0.65),
+                        end: 0
+                    }
+                }));
+            }
         }
     }
 
