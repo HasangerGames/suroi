@@ -327,7 +327,7 @@ export class ComplexHitbox extends Hitbox {
     }
 
     override clone(): ComplexHitbox {
-        return new ComplexHitbox(...this.hitboxes);
+        return new ComplexHitbox(...this.hitboxes.map(hitbox => hitbox.clone()));
     }
 
     override transform(position: Vector, scale?: number | undefined, orientation?: Orientation | undefined): ComplexHitbox {

@@ -582,9 +582,11 @@ export class Game {
                     thisHitbox.resolveCollision(thatHitbox);
                 }
                 position = thisHitbox.getCenter();
+                if (collided) break;
             }
 
             thisHitbox = crateHitbox.transform(position);
+
             for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                 if (object instanceof Obstacle &&
                     !object.dead &&
@@ -593,21 +595,22 @@ export class Game {
                     collided = true;
                     thisHitbox.resolveCollision(object.spawnHitbox);
                 }
+                position = thisHitbox.getCenter();
+            }
 
-                if (collided) break;
-
+            // second loop, buildings
+            for (const object of this.grid.intersectsHitbox(thisHitbox)) {
                 if (object instanceof Building &&
                     object.scopeHitbox &&
-                    !object.definition.wallsToDestroy &&
-                    object.scopeHitbox.collidesWith(thisHitbox)) {
+                    object.definition.wallsToDestroy === undefined) {
+                    const hitbox = object.scopeHitbox.clone();
+                    hitbox.scale(1.5);
+                    if (!thisHitbox.collidesWith(hitbox)) continue;
                     collided = true;
                     thisHitbox.resolveCollision(object.scopeHitbox);
                 }
-
-                if (collided) break;
+                position = thisHitbox.getCenter();
             }
-
-            position = thisHitbox.getCenter();
 
             const { min, max } = thisHitbox.toRectangle();
             const width = max.x - min.x;
