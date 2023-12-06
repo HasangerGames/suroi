@@ -14,7 +14,6 @@ import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
-import { Obstacle } from "./obstacle";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 
 export class Building extends GameObject<ObjectCategory.Building> {
@@ -118,12 +117,11 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         graphics?.lineTo(end.x, end.y);
                         graphics?.endFill();
 
-                        for (const object of this.game.objects) {
-                            if (object instanceof Obstacle &&
-                                object.damageable &&
-                                !object.dead &&
-                                object.definition.role !== ObstacleSpecialRoles.Window &&
-                                object.hitbox?.intersectsLine(player.position, end)) {
+                        for (const obstacle of this.game.objects.getCategory(ObjectCategory.Obstacle)) {
+                            if (obstacle.damageable &&
+                                !obstacle.dead &&
+                                obstacle.definition.role !== ObstacleSpecialRoles.Window &&
+                                obstacle.hitbox?.intersectsLine(player.position, end)) {
                                 collided = true;
                                 break;
                             }
@@ -140,6 +138,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
         if (this.ceilingVisible === visible) return;
 
+        this.ceilingVisible = visible;
+
         this.ceilingTween?.kill();
 
         this.ceilingTween = new Tween(
@@ -147,11 +147,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
             {
                 target: this.ceilingContainer,
                 to: { alpha: visible ? 0 : 1 },
-                duration: visible ? 120 : 300,
-                ease: EaseFunctions.sineOut,
-                onComplete: () => {
-                    this.ceilingVisible = visible;
-                }
+                duration: visible ? 150 : 300,
+                ease: EaseFunctions.sineOut
             }
         );
     }

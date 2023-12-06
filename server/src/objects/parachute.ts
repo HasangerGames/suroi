@@ -33,10 +33,8 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
     update(): void {
         if (this.height < 0) {
-            this.game.grid.removeObject(this);
-            this.game.parachutes.delete(this);
+            this.game.removeObject(this);
             this.game.airdrops.delete(this.airdrop);
-            this.game.updateObjects = true;
 
             const crate = this.game.map.generateObstacle(this.airdrop.type, this.position);
 

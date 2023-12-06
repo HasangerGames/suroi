@@ -597,7 +597,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         };
 
         // new and deleted players
-        if (this._firstPacket) packet.newPlayers = this.game.players;
+        if (this._firstPacket) packet.newPlayers = this.game.objects.getCategory(ObjectCategory.Player);
         else packet.newPlayers = this.game.newPlayers;
 
         packet.deletedPlayers = this.game.deletedPlayers;
