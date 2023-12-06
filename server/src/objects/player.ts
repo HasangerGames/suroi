@@ -364,7 +364,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const primaryItem = this.inventory.getWeapon(slot) as GunItem;
         const primaryDefinition = primaryItem.definition;
         primaryItem.ammo = primaryDefinition.capacity;
-        this.inventory.items[primaryDefinition.ammoType] = Infinity;
+        this.inventory.items[primaryDefinition.ammoType] = this.inventory.backpack.maxCapacity[primaryDefinition.ammoType];
     }
 
     emote(slot: number): void {

@@ -564,8 +564,6 @@ export class InputManager {
 
         return name === undefined ? name : `./img/misc/${name}_icon.svg`;
     }
-
-    readonly getPickupBind = (): string => this.binds.getInputsBoundToAction("interact")[0];
 }
 
 class InputMapper {

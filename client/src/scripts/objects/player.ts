@@ -415,45 +415,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
             const action = full.action;
 
             if (this.action.type !== action.type || this.action.seq !== action.seq) {
-                let actionTime = 0;
                 let actionSoundName = "";
-                let actionName = "";
                 this.healingParticlesEmitter.active = false;
 
                 if (this.actionSound) this.game.soundManager.stop(this.actionSound);
 
                 switch (action.type) {
                     case PlayerActions.None: {
-                        if (this.isActivePlayer) $("#action-container").hide().stop();
+                        if (this.isActivePlayer) this.game.uiManager.cancelAction();
                         break;
                     }
                     case PlayerActions.Reload: {
                         const weaponDef = (this.activeItem as GunDefinition);
-                        actionName = "Reloading...";
                         if (weaponDef.casingParticles?.spawnOnReload) this.spawnCasingParticles();
                         actionSoundName = `${weaponDef.idString}_reload`;
-                        actionTime = this.activeItemIsDual ? weaponDef.dual!.reloadTime : weaponDef.reloadTime;
+                        if (this.isActivePlayer) this.game.uiManager.animateAction("Reloading...", this.activeItemIsDual ? weaponDef.dual!.reloadTime : weaponDef.reloadTime);
                         break;
                     }
                     case PlayerActions.UseItem: {
                         const itemDef = action.item;
-                        actionName = `${itemDef.useText} ${itemDef.name}`;
-                        actionTime = itemDef.useTime;
                         actionSoundName = itemDef.idString;
                         this.healingParticlesEmitter.active = true;
+                        if (this.isActivePlayer) this.game.uiManager.animateAction(`${itemDef.useText} ${itemDef.name}`, itemDef.useTime);
                         break;
-                    }
-                }
-
-                if (this.isActivePlayer) {
-                    if (actionName) {
-                        $("#action-name").text(actionName);
-                        $("#action-container").show();
-                    }
-                    if (actionTime > 0) {
-                        $("#action-timer-anim").stop().width("0%").animate({ width: "100%" }, actionTime * 1000, "linear", () => {
-                            $("#action-container").hide();
-                        });
                     }
                 }
                 if (actionSoundName) {

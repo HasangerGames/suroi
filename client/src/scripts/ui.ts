@@ -648,7 +648,7 @@ Video evidence is required.`)) {
     if (game.inputManager.isMobile) {
         // Interact message
         $("#interact-message").on("click", () => {
-            game.console.handleQuery("interact");
+            game.console.handleQuery(game.uiManager.action.active ? "cancel_action" : "interact");
         });
         // noinspection HtmlUnknownTarget
         $("#interact-key").html('<img src="./img/misc/tap-icon.svg" alt="Tap">');

@@ -95,6 +95,44 @@ export class UIManager {
         interactKey: $("#interact-key")
     };
 
+    action = {
+        active: false,
+        start: -1,
+        time: 0
+    };
+
+    animateAction(name: string, time: number): void {
+        if (time > 0) {
+            this.action.start = Date.now();
+            $("#action-timer-anim").stop()
+                .css({ "stroke-dashoffset": "226" })
+                .animate(
+                    { "stroke-dashoffset": "0" },
+                    time * 1000,
+                    "linear",
+                    () => {
+                        $("#action-container").hide();
+                        this.action.active = false;
+                    });
+        }
+        if (name) {
+            $("#action-name").text(name);
+            $("#action-container").show();
+        }
+        this.action.active = true;
+        this.action.time = time;
+    }
+
+    updateAction(): void {
+        const amount = this.action.time - (Date.now() - this.action.start) / 1000;
+        if (amount > 0) $("#action-time").text(amount.toFixed(1));
+    }
+
+    cancelAction(): void {
+        $("#action-container").hide().stop();
+        this.action.active = false;
+    }
+
     gameOverScreenTimeout: number | undefined;
 
     showGameOverScreen(packet: GameOverPacket): void {

@@ -546,7 +546,8 @@ export class Game {
     private readonly _cache: {
         object?: Loot | Obstacle
         offset?: number
-        pickupBind?: string
+        isAction?: boolean
+        bind?: string
         canInteract?: boolean
     } = {};
 
@@ -570,43 +571,52 @@ export class Game {
             building.toggleCeiling();
         }
 
-        interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
-        const interactable: CloseObject = {
-            object: undefined,
-            minDist: Number.MAX_VALUE
-        };
-        const uninteractable: CloseObject = {
-            object: undefined,
-            minDist: Number.MAX_VALUE
-        };
-        const detectionHitbox = new CircleHitbox(3, player.position);
+        let object: Obstacle | Loot | undefined;
+        let offset: number | undefined;
+        const isAction = this.uiManager.action.active;
+        const bind = this.inputManager.binds.getInputsBoundToAction(isAction ? "cancel_action" : "interact")[0];
+        let canInteract = true;
 
-        for (const object of this.objects) {
-            if (
-                (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
-                object.hitbox.collidesWith(detectionHitbox)
-            ) {
-                const dist = distanceSquared(object.position, player.position);
-                if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
-                    interactable.minDist = dist;
-                    interactable.object = object;
-                } else if (object instanceof Loot && dist < uninteractable.minDist) {
-                    uninteractable.minDist = dist;
-                    uninteractable.object = object;
+        if (isAction) {
+            this.uiManager.updateAction();
+        } else {
+            interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
+            const interactable: CloseObject = {
+                object: undefined,
+                minDist: Number.MAX_VALUE
+            };
+            const uninteractable: CloseObject = {
+                object: undefined,
+                minDist: Number.MAX_VALUE
+            };
+            const detectionHitbox = new CircleHitbox(3, player.position);
+
+            for (const object of this.objects) {
+                if (
+                    (object instanceof Loot || (object instanceof Obstacle && object.canInteract(player))) &&
+                    object.hitbox.collidesWith(detectionHitbox)
+                ) {
+                    const dist = distanceSquared(object.position, player.position);
+                    if ((object instanceof Obstacle || object.canInteract(player)) && dist < interactable.minDist) {
+                        interactable.minDist = dist;
+                        interactable.object = object;
+                    } else if (object instanceof Loot && dist < uninteractable.minDist) {
+                        uninteractable.minDist = dist;
+                        uninteractable.object = object;
+                    }
                 }
             }
+
+            object = interactable.object ?? uninteractable.object;
+            offset = object instanceof Obstacle ? object.door?.offset : undefined;
+            canInteract = interactable.object !== undefined;
         }
-
-        if (this.spectating) return;
-
-        const object = interactable.object ?? uninteractable.object;
-        const offset = object instanceof Obstacle ? object.door?.offset : undefined;
-        const canInteract = interactable.object !== undefined;
 
         const differences = {
             object: this._cache.object?.id !== object?.id,
             offset: this._cache.offset !== offset,
-            bind: this.inputManager.getPickupBind() !== this._cache.pickupBind,
+            isAction: this._cache.isAction !== isAction,
+            bind: this._cache.bind !== bind,
             canInteract: this._cache.canInteract !== canInteract
         };
 
@@ -615,26 +625,33 @@ export class Game {
         if (
             differences.object ||
             differences.offset ||
+            differences.isAction ||
             differences.bind ||
             differences.canInteract
         ) {
             // Cache miss, rerender
             this._cache.object = object;
             this._cache.offset = offset;
-            this._cache.pickupBind = this.inputManager.getPickupBind();
+            this._cache.isAction = isAction;
+            this._cache.bind = bind;
             this._cache.canInteract = canInteract;
 
             const interactKey = this.uiManager.ui.interactKey;
             const interactMsg = this.uiManager.ui.interactMsg;
 
-            if (object !== undefined) {
-                const prepareInteractText = (): void => {
-                    if (
-                        object === undefined ||
-                        // If the loot object hasn't changed, we don't need to redo the text
-                        !(differences.object || differences.offset)
-                    ) return;
+            const type = (object?.definition as LootDefinition)?.itemType;
 
+            // Update interact message
+            if (
+                (
+                    this.inputManager.isMobile
+                        // Only show interact message on mobile if object needs to be tapped to pick up
+                        ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee)) || object instanceof Obstacle)
+                        : object !== undefined
+                ) ||
+                isAction
+            ) {
+                if (differences.object || differences.offset || differences.isAction) { // If the loot object hasn't changed, we don't need to redo the text
                     let interactText;
                     if (object instanceof Obstacle) {
                         switch (object.definition.role) {
@@ -645,71 +662,56 @@ export class Game {
                                 interactText = `${object.definition.interactText} ${object.definition.name}`;
                                 break;
                         }
-                    } else { // object must be Loot
+                    } else if (object instanceof Loot) {
                         interactText = `${object.definition.name}${object.count > 1 ? ` (${object.count})` : ""}`;
-                    }
-                    if (!interactText) return;
-                    $("#interact-text").text(interactText);
-                };
-
-                if (this.inputManager.isMobile) {
-                    // Auto open doors
-                    if (object instanceof Obstacle && object.canInteract(player) && object.door?.offset === 0) {
-                        this.inputManager.addAction(InputActions.Interact);
+                    } else if (isAction) {
+                        interactText = "Cancel";
                     }
 
-                    const type = (object.definition as LootDefinition).itemType;
-                    if ( // Auto pickup
-                        object instanceof Loot &&
-                        canInteract &&
-                        // Only pick up melees if no melee is equipped
-                        (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
-                        // Only pick up guns if there's a free slot
-                        (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1]))
-                    ) {
-                        this.inputManager.addAction(InputActions.Interact);
-                    } else if (
-                        (object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee)) ||
-                        object instanceof Obstacle
-                    ) {
-                        prepareInteractText();
-
-                        if (canInteract) {
-                            interactKey.addClass("active").show();
-                        } else {
-                            interactKey.removeClass("active").hide();
-                        }
-
-                        interactMsg.show();
-                        return;
-                    }
-                    interactMsg.hide();
-                } else { // not mobile
-                    prepareInteractText();
-
-                    if (!this._bindChangeAcknowledged) {
-                        this._bindChangeAcknowledged = true;
-
-                        const input = this.inputManager.getPickupBind();
-                        const icon = InputManager.getIconFromInputName(input);
-
-                        if (icon === undefined) {
-                            interactKey.text(input);
-                        } else {
-                            interactKey.html(`<img src="${icon}" alt="${input}"/>`);
-                        }
-                    }
-
-                    if (canInteract) {
-                        interactKey.addClass("active").show();
-                    } else {
-                        interactKey.removeClass("active").hide();
-                    }
-
-                    interactMsg.show();
+                    if (interactText) $("#interact-text").text(interactText);
                 }
-            } else { // object is undefined
+
+                if (!this.inputManager.isMobile && !this._bindChangeAcknowledged) {
+                    this._bindChangeAcknowledged = true;
+
+                    const icon = InputManager.getIconFromInputName(bind);
+
+                    if (icon === undefined) {
+                        interactKey.text(bind);
+                    } else {
+                        interactKey.html(`<img src="${icon}" alt="${bind}"/>`);
+                    }
+                }
+
+                if (canInteract) {
+                    interactKey.addClass("active").show();
+                } else {
+                    interactKey.removeClass("active").hide();
+                }
+
+                interactMsg.show();
+            } else {
                 interactMsg.hide();
+            }
+
+            // Mobile stuff
+            if (object && this.inputManager.isMobile) {
+                // Auto open doors
+                if (object instanceof Obstacle && object.canInteract(player) && object.door?.offset === 0) {
+                    this.inputManager.addAction(InputActions.Interact);
+                }
+
+                // Auto pickup
+                if (
+                    object instanceof Loot &&
+                    canInteract &&
+                    // Only pick up melees if no melee is equipped
+                    (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
+                    // Only pick up guns if there's a free slot
+                    (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1]))
+                ) {
+                    this.inputManager.addAction(InputActions.Interact);
+                }
             }
         }
     }
