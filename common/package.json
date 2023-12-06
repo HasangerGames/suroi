@@ -10,14 +10,13 @@
   "keywords": [],
   "license": "GPL-3.0",
   "dependencies": {
-    "@damienvesper/bit-buffer": "^1.0.0",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.34.0"
+    "@damienvesper/bit-buffer": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^6.13.1",
-    "@typescript-eslint/parser": "^6.13.1",
-    "eslint": "^8.54.0",
+    "@types/node": "^20.10.3",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
     "eslint-config-standard-with-typescript": "^40.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-n": "^16.3.1",
