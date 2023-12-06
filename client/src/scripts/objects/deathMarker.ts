@@ -11,7 +11,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
     override readonly type = ObjectCategory.DeathMarker;
 
     playerName!: string;
-    nameColor = "#dcdcdc";
+    nameColor = 0xdcdcdc;
 
     image: SuroiSprite;
     playerNameText: Text;
@@ -56,7 +56,7 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
             this.playerNameText.text = this.playerName;
 
             if (player.hasColor) {
-                this.nameColor = player.nameColor;
+                this.nameColor = player.nameColor.toNumber();
             }
         }
 

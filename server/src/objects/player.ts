@@ -276,7 +276,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     readonly role?: string;
     readonly isDev: boolean;
     readonly hasColor: boolean;
-    readonly nameColor: string;
+    readonly nameColor: number;
 
     /**
      * Used to make players invulnerable for 5 seconds after spawning or until they move
@@ -314,8 +314,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.ip = userData.ip;
         this.role = userData.role;
         this.isDev = userData.isDev;
-        this.nameColor = userData.nameColor;
-        this.hasColor = userData.nameColor !== undefined && (userData.nameColor.trim().length > 2) && userData.nameColor !== "none";
+        this.nameColor = userData.nameColor ?? 0;
+        this.hasColor = userData.nameColor !== undefined;
 
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),

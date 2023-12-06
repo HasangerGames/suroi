@@ -1,3 +1,4 @@
+import { Color } from "pixi.js";
 import {
     DEFAULT_INVENTORY,
     GameConstants,
@@ -59,12 +60,11 @@ export class UIManager {
             name = GameConstants.player.defaultName;
         } else {
             name = player.name;
+            if (player.hasColor) {
+                element.css("color", player.nameColor.toHex());
+            }
         }
         element.text(name);
-
-        if (player?.hasColor) {
-            element.css("color", player.nameColor);
-        }
 
         return element.prop("outerHTML");
     }

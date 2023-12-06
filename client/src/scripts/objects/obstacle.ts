@@ -16,6 +16,7 @@ import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Sound } from "../utils/soundManager";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -211,6 +212,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             }
         }
         this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
+
+        if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
+            this.container.zIndex = ZIndexes.UnderwaterDeadObstacles;
+        }
 
         if (!this.isDoor) {
             this.hitbox = definition.hitbox.transform(this.position, this.scale, this.orientation);

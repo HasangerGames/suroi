@@ -18,6 +18,7 @@ import { SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Game } from "./game";
 import { type Player } from "./objects/player";
 import { Logger } from "./utils/misc";
+import { clamp } from "../../common/src/utils/math";
 
 /**
  * Apply CORS headers to a response.
@@ -200,7 +201,7 @@ export interface PlayerContainer {
     readonly ip: string | undefined
     readonly role?: string
     readonly isDev: boolean
-    readonly nameColor: string
+    readonly nameColor?: number
     readonly lobbyClearing: boolean
 }
 
@@ -266,6 +267,8 @@ app.ws("/play", {
         const givenRole = searchParams.get("role");
         let role: string | undefined;
         let isDev = false;
+
+        let nameColor: number | undefined;
         if (
             password !== null &&
             givenRole !== null &&
@@ -274,14 +277,11 @@ app.ws("/play", {
         ) {
             role = givenRole;
             isDev = !Config.roles[givenRole].noPrivileges;
-        }
 
-        //
-        // Name color
-        //
-        let color = searchParams.get("nameColor");
-        if (color?.match(/^([A-F0-9]{3,4}){1,2}$/i)) {
-            color = `#${color}`;
+            try {
+                const colorString = searchParams.get("nameColor");
+                if (colorString) nameColor = clamp(parseInt(colorString), 0, 0xffffff);
+            } catch { }
         }
 
         //
@@ -293,7 +293,7 @@ app.ws("/play", {
             ip,
             role,
             isDev,
-            nameColor: isDev ? (color ?? "") : "",
+            nameColor,
             lobbyClearing: searchParams.get("lobbyClearing") === "true"
         };
         res.upgrade(
