@@ -53,13 +53,25 @@ import { Plane } from "./objects/plane";
 import { Timeout } from "../../../common/src/utils/misc";
 import { Parachute } from "./objects/parachute";
 
+interface ObjectMapping {
+    [ObjectCategory.Player]: Player
+    [ObjectCategory.Obstacle]: Obstacle
+    [ObjectCategory.DeathMarker]: DeathMarker
+    [ObjectCategory.Loot]: Loot
+    [ObjectCategory.Building]: Building
+    [ObjectCategory.Decal]: Decal
+    [ObjectCategory.Parachute]: Parachute
+}
+
 export class Game {
     socket!: WebSocket;
 
-    readonly objects = new ObjectPool<GameObject>();
-    readonly players = new ObjectPool<Player>();
-    readonly loots = new Set<Loot>();
+    readonly objects = new ObjectPool<ObjectMapping>();
     readonly bullets = new Set<Bullet>();
+    readonly planes = new Set<Plane>();
+    // Since all bullets have the same zIndex
+    // Add all to a container so pixi has to do less sorting of zIndexes
+    readonly bulletsContainer = new Container();
 
     readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: string }>();
 
@@ -89,12 +101,6 @@ export class Game {
 
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
-
-    readonly planes = new Set<Plane>();
-
-    // Since all bullets have the same zIndex
-    // Add all to a container so pixi has to do less sorting of zIndexes
-    readonly bulletsContainer = new Container();
 
     readonly music: Howl;
     musicPlaying = false;
@@ -350,7 +356,6 @@ export class Game {
         for (const object of this.objects) object.destroy();
         for (const airdrop of this.planes) airdrop.destroy();
         this.objects.clear();
-        this.players.clear();
         this.bullets.clear();
         this.planes.clear();
         this.camera.container.removeChildren();
@@ -359,7 +364,6 @@ export class Game {
         this.map.gasGraphics.clear();
         this.map.pings.clear();
         this.map.pingsContainer.removeChildren();
-        this.loots.clear();
         this.playerNames.clear();
         this._timeouts.clear();
 
@@ -403,7 +407,7 @@ export class Game {
         }
 
         if (this.console.getBuiltInCVar("cv_movement_smoothing")) {
-            for (const player of this.players) {
+            for (const player of this.objects.getCategory(ObjectCategory.Player)) {
                 player.updateContainerPosition();
                 if (!player.isActivePlayer || !this.console.getBuiltInCVar("cv_responsive_rotation") || this.spectating) {
                     player.updateContainerRotation();
@@ -414,7 +418,7 @@ export class Game {
                 this.camera.position = this.activePlayer.container.position;
             }
 
-            for (const loot of this.loots) loot.updateContainerPosition();
+            for (const loot of this.objects.getCategory(ObjectCategory.Loot)) loot.updateContainerPosition();
         }
 
         for (const tween of this.tweens) tween.update();
@@ -466,21 +470,17 @@ export class Game {
                     ObjectsMapping[type] as (new (game: Game, id: number, data: Required<ObjectsNetData[K]>) => GameObject)
                 )(this, id, data);
 
-                if (newObject instanceof Loot) this.loots.add(newObject);
-                else if (newObject instanceof Player) this.players.add(newObject);
-
-                this.objects.add(newObject);
+                this.objects.add(newObject as ObjectMapping[ObjectCategory]);
             }
 
             if (object) {
-                this.objects.add(object);
                 object.updateFromData(data, false);
             }
         }
 
         for (const { id, data } of updateData.partialDirtyObjects) {
             const object = this.objects.get(id);
-            if (object) object.updateFromData(data, false);
+            if (object) (object as GameObject).updateFromData(data, false);
         }
 
         for (const id of updateData.deletedObjects) {
@@ -492,12 +492,6 @@ export class Game {
 
             object.destroy();
             this.objects.delete(object);
-
-            if (object instanceof Player) {
-                this.players.delete(object);
-            } else if (object instanceof Loot) {
-                this.loots.delete(object);
-            }
         }
 
         for (const bullet of updateData.deserializedBullets) {
@@ -572,6 +566,10 @@ export class Game {
         const player = this.activePlayer;
         if (!player) return;
 
+        for (const building of this.objects.getCategory(ObjectCategory.Building)) {
+            building.toggleCeiling();
+        }
+
         interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
         const interactable: CloseObject = {
             object: undefined,
@@ -596,8 +594,6 @@ export class Game {
                     uninteractable.minDist = dist;
                     uninteractable.object = object;
                 }
-            } else if (object instanceof Building && !object.dead) {
-                object.toggleCeiling();
             }
         }
 

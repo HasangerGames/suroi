@@ -1,45 +1,68 @@
-export class ObjectPool<T extends { id: number }> {
-    private readonly objects = new Map<number, T>();
+import { ObjectCategory } from "../constants";
+
+interface GameObject<T extends ObjectCategory = ObjectCategory> {
+    readonly type: T
+    readonly id: number
+}
+
+export class ObjectPool<Mapping extends { [Cat in ObjectCategory]: GameObject<Cat> }> {
+    private readonly _objects = new Map<number, GameObject>();
+
+    private readonly _byCategory: { [C in ObjectCategory]: Set<GameObject<C>> };
+
+    getCategory<C extends ObjectCategory>(key: C): Set<Mapping[C]> {
+        return this._byCategory[key] as Set<Mapping[C]>;
+    }
+
+    constructor() {
+        this._byCategory = Object.keys(ObjectCategory)
+            .filter(e => !Number.isNaN(+e)) // ignore double indexing (extract enum members)
+            .reduce(
+                (acc, cur) => {
+                    acc[cur as `${ObjectCategory}`] = new Set<Mapping[ObjectCategory[`${ObjectCategory}` & keyof typeof ObjectCategory]]>();
+                    return acc;
+                },
+                // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter, @typescript-eslint/consistent-type-assertions
+                {} as ObjectPool<Mapping>["_byCategory"]
+            );
+    }
 
     clear(): void {
-        this.objects.clear();
+        this._objects.clear();
+        Object.values(this._byCategory).forEach(e => e.clear());
     }
 
-    add(object: T): boolean {
-        if (this.objects.has(object.id)) return false;
-        this.objects.set(object.id, object);
-        return true;
+    add(object: Mapping[ObjectCategory]): void {
+        this._objects.set(object.id, object);
+        (this.getCategory(object.type as ObjectCategory)).add(object);
     }
 
-    addAll(...objects: T[]): boolean[] {
-        return objects.map(this.add.bind(this));
+    delete<Cat extends ObjectCategory>(object: Mapping[Cat]): void {
+        this.getCategory(object.type as Cat).delete(object);
+        this._objects.delete(object.id);
     }
 
-    delete(object: T): boolean {
-        return this.objects.delete(object.id);
+    has(object: GameObject): boolean {
+        return this._objects.has(object.id);
     }
 
-    has(object: T): boolean {
-        return this.objects.has(object.id);
+    categoryHas<Cat extends ObjectCategory>(object: Mapping[Cat]): boolean {
+        return this.getCategory(object.type as Cat).has(object);
     }
 
-    get(id: number): T | undefined {
-        return this.objects.get(id);
+    get(id: number): Mapping[ObjectCategory] | undefined {
+        return this._objects.get(id) as Mapping[ObjectCategory] | undefined;
     }
 
-    hasID(id: number): boolean {
-        return this.objects.has(id);
-    }
-
-    deleteByID(id: number): void {
-        this.objects.delete(id);
+    hasId(id: number): boolean {
+        return this._objects.has(id);
     }
 
     get size(): number {
-        return this.objects.size;
+        return this._objects.size;
     }
 
-    [Symbol.iterator](): Iterator<T> {
-        return this.objects.values();
+    [Symbol.iterator](): Iterator<Mapping[ObjectCategory]> {
+        return this._objects.values() as Iterator<Mapping[ObjectCategory]>;
     }
 }
