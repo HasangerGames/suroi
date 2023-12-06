@@ -415,15 +415,18 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);
 
         for (let step = 0; step < 10; step++) {
+            let collided = false;
             for (const potential of this.nearObjects) {
                 if (
                     potential instanceof Obstacle &&
                     potential.collidable &&
                     this.hitbox.collidesWith(potential.hitbox)
                 ) {
+                    collided = true;
                     this.hitbox.resolveCollision(potential.hitbox);
                 }
             }
+            if (!collided) break;
         }
 
         // World boundaries
