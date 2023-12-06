@@ -417,7 +417,7 @@ export class UpdatePacket extends Packet {
         id: number
         name: string
         hasColor: boolean
-        nameColor: string
+        nameColor: number
     }>();
 
     deletedPlayers = new Set<number>();
@@ -535,7 +535,7 @@ export class UpdatePacket extends Packet {
                 stream.writePlayerName(player.name);
                 stream.writeBoolean(player.hasColor);
                 if (player.hasColor) {
-                    stream.writeUTF8String(player.nameColor, 10);
+                    stream.writeBits(player.nameColor, 24);
                 }
             }
         }
@@ -679,7 +679,7 @@ export class UpdatePacket extends Packet {
                 const id = stream.readObjectID();
                 const name = stream.readPlayerName();
                 const hasColor = stream.readBoolean();
-                const nameColor = hasColor ? stream.readUTF8String(10) : "";
+                const nameColor = hasColor ? stream.readBits(24) : 0;
                 this.newPlayers.add({
                     id,
                     name,

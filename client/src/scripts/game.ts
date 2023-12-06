@@ -1,6 +1,6 @@
 import $ from "jquery";
 
-import { Application, Container } from "pixi.js";
+import { Application, Color, Container } from "pixi.js";
 import {
     GameConstants,
     InputActions,
@@ -73,7 +73,7 @@ export class Game {
     // Add all to a container so pixi has to do less sorting of zIndexes
     readonly bulletsContainer = new Container();
 
-    readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: string }>();
+    readonly playerNames = new Map<number, { name: string, hasColor: boolean, nameColor: Color }>();
 
     activePlayerID = -1;
     get activePlayer(): Player | undefined {
@@ -440,7 +440,7 @@ export class Game {
             this.playerNames.set(newPlayer.id, {
                 name: newPlayer.name,
                 hasColor: newPlayer.hasColor,
-                nameColor: newPlayer.nameColor
+                nameColor: new Color(newPlayer.nameColor)
             });
         }
 

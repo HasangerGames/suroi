@@ -7,6 +7,7 @@ import { stringIsPositiveNumber } from "./utils/misc";
 import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/brands.css";
 import "../../node_modules/@fortawesome/fontawesome-free/css/solid.css";
+import { Color } from "pixi.js";
 
 const playButton: JQuery = $("#btn-play-solo");
 
@@ -146,13 +147,22 @@ $(async(): Promise<void> => {
 
                 const devPass = game.console.getBuiltInCVar("dv_password");
                 const role = game.console.getBuiltInCVar("dv_role");
-                const nameColor = game.console.getBuiltInCVar("dv_name_color");
                 const lobbyClearing = game.console.getBuiltInCVar("dv_lobby_clearing");
 
                 if (devPass) address += `&password=${devPass}`;
                 if (role) address += `&role=${role}`;
-                if (nameColor) address += `&nameColor=${nameColor}`;
                 if (lobbyClearing) address += "&lobbyClearing=true";
+
+                const nameColor = game.console.getBuiltInCVar("dv_name_color");
+                if (nameColor) {
+                    try {
+                        const finalColor = new Color(game.console.getBuiltInCVar("dv_name_color")).toNumber();
+                        address += `&nameColor=${finalColor}`;
+                    } catch (e) {
+                        alert("Nice try kenos.");
+                        console.error(e);
+                    }
+                }
 
                 game.connect(address);
                 $("#splash-server-message").hide();
