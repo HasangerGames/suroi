@@ -5,8 +5,6 @@ import { v, vClone, type Vector } from "../../common/src/utils/vector";
 import { Config, GasMode } from "./config";
 import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
-import { Logger } from "./utils/misc";
-import { newGame } from "./server";
 import { CircleHitbox } from "../../common/src/utils/hitbox";
 import { MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 
@@ -79,12 +77,6 @@ export class Gas {
         this.initialDuration = duration;
         this.percentage = 1;
         this.countdownStart = this.game.now;
-
-        if (currentStage.preventJoin) {
-            newGame();
-            Logger.log(`Game ${this.game.id} | Preventing new players from joining`);
-            this.game.allowJoin = false;
-        }
 
         if (currentStage.state === GasState.Waiting) {
             this.oldPosition = vClone(this.newPosition);

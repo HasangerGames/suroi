@@ -23,6 +23,7 @@ export const Config = {
 
     maxPlayersPerGame: 80,
     maxGames: 3,
+    preventJoinAfter: 60000,
 
     gas: { mode: GasMode.Normal },
 
@@ -93,6 +94,11 @@ export interface ConfigType {
      * The maximum number of concurrent games.
      */
     readonly maxGames: number
+
+    /**
+     * The number of milliseconds after which players are prevented from joining a game.
+     */
+    readonly preventJoinAfter: number
 
     /**
      * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.

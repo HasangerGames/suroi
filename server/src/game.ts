@@ -14,7 +14,7 @@ import {
 import { Maps } from "./data/maps";
 import { Config, SpawnMode } from "./config";
 import { Map } from "./map";
-import { endGame, type PlayerContainer } from "./server";
+import { endGame, newGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { v, vAdd, type Vector } from "../../common/src/utils/vector";
@@ -163,6 +163,12 @@ export class Game {
         this.gas = new Gas(this);
 
         this.allowJoin = true;
+
+        this.addTimeout(() => {
+            newGame();
+            Logger.log(`Game ${this.id} | Preventing new players from joining`);
+            this.allowJoin = false;
+        }, Config.preventJoinAfter);
 
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
