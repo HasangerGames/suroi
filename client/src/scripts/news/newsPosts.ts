@@ -3,6 +3,41 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1701898639000,
+        author: "HAZEL",
+        title: "Double Trouble",
+        bannerImage: "../img/news/v0.14.0.png",
+        content: `The weather grows cold, the trees lose their leaves, and the snowdrifts pile high. But we've got a couple new features to spice up the winter season! The entire map has been reskinned to frosty perfection, with more surprises in store soon! Also, we've added the long-awaited dual-wielding feature for pistols—if one isn't enough, grab another for twice the firepower!<br><br>
+
+Of course, we've made a few changes and fixes, including a circular action timer, reworked airdrops, and a larger map grid. Go warm yourself up with a toasty chicken dinner!`,
+        longContent: `<h2>Suroi v0.14.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Winter mode!</strong> Just a reskin for now. More content coming soon.</li>
+  <li><strong>Dual wielding!</strong> You can now dual wield pistols.</li>
+  <li>You can now cancel actions on mobile.</li>
+  <li>Added 2 emotes.</li>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>**Better rivers!** River generation has been improved further. Rivers are now smoother, and loot flows down them.</li>
+  <li>**Circular action timer!** A circular timer is now displayed when reloading/using healing items.</li>
+  <li>Adjusted lobby timings. Players are now prevented from joining earlier on more active servers, and later on less active ones.</li>
+  <li>Increased map grid size.</li>
+  <li>Decreased Model 37 fire and switch delays to 900 ms.</li>
+  <li>New airdrop killfeed icon.</li>
+  <li>New helmet pickup sound.</li>
+</ul>
+
+<h3>Bug fixes</h3>
+<ul>
+  <li>Fixed airdrops spawning in the gas.</li>
+  <li>Fixed airdrop pings not showing up sometimes.</li>
+  <li>Fixed picking up skins on mobile.</li>
+</ul>`
+    },
+    {
         date: 1701085392000,
         author: "HAZEL",
         title: "Terminal Velocity",

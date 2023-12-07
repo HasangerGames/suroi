@@ -354,7 +354,7 @@ export class Game {
 
         // reset stuff
         for (const object of this.objects) object.destroy();
-        for (const airdrop of this.planes) airdrop.destroy();
+        for (const plane of this.planes) plane.destroy();
         this.objects.clear();
         this.bullets.clear();
         this.planes.clear();
