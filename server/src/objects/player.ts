@@ -19,7 +19,7 @@ import { FloorTypes } from "../../../common/src/utils/terrain";
 import { clamp, distanceSquared, lineIntersectsRect2 } from "../../../common/src/utils/math";
 import { type ExtendedWearerAttributes, ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { v, vAdd, vClone, type Vector, vEqual } from "../../../common/src/utils/vector";
+import { v, vAdd, vClone, type Vector, vEqual, vMul } from "../../../common/src/utils/vector";
 import { type KillFeedMessage, type PlayerData, UpdatePacket } from "../../../common/src/packets/updatePacket";
 import { Config } from "../config";
 import { type Game } from "../game";
@@ -155,7 +155,14 @@ export class Player extends GameObject<ObjectCategory.Player> {
      * Whether the player is attacking as of last update
      */
     attacking = false;
-
+    /**
+     * velocity
+     */
+    velocity = v(0, 0);
+    /**
+     * slide
+     */
+    sliding = false;
     /**
      * Whether the player started attacking last update
      */
@@ -400,16 +407,36 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
         }
         /* eslint-disable no-multi-spaces */
-        const speed = Config.movementSpeed *                // Base speed
+        // Calculate Velocity
+
+        // Calculate Slide
+        if (FloorTypes[this.floor].slide) {
+            this.velocity = vAdd(this.velocity, v(movement.x * 0.01, movement.y * 0.01));
+            // MaxForce
+            this.velocity.x = clamp(this.velocity.x, -1, 1);
+            this.velocity.y = clamp(this.velocity.y, -1, 1);
+            // Desaceleration
+            this.velocity = vMul(this.velocity, 0.99);
+            this.sliding = true;
+        } else {
+            if (this.sliding) {
+                if (Math.abs(this.velocity.x) <= 0.2 && Math.abs(this.velocity.y) <= 0.2) {
+                    this.sliding = false;
+                }
+                this.velocity = vMul(this.velocity, 0.78);
+            } else {
+                const speed = Config.movementSpeed *                // Base speed
             (FloorTypes[this.floor].speedMultiplier ?? 1) * // Speed multiplier from floor player is standing in
             recoilMultiplier *                              // Recoil from items
             (this.action?.speedMultiplier ?? 1) *           // Speed modifier from performing actions
             (1 + (this.adrenaline / 1000)) *                // Linear speed boost from adrenaline
             this.activeItemDefinition.speedMultiplier *     // Active item speed modifier
             this.modifiers.baseSpeed;                       // Current on-wearer modifier
-
+                this.velocity = v(movement.x * speed, movement.y * speed);
+            }
+        }
         const oldPosition = vClone(this.position);
-        this.position = vAdd(this.position, v(movement.x * speed, movement.y * speed));
+        this.position = vAdd(this.position, this.velocity);
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this.hitbox);

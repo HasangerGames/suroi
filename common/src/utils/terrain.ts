@@ -8,6 +8,7 @@ export interface FloorDefinition {
     speedMultiplier?: number
     overlay?: boolean
     particles?: boolean
+    slide?: boolean
 }
 
 export const FloorTypes: Record<string, FloorDefinition> = {
@@ -28,9 +29,13 @@ export const FloorTypes: Record<string, FloorDefinition> = {
     },
     water: {
         debugColor: 0x00ddff,
-        speedMultiplier: 0.7,
         overlay: true,
+        speedMultiplier: 0.7,
         particles: true
+    },
+    ice: {
+        debugColor: 0x00ddff,
+        slide: true
     }
 };
 
@@ -138,7 +143,7 @@ export class Terrain {
 
     getFloor(position: Vector): string {
         const pos = this._roundToCells(position);
-        let floor = "water";
+        let floor = "ice";
 
         const isInsideMap = this.beachHitbox.isPointInside(position);
         if (isInsideMap) floor = "sand";
@@ -153,7 +158,7 @@ export class Terrain {
                     floor = "sand";
                 }
                 if (river.waterHitbox.isPointInside(position)) {
-                    floor = "water";
+                    floor = "ice";
                     break;
                 }
             }
