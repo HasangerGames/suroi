@@ -3,7 +3,7 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
-        date: 1701898639000,
+        date: 1701952893000,
         author: "HAZEL",
         title: "Double Trouble",
         bannerImage: "../img/news/v0.14.0.png",
@@ -21,8 +21,8 @@ Of course, we've made a few changes and fixes, including a circular action timer
 
 <h3>Changes</h3>
 <ul>
-  <li>**Better rivers!** River generation has been improved further. Rivers are now smoother, and loot flows down them.</li>
-  <li>**Circular action timer!** A circular timer is now displayed when reloading/using healing items.</li>
+  <li><strong>Better rivers!</strong> River generation has been improved further. Rivers are now smoother, and loot flows down them.</li>
+  <li><strong>Circular action timer!</strong> A circular timer is now displayed when reloading/using healing items.</li>
   <li>Adjusted lobby timings. Players are now prevented from joining earlier on more active servers, and later on less active ones.</li>
   <li>Increased map grid size.</li>
   <li>Decreased Model 37 fire and switch delays to 900 ms.</li>
