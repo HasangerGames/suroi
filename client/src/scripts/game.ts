@@ -1,13 +1,7 @@
 import $ from "jquery";
 
 import { Application, Color, Container } from "pixi.js";
-import {
-    GameConstants,
-    InputActions,
-    ObjectCategory,
-    PacketType,
-    ZIndexes
-} from "../../../common/src/constants";
+import { GameConstants, InputActions, ObjectCategory, PacketType, ZIndexes } from "../../../common/src/constants";
 import { Scopes } from "../../../common/src/definitions/scopes";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
@@ -646,7 +640,7 @@ export class Game {
                 (
                     this.inputManager.isMobile
                         // Only show interact message on mobile if object needs to be tapped to pick up
-                        ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee)) || object instanceof Obstacle)
+                        ? ((object instanceof Loot && (type === ItemType.Gun || type === ItemType.Melee || type === ItemType.Skin)) || object instanceof Obstacle)
                         : object !== undefined
                 ) ||
                 isAction
@@ -695,23 +689,26 @@ export class Game {
             }
 
             // Mobile stuff
-            if (object && this.inputManager.isMobile) {
-                // Auto open doors
-                if (object instanceof Obstacle && object.canInteract(player) && object.door?.offset === 0) {
-                    this.inputManager.addAction(InputActions.Interact);
-                }
-
-                // Auto pickup
-                if (
-                    object instanceof Loot &&
-                    canInteract &&
-                    // Only pick up melees if no melee is equipped
-                    (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
-                    // Only pick up guns if there's a free slot
-                    (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1]))
-                ) {
-                    this.inputManager.addAction(InputActions.Interact);
-                }
+            if (
+                this.inputManager.isMobile &&
+                canInteract &&
+                (
+                    ( // Auto pickup
+                        object instanceof Loot &&
+                        // Only pick up melees if no melee is equipped
+                        (type !== ItemType.Melee || this.uiManager.inventory.weapons[2]?.definition.idString === "fists") &&
+                        // Only pick up guns if there's a free slot
+                        (type !== ItemType.Gun || (!this.uiManager.inventory.weapons[0] || !this.uiManager.inventory.weapons[1])) &&
+                        type !== ItemType.Skin
+                    ) ||
+                    ( // Auto open doors
+                        object instanceof Obstacle &&
+                        object.canInteract(player) &&
+                        object.door?.offset === 0
+                    )
+                )
+            ) {
+                this.inputManager.addAction(InputActions.Interact);
             }
         }
     }
