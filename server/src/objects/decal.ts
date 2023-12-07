@@ -5,7 +5,7 @@ import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializat
 import { randomRotation } from "../../../common/src/utils/random";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 
 export class Decal extends GameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;

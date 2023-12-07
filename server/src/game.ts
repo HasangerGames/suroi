@@ -1,7 +1,7 @@
 import { OBJECT_ID_BITS, type SuroiBitStream } from "../../common/src/utils/suroiBitStream";
 import { Gas } from "./gas";
 import { Grid } from "./utils/grid";
-import { type GameObject } from "./types/gameObject";
+import { type GameObject } from "./objects/gameObject";
 import { type Emote } from "./objects/emote";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import {

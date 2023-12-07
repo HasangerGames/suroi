@@ -1,10 +1,4 @@
-import { Color } from "pixi.js";
-import {
-    DEFAULT_INVENTORY,
-    GameConstants,
-    KillFeedMessageType,
-    KillType
-} from "../../../../common/src/constants";
+import { DEFAULT_INVENTORY, GameConstants, KillFeedMessageType, KillType } from "../../../../common/src/constants";
 import { Ammos } from "../../../../common/src/definitions/ammos";
 import { Loots } from "../../../../common/src/definitions/loots";
 import { type ScopeDefinition } from "../../../../common/src/definitions/scopes";

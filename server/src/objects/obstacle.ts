@@ -12,7 +12,7 @@ import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { type MeleeItem } from "../inventory/meleeItem";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { getLootTableLoot, getRandomIdString, type LootItem } from "../utils/misc";
 import { type Building } from "./building";
 import { type Explosion } from "./explosion";

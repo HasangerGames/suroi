@@ -4,7 +4,7 @@ import { angleBetweenPoints, lerp } from "../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Airdrop, type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { Building } from "./building";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";

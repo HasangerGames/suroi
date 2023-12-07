@@ -10,7 +10,7 @@ import { randomRotation } from "../../../common/src/utils/random";
 import { v, vAdd, vClone, vMul, vSub, type Vector, vEqual } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Player } from "./player";
 

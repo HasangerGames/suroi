@@ -5,7 +5,7 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { randomRotation } from "../../../common/src/utils/random";
 import { v, vAdd, vRotate, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type GameObject } from "../types/gameObject";
+import { type GameObject } from "./gameObject";
 import { Decal } from "./decal";
 import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";

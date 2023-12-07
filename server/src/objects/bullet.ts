@@ -7,7 +7,7 @@ import { randomFloat } from "../../../common/src/utils/random";
 import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { type GunItem } from "../inventory/gunItem";
-import { type GameObject } from "../types/gameObject";
+import { type GameObject } from "./gameObject";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";

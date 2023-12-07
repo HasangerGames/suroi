@@ -5,7 +5,7 @@ import { ItemType, type ReferenceTo } from "../../../common/src/utils/objectDefi
 import { vAdd, vRotate } from "../../../common/src/utils/vector";
 import { Obstacle } from "../objects/obstacle";
 import { type Player } from "../objects/player";
-import { type GameObject } from "../types/gameObject";
+import { type GameObject } from "../objects/gameObject";
 import { InventoryItem } from "./inventoryItem";
 
 /**

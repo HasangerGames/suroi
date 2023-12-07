@@ -6,7 +6,7 @@ import { type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
 export class Building extends GameObject<ObjectCategory.Building> {

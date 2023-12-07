@@ -29,7 +29,7 @@ import { Inventory } from "../inventory/inventory";
 import { type InventoryItem } from "../inventory/inventoryItem";
 import { MeleeItem } from "../inventory/meleeItem";
 import { type PlayerContainer } from "../server";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { removeFrom } from "../utils/misc";
 import { Building } from "./building";
 import { DeathMarker } from "./deathMarker";
@@ -643,29 +643,29 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         let toSpectate: Player | undefined;
 
-        const spectablePlayers = game.spectablePlayers;
+        const spectatablePlayers = game.spectablePlayers;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
                 if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
-                else if (spectablePlayers.length > 1) toSpectate = pickRandomInArray(spectablePlayers);
+                else if (spectatablePlayers.length > 1) toSpectate = pickRandomInArray(spectatablePlayers);
                 break;
             }
             case SpectateActions.SpectatePrevious:
                 if (this.spectating !== undefined) {
-                    let index: number = spectablePlayers.indexOf(this.spectating) - 1;
-                    if (index < 0) index = spectablePlayers.length - 1;
-                    toSpectate = spectablePlayers[index];
+                    let index: number = spectatablePlayers.indexOf(this.spectating) - 1;
+                    if (index < 0) index = spectatablePlayers.length - 1;
+                    toSpectate = spectatablePlayers[index];
                 }
                 break;
             case SpectateActions.SpectateNext:
                 if (this.spectating !== undefined) {
-                    let index: number = spectablePlayers.indexOf(this.spectating) + 1;
-                    if (index >= spectablePlayers.length) index = 0;
-                    toSpectate = spectablePlayers[index];
+                    let index: number = spectatablePlayers.indexOf(this.spectating) + 1;
+                    if (index >= spectatablePlayers.length) index = 0;
+                    toSpectate = spectatablePlayers[index];
                 }
                 break;
             case SpectateActions.SpectateSpecific: {
-                toSpectate = spectablePlayers.find(player => player.id === packet.playerID);
+                toSpectate = spectatablePlayers.find(player => player.id === packet.playerID);
                 break;
             }
             case SpectateActions.SpectateKillLeader: {

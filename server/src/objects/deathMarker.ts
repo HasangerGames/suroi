@@ -1,6 +1,6 @@
 import { ObjectCategory } from "../../../common/src/constants";
 import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
