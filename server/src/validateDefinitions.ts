@@ -748,13 +748,6 @@ logger.indent("Validating gas stages", () => {
                 field: "dps",
                 baseErrorPath: errorPath
             });
-
-            tester.assertNoPointlessValue({
-                obj: stage,
-                field: "preventJoin",
-                defaultValue: false,
-                baseErrorPath: errorPath
-            });
         });
     }
 });
