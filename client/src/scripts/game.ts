@@ -46,6 +46,7 @@ import { distanceSquared } from "../../../common/src/utils/math";
 import { Plane } from "./objects/plane";
 import { Timeout } from "../../../common/src/utils/misc";
 import { Parachute } from "./objects/parachute";
+import { type Sound, sound } from "@pixi/sound";
 
 interface ObjectMapping {
     [ObjectCategory.Player]: Player
@@ -96,8 +97,7 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly music: Howl;
-    musicPlaying = false;
+    readonly music: Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -137,9 +137,12 @@ export class Game {
 
         this.bulletsContainer.zIndex = ZIndexes.Bullets;
 
-        this.music = new Howl({
-            src: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
-            loop: true
+        this.music = sound.add("menu_music", {
+            url: `../audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: true,
+            volume: this.console.getBuiltInCVar("cv_music_volume")
         });
 
         setInterval(() => {
@@ -147,14 +150,6 @@ export class Game {
                 $("#fps-counter").text(`${Math.round(this.pixi.ticker.FPS)} fps`);
             }
         }, 500);
-
-        if (!this.musicPlaying) {
-            const musicVolume = this.console.getBuiltInCVar("cv_music_volume");
-
-            this.music.play();
-            this.music.volume(musicVolume);
-            this.musicPlaying = true;
-        }
     }
 
     connect(address: string): void {
@@ -167,7 +162,6 @@ export class Game {
 
         this.socket.onopen = (): void => {
             this.music.stop();
-            this.musicPlaying = false;
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -331,9 +325,7 @@ export class Game {
     endGame(): void {
         clearTimeout(this._tickTimeoutID);
 
-        if (this.activePlayer?.actionSound) {
-            this.soundManager.stop(this.activePlayer.actionSound);
-        }
+        this.soundManager.stopAll();
 
         $("#action-container").hide();
         $("#game-menu").hide();
@@ -363,11 +355,7 @@ export class Game {
 
         this.camera.zoom = Scopes.definitions[0].zoomLevel;
 
-        if (!this.musicPlaying) {
-            this.music.stop().play();
-            this.music.volume(this.console.getBuiltInCVar("cv_music_volume"));
-            this.musicPlaying = true;
-        }
+        void this.music.play();
     }
 
     sendPacket(packet: Packet): void {

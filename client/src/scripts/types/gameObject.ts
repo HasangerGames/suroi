@@ -6,8 +6,8 @@ import { v, vClone, type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
-import { type Sound } from "../utils/soundManager";
 import type { Timeout } from "../../../../common/src/utils/misc";
+import type { GameSound, SoundOptions } from "../utils/soundManager";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
     id: number;
@@ -97,14 +97,11 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> {
         this.container.destroy();
     }
 
-    playSound(
-        key: string,
-        fallOff?: number,
-        maxDistance?: number,
-        dynamic?: boolean,
-        onend?: () => void
-    ): Sound {
-        return this.game.soundManager.play(key, this.position, fallOff, maxDistance, dynamic, onend);
+    playSound(name: string, options?: Partial<Omit<SoundOptions, "position">>): GameSound {
+        return this.game.soundManager.play(name, {
+            position: this.position,
+            ...options
+        });
     }
 
     abstract updateFromData(data: ObjectsNetData[Cat], isNew: boolean): void;

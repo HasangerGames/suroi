@@ -205,7 +205,10 @@ export class Building extends GameObject<ObjectCategory.Building> {
                     scale: { start: 1, end: 0.2 },
                     speed: velFromAngle(randomRotation(), randomFloat(1, 2))
                 }));
-                this.playSound("ceiling_collapse", 0.5, 96);
+                this.playSound("ceiling_collapse", {
+                    fallOff: 0.5,
+                    maxRange: 96
+                });
             }
             this.ceilingTween?.kill();
             this.ceilingContainer.zIndex = ZIndexes.DeadObstacles;

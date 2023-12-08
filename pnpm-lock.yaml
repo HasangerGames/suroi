@@ -44,9 +44,9 @@ importers:
       '@pixi/graphics-extras':
         specifier: ^7.3.2
         version: 7.3.2(@pixi/core@7.3.2)(@pixi/graphics@7.3.2)
-      howler:
-        specifier: ^2.2.4
-        version: 2.2.4
+      '@pixi/sound':
+        specifier: ^5.2.2
+        version: 5.2.2(@pixi/assets@7.3.2)(@pixi/core@7.3.2)
       jquery:
         specifier: ^3.7.1
         version: 3.7.1
@@ -60,9 +60,6 @@ importers:
       '@tsconfig/svelte':
         specifier: ^5.0.2
         version: 5.0.2
-      '@types/howler':
-        specifier: ^2.2.11
-        version: 2.2.11
       '@types/jquery':
         specifier: ^3.5.29
         version: 3.5.29
@@ -1205,6 +1202,16 @@ packages:
       ismobilejs: 1.1.1
     dev: false
 
+  /@pixi/sound@5.2.2(@pixi/assets@7.3.2)(@pixi/core@7.3.2):
+    resolution: {integrity: sha512-WjUDD24nQaAA2+aHbvDbgB/9l/kni3aNlZSmunU99KBGrQ9NfGS/VvAUxA88b7eOLXNvskzW2cvEnGMbltRiFA==}
+    peerDependencies:
+      '@pixi/assets': ^7.0.0
+      '@pixi/core': ^7.0.0
+    dependencies:
+      '@pixi/assets': 7.3.2(@pixi/core@7.3.2)(@pixi/utils@7.3.2)
+      '@pixi/core': 7.3.2
+    dev: false
+
   /@pixi/sprite-animated@7.3.2(@pixi/core@7.3.2)(@pixi/sprite@7.3.2):
     resolution: {integrity: sha512-j9pyUe4cefxE9wecNfbWQyL5fBQKvCGYaOA0DE1X46ukBHrIuhA8u3jg2X3N3r4IcbVvxpWFYDrDsWXWeiBmSw==}
     peerDependencies:
@@ -1456,10 +1463,6 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
-    dev: true
-
-  /@types/howler@2.2.11:
-    resolution: {integrity: sha512-7aBoUL6RbSIrqKnpEgfa1wSNUBK06mn08siP2QI0zYk7MXfEJAaORc4tohamQYqCqVESoDyRWSdQn2BOKWj2Qw==}
     dev: true
 
   /@types/jquery@3.5.29:
@@ -3058,10 +3061,6 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       function-bind: 1.1.2
-
-  /howler@2.2.4:
-    resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
-    dev: false
 
   /htmlparser2@8.0.2:
     resolution: {integrity: sha512-GYdjWKDkbRLkZ5geuHs5NY1puJ+PXwP7+fHPRz06Eirsb9ugf6d8kkXav6ADhcODhFFPMIXyxkxSuMf3D6NCFA==}

@@ -4,7 +4,7 @@ import { type Game } from "../game";
 import { distanceSquared, vLerp, velFromAngle } from "../../../../common/src/utils/math";
 import { PIXI_SCALE } from "../utils/constants";
 import { GameConstants, ZIndexes } from "../../../../common/src/constants";
-import { type Sound } from "../utils/soundManager";
+import type { GameSound } from "../utils/soundManager";
 
 export class Plane {
     game: Game;
@@ -12,7 +12,7 @@ export class Plane {
     startPosition: Vector;
     endPosition: Vector;
     image: SuroiSprite;
-    sound: Sound;
+    sound: GameSound;
 
     startTime = Date.now();
 
@@ -33,7 +33,12 @@ export class Plane {
             .setRotation(direction)
             .setScale(2);
 
-        this.sound = game.soundManager.play("airdrop_plane", startPosition, 0.5, 256, true);
+        this.sound = game.soundManager.play("airdrop_plane", {
+            position: startPosition,
+            fallOff: 0.5,
+            maxRange: 256,
+            dynamic: true
+        });
 
         game.camera.addObject(this.image);
     }
