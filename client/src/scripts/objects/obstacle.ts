@@ -98,22 +98,20 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 // fixme idString check, hard coded behavior
                 // move running sound to a building sound
                 if (this.definition.idString === "generator") {
-                    if (!this.destroyed) {
-                        const options = {
+                    const playGeneratorSound = (starting?: boolean): void => {
+                        if (this.destroyed) return;
+                        this.playSound(starting ? "generator_starting" : "generator_running", {
                             fallOff: 2,
                             maxRange: 512,
-                            dynamic: true
-                        };
-                        this.playSound("generator_starting", {
-                            ...options,
-                            onEnd: () => {
-                                this.playSound("generator_running", {
-                                    ...options,
-                                    loop: true
-                                });
-                            }
+                            dynamic: true,
+                            ...(
+                                starting
+                                    ? { onEnd: playGeneratorSound }
+                                    : { loop: true }
+                            )
                         });
-                    }
+                    };
+                    playGeneratorSound(!isNew);
                 } else if (this.definition.idString === "airdrop_crate_locked") {
                     if (this.destroyed || isNew) return;
 

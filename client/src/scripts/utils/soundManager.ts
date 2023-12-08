@@ -60,10 +60,6 @@ export class GameSound {
             loaded: (_err, _sound, instance) => {
                 if (instance) this.init(instance);
             },
-            complete: () => {
-                options.onEnd?.();
-                this.ended = true;
-            },
             filters: [this.stereoFilter],
             loop: options.loop,
             volume: this.manager.volume
@@ -77,6 +73,13 @@ export class GameSound {
 
     init(instance: PixiSound.IMediaInstance): void {
         this.instance = instance;
+        instance.on("end", () => {
+            this.onEnd?.();
+            this.ended = true;
+        });
+        instance.on("stop", () => {
+            this.ended = true;
+        });
         this.update();
     }
 
