@@ -64,7 +64,8 @@ export class GameSound {
                 options.onEnd?.();
             },
             filters: [this.stereoFilter],
-            loop: options.loop
+            loop: options.loop,
+            volume: this.manager.volume
         });
 
         // PixiSound.sound.play returns a promise if the sound has not finished loading
