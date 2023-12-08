@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type DecalDefinition } from "../../../../common/src/definitions/decals";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 
 export class Decal extends GameObject<ObjectCategory.Decal> {

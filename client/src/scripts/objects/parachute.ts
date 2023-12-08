@@ -5,7 +5,7 @@ import { randomFloat, randomPointInsideCircle } from "../../../../common/src/uti
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { v, type Vector } from "../../../../common/src/utils/vector";
 import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { GameSound } from "../utils/soundManager";
 import { Tween } from "../utils/tween";

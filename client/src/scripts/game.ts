@@ -20,7 +20,7 @@ import { Loot } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { ParticleManager } from "./objects/particles";
 import { Player } from "./objects/player";
-import { type GameObject } from "./types/gameObject";
+import { type GameObject } from "./objects/gameObject";
 
 import { UIManager } from "./utils/uiManager";
 import { COLORS, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";

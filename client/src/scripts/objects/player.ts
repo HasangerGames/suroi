@@ -23,7 +23,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";

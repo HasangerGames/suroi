@@ -8,7 +8,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
