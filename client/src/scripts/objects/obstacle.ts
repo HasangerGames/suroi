@@ -94,25 +94,28 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             if (!this.activated && full.activated) {
                 this.activated = full.activated;
-                let firstRun = !isNew;
 
                 // fixme idString check, hard coded behavior
                 // move running sound to a building sound
                 if (this.definition.idString === "generator") {
-                    const playGeneratorSound = (): void => {
-                        if (this.destroyed) return;
-                        this.playSound(firstRun ? "generator_starting" : "generator_running", {
+                    if (!this.destroyed) {
+                        const options = {
                             fallOff: 2,
                             maxRange: 512,
-                            dynamic: true,
-                            onEnd: playGeneratorSound
+                            dynamic: true
+                        };
+                        this.playSound("generator_starting", {
+                            ...options,
+                            onEnd: () => {
+                                this.playSound("generator_running", {
+                                    ...options,
+                                    loop: true
+                                });
+                            }
                         });
-                        firstRun = false;
-                    };
-                    playGeneratorSound();
+                    }
                 } else if (this.definition.idString === "airdrop_crate_locked") {
-                    if (this.destroyed || !firstRun) return;
-                    firstRun = false;
+                    if (this.destroyed || isNew) return;
 
                     const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                         zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),

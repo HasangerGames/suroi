@@ -62,6 +62,7 @@ export class GameSound {
             },
             complete: () => {
                 options.onEnd?.();
+                this.ended = true;
             },
             filters: [this.stereoFilter],
             loop: options.loop,
@@ -76,15 +77,6 @@ export class GameSound {
 
     init(instance: PixiSound.IMediaInstance): void {
         this.instance = instance;
-
-        instance.on("end", () => {
-            this.onEnd?.();
-            this.ended = true;
-        });
-        // me when stopping sounds doesn't fire end events
-        // but it makes sense ig
-        instance.on("stop", () => { this.ended = true; });
-
         this.update();
     }
 
