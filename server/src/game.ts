@@ -164,12 +164,6 @@ export class Game {
 
         this.allowJoin = true;
 
-        this.addTimeout(() => {
-            newGame();
-            Logger.log(`Game ${this.id} | Preventing new players from joining`);
-            this.allowJoin = false;
-        }, Config.preventJoinAfter);
-
         Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
 
         // Start the tick loop
@@ -474,6 +468,12 @@ export class Game {
                 this._started = true;
                 this.startedTime = this.now;
                 this.gas.advanceGas();
+
+                this.addTimeout(() => {
+                    newGame();
+                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
+                    this.allowJoin = false;
+                }, Config.preventJoinAfter);
             }, 3000);
         }
 
