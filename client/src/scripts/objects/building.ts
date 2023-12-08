@@ -42,7 +42,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
     }
 
     toggleCeiling(): void {
-        if (this.ceilingHitbox === undefined) return;
+        if (this.ceilingHitbox === undefined || this.dead) return;
         const player = this.game.activePlayer;
         if (player === undefined) return;
 
