@@ -243,7 +243,11 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                 if (this.parentBuilding && definition.interactType) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
                         if (obstacle.definition.idString === definition.interactType) {
-                            this.game.addTimeout(() => { obstacle.interact(); }, definition.interactDelay);
+                            this.game.addTimeout(() => {
+                                obstacle.interact();
+                                this.parentBuilding!.puzzleSolved = true;
+                                this.game.fullDirtyObjects.add(this.parentBuilding!);
+                            }, definition.interactDelay);
                         }
                     }
                 }

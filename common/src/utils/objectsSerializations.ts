@@ -93,6 +93,7 @@ export interface ObjectsNetData {
             definition: BuildingDefinition
             position: Vector
             rotation: Orientation
+            puzzleSolved: boolean
         }
     }
     //
@@ -324,6 +325,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Buildings.writeToStream(stream, data.full.definition);
             stream.writePosition(data.full.position);
             stream.writeBits(data.full.rotation, 2);
+            stream.writeBoolean(data.full.puzzleSolved);
         },
         deserializePartial(stream) {
             return {
@@ -336,7 +338,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 full: {
                     definition: Buildings.readFromStream(stream),
                     position: stream.readPosition(),
-                    rotation: stream.readBits(2) as Orientation
+                    rotation: stream.readBits(2) as Orientation,
+                    puzzleSolved: stream.readBoolean()
                 }
             };
         }

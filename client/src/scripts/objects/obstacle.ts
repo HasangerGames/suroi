@@ -95,64 +95,48 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             if (!this.activated && full.activated) {
                 this.activated = full.activated;
 
-                // fixme idString check, hard coded behavior
-                // move running sound to a building sound
-                if (this.definition.idString === "generator") {
-                    const playGeneratorSound = (starting?: boolean): void => {
-                        if (this.destroyed) return;
-                        this.playSound(starting ? "generator_starting" : "generator_running", {
-                            fallOff: 2,
-                            maxRange: 512,
-                            dynamic: true,
-                            ...(
-                                starting
-                                    ? { onEnd: playGeneratorSound }
-                                    : { loop: true }
-                            )
+                if (!isNew && !this.destroyed) {
+                    if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
+                        this.playSound(definition.sound.name, definition.sound);
+                    }
+
+                    // fixme idString check, hard coded behavior
+                    if (this.definition.idString === "airdrop_crate_locked") {
+                        const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
+                            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 1000,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quartIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sextIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
                         });
-                    };
-                    playGeneratorSound(!isNew);
-                } else if (this.definition.idString === "airdrop_crate_locked") {
-                    if (this.destroyed || isNew) return;
 
-                    const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
-                        zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-                        lifetime: 1000,
-                        scale: {
-                            start: randomFloat(0.85, 0.95),
-                            end: 0,
-                            ease: EaseFunctions.quartIn
-                        },
-                        alpha: {
-                            start: 1,
-                            end: 0,
-                            ease: EaseFunctions.sextIn
-                        },
-                        rotation: { start: randomRotation(), end: randomRotation() },
-                        speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
-                    });
+                        /* eslint-disable @typescript-eslint/consistent-type-assertions */
+                        this.game.particleManager.spawnParticle({
+                            frames: "airdrop_particle_1",
+                            position: this.position,
+                            ...options(8, 18),
+                            rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
+                        } as ParticleOptions);
 
-                    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-                    this.game.particleManager.spawnParticle({
-                        frames: "airdrop_particle_1",
-                        position: this.position,
-                        ...options(8, 18),
-                        rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
-                    } as ParticleOptions);
+                        texture = "airdrop_crate_unlocking";
 
-                    this.playSound("airdrop_unlock", {
-                        fallOff: 0.2,
-                        maxRange: 96
-                    });
-                    texture = "airdrop_crate_unlocking";
-
-                    this.addTimeout(() => {
-                        this.game.particleManager.spawnParticles(4, () => ({
-                            frames: "airdrop_particle_2",
-                            position: this.hitbox.randomPoint(),
-                            ...options(4, 9)
-                        } as ParticleOptions));
-                    }, 800);
+                        this.addTimeout(() => {
+                            this.game.particleManager.spawnParticles(4, () => ({
+                                frames: "airdrop_particle_2",
+                                position: this.hitbox.randomPoint(),
+                                ...options(4, 9)
+                            } as ParticleOptions));
+                        }, 800);
+                    }
                 }
             }
 

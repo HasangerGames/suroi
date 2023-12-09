@@ -13,8 +13,9 @@ import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
-import { type Vector, v, vAdd, vMul } from "../../../../common/src/utils/vector";
+import { type Vector, v, vAdd, vMul, vRotate } from "../../../../common/src/utils/vector";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
+import type { GameSound } from "../utils/soundManager";
 
 export class Building extends GameObject<ObjectCategory.Building> {
     override readonly type = ObjectCategory.Building;
@@ -29,6 +30,8 @@ export class Building extends GameObject<ObjectCategory.Building> {
     orientation!: Orientation;
 
     ceilingVisible = false;
+
+    sound?: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Building]>) {
         super(game, id);
@@ -178,6 +181,32 @@ export class Building extends GameObject<ObjectCategory.Building> {
             this.ceilingContainer.rotation = this.rotation;
 
             this.ceilingHitbox = (this.definition.scopeHitbox ?? this.definition.ceilingHitbox)?.transform(this.position, 1, this.orientation);
+
+            if (this.definition.sounds) {
+                const sounds = this.definition.sounds;
+
+                const soundOptions = {
+                    position: vAdd(vRotate(sounds?.position ?? v(0, 0), this.rotation), this.position),
+                    fallOff: sounds.fallOff,
+                    maxRange: sounds.maxRange,
+                    dynamic: true,
+                    loop: true
+                };
+
+                if (sounds.normal &&
+                    !full.puzzleSolved &&
+                    this.sound?.name !== sounds.normal) {
+                    this.sound?.stop();
+                    this.sound = this.game.soundManager.play(sounds.normal, soundOptions);
+                }
+
+                if (sounds.solved &&
+                    full.puzzleSolved &&
+                    this.sound?.name !== sounds.solved) {
+                    this.sound?.stop();
+                    this.sound = this.game.soundManager.play(sounds.solved, soundOptions);
+                }
+            }
         }
 
         const definition = this.definition;
@@ -267,5 +296,6 @@ export class Building extends GameObject<ObjectCategory.Building> {
         super.destroy();
         this.ceilingTween?.kill();
         this.ceilingContainer.destroy();
+        this.sound?.stop();
     }
 }

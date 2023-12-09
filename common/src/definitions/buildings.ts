@@ -45,6 +45,14 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly subBuildings?: SubBuilding[]
     readonly decals?: BuildingDecal[]
 
+    readonly sounds?: {
+        readonly normal?: string
+        readonly solved?: string
+        readonly position?: Vector
+        readonly maxRange: number
+        readonly fallOff: number
+    }
+
     readonly floorImages?: Array<{
         readonly key: string
         readonly position: Vector
@@ -1237,6 +1245,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             RectangleHitbox.fromRect(10, 15, v(-17, -60)),
             RectangleHitbox.fromRect(50, 24, v(8, 93.2))
         ),
+        sounds: {
+            solved: "generator_running",
+            position: v(23, 75),
+            maxRange: 416,
+            fallOff: 2
+        },
         floorImages: [
             {
                 key: "ship_floor_1",

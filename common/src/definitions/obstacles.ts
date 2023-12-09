@@ -65,6 +65,11 @@ export type ObstacleDefinition = ObjectDefinition & {
     readonly slideFactor?: number
 })) | {
     readonly role: ObstacleSpecialRoles.Activatable
+    readonly sound?: {
+        readonly name: string
+        readonly maxRange: number
+        readonly fallOff: number
+    }
     readonly requiredItem?: string
     readonly interactText?: string
     // obstacle will interact will all obstacles with that id string from the parent building
@@ -500,6 +505,11 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             role: ObstacleSpecialRoles.Activatable,
             zIndex: ZIndexes.ObstaclesLayer2,
             interactText: "Open",
+            sound: {
+                name: "airdrop_unlock",
+                maxRange: 64,
+                fallOff: 0.3
+            },
             replaceWith: {
                 idString: { airdrop_crate: 0.95, gold_airdrop_crate: 0.05 },
                 delay: 800
@@ -1664,9 +1674,14 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 particle: "metal_particle"
             },
             role: ObstacleSpecialRoles.Activatable,
+            sound: {
+                name: "generator_starting",
+                maxRange: 412,
+                fallOff: 2
+            },
             emitParticles: true,
             requiredItem: "gas_can",
-            interactText: "Open",
+            interactText: "Activate",
             interactType: "vault_door",
             interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)
