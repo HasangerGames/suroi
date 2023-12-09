@@ -23,8 +23,8 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
-import { type Sound } from "../utils/soundManager";
+import { GameObject } from "./gameObject";
+import { type GameSound } from "../utils/soundManager";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { Obstacle } from "./obstacle";
 import { type ParticleEmitter } from "./particles";
@@ -58,8 +58,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
     animationSeq!: boolean;
 
-    footstepSound?: Sound;
-    actionSound?: Sound;
+    footstepSound?: GameSound;
+    actionSound?: GameSound;
 
     action = {
         type: PlayerActions.None,
@@ -324,7 +324,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.distSinceLastFootstep += distanceSquared(this.oldPosition, this.position);
 
             if (this.distSinceLastFootstep > 7) {
-                this.footstepSound = this.playSound(`${this.floorType}_step_${random(1, 2)}`, 0.6, 48);
+                this.footstepSound = this.playSound(`${this.floorType}_step_${random(1, 2)}`, {
+                    fallOff: 0.6,
+                    maxRange: 48
+                });
                 this.distSinceLastFootstep = 0;
 
                 if (FloorTypes[floorType].particles) {
@@ -418,7 +421,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 let actionSoundName = "";
                 this.healingParticlesEmitter.active = false;
 
-                if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+                this.actionSound?.stop();
 
                 switch (action.type) {
                     case PlayerActions.None: {
@@ -441,9 +444,16 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     }
                 }
                 if (actionSoundName) {
-                    this.actionSound = this.playSound(actionSoundName, 0.6, 48, false, () => {
-                        if (this.activeItemIsDual && action.type === PlayerActions.Reload) {
-                            this.actionSound = this.playSound(actionSoundName, 0.6, 48, false);
+                    this.actionSound = this.playSound(actionSoundName, {
+                        fallOff: 0.6,
+                        maxRange: 48,
+                        onEnd: () => {
+                            if (this.activeItemIsDual && action.type === PlayerActions.Reload) {
+                                this.actionSound = this.playSound(actionSoundName, {
+                                    fallOff: 0.6,
+                                    maxRange: 48
+                                });
+                            }
                         }
                     });
                 }
@@ -548,7 +558,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 this.anims.muzzleFlashFadeAnim?.kill();
                 this.anims.muzzleFlashRecoilAnim?.kill();
                 this.images.muzzleFlash.alpha = 0;
-                if (this.isActivePlayer && !isNew) this.playSound(`${this.activeItem.idString}_switch`, 0);
+                if (this.isActivePlayer && !isNew) this.game.soundManager.play(`${this.activeItem.idString}_switch`);
             }
 
             let offset = 0;
@@ -616,7 +626,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.anims.emoteAnim?.kill();
         this.anims.emoteHideAnim?.kill();
         this._emoteHideTimeout?.kill();
-        this.playSound("emote", 0.4, 128);
+        this.playSound("emote", {
+            fallOff: 0.4,
+            maxRange: 128
+        });
         this.images.emoteImage.setFrame(`${type.idString}`);
 
         this.emoteContainer.visible = true;
@@ -693,7 +706,10 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     });
                 }
 
-                this.playSound("swing", 0.4, 96);
+                this.playSound("swing", {
+                    fallOff: 0.4,
+                    maxRange: 96
+                });
 
                 this.addTimeout(() => {
                     // Play hit effect on closest object
@@ -735,8 +751,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
             case AnimationType.GunAlt:
             case AnimationType.LastShot: {
                 const weaponDef = this.activeItem as GunDefinition;
-                this.playSound(`${weaponDef.idString}_fire`, 0.5);
-                if (anim === AnimationType.LastShot) this.playSound(`${weaponDef.idString}_last_shot`, 0.5);
+                this.playSound(`${weaponDef.idString}_fire`, { fallOff: 0.5 });
+                if (anim === AnimationType.LastShot) this.playSound(`${weaponDef.idString}_last_shot`, { fallOff: 0.5 });
 
                 if (weaponDef.itemType === ItemType.Gun) {
                     const isAltFire = anim === AnimationType.GunAlt;
@@ -817,14 +833,20 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 break;
             }
             case AnimationType.GunClick: {
-                this.playSound("gun_click", 0.8, 48);
+                this.playSound("gun_click", { fallOff: 0.8, maxRange: 48 });
                 break;
             }
         }
     }
 
     hitEffect(position: Vector, angle: number): void {
-        this.game.soundManager.play(randomBoolean() ? "player_hit_1" : "player_hit_2", position, 0.2, 96);
+        this.game.soundManager.play(
+            randomBoolean() ? "player_hit_1" : "player_hit_2",
+            {
+                position,
+                fallOff: 0.2,
+                maxRange: 96
+            });
 
         this.game.particleManager.spawnParticle({
             frames: "blood_particle",
@@ -846,7 +868,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     destroy(): void {
         super.destroy();
         this.healingParticlesEmitter.destroy();
-        if (this.actionSound) this.game.soundManager.stop(this.actionSound);
+        this.actionSound?.stop();
         if (this.isActivePlayer) $("#action-container").hide();
         this.waterOverlayAnim?.kill();
         this.anims.emoteHideAnim?.kill();

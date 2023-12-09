@@ -13,6 +13,7 @@ import { body, createDropdown } from "./uiHelpers";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { SpectatePacket } from "../../../common/src/packets/spectatePacket";
 import type { CVarTypeMapping } from "./utils/console/defaultClientCVars";
+import { sound } from "@pixi/sound";
 
 export function setupUI(game: Game): void {
     if (UI_DEBUG_MODE) {
@@ -426,7 +427,7 @@ Video evidence is required.`)) {
 
     // Music volume
     addSliderListener("#slider-music-volume", "cv_music_volume", (value: number) => {
-        game.music.volume(value);
+        game.music.volume = value;
     });
 
     // SFX volume
@@ -436,9 +437,9 @@ Video evidence is required.`)) {
 
     // Master volume
     addSliderListener("#slider-master-volume", "cv_master_volume", (value: number) => {
-        Howler.volume(value);
+        sound.volumeAll = value;
     });
-    Howler.volume(game.console.getBuiltInCVar("cv_master_volume"));
+    sound.volumeAll = game.console.getBuiltInCVar("cv_master_volume");
 
     // Old menu music
     addCheckboxListener("#toggle-old-music", "cv_use_old_menu_music");

@@ -3,7 +3,7 @@ import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Tween } from "../utils/tween";
 

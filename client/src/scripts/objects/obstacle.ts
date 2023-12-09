@@ -8,15 +8,15 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
 import { orientationToRotation } from "../utils/misc";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
 import { type Player } from "./player";
 import { type ParticleEmitter, type ParticleOptions } from "./particles";
-import { type Sound } from "../utils/soundManager";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
+import type { GameSound } from "../utils/soundManager";
 
 export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     override readonly type = ObjectCategory.Obstacle;
@@ -44,7 +44,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
-    hitSound?: Sound;
+    hitSound?: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Obstacle]>) {
         super(game, id);
@@ -94,55 +94,49 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             if (!this.activated && full.activated) {
                 this.activated = full.activated;
-                let firstRun = !isNew;
 
-                // fixme idString check, hard coded behavior
-                if (this.definition.idString === "generator") {
-                    const playGeneratorSound = (): void => {
-                        if (this.destroyed) return;
-                        this.playSound(firstRun ? "generator_starting" : "generator_running", 2, 512, true, playGeneratorSound);
-                        firstRun = false;
-                    };
-                    playGeneratorSound();
-                } else if (this.definition.idString === "airdrop_crate_locked") {
-                    if (this.destroyed || !firstRun) return;
-                    firstRun = false;
+                if (!isNew && !this.destroyed) {
+                    if (definition.role === ObstacleSpecialRoles.Activatable && definition.sound) {
+                        this.playSound(definition.sound.name, definition.sound);
+                    }
 
-                    const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
-                        zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
-                        lifetime: 1000,
-                        scale: {
-                            start: randomFloat(0.85, 0.95),
-                            end: 0,
-                            ease: EaseFunctions.quartIn
-                        },
-                        alpha: {
-                            start: 1,
-                            end: 0,
-                            ease: EaseFunctions.sextIn
-                        },
-                        rotation: { start: randomRotation(), end: randomRotation() },
-                        speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
-                    });
+                    // fixme idString check, hard coded behavior
+                    if (this.definition.idString === "airdrop_crate_locked") {
+                        const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
+                            zIndex: Math.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
+                            lifetime: 1000,
+                            scale: {
+                                start: randomFloat(0.85, 0.95),
+                                end: 0,
+                                ease: EaseFunctions.quartIn
+                            },
+                            alpha: {
+                                start: 1,
+                                end: 0,
+                                ease: EaseFunctions.sextIn
+                            },
+                            rotation: { start: randomRotation(), end: randomRotation() },
+                            speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
+                        });
 
-                    /* eslint-disable @typescript-eslint/consistent-type-assertions */
-                    this.game.particleManager.spawnParticle({
-                        frames: "airdrop_particle_1",
-                        position: this.position,
-                        ...options(8, 18),
-                        rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
-                    } as ParticleOptions);
+                        /* eslint-disable @typescript-eslint/consistent-type-assertions */
+                        this.game.particleManager.spawnParticle({
+                            frames: "airdrop_particle_1",
+                            position: this.position,
+                            ...options(8, 18),
+                            rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
+                        } as ParticleOptions);
 
-                    this.playSound("airdrop_unlock", 0.2, 96);
-                    texture = "airdrop_crate_unlocking";
+                        texture = "airdrop_crate_unlocking";
 
-                    this.addTimeout(() => {
-                        this.game.particleManager.spawnParticles(4, () => ({
-                            frames: "airdrop_particle_2",
-                            position: this.hitbox.randomPoint(),
-                            ...options(4, 9)
-                        } as ParticleOptions));
-                    }, 800);
+                        this.addTimeout(() => {
+                            this.game.particleManager.spawnParticles(4, () => ({
+                                frames: "airdrop_particle_2",
+                                position: this.hitbox.randomPoint(),
+                                ...options(4, 9)
+                            } as ParticleOptions));
+                        }, 800);
+                    }
                 }
             }
 
@@ -172,7 +166,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!this.dead && data.dead) {
             this.dead = true;
             if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
-                this.playSound(`${definition.material}_destroyed`, 0.2, 96);
+                this.playSound(`${definition.material}_destroyed`, {
+                    fallOff: 0.2,
+                    maxRange: 96
+                });
 
                 if (definition.noResidue) {
                     this.image.setVisible(false);
@@ -327,9 +324,10 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             const soundName = definition.doorSound ?? "door";
             this.playSound(
-                offset === 0 ? `${soundName}_close` : `${soundName}_open`,
-                0.3,
-                48
+                offset === 0 ? `${soundName}_close` : `${soundName}_open`, {
+                    fallOff: 0.3,
+                    maxRange: 48
+                }
             );
 
             if (definition.operationStyle !== "slide") {
@@ -356,8 +354,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     hitEffect(position: Vector, angle: number): void {
-        if (this.hitSound) this.game.soundManager.stop(this.hitSound);
-        this.hitSound = this.game.soundManager.play(`${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, position, 0.2, 96);
+        this.hitSound?.stop();
+        this.hitSound = this.game.soundManager.play(
+            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, {
+                position,
+                fallOff: 0.2,
+                maxRange: 96
+            });
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,

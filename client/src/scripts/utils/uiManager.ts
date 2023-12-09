@@ -135,8 +135,7 @@ export class UIManager {
         $("#interact-message").hide();
         $("#spectating-container").hide();
 
-        const activePlayer = game.activePlayer;
-        if (activePlayer?.actionSound) game.soundManager.stop(activePlayer.actionSound);
+        game.activePlayer?.actionSound?.stop();
 
         $("#gas-msg").fadeOut(500);
 
@@ -166,15 +165,7 @@ export class UIManager {
         $("#game-over-damage-taken").text(packet.damageTaken);
         $("#game-over-time").text(formatDate(packet.timeAlive));
 
-        if (packet.won) {
-            const volume = game.console.getBuiltInCVar("cv_music_volume");
-            if (volume) {
-                game.music.play();
-            }
-            game.music.loop();
-            game.music.volume(volume);
-            game.musicPlaying = true;
-        }
+        if (packet.won) void game.music.play();
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
 

@@ -5,9 +5,9 @@ import { randomFloat, randomPointInsideCircle } from "../../../../common/src/uti
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { v, type Vector } from "../../../../common/src/utils/vector";
 import type { Game } from "../game";
-import { GameObject } from "../types/gameObject";
+import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import type { Sound } from "../utils/soundManager";
+import type { GameSound } from "../utils/soundManager";
 import { Tween } from "../utils/tween";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
@@ -17,7 +17,7 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
 
     scaleAnim?: Tween<Vector>;
 
-    fallSound!: Sound;
+    fallSound!: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Parachute]>) {
         super(game, id);
@@ -32,7 +32,11 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         if (data.full) {
             this.position = data.full.position;
             this.container.position = toPixiCoords(this.position);
-            this.fallSound = this.playSound("airdrop_fall", 1, 128, true);
+            this.fallSound = this.playSound("airdrop_fall", {
+                fallOff: 1,
+                maxRange: 128,
+                dynamic: true
+            });
         }
 
         const scale = lerp(0.5, 1, data.height);
@@ -78,6 +82,6 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
     destroy(): void {
         super.destroy();
         this.scaleAnim?.kill();
-        this.game.soundManager.stop(this.fallSound);
+        this.fallSound?.stop();
     }
 }

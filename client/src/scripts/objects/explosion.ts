@@ -43,6 +43,9 @@ export function explosion(game: Game, definition: ExplosionDefinition, position:
     game.camera.shake(definition.cameraShake.duration, definition.cameraShake.intensity);
 
     if (definition.sound !== undefined) {
-        game.soundManager.play(definition.sound, position, 0.4);
+        game.soundManager.play(definition.sound, {
+            position,
+            fallOff: 0.4
+        });
     }
 }
