@@ -1,5 +1,5 @@
 import { type Orientation, type Variation } from "../typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type FloorTypes } from "../utils/terrain";
 import { ObjectDefinitions, type ObjectDefinition, type ReferenceTo, MapObjectSpawnMode } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
@@ -216,12 +216,12 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
     {
         idString: "house",
         name: "House",
-        spawnHitbox: new ComplexHitbox(
+        spawnHitbox: new HitboxGroup(
             RectangleHitbox.fromRect(41, 51, v(31.50, -14.50)), // Garage
             RectangleHitbox.fromRect(68, 68, v(-18, -6)), // Main House
             RectangleHitbox.fromRect(28, 17, v(-31, 31.50)) // Doorstep
         ),
-        scopeHitbox: new ComplexHitbox(
+        scopeHitbox: new HitboxGroup(
             RectangleHitbox.fromRect(34.50, 42, v(29.25, -15.50)), // Garage
             RectangleHitbox.fromRect(60.50, 56, v(-17.25, -8.50)), // Main House
             RectangleHitbox.fromRect(15, 11, v(-31.50, 24.50)) // Doorstep
@@ -241,7 +241,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
             },
             {
                 type: "wood",
-                hitbox: new ComplexHitbox(
+                hitbox: new HitboxGroup(
                     RectangleHitbox.fromRect(60, 56, v(-18, -9)), // Main House
                     RectangleHitbox.fromRect(18.80, 14, v(-31.40, 27)) // Doorstep
                 )
@@ -688,7 +688,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "refinery",
         name: "Refinery",
         spawnHitbox: RectangleHitbox.fromRect(184, 131, v(35, 21.50)),
-        scopeHitbox: new ComplexHitbox(
+        scopeHitbox: new HitboxGroup(
             RectangleHitbox.fromRect(33.50, 72, v(-32.75, 0)),
             RectangleHitbox.fromRect(65.50, 29.50, v(16.75, -21.25))
         ),
@@ -1240,7 +1240,7 @@ export const Buildings = new ObjectDefinitions<BuildingDefinition>([
         idString: "ship",
         name: "Ship",
         spawnHitbox: RectangleHitbox.fromRect(110, 300, v(0, 0)),
-        scopeHitbox: new ComplexHitbox(
+        scopeHitbox: new HitboxGroup(
             RectangleHitbox.fromRect(44, 38, v(9.5, -70.5)),
             RectangleHitbox.fromRect(10, 15, v(-17, -60)),
             RectangleHitbox.fromRect(50, 24, v(8, 93.2))

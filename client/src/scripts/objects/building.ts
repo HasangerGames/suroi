@@ -2,7 +2,7 @@ import { Container, Graphics } from "pixi.js";
 import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
-import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../../../common/src/utils/hitbox";
+import { CircleHitbox, RectangleHitbox, type Hitbox, HitboxGroup } from "../../../../common/src/utils/hitbox";
 import { circleCircleIntersection, rectCircleIntersection, polarToVector } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -58,7 +58,7 @@ export class Building extends GameObject<ObjectCategory.Building> {
 
             const playerHitbox = new CircleHitbox(visionSize, player.position);
 
-            const hitboxes = this.ceilingHitbox instanceof ComplexHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
+            const hitboxes = this.ceilingHitbox instanceof HitboxGroup ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
             let graphics: Graphics | undefined;
             if (HITBOX_DEBUG_MODE) {

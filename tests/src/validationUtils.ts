@@ -1,5 +1,5 @@
 import { type ObjectDefinition, type ObjectDefinitions, type BaseBulletDefinition } from "../../common/src/utils/objectDefinitions";
-import { CircleHitbox, ComplexHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, HitboxGroup, PolygonHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import type { Vector } from "../../common/src/utils/vector";
 import { LootTiers, type WeightedItem } from "../../server/src/data/lootTables";
 import { Loots } from "../../common/src/definitions/loots";
@@ -555,7 +555,7 @@ export const validators = Object.freeze({
         } else if (hitbox instanceof RectangleHitbox) {
             this.vector(baseErrorPath, hitbox.min);
             this.vector(baseErrorPath, hitbox.max);
-        } else if (hitbox instanceof ComplexHitbox) {
+        } else if (hitbox instanceof HitboxGroup) {
             hitbox.hitboxes.map(this.hitbox.bind(this, baseErrorPath));
         } else if (hitbox instanceof PolygonHitbox) {
             hitbox.points.map(v => this.vector(baseErrorPath, v));

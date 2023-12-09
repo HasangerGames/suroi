@@ -92,8 +92,8 @@ export class Terrain {
             v(width - beachPadding, height - beachPadding)
         );
 
-        this.beachHitbox = new PolygonHitbox(...jaggedRectangle(beachRect, spacing, variation, random));
-        this.grassHitbox = new PolygonHitbox(...jaggedRectangle(grassRect, spacing, variation, random));
+        this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, variation, random));
+        this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, variation, random));
 
         this.rivers = rivers;
 
@@ -292,8 +292,8 @@ export class River {
             bankPoints[this.points.length + length - i] = bankPoint2;
         }
 
-        this.waterHitbox = new PolygonHitbox(...waterPoints);
-        this.bankHitbox = new PolygonHitbox(...bankPoints);
+        this.waterHitbox = new PolygonHitbox(waterPoints);
+        this.bankHitbox = new PolygonHitbox(bankPoints);
     }
 
     getControlPoints(t: number): {

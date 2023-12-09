@@ -2,7 +2,7 @@ import { Buildings, type BuildingDefinition } from "../../common/src/definitions
 import { Decals } from "../../common/src/definitions/decals";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../common/src/typings";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
+import { CircleHitbox, HitboxGroup, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, Terrain } from "../../common/src/utils/terrain";
 import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, polarToVector } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
@@ -27,7 +27,7 @@ export class Map {
     readonly oceanSize: number;
     readonly beachSize: number;
 
-    readonly beachHitbox: ComplexHitbox;
+    readonly beachHitbox: HitboxGroup;
 
     readonly seed: number;
 
@@ -63,7 +63,7 @@ export class Map {
         const beachPadding = this._beachPadding = mapDefinition.oceanSize + mapDefinition.beachSize + 8;
         const oceanSize = this.oceanSize + 8;
 
-        this.beachHitbox = new ComplexHitbox(
+        this.beachHitbox = new HitboxGroup(
             new RectangleHitbox(
                 v(this.width - beachPadding, oceanSize),
                 v(this.width - oceanSize, this.height - oceanSize)

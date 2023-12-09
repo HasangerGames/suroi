@@ -1,6 +1,6 @@
 import { ZIndexes } from "../constants";
 import { type Variation } from "../typings";
-import { CircleHitbox, ComplexHitbox, type Hitbox, RectangleHitbox } from "../utils/hitbox";
+import { CircleHitbox, HitboxGroup, type Hitbox, RectangleHitbox } from "../utils/hitbox";
 import {
     type ObjectDefinition,
     ObjectDefinitions,
@@ -191,13 +191,13 @@ function makeContainerWalls(id: number, style: "open2" | "open1" | "closed", tin
     let hitbox: Hitbox;
     switch (style) {
         case "open2":
-            hitbox = new ComplexHitbox(
+            hitbox = new HitboxGroup(
                 RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
                 RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0))
             );
             break;
         case "open1":
-            hitbox = new ComplexHitbox(
+            hitbox = new HitboxGroup(
                 RectangleHitbox.fromRect(1.85, 28, v(6.1, 0)),
                 RectangleHitbox.fromRect(1.85, 28, v(-6.1, 0)),
                 RectangleHitbox.fromRect(14, 1.85, v(0, -13.04))
@@ -248,7 +248,7 @@ function makeGunMount(idString: string, name: string): ObstacleDefinition {
             destroy: 0.95
         },
         hasLoot: true,
-        hitbox: new ComplexHitbox(
+        hitbox: new HitboxGroup(
             RectangleHitbox.fromRect(8.2, 0.95, v(0, -1.32)), // Base
             RectangleHitbox.fromRect(0.75, 2.75, v(0, 0.48)), // Center post
             RectangleHitbox.fromRect(0.75, 2.75, v(-3.11, 0.48)), // Left post
@@ -494,7 +494,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 destroy: 0.9
             },
             indestructible: true,
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(16.8, 13.6),
                 RectangleHitbox.fromRect(26, 2),
                 new CircleHitbox(5, v(-8, 1.8)),
@@ -553,7 +553,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.7, 8.7)
             ),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
@@ -571,7 +571,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.7, 8.7)
             ),
             spawnHitbox: RectangleHitbox.fromRect(10, 10),
@@ -610,7 +610,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.95
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.7, 70.6),
                 RectangleHitbox.fromRect(12, 1.7, v(5.5, -34.5)),
                 RectangleHitbox.fromRect(12, 1.7, v(5.5, 34.5))
@@ -730,7 +730,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 // Comments assume the building is not rotated (rotation = 0)
                 RectangleHitbox.fromRect(14.33, 2, v(-41.16, -34.15)), // First Topmost wall
                 RectangleHitbox.fromRect(17, 2, v(-15, -34.15)), // Topmost wall after the first window
@@ -811,7 +811,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(2.5),
             // TODO Figure out why this doesn't work
-            /* hitbox: new ComplexHitbox([
+            /* hitbox: new HitboxGroup([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
             ]), */
@@ -830,7 +830,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             },
             hitbox: new CircleHitbox(2.5),
             // TODO Figure out why this doesn't work
-            /* hitbox: new ComplexHitbox([
+            /* hitbox: new HitboxGroup([
                 RectangleHitbox.fromRect(v(-3.18, 1.25), v(3.2, 4.05)),
                 new CircleHitbox(2.5)
             ]), */
@@ -1227,7 +1227,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(57, 1.8, v(-22, -36.1)), // First topmost wall
                 RectangleHitbox.fromRect(30.75, 1.8, v(35.38, -36.1)), // Wall after the hole
                 RectangleHitbox.fromRect(2, 33.5, v(49.75, -22.25)), // Wall from top right to bottom right
@@ -1316,7 +1316,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 new CircleHitbox(5.22, v(0, -0.65)),
                 new CircleHitbox(4.9, v(0, 0.9))
             ),
@@ -1339,7 +1339,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1,
                 destroy: 0.5
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 new CircleHitbox(3, v(-11.3, -3.85)), // Main tank rounded corners
                 new CircleHitbox(3, v(-11.3, -6.55)),
                 RectangleHitbox.fromRect(17.5, 3.5, v(-5.55, -5.25)),
@@ -1374,7 +1374,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 // Right walls
                 RectangleHitbox.fromRect(2, 9, v(-31, 26)),
                 RectangleHitbox.fromRect(2, 22, v(-31, 0.2)),
@@ -1409,7 +1409,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 1.0
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(20.25, 2.15, v(0, 25.1)), // Front bumper
                 RectangleHitbox.fromRect(18.96, 9.2, v(0, 19.4)), // Hood
                 RectangleHitbox.fromRect(16.7, 23.5, v(0, 3)), // Cab
@@ -1437,7 +1437,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(14.9, 44.7, v(-0.05, 0)), // Body
                 RectangleHitbox.fromRect(15.9, 6.4, v(0, -11.2)), // Front-most back wheels
                 RectangleHitbox.fromRect(15.9, 6.4, v(0, -18.2)), // Rearmost back wheels
@@ -1571,7 +1571,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(6.1, 15.5, v(0, 0)), // Middle big rectangle
                 RectangleHitbox.fromRect(5.3, 6, v(0, 10.97)), // Top small rectangle
                 RectangleHitbox.fromRect(4.2, 1.8, v(0, 14.8)), // Top wheels
@@ -1596,7 +1596,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 // Bottom Bottom left
                 RectangleHitbox.fromRect(6, 15.5, v(-29.6, 77.7 + 0.6)), // Middle Big rectangle
                 RectangleHitbox.fromRect(5.45, 6, v(-29.6, 66.7 + 0.6)), // Top Small rectangle
@@ -1744,7 +1744,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             frames: {
                 particle: "metal_particle"
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1, 220, v(48, -20)), // Right wall
 
                 RectangleHitbox.fromRect(1, 66, v(-31, 4.8)), // Left wall (middle)
@@ -1809,7 +1809,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.15, 17.3, v(0, -3.8)),
                 RectangleHitbox.fromRect(9.45, 10.6, v(0, -4.9))
             ),
@@ -1848,7 +1848,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(8.2, 9.2, v(-0.36, 0)),
                 new CircleHitbox(3.45, v(1, 0))
             ),
@@ -1869,7 +1869,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.2, 31.75, v(-2.2, -2.8)),
                 RectangleHitbox.fromRect(2, 5, v(-2.3, 15.4)),
                 RectangleHitbox.fromRect(4.71, 6.59, v(0.95, 15.4))
@@ -1892,7 +1892,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.9
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(1.75, 29.5, v(-10.23, -1.7)), // Left wall
                 RectangleHitbox.fromRect(1.75, 9.2, v(10.23, -11.9)), // Right wall above window
                 RectangleHitbox.fromRect(1.75, 10.7, v(10.23, 7.6)), // Right wall below window
@@ -1957,7 +1957,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 spawnMax: 1.0,
                 destroy: 0.7
             },
-            hitbox: new ComplexHitbox(
+            hitbox: new HitboxGroup(
                 RectangleHitbox.fromRect(2, 16.3, v(-29.3, -22.3)),
                 RectangleHitbox.fromRect(60, 2, v(0, -29.4)),
                 RectangleHitbox.fromRect(2, 16.3, v(29.3, -22.3)),

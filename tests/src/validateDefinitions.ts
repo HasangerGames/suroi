@@ -33,6 +33,7 @@ import { Modes } from "../../common/src/definitions/modes";
 */
 
 const testStart = Date.now();
+
 logger.log("START");
 logger.indent("Validating gas stages", () => {
     for (let i = 0, l = GasStages.length; i < l; i++) {

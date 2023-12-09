@@ -1,5 +1,5 @@
 import { Sprite, Texture, type ColorSource, type Graphics, Spritesheet, type ISpritesheetData } from "pixi.js";
-import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox, PolygonHitbox } from "../../../../common/src/utils/hitbox";
+import { type Hitbox, HitboxType } from "../../../../common/src/utils/hitbox";
 import { v, type Vector, vMul } from "../../../../common/src/utils/vector";
 import { MODE, PIXI_SCALE } from "./constants";
 
@@ -117,21 +117,28 @@ export function drawHitbox<T extends Graphics>(hitbox: Hitbox, color: ColorSourc
     graphics.beginFill();
     graphics.fill.alpha = 0;
 
-    if (hitbox instanceof RectangleHitbox) {
-        const min = toPixiCoords(hitbox.min);
-        const max = toPixiCoords(hitbox.max);
-        graphics.moveTo(min.x, min.y)
-            .lineTo(max.x, min.y)
-            .lineTo(max.x, max.y)
-            .lineTo(min.x, max.y)
-            .lineTo(min.x, min.y);
-    } else if (hitbox instanceof CircleHitbox) {
-        const pos = toPixiCoords(hitbox.position);
-        graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
-    } else if (hitbox instanceof ComplexHitbox) {
-        for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
-    } else if (hitbox instanceof PolygonHitbox) {
-        graphics.drawPolygon(hitbox.points.map(point => toPixiCoords(point)));
+    switch (hitbox.type) {
+        case HitboxType.Rect: {
+            const min = toPixiCoords(hitbox.min);
+            const max = toPixiCoords(hitbox.max);
+            graphics.moveTo(min.x, min.y)
+                .lineTo(max.x, min.y)
+                .lineTo(max.x, max.y)
+                .lineTo(min.x, max.y)
+                .lineTo(min.x, min.y);
+            break;
+        }
+        case HitboxType.Circle: {
+            const pos = toPixiCoords(hitbox.position);
+            graphics.arc(pos.x, pos.y, hitbox.radius * PIXI_SCALE, 0, Math.PI * 2);
+            break;
+        }
+        case HitboxType.Group:
+            for (const h of hitbox.hitboxes) drawHitbox(h, color, graphics);
+            break;
+        case HitboxType.Polygon:
+            graphics.drawPolygon(hitbox.points.map(point => toPixiCoords(point)));
+            break;
     }
 
     graphics.closePath().endFill();
