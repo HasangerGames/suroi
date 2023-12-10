@@ -159,20 +159,23 @@ export class Minimap {
                 });
             }
 
-            // river bank needs to be draw first
-            for (const river of rivers) {
-                ctx.fill.color = COLORS.riverBank.toNumber();
-                ctx.drawRoundedShape?.(getRiverPoly(river.bankHitbox.points), 0, true);
+            // no rivers breaks map graphics
+            if (rivers.length) {
+                // river bank needs to be draw first
+                for (const river of rivers) {
+                    ctx.fill.color = COLORS.riverBank.toNumber();
+                    ctx.drawRoundedShape?.(getRiverPoly(river.bankHitbox.points), 0, true);
+                }
+                for (const river of rivers) {
+                    ctx.fill.color = COLORS.water.toNumber();
+                    ctx.drawRoundedShape?.(getRiverPoly(river.waterHitbox.points), 0, true);
+                }
+                // clip the river polygons
+                ctx.drawRect(0, 0, width * scale, height * scale);
+                ctx.beginHole();
+                ctx.drawRoundedShape?.(beach, radius);
+                ctx.endHole();
             }
-            for (const river of rivers) {
-                ctx.fill.color = COLORS.water.toNumber();
-                ctx.drawRoundedShape?.(getRiverPoly(river.waterHitbox.points), 0, true);
-            }
-            // clip the river polygons
-            ctx.drawRect(0, 0, width * scale, height * scale);
-            ctx.beginHole();
-            ctx.drawRoundedShape?.(beach, radius);
-            ctx.endHole();
 
             ctx.lineStyle({
                 color: 0x000000,
