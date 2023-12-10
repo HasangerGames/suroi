@@ -158,7 +158,7 @@ app.get("/api/getGame", async(res, req) => {
                 // Join the game that most recently started
                 const game = games
                     .filter(g => g && !g.over)
-                    .reduce((a, b) => (a as Game).startedTime > (b as Game).startedTime ? a : b);
+                    .reduce((a, b) => (a!).startedTime > (b!).startedTime ? a : b);
 
                 if (game) response = { success: true, gameID: game.id };
                 else response = { success: false };
@@ -340,7 +340,7 @@ app.ws("/play", {
      */
     close(socket: WebSocket<PlayerContainer>) {
         const data = socket.getUserData();
-        if (Config.protection) simultaneousConnections[data.ip as string]--;
+        if (Config.protection) simultaneousConnections[data.ip!]--;
         const game = games[data.gameID];
         const player = data.player;
         if (game === undefined || player === undefined) return;

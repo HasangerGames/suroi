@@ -243,8 +243,8 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
 
             stream.writeBits(message.killType ?? KillType.Suicide, KILL_TYPE_BITS);
             if (message.killType === KillType.TwoPartyInteraction) {
-                stream.writeObjectID(message.killerID as number);
-                stream.writeBits(message.kills as number, 7);
+                stream.writeObjectID(message.killerID!);
+                stream.writeBits(message.kills!, 7);
             }
 
             const weaponWasUsed = message.weaponUsed !== undefined;
@@ -271,13 +271,13 @@ function serializeKillFeedMessage(stream: SuroiBitStream, message: KillFeedMessa
 
         case KillFeedMessageType.KillLeaderAssigned: {
             stream.writeObjectID(message.playerID!);
-            stream.writeBits(message.kills as number, 7);
+            stream.writeBits(message.kills!, 7);
             stream.writeBoolean(message.hideInKillFeed ?? false);
             break;
         }
 
         case KillFeedMessageType.KillLeaderUpdated: {
-            stream.writeBits(message.kills as number, 7);
+            stream.writeBits(message.kills!, 7);
             break;
         }
 

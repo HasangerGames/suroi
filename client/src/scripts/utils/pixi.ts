@@ -12,7 +12,7 @@ export async function loadTextures(): Promise<void> {
     const promises: Array<Promise<void>> = [];
 
     for (const atlas of atlases as ISpritesheetData[]) {
-        const image = atlas.meta.image as string;
+        const image = atlas.meta.image!;
 
         console.log(`Loading atlas ${location.origin}/${image}`);
 

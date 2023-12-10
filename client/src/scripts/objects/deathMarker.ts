@@ -39,7 +39,6 @@ export class DeathMarker extends GameObject<ObjectCategory.DeathMarker> {
         this.playerNameText.anchor.set(0.5);
         this.container.addChild(this.image, this.playerNameText);
 
-
         this.updateFromData(data, true);
     }
 

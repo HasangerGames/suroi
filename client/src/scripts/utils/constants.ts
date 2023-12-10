@@ -17,7 +17,7 @@ export const HITBOX_COLORS = {
     playerWeapon: new Color("lime")
 };
 
-export const MODE = Modes.find(m => m.idString === Config.mode) as ModeDefinition;
+export const MODE = Modes.find(m => m.idString === Config.mode)!;
 
 // Converts the strings in the mode definition to Color objects
 export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
