@@ -18,7 +18,7 @@ import { endGame, newGame, type PlayerContainer } from "./server";
 import { type WebSocket } from "uWebSockets.js";
 import { randomPointInsideCircle, randomRotation } from "../../common/src/utils/random";
 import { v, vAdd, type Vector } from "../../common/src/utils/vector";
-import { clamp, distanceSquared, velFromAngle } from "../../common/src/utils/math";
+import { clamp, distanceSquared, polarToVector } from "../../common/src/utils/math";
 import { Logger, removeFrom } from "./utils/misc";
 import { type LootDefinition } from "../../common/src/definitions/loots";
 import { type GunItem } from "./inventory/gunItem";
@@ -79,7 +79,7 @@ export class Game {
 
     readonly livingPlayers: Set<Player> = new Set<Player>();
     readonly connectedPlayers: Set<Player> = new Set<Player>();
-    readonly spectablePlayers: Player[] = [];
+    readonly spectatablePlayers: Player[] = [];
     /**
      * New players created this tick
      */
@@ -357,7 +357,7 @@ export class Game {
         this._sendKillFeedMessage(KillFeedMessageType.KillLeaderAssigned);
     }
 
-    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<KillFeedMessage>): void {
+    private _sendKillFeedMessage(messageType: KillFeedMessageType, options?: Partial<Omit<KillFeedMessage, "messageType" | "playerID" | "kills">>): void {
         if (this._killLeader === undefined) return;
         this.killFeedMessages.add({
             messageType,
@@ -446,7 +446,7 @@ export class Game {
 
         this.livingPlayers.add(player);
         this.objects.add(player);
-        this.spectablePlayers.push(player);
+        this.spectatablePlayers.push(player);
         this.connectedPlayers.add(player);
         this.newPlayers.add(player);
         this.grid.addObject(player);
@@ -489,7 +489,7 @@ export class Game {
             this.livingPlayers.delete(player);
             this.removeObject(player);
             this.deletedPlayers.add(player.id);
-            removeFrom(this.spectablePlayers, player);
+            removeFrom(this.spectatablePlayers, player);
         } else {
             player.rotation = 0;
             player.movement.up = player.movement.down = player.movement.left = player.movement.right = false;
@@ -629,7 +629,7 @@ export class Game {
 
         const planePos = vAdd(
             position,
-            velFromAngle(direction, -GameConstants.maxPosition)
+            polarToVector(direction, -GameConstants.maxPosition)
         );
 
         const airdrop = { position, type: crateDef };

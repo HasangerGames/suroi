@@ -195,8 +195,11 @@ export class SoundManager {
         }
 
         for (const gun of Guns) {
-            soundsToLoad[`${gun.idString}_fire`] = `audio/sfx/weapons/${gun.idString}_fire`;
-            soundsToLoad[`${gun.idString}_switch`] = `audio/sfx/weapons/${gun.idString}_switch`;
+            if (!gun.isDual) {
+                soundsToLoad[`${gun.idString}_fire`] = `audio/sfx/weapons/${gun.idString}_fire`;
+                soundsToLoad[`${gun.idString}_switch`] = `audio/sfx/weapons/${gun.idString}_switch`;
+            }
+
             soundsToLoad[`${gun.idString}_reload`] = `audio/sfx/weapons/${gun.idString}_reload`;
             if (gun.ballistics.lastShotFX) soundsToLoad[`${gun.idString}_last_shot`] = `audio/sfx/weapons/${gun.idString}_last_shot`;
         }

@@ -10,6 +10,7 @@ import {
 } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { ContainerTints } from "./buildings";
+import { type LootDefinition } from "./loots";
 
 export type ObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
@@ -70,15 +71,18 @@ export type ObstacleDefinition = ObjectDefinition & {
         readonly maxRange: number
         readonly fallOff: number
     }
-    readonly requiredItem?: string
+    readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly interactText?: string
-    // obstacle will interact will all obstacles with that id string from the parent building
-    readonly interactType?: string
+    /**
+     * For a given idString `str`, all obstacles with idString `str` in the same
+     * building containing this one will be interacted with when this obstacle is activated
+     */
+    readonly triggerInteractOn?: ReferenceTo<ObstacleDefinition>
     readonly interactDelay?: number
     readonly emitParticles?: boolean
     readonly replaceWith?: {
-        idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
-        delay: number
+        readonly idString: Record<ReferenceTo<ObstacleDefinition>, number> | ReferenceTo<ObstacleDefinition>
+        readonly delay: number
     }
 } | {
     readonly role?: ObstacleSpecialRoles.Wall | ObstacleSpecialRoles.Window
@@ -1649,7 +1653,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
                 RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, -99.5)),
 
                 RectangleHitbox.fromRect(4.3, 1.8, v(29.6, 99.5)),
-                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5))// Top Wheels
+                RectangleHitbox.fromRect(4.3, 1.8, v(-29.6, 99.5)) // Top Wheels
 
             ),
             rotationMode: RotationMode.Limited,
@@ -1682,7 +1686,7 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             emitParticles: true,
             requiredItem: "gas_can",
             interactText: "Activate",
-            interactType: "vault_door",
+            triggerInteractOn: "vault_door",
             interactDelay: 2000,
             hitbox: RectangleHitbox.fromRect(9, 7)
         },

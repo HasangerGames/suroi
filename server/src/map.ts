@@ -4,7 +4,7 @@ import { Obstacles, RotationMode, type ObstacleDefinition } from "../../common/s
 import { type Orientation, type Variation } from "../../common/src/typings";
 import { CircleHitbox, ComplexHitbox, RectangleHitbox, type Hitbox } from "../../common/src/utils/hitbox";
 import { River, Terrain } from "../../common/src/utils/terrain";
-import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, velFromAngle } from "../../common/src/utils/math";
+import { addAdjust, addOrientations, angleBetweenPoints, distance, lerp, lineIntersectsLine, polarToVector } from "../../common/src/utils/math";
 import { type ReferenceTo, ObstacleSpecialRoles, type ReifiableDef, MapObjectSpawnMode } from "../../common/src/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomRotation, randomVector } from "../../common/src/utils/random";
 import { v, vAdd, vClone, type Vector } from "../../common/src/utils/vector";
@@ -218,7 +218,7 @@ export class Map {
                 randomGenerator.get(minDeviation, maxDeviation)
             );
 
-            const pos = vAdd(lastPoint, velFromAngle(angle, randomGenerator.getInt(30, 80)));
+            const pos = vAdd(lastPoint, polarToVector(angle, randomGenerator.getInt(30, 80)));
 
             let collided = false;
 

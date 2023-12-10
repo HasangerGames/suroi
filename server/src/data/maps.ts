@@ -226,7 +226,7 @@ export const Maps: Record<string, MapDefinition> = {
         genCallback: (map: Map) => {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, yOff: number, xOff: number): void => {
-                const width = 50;
+                const width = 70;
 
                 const startPos = vClone(pos);
                 startPos.x -= width / 2;
@@ -276,10 +276,10 @@ export const Maps: Record<string, MapDefinition> = {
                 map.generateObstacle(obstacle.id, vAdd(center, v(obstacle.pos.x * -1, obstacle.pos.y * -1)), 0, 1);
             }
 
-            genLoots(vAdd(center, v(-70, 70)), 8, 8);
-            genLoots(vAdd(center, v(70, 70)), 8, 8);
-            genLoots(vAdd(center, v(-70, -70)), -8, 8);
-            genLoots(vAdd(center, v(70, -70)), -8, 8);
+            genLoots(vAdd(center, v(-70, 75)), 8, 8);
+            genLoots(vAdd(center, v(70, 75)), 8, 8);
+            genLoots(vAdd(center, v(-70, -75)), -8, 8);
+            genLoots(vAdd(center, v(70, -75)), -8, 8);
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {

@@ -10,6 +10,7 @@ import { Scopes, type ScopeDefinition } from "../../../common/src/definitions/sc
 import { absMod } from "../../../common/src/utils/math";
 import { type Timeout } from "../../../common/src/utils/misc";
 import { ItemType, type ReifiableDef } from "../../../common/src/utils/objectDefinitions";
+import { type Game } from "../game";
 import { type Player } from "../objects/player";
 import { HealingAction } from "./action";
 import { GunItem } from "./gunItem";
@@ -32,7 +33,7 @@ export class Inventory {
      */
     readonly owner: Player;
 
-    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY));
+    readonly items = JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY;
 
     helmet?: ArmorDefinition;
     vest?: ArmorDefinition;
@@ -297,14 +298,17 @@ export class Inventory {
 
         if (item === undefined || item.definition.noDrop) return undefined;
 
-        this.owner.game
-            .addLoot(item.definition, this.owner.position)
-            .push(this.owner.rotation, pushForce);
-
-        if (item instanceof GunItem && item.dual) {
+        const dropItem = (toDrop: Parameters<Game["addLoot"]>[0] = item.definition, position = this.owner.position, count = 1): void => {
             this.owner.game
-                .addLoot(item.definition, this.owner.position)
+                .addLoot(toDrop, position, count)
                 .push(this.owner.rotation, pushForce);
+        };
+
+        if (item instanceof GunItem && item.definition.isDual) {
+            dropItem(item.definition.singleVariant);
+            dropItem(item.definition.singleVariant);
+        } else {
+            dropItem();
         }
 
         if (item instanceof GunItem && item.ammo > 0) {
@@ -336,9 +340,7 @@ export class Inventory {
             if (overAmount > 0) {
                 this.items[ammoType] -= overAmount;
 
-                this.owner.game
-                    .addLoot(ammoType, this.owner.position, overAmount)
-                    .push(this.owner.rotation, pushForce);
+                dropItem(ammoType, this.owner.position, overAmount);
             }
 
             this.owner.dirty.items = true;
@@ -386,6 +388,21 @@ export class Inventory {
      */
     getWeapon(index: number): InventoryItem | undefined {
         return this.weapons[index];
+    }
+
+    upgradeToDual(slot: number): boolean {
+        if (!Inventory.isValidWeaponSlot(slot)) throw new RangeError(`Attempted to upgrade to dual weapon in invalid slot '${slot}'`);
+        if (!this.hasWeapon(slot) || !(this.weapons[slot] instanceof GunItem)) return false;
+
+        const gun = this.weapons[slot] as GunItem;
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        if (gun.definition.isDual || gun.definition.dualVariant === undefined) return false;
+
+        const dualGun = this._reifyItem(gun.definition.dualVariant) as GunItem;
+        this._setWeapon(slot, dualGun);
+        dualGun.ammo = gun.ammo;
+
+        return true;
     }
 
     /**

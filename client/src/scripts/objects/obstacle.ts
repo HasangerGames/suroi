@@ -2,7 +2,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type ObstacleDefinition } from "../../../../common/src/definitions/obstacles";
 import { type Orientation, type Variation } from "../../../../common/src/typings";
 import { CircleHitbox, type Hitbox, type RectangleHitbox } from "../../../../common/src/utils/hitbox";
-import { addAdjust, calculateDoorHitboxes, lerp, velFromAngle } from "../../../../common/src/utils/math";
+import { addAdjust, calculateDoorHitboxes, lerp, polarToVector } from "../../../../common/src/utils/math";
 import { ObstacleSpecialRoles } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomBoolean, randomFloat, randomRotation } from "../../../../common/src/utils/random";
@@ -87,7 +87,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         lifetime: 3500,
                         scale: { start: 0, end: randomFloat(4, 5) },
                         alpha: { start: 0.9, end: 0 },
-                        speed: velFromAngle(randomFloat(-1.9, -2.1), randomFloat(5, 6))
+                        speed: polarToVector(randomFloat(-1.9, -2.1), randomFloat(5, 6))
                     })
                 });
             }
@@ -116,7 +116,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                                 ease: EaseFunctions.sextIn
                             },
                             rotation: { start: randomRotation(), end: randomRotation() },
-                            speed: velFromAngle(randomRotation(), randomFloat(minSpeed, maxSpeed))
+                            speed: polarToVector(randomRotation(), randomFloat(minSpeed, maxSpeed))
                         });
 
                         /* eslint-disable @typescript-eslint/consistent-type-assertions */
@@ -166,10 +166,13 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         if (!this.dead && data.dead) {
             this.dead = true;
             if (!isNew && !("replaceWith" in definition && definition.replaceWith)) {
-                this.playSound(`${definition.material}_destroyed`, {
-                    fallOff: 0.2,
-                    maxRange: 96
-                });
+                this.playSound(
+                    `${definition.material}_destroyed`,
+                    {
+                        fallOff: 0.2,
+                        maxRange: 96
+                    }
+                );
 
                 if (definition.noResidue) {
                     this.image.setVisible(false);
@@ -204,7 +207,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
                         end: 0,
                         ease: EaseFunctions.sextIn
                     },
-                    speed: velFromAngle(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
+                    speed: polarToVector(randomRotation(), randomFloat(4, 9) * (definition.explosion ? 3 : 1))
                 }));
             }
         }
@@ -324,7 +327,8 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
 
             const soundName = definition.doorSound ?? "door";
             this.playSound(
-                offset === 0 ? `${soundName}_close` : `${soundName}_open`, {
+                `${soundName}_${offset ? "open" : "close"}`,
+                {
                     fallOff: 0.3,
                     maxRange: 48
                 }
@@ -350,17 +354,26 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
     }
 
     canInteract(player: Player): boolean {
-        return !this.dead && ((this.isDoor && !this.door?.locked) || (this.definition.role === ObstacleSpecialRoles.Activatable && (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem) && !this.activated));
+        return !this.dead && (
+            (this.isDoor && !this.door?.locked) ||
+            (
+                this.definition.role === ObstacleSpecialRoles.Activatable &&
+                (player.activeItem.idString === this.definition.requiredItem || !this.definition.requiredItem) &&
+                !this.activated
+            )
+        );
     }
 
     hitEffect(position: Vector, angle: number): void {
         this.hitSound?.stop();
         this.hitSound = this.game.soundManager.play(
-            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`, {
+            `${this.definition.material}_hit_${randomBoolean() ? "1" : "2"}`,
+            {
                 position,
                 fallOff: 0.2,
                 maxRange: 96
-            });
+            }
+        );
 
         this.game.particleManager.spawnParticle({
             frames: this.particleFrames,
@@ -369,7 +382,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             lifetime: 600,
             scale: { start: 0.9, end: 0.2 },
             alpha: { start: 1, end: 0.65 },
-            speed: velFromAngle((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
+            speed: polarToVector((angle + randomFloat(-0.3, 0.3)), randomFloat(2.5, 4.5))
         });
     }
 

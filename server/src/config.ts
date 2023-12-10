@@ -1,4 +1,5 @@
 import { type Vector } from "../../common/src/utils/vector";
+import { type Maps } from "./data/maps";
 
 export enum SpawnMode {
     Normal,
@@ -60,7 +61,7 @@ export interface ConfigType {
      * The map name. Must be a valid value from the server maps definitions (`maps.ts`).
      * Example: `"main"` for the main map or `"debug"` for the debug map
      */
-    readonly mapName: string
+    readonly mapName: keyof typeof Maps
 
     /**
      * There are 5 spawn modes: Normal, Random, Radius, Fixed, and Center.

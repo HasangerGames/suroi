@@ -45,9 +45,11 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
                         object.piercingDamage(GameConstants.airdrop.damage, KillType.Airdrop);
                     } else if (object instanceof Obstacle) {
                         object.damage(Infinity, crate);
-                    } else if (object instanceof Building &&
+                    } else if (
+                        object instanceof Building &&
                         object.scopeHitbox &&
-                        crate.hitbox.collidesWith(object.scopeHitbox)) {
+                        crate.hitbox.collidesWith(object.scopeHitbox)
+                    ) {
                         object.damage(Infinity);
                     }
                 }
