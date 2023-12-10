@@ -211,7 +211,7 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
         this.container.zIndex = this.dead ? ZIndexes.DeadObstacles : definition.zIndex ?? ZIndexes.ObstaclesLayer1;
 
         if (this.dead && FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay) {
-            this.container.zIndex = ZIndexes.UnderwaterDeadObstacles;
+            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
         }
 
         if (!this.isDoor) {

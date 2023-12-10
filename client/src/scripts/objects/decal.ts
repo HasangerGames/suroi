@@ -4,6 +4,7 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import type { Game } from "../game";
 import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
+import { FloorTypes } from "../../../../common/src/utils/terrain";
 
 export class Decal extends GameObject<ObjectCategory.Decal> {
     override readonly type = ObjectCategory.Decal;
@@ -32,5 +33,9 @@ export class Decal extends GameObject<ObjectCategory.Decal> {
 
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;
+
+        if (FloorTypes[this.game.map.terrain.getFloor(this.position)].overlay && !definition.zIndex) {
+            this.container.zIndex = ZIndexes.UnderWaterDeadObstacles;
+        }
     }
 }
