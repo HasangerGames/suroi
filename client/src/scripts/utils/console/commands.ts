@@ -490,6 +490,18 @@ export function setUpCommands(game: Game): void {
             signatures: [{ args: [], noexcept: true }]
         }
     );
+    Command.createCommand(
+        "toggle_hud",
+        function(): undefined {
+            // TODO add hud logic lol
+        },
+        game,
+        {
+            short: "Toggles the game HUD",
+            long: "When invoked, the Heads Up Display will be toggled.",
+            signatures: [{args: [], noexcept: true}]
+        }
+    )
 
     Command.createCommand(
         "reload",
