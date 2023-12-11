@@ -76,6 +76,35 @@ jobs:
         working-directory: ./server
         run: pnpm build
 
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    concurrency: ci-tests-${{ github.ref }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
+      - name: Install Packages
+        working-directory: ./tests
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: ./tests
+        run: pnpm build
+
       - name: Validate object definitions
-        working-directory: ./server
+        working-directory: ./tests
         run: pnpm validateDefinitions
