@@ -1,7 +1,8 @@
+import { Color } from "pixi.js";
 import { BaseBullet, type BulletOptions } from "../../../../common/src/utils/baseBullet";
 import { distance } from "../../../../common/src/utils/math";
 import { type Game } from "../game";
-import { PIXI_SCALE } from "../utils/constants";
+import { MODE, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
@@ -31,7 +32,9 @@ export class Bullet extends BaseBullet {
         this.image.anchor.set(1, 0.5);
         this.image.alpha = (tracerStats?.opacity ?? 1) / (this.reflectionCount + 1);
 
-        this.image.tint = this.definition.tracer?.color ?? 0xffffff;
+        const color = new Color(this.definition.tracer?.color ?? 0xffffff);
+        if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
+        this.image.tint = color;
 
         this.game.bulletsContainer.addChild(this.image);
     }
