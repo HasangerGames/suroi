@@ -30,38 +30,15 @@ export class UIManager {
     minAdrenaline = 0;
     adrenaline = 0;
 
-    inventory = {
+    readonly inventory = {
         activeWeaponIndex: 0,
-        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"],
-        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)),
+        weapons: new Array(GameConstants.player.maxWeapons).fill(undefined) as PlayerData["inventory"]["weapons"] & object,
+        items: JSON.parse(JSON.stringify(DEFAULT_INVENTORY)) as typeof DEFAULT_INVENTORY,
         scope: Loots.fromString<ScopeDefinition>("1x_scope")
     };
 
-    constructor(game: Game) {
-        this.game = game;
-    }
-
-    getPlayerName(id: number): string {
-        const element = $("<span>");
-        const player = this.game.playerNames.get(id);
-
-        let name: string;
-
-        if (!player) {
-            console.warn(`Unknown player name with id ${id}`);
-            name = "[Unknown Player]";
-        } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            name = GameConstants.player.defaultName;
-        } else {
-            name = player.name;
-            if (player.hasColor) {
-                element.css("color", player.nameColor.toHex());
-            }
-        }
-        element.text(name);
-
-        return element.prop("outerHTML");
-    }
+    private _gameOverScreenTimeout: number | undefined;
+    get gameOverScreenTimeout(): number | undefined { return this._gameOverScreenTimeout; }
 
     readonly ui = {
         activeWeapon: $("#weapon-ammo-container"),
@@ -89,16 +66,45 @@ export class UIManager {
         interactKey: $("#interact-key")
     };
 
-    action = {
+    readonly action = {
         active: false,
         start: -1,
         time: 0
     };
 
+    private _killMessageTimeoutID?: number;
+
+    constructor(game: Game) {
+        this.game = game;
+    }
+
+    getPlayerName(id: number): string {
+        const element = $("<span>");
+        const player = this.game.playerNames.get(id);
+
+        let name: string;
+
+        if (!player) {
+            console.warn(`Unknown player name with id ${id}`);
+            name = "[Unknown Player]";
+        } else if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            name = GameConstants.player.defaultName;
+        } else {
+            name = player.name;
+            if (player.hasColor) {
+                element.css("color", player.nameColor.toHex());
+            }
+        }
+        element.text(name);
+
+        return element.prop("outerHTML");
+    }
+
     animateAction(name: string, time: number): void {
         if (time > 0) {
             this.action.start = Date.now();
-            $("#action-timer-anim").stop()
+            $("#action-timer-anim")
+                .stop()
                 .css({ "stroke-dashoffset": "226" })
                 .animate(
                     { "stroke-dashoffset": "0" },
@@ -107,7 +113,8 @@ export class UIManager {
                     () => {
                         $("#action-container").hide();
                         this.action.active = false;
-                    });
+                    }
+                );
         }
         if (name) {
             $("#action-name").text(name);
@@ -126,8 +133,6 @@ export class UIManager {
         $("#action-container").hide().stop();
         this.action.active = false;
     }
-
-    gameOverScreenTimeout: number | undefined;
 
     showGameOverScreen(packet: GameOverPacket): void {
         const game = this.game;
@@ -167,7 +172,7 @@ export class UIManager {
 
         if (packet.won) void game.music.play();
 
-        this.gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
+        this._gameOverScreenTimeout = window.setTimeout(() => gameOverScreen.fadeIn(500), 500);
 
         // Player rank
         $("#game-over-rank").text(`#${packet.rank}`).toggleClass("won", packet.won);
@@ -242,7 +247,8 @@ export class UIManager {
 
             this.ui.adrenalineBar.width(`${percentage}%`);
 
-            this.ui.adrenalineBarPercentage.text(safeRound(this.adrenaline))
+            this.ui.adrenalineBarPercentage
+                .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
         }
 
@@ -300,22 +306,26 @@ export class UIManager {
             this.ui.killStreakCounter.text(`Streak: ${activeWeapon.stats.kills}`);
         }
 
-        for (let i = 0; i < GameConstants.player.maxWeapons; i++) {
+        const max = GameConstants.player.maxWeapons;
+        for (let i = 0; i < max; i++) {
             const container = $(`#weapon-slot-${i + 1}`);
-
             const weapon = inventory.weapons[i];
 
             if (weapon) {
-                container.addClass("has-item");
+                container
+                    .addClass("has-item")
+                    .children(".item-name")
+                    .text(weapon.definition.name);
 
-                container.children(".item-name").text((weapon.dual ? "Dual " : "") + weapon.definition.name);
-
-                const imagePath = `./img/game/weapons/${weapon.definition.idString}.svg`;
-                container.children(".item-image").attr("src", imagePath).show().toggleClass("dual", weapon.dual);
-                container.children(".dual-image").toggle(weapon.dual);
+                container
+                    .children(".item-image")
+                    .attr("src", `./img/game/weapons/${weapon.definition.idString}.svg`)
+                    .show();
 
                 if (weapon.ammo !== undefined) {
-                    container.children(".item-ammo").text(weapon.ammo)
+                    container
+                        .children(".item-ammo")
+                        .text(weapon.ammo)
                         .css("color", weapon.ammo > 0 ? "inherit" : "red");
                 }
             } else {
@@ -326,14 +336,16 @@ export class UIManager {
             }
         }
 
-        this.ui.weaponsContainer.children(".inventory-slot").removeClass("active");
+        this.ui.weaponsContainer
+            .children(".inventory-slot")
+            .removeClass("active");
+
         $(`#weapon-slot-${this.inventory.activeWeaponIndex + 1}`).addClass("active");
     }
 
     updateItems(): void {
         for (const item in this.inventory.items) {
             const count = this.inventory.items[item];
-
             const itemDef = Loots.fromString(item);
 
             $(`#${item}-count`).text(count);
@@ -350,14 +362,14 @@ export class UIManager {
             }
 
             if (itemDef.itemType === ItemType.Scope && !UI_DEBUG_MODE) {
-                itemSlot.toggle(count > 0).removeClass("active");
+                itemSlot
+                    .toggle(count > 0)
+                    .removeClass("active");
             }
         }
 
         $(`#${this.inventory.scope.idString}-slot`).addClass("active");
     }
-
-    private _killMessageTimeoutID?: number;
 
     private _addKillMessage(kills: number, name: string, weaponUsed: string, streak?: number): void {
         const killText = `Kills: ${kills}`;
@@ -408,7 +420,7 @@ export class UIManager {
             weaponUsed,
             killstreak,
 
-            hideInKillFeed
+            hideInKillfeed
         } = message;
 
         const playerName = playerID !== undefined ? this.getPlayerName(playerID) : "";
@@ -421,26 +433,26 @@ export class UIManager {
                 const hasKillstreak = killstreak! > 1;
                 switch (this.game.console.getBuiltInCVar("cv_killfeed_style")) {
                     case "text": {
-                        let message = "";
+                        let killMessage = "";
                         switch (killType) {
                             case KillType.Suicide:
-                                message = `${playerName} committed suicide`;
+                                killMessage = `${playerName} committed suicide`;
                                 break;
                             case KillType.TwoPartyInteraction:
-                                message = `${this.getPlayerName(killerID!)} killed ${playerName}`;
+                                killMessage = `${this.getPlayerName(killerID!)} killed ${playerName}`;
                                 break;
                             case KillType.Gas:
-                                message = `${playerName} died to the gas`;
+                                killMessage = `${playerName} died to the gas`;
                                 break;
                             case KillType.Airdrop:
-                                message = `${playerName} was crushed by an airdrop`;
+                                killMessage = `${playerName} was crushed by an airdrop`;
                                 break;
                         }
 
                         messageText = `
                         ${hasKillstreak ? killstreak : ""}
                         <img class="kill-icon" src="./img/misc/skull_icon.svg" alt="Skull">
-                        ${message}${weaponUsed === undefined ? "" : ` with ${weaponUsed.name}`}`;
+                        ${killMessage}${weaponUsed === undefined ? "" : ` with ${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}`}`;
                         break;
                     }
                     case "icon": {
@@ -454,10 +466,12 @@ export class UIManager {
                                 iconName = "airdrop";
                                 break;
                             default:
-                                iconName = weaponUsed?.idString ?? "";
+                                iconName = weaponUsed?.idString === undefined
+                                    ? ""
+                                    : `${weaponUsed.idString}${"dual" in message && message.dual ? "_dual" : ""}`;
                                 break;
                         }
-                        const altText = weaponUsed ? weaponUsed.name : iconName;
+                        const altText = weaponUsed ? `${"dual" in message && message.dual ? "Dual " : ""}${weaponUsed.name}` : iconName;
                         const killstreakText = hasKillstreak
                             ? `
                             <span style="font-size: 80%">(${killstreak}
@@ -465,10 +479,10 @@ export class UIManager {
                             </span>`
                             : "";
 
-                        messageText = `
-                        ${killerName}
-                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">
-                        ${killstreakText}
+                        messageText = `\
+                        ${killerName}\
+                        <img class="kill-icon" src="./img/killfeed/${iconName}_killfeed.svg" alt="${altText}">\
+                        ${killstreakText}\
                         ${playerName}`;
                         break;
                     }
@@ -494,7 +508,7 @@ export class UIManager {
                 $("#kill-leader-leader").html(playerName);
                 $("#kill-leader-kills-counter").text(kills!);
 
-                if (!hideInKillFeed) {
+                if (!hideInKillfeed) {
                     messageText = `<i class="fa-solid fa-crown"></i> ${playerName} promoted to Kill Leader!`;
                     this.game.soundManager.play("kill_leader_assigned");
                 }

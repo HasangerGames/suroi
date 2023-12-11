@@ -1,4 +1,5 @@
 import { FireMode } from "../constants";
+import { mergeDeep } from "../utils/misc";
 import { type BaseBulletDefinition, type ItemDefinition, ItemType, type ReferenceTo } from "../utils/objectDefinitions";
 import { v, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
@@ -32,33 +33,22 @@ export type GunDefinition = ItemDefinition & {
     readonly summonAirdrop?: boolean
 
     readonly fists: {
-        readonly left: Vector
-        readonly right: Vector
         readonly leftZIndex?: number
         readonly rightZIndex?: number
         readonly animationDuration: number
     }
 
-    readonly image: {
-        readonly position: Vector
-        readonly angle?: number
-    }
-
-    readonly dual?: {
-        readonly offset: number
-        readonly fireDelay: number
-        readonly shotSpread: number
-        readonly moveSpread: number
-        readonly reloadTime: number
-    }
-
     readonly casingParticles?: {
-        readonly position: Vector
         readonly count?: number
         readonly spawnOnReload?: boolean
         readonly ejectionDelay?: number
     }
-    readonly specialParticle?: string
+
+    readonly image: {
+        readonly angle?: number
+    }
+
+    readonly dualVariant?: ReferenceTo<GunDefinition>
 
     readonly noMuzzleFlash?: boolean
     readonly ballistics: BaseBulletDefinition
@@ -71,9 +61,56 @@ export type GunDefinition = ItemDefinition & {
         readonly burstCooldown: number
         // note: the time between bursts is burstCooldown, and the time between shots within a burst is cooldown
     }
+}) & ({
+    readonly isDual?: false
+    readonly fists: {
+        readonly left: Vector
+        readonly right: Vector
+    }
+    readonly image: {
+        readonly position: Vector
+    }
+    readonly casingParticles?: {
+        readonly position: Vector
+    }
+} | {
+    readonly isDual: true
+    readonly singleVariant: ReferenceTo<GunDefinition>
+    /**
+     * This offset is used for pretty much everything that's unique to dual weapons: it's an offset for projectile spawns, casing spawns and world images
+     */
+    readonly leftRightOffset: number
 });
 
-export const Guns: GunDefinition[] = [
+export type SingleGunNarrowing = GunDefinition & { readonly isDual: false };
+export type DualGunNarrowing = GunDefinition & { readonly isDual: true };
+
+/* eslint-disable @typescript-eslint/indent */
+
+const GunsRaw: Array<GunDefinition & {
+    readonly dual?: {
+        readonly leftRightOffset: number
+    } & {
+        [
+            K in Extract<
+                keyof (GunDefinition & { readonly isDual: true }),
+                "wearerAttributes" |
+                "ammoSpawnAmount" |
+                "capacity" |
+                "reloadTime" |
+                "fireDelay" |
+                "switchDelay" |
+                "speedMultiplier" |
+                "recoilMultiplier" |
+                "recoilDuration" |
+                "shotSpread" |
+                "moveSpread" |
+                "burstProperties" |
+                "leftRightOffset"
+            >
+        ]?: (GunDefinition & { readonly isDual: true })[K]
+    }
+}> = [
     {
         idString: "ak47",
         name: "AK-47",
@@ -430,7 +467,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 0.3,
         moveSpread: 0.6,
-        length: 8.2,
+        length: 8.9,
         shootOnRelease: true,
         fists: {
             left: v(106, -1),
@@ -531,10 +568,11 @@ export const Guns: GunDefinition[] = [
             range: 160
         },
         dual: {
-            offset: 1.3,
+            leftRightOffset: 1.3,
             fireDelay: 187.5,
             shotSpread: 3,
             moveSpread: 6,
+            capacity: 14,
             reloadTime: 4
         }
     },
@@ -573,10 +611,11 @@ export const Guns: GunDefinition[] = [
             range: 120
         },
         dual: {
-            offset: 1.3,
+            leftRightOffset: 1.3,
             fireDelay: 75,
             shotSpread: 10,
             moveSpread: 18,
+            capacity: 30,
             reloadTime: 2.9
         }
     },
@@ -608,15 +647,19 @@ export const Guns: GunDefinition[] = [
             position: v(3.5, 1),
             ejectionDelay: 500
         },
-        specialParticle: "radio_wave",
         noMuzzleFlash: true,
         capacity: 1,
         reloadTime: 1.4,
         ballistics: {
+            tracer: {
+                image: "radio_wave",
+                opacity: 0.8,
+                forceMaxLength: true
+            },
             damage: 0,
             obstacleMultiplier: 1,
-            speed: 1,
-            range: 0
+            speed: 0.01,
+            range: 50
         }
     },
     {
@@ -654,10 +697,11 @@ export const Guns: GunDefinition[] = [
             range: 85
         },
         dual: {
-            offset: 1.3,
+            leftRightOffset: 1.3,
             fireDelay: 30,
             shotSpread: 17,
             moveSpread: 35,
+            capacity: 32,
             reloadTime: 3.7
         }
     },
@@ -934,7 +978,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Single,
         shotSpread: 1,
         moveSpread: 3.5,
-        length: 7.8,
+        length: 8.1,
         fists: {
             left: v(110, -3),
             right: v(40, 0),
@@ -1125,7 +1169,7 @@ export const Guns: GunDefinition[] = [
         fireMode: FireMode.Auto,
         shotSpread: 0.5,
         moveSpread: 5,
-        length: 5.9,
+        length: 6.2,
         fists: {
             left: v(40, 0),
             right: v(40, 0),
@@ -1147,7 +1191,16 @@ export const Guns: GunDefinition[] = [
                 opacity: 0.85,
                 color: 0xFF8000
             }
-        }
+        }/* ,
+        dual: {
+            leftRightOffset: 1.3,
+            capacity: 200,
+            fireDelay: 20,
+            shotSpread: 1,
+            moveSpread: 8,
+            reloadTime: 2.8
+        } */
+        // justice for dual s_g17 when™
     },
 
     // only dev weapons below this point
@@ -1265,3 +1318,33 @@ export const Guns: GunDefinition[] = [
         }
     }
 ];
+
+export const Guns: GunDefinition[] = GunsRaw.map(e => {
+    if (e.dual === undefined) {
+        return [e];
+    }
+
+    const dualDef = mergeDeep(
+        {},
+        e,
+        e.dual,
+        {
+            idString: `dual_${e.idString}`,
+            name: `Dual ${e.name}`,
+            isDual: true,
+            singleVariant: e.idString
+        }
+    ) as GunDefinition & { readonly dual?: object, readonly isDual: true };
+    // @ts-expect-error init code
+    delete dualDef.dual;
+    // @ts-expect-error init code
+    delete dualDef.fists;
+    // @ts-expect-error init code
+    delete dualDef.image;
+    // @ts-expect-error init code
+    delete dualDef.casingParticles;
+    // @ts-expect-error init code
+    e.dualVariant = dualDef.idString;
+
+    return [e, dualDef];
+}).flat();

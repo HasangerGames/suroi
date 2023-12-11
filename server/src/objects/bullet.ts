@@ -6,11 +6,13 @@ import { normalizeAngle } from "../../../common/src/utils/math";
 import { randomFloat } from "../../../common/src/utils/random";
 import { v, vAdd, vMul, type Vector } from "../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { type GunItem } from "../inventory/gunItem";
+import { GunItem } from "../inventory/gunItem";
 import { type GameObject } from "./gameObject";
 import { type Explosion } from "./explosion";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
+import { Loots } from "../../../common/src/definitions/loots";
+import { type SingleGunNarrowing } from "../../../common/src/definitions/guns";
 
 type Weapon = GunItem | Explosion;
 
@@ -47,7 +49,8 @@ export class Bullet extends BaseBullet {
         shooter: GameObject,
         options: ServerBulletOptions
     ) {
-        const definition = Bullets.fromString(`${source.definition.idString}_bullet`);
+        const reference = source instanceof GunItem && source.definition.isDual ? Loots.fromString<SingleGunNarrowing>(source.definition.singleVariant) : source.definition;
+        const definition = Bullets.fromString(`${reference.idString}_bullet`);
         const variance = definition.rangeVariance;
 
         super({

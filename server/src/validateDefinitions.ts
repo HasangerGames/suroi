@@ -8,7 +8,7 @@ import { Bullets } from "../../common/src/definitions/bullets";
 import { Decals } from "../../common/src/definitions/decals";
 import { Emotes } from "../../common/src/definitions/emotes";
 import { Explosions } from "../../common/src/definitions/explosions";
-import { Guns } from "../../common/src/definitions/guns";
+import { type DualGunNarrowing, Guns, type SingleGunNarrowing } from "../../common/src/definitions/guns";
 import { HealingItems } from "../../common/src/definitions/healingItems";
 import { Loots } from "../../common/src/definitions/loots";
 import { Melees } from "../../common/src/definitions/melees";
@@ -1928,83 +1928,136 @@ logger.indent("Validating guns", () => {
                 baseErrorPath: errorPath
             });
 
-            logger.indent("Validating fists", () => {
-                const errorPath2 = tester.createPath(errorPath, "fists");
+            if (gun.isDual) {
+                logger.indent("Validating dual attributes", () => {
+                    const errorPath2 = tester.createPath(errorPath, "dual properties");
 
-                validators.vector(errorPath2, gun.fists.left);
-                validators.vector(errorPath2, gun.fists.right);
-
-                tester.assertIsPositiveReal({
-                    obj: gun.fists,
-                    field: "animationDuration",
-                    baseErrorPath: errorPath2
-                });
-            });
-
-            logger.indent("Validating image", () => {
-                const errorPath2 = tester.createPath(errorPath, "image");
-
-                validators.vector(errorPath2, gun.image.position);
-
-                tester.assertNoPointlessValue({
-                    obj: gun.image,
-                    field: "angle",
-                    defaultValue: 0,
-                    baseErrorPath: errorPath
-                });
-
-                if (gun.image.angle !== undefined) {
-                    tester.assertIsRealNumber({
-                        obj: gun.image,
-                        field: "angle",
+                    tester.assertIsPositiveFiniteReal({
+                        obj: gun,
+                        field: "leftRightOffset",
                         baseErrorPath: errorPath2
                     });
-                }
-            });
 
-            if (gun.casingParticles !== undefined) {
-                const casings = gun.casingParticles;
-                logger.indent("Validating casings", () => {
-                    const errorPath2 = tester.createPath(errorPath, "casings");
-                    validators.vector(errorPath2, casings.position);
-
-                    tester.assertNoPointlessValue({
-                        obj: casings,
-                        field: "count",
-                        defaultValue: 1,
-                        baseErrorPath: errorPath
+                    tester.assertReferenceExistsArray({
+                        obj: gun,
+                        field: "singleVariant",
+                        collection: Guns,
+                        collectionName: "Guns",
+                        baseErrorPath: errorPath2
                     });
 
-                    if (casings.count !== undefined) {
-                        tester.assertIsPositiveFiniteReal({
-                            obj: casings,
-                            field: "count",
-                            baseErrorPath: errorPath
-                        });
+                    const singleDualPtr = Loots.fromString<SingleGunNarrowing>(gun.singleVariant)?.dualVariant;
+                    tester.assert(
+                        singleDualPtr === gun.idString,
+                        `This gun specified weapon '${gun.dualVariant}' as its single form, but that weapon ${singleDualPtr === undefined ? "doesn't exist" : `specified its dual form as being '${singleDualPtr}'`}`,
+                        errorPath2
+                    );
+                });
+            } else {
+                logger.indent("Validating fists", () => {
+                    const errorPath2 = tester.createPath(errorPath, "fists");
+
+                    validators.vector(errorPath2, gun.fists.left);
+                    validators.vector(errorPath2, gun.fists.right);
+
+                    tester.assertIsPositiveReal({
+                        obj: gun.fists,
+                        field: "animationDuration",
+                        baseErrorPath: errorPath2
+                    });
+                });
+
+                logger.indent("Validating image", () => {
+                    const errorPath2 = tester.createPath(errorPath, "image");
+
+                    if (!gun.isDual) {
+                        validators.vector(errorPath2, gun.image.position);
                     }
 
                     tester.assertNoPointlessValue({
-                        obj: casings,
-                        field: "spawnOnReload",
-                        defaultValue: false,
-                        baseErrorPath: errorPath
-                    });
-
-                    tester.assertNoPointlessValue({
-                        obj: casings,
-                        field: "ejectionDelay",
+                        obj: gun.image,
+                        field: "angle",
                         defaultValue: 0,
                         baseErrorPath: errorPath
                     });
 
-                    if (casings.ejectionDelay !== undefined) {
-                        tester.assertIsPositiveFiniteReal({
-                            obj: casings,
-                            field: "ejectionDelay",
-                            baseErrorPath: errorPath
+                    if (gun.image.angle !== undefined) {
+                        tester.assertIsRealNumber({
+                            obj: gun.image,
+                            field: "angle",
+                            baseErrorPath: errorPath2
                         });
                     }
                 });
+
+                if (gun.casingParticles !== undefined) {
+                    const casings = gun.casingParticles;
+                    logger.indent("Validating casings", () => {
+                        const errorPath2 = tester.createPath(errorPath, "casings");
+                        validators.vector(errorPath2, casings.position);
+
+                        tester.assertNoPointlessValue({
+                            obj: casings,
+                            field: "count",
+                            defaultValue: 1,
+                            baseErrorPath: errorPath
+                        });
+
+                        if (casings.count !== undefined) {
+                            tester.assertIsPositiveFiniteReal({
+                                obj: casings,
+                                field: "count",
+                                baseErrorPath: errorPath
+                            });
+                        }
+
+                        tester.assertNoPointlessValue({
+                            obj: casings,
+                            field: "spawnOnReload",
+                            defaultValue: false,
+                            baseErrorPath: errorPath
+                        });
+
+                        tester.assertNoPointlessValue({
+                            obj: casings,
+                            field: "ejectionDelay",
+                            defaultValue: 0,
+                            baseErrorPath: errorPath
+                        });
+
+                        if (casings.ejectionDelay !== undefined) {
+                            tester.assertIsPositiveFiniteReal({
+                                obj: casings,
+                                field: "ejectionDelay",
+                                baseErrorPath: errorPath
+                            });
+                        }
+                    });
+                }
+            }
+
+            tester.assertNoPointlessValue({
+                obj: gun,
+                field: "dualVariant",
+                defaultValue: "",
+                baseErrorPath: errorPath
+            });
+
+            if (gun.dualVariant) {
+                tester.assertReferenceExistsArray({
+                    obj: gun,
+                    field: "dualVariant",
+                    collection: Guns,
+                    collectionName: "Guns",
+                    baseErrorPath: errorPath
+                });
+
+                const dualSinglePtr: string | undefined = Loots.fromString<DualGunNarrowing>(gun.dualVariant)?.singleVariant;
+                tester.assert(
+                    dualSinglePtr === gun.idString,
+                    `This gun specified weapon '${gun.dualVariant}' as its dual form, but that weapon ${dualSinglePtr === undefined ? "doesn't exist" : `specified its single form as being '${dualSinglePtr}'`}`,
+                    errorPath
+                );
             }
 
             tester.assertNoPointlessValue({

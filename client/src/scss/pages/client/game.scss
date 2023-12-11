@@ -10,7 +10,8 @@
     height: 100%;
 
     // Darkens canvas (for Halloween mode)
-    /*canvas {
+    /*
+    canvas {
         filter: brightness(0.65) saturate(0.85);
         position: relative;
         z-index: -1;
@@ -851,14 +852,6 @@
         width: 90px;
         height: 90px;
         position: absolute;
-
-        &.dual {
-            transform: translate(-12%);
-        }
-
-        &.dual-image {
-            transform: translate(12%);
-        }
 
         @media screen and (max-width: $screen_large) {
             width: 50px;

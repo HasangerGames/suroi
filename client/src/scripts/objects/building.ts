@@ -3,7 +3,7 @@ import { ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { type BuildingDefinition } from "../../../../common/src/definitions/buildings";
 import { type Orientation } from "../../../../common/src/typings";
 import { CircleHitbox, RectangleHitbox, type Hitbox, ComplexHitbox } from "../../../../common/src/utils/hitbox";
-import { circleCircleIntersection, rectCircleIntersection, velFromAngle } from "../../../../common/src/utils/math";
+import { circleCircleIntersection, rectCircleIntersection, polarToVector } from "../../../../common/src/utils/math";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomRotation } from "../../../../common/src/utils/random";
 import type { Game } from "../game";
@@ -232,12 +232,16 @@ export class Building extends GameObject<ObjectCategory.Building> {
                         ease: EaseFunctions.sextIn
                     },
                     scale: { start: 1, end: 0.2 },
-                    speed: velFromAngle(randomRotation(), randomFloat(1, 2))
+                    speed: polarToVector(randomRotation(), randomFloat(1, 2))
                 }));
-                this.playSound("ceiling_collapse", {
-                    fallOff: 0.5,
-                    maxRange: 96
-                });
+
+                this.playSound(
+                    "ceiling_collapse",
+                    {
+                        fallOff: 0.5,
+                        maxRange: 96
+                    }
+                );
             }
             this.ceilingTween?.kill();
             this.ceilingContainer.zIndex = ZIndexes.DeadObstacles;

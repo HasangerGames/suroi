@@ -240,9 +240,9 @@ export class Obstacle extends GameObject<ObjectCategory.Obstacle> {
             case ObstacleSpecialRoles.Activatable: {
                 this.activated = true;
 
-                if (this.parentBuilding && definition.interactType) {
+                if (this.parentBuilding && definition.triggerInteractOn) {
                     for (const obstacle of this.parentBuilding.interactableObstacles) {
-                        if (obstacle.definition.idString === definition.interactType) {
+                        if (obstacle.definition.idString === definition.triggerInteractOn) {
                             this.game.addTimeout(() => {
                                 obstacle.interact();
                                 this.parentBuilding!.puzzleSolved = true;

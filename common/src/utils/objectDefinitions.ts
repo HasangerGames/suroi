@@ -37,9 +37,12 @@ export class ObjectDefinitions<T extends ObjectDefinition = ObjectDefinition> {
     }
 
     writeToStream(stream: SuroiBitStream, type: ReifiableDef<T>): void {
-        stream.writeBits(this.idStringToNumber[
-            typeof type === "string" ? type : type.idString
-        ], this.bitCount);
+        stream.writeBits(
+            this.idStringToNumber[
+                typeof type === "string" ? type : type.idString
+            ],
+            this.bitCount
+        );
     }
 
     readFromStream<U extends T = T>(stream: SuroiBitStream): U {
@@ -126,6 +129,7 @@ export interface BaseBulletDefinition {
         readonly length?: number
         readonly color?: number
         readonly image?: string
+        readonly forceMaxLength?: boolean
     }
 
     readonly rangeVariance?: number

@@ -7,6 +7,8 @@ export interface ModeDefinition {
     readonly colors: Record<ColorKeys, string>
     readonly specialMenuMusic?: boolean
     readonly reskin?: string
+    // will be multiplied to the bullet trail color
+    readonly bulletTrailAdjust?: string
 }
 
 export interface ReskinDefinition { textures: string[], sounds?: string[] }
@@ -59,7 +61,8 @@ export const Modes: ModeDefinition[] = [
             gas: "hsla(17, 100%, 50%, 0.55)"
         },
         specialMenuMusic: true,
-        reskin: "winter"
+        reskin: "winter",
+        bulletTrailAdjust: "hsl(0, 50%, 80%)"
     }
 ];
 

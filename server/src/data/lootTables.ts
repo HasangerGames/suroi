@@ -310,6 +310,11 @@ export const LootTables: Record<string, LootTable> = {
 
 export const LootTiers: Record<string, WeightedItem[]> = {
     guns: [
+        // START TEMPORARY
+        // { item: "dual_g19", weight: 4 },
+        // { item: "dual_m1895", weight: 3.5 },
+        // { item: "dual_cz75a", weight: 3 },
+        // END TEMPORARY
         { item: "g19", weight: 2 },
         { item: "m1895", weight: 1.75 },
         { item: "mp40", weight: 1.7 },

@@ -2,7 +2,15 @@ export function isObject(item: unknown): item is Record<string, unknown> {
     return (item && typeof item === "object" && !Array.isArray(item)) as boolean;
 }
 
-export type DeepPartial<T> = { [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K] };
+export type DeepPartial<T> = {
+    [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+export type DeepRequired<T> = T extends Array<infer R>
+    ? Array<DeepRequired<NonNullable<R>>>
+    : {
+        [K in keyof T]-?: DeepRequired<NonNullable<T[K]>>;
+    };
 
 export function mergeDeep<T extends object>(target: T, ...sources: Array<DeepPartial<T>>): T {
     if (!sources.length) return target;
