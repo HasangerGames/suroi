@@ -42,6 +42,18 @@ export type GunDefinition = ItemDefinition & {
         readonly count?: number
         readonly spawnOnReload?: boolean
         readonly ejectionDelay?: number
+        readonly velocity?: {
+            readonly x?: {
+                readonly min: number
+                readonly max: number
+                readonly randomSign?: boolean
+            }
+            readonly y?: {
+                readonly min: number
+                readonly max: number
+                readonly randomSign?: boolean
+            }
+        }
     }
 
     readonly image: {
@@ -316,7 +328,14 @@ const GunsRaw: Array<GunDefinition & {
         image: { position: v(95, 0) },
         casingParticles: {
             position: v(4.5, 0.6),
-            ejectionDelay: 450
+            ejectionDelay: 450,
+            velocity: {
+                y: {
+                    min: 2,
+                    max: 5,
+                    randomSign: true
+                }
+            }
         },
         singleReload: true,
         ballistics: {
@@ -398,7 +417,14 @@ const GunsRaw: Array<GunDefinition & {
         casingParticles: {
             position: v(4, 0.6),
             count: 2,
-            spawnOnReload: true
+            spawnOnReload: true,
+            velocity: {
+                y: {
+                    min: 8,
+                    max: 15,
+                    randomSign: true
+                }
+            }
         },
         ballistics: {
             damage: 10,
@@ -517,7 +543,7 @@ const GunsRaw: Array<GunDefinition & {
         },
         image: { position: v(90, 4) },
         casingParticles: {
-            position: v(4, 0.6),
+            position: v(2, 0.6),
             ejectionDelay: 700
         },
         ballistics: {
@@ -557,7 +583,18 @@ const GunsRaw: Array<GunDefinition & {
         casingParticles: {
             position: v(3.5, 0.5),
             count: 7,
-            spawnOnReload: true
+            spawnOnReload: true,
+            velocity: {
+                x: {
+                    min: -15,
+                    max: -4
+                },
+                y: {
+                    min: 5,
+                    max: 18,
+                    randomSign: true
+                }
+            }
         },
         capacity: 7,
         reloadTime: 2.1,
@@ -600,7 +637,13 @@ const GunsRaw: Array<GunDefinition & {
         },
         image: { position: v(65, 0) },
         casingParticles: {
-            position: v(3.5, 0.5)
+            position: v(3.5, 0.5),
+            velocity: {
+                y: {
+                    min: 2,
+                    max: 18
+                }
+            }
         },
         capacity: 15,
         reloadTime: 1.5,
@@ -686,7 +729,13 @@ const GunsRaw: Array<GunDefinition & {
         },
         image: { position: v(70, -1) },
         casingParticles: {
-            position: v(3.5, 0.5)
+            position: v(3.5, 0.5),
+            velocity: {
+                y: {
+                    min: 2,
+                    max: 18
+                }
+            }
         },
         capacity: 16,
         reloadTime: 1.9,
@@ -987,7 +1036,13 @@ const GunsRaw: Array<GunDefinition & {
         },
         image: { position: v(87, 1) },
         casingParticles: {
-            position: v(4, 0.6)
+            position: v(4, 0.6),
+            velocity: {
+                y: {
+                    min: 4,
+                    max: 15
+                }
+            }
         },
         ballistics: {
             damage: 39,
@@ -1101,7 +1156,13 @@ const GunsRaw: Array<GunDefinition & {
         },
         image: { position: v(85, 0) },
         casingParticles: {
-            position: v(5, 0.5)
+            position: v(5, 0.5),
+            velocity: {
+                y: {
+                    min: 4,
+                    max: 15
+                }
+            }
         },
         ballistics: {
             damage: 25.5,
@@ -1277,7 +1338,14 @@ const GunsRaw: Array<GunDefinition & {
         image: { position: v(80, 0) },
         casingParticles: {
             position: v(4, 0.6),
-            ejectionDelay: 450
+            ejectionDelay: 450,
+            velocity: {
+                y: {
+                    min: 2,
+                    max: 5,
+                    randomSign: true
+                }
+            }
         },
         singleReload: true,
         ballistics: {
@@ -1343,6 +1411,8 @@ export const Guns: GunDefinition[] = GunsRaw.map(e => {
     delete dualDef.image;
     // @ts-expect-error init code
     delete dualDef.casingParticles;
+    // @ts-expect-error init code
+    delete e.dual;
     // @ts-expect-error init code
     e.dualVariant = dualDef.idString;
 

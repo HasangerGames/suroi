@@ -20,7 +20,7 @@ import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { angleBetweenPoints, distanceSquared, polarToVector } from "../../../../common/src/utils/math";
 import { ItemType } from "../../../../common/src/utils/objectDefinitions";
 import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
-import { random, randomBoolean, randomFloat, randomVector } from "../../../../common/src/utils/random";
+import { random, randomBoolean, randomFloat, randomSign, randomVector } from "../../../../common/src/utils/random";
 import { v, vAdd, vAdd2, vClone, type Vector, vRotate } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
 import { GameObject } from "./gameObject";
@@ -208,49 +208,67 @@ export class Player extends GameObject<ObjectCategory.Player> {
         const weaponDef = this.activeItem as GunDefinition;
         const reference = this._getItemReference() as SingleGunNarrowing;
         const initialRotation = this.rotation + Math.PI / 2;
-        const spinAmount = randomFloat(Math.PI / 2, Math.PI);
         const casings = reference.casingParticles;
 
         if (casings === undefined) return;
 
-        let position: Vector;
+        const position = vClone(casings.position);
         if (weaponDef.isDual) {
-            position = Loots.fromString<SingleGunNarrowing>(weaponDef.singleVariant).casingParticles!.position;
-            position.y = (altFire ? -1 : 1) * position.y + weaponDef.leftRightOffset;
-        } else {
-            position = vClone(casings.position);
+            position.y = (altFire ? -1 : 1) * (position.y + weaponDef.leftRightOffset);
         }
 
         const spawnCasings = (): void => {
+            const casingVelX = casings.velocity?.x;
+            const casingVelY = casings.velocity?.y;
+
             this.game.particleManager.spawnParticles(
                 casings.count ?? 1,
-                () => ({
-                    frames: `${weaponDef.ammoType}_particle`,
-                    zIndex: ZIndexes.Players,
-                    position: vAdd(this.position, vRotate(position, this.rotation)),
-                    lifetime: 400,
-                    scale: {
-                        start: 0.8,
-                        end: 0.4
-                    },
-                    alpha: {
-                        start: 1,
-                        end: 0,
-                        ease: EaseFunctions.sextIn
-                    },
-                    rotation: {
-                        start: initialRotation,
-                        end: initialRotation + spinAmount
-                    },
-                    speed: vRotate(
-                        vAdd2(
-                            randomVector(2, -5, 10, 15),
-                            -(spinAmount / 4),
-                            0
-                        ),
-                        this.rotation
-                    )
-                })
+                () => {
+                    const spinAmount = randomFloat(Math.PI / 2, Math.PI);
+                    const displacement = randomVector(
+                        casingVelX?.min ?? 2,
+                        casingVelX?.max ?? -5,
+                        casingVelY?.min ?? 10,
+                        casingVelY?.max ?? 15
+                    );
+
+                    if (casingVelX?.randomSign) {
+                        displacement.x *= randomSign();
+                    }
+
+                    if (casingVelY?.randomSign) {
+                        displacement.y *= randomSign();
+                    }
+
+                    return {
+                        frames: `${weaponDef.ammoType}_particle`,
+                        zIndex: ZIndexes.Players,
+                        position: vAdd(this.position, vRotate(position, this.rotation)),
+                        lifetime: 400,
+                        scale: {
+                            start: 0.8,
+                            end: 0.4
+                        },
+                        alpha: {
+                            start: 1,
+                            end: 0,
+                            ease: EaseFunctions.sextIn
+                        },
+                        rotation: {
+                            start: initialRotation,
+                            end: initialRotation + Math.sign(displacement.y) * spinAmount
+                            //                    ^^^^^^^^^^ make casings spin clockwise or counterclockwise depending on which way they're flying
+                        },
+                        speed: vRotate(
+                            vAdd2(
+                                displacement,
+                                -(spinAmount / 4),
+                                0
+                            ),
+                            this.rotation
+                        )
+                    };
+                }
             );
         };
 
@@ -431,7 +449,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                             if (weaponDef.isDual) {
                                 this.spawnCasingParticles(true);
                             }
-                            this.spawnCasingParticles();
+                            this.spawnCasingParticles(false);
                         }
 
                         actionSoundName = `${weaponDef.idString}_reload`;
