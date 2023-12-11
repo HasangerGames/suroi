@@ -1,23 +1,23 @@
 import { GameConstants, ObjectCategory, ZIndexes } from "../../../../common/src/constants";
 import { lerp } from "../../../../common/src/utils/math";
-import type { ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
+import { type ObjectsNetData } from "../../../../common/src/utils/objectsSerializations";
 import { randomFloat, randomPointInsideCircle } from "../../../../common/src/utils/random";
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { v, type Vector } from "../../../../common/src/utils/vector";
-import type { Game } from "../game";
+import { type Game } from "../game";
 import { GameObject } from "./gameObject";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
-import type { GameSound } from "../utils/soundManager";
+import { type GameSound } from "../utils/soundManager";
 import { Tween } from "../utils/tween";
 
 export class Parachute extends GameObject<ObjectCategory.Parachute> {
     override readonly type = ObjectCategory.Parachute;
 
-    image = new SuroiSprite("airdrop_parachute");
+    private readonly image = new SuroiSprite("airdrop_parachute");
 
-    scaleAnim?: Tween<Vector>;
+    private scaleAnim?: Tween<Vector>;
 
-    fallSound!: GameSound;
+    private fallSound?: GameSound;
 
     constructor(game: Game, id: number, data: Required<ObjectsNetData[ObjectCategory.Parachute]>) {
         super(game, id);
@@ -32,11 +32,14 @@ export class Parachute extends GameObject<ObjectCategory.Parachute> {
         if (data.full) {
             this.position = data.full.position;
             this.container.position = toPixiCoords(this.position);
-            this.fallSound = this.playSound("airdrop_fall", {
-                fallOff: 1,
-                maxRange: 128,
-                dynamic: true
-            });
+            this.fallSound = this.playSound(
+                "airdrop_fall",
+                {
+                    fallOff: 1,
+                    maxRange: 128,
+                    dynamic: true
+                }
+            );
         }
 
         const scale = lerp(0.5, 1, data.height);

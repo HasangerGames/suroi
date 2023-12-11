@@ -173,10 +173,16 @@ export function rectRectCollision(min1: Vector, max1: Vector, min2: Vector, max2
     return min2.x < max1.x && min2.y < max1.y && min1.x < max2.x && min1.y < max2.y;
 }
 
-export function velFromAngle(angle: number, multiplier = 1): Vector {
+/**
+ * Takes a polar representation of a vector and converts it into a cartesian one
+ * @param angle The vector's angle
+ * @param magnitude The vector's length. Defaults to 1
+ * @returns A new vector whose length is `magnitude` and whose direction is `angle`
+ */
+export function polarToVector(angle: number, magnitude = 1): Vector {
     return {
-        x: Math.cos(angle) * multiplier,
-        y: Math.sin(angle) * multiplier
+        x: Math.cos(angle) * magnitude,
+        y: Math.sin(angle) * magnitude
     };
 }
 

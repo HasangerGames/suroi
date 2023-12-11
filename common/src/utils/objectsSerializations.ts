@@ -29,7 +29,6 @@ export interface ObjectsNetData {
         full?: {
             invulnerable: boolean
             activeItem: LootDefinition
-            activeItemIsdual?: boolean
             skin: SkinDefinition
             helmet?: ArmorDefinition
             vest?: ArmorDefinition
@@ -145,9 +144,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             if (full.action.item) {
                 Loots.writeToStream(stream, full.action.item);
             }
-            if ("dual" in full.activeItem && full.activeItemIsdual !== undefined) {
-                stream.writeBoolean(full.activeItemIsdual);
-            }
 
             stream.writeBoolean(full.helmet !== undefined);
             if (full.helmet) {
@@ -185,10 +181,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             if (full.action && full.action.type === PlayerActions.UseItem) {
                 full.action.item = Loots.readFromStream(stream);
-            }
-
-            if ("dual" in full.activeItem) {
-                full.activeItemIsdual = stream.readBoolean();
             }
 
             if (stream.readBoolean()) {

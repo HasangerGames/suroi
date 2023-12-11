@@ -12,8 +12,8 @@ export class Bullet extends BaseBullet {
     readonly image: SuroiSprite;
     readonly maxLength: number;
     readonly tracerLength: number;
-    trailReachedMaxLength = false;
-    trailTicks = 0;
+    private _trailReachedMaxLength = false;
+    private _trailTicks = 0;
 
     constructor(game: Game, options: BulletOptions) {
         super(options);
@@ -65,24 +65,27 @@ export class Bullet extends BaseBullet {
                 break;
             }
 
-            if (!this.trailReachedMaxLength) this.trailTicks += delta;
+            if (!this._trailReachedMaxLength) this._trailTicks += delta;
         } else {
-            this.trailTicks -= delta;
+            this._trailTicks -= delta;
         }
 
-        const dist = distance(this.initialPosition, this.position);
+        const length = this.definition.tracer?.forceMaxLength
+            ? this.maxLength
+            : Math.min(
+                Math.min(
+                    this.definition.speed * this._trailTicks,
+                    distance(this.initialPosition, this.position)
+                ) * PIXI_SCALE,
+                this.maxLength
+            );
 
-        const fadeDist = this.definition.speed * this.trailTicks;
-
-        const length = Math.min(Math.min(fadeDist, dist) * PIXI_SCALE, this.maxLength);
-
-        if (length === this.maxLength) this.trailReachedMaxLength = true;
+        if (length === this.maxLength) this._trailReachedMaxLength = true;
 
         this.image.width = length;
-
         this.image.setVPos(toPixiCoords(this.position));
 
-        if (this.trailTicks <= 0 && this.dead) {
+        if (this._trailTicks <= 0 && this.dead) {
             this.destroy();
         }
     }

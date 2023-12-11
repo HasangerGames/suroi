@@ -208,7 +208,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
     readonly animation = {
         type: AnimationType.None,
         // This boolean is flipped when an animation plays
-        // when its changed the client plays the animation
+        // when it's changed, the client plays the animation
         seq: false
     };
 
@@ -296,6 +296,8 @@ export class Player extends GameObject<ObjectCategory.Player> {
     isInsideBuilding = false;
 
     floor = "water";
+
+    screenHitbox = RectangleHitbox.fromRect(1, 1);
 
     get position(): Vector {
         return this.hitbox.position;
@@ -618,7 +620,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 messageType: KillFeedMessageType.KillLeaderAssigned,
                 playerID: killLeader.id,
                 kills: killLeader.kills,
-                hideInKillFeed: true
+                hideInKillfeed: true
             });
         }
 
@@ -643,7 +645,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
 
         let toSpectate: Player | undefined;
 
-        const spectatablePlayers = game.spectablePlayers;
+        const spectatablePlayers = game.spectatablePlayers;
         switch (packet.spectateAction) {
             case SpectateActions.BeginSpectating: {
                 if (this.killedBy !== undefined && !this.killedBy.dead) toSpectate = this.killedBy;
@@ -652,16 +654,22 @@ export class Player extends GameObject<ObjectCategory.Player> {
             }
             case SpectateActions.SpectatePrevious:
                 if (this.spectating !== undefined) {
-                    let index: number = spectatablePlayers.indexOf(this.spectating) - 1;
-                    if (index < 0) index = spectatablePlayers.length - 1;
-                    toSpectate = spectatablePlayers[index];
+                    toSpectate = spectatablePlayers[
+                        Math.max(
+                            0,
+                            spectatablePlayers.indexOf(this.spectating) - 1
+                        )
+                    ];
                 }
                 break;
             case SpectateActions.SpectateNext:
                 if (this.spectating !== undefined) {
-                    let index: number = spectatablePlayers.indexOf(this.spectating) + 1;
-                    if (index >= spectatablePlayers.length) index = 0;
-                    toSpectate = spectatablePlayers[index];
+                    toSpectate = spectatablePlayers[
+                        Math.min(
+                            spectatablePlayers.length,
+                            spectatablePlayers.indexOf(this.spectating) + 1
+                        )
+                    ];
                 }
                 break;
             case SpectateActions.SpectateSpecific: {
@@ -702,8 +710,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
             this.game.fullDirtyObjects.add(this);
         }
     }
-
-    screenHitbox = RectangleHitbox.fromRect(1, 1);
 
     sendPacket(packet: Packet): void {
         packet.serialize();
@@ -867,11 +873,13 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 playerID: this.id,
                 weaponUsed: weaponUsed?.definition
             };
+
             if (source instanceof Player) {
                 if (source !== this) {
                     killFeedMessage.killType = KillType.TwoPartyInteraction;
                     killFeedMessage.killerID = source.id;
                     killFeedMessage.kills = source.kills;
+
                     if (source.activeItem.definition.killstreak) {
                         killFeedMessage.killstreak = source.activeItem.stats.kills;
                     }
@@ -879,6 +887,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
             } else {
                 killFeedMessage.killType = source;
             }
+
             this.game.killFeedMessages.add(killFeedMessage);
         }
 
@@ -896,7 +905,7 @@ export class Player extends GameObject<ObjectCategory.Player> {
         this.game.livingPlayers.delete(this);
         this.game.grid.removeObject(this);
         this.game.updateObjects = true;
-        removeFrom(this.game.spectablePlayers, this);
+        removeFrom(this.game.spectatablePlayers, this);
 
         //
         // Drop loot
@@ -934,7 +943,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
         }
 
         // Drop equipment
-
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item && item.noDrop !== true) {
@@ -1036,7 +1044,11 @@ export class Player extends GameObject<ObjectCategory.Player> {
                     if (this.game.now - this.lastInteractionTime < 120) return;
                     this.lastInteractionTime = this.game.now;
 
-                    interface CloseObject { object: Loot | Obstacle | undefined, minDist: number }
+                    interface CloseObject {
+                        object: Loot | Obstacle | undefined
+                        minDist: number
+                    }
+
                     const interactable: CloseObject = {
                         object: undefined,
                         minDist: Number.MAX_VALUE
@@ -1134,7 +1146,6 @@ export class Player extends GameObject<ObjectCategory.Player> {
                 backpack: this.inventory.backpack,
                 skin: this.loadout.skin,
                 activeItem: this.activeItem.definition,
-                activeItemIsdual: this.activeItem instanceof GunItem && this.activeItem.dual,
                 action: {
                     seq: this.actionSeq,
                     ...(() => {

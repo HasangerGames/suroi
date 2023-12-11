@@ -8,10 +8,10 @@ import { type ObjectsNetData } from "../../../../common/src/utils/objectsSeriali
 import { FloorTypes } from "../../../../common/src/utils/terrain";
 import { type Vector } from "../../../../common/src/utils/vector";
 import { type Game } from "../game";
-import { GameObject } from "./gameObject";
 import { GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { EaseFunctions, Tween } from "../utils/tween";
+import { GameObject } from "./gameObject";
 import { type Player } from "./player";
 
 export class Loot extends GameObject {
@@ -137,24 +137,30 @@ export class Loot extends GameObject {
         switch (definition.itemType) {
             case ItemType.Gun: {
                 for (const weapon of inventory.weapons) {
-                    if (weapon?.definition.itemType === ItemType.Gun &&
-                        weapon.definition.dual &&
-                        !weapon.dual &&
-                        weapon.definition.idString === this.definition.idString) {
+                    if (
+                        weapon?.definition.itemType === ItemType.Gun &&
+                        (
+                            definition.idString === weapon.definition.dualVariant ||
+                            (
+                                definition === weapon.definition &&
+                                weapon.definition.dualVariant
+                            )
+                        )
+                    ) {
                         return true;
                     }
                 }
 
                 return !inventory.weapons[0] ||
                     !inventory.weapons[1] ||
-                    (inventory.activeWeaponIndex < 2 && this.definition.idString !== inventory.weapons[inventory.activeWeaponIndex]?.definition.idString);
+                    (inventory.activeWeaponIndex < 2 && definition !== inventory.weapons[inventory.activeWeaponIndex]?.definition);
             }
             case ItemType.Melee: {
-                return this.definition.idString !== inventory.weapons[2]?.definition.idString;
+                return definition !== inventory.weapons[2]?.definition;
             }
             case ItemType.Healing:
             case ItemType.Ammo: {
-                const idString = this.definition.idString;
+                const idString = definition.idString;
 
                 return (definition as AmmoDefinition).ephemeral ?? (inventory.items[idString] + 1 <= player.equipment.backpack.maxCapacity[idString]);
             }
@@ -169,7 +175,7 @@ export class Loot extends GameObject {
                 return definition.level > player.backpackLevel;
             }
             case ItemType.Scope: {
-                return inventory.items[this.definition.idString] === 0;
+                return inventory.items[definition.idString] === 0;
             }
             case ItemType.Skin: {
                 return true;

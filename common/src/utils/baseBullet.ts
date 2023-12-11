@@ -146,12 +146,7 @@ export class BaseBullet {
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readBits(2);
         const sourceID = stream.readObjectID();
-
-        let clipDistance: number | undefined;
-
-        if (source.goToMouse) {
-            clipDistance = stream.readFloat(0, source.range, 16);
-        }
+        const clipDistance = source.goToMouse ? stream.readFloat(0, source.range, 16) : undefined;
 
         return {
             source,
