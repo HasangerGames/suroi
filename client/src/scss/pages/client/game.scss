@@ -15,8 +15,12 @@
         filter: brightness(0.65) saturate(0.85);
         position: relative;
         z-index: -1;
+    }*/
+
+    .over-hud {
+        z-index: 1;
+        position: relative;
     }
-    */
 }
 
 #btn-reload {

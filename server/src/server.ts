@@ -109,10 +109,11 @@ function removePunishment(ip: string): void {
     }
 }
 
-let playerCount = 0;
-
 app.get("/api/playerCount", (res) => {
     cors(res);
+    const playerCount = games.reduce((a, b) => {
+        return a + (b ? b.connectedPlayers.size : 0);
+    }, 0);
     res.writeHeader("Content-Type", "text/plain").end(playerCount.toString());
 });
 
@@ -314,7 +315,6 @@ app.ws("/play", {
         const game = games[data.gameID];
         if (game === undefined) return;
         data.player = game.addPlayer(socket);
-        playerCount++;
         // data.player.sendGameOverPacket(false) // uncomment to test game over screen
     },
 
@@ -344,7 +344,6 @@ app.ws("/play", {
         const game = games[data.gameID];
         const player = data.player;
         if (game === undefined || player === undefined) return;
-        playerCount--;
         Logger.log(`Game ${data.gameID} | "${player.name}" left`);
         game.removePlayer(player);
     }
