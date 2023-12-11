@@ -1324,7 +1324,17 @@ export const Guns: GunDefinition[] = GunsRaw.map(e => {
         return [e];
     }
 
-    const dualDef = mergeDeep({}, e, e.dual) as GunDefinition & { readonly dual?: object, readonly isDual: true };
+    const dualDef = mergeDeep(
+        {},
+        e,
+        e.dual,
+        {
+            idString: `dual_${e.idString}`,
+            name: `Dual ${e.name}`,
+            isDual: true,
+            singleVariant: e.idString
+        }
+    ) as GunDefinition & { readonly dual?: object, readonly isDual: true };
     // @ts-expect-error init code
     delete dualDef.dual;
     // @ts-expect-error init code
@@ -1334,15 +1344,7 @@ export const Guns: GunDefinition[] = GunsRaw.map(e => {
     // @ts-expect-error init code
     delete dualDef.casingParticles;
     // @ts-expect-error init code
-    dualDef.isDual = true;
-    // @ts-expect-error init code
-    dualDef.singleVariant = e.idString;
-    // @ts-expect-error init code
-    dualDef.idString = `dual_${dualDef.idString}`;
-    // @ts-expect-error init code
     e.dualVariant = dualDef.idString;
-    // @ts-expect-error init code
-    dualDef.name = `Dual ${dualDef.name}`;
 
     return [e, dualDef];
 }).flat();
