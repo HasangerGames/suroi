@@ -75,6 +75,7 @@ export const Maps: Record<string, MapDefinition> = {
         },
         obstacles: {
             oil_tank: 10,
+            christmas_tree: 1, // winter mode
             oak_tree: 310,
             birch_tree: 50,
             pine_tree: 30,
@@ -324,8 +325,7 @@ export const Maps: Record<string, MapDefinition> = {
         beachSize: 8,
         oceanSize: 8,
         genCallback(map) {
-            map.generateObstacle("airdrop_crate_locked", v(this.width / 2, this.height / 2), 0);
-            map.generateObstacle("bush", v(this.width / 2, this.height / 2 - 15), 0);
+            map.generateObstacle("christmas_tree", v(this.width / 2, this.height / 2), 0);
         }
     },
     guns_test: {

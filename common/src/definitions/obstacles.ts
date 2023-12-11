@@ -311,6 +311,26 @@ export const Obstacles = new ObjectDefinitions<ObstacleDefinition>(
             zIndex: ZIndexes.ObstaclesLayer4
         },
         {
+            idString: "christmas_tree",
+            name: "Christmas Tree",
+            material: "tree",
+            health: 720,
+            scale: {
+                spawnMin: 0.9,
+                spawnMax: 1.1,
+                destroy: 0.75
+            },
+            hitbox: new CircleHitbox(10),
+            spawnHitbox: new CircleHitbox(15),
+            rotationMode: RotationMode.Full,
+            zIndex: ZIndexes.ObstaclesLayer4,
+            frames: {
+                particle: "pine_tree_particle",
+                residue: "pine_tree_residue"
+            },
+            hasLoot: true
+        },
+        {
             idString: "rock",
             name: "Rock",
             material: "stone",

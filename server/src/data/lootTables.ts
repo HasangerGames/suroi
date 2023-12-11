@@ -40,7 +40,8 @@ export const LootTables: Record<string, LootTable> = {
             { tier: "scopes", weight: 0.3 },
             { tier: "healing_items", weight: 1 },
             { tier: "ammo", weight: 0.5 },
-            { tier: "melee", weight: 0.04 }
+            { tier: "melee", weight: 0.04 },
+            { tier: "winter_skins", weight: 0.5 } // winter mode
         ]
     },
     aegis_crate: {
@@ -305,6 +306,17 @@ export const LootTables: Record<string, LootTable> = {
             { item: "medikit", weight: 1 },
             { item: "tablets", weight: 1 }
         ]
+    },
+    christmas_tree: {
+        min: 3,
+        max: 5,
+        loot: [
+            { tier: "special_winter_skins", weight: 1 },
+            { tier: "special_guns", weight: 1 },
+            { tier: "special_equipment", weight: 0.65 },
+            { tier: "special_healing_items", weight: 0.65 },
+            { tier: "special_scopes", weight: 0.3 }
+        ]
     }
 };
 
@@ -466,5 +478,16 @@ export const LootTiers: Record<string, WeightedItem[]> = {
         { item: "acr", weight: 1 },
         { item: "barrett", weight: 0.5 },
         { item: "g19", weight: 0.0005 }
+    ],
+    winter_skins: [
+        { item: "peppermint", weight: 1 },
+        { item: "spearmint", weight: 1 },
+        { item: "coal", weight: 1 },
+        { item: "henrys_little_helper", weight: 1 },
+        { item: "candy_cane", weight: 1 }
+    ],
+    special_winter_skins: [
+        { item: "christmas_tree_skin", weight: 1 },
+        { item: "gingerbread", weight: 1 }
     ]
 };
