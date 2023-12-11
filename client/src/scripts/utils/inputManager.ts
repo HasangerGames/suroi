@@ -420,8 +420,9 @@ export class InputManager {
         cancel_action: "Cancel Action",
         toggle_map: "Toggle Fullscreen Map",
         toggle_minimap: "Toggle Minimap",
+        toggle_hud: "Toggle HUD",
         "+emote_wheel": "Emote Wheel",
-        toggle_console: "Toggle Console"
+        toggle_console: "Toggle Console",
     };
 
     generateBindsConfigScreen(): void {
