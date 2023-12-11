@@ -17,6 +17,7 @@ Of course, we've made a few changes and fixes, including a circular action timer
   <li><strong>Dual wielding!</strong> You can now dual wield pistols.</li>
   <li>You can now cancel actions on mobile.</li>
   <li>Added 2 emotes.</li>
+  <li>Added keybind to toggle UI.</li>
 </ul>
 
 <h3>Changes</h3>
